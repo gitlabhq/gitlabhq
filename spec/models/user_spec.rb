@@ -13,6 +13,10 @@ describe User, models: true do
     it { is_expected.to include_module(TokenAuthenticatable) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:path).to(:namespace).with_prefix }
+  end
+
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
@@ -22,13 +26,10 @@ describe User, models: true do
     it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
     it { is_expected.to have_many(:recent_events).class_name('Event') }
-    it { is_expected.to have_many(:issues).dependent(:restrict_with_exception) }
+    it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_issues).dependent(:nullify) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:assigned_merge_requests).dependent(:nullify) }
     it { is_expected.to have_many(:identities).dependent(:destroy) }
-    it { is_expected.to have_one(:abuse_report) }
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
@@ -37,6 +38,34 @@ describe User, models: true do
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
+
+    describe "#abuse_report" do
+      let(:current_user) { create(:user) }
+      let(:other_user) { create(:user) }
+
+      it { is_expected.to have_one(:abuse_report) }
+
+      it "refers to the abuse report whose user_id is the current user" do
+        abuse_report = create(:abuse_report, reporter: other_user, user: current_user)
+
+        expect(current_user.abuse_report).to eq(abuse_report)
+      end
+
+      it "does not refer to the abuse report whose reporter_id is the current user" do
+        create(:abuse_report, reporter: current_user, user: other_user)
+
+        expect(current_user.abuse_report).to be_nil
+      end
+
+      it "does not update the user_id of an abuse report when the user is updated" do
+        abuse_report = create(:abuse_report, reporter: current_user, user: other_user)
+
+        current_user.block
+
+        expect(abuse_report.reload.user).to eq(other_user)
+      end
+    end
 
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
@@ -72,6 +101,18 @@ describe User, models: true do
         expect(user.errors.values).to eq [['dashboard is a reserved name']]
       end
 
+      it 'allows child names' do
+        user = build(:user, username: 'avatar')
+
+        expect(user).to be_valid
+      end
+
+      it 'allows wildcard names' do
+        user = build(:user, username: 'blob')
+
+        expect(user).to be_valid
+      end
+
       it 'validates uniqueness' do
         expect(subject).to validate_uniqueness_of(:username).case_insensitive
       end
@@ -81,6 +122,7 @@ describe User, models: true do
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
+    it { is_expected.not_to allow_value(Gitlab::Database::MAX_INT_VALUE + 1).for(:projects_limit) }
 
     it { is_expected.to validate_length_of(:bio).is_at_most(255) }
 
@@ -210,22 +252,6 @@ describe User, models: true do
         end
       end
     end
-
-    describe 'ghost users' do
-      it 'does not allow a non-blocked ghost user' do
-        user = build(:user, :ghost)
-        user.state = 'active'
-
-        expect(user).to be_invalid
-      end
-
-      it 'allows a blocked ghost user' do
-        user = build(:user, :ghost)
-        user.state = 'blocked'
-
-        expect(user).to be_valid
-      end
-    end
   end
 
   describe "scopes" do
@@ -303,7 +329,7 @@ describe User, models: true do
   end
 
   describe "Respond to" do
-    it { is_expected.to respond_to(:is_admin?) }
+    it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
     it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
@@ -319,6 +345,35 @@ describe User, models: true do
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
       end
+    end
+  end
+
+  describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
+    let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
+    let(:user) { create(:user) }
+
+    it 'writes trackable attributes' do
+      expect do
+        user.update_tracked_fields!(request)
+      end.to change { user.reload.current_sign_in_at }
+    end
+
+    it 'does not write trackable attributes when called a second time within the hour' do
+      user.update_tracked_fields!(request)
+
+      expect do
+        user.update_tracked_fields!(request)
+      end.not_to change { user.reload.current_sign_in_at }
+    end
+
+    it 'writes trackable attributes for a different user' do
+      user2 = create(:user)
+
+      user.update_tracked_fields!(request)
+
+      expect do
+        user2.update_tracked_fields!(request)
+      end.to change { user2.reload.current_sign_in_at }
     end
   end
 
@@ -376,21 +431,9 @@ describe User, models: true do
   end
 
   describe '#generate_password' do
-    it "executes callback when force_random_password specified" do
-      user = build(:user, force_random_password: true)
-      expect(user).to receive(:generate_password)
-      user.save
-    end
-
     it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
       expect(user.password).to eq('abcdefghe')
-    end
-
-    it "generates password when forcing random password" do
-      allow(Devise).to receive(:friendly_token).and_return('123456789')
-      user = create(:user, password: 'abcdefg', force_random_password: true)
-      expect(user.password).to eq('12345678')
     end
   end
 
@@ -398,6 +441,56 @@ describe User, models: true do
     it "has authentication token" do
       user = create(:user)
       expect(user.authentication_token).not_to be_blank
+    end
+  end
+
+  describe 'ensure incoming email token' do
+    it 'has incoming email token' do
+      user = create(:user)
+      expect(user.incoming_email_token).not_to be_blank
+    end
+  end
+
+  describe '#ensure_user_rights_and_limits' do
+    describe 'with external user' do
+      let(:user) { create(:user, external: true) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: false)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        stub_config_setting(default_can_create_group: true)
+
+        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+          .and change { user.projects_limit }.to(current_application_settings.default_projects_limit)
+      end
+    end
+
+    describe 'without external user' do
+      let(:user) { create(:user, external: false) }
+
+      it 'receives callback when external changes' do
+        expect(user).to receive(:ensure_user_rights_and_limits)
+
+        user.update_attributes(external: true)
+      end
+
+      it 'ensures correct rights and limits for user' do
+        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+          .and change { user.projects_limit }.to(0)
+      end
+    end
+  end
+
+  describe 'rss token' do
+    it 'ensures an rss token on read' do
+      user = create(:user, rss_token: nil)
+      rss_token = user.rss_token
+      expect(rss_token).not_to be_blank
+      expect(user.reload.rss_token).to eq rss_token
     end
   end
 
@@ -572,21 +665,11 @@ describe User, models: true do
     it { expect(User.without_projects).to include user_without_project2 }
   end
 
-  describe '.not_in_project' do
-    before do
-      User.delete_all
-      @user = create :user
-      @project = create(:empty_project)
-    end
-
-    it { expect(User.not_in_project(@project)).to include(@user, @project.owner) }
-  end
-
   describe 'user creation' do
     describe 'normal user' do
       let(:user) { create(:user, name: 'John Smith') }
 
-      it { expect(user.is_admin?).to be_falsey }
+      it { expect(user.admin?).to be_falsey }
       it { expect(user.require_ssh_key?).to be_truthy }
       it { expect(user.can_create_group?).to be_truthy }
       it { expect(user.can_create_project?).to be_truthy }
@@ -637,7 +720,7 @@ describe User, models: true do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
-        '' => true,
+        '' => true
       }
 
       protocol_and_expectation.each do |protocol, expected|
@@ -671,50 +754,60 @@ describe User, models: true do
   end
 
   describe '.search' do
-    let(:user) { create(:user) }
+    let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
+    let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
 
-    it 'returns users with a matching name' do
-      expect(described_class.search(user.name)).to eq([user])
+    describe 'name matching' do
+      it 'returns users with a matching name with exact match first' do
+        expect(described_class.search(user.name)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching name' do
+        expect(described_class.search(user.name[0..2])).to eq([user, user2])
+      end
+
+      it 'returns users with a matching name regardless of the casing' do
+        expect(described_class.search(user2.name.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a partially matching name' do
-      expect(described_class.search(user.name[0..2])).to eq([user])
+    describe 'email matching' do
+      it 'returns users with a matching Email' do
+        expect(described_class.search(user.email)).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching Email' do
+        expect(described_class.search(user.email[0..2])).to eq([user, user2])
+      end
+
+      it 'returns users with a matching Email regardless of the casing' do
+        expect(described_class.search(user2.email.upcase)).to eq([user2])
+      end
     end
 
-    it 'returns users with a matching name regardless of the casing' do
-      expect(described_class.search(user.name.upcase)).to eq([user])
-    end
+    describe 'username matching' do
+      it 'returns users with a matching username' do
+        expect(described_class.search(user.username)).to eq([user, user2])
+      end
 
-    it 'returns users with a matching Email' do
-      expect(described_class.search(user.email)).to eq([user])
-    end
+      it 'returns users with a partially matching username' do
+        expect(described_class.search(user.username[0..2])).to eq([user, user2])
+      end
 
-    it 'returns users with a partially matching Email' do
-      expect(described_class.search(user.email[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching Email regardless of the casing' do
-      expect(described_class.search(user.email.upcase)).to eq([user])
-    end
-
-    it 'returns users with a matching username' do
-      expect(described_class.search(user.username)).to eq([user])
-    end
-
-    it 'returns users with a partially matching username' do
-      expect(described_class.search(user.username[0..2])).to eq([user])
-    end
-
-    it 'returns users with a matching username regardless of the casing' do
-      expect(described_class.search(user.username.upcase)).to eq([user])
+      it 'returns users with a matching username regardless of the casing' do
+        expect(described_class.search(user2.username.upcase)).to eq([user2])
+      end
     end
   end
 
   describe '.search_with_secondary_emails' do
     delegate :search_with_secondary_emails, to: :described_class
 
-    let!(:user) { create(:user) }
-    let!(:email) { create(:email) }
+    let!(:user) { create(:user, name: 'John Doe', username: 'john.doe', email: 'john.doe@example.com' ) }
+    let!(:another_user) { create(:user, name: 'Albert Smith', username: 'albert.smith', email: 'albert.smith@example.com' ) }
+    let!(:email) do
+      create(:email, user: another_user, email: 'alias@example.com')
+    end
 
     it 'returns users with a matching name' do
       expect(search_with_secondary_emails(user.name)).to eq([user])
@@ -826,13 +919,82 @@ describe User, models: true do
 
   describe '.find_by_username!' do
     it 'raises RecordNotFound' do
-      expect { described_class.find_by_username!('JohnDoe') }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      expect { described_class.find_by_username!('JohnDoe') }
+        .to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'is case-insensitive' do
       user = create(:user, username: 'JohnDoe')
       expect(described_class.find_by_username!('JOHNDOE')).to eq user
+    end
+  end
+
+  describe '.find_by_full_path' do
+    let!(:user) { create(:user) }
+
+    context 'with a route matching the given path' do
+      let!(:route) { user.namespace.route }
+
+      it 'returns the user' do
+        expect(User.find_by_full_path(route.path)).to eq(user)
+      end
+
+      it 'is case-insensitive' do
+        expect(User.find_by_full_path(route.path.upcase)).to eq(user)
+        expect(User.find_by_full_path(route.path.downcase)).to eq(user)
+      end
+    end
+
+    context 'with a redirect route matching the given path' do
+      let!(:redirect_route) { user.namespace.redirect_routes.create(path: 'foo') }
+
+      context 'without the follow_redirects option' do
+        it 'returns nil' do
+          expect(User.find_by_full_path(redirect_route.path)).to eq(nil)
+        end
+      end
+
+      context 'with the follow_redirects option set to true' do
+        it 'returns the user' do
+          expect(User.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
+        end
+
+        it 'is case-insensitive' do
+          expect(User.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
+          expect(User.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
+        end
+      end
+    end
+
+    context 'without a route or a redirect route matching the given path' do
+      context 'without the follow_redirects option' do
+        it 'returns nil' do
+          expect(User.find_by_full_path('unknown')).to eq(nil)
+        end
+      end
+      context 'with the follow_redirects option set to true' do
+        it 'returns nil' do
+          expect(User.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
+        end
+      end
+    end
+
+    context 'with a group route matching the given path' do
+      context 'when the group namespace has an owner_id (legacy data)' do
+        let!(:group) { create(:group, path: 'group_path', owner: user) }
+
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
+      end
+
+      context 'when the group namespace does not have an owner_id' do
+        let!(:group) { create(:group, path: 'group_path') }
+
+        it 'returns nil' do
+          expect(User.find_by_full_path('group_path')).to eq(nil)
+        end
+      end
     end
   end
 
@@ -858,6 +1020,24 @@ describe User, models: true do
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
       expect(user.avatar_type).to eq(['only images allowed'])
+    end
+  end
+
+  describe '#avatar_url' do
+    let(:user) { create(:user, :with_avatar) }
+
+    context 'when avatar file is uploaded' do
+      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
+      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
+
+      it 'shows correct avatar url' do
+        expect(user.avatar_url).to eq(avatar_path)
+        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
+
+        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
+
+        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+      end
     end
   end
 
@@ -976,6 +1156,18 @@ describe User, models: true do
       user.website_url = 'https://test.com'
 
       expect(user.short_website_url).to eq 'test.com'
+    end
+  end
+
+  describe '#sanitize_attrs' do
+    let(:user) { build(:user, name: 'test & user', skype: 'test&user') }
+
+    it 'encodes HTML entities in the Skype attribute' do
+      expect { user.sanitize_attrs }.to change { user.skype }.to('test&amp;user')
+    end
+
+    it 'does not encode HTML entities in the name attribute' do
+      expect { user.sanitize_attrs }.not_to change { user.name }
     end
   end
 
@@ -1361,25 +1553,6 @@ describe User, models: true do
     end
   end
 
-  describe '#viewable_starred_projects' do
-    let(:user) { create(:user) }
-    let(:public_project) { create(:empty_project, :public) }
-    let(:private_project) { create(:empty_project, :private) }
-    let(:private_viewable_project) { create(:empty_project, :private) }
-
-    before do
-      private_viewable_project.team << [user, Gitlab::Access::MASTER]
-
-      [public_project, private_project, private_viewable_project].each do |project|
-        user.toggle_star(project)
-      end
-    end
-
-    it 'returns only starred projects the user can view' do
-      expect(user.viewable_starred_projects).not_to include(private_project)
-    end
-  end
-
   describe '#projects_with_reporter_access_limited_to' do
     let(:project1) { create(:empty_project) }
     let(:project2) { create(:empty_project) }
@@ -1403,8 +1576,8 @@ describe User, models: true do
     end
 
     it 'returns the projects when using an ActiveRecord relation' do
-      projects = user.
-        projects_with_reporter_access_limited_to(Project.select(:id))
+      projects = user
+        .projects_with_reporter_access_limited_to(Project.select(:id))
 
       expect(projects).to eq([project1])
     end
@@ -1416,40 +1589,114 @@ describe User, models: true do
     end
   end
 
-  describe '#nested_groups' do
+  describe '#all_expanded_groups' do
+    # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
     let!(:user) { create(:user) }
-    let!(:group) { create(:group) }
-    let!(:nested_group) { create(:group, parent: group) }
 
-    before do
-      group.add_owner(user)
+    #                group
+    #        _______ (foo) _______
+    #       |                     |
+    #       |                     |
+    # nested_group_1        nested_group_2
+    # (bar)                 (barbaz)
+    #       |                     |
+    #       |                     |
+    # nested_group_1_1      nested_group_2_1
+    # (baz)                 (baz)
+    #
+    let!(:group) { create :group }
+    let!(:nested_group_1) { create :group, parent: group, name: 'bar' }
+    let!(:nested_group_1_1) { create :group, parent: nested_group_1, name: 'baz' }
+    let!(:nested_group_2) { create :group, parent: group, name: 'barbaz' }
+    let!(:nested_group_2_1) { create :group, parent: nested_group_2, name: 'baz' }
 
-      # Add more data to ensure method does not include wrong groups
-      create(:group).add_owner(create(:user))
+    subject { user.all_expanded_groups }
+
+    context 'user is not a member of any group' do
+      it 'returns an empty array' do
+        is_expected.to eq([])
+      end
     end
 
-    it { expect(user.nested_groups).to eq([nested_group]) }
-  end
+    context 'user is member of all groups' do
+      before do
+        group.add_owner(user)
+        nested_group_1.add_owner(user)
+        nested_group_1_1.add_owner(user)
+        nested_group_2.add_owner(user)
+        nested_group_2_1.add_owner(user)
+      end
 
-  describe '#nested_groups_projects' do
-    let!(:user) { create(:user) }
-    let!(:group) { create(:group) }
-    let!(:nested_group) { create(:group, parent: group) }
-    let!(:project) { create(:empty_project, namespace: group) }
-    let!(:nested_project) { create(:empty_project, namespace: nested_group) }
-
-    before do
-      group.add_owner(user)
-
-      # Add more data to ensure method does not include wrong projects
-      other_project = create(:empty_project, namespace: create(:group, :nested))
-      other_project.add_developer(create(:user))
+      it 'returns all groups' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1,
+          nested_group_2, nested_group_2_1
+        ]
+      end
     end
 
-    it { expect(user.nested_groups_projects).to eq([nested_project]) }
+    context 'user is member of the top group' do
+      before do
+        group.add_owner(user)
+      end
+
+      if Group.supports_nested_groups?
+        it 'returns all groups' do
+          is_expected.to match_array [
+            group,
+            nested_group_1, nested_group_1_1,
+            nested_group_2, nested_group_2_1
+          ]
+        end
+      else
+        it 'returns the top-level groups' do
+          is_expected.to match_array [group]
+        end
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 1', :nested_groups do
+      before do
+        nested_group_1.add_owner(user)
+      end
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
+
+    context 'user is member of the first child (internal node), branch 2', :nested_groups do
+      before do
+        nested_group_2.add_owner(user)
+      end
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_2, nested_group_2_1
+        ]
+      end
+    end
+
+    context 'user is member of the last child (leaf node)', :nested_groups do
+      before do
+        nested_group_1_1.add_owner(user)
+      end
+
+      it 'returns the groups in the hierarchy' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1
+        ]
+      end
+    end
   end
 
-  describe '#refresh_authorized_projects', redis: true do
+  describe '#refresh_authorized_projects', clean_gitlab_redis_shared_state: true do
     let(:project1) { create(:empty_project) }
     let(:project2) { create(:empty_project) }
     let(:user) { create(:user) }
@@ -1464,10 +1711,6 @@ describe User, models: true do
 
     it 'refreshes the list of authorized projects' do
       expect(user.project_authorizations.count).to eq(2)
-    end
-
-    it 'sets the authorized_projects_populated column' do
-      expect(user.authorized_projects_populated).to eq(true)
     end
 
     it 'stores the correct access levels' do
@@ -1509,6 +1752,20 @@ describe User, models: true do
     end
   end
 
+  describe '#full_private_access?' do
+    it 'returns false for regular user' do
+      user = build(:user)
+
+      expect(user.full_private_access?).to be_falsy
+    end
+
+    it 'returns true for admin user' do
+      user = build(:user, :admin)
+
+      expect(user.full_private_access?).to be_truthy
+    end
+  end
+
   describe '.ghost' do
     it "creates a ghost user if one isn't already present" do
       ghost = User.ghost
@@ -1543,6 +1800,158 @@ describe User, models: true do
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
       end
+    end
+
+    context 'when a domain whitelist is in place' do
+      before do
+        stub_application_setting(domain_whitelist: ['gitlab.com'])
+      end
+
+      it 'creates a ghost user' do
+        expect(User.ghost).to be_persisted
+      end
+    end
+  end
+
+  describe '#update_two_factor_requirement' do
+    let(:user) { create :user }
+
+    context 'with 2FA requirement on groups' do
+      let(:group1) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 23 }
+      let(:group2) { create :group, require_two_factor_authentication: true, two_factor_grace_period: 32 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+        group2.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+
+      it 'uses the shortest grace period' do
+        expect(user.two_factor_grace_period).to be 23
+      end
+    end
+
+    context 'with 2FA requirement on nested parent group', :nested_groups do
+      let!(:group1) { create :group, require_two_factor_authentication: true }
+      let!(:group1a) { create :group, require_two_factor_authentication: false, parent: group1 }
+
+      before do
+        group1a.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'with 2FA requirement on nested child group', :nested_groups do
+      let!(:group1) { create :group, require_two_factor_authentication: false }
+      let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
+
+      before do
+        group1.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'requires 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be true
+      end
+    end
+
+    context 'without 2FA requirement on groups' do
+      let(:group) { create :group }
+
+      before do
+        group.add_user(user, GroupMember::OWNER)
+
+        user.update_two_factor_requirement
+      end
+
+      it 'does not require 2FA' do
+        expect(user.require_two_factor_authentication_from_group).to be false
+      end
+
+      it 'falls back to the default grace period' do
+        expect(user.two_factor_grace_period).to be 48
+      end
+    end
+  end
+
+  context '.active' do
+    before do
+      User.ghost
+      create(:user, name: 'user', state: 'active')
+      create(:user, name: 'user', state: 'blocked')
+    end
+
+    it 'only counts active and non internal users' do
+      expect(User.active.count).to eq(1)
+    end
+  end
+
+  describe 'preferred language' do
+    it 'is English by default' do
+      user = create(:user)
+
+      expect(user.preferred_language).to eq('en')
+    end
+  end
+
+  context '#invalidate_issue_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for issue counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_issue_cache_counts
+    end
+  end
+
+  context '#invalidate_merge_request_cache_counts' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for Merge Request counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_merge_request_cache_counts
+    end
+  end
+
+  describe '#allow_password_authentication?' do
+    context 'regular user' do
+      let(:user) { build(:user) }
+
+      it 'returns true when sign-in is enabled' do
+        expect(user.allow_password_authentication?).to be_truthy
+      end
+
+      it 'returns false when sign-in is disabled' do
+        stub_application_setting(password_authentication_enabled: false)
+
+        expect(user.allow_password_authentication?).to be_falsey
+      end
+    end
+
+    it 'returns false for ldap user' do
+      user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication?).to be_falsey
     end
   end
 end

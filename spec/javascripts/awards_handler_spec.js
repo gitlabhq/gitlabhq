@@ -1,8 +1,9 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
-require('es6-promise').polyfill();
+import Cookies from 'js-cookie';
+import loadAwardsHandler from '~/awards_handler';
 
-const AwardsHandler = require('~/awards_handler');
+import '~/lib/utils/common_utils';
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
@@ -25,14 +26,13 @@ const AwardsHandler = require('~/awards_handler');
 
   describe('AwardsHandler', function() {
     preloadFixtures('issues/issue_with_comment.html.raw');
-    beforeEach(function() {
+    beforeEach(function(done) {
       loadFixtures('issues/issue_with_comment.html.raw');
-      awardsHandler = new AwardsHandler;
-      spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
-        return function(url, emoji, cb) {
-          return cb();
-        };
-      })(this));
+      loadAwardsHandler(true).then((obj) => {
+        awardsHandler = obj;
+        spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+        done();
+      }).catch(fail);
 
       let isEmojiMenuBuilt = false;
       openAndWaitForEmojiMenu = function() {
@@ -46,9 +46,6 @@ const AwardsHandler = require('~/awards_handler');
               isEmojiMenuBuilt = true;
               resolve();
             });
-
-            // Fail after 1 second
-            setTimeout(reject, 1000);
           }
         });
       };
@@ -67,7 +64,7 @@ const AwardsHandler = require('~/awards_handler');
           $emojiMenu = $('.emoji-menu');
           expect($emojiMenu.length).toBe(1);
           expect($emojiMenu.hasClass('is-visible')).toBe(true);
-          expect($emojiMenu.find('#emoji_search').length).toBe(1);
+          expect($emojiMenu.find('.js-emoji-menu-search').length).toBe(1);
           return expect($('.js-awards-block.current').length).toBe(1);
         });
       });
@@ -117,6 +114,27 @@ const AwardsHandler = require('~/awards_handler');
         awardsHandler.addAwardToEmojiBar($votesBlock, 'heart', false);
         expect($emojiButton.length).toBe(1);
         return expect($emojiButton.next('.js-counter').text()).toBe('4');
+      });
+    });
+    describe('::userAuthored', function() {
+      it('should update tooltip to user authored title', function() {
+        var $thumbsUpEmoji, $votesBlock;
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'sam');
+        awardsHandler.userAuthored($thumbsUpEmoji);
+        return expect($thumbsUpEmoji.data("original-title")).toBe("You cannot vote on your own issue, MR and note");
+      });
+      it('should restore tooltip back to initial vote list', function() {
+        var $thumbsUpEmoji, $votesBlock;
+        jasmine.clock().install();
+        $votesBlock = $('.js-awards-block').eq(0);
+        $thumbsUpEmoji = $votesBlock.find('[data-name=thumbsup]').parent();
+        $thumbsUpEmoji.attr('data-title', 'sam');
+        awardsHandler.userAuthored($thumbsUpEmoji);
+        jasmine.clock().tick(2801);
+        jasmine.clock().uninstall();
+        return expect($thumbsUpEmoji.data("original-title")).toBe("sam");
       });
     });
     describe('::getAwardUrl', function() {
@@ -198,23 +216,43 @@ const AwardsHandler = require('~/awards_handler');
         return expect($thumbsUpEmoji.data("original-title")).toBe('sam');
       });
     });
-    describe('search', function() {
-      return it('should filter the emoji', function(done) {
+    describe('::searchEmojis', () => {
+      it('should filter the emoji', function(done) {
         return openAndWaitForEmojiMenu()
           .then(() => {
             expect($('[data-name=angel]').is(':visible')).toBe(true);
             expect($('[data-name=anger]').is(':visible')).toBe(true);
-            $('#emoji_search').val('ali').trigger('input');
+            awardsHandler.searchEmojis('ali');
             expect($('[data-name=angel]').is(':visible')).toBe(false);
             expect($('[data-name=anger]').is(':visible')).toBe(false);
             expect($('[data-name=alien]').is(':visible')).toBe(true);
+            expect($('.js-emoji-menu-search').val()).toBe('ali');
           })
           .then(done)
-          .catch(() => {
-            done.fail('Failed to open and build emoji menu');
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
+          });
+      });
+      it('should clear the search when searching for nothing', function(done) {
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            awardsHandler.searchEmojis('ali');
+            expect($('[data-name=angel]').is(':visible')).toBe(false);
+            expect($('[data-name=anger]').is(':visible')).toBe(false);
+            expect($('[data-name=alien]').is(':visible')).toBe(true);
+            awardsHandler.searchEmojis('');
+            expect($('[data-name=angel]').is(':visible')).toBe(true);
+            expect($('[data-name=anger]').is(':visible')).toBe(true);
+            expect($('[data-name=alien]').is(':visible')).toBe(true);
+            expect($('.js-emoji-menu-search').val()).toBe('');
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
     });
+
     describe('emoji menu', function() {
       const emojiSelector = '[data-name="sunglasses"]';
       const openEmojiMenuAndAddEmoji = function() {
@@ -234,8 +272,8 @@ const AwardsHandler = require('~/awards_handler');
       it('should add selected emoji to awards block', function(done) {
         return openEmojiMenuAndAddEmoji()
           .then(done)
-          .catch(() => {
-            done.fail('Failed to open and build emoji menu');
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
       });
       it('should remove already selected emoji', function(done) {
@@ -249,8 +287,61 @@ const AwardsHandler = require('~/awards_handler');
           })
           .then(done)
           .catch((err) => {
-            done.fail('Failed to open and build emoji menu');
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
           });
+      });
+    });
+
+    describe('frequently used emojis', function() {
+      beforeEach(() => {
+        // Clear it out
+        Cookies.set('frequently_used_emojis', '');
+      });
+
+      it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', function(done) {
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            const emojiMenu = document.querySelector('.emoji-menu');
+            Array.prototype.forEach.call(emojiMenu.querySelectorAll('.emoji-menu-title'), (title) => {
+              expect(title.textContent.trim().toLowerCase()).not.toBe('frequently used');
+            });
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
+          });
+      });
+
+      it('should have any frequently used section when there are frequently used emojis', function(done) {
+        awardsHandler.addEmojiToFrequentlyUsedList('8ball');
+
+        return openAndWaitForEmojiMenu()
+          .then(() => {
+            const emojiMenu = document.querySelector('.emoji-menu');
+            const hasFrequentlyUsedHeading = Array.prototype.some.call(emojiMenu.querySelectorAll('.emoji-menu-title'), title =>
+              title.textContent.trim().toLowerCase() === 'frequently used'
+            );
+
+            expect(hasFrequentlyUsedHeading).toBe(true);
+          })
+          .then(done)
+          .catch((err) => {
+            done.fail(`Failed to open and build emoji menu: ${err.message}`);
+          });
+      });
+
+      it('should disregard invalid frequently used emoji that are being attempted to be added', function() {
+        awardsHandler.addEmojiToFrequentlyUsedList('8ball');
+        awardsHandler.addEmojiToFrequentlyUsedList('invalid_emoji');
+        awardsHandler.addEmojiToFrequentlyUsedList('grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
+      });
+
+      it('should disregard invalid frequently used emoji already set in cookie', function() {
+        Cookies.set('frequently_used_emojis', '8ball,invalid_emoji,grinning');
+
+        expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
       });
     });
   });

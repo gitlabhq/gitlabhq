@@ -16,7 +16,7 @@ class AkismetService
       created_at: DateTime.now,
       author: owner.name,
       author_email: owner.email,
-      referrer: options[:referrer],
+      referrer: options[:referrer]
     }
 
     begin

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe API::Helpers, api: true do
+describe API::Helpers do
   include API::APIGuard::HelperMethods
-  include API::Helpers
+  include described_class
   include SentryHelper
 
   let(:user) { create(:user) }
@@ -13,6 +13,10 @@ describe API::Helpers, api: true do
   let(:env) { { 'REQUEST_METHOD' => 'GET' } }
   let(:request) { Rack::Request.new(env) }
   let(:header) { }
+
+  before do
+    allow_any_instance_of(self.class).to receive(:options).and_return({})
+  end
 
   def set_env(user_or_token, identifier)
     clear_env
@@ -55,40 +59,62 @@ describe API::Helpers, api: true do
     subject { current_user }
 
     describe "Warden authentication" do
-      before { doorkeeper_guard_returns false }
+      before do
+        doorkeeper_guard_returns false
+      end
 
       context "with invalid credentials" do
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to be_nil }
         end
       end
 
       context "with valid credentials" do
-        before { warden_authenticate_returns user }
+        before do
+          warden_authenticate_returns user
+        end
 
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "HEAD request" do
-          before { env['REQUEST_METHOD'] = 'HEAD' }
+          before do
+            env['REQUEST_METHOD'] = 'HEAD'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "PUT request" do
-          before { env['REQUEST_METHOD'] = 'PUT' }
+          before do
+            env['REQUEST_METHOD'] = 'PUT'
+          end
+
           it { is_expected.to be_nil }
         end
 
         context "POST request" do
-          before { env['REQUEST_METHOD'] = 'POST' }
+          before do
+            env['REQUEST_METHOD'] = 'POST'
+          end
+
           it { is_expected.to be_nil }
         end
 
         context "DELETE request" do
-          before { env['REQUEST_METHOD'] = 'DELETE' }
+          before do
+            env['REQUEST_METHOD'] = 'DELETE'
+          end
+
           it { is_expected.to be_nil }
         end
       end
@@ -145,7 +171,6 @@ describe API::Helpers, api: true do
       it "returns nil for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_access_with_scope('write_user')
 
         expect(current_user).to be_nil
       end
@@ -427,6 +452,7 @@ describe API::Helpers, api: true do
     context 'current_user is nil' do
       before do
         expect_any_instance_of(self.class).to receive(:current_user).and_return(nil)
+        allow_any_instance_of(self.class).to receive(:initial_current_user).and_return(nil)
       end
 
       it 'returns a 401 response' do
@@ -435,11 +461,36 @@ describe API::Helpers, api: true do
     end
 
     context 'current_user is present' do
+      let(:user) { build(:user) }
+
       before do
-        expect_any_instance_of(self.class).to receive(:current_user).and_return(true)
+        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
       end
 
       it 'does not raise an error' do
+        expect { authenticate! }.not_to raise_error
+      end
+    end
+
+    context 'current_user is blocked' do
+      let(:user) { build(:user, :blocked) }
+
+      before do
+        expect_any_instance_of(self.class).to receive(:current_user).at_least(:once).and_return(user)
+      end
+
+      it 'raises an error' do
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(user)
+
+        expect { authenticate! }.to raise_error '401 - {"message"=>"401 Unauthorized"}'
+      end
+
+      it "doesn't raise an error if an admin user is impersonating a blocked user (via sudo)" do
+        admin_user = build(:user, :admin)
+
+        expect_any_instance_of(self.class).to receive(:initial_current_user).and_return(admin_user)
+
         expect { authenticate! }.not_to raise_error
       end
     end

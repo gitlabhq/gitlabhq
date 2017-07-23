@@ -4,7 +4,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I visit \'bug\' label edit page' do
-    visit edit_namespace_project_label_path(project.namespace, project, bug_label)
+    visit edit_project_label_path(project, bug_label)
   end
 
   step 'I remove label \'bug\'' do
@@ -31,19 +31,19 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label \'bug\'' do
     fill_in 'Title', with: 'bug'
     fill_in 'Background color', with: '#F95610'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I submit new label with invalid color' do
     fill_in 'Title', with: 'support'
     fill_in 'Background color', with: '#12'
-    click_button 'Create Label'
+    click_button 'Create label'
   end
 
   step 'I should see label label exist error message' do

@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Issue, models: true do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to have_many(:assignees) }
   end
 
   describe 'modules' do
@@ -20,6 +21,55 @@ describe Issue, models: true do
   describe "act_as_paranoid" do
     it { is_expected.to have_db_column(:deleted_at) }
     it { is_expected.to have_db_index(:deleted_at) }
+  end
+
+  describe '#order_by_position_and_priority' do
+    let(:project) { create :empty_project }
+    let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
+    let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
+    let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
+    let!(:issue2) { create(:labeled_issue, project: project, labels: [p2]) }
+    let!(:issue3) { create(:issue, project: project, relative_position: 100) }
+    let!(:issue4) { create(:issue, project: project, relative_position: 200) }
+
+    it 'returns ordered list' do
+      expect(project.issues.order_by_position_and_priority)
+        .to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([])
+
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#closed_at' do
+    after do
+      Timecop.return
+    end
+
+    let!(:now) { Timecop.freeze(Time.now) }
+
+    it 'sets closed_at to Time.now when issue is closed' do
+      issue = create(:issue, state: 'opened')
+
+      issue.close
+
+      expect(issue.closed_at).to eq(now)
+    end
   end
 
   describe '#to_reference' do
@@ -93,22 +143,24 @@ describe Issue, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the issue assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
-    end
-    it 'returns false if the issue assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
-    end
-  end
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
 
-  describe '#is_being_reassigned?' do
-    it 'returns issues assigned to user' do
-      user = create(:user)
-      create_list(:issue, 2, assignee: user)
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignees << user
 
-      expect(Issue.open_for(user).count).to eq 2
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.update(author: user)
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to be_falsey
     end
   end
 
@@ -193,7 +245,9 @@ describe Issue, models: true do
       let(:project) { create(:empty_project) }
       let(:issue) { create(:issue, project: project) }
 
-      before { project.team << [user, :reporter] }
+      before do
+        project.team << [user, :reporter]
+      end
 
       it { is_expected.to eq true }
 
@@ -207,12 +261,18 @@ describe Issue, models: true do
         let(:to_project) { create(:empty_project) }
 
         context 'destination project allowed' do
-          before { to_project.team << [user, :reporter] }
+          before do
+            to_project.team << [user, :reporter]
+          end
+
           it { is_expected.to eq true }
         end
 
         context 'destination project not allowed' do
-          before { to_project.team << [user, :guest] }
+          before do
+            to_project.team << [user, :guest]
+          end
+
           it { is_expected.to eq false }
         end
       end
@@ -239,8 +299,8 @@ describe Issue, models: true do
     let(:user) { build(:admin) }
 
     before do
-      allow(subject.project.repository).to receive(:branch_names).
-                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+      allow(subject.project.repository).to receive(:branch_names)
+                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -262,10 +322,31 @@ describe Issue, models: true do
     end
 
     it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(["#{subject.iid}-0-stable"])
+      allow(subject.project.repository).to receive(:branch_names)
+        .and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
+    end
+  end
+
+  describe '#has_related_branch?' do
+    let(:issue) { create(:issue, title: "Blue Bell Knoll") }
+    subject { issue.has_related_branch? }
+
+    context 'branch found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["iceblink-luck", issue.to_branch_name])
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'branch not found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["lazy-calm"])
+      end
+
+      it { is_expected.to eq false }
     end
   end
 
@@ -339,12 +420,15 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      issue = create(:issue, assignee: user1)
+      project = create(:empty_project)
+      issue = create(:issue, assignees: [user1], project: project)
+      project.add_developer(user1)
+      project.add_developer(user2)
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
 
-      issue.assignee = user2
+      issue.assignees = [user2]
       issue.save
 
       expect(user1.assigned_open_issues_count).to eq(0)
@@ -473,7 +557,9 @@ describe Issue, models: true do
         end
 
         context 'when the user is the project owner' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)
@@ -617,6 +703,59 @@ describe Issue, models: true do
         issue = build(:issue, :confidential, project: project)
 
         expect(issue).not_to be_falsy
+      end
+    end
+  end
+
+  describe '#hook_attrs' do
+    let(:attrs_hash) { subject.hook_attrs }
+
+    it 'includes time tracking attrs' do
+      expect(attrs_hash).to include(:total_time_spent)
+      expect(attrs_hash).to include(:human_time_estimate)
+      expect(attrs_hash).to include(:human_total_time_spent)
+      expect(attrs_hash).to include('time_estimate')
+    end
+
+    it 'includes assignee_ids and deprecated assignee_id' do
+      expect(attrs_hash).to include(:assignee_id)
+      expect(attrs_hash).to include(:assignee_ids)
+    end
+  end
+
+  describe '#check_for_spam' do
+    let(:project) { create :project, visibility_level: visibility_level }
+    let(:issue) { create :issue, project: project }
+
+    subject do
+      issue.assign_attributes(description: description)
+      issue.check_for_spam?
+    end
+
+    context 'when project is public and spammable attributes changed' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+      let(:description) { 'woo' }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when project is private' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+      let(:description) { issue.description }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when spammable attributes have not changed' do
+      let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+      let(:description) { issue.description }
+
+      it 'returns false' do
+        is_expected.to be_falsey
       end
     end
   end

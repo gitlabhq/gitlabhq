@@ -1,8 +1,0 @@
-<% if @discussion && @discussion.diff_file -%>
- on <%= @note.diff_file.file_path -%>
-<% end -%>:
-
-<%= url %>
-
-<%= render 'simple_diff' if @discussion -%>
-<%= render 'note_message' %>

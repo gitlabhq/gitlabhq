@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get all environments of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Environment
@@ -79,6 +79,7 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
+        status 204
         environment.destroy
       end
 

@@ -1,14 +1,15 @@
-const ActionsComponent = require('~/environments/components/environment_actions');
+import Vue from 'vue';
+import actionsComp from '~/environments/components/environment_actions.vue';
 
 describe('Actions Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
+  let ActionsComponent;
+  let actionsMock;
+  let component;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
-  });
+    ActionsComponent = Vue.extend(actionsComp);
 
-  it('should render a dropdown with the provided actions', () => {
-    const actionsMock = [
+    actionsMock = [
       {
         name: 'bar',
         play_path: 'https://gitlab.com/play',
@@ -17,20 +18,45 @@ describe('Actions Component', () => {
         name: 'foo',
         play_path: '#',
       },
+      {
+        name: 'foo bar',
+        play_path: 'url',
+        playable: false,
+      },
     ];
 
-    const component = new ActionsComponent({
-      el: document.querySelector('.test-dom-element'),
+    component = new ActionsComponent({
       propsData: {
         actions: actionsMock,
       },
-    });
+    }).$mount();
+  });
 
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Deploy to...');
+    });
+  });
+
+  it('should render a dropdown button with icon and title attribute', () => {
+    expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual('Deploy to...');
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual('Deploy to...');
+  });
+
+  it('should render a dropdown with the provided list of actions', () => {
     expect(
       component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actionsMock.length);
+  });
+
+  it('should render a disabled action when it\'s not playable', () => {
     expect(
-      component.$el.querySelector('.dropdown-menu li a').getAttribute('href'),
-    ).toEqual(actionsMock[0].play_path);
+      component.$el.querySelector('.dropdown-menu li:last-child button').getAttribute('disabled'),
+    ).toEqual('disabled');
+
+    expect(
+      component.$el.querySelector('.dropdown-menu li:last-child button').classList.contains('disabled'),
+    ).toEqual(true);
   });
 });

@@ -61,8 +61,8 @@ describe WikiPage, models: true do
         actual_order =
           grouped_entries.map do |page_or_dir|
             get_slugs(page_or_dir)
-          end.
-          flatten
+          end
+          .flatten
         expect(actual_order).to eq(expected_order)
       end
     end

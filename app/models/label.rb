@@ -15,11 +15,13 @@ class Label < ActiveRecord::Base
 
   default_value_for :color, DEFAULT_COLOR
 
-  has_many :lists, dependent: :destroy
+  has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
-  has_many :label_links, dependent: :destroy
+  has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
+
+  before_validation :strip_whitespace_from_title_and_color
 
   validates :color, color: true, allow_blank: false
 
@@ -32,6 +34,7 @@ class Label < ActiveRecord::Base
 
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
+  scope :on_project_boards, ->(project_id) { joins(lists: :board).merge(List.movable).where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)
     joins(:priorities)
@@ -43,9 +46,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id))).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id)))
+                              .join_sources
 
     joins(label_priorities).where(priorities[:priority].eq(nil))
   end
@@ -54,9 +57,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id])).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]))
+                              .join_sources
 
     joins(label_priorities)
   end
@@ -130,6 +133,10 @@ class Label < ActiveRecord::Base
     template
   end
 
+  def color
+    super || DEFAULT_COLOR
+  end
+
   def text_color
     LabelsHelper.text_color_for_bg(self.color)
   end
@@ -165,8 +172,12 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:priority] = priority(options[:project]) if options.has_key?(:project)
+      json[:priority] = priority(options[:project]) if options.key?(:project)
     end
+  end
+
+  def hook_attrs
+    attributes
   end
 
   private
@@ -188,5 +199,9 @@ class Label < ActiveRecord::Base
 
   def sanitize_title(value)
     CGI.unescapeHTML(Sanitize.clean(value.to_s))
+  end
+
+  def strip_whitespace_from_title_and_color
+    %w(color title).each { |attr| self[attr] = self[attr]&.strip }
   end
 end

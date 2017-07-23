@@ -1,13 +1,17 @@
 require 'spec_helper'
 
-describe API::Milestones, api: true  do
-  include ApiHelpers
+describe API::Milestones do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
+  let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
+  let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
+  let(:label_3) { create(:label, title: 'label_3', project: project) }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   describe 'GET /projects/:id/milestones' do
     it 'returns project milestones' do
@@ -227,6 +231,18 @@ describe API::Milestones, api: true  do
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
 
+    it 'returns project issues sorted by label priority' do
+      issue_1 = create(:labeled_issue, project: project, milestone: milestone, labels: [label_3])
+      issue_2 = create(:labeled_issue, project: project, milestone: milestone, labels: [label_1])
+      issue_3 = create(:labeled_issue, project: project, milestone: milestone, labels: [label_2])
+
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+
+      expect(json_response.first['id']).to eq(issue_2.id)
+      expect(json_response.second['id']).to eq(issue_3.id)
+      expect(json_response.third['id']).to eq(issue_1.id)
+    end
+
     it 'matches V4 response schema for a list of issues' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
 
@@ -283,16 +299,34 @@ describe API::Milestones, api: true  do
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
       end
+
+      it 'returns issues ordered by label priority' do
+        issue.labels << label_2
+        confidential_issue.labels << label_1
+
+        get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        expect(json_response.first['id']).to eq(confidential_issue.id)
+        expect(json_response.second['id']).to eq(issue.id)
+      end
     end
   end
 
   describe 'GET /projects/:id/milestones/:milestone_id/merge_requests' do
     let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:another_merge_request) { create(:merge_request, :simple, source_project: project) }
+
     before do
       milestone.merge_requests << merge_request
     end
 
     it 'returns project merge_requests for a particular milestone' do
+      # eager-load another_merge_request
+      another_merge_request
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
 
       expect(response).to have_http_status(200)
@@ -300,6 +334,18 @@ describe API::Milestones, api: true  do
       expect(json_response.size).to eq(1)
       expect(json_response.first['title']).to eq(merge_request.title)
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
+    end
+
+    it 'returns project merge_requests sorted by label priority' do
+      merge_request_1 = create(:labeled_merge_request, source_branch: 'branch_1', source_project: project, milestone: milestone, labels: [label_2])
+      merge_request_2 = create(:labeled_merge_request, source_branch: 'branch_2', source_project: project, milestone: milestone, labels: [label_1])
+      merge_request_3 = create(:labeled_merge_request, source_branch: 'branch_3', source_project: project, milestone: milestone, labels: [label_3])
+
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
+
+      expect(json_response.first['id']).to eq(merge_request_2.id)
+      expect(json_response.second['id']).to eq(merge_request_1.id)
+      expect(json_response.third['id']).to eq(merge_request_3.id)
     end
 
     it 'returns a 404 error if milestone id not found' do
@@ -319,6 +365,21 @@ describe API::Milestones, api: true  do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests")
 
       expect(response).to have_http_status(401)
+    end
+
+    it 'returns merge_requests ordered by position asc' do
+      milestone.merge_requests << another_merge_request
+      another_merge_request.labels << label_1
+      merge_request.labels << label_2
+
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/merge_requests", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.size).to eq(2)
+      expect(json_response.first['id']).to eq(another_merge_request.id)
+      expect(json_response.second['id']).to eq(merge_request.id)
     end
   end
 end

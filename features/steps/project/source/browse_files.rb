@@ -4,11 +4,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
   include RepoHelpers
+  include WaitForRequests
 
   step "I don't have write access" do
     @project = create(:project, :repository, name: "Other Project", path: "other-project")
     @project.team << [@user, :reporter]
-    visit namespace_project_tree_path(@project.namespace, @project, root_ref)
+    visit project_tree_path(@project, root_ref)
   end
 
   step 'I should see files from repository' do
@@ -18,7 +19,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see files from repository for "6d39438"' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, "6d39438")
+    expect(current_path).to eq project_tree_path(@project, "6d39438")
     expect(page).to have_content ".gitignore"
     expect(page).to have_content "LICENSE"
   end
@@ -36,10 +37,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
+    wait_for_requests
     expect(page).to have_content old_gitignore_content
   end
 
   step 'I should see its new content' do
+    wait_for_requests
     expect(page).to have_content new_gitignore_content
   end
 
@@ -48,7 +51,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Raw"' do
-    click_link 'Raw'
+    click_link 'Open raw'
   end
 
   step 'I should see raw file content' do
@@ -56,11 +59,15 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click button "Edit"' do
-    click_link 'Edit'
+    find('.js-edit-blob').click
   end
 
   step 'I cannot see the edit button' do
     expect(page).not_to have_link 'edit'
+  end
+
+  step 'I click button "Fork"' do
+    click_link 'Fork'
   end
 
   step 'I can edit code' do
@@ -82,11 +89,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I fill the new branch name' do
-    fill_in :target_branch, with: 'new_branch_name', visible: true
-  end
-
-  step 'I fill the new file name with an illegal name' do
-    fill_in :file_name, with: 'Spaces Not Allowed'
+    fill_in :branch_name, with: 'new_branch_name', visible: true
   end
 
   step 'I fill the new file name with a new directory' do
@@ -98,11 +101,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click link "Diff"' do
-    click_link 'Preview Changes'
+    click_link 'Preview changes'
   end
 
-  step 'I click on "Commit Changes"' do
-    click_button 'Commit Changes'
+  step 'I click on "Commit changes"' do
+    click_button 'Commit changes'
   end
 
   step 'I click on "Changes" tab' do
@@ -233,16 +236,16 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the files URL' do
-    expect(current_path).to eq namespace_project_tree_path(@project.namespace, @project, 'master')
+    expect(current_path).to eq project_tree_path(@project, 'master')
   end
 
   step 'I am redirected to the ".gitignore"' do
-    expect(current_path).to eq(namespace_project_blob_path(@project.namespace, @project, 'master/.gitignore'))
+    expect(current_path).to eq(project_blob_path(@project, 'master/.gitignore'))
   end
 
   step 'I am redirected to the permalink URL' do
     expect(current_path).to(
-      eq(namespace_project_blob_path(@project.namespace, @project,
+      eq(project_blob_path(@project,
                                      @project.repository.commit.sha +
                                      '/.gitignore'))
     )
@@ -250,26 +253,26 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I am redirected to the new file' do
     expect(current_path).to eq(
-      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name))
+      project_blob_path(@project, 'master/' + new_file_name))
   end
 
   step 'I am redirected to the new file with directory' do
     expect(current_path).to eq(
-      namespace_project_blob_path(@project.namespace, @project, 'master/' + new_file_name_with_directory))
+      project_blob_path(@project, 'master/' + new_file_name_with_directory))
   end
 
   step 'I am redirected to the new merge request page' do
-    expect(current_path).to eq(new_namespace_project_merge_request_path(@project.namespace, @project))
+    expect(current_path).to eq(project_new_merge_request_path(@project))
   end
 
   step "I am redirected to the fork's new merge request page" do
     fork = @user.fork_of(@project)
-    expect(current_path).to eq(new_namespace_project_merge_request_path(fork.namespace, fork))
+    expect(current_path).to eq(project_new_merge_request_path(fork))
   end
 
   step 'I am redirected to the root directory' do
     expect(current_path).to eq(
-      namespace_project_tree_path(@project.namespace, @project, 'master'))
+      project_tree_path(@project, 'master'))
   end
 
   step "I don't see the permalink link" do
@@ -277,7 +280,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I see "Unable to create directory"' do
-    expect(page).to have_content('Directory already exists')
+    expect(page).to have_content('A directory with this name already exists')
+  end
+
+  step 'I see "Path can contain only..."' do
+    expect(page).to have_content('Path can contain only')
   end
 
   step 'I see a commit error message' do
@@ -316,11 +323,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step "I visit the 'test' tree" do
-    visit namespace_project_tree_path(@project.namespace, @project, "'test'")
+    visit project_tree_path(@project, "'test'")
   end
 
   step "I visit the fix tree" do
-    visit namespace_project_tree_path(@project.namespace, @project, "fix/.testdir")
+    visit project_tree_path(@project, "fix/.testdir")
   end
 
   step 'I see the commit data' do
@@ -334,7 +341,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "files/lfs/lfs_object.iso" file in repo' do
-    visit namespace_project_tree_path(@project.namespace, @project, "lfs")
+    allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
+    visit project_tree_path(@project, "lfs")
     click_link 'files'
     click_link "lfs"
     click_link "lfs_object.iso"
@@ -352,7 +360,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I should see buttons for allowed commands' do
     page.within '.content' do
-      expect(page).to have_content 'Raw'
+      expect(page).to have_link 'Download'
       expect(page).to have_content 'History'
       expect(page).to have_content 'Permalink'
       expect(page).not_to have_content 'Edit'
@@ -360,6 +368,11 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
       expect(page).to have_content 'Delete'
       expect(page).to have_content 'Replace'
     end
+  end
+
+  step 'I should see a Fork/Cancel combo' do
+    expect(page).to have_link 'Fork'
+    expect(page).to have_button 'Cancel'
   end
 
   step 'I should see a notice about a new fork having been created' do
@@ -372,7 +385,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I visit the SVG file' do
-    visit namespace_project_blob_path(@project.namespace, @project, 'new_branch_name/logo_sample.svg')
+    visit project_blob_path(@project, 'new_branch_name/logo_sample.svg')
   end
 
   step 'I can see the new rendered SVG image' do

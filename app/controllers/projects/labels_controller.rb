@@ -1,14 +1,14 @@
 class Projects::LabelsController < Projects::ApplicationController
   include ToggleSubscriptionAction
 
-  before_action :module_enabled
+  before_action :check_issuables_available!
   before_action :label, only: [:edit, :update, :destroy, :promote]
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
                                                  :generate, :destroy, :remove_priority,
                                                  :set_priorities]
-  before_action :authorize_admin_group!, only: [:promote]
+  before_action :authorize_admin_group_labels!, only: [:promote]
 
   respond_to :js, :html
 
@@ -19,7 +19,7 @@ class Projects::LabelsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @available_labels.as_json(only: [:id, :title, :color])
+        render json: LabelSerializer.new.represent_appearance(@available_labels)
       end
     end
   end
@@ -29,11 +29,11 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = @project.labels.create(label_params)
+    @label = Labels::CreateService.new(label_params).execute(project: @project)
 
     if @label.valid?
       respond_to do |format|
-        format.html { redirect_to namespace_project_labels_path(@project.namespace, @project) }
+        format.html { redirect_to project_labels_path(@project) }
         format.json { render json: @label }
       end
     else
@@ -48,8 +48,10 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
-      redirect_to namespace_project_labels_path(@project.namespace, @project)
+    @label = Labels::UpdateService.new(label_params).execute(@label)
+
+    if @label.valid?
+      redirect_to project_labels_path(@project)
     else
       render :edit
     end
@@ -59,12 +61,11 @@ class Projects::LabelsController < Projects::ApplicationController
     Gitlab::IssuesLabels.generate(@project)
 
     if params[:redirect] == 'issues'
-      redirect_to namespace_project_issues_path(@project.namespace, @project)
+      redirect_to project_issues_path(@project)
     elsif params[:redirect] == 'merge_requests'
-      redirect_to namespace_project_merge_requests_path(@project.namespace,
-                                                        @project)
+      redirect_to project_merge_requests_path(@project)
     else
-      redirect_to namespace_project_labels_path(@project.namespace, @project)
+      redirect_to project_labels_path(@project)
     end
   end
 
@@ -72,7 +73,9 @@ class Projects::LabelsController < Projects::ApplicationController
     @label.destroy
     @labels = find_labels
 
-    redirect_to(namespace_project_labels_path(@project.namespace, @project), notice: 'Label was removed')
+    redirect_to project_labels_path(@project),
+                status: 302,
+                notice: 'Label was removed'
   end
 
   def remove_priority
@@ -110,7 +113,7 @@ class Projects::LabelsController < Projects::ApplicationController
       return render_404 unless promote_service.execute(@label)
       respond_to do |format|
         format.html do
-          redirect_to(namespace_project_labels_path(@project.namespace, @project),
+          redirect_to(project_labels_path(@project),
                       notice: 'Label was promoted to a Group Label')
         end
         format.js
@@ -121,7 +124,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
       respond_to do |format|
         format.html do
-          redirect_to(namespace_project_labels_path(@project.namespace, @project),
+          redirect_to(project_labels_path(@project),
                       notice: 'Failed to promote label due to internal error. Please contact administrators.')
         end
         format.js
@@ -130,12 +133,6 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   protected
-
-  def module_enabled
-    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
-      return render_404
-    end
-  end
 
   def label_params
     params.require(:label).permit(:title, :description, :color)
@@ -157,7 +154,7 @@ class Projects::LabelsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_label, @project)
   end
 
-  def authorize_admin_group!
-    return render_404 unless can?(current_user, :admin_group, @project.group)
+  def authorize_admin_group_labels!
+    return render_404 unless can?(current_user, :admin_label, @project.group)
   end
 end

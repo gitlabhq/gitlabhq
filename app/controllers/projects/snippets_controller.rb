@@ -1,9 +1,11 @@
 class Projects::SnippetsController < Projects::ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include RendersBlob
 
-  before_action :module_enabled
+  before_action :check_snippets_available!
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
   # Allow read any snippet
@@ -21,15 +23,14 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @snippets = SnippetsFinder.new.execute(
+    @snippets = SnippetsFinder.new(
       current_user,
-      filter: :by_project,
       project: @project,
       scope: params[:scope]
-    )
+    ).execute
     @snippets = @snippets.page(params[:page])
     if @snippets.out_of_range? && @snippets.total_pages != 0
-      redirect_to namespace_project_snippets_path(page: @snippets.total_pages)
+      redirect_to project_snippets_path(@project, page: @snippets.total_pages)
     end
   end
 
@@ -54,9 +55,23 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def show
-    @note = @project.notes.new(noteable: @snippet)
-    @notes = Banzai::NoteRenderer.render(@snippet.notes.fresh, @project, current_user)
-    @noteable = @snippet
+    blob = @snippet.blob
+    conditionally_expand_blob(blob)
+
+    respond_to do |format|
+      format.html do
+        @note = @project.notes.new(noteable: @snippet)
+        @noteable = @snippet
+
+        @discussions = @snippet.discussions
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(blob)
+      end
+    end
   end
 
   def destroy
@@ -64,7 +79,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to namespace_project_snippets_path(@project.namespace, @project)
+    redirect_to project_snippets_path(@project), status: 302
   end
 
   protected
@@ -74,6 +89,10 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
+
+  def spammable_path
+    project_snippet_path(@project, @snippet)
+  end
 
   def authorize_read_project_snippet!
     return render_404 unless can?(current_user, :read_project_snippet, @snippet)
@@ -87,11 +106,7 @@ class Projects::SnippetsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_project_snippet, @snippet)
   end
 
-  def module_enabled
-    return render_404 unless @project.feature_available?(:snippets, current_user)
-  end
-
   def snippet_params
-    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
   end
 end

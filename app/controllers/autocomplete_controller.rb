@@ -5,11 +5,11 @@ class AutocompleteController < ApplicationController
 
   def users
     @users ||= User.none
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = @users.page(params[:page])
+    @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
+    @users = @users.page(params[:page]).per(params[:per_page])
 
     if params[:todo_filter].present? && current_user
       @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
@@ -18,11 +18,10 @@ class AutocompleteController < ApplicationController
     if params[:search].blank?
       # Include current user if available to filter by "Me"
       if params[:current_user].present? && current_user
-        @users = @users.where.not(id: current_user.id)
-        @users = [current_user, *@users]
+        @users = [current_user, *@users].uniq
       end
 
-      if params[:author_id].present?
+      if params[:author_id].present? && current_user
         author = User.find_by_id(params[:author_id])
         @users = [author, *@users].uniq if author
       end
@@ -42,7 +41,7 @@ class AutocompleteController < ApplicationController
 
     no_project = {
       id: 0,
-      name_with_namespace: 'No project',
+      name_with_namespace: 'No project'
     }
     projects.unshift(no_project) unless params[:offset_id].present?
 

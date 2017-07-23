@@ -6,7 +6,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
-    let(:project) { setup_project }
+    let!(:project) { setup_project }
 
     before do
       project.team << [user, :master]
@@ -79,6 +79,18 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']).not_to be_empty
       end
 
+      it 'has merge requests diff st_diffs' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['utf8_st_diffs']).not_to be_nil
+      end
+
+      it 'has merge request diff files' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_files']).not_to be_empty
+      end
+
+      it 'has merge request diff commits' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_commits']).not_to be_empty
+      end
+
       it 'has merge requests comments' do
         expect(saved_project_json['merge_requests'].first['notes']).not_to be_empty
       end
@@ -141,6 +153,12 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(project_tree_saver.save).to be true
       end
 
+      it 'does not complain about non UTF-8 characters in MR diff files' do
+        ActiveRecord::Base.connection.execute("UPDATE merge_request_diff_files SET diff = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
+
+        expect(project_tree_saver.save).to be true
+      end
+
       context 'group members' do
         let(:user2) { create(:user, email: 'group@member.com') }
         let(:member_emails) do
@@ -185,11 +203,21 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
           end
         end
       end
+
+      context 'project attributes' do
+        it 'contains the html description' do
+          expect(saved_project_json).to include("description_html" => 'description')
+        end
+
+        it 'does not contain the runners token' do
+          expect(saved_project_json).not_to include("runners_token" => 'token')
+        end
+      end
     end
   end
 
   def setup_project
-    issue = create(:issue, assignee: user)
+    issue = create(:issue, assignees: [user])
     snippet = create(:project_snippet)
     release = create(:release)
     group = create(:group)
@@ -205,6 +233,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                      releases: [release],
                      group: group
                     )
+    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

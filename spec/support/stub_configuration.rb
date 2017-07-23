@@ -5,8 +5,8 @@ module StubConfiguration
     # Stubbing both of these because we're not yet consistent with how we access
     # current application settings
     allow_any_instance_of(ApplicationSetting).to receive_messages(messages)
-    allow(Gitlab::CurrentSettings.current_application_settings).
-      to receive_messages(messages)
+    allow(Gitlab::CurrentSettings.current_application_settings)
+      .to receive_messages(messages)
   end
 
   def stub_config_setting(messages)
@@ -19,6 +19,14 @@ module StubConfiguration
 
   def stub_incoming_email_setting(messages)
     allow(Gitlab.config.incoming_email).to receive_messages(messages)
+  end
+
+  def stub_mattermost_setting(messages)
+    allow(Gitlab.config.mattermost).to receive_messages(messages)
+  end
+
+  def stub_omniauth_setting(messages)
+    allow(Gitlab.config.omniauth).to receive_messages(messages)
   end
 
   private

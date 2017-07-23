@@ -1,7 +1,9 @@
+# Gitaly note: JV: needs 1 RPC for #load_blame.
+
 module Gitlab
   module Git
     class Blame
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       attr_reader :lines, :blames
 
@@ -24,6 +26,7 @@ module Gitlab
 
       private
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/376
       def load_blame
         cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
         # Read in binary mode to ensure ASCII-8BIT

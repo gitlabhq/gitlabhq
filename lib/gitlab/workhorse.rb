@@ -1,6 +1,7 @@
 require 'base64'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 module Gitlab
   class Workhorse
@@ -15,16 +16,35 @@ module Gitlab
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, user)
+      def git_http_ok(repository, is_wiki, user, action)
+        project = repository.project
+        repo_path = repository.path_to_repo
         params = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          RepoPath: repository.path_to_repo,
+          GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          RepoPath: repo_path
         }
 
-        params.merge!(
-          GitalySocketPath: Gitlab.config.gitaly.socket_path,
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-        ) if Gitlab.config.gitaly.socket_path.present?
+        server = {
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        }
+        params[:Repository] = repository.gitaly_repository.to_h
+
+        feature_enabled = case action.to_s
+                          when 'git_receive_pack'
+                            Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
+                          when 'git_upload_pack'
+                            Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                          when 'info_refs'
+                            true
+                          else
+                            raise "Unsupported action: #{action}"
+                          end
+        if feature_enabled
+          params[:GitalyAddress] = server[:address] # This field will be deprecated
+          params[:GitalyServer] = server
+        end
 
         params
       end
@@ -33,7 +53,7 @@ module Gitlab
         {
           StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
           LfsOid: oid,
-          LfsSize: size,
+          LfsSize: size
         }
       end
 
@@ -42,10 +62,21 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = {
-          'RepoPath' => repository.path_to_repo,
-          'BlobId' => blob.id,
-        }
+        params = if Gitlab::GitalyClient.feature_enabled?(:project_raw_show)
+                   {
+                     'GitalyServer' => gitaly_server_hash(repository),
+                     'GetBlobRequest' => {
+                       repository: repository.gitaly_repository.to_h,
+                       oid: blob.id,
+                       limit: -1
+                     }
+                   }
+                 else
+                   {
+                     'RepoPath' => repository.path_to_repo,
+                     'BlobId' => blob.id
+                   }
+                 end
 
         [
           SEND_DATA_HEADER,
@@ -109,10 +140,10 @@ module Gitlab
             'Subprotocols' => terminal[:subprotocols],
             'Url' => terminal[:url],
             'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time],
+            'MaxSessionTime' => terminal[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.has_key?(:ca_pem)
+        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
 
         details
       end
@@ -147,16 +178,16 @@ module Gitlab
           encoded_message,
           secret,
           true,
-          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' },
+          { iss: 'gitlab-workhorse', verify_iss: true, algorithm: 'HS256' }
         )
       end
 
       def secret_path
-        Rails.root.join('.gitlab_workhorse_secret')
+        Gitlab.config.workhorse.secret_file
       end
 
       def set_key_and_notify(key, value, expire: nil, overwrite: true)
-        Gitlab::Redis.with do |redis|
+        Gitlab::Redis::Queues.with do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             redis.publish(NOTIFICATION_CHANNEL, "#{key}=#{value}")
@@ -171,6 +202,13 @@ module Gitlab
 
       def encode(hash)
         Base64.urlsafe_encode64(JSON.dump(hash))
+      end
+
+      def gitaly_server_hash(repository)
+        {
+          address: Gitlab::GitalyClient.address(repository.project.repository_storage),
+          token: Gitlab::GitalyClient.token(repository.project.repository_storage)
+        }
       end
     end
   end

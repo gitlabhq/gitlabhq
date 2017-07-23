@@ -1,23 +1,24 @@
+- breadcrumb_title "Pipelines"
 - page_title "New Pipeline"
 
 %h3.page-title
   New Pipeline
 %hr
 
-= form_for @pipeline, as: :pipeline, url: namespace_project_pipelines_path(@project.namespace, @project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
+= form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
   .form-group
     = f.label :ref, 'Create for', class: 'control-label'
     .col-sm-10
       = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
       = dropdown_tag(params[:ref] || @project.default_branch,
-                     options: { toggle_class: 'js-branch-select wide',
-                                filter: true, dropdown_class: "dropdown-menu-selectable", placeholder: "Search branches",
+                     options: { toggle_class: 'js-branch-select wide git-revision-dropdown-toggle',
+                                filter: true, dropdown_class: "dropdown-menu-selectable git-revision-dropdown", placeholder: "Search branches",
                                 data: { selected: params[:ref] || @project.default_branch, field_name: 'pipeline[ref]' } })
       .help-block Existing branch name, tag
   .form-actions
     = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', namespace_project_pipelines_path(@project.namespace, @project), class: 'btn btn-cancel'
+    = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-cancel'
 
 :javascript
   var availableRefs = #{@project.repository.ref_names.to_json};

@@ -1,4 +1,0 @@
----
-title: Add KUBE_CA_PEM_FILE, deprecate KUBE_CA_PEM
-merge_request: 9398
-author:

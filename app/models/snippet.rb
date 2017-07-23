@@ -1,16 +1,23 @@
 class Snippet < ActiveRecord::Base
   include Gitlab::VisibilityLevel
-  include Linguist::BlobHelper
   include CacheMarkdownField
+  include Noteable
   include Participable
   include Referable
   include Sortable
   include Awardable
   include Mentionable
   include Spammable
+  include Editable
 
   cache_markdown_field :title, pipeline: :single_line
+  cache_markdown_field :description
   cache_markdown_field :content
+
+  # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with snippets.
+  # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10392/diffs#note_28719102
+  alias_attribute :last_edited_at, :updated_at
+  alias_attribute :last_edited_by, :updated_by
 
   # If file_name changes, it invalidates content
   alias_method :default_content_html_invalidator, :content_html_invalidated?
@@ -23,16 +30,14 @@ class Snippet < ActiveRecord::Base
   belongs_to :author, class_name: 'User'
   belongs_to :project
 
-  has_many :notes, as: :noteable, dependent: :destroy
+  has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
   validates :author, presence: true
   validates :title, presence: true, length: { maximum: 255 }
   validates :file_name,
-    length: { maximum: 255 },
-    format: { with: Gitlab::Regex.file_name_regex,
-              message: Gitlab::Regex.file_name_regex_message }
+    length: { maximum: 255 }
 
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
@@ -86,45 +91,24 @@ class Snippet < ActiveRecord::Base
     ]
   end
 
-  def data
-    content
+  def blob
+    @blob ||= Blob.decorate(SnippetBlob.new(self), nil)
   end
 
   def hook_attrs
     attributes
   end
 
-  def size
-    0
-  end
-
   def file_name
     super.to_s
-  end
-
-  # alias for compatibility with blobs and highlighting
-  def path
-    file_name
-  end
-
-  def name
-    file_name
   end
 
   def sanitized_file_name
     file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
   end
 
-  def mode
-    nil
-  end
-
   def visibility_level_field
     :visibility_level
-  end
-
-  def no_highlighting?
-    content.lines.count > 1000
   end
 
   def notes_with_associations
@@ -132,7 +116,8 @@ class Snippet < ActiveRecord::Base
   end
 
   def check_for_spam?
-    public?
+    visibility_level_changed?(to: Snippet::PUBLIC) ||
+      (public? && (title_changed? || content_changed?))
   end
 
   def spammable_entity_type
@@ -166,19 +151,6 @@ class Snippet < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(table[:content].matches(pattern))
-    end
-
-    def accessible_to(user)
-      return are_public unless user.present?
-      return all if user.admin?
-
-      where(
-        'visibility_level IN (:visibility_levels)
-         OR author_id = :author_id
-         OR project_id IN (:project_ids)',
-         visibility_levels: [Snippet::PUBLIC, Snippet::INTERNAL],
-         author_id: user.id,
-         project_ids: user.authorized_projects.select(:id))
     end
   end
 end

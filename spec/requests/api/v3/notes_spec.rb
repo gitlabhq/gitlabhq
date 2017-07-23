@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Notes, api: true  do
-  include ApiHelpers
-
+describe API::V3::Notes do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, :public, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, author: user) }
@@ -15,8 +13,8 @@ describe API::V3::Notes, api: true  do
   # For testing the cross-reference of a private issue in a public issue
   let(:private_user)    { create(:user) }
   let(:private_project) do
-    create(:empty_project, namespace: private_user.namespace).
-    tap { |p| p.team << [private_user, :master] }
+    create(:empty_project, namespace: private_user.namespace)
+    .tap { |p| p.team << [private_user, :master] }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 

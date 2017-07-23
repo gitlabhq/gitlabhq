@@ -1,17 +1,25 @@
-# Triggering jobs through the API
+# Triggering pipelines through the API
 
-> **Note**:
+> **Notes**:
 - [Introduced][ci-229] in GitLab CE 7.14.
 - GitLab 8.12 has a completely redesigned job permissions system. Read all
   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
 
-Triggers can be used to force a rebuild of a specific `ref` (branch or tag)
-with an API call.
+Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
+tag) with an API call.
 
-## Add a trigger
+## Authentication tokens
+
+The following methods of authentication are supported.
+
+### Trigger token
+
+A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
+
+## Adding a new trigger
 
 You can add a new trigger by going to your project's
-**Settings ➔ CI/CD Pipelines ➔ Triggers**. The **Add trigger** button will
+**Settings ➔ Pipelines** under **Triggers**. The **Add trigger** button will
 create a new token which you can then use to trigger a rerun of this
 particular project's pipeline.
 
@@ -21,17 +29,31 @@ overview of the time the triggers were last used.
 
 ![Triggers page overview](img/triggers_page.png)
 
-## Revoke a trigger
-
-You can revoke a trigger any time by going at your project's
-**Settings > Triggers** and hitting the **Revoke** button. The action is
-irreversible.
-
-## Trigger a job
+## Taking ownership of a trigger
 
 > **Note**:
-Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
-it will not trigger a job.
+GitLab 9.0 introduced a trigger ownership to solve permission problems.
+
+Each created trigger when run will impersonate their associated user including
+their access to projects and their project permissions.
+
+You can take ownership of existing triggers by clicking *Take ownership*.
+From now on the trigger will be run as you.
+
+## Revoking a trigger
+
+You can revoke a trigger any time by going at your project's
+**Settings ➔ Pipelines** under **Triggers** and hitting the **Revoke** button.
+The action is irreversible.
+
+## Triggering a pipeline
+
+> **Notes**:
+- Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
+  it will not trigger a job.
+- If your project is public, passing the token in plain text is probably not the
+  wisest idea, so you might want to use a
+  [secret variable](../variables/README.md#secret-variables) for that purpose.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
@@ -39,11 +61,11 @@ To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 POST /projects/:id/trigger/pipeline
 ```
 
-The required parameters are the trigger's `token` and the Git `ref` on which
-the trigger will be performed. Valid refs are the branch and the tag. The `:id`
-of a project can be found by [querying the API](../../api/projects.md)
-or by visiting the **CI/CD Pipelines** settings page which provides
-self-explanatory examples.
+The required parameters are the [trigger's `token`](#authentication-tokens)
+and the Git `ref` on which the trigger will be performed. Valid refs are the
+branch and the tag. The `:id` of a project can be found by
+[querying the API](../../api/projects.md) or by visiting the **Pipelines**
+settings page which provides self-explanatory examples.
 
 When a rerun of a pipeline is triggered, the information is exposed in GitLab's
 UI under the **Jobs** page and the jobs are marked as triggered 'by API'.
@@ -60,46 +82,7 @@ below.
 
 ---
 
-See the [Examples](#examples) section for more details on how to actually
-trigger a rebuild.
-
-## Trigger a job from webhook
-
-> Introduced in GitLab 8.14.
-
-To trigger a job from webhook of another project you need to add the following
-webhook url for Push and Tag push events:
-
-```
-https://gitlab.example.com/api/v4/projects/:id/ref/:ref/trigger/pipeline?token=TOKEN
-```
-
-> **Note**:
-- `ref` should be passed as part of url in order to take precedence over `ref`
-  from webhook body that designates the branchref that fired the trigger in the source repository.
-- `ref` should be url encoded if contains slashes.
-
-## Pass job variables to a trigger
-
-You can pass any number of arbitrary variables in the trigger API call and they
-will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
-file. The parameter is of the form:
-
-```
-variables[key]=value
-```
-
-This information is also exposed in the UI.
-
-![Job variables in UI](img/trigger_variables.png)
-
----
-
-See the [Examples](#examples) section below for more details.
-
-## Examples
-
-Using cURL you can trigger a rebuild with minimal effort, for example:
+By using cURL you can trigger a pipeline rerun with minimal effort, for example:
 
 ```bash
 curl --request POST \
@@ -116,8 +99,6 @@ Alternatively, you can pass the `token` and `ref` arguments in the query string:
 curl --request POST \
     "https://gitlab.example.com/api/v4/projects/9/trigger/pipeline?token=TOKEN&ref=master"
 ```
-
-### Triggering a job within `.gitlab-ci.yml`
 
 You can also benefit by using triggers in your `.gitlab-ci.yml`. Let's say that
 you have two projects, A and B, and you want to trigger a rebuild on the `master`
@@ -138,14 +119,37 @@ Now, whenever a new tag is pushed on project A, the job will run and the
 `stage: deploy` ensures that this job will run only after all jobs with
 `stage: test` complete successfully.
 
-_**Note:** If your project is public, passing the token in plain text is
-probably not the wisest idea, so you might want to use a
-[secure variable](../variables/README.md#user-defined-variables-secure-variables)
-for that purpose._
+## Triggering a pipeline from a webhook
 
-### Making use of trigger variables
+> **Notes**:
+- Introduced in GitLab 8.14.
+- `ref` should be passed as part of the URL in order to take precedence over
+  `ref` from the webhook body that designates the branch ref that fired the
+  trigger in the source repository.
+- `ref` should be URL-encoded if it contains slashes.
 
-Using trigger variables can be proven useful for a variety of reasons.
+To trigger a job from a webhook of another project you need to add the following
+webhook URL for Push and Tag events (change the project ID, ref and token):
+
+```
+https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN
+```
+
+## Making use of trigger variables
+
+You can pass any number of arbitrary variables in the trigger API call and they
+will be available in GitLab CI so that they can be used in your `.gitlab-ci.yml`
+file. The parameter is of the form:
+
+```
+variables[key]=value
+```
+
+This information is also exposed in the UI.
+
+![Job variables in UI](img/trigger_variables.png)
+
+Using trigger variables can be proven useful for a variety of reasons:
 
 * Identifiable jobs. Since the variable is exposed in the UI you can know
   why the rebuild was triggered if you pass a variable that explains the
@@ -190,15 +194,11 @@ curl --request POST \
   https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 
-### Using webhook to trigger job
+## Using cron to trigger nightly pipelines
 
-You can add the following webhook to another project in order to trigger a job:
-
-```
-https://gitlab.example.com/api/v4/projects/9/ref/master/trigger/pipeline?token=TOKEN&variables[UPLOAD_TO_S3]=true
-```
-
-### Using cron to trigger nightly jobs
+>**Note:**
+The following behavior can also be achieved through GitLab's UI with
+[pipeline schedules](../../user/project/pipelines/schedules.md).
 
 Whether you craft a script or just run cURL directly, you can trigger jobs
 in conjunction with cron. The example below triggers a job on the `master`
@@ -208,4 +208,18 @@ branch of project with ID `9` every night at `00:30`:
 30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
 ```
 
+## Legacy triggers
+
+Old triggers, created before GitLab 9.0 will be marked as legacy.
+
+Triggers with the legacy label do not have an associated user and only have
+access to the current project. They are considered deprecated and will be
+removed with one of the future versions of GitLab. You are advised to
+[take ownership](#taking-ownership) of any legacy triggers.
+
+[ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
+[ee]: https://about.gitlab.com/gitlab-ee/
+[variables]: ../variables/README.md
+[predef]: ../variables/README.md#predefined-variables-environment-variables
+[registry]: ../../user/project/container_registry.md

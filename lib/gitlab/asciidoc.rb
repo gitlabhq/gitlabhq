@@ -14,39 +14,26 @@ module Gitlab
     # Public: Converts the provided Asciidoc markup into HTML.
     #
     # input         - the source text in Asciidoc format
-    # context       - a Hash with the template context:
-    #                 :commit
-    #                 :project
-    #                 :project_wiki
-    #                 :requested_path
-    #                 :ref
-    # asciidoc_opts - a Hash of options to pass to the Asciidoctor converter
     #
-    def self.render(input, context, asciidoc_opts = {})
-      asciidoc_opts.reverse_merge!(
-        safe: :secure,
-        backend: :gitlab_html5,
-        attributes: []
-      )
-      asciidoc_opts[:attributes].unshift(*DEFAULT_ADOC_ATTRS)
+    def self.render(input, context)
+      asciidoc_opts = { safe: :secure,
+                        backend: :gitlab_html5,
+                        attributes: DEFAULT_ADOC_ATTRS }
+
+      context[:pipeline] = :ascii_doc
 
       plantuml_setup
 
       html = ::Asciidoctor.convert(input, asciidoc_opts)
-
-      html = Banzai.post_process(html, context)
-
-      filter = Banzai::Filter::SanitizationFilter.new(html)
-      html = filter.call.to_s
-
+      html = Banzai.render(html, context)
       html.html_safe
     end
 
     def self.plantuml_setup
       Asciidoctor::PlantUml.configure do |conf|
-        conf.url = ApplicationSetting.current.plantuml_url
-        conf.svg_enable = ApplicationSetting.current.plantuml_enabled
-        conf.png_enable = ApplicationSetting.current.plantuml_enabled
+        conf.url = current_application_settings.plantuml_url
+        conf.svg_enable = current_application_settings.plantuml_enabled
+        conf.png_enable = current_application_settings.plantuml_enabled
         conf.txt_enable = false
       end
     end
@@ -59,13 +46,13 @@ module Gitlab
       def stem(node)
         return super unless node.style.to_sym == :latexmath
 
-        %(<pre#{id_attribute(node)} class="code math js-render-math #{node.role}" data-math-style="display"><code>#{node.content}</code></pre>)
+        %(<pre#{id_attribute(node)} data-math-style="display"><code>#{node.content}</code></pre>)
       end
 
       def inline_quoted(node)
         return super unless node.type.to_sym == :latexmath
 
-        %(<code#{id_attribute(node)} class="code math js-render-math #{node.role}" data-math-style="inline">#{node.text}</code>)
+        %(<code#{id_attribute(node)} data-math-style="inline">#{node.text}</code>)
       end
 
       private

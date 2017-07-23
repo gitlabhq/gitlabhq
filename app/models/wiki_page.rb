@@ -24,16 +24,16 @@ class WikiPage
   def self.group_by_directory(pages)
     return [] if pages.blank?
 
-    pages.sort_by { |page| [page.directory, page.slug] }.
-      group_by(&:directory).
-      map do |dir, pages|
+    pages.sort_by { |page| [page.directory, page.slug] }
+      .group_by(&:directory)
+      .map do |dir, pages|
         if dir.present?
           WikiDirectory.new(dir, pages)
         else
           pages
         end
-      end.
-      flatten
+      end
+      .flatten
   end
 
   def self.unhyphenize(name)
@@ -151,7 +151,13 @@ class WikiPage
   end
 
   # Returns boolean True or False if this instance
-  # has been fully saved to disk or not.
+  # is the latest commit version of the page.
+  def latest?
+    !historical?
+  end
+
+  # Returns boolean True or False if this instance
+  # has been fully created on disk or not.
   def persisted?
     @persisted == true
   end
@@ -227,6 +233,8 @@ class WikiPage
   end
 
   def save(method, *args)
+    saved = false
+
     project_wiki = wiki
     if valid? && project_wiki.send(method, *args)
 
@@ -244,10 +252,10 @@ class WikiPage
       set_attributes
 
       @persisted = true
+      saved = true
     else
       errors.add(:base, project_wiki.error_message) if project_wiki.error_message
-      @persisted = false
     end
-    @persisted
+    saved
   end
 end

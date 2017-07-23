@@ -1,5 +1,5 @@
 class Projects::DiscussionsController < Projects::ApplicationController
-  before_action :module_enabled
+  before_action :check_merge_requests_available!
   before_action :merge_request
   before_action :discussion
   before_action :authorize_resolve_discussion!
@@ -28,14 +28,10 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @merge_request.find_diff_discussion(params[:id]) || render_404
+    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!
     access_denied! unless discussion.can_resolve?(current_user)
-  end
-
-  def module_enabled
-    render_404 unless @project.feature_available?(:merge_requests, current_user)
   end
 end

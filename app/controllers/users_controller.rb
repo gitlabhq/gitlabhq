@@ -1,7 +1,8 @@
 class UsersController < ApplicationController
+  include RoutableActions
+
   skip_before_action :authenticate_user!
   before_action :user, except: [:exists]
-  before_action :authorize_read_user!, only: [:show]
 
   def show
     respond_to do |format|
@@ -9,7 +10,7 @@ class UsersController < ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
 
       format.json do
@@ -39,7 +40,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects, remote: true)
+          html: view_to_html_string("shared/projects/_list", projects: @projects)
         }
       end
     end
@@ -65,7 +66,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("snippets/_snippets", collection: @snippets, remote: true)
+          html: view_to_html_string("snippets/_snippets", collection: @snippets)
         }
       end
     end
@@ -91,12 +92,8 @@ class UsersController < ApplicationController
 
   private
 
-  def authorize_read_user!
-    render_404 unless can?(current_user, :read_user, user)
-  end
-
   def user
-    @user ||= User.find_by_username!(params[:username])
+    @user ||= find_routable!(User, params[:username])
   end
 
   def contributed_projects
@@ -109,11 +106,11 @@ class UsersController < ApplicationController
 
   def load_events
     # Get user activity feed for projects common for both users
-    @events = user.recent_events.
-      merge(projects_for_current_user).
-      references(:project).
-      with_associations.
-      limit_recent(20, params[:offset])
+    @events = user.recent_events
+      .merge(projects_for_current_user)
+      .references(:project)
+      .with_associations
+      .limit_recent(20, params[:offset])
   end
 
   def load_projects
@@ -131,15 +128,18 @@ class UsersController < ApplicationController
   end
 
   def load_snippets
-    @snippets = SnippetsFinder.new.execute(
+    @snippets = SnippetsFinder.new(
       current_user,
-      filter: :by_user,
-      user: user,
+      author: user,
       scope: params[:scope]
-    ).page(params[:page])
+    ).execute.page(params[:page])
   end
 
   def projects_for_current_user
-    ProjectsFinder.new.execute(current_user)
+    ProjectsFinder.new(current_user: current_user).execute
+  end
+
+  def build_canonical_path(user)
+    url_for(params.merge(username: user.to_param))
   end
 end

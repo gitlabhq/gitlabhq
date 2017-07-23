@@ -4,7 +4,7 @@ describe PipelineSerializer do
   let(:user) { create(:user) }
 
   let(:serializer) do
-    described_class.new(user: user)
+    described_class.new(current_user: user)
   end
 
   subject { serializer.represent(resource) }
@@ -44,7 +44,7 @@ describe PipelineSerializer do
       end
 
       let(:serializer) do
-        described_class.new(user: user)
+        described_class.new(current_user: user)
           .with_pagination(request, response)
       end
 
@@ -69,7 +69,9 @@ describe PipelineSerializer do
         let(:pagination) { { page: 1, per_page: 2 } }
 
         context 'when a single pipeline object is present in relation' do
-          before { create(:ci_empty_pipeline) }
+          before do
+            create(:ci_empty_pipeline)
+          end
 
           it 'serializes pipeline relation' do
             expect(subject.first).to have_key :id
@@ -77,7 +79,9 @@ describe PipelineSerializer do
         end
 
         context 'when a multiple pipeline objects are being serialized' do
-          before { create_list(:ci_empty_pipeline, 3) }
+          before do
+            create_list(:ci_empty_pipeline, 3)
+          end
 
           it 'serializes appropriate number of objects' do
             expect(subject.count).to be 2
@@ -91,6 +95,53 @@ describe PipelineSerializer do
             subject
           end
         end
+      end
+    end
+
+    context 'number of queries' do
+      let(:resource) { Ci::Pipeline.all }
+      let(:project) { create(:empty_project) }
+
+      before do
+        Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+          create_pipeline(status)
+        end
+      end
+
+      it 'verifies number of queries', :request_store do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+        expect(recorded.count).to be_within(1).of(57)
+        expect(recorded.cached_count).to eq(0)
+      end
+
+      def create_pipeline(status)
+        create(:ci_empty_pipeline, project: project, status: status).tap do |pipeline|
+          Ci::Build::AVAILABLE_STATUSES.each do |status|
+            create_build(pipeline, status, status)
+          end
+        end
+      end
+
+      def create_build(pipeline, stage, status)
+        create(:ci_build, :tags, :triggered, :artifacts,
+          pipeline: pipeline, stage: stage,
+          name: stage, status: status)
+      end
+    end
+  end
+
+  describe '#represent_status' do
+    context 'when represents only status' do
+      let(:resource) { create(:ci_pipeline) }
+      let(:status) { resource.detailed_status(double('user')) }
+
+      subject { serializer.represent_status(resource) }
+
+      it 'serializes only status' do
+        expect(subject[:text]).to eq(status.text)
+        expect(subject[:label]).to eq(status.label)
+        expect(subject[:icon]).to eq(status.icon)
+        expect(subject[:favicon]).to eq("/assets/ci_favicons/#{status.favicon}.ico")
       end
     end
   end

@@ -12,23 +12,27 @@ module Issues
       spam_check(issue, current_user)
     end
 
-    def handle_changes(issue, old_labels: [], old_mentioned_users: [])
-      if has_changes?(issue, old_labels: old_labels)
+    def handle_changes(issue, options)
+      old_labels = options[:old_labels] || []
+      old_mentioned_users = options[:old_mentioned_users] || []
+      old_assignees = options[:old_assignees] || []
+
+      if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end
 
       if issue.previous_changes.include?('title') ||
           issue.previous_changes.include?('description')
-        todo_service.update_issue(issue, current_user)
+        todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
       if issue.previous_changes.include?('milestone_id')
         create_milestone_note(issue)
       end
 
-      if issue.previous_changes.include?('assignee_id')
-        create_assignee_note(issue)
-        notification_service.reassigned_issue(issue, current_user)
+      if issue.assignees != old_assignees
+        create_assignee_note(issue, old_assignees)
+        notification_service.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_issue(issue, current_user)
       end
 

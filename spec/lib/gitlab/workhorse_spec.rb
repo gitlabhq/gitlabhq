@@ -179,23 +179,87 @@ describe Gitlab::Workhorse, lib: true do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
+    let(:repo_path) { repository.path_to_repo }
+    let(:action) { 'info_refs' }
+    let(:params) do
+      { GL_ID: "user-#{user.id}", GL_REPOSITORY: "project-#{project.id}", RepoPath: repo_path }
+    end
 
-    subject { described_class.git_http_ok(repository, user) }
+    subject { described_class.git_http_ok(repository, false, user, action) }
 
-    it { expect(subject).to eq({ GL_ID: "user-#{user.id}", RepoPath: repository.path_to_repo }) }
+    it { expect(subject).to include(params) }
 
-    context 'when Gitaly socket path is present' do
-      let(:gitaly_socket_path) { '/tmp/gitaly.sock' }
-
-      before do
-        allow(Gitlab.config.gitaly).to receive(:socket_path).and_return(gitaly_socket_path)
+    context 'when is_wiki' do
+      let(:params) do
+        { GL_ID: "user-#{user.id}", GL_REPOSITORY: "wiki-#{project.id}", RepoPath: repo_path }
       end
 
-      it 'includes Gitaly params in the returned value' do
-        expect(subject).to include({
-          GitalyResourcePath: "/projects/#{repository.project.id}/git-http/info-refs",
-          GitalySocketPath: gitaly_socket_path,
-        })
+      subject { described_class.git_http_ok(repository, true, user, action) }
+
+      it { expect(subject).to include(params) }
+    end
+
+    context 'when Gitaly is enabled' do
+      let(:gitaly_params) do
+        {
+          GitalyAddress: Gitlab::GitalyClient.address('default'),
+          GitalyServer: {
+            address: Gitlab::GitalyClient.address('default'),
+            token: Gitlab::GitalyClient.token('default')
+          }
+        }
+      end
+
+      before do
+        allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
+      end
+
+      it 'includes a Repository param' do
+        repo_param = { Repository: {
+          storage_name: 'default',
+          relative_path: project.full_path + '.git'
+        } }
+
+        expect(subject).to include(repo_param)
+      end
+
+      context "when git_upload_pack action is passed" do
+        let(:action) { 'git_upload_pack' }
+        let(:feature_flag) { :post_upload_pack }
+
+        context 'when action is enabled by feature flag' do
+          it 'includes Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
+
+            expect(subject).to include(gitaly_params)
+          end
+        end
+
+        context 'when action is not enabled by feature flag' do
+          it 'does not include Gitaly params in the returned value' do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+
+            expect(subject).not_to include(gitaly_params)
+          end
+        end
+      end
+
+      context "when git_receive_pack action is passed" do
+        let(:action) { 'git_receive_pack' }
+
+        it { expect(subject).to include(gitaly_params) }
+      end
+
+      context "when info_refs action is passed" do
+        let(:action) { 'info_refs' }
+
+        it { expect(subject).to include(gitaly_params) }
+      end
+
+      context 'when action passed is not supported by Gitaly' do
+        let(:action) { 'download' }
+
+        it { expect { subject }.to raise_exception('Unsupported action: download') }
       end
     end
   end
@@ -212,7 +276,7 @@ describe Gitlab::Workhorse, lib: true do
       end
 
       it 'set and notify' do
-        expect_any_instance_of(Redis).to receive(:publish)
+        expect_any_instance_of(::Redis).to receive(:publish)
           .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
 
         subject
@@ -246,10 +310,48 @@ describe Gitlab::Workhorse, lib: true do
         end
 
         it 'does not notify' do
-          expect_any_instance_of(Redis).not_to receive(:publish)
+          expect_any_instance_of(::Redis).not_to receive(:publish)
 
           subject
         end
+      end
+    end
+  end
+
+  describe '.send_git_blob' do
+    include FakeBlobHelpers
+
+    let(:blob) { fake_blob }
+
+    subject { described_class.send_git_blob(repository, blob) }
+
+    context 'when Gitaly project_raw_show feature is enabled' do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq({
+          'GitalyServer' => {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          },
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }.deep_stringify_keys)
+      end
+    end
+
+    context 'when Gitaly project_raw_show feature is disabled', skip_gitaly_mock: true do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
       end
     end
   end

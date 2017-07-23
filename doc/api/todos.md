@@ -1,4 +1,4 @@
-# Todos
+# Todos API
 
 > [Introduced][ce-3188] in GitLab 8.10.
 

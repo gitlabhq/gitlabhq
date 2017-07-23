@@ -6,7 +6,7 @@ module API
       before { authenticate! }
       AWARDABLES = %w[issue merge_request snippet].freeze
 
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         AWARDABLES.each do |awardable_type|
           awardable_string = awardable_type.pluralize
           awardable_id_string = "#{awardable_type}_id"

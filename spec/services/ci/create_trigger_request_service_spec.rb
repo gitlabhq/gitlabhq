@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::CreateTriggerRequestService, services: true do
   let(:service) { described_class.new }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:trigger) { create(:ci_trigger, project: project) }
 
   before do
@@ -16,6 +16,7 @@ describe Ci::CreateTriggerRequestService, services: true do
       context 'without owner' do
         it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
         it { expect(subject.pipeline).to be_kind_of(Ci::Pipeline) }
+        it { expect(subject.pipeline).to be_trigger }
         it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
       end
 
@@ -25,6 +26,7 @@ describe Ci::CreateTriggerRequestService, services: true do
 
         it { expect(subject).to be_kind_of(Ci::TriggerRequest) }
         it { expect(subject.pipeline).to be_kind_of(Ci::Pipeline) }
+        it { expect(subject.pipeline).to be_trigger }
         it { expect(subject.pipeline.user).to eq(owner) }
         it { expect(subject.builds.first).to be_kind_of(Ci::Build) }
         it { expect(subject.builds.first.user).to eq(owner) }

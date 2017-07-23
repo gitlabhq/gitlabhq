@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'Issue filtering by Labels', feature: true, js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
-  include WaitForAjax
 
   let(:project) { create(:project, :public) }
   let!(:user)   { create(:user) }
@@ -27,9 +26,9 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     mr3.labels << feature
 
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   context 'filter by label bug' do

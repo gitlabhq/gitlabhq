@@ -1,13 +1,14 @@
 - page_title "Emails"
+- @content_class = "limit-container-width" unless fluid_layout
 = render 'profiles/head'
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       = page_title
     %p
       Control emails linked to your account
-  .col-lg-9
+  .col-lg-8
     %h4.prepend-top-0
       Add email address
     = form_for 'email', url: profile_emails_path do |f|
@@ -33,17 +34,17 @@
       %li
         = @primary
         %span.pull-right
-          %span.label.label-success Primary Email
+          %span.label.label-success Primary email
           - if @primary === current_user.public_email
-            %span.label.label-info Public Email
+            %span.label.label-info Public email
           - if @primary === current_user.notification_email
-            %span.label.label-info Notification Email
+            %span.label.label-info Notification email
       - @emails.each do |email|
         %li
           = email.email
           %span.pull-right
             - if email.email === current_user.public_email
-              %span.label.label-info Public Email
+              %span.label.label-info Public email
             - if email.email === current_user.notification_email
-              %span.label.label-info Notification Email
+              %span.label.label-info Notification email
             = link_to 'Remove', profile_email_path(email), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-warning prepend-left-10'

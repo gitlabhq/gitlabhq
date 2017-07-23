@@ -3,15 +3,19 @@ module Gitlab
     module Status
       class Created < Status::Core
         def text
-          'created'
+          s_('CiStatusText|created')
         end
 
         def label
-          'created'
+          s_('CiStatusLabel|created')
         end
 
         def icon
           'icon_status_created'
+        end
+
+        def favicon
+          'favicon_status_created'
         end
       end
     end

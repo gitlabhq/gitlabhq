@@ -19,14 +19,24 @@
 ---
 
 ## Tooltips
+Tooltips identify elements or provide additional, useful information about the referring elements. Tooltips are different from ALT-attributes, which are intended primarily for static images. Tooltips are summoned by:
+
+* Hovering over an element with a cursor
+* Focusing on an element with a keyboard (usually the tab key)
+* Upon touch
 
 ### Usage
-A tooltip should only be added if additional information is required.
+A tooltip should be used:
+* When there isn’t enough space to show the information
+* When it isn’t critical for the user to see the information
+* For icons that don’t have a label
+
+Tooltips shouldn’t repeat information that is shown near the referring element. However, they can show the same data in a different format (e.g. date or timestamps).
 
 ![Tooltip usage](img/tooltip-usage.png)
 
 ### Placement
-By default, tooltips should be placed below the element that they refer to. However, if there is not enough space in the viewpoint, the tooltip should be moved to the side as needed.
+By default, tooltips should be placed below the referring element. However, if there isn’t enough space in the viewport, the tooltip should be moved to the side as needed.
 
 ![Tooltip placement location](img/tooltip-placement.png)
 

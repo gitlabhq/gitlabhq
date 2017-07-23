@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle */
-/* global Vue */
 /* global boardsMockInterceptor */
 /* global BoardService */
 /* global List */
@@ -7,14 +6,16 @@
 /* global listObj */
 /* global listObjDuplicate */
 
-require('~/lib/utils/url_utility');
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/services/board_service');
-require('~/boards/stores/boards_store');
-require('./mock_data');
+import Vue from 'vue';
+
+import '~/lib/utils/url_utility';
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/services/board_service';
+import '~/boards/stores/boards_store';
+import './mock_data';
 
 describe('List model', () => {
   let list;
@@ -42,7 +43,7 @@ describe('List model', () => {
     list = new List({
       title: 'test',
       label: {
-        id: 1,
+        id: _.random(10000),
         title: 'test',
         color: 'red'
       }
@@ -50,7 +51,7 @@ describe('List model', () => {
     list.save();
 
     setTimeout(() => {
-      expect(list.id).toBe(1);
+      expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
       done();
@@ -59,7 +60,7 @@ describe('List model', () => {
 
   it('destroys the list', (done) => {
     gl.issueBoards.BoardsStore.addList(listObj);
-    list = gl.issueBoards.BoardsStore.findList('id', 1);
+    list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
     expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
     list.destroy();
 
@@ -91,9 +92,10 @@ describe('List model', () => {
     const listDup = new List(listObjDuplicate);
     const issue = new ListIssue({
       title: 'Testing',
-      iid: 1,
+      iid: _.random(10000),
       confidential: false,
-      labels: [list.label, listDup.label]
+      labels: [list.label, listDup.label],
+      assignees: [],
     });
 
     list.issues.push(issue);
@@ -101,9 +103,88 @@ describe('List model', () => {
 
     spyOn(gl.boardService, 'moveIssue').and.callThrough();
 
-    listDup.updateIssueLabel(list, issue);
+    listDup.updateIssueLabel(issue, list);
 
     expect(gl.boardService.moveIssue)
       .toHaveBeenCalledWith(issue.id, list.id, listDup.id, undefined, undefined);
+  });
+
+  describe('page number', () => {
+    beforeEach(() => {
+      spyOn(list, 'getIssues');
+    });
+
+    it('increase page number if current issue count is more than the page size', () => {
+      for (let i = 0; i < 30; i += 1) {
+        list.issues.push(new ListIssue({
+          title: 'Testing',
+          iid: _.random(10000) + i,
+          confidential: false,
+          labels: [list.label],
+          assignees: [],
+        }));
+      }
+      list.issuesSize = 50;
+
+      expect(list.issues.length).toBe(30);
+
+      list.nextPage();
+
+      expect(list.page).toBe(2);
+      expect(list.getIssues).toHaveBeenCalled();
+    });
+
+    it('does not increase page number if issue count is less than the page size', () => {
+      list.issues.push(new ListIssue({
+        title: 'Testing',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label],
+        assignees: [],
+      }));
+      list.issuesSize = 2;
+
+      list.nextPage();
+
+      expect(list.page).toBe(1);
+      expect(list.getIssues).toHaveBeenCalled();
+    });
+  });
+
+  describe('newIssue', () => {
+    beforeEach(() => {
+      spyOn(gl.boardService, 'newIssue').and.returnValue(Promise.resolve({
+        json() {
+          return {
+            iid: 42,
+          };
+        },
+      }));
+    });
+
+    it('adds new issue to top of list', (done) => {
+      list.issues.push(new ListIssue({
+        title: 'Testing',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label],
+        assignees: [],
+      }));
+      const dummyIssue = new ListIssue({
+        title: 'new issue',
+        iid: _.random(10000),
+        confidential: false,
+        labels: [list.label],
+        assignees: [],
+      });
+
+      list.newIssue(dummyIssue)
+        .then(() => {
+          expect(list.issues.length).toBe(2);
+          expect(list.issues[0]).toBe(dummyIssue);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 });

@@ -26,9 +26,9 @@ it works.
 
 ---
 
-In the case of [custom domains](#custom-domains) (but not 
-[wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on 
-ports `80` and/or `443`. For that reason, there is some flexibility in the way 
+In the case of [custom domains](#custom-domains) (but not
+[wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on
+ports `80` and/or `443`. For that reason, there is some flexibility in the way
 which you can set it up:
 
 1. Run the Pages daemon in the same server as GitLab, listening on a secondary IP.
@@ -65,11 +65,13 @@ you need to add a [wildcard DNS A record][wiki-wildcard-dns] pointing to the
 host that GitLab runs. For example, an entry would look like this:
 
 ```
-*.example.io. 1800 IN A 1.1.1.1
+*.example.io. 1800 IN A    1.1.1.1
+*.example.io. 1800 IN AAAA 2001::1
 ```
 
 where `example.io` is the domain under which GitLab Pages will be served
-and `1.1.1.1` is the IP address of your GitLab instance.
+and `1.1.1.1` is the IPv4 address of your GitLab instance and `2001::1` is the
+IPv6 address. If you don't have IPv6, you can omit the AAAA record.
 
 > **Note:**
 You should not use the GitLab domain to serve user pages. For more information
@@ -141,7 +143,8 @@ outside world.
 In addition to the wildcard domains, you can also have the option to configure
 GitLab Pages to work with custom domains. Again, there are two options here:
 support custom domains with and without TLS certificates. The easiest setup is
-that without TLS certificates.
+that without TLS certificates. In either case, you'll need a secondary IP. If
+you have IPv6 as well as IPv4 addresses, you can use them both.
 
 ### Custom domains
 
@@ -163,11 +166,12 @@ world. Custom domains are supported, but no TLS.
     pages_external_url "http://example.io"
     nginx['listen_addresses'] = ['1.1.1.1']
     pages_nginx['enable'] = false
-    gitlab_pages['external_http'] = '1.1.1.2:80'
+    gitlab_pages['external_http'] = ['1.1.1.2:80', '[2001::2]:80']
     ```
 
     where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+    `1.1.1.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
+    listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
 
@@ -194,12 +198,13 @@ world. Custom domains and TLS are supported.
     pages_nginx['enable'] = false
     gitlab_pages['cert'] = "/etc/gitlab/ssl/example.io.crt"
     gitlab_pages['cert_key'] = "/etc/gitlab/ssl/example.io.key"
-    gitlab_pages['external_http'] = '1.1.1.2:80'
-    gitlab_pages['external_https'] = '1.1.1.2:443'
+    gitlab_pages['external_http'] = ['1.1.1.2:80', '[2001::2]:80']
+    gitlab_pages['external_https'] = ['1.1.1.2:443', '[2001::2]:443']
     ```
 
     where `1.1.1.1` is the primary IP address that GitLab is listening to and
-    `1.1.1.2` the secondary IP where the GitLab Pages daemon listens to.
+    `1.1.1.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
+    listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
 

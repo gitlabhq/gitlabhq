@@ -8,10 +8,7 @@ class ValidateNewBranchService < BaseService
       return error('Branch name is invalid')
     end
 
-    repository = project.repository
-    existing_branch = repository.find_branch(branch_name)
-
-    if existing_branch
+    if project.repository.branch_exists?(branch_name)
       return error('Branch already exists')
     end
 

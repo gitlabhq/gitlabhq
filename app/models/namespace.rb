@@ -1,11 +1,13 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
+  acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
+  include AfterCommitQueue
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -14,13 +16,13 @@ class Namespace < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  has_many :projects, dependent: :destroy
+  has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
-  has_one :chat_team, dependent: :destroy
+  has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -33,7 +35,7 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    namespace: true
+    dynamic_path: true
 
   validate :nesting_level_allowed
 
@@ -46,7 +48,7 @@ class Namespace < ActiveRecord::Base
   before_destroy(prepend: true) { prepare_for_destroy }
   after_destroy :rm_dir
 
-  scope :root, -> { where('type IS NULL') }
+  scope :for_user, -> { where('type IS NULL') }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -56,7 +58,7 @@ class Namespace < ActiveRecord::Base
         'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
         'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
         'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
+        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size'
       )
   end
 
@@ -104,6 +106,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def visibility_level_field
+    :visibility_level
+  end
+
   def to_param
     full_path
   end
@@ -120,10 +126,10 @@ class Namespace < ActiveRecord::Base
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
-      gitlab_shell.add_namespace(repository_storage_path, path_was)
+      gitlab_shell.add_namespace(repository_storage_path, full_path_was)
 
-      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
-        Rails.logger.error "Exception moving path #{repository_storage_path} from #{path_was} to #{path}"
+      unless gitlab_shell.mv_namespace(repository_storage_path, full_path_was, full_path)
+        Rails.logger.error "Exception moving path #{repository_storage_path} from #{full_path_was} to #{full_path}"
 
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
@@ -131,8 +137,8 @@ class Namespace < ActiveRecord::Base
       end
     end
 
-    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
-    Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
+    Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
+    Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
 
     remove_exports!
 
@@ -150,12 +156,12 @@ class Namespace < ActiveRecord::Base
   end
 
   def any_project_has_container_registry_tags?
-    projects.any?(&:has_container_registry_tags?)
+    all_projects.any?(&:has_container_registry_tags?)
   end
 
   def send_update_instructions
     projects.each do |project|
-      project.send_move_instructions("#{path_was}/#{project.path}")
+      project.send_move_instructions("#{full_path_was}/#{project.path}")
     end
   end
 
@@ -176,26 +182,20 @@ class Namespace < ActiveRecord::Base
     projects.with_shared_runners.any?
   end
 
-  # Scopes the model on ancestors of the record
+  # Returns all the ancestors of the current namespaces.
   def ancestors
-    if parent_id
-      path = route ? route.path : full_path
-      paths = []
+    return self.class.none unless parent_id
 
-      until path.blank?
-        path = path.rpartition('/').first
-        paths << path
-      end
-
-      self.class.joins(:route).where('routes.path IN (?)', paths).reorder('routes.path ASC')
-    else
-      self.class.none
-    end
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: parent_id))
+      .base_and_ancestors
   end
 
-  # Scopes the model on direct and indirect children of the record
+  # Returns all the descendants of the current namespace.
   def descendants
-    self.class.joins(:route).where('routes.path LIKE ?', "#{route.path}/%").reorder('routes.path ASC')
+    Gitlab::GroupHierarchy
+      .new(self.class.where(parent_id: id))
+      .base_and_descendants
   end
 
   def user_ids_for_project_authorizations
@@ -214,6 +214,22 @@ class Namespace < ActiveRecord::Base
     @old_repository_storage_paths ||= repository_storage_paths
   end
 
+  # Includes projects from this namespace and projects from all subgroups
+  # that belongs to this namespace
+  def all_projects
+    Project.inside_path(full_path)
+  end
+
+  def has_parent?
+    parent.present?
+  end
+
+  def soft_delete_without_removing_associations
+    # We can't use paranoia's `#destroy` since this will hard-delete projects.
+    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
+    self.deleted_at = Time.now
+  end
+
   private
 
   def repository_storage_paths
@@ -221,7 +237,7 @@ class Namespace < ActiveRecord::Base
     # pending delete. Unscoping also get rids of the default order, which causes
     # problems with SELECT DISTINCT.
     Project.unscoped do
-      projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
+      all_projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
     end
   end
 
@@ -230,15 +246,17 @@ class Namespace < ActiveRecord::Base
     old_repository_storage_paths.each do |repository_storage_path|
       # Move namespace directory into trash.
       # We will remove it later async
-      new_path = "#{path}+#{id}+deleted"
+      new_path = "#{full_path}+#{id}+deleted"
 
-      if gitlab_shell.mv_namespace(repository_storage_path, path, new_path)
-        message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+      if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
+        message = "Namespace directory \"#{full_path}\" moved to \"#{new_path}\""
         Gitlab::AppLogger.info message
 
         # Remove namespace directroy async with delay so
         # GitLab has time to remove all projects first
-        GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        run_after_commit do
+          GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+        end
       end
     end
 
@@ -246,10 +264,10 @@ class Namespace < ActiveRecord::Base
   end
 
   def refresh_access_of_projects_invited_groups
-    Group.
-      joins(project_group_links: :project).
-      where(projects: { namespace_id: id }).
-      find_each(&:refresh_members_authorized_projects)
+    Group
+      .joins(project_group_links: :project)
+      .where(projects: { namespace_id: id })
+      .find_each(&:refresh_members_authorized_projects)
   end
 
   def remove_exports!

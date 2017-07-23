@@ -1,4 +1,4 @@
-# Broadcast Messages
+# Broadcast Messages API
 
 > **Note:** This feature was introduced in GitLab 8.12.
 

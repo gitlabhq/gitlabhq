@@ -8,7 +8,7 @@ module API
       params do
         requires :id, type: String, desc: 'The project ID'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get all Pipelines of the project' do
           detail 'This feature was introduced in GitLab 8.11.'
           success ::API::Entities::Pipeline
@@ -21,7 +21,7 @@ module API
         get ':id/pipelines' do
           authorize! :read_pipeline, user_project
 
-          pipelines = PipelinesFinder.new(user_project).execute(scope: params[:scope])
+          pipelines = PipelinesFinder.new(user_project, scope: params[:scope]).execute
           present paginate(pipelines), with: ::API::Entities::Pipeline
         end
       end

@@ -1,14 +1,14 @@
-- unless @snippet.content.empty?
-  - if markup?(@snippet.file_name)
-    %textarea.markdown-snippet-copy.blob-content{ data: { blob_id: @snippet.id } }
-      = @snippet.content
-    .file-content.wiki
-      - if gitlab_markdown?(@snippet.file_name)
-        = preserve(markdown_field(@snippet, :content))
-      - else
-        = render_markup(@snippet.file_name, @snippet.content)
-  - else
-    = render 'shared/file_highlight', blob: @snippet
-- else
-  .file-content.code
-    .nothing-here-block Empty file
+- blob = @snippet.blob
+.js-file-title.file-title-flex-parent
+  = render 'projects/blob/header_content', blob: blob
+
+  .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob
+
+    .btn-group{ role: "group" }<
+      = copy_blob_source_button(blob)
+      = open_raw_blob_button(blob)
+
+      = link_to icon('download'), download_snippet_path(@snippet), target: '_blank', class: "btn btn-sm has-tooltip", title: 'Download', data: { container: 'body' }
+
+= render 'projects/blob/content', blob: blob

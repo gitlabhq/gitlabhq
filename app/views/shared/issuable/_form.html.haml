@@ -8,7 +8,7 @@
   .alert.alert-danger
     Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
     Please check out
-    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank"
+    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank", rel: 'noopener noreferrer'
     and make sure your changes will not unintentionally remove theirs
 
 .form-group
@@ -17,7 +17,7 @@
   = render 'shared/issuable/form/template_selector', issuable: issuable
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:work_in_progress?)
 
-= render 'shared/issuable/form/description', issuable: issuable, form: form
+= render 'shared/form_elements/description', model: issuable, form: form, project: project
 
 - if issuable.respond_to?(:confidential)
   .form-group
@@ -45,41 +45,47 @@
 
 = render 'shared/issuable/form/merge_params', issuable: issuable
 
-- if @merge_request_for_resolving_discussions
+- if @merge_request_to_resolve_discussions_of
   .form-group
     .col-sm-10.col-sm-offset-2
-      - if @merge_request_for_resolving_discussions.discussions_can_be_resolved_by?(current_user)
-        = icon('exclamation-triangle')
-        Creating this issue will mark all discussions in
-        = link_to @merge_request_for_resolving_discussions.to_reference, merge_request_path(@merge_request_for_resolving_discussions)
-        as resolved.
-        = hidden_field_tag 'merge_request_for_resolving_discussions', @merge_request_for_resolving_discussions.iid
+      = icon('info-circle')
+      - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
+        = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
+        - if @discussion_to_resolve
+          = hidden_field_tag 'discussion_to_resolve', @discussion_to_resolve.id
+          Creating this issue will resolve the discussion in
+        - else
+          Creating this issue will resolve all discussions in
+        = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
       - else
-        = icon('exclamation-triangle')
-        You can't automatically mark all discussions in
-        = link_to @merge_request_for_resolving_discussions.to_reference, merge_request_path(@merge_request_for_resolving_discussions)
-        as resolved. Ask someone with sufficient rights to resolve the them.
+        The
+        = @discussion_to_resolve ? 'discussion' : 'discussions'
+        at
+        = link_to_discussions_to_resolve(@merge_request_to_resolve_discussions_of, @discussion_to_resolve)
+        will stay unresolved. Ask someone with permission to resolve
+        = @discussion_to_resolve ? 'it.' : 'them.'
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
-  - if issuable.new_record?
-    = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
-  - else
-    = form.submit 'Save changes', class: 'btn btn-save'
+  .pull-right
+    - if issuable.new_record?
+      = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
+    - else
+      - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
+        = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" }, method: :delete, class: 'btn btn-danger btn-grouped'
+      = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+
+  %span.append-right-10
+    - if issuable.new_record?
+      = form.submit "Submit #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+    - else
+      = form.submit 'Save changes', class: 'btn btn-save'
 
   - if !issuable.persisted? && !issuable.project.empty_repo? && (guide_url = contribution_guide_path(issuable.project))
-    .inline.prepend-left-10
+    .inline.prepend-top-10
       Please review the
       %strong= link_to('contribution guidelines', guide_url)
       for this project.
 
-  - if issuable.new_record?
-    = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
-  - else
-    .pull-right
-      - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
-        = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.human_class_name} will be removed! Are you sure?" },
-                                                                                                  method: :delete, class: 'btn btn-danger btn-grouped'
-      = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
 
 = form.hidden_field :lock_version

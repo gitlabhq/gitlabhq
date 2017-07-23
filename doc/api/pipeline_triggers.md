@@ -1,4 +1,4 @@
-# Pipeline triggers
+# Pipeline triggers API
 
 You can read more about [triggering pipelines through the API](../ci/triggers/README.md).
 
@@ -12,7 +12,7 @@ GET /projects/:id/triggers
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer | yes      | The ID of a project |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/triggers"
@@ -41,10 +41,10 @@ Get details of project's build trigger.
 GET /projects/:id/triggers/:trigger_id
 ```
 
-| Attribute | Type    | required | Description              |
-|-----------|---------|----------|--------------------------|
-| `id`      | integer | yes      | The ID of a project      |
-| `token`   | string  | yes      | The `token` of a trigger |
+| Attribute    | Type    | required | Description              |
+|--------------|---------|----------|--------------------------|
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `trigger_id` | integer | yes      | The trigger id           |
 
 ```
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
@@ -73,7 +73,7 @@ POST /projects/:id/triggers
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
-| `id`          | integer | yes      | The ID of a project      |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `description` | string  | yes      | The trigger name         |
 
 ```
@@ -103,6 +103,7 @@ PUT /projects/:id/triggers/:trigger_id
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id`  | integer | yes      | The trigger id           |
 | `description` | string  | no       | The trigger name         |
 
@@ -133,6 +134,7 @@ POST /projects/:id/triggers/:trigger_id/take_ownership
 
 | Attribute     | Type    | required | Description              |
 |---------------|---------|----------|--------------------------|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id`  | integer | yes      | The trigger id           |
 
 ```
@@ -162,7 +164,7 @@ DELETE /projects/:id/triggers/:trigger_id
 
 | Attribute      | Type    | required | Description              |
 |----------------|---------|----------|--------------------------|
-| `id`           | integer | yes      | The ID of a project      |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
 | `trigger_id`   | integer | yes      | The trigger id           |
 
 ```

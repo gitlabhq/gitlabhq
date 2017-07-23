@@ -34,7 +34,7 @@ module Users
         # Keep trying until we obtain the lease. If we don't do so we may end up
         # not updating the list of authorized projects properly. To prevent
         # hammering Redis too much we'll wait for a bit between retries.
-        sleep(1)
+        sleep(0.1)
       end
 
       begin
@@ -73,12 +73,11 @@ module Users
     # remove - The IDs of the authorization rows to remove.
     # add - Rows to insert in the form `[user id, project id, access level]`
     def update_authorizations(remove = [], add = [])
-      return if remove.empty? && add.empty? && user.authorized_projects_populated
+      return if remove.empty? && add.empty?
 
       User.transaction do
         user.remove_project_authorizations(remove) unless remove.empty?
         ProjectAuthorization.insert_authorizations(add) unless add.empty?
-        user.set_authorized_projects_column
       end
 
       # Since we batch insert authorization rows, Rails' associations may get
@@ -93,9 +92,7 @@ module Users
     end
 
     def current_authorizations_per_project
-      current_authorizations.each_with_object({}) do |row, hash|
-        hash[row.project_id] = row
-      end
+      current_authorizations.index_by(&:project_id)
     end
 
     def current_authorizations
@@ -103,38 +100,13 @@ module Users
     end
 
     def fresh_authorizations
-      ProjectAuthorization.
-        unscoped.
-        select('project_id, MAX(access_level) AS access_level').
-        from("(#{project_authorizations_union.to_sql}) #{ProjectAuthorization.table_name}").
-        group(:project_id)
-    end
+      klass = if Group.supports_nested_groups?
+                Gitlab::ProjectAuthorizations::WithNestedGroups
+              else
+                Gitlab::ProjectAuthorizations::WithoutNestedGroups
+              end
 
-    private
-
-    # Returns a union query of projects that the user is authorized to access
-    def project_authorizations_union
-      relations = [
-        # Personal projects
-        user.personal_projects.select("#{user.id} AS user_id, projects.id AS project_id, #{Gitlab::Access::MASTER} AS access_level"),
-
-        # Projects the user is a member of
-        user.projects.select_for_project_authorization,
-
-        # Projects of groups the user is a member of
-        user.groups_projects.select_for_project_authorization,
-
-        # Projects of subgroups of groups the user is a member of
-        user.nested_groups_projects.select_for_project_authorization,
-
-        # Projects shared with groups the user is a member of
-        user.groups.joins(:shared_projects).select_for_project_authorization,
-
-        # Projects shared with subgroups of groups the user is a member of
-        user.nested_groups.joins(:shared_projects).select_for_project_authorization
-      ]
-
-      Gitlab::SQL::Union.new(relations)
+      klass.new(user).calculate
     end
   end
 end

@@ -1,11 +1,16 @@
-- page_title "Milestones"
-- header_title "Milestones", dashboard_milestones_path
+- @hide_top_links = true
+- page_title 'Milestones'
+- header_title 'Milestones', dashboard_milestones_path
+
+- if show_new_nav?
+  - content_for :breadcrumbs_extra do
+    = render 'shared/new_project_item_select', path: 'milestones/new', label: 'New milestone', include_groups: true
 
 .top-area
-  = render 'shared/milestones_filter'
+  = render 'shared/milestones_filter', counts: @milestone_states
 
-  .nav-controls
-    = render 'shared/new_project_item_select', path: 'milestones/new', label: "New Milestone", include_groups: true
+  .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+    = render 'shared/new_project_item_select', path: 'milestones/new', label: 'New milestone', include_groups: true
 
 .milestones
   %ul.content-list
@@ -15,4 +20,4 @@
     - else
       - @milestones.each do |milestone|
         = render 'milestone', milestone: milestone
-  = paginate @milestones, theme: "gitlab"
+  = paginate @milestones, theme: 'gitlab'

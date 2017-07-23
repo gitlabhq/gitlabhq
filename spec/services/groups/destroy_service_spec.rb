@@ -6,12 +6,21 @@ describe Groups::DestroyService, services: true do
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
-  let!(:project)      { create(:project, namespace: group) }
+  let!(:project)      { create(:empty_project, namespace: group) }
+  let!(:notification_setting) { create(:notification_setting, source: group)}
   let!(:gitlab_shell) { Gitlab::Shell.new }
   let!(:remove_path)  { group.path + "+#{group.id}+deleted" }
 
   before do
     group.add_user(user, Gitlab::Access::OWNER)
+  end
+
+  def destroy_group(group, user, async)
+    if async
+      Groups::DestroyService.new(group, user).async_execute
+    else
+      Groups::DestroyService.new(group, user).execute
+    end
   end
 
   shared_examples 'group destruction' do |async|
@@ -23,41 +32,46 @@ describe Groups::DestroyService, services: true do
       it { expect(Group.unscoped.all).not_to include(group) }
       it { expect(Group.unscoped.all).not_to include(nested_group) }
       it { expect(Project.unscoped.all).not_to include(project) }
+      it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
     context 'file system' do
       context 'Sidekiq inline' do
         before do
-          # Run sidekiq immediatly to check that renamed dir will be removed
+          # Run sidekiq immediately to check that renamed dir will be removed
           Sidekiq::Testing.inline! { destroy_group(group, user, async) }
         end
 
-        it { expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey }
-        it { expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey }
-      end
-
-      context 'Sidekiq fake' do
-        before do
-          # Don't run sidekiq to check if renamed repository exists
-          Sidekiq::Testing.fake! { destroy_group(group, user, async) }
+        it 'verifies that paths have been deleted' do
+          expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey
+          expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
         end
-
-        it { expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey }
-        it { expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_truthy }
-      end
-    end
-
-    def destroy_group(group, user, async)
-      if async
-        Groups::DestroyService.new(group, user).async_execute
-      else
-        Groups::DestroyService.new(group, user).execute
       end
     end
   end
 
   describe 'asynchronous delete' do
     it_behaves_like 'group destruction', true
+
+    context 'Sidekiq fake' do
+      before do
+        # Don't run Sidekiq to verify that group and projects are not actually destroyed
+        Sidekiq::Testing.fake! { destroy_group(group, user, true) }
+      end
+
+      after do
+        # Clean up stale directories
+        gitlab_shell.rm_namespace(project.repository_storage_path, group.path)
+        gitlab_shell.rm_namespace(project.repository_storage_path, remove_path)
+      end
+
+      it 'verifies original paths and projects still exist' do
+        expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey
+        expect(Project.unscoped.count).to eq(1)
+        expect(Group.unscoped.count).to eq(2)
+      end
+    end
 
     context 'potential race conditions' do
       context "when the `GroupDestroyWorker` task runs immediately" do

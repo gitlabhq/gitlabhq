@@ -10,12 +10,28 @@ describe Gitlab::Ci::Build::Image do
       let(:image_name) { 'ruby:2.1' }
       let(:job) { create(:ci_build, options: { image: image_name } ) }
 
-      it 'fabricates an object of the proper class' do
-        is_expected.to be_kind_of(described_class)
+      context 'when image is defined as string' do
+        it 'fabricates an object of the proper class' do
+          is_expected.to be_kind_of(described_class)
+        end
+
+        it 'populates fabricated object with the proper name attribute' do
+          expect(subject.name).to eq(image_name)
+        end
       end
 
-      it 'populates fabricated object with the proper name attribute' do
-        expect(subject.name).to eq(image_name)
+      context 'when image is defined as hash' do
+        let(:entrypoint) { '/bin/sh' }
+        let(:job) { create(:ci_build, options: { image: { name: image_name, entrypoint: entrypoint } } ) }
+
+        it 'fabricates an object of the proper class' do
+          is_expected.to be_kind_of(described_class)
+        end
+
+        it 'populates fabricated object with the proper attributes' do
+          expect(subject.name).to eq(image_name)
+          expect(subject.entrypoint).to eq(entrypoint)
+        end
       end
 
       context 'when image name is empty' do
@@ -41,10 +57,39 @@ describe Gitlab::Ci::Build::Image do
       let(:service_image_name) { 'postgres' }
       let(:job) { create(:ci_build, options: { services: [service_image_name] }) }
 
-      it 'fabricates an non-empty array of objects' do
-        is_expected.to be_kind_of(Array)
-        is_expected.not_to be_empty
-        expect(subject.first.name).to eq(service_image_name)
+      context 'when service is defined as string' do
+        it 'fabricates an non-empty array of objects' do
+          is_expected.to be_kind_of(Array)
+          is_expected.not_to be_empty
+        end
+
+        it 'populates fabricated objects with the proper name attributes' do
+          expect(subject.first).to be_kind_of(described_class)
+          expect(subject.first.name).to eq(service_image_name)
+        end
+      end
+
+      context 'when service is defined as hash' do
+        let(:service_entrypoint) { '/bin/sh' }
+        let(:service_alias) { 'db' }
+        let(:service_command) { 'sleep 30' }
+        let(:job) do
+          create(:ci_build, options: { services: [{ name: service_image_name, entrypoint: service_entrypoint,
+                                                    alias: service_alias, command: service_command }] })
+        end
+
+        it 'fabricates an non-empty array of objects' do
+          is_expected.to be_kind_of(Array)
+          is_expected.not_to be_empty
+          expect(subject.first).to be_kind_of(described_class)
+        end
+
+        it 'populates fabricated objects with the proper attributes' do
+          expect(subject.first.name).to eq(service_image_name)
+          expect(subject.first.entrypoint).to eq(service_entrypoint)
+          expect(subject.first.alias).to eq(service_alias)
+          expect(subject.first.command).to eq(service_command)
+        end
       end
 
       context 'when service image name is empty' do

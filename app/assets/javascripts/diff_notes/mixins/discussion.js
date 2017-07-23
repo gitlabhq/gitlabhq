@@ -1,37 +1,35 @@
 /* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, no-param-reassign, max-len */
 
-((w) => {
-  w.DiscussionMixins = {
-    computed: {
-      discussionCount: function () {
-        return Object.keys(this.discussions).length;
-      },
-      resolvedDiscussionCount: function () {
-        let resolvedCount = 0;
+window.DiscussionMixins = {
+  computed: {
+    discussionCount: function () {
+      return Object.keys(this.discussions).length;
+    },
+    resolvedDiscussionCount: function () {
+      let resolvedCount = 0;
 
-        for (const discussionId in this.discussions) {
-          const discussion = this.discussions[discussionId];
+      for (const discussionId in this.discussions) {
+        const discussion = this.discussions[discussionId];
 
-          if (discussion.isResolved()) {
-            resolvedCount += 1;
-          }
+        if (discussion.isResolved()) {
+          resolvedCount += 1;
         }
-
-        return resolvedCount;
-      },
-      unresolvedDiscussionCount: function () {
-        let unresolvedCount = 0;
-
-        for (const discussionId in this.discussions) {
-          const discussion = this.discussions[discussionId];
-
-          if (!discussion.isResolved()) {
-            unresolvedCount += 1;
-          }
-        }
-
-        return unresolvedCount;
       }
+
+      return resolvedCount;
+    },
+    unresolvedDiscussionCount: function () {
+      let unresolvedCount = 0;
+
+      for (const discussionId in this.discussions) {
+        const discussion = this.discussions[discussionId];
+
+        if (!discussion.isResolved()) {
+          unresolvedCount += 1;
+        }
+      }
+
+      return unresolvedCount;
     }
-  };
-})(window);
+  }
+};

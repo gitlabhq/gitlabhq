@@ -3,16 +3,16 @@ namespace :gitlab do
     desc 'GitLab | Assets | Compile all frontend assets'
     task compile: [
       'yarn:check',
-      'assets:precompile',
+      'rake:assets:precompile',
       'webpack:compile',
-      'gitlab:assets:fix_urls'
+      'fix_urls'
     ]
 
     desc 'GitLab | Assets | Clean up old compiled frontend assets'
-    task clean: ['assets:clean']
+    task clean: ['rake:assets:clean']
 
     desc 'GitLab | Assets | Remove all compiled frontend assets'
-    task purge: ['assets:clobber']
+    task purge: ['rake:assets:clobber']
 
     desc 'GitLab | Assets | Uninstall frontend dependencies'
     task purge_modules: ['yarn:clobber']

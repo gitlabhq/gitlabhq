@@ -1,4 +1,3 @@
-= render 'layouts/nav/group_settings'
 .scrolling-tabs-container{ class: nav_control_class }
   .fade-left
     = icon('angle-left')
@@ -25,3 +24,8 @@
       = link_to group_group_members_path(@group), title: 'Members' do
         %span
           Members
+    - if current_user && can?(current_user, :admin_group, @group)
+      = nav_link(path: %w[groups#projects groups#edit]) do
+        = link_to edit_group_path(@group), title: 'Settings' do
+          %span
+            Settings

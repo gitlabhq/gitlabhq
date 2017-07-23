@@ -5,7 +5,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Trigger a GitLab project pipeline' do
         success Entities::Pipeline
       end
@@ -14,7 +14,7 @@ module API
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
-      post ":id/(ref/:ref/)trigger/pipeline" do
+      post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
         project = find_project(params[:id])
         trigger = Ci::Trigger.find_by_token(params[:token].to_s)
         not_found! unless project && trigger
@@ -142,6 +142,7 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         return not_found!('Trigger') unless trigger
 
+        status 204
         trigger.destroy
       end
     end

@@ -5,7 +5,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
 
   step 'I should see group "Owned"' do
-    expect(page).to have_content '@owned'
+    expect(page).to have_content 'Owned'
   end
 
   step 'I am a signed out user' do
@@ -61,7 +61,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 
@@ -81,7 +81,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see new group "Owned" avatar' do
     expect(owned_group.avatar).to be_instance_of AvatarUploader
-    expect(owned_group.avatar.url).to eq "/uploads/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
+    expect(owned_group.avatar.url).to eq "/uploads/-/system/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -123,7 +123,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'the archived project have some issues' do
     create :issue,
       project: @archived_project,
-      assignee: current_user,
+      assignees: [current_user],
       author: current_user
   end
 

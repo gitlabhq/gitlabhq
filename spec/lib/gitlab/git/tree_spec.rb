@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Gitlab::Git::Tree, seed_helper: true do
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+
   context :repo do
-    let(:repository) { Gitlab::Git::Repository.new(TEST_REPO_PATH) }
     let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
 
     it { expect(tree).to be_kind_of Array }
@@ -11,7 +12,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
     it { expect(tree.select(&:file?).size).to eq(10) }
     it { expect(tree.select(&:submodule?).size).to eq(2) }
 
-    describe :dir do
+    describe '#dir?' do
       let(:dir) { tree.select(&:dir?).first }
 
       it { expect(dir).to be_kind_of Gitlab::Git::Tree }
@@ -19,6 +20,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
       it { expect(dir.path).to eq('encoding') }
+      it { expect(dir.mode).to eq('40000') }
 
       context :subdir do
         let(:subdir) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files').first }
@@ -41,7 +43,7 @@ describe Gitlab::Git::Tree, seed_helper: true do
       end
     end
 
-    describe :file do
+    describe '#file?' do
       let(:file) { tree.select(&:file?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
@@ -50,27 +52,47 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(file.name).to eq('.gitignore') }
     end
 
-    describe :readme do
+    describe '#readme?' do
       let(:file) { tree.select(&:readme?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('README.md') }
     end
 
-    describe :contributing do
+    describe '#contributing?' do
       let(:file) { tree.select(&:contributing?).first }
 
       it { expect(file).to be_kind_of Gitlab::Git::Tree }
       it { expect(file.name).to eq('CONTRIBUTING.md') }
     end
 
-    describe :submodule do
+    describe '#submodule?' do
       let(:submodule) { tree.select(&:submodule?).first }
 
       it { expect(submodule).to be_kind_of Gitlab::Git::Tree }
       it { expect(submodule.id).to eq('79bceae69cb5750d6567b223597999bfa91cb3b9') }
       it { expect(submodule.commit_id).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
       it { expect(submodule.name).to eq('gitlab-shell') }
+    end
+  end
+
+  describe '#where' do
+    context 'with gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+      end
+
+      it 'calls #tree_entries_from_rugged' do
+        expect(described_class).to receive(:tree_entries_from_rugged)
+
+        described_class.where(repository, SeedRepo::Commit::ID, '/')
+      end
+    end
+
+    it 'gets the tree entries from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService).to receive(:tree_entries)
+
+      described_class.where(repository, SeedRepo::Commit::ID, '/')
     end
   end
 end

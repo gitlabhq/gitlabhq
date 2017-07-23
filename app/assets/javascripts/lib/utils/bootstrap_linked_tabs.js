@@ -31,82 +31,78 @@
  *
  * ### How to use
  *
- *  new window.gl.LinkedTabs({
+ *  new LinkedTabs({
  *    action: "#{controller.action_name}",
  *    defaultAction: 'tab1',
  *    parentEl: '.tab-links'
  *  });
  */
 
-(() => {
-  window.gl = window.gl || {};
+export default class LinkedTabs {
+  /**
+   * Binds the events and activates de default tab.
+   *
+   * @param  {Object} options
+   */
+  constructor(options = {}) {
+    this.options = options;
 
-  window.gl.LinkedTabs = class LinkedTabs {
-    /**
-     * Binds the events and activates de default tab.
-     *
-     * @param  {Object} options
-     */
-    constructor(options) {
-      this.options = options || {};
+    this.defaultAction = this.options.defaultAction;
+    this.action = this.options.action || this.defaultAction;
 
-      this.defaultAction = this.options.defaultAction;
-      this.action = this.options.action || this.defaultAction;
-
-      if (this.action === 'show') {
-        this.action = this.defaultAction;
-      }
-
-      this.currentLocation = window.location;
-
-      const tabSelector = `${this.options.parentEl} a[data-toggle="tab"]`;
-
-      // since this is a custom event we need jQuery :(
-      $(document)
-        .off('shown.bs.tab', tabSelector)
-        .on('shown.bs.tab', tabSelector, e => this.tabShown(e));
-
-      this.activateTab(this.action);
+    if (this.action === 'show') {
+      this.action = this.defaultAction;
     }
 
-    /**
-     * Handles the `shown.bs.tab` event to set the currect url action.
-     *
-     * @param  {type} evt
-     * @return {Function}
-     */
-    tabShown(evt) {
-      const source = evt.target.getAttribute('href');
+    this.currentLocation = window.location;
 
-      return this.setCurrentAction(source);
-    }
+    const tabSelector = `${this.options.parentEl} a[data-toggle="tab"]`;
 
-    /**
-     * Updates the URL with the path that matched the given action.
-     *
-     * @param  {String} source
-     * @return {String}
-     */
-    setCurrentAction(source) {
-      const copySource = source;
+    // since this is a custom event we need jQuery :(
+    $(document)
+      .off('shown.bs.tab', tabSelector)
+      .on('shown.bs.tab', tabSelector, e => this.tabShown(e));
 
-      copySource.replace(/\/+$/, '');
+    this.activateTab(this.action);
+  }
 
-      const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
+  /**
+   * Handles the `shown.bs.tab` event to set the currect url action.
+   *
+   * @param  {type} evt
+   * @return {Function}
+   */
+  tabShown(evt) {
+    const source = evt.target.getAttribute('href');
 
-      history.replaceState({
-        url: newState,
-      }, document.title, newState);
-      return newState;
-    }
+    return this.setCurrentAction(source);
+  }
 
-    /**
-     * Given the current action activates the correct tab.
-     * http://getbootstrap.com/javascript/#tab-show
-     * Note: Will trigger `shown.bs.tab`
-     */
-    activateTab() {
-      return $(`${this.options.parentEl} a[data-action='${this.action}']`).tab('show');
-    }
-  };
-})();
+  /**
+   * Updates the URL with the path that matched the given action.
+   *
+   * @param  {String} source
+   * @return {String}
+   */
+  setCurrentAction(source) {
+    const copySource = source;
+
+    copySource.replace(/\/+$/, '');
+
+    const newState = `${copySource}${this.currentLocation.search}${this.currentLocation.hash}`;
+
+    history.replaceState({
+      url: newState,
+    }, document.title, newState);
+    return newState;
+  }
+
+  /**
+   * Given the current action activates the correct tab.
+   * http://getbootstrap.com/javascript/#tab-show
+   * Note: Will trigger `shown.bs.tab`
+   */
+  activateTab() {
+    return $(`${this.options.parentEl} a[data-action='${this.action}']`).tab('show');
+  }
+}

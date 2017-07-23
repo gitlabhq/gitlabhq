@@ -24,6 +24,10 @@ class BaseService
     Gitlab::AppLogger.info message
   end
 
+  def log_error(message)
+    Gitlab::AppLogger.error message
+  end
+
   def system_hook_service
     SystemHooksService.new
   end

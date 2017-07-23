@@ -12,7 +12,7 @@ module EmailsHelper
         "action" => {
           "@type" => "ViewAction",
           "name" => name,
-          "url" => url,
+          "url" => url
           }
         }
 
@@ -65,5 +65,18 @@ module EmailsHelper
         alt: "GitLab"
       )
     end
+  end
+
+  def email_default_heading(text)
+    content_tag :h1, text, style: [
+      "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif",
+      'color:#333333',
+      'font-size:18px',
+      'font-weight:400',
+      'line-height:1.4',
+      'padding:0',
+      'margin:0',
+      'text-align:center'
+    ].join(';')
   end
 end

@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         NOTEABLE_TYPES.each do |noteable_type|
           noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -34,8 +34,8 @@ module API
                 # paginate() only works with a relation. This could lead to a
                 # mismatch between the pagination headers info and the actual notes
                 # array returned, but this is really a edge-case.
-                paginate(noteable.notes).
-                reject { |n| n.cross_reference_not_visible_for?(current_user) }
+                paginate(noteable.notes)
+                .reject { |n| n.cross_reference_not_visible_for?(current_user) }
               present notes, with: ::API::V3::Entities::Note
             else
               not_found!("Notes")
@@ -79,7 +79,7 @@ module API
             noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
 
             if can?(current_user, noteable_read_ability_name(noteable), noteable)
-              if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+              if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
                 opts[:created_at] = params[:created_at]
               end
 

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Deployments, api: true  do
-  include ApiHelpers
-
+describe API::V3::Deployments do
   let(:user)        { create(:user) }
   let(:non_member)  { create(:user) }
   let(:project)     { deployment.environment.project }
@@ -26,11 +24,11 @@ describe API::Deployments, api: true  do
   describe 'GET /projects/:id/deployments' do
     context 'as member of the project' do
       it_behaves_like 'a paginated resources' do
-        let(:request) { get api("/projects/#{project.id}/deployments", user) }
+        let(:request) { get v3_api("/projects/#{project.id}/deployments", user) }
       end
 
       it 'returns projects deployments' do
-        get api("/projects/#{project.id}/deployments", user)
+        get v3_api("/projects/#{project.id}/deployments", user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -42,7 +40,7 @@ describe API::Deployments, api: true  do
 
     context 'as non member' do
       it 'returns a 404 status code' do
-        get api("/projects/#{project.id}/deployments", non_member)
+        get v3_api("/projects/#{project.id}/deployments", non_member)
 
         expect(response).to have_http_status(404)
       end
@@ -52,7 +50,7 @@ describe API::Deployments, api: true  do
   describe 'GET /projects/:id/deployments/:deployment_id' do
     context 'as a member of the project' do
       it 'returns the projects deployment' do
-        get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
+        get v3_api("/projects/#{project.id}/deployments/#{deployment.id}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['sha']).to match /\A\h{40}\z/
@@ -62,7 +60,7 @@ describe API::Deployments, api: true  do
 
     context 'as non member' do
       it 'returns a 404 status code' do
-        get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
+        get v3_api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
 
         expect(response).to have_http_status(404)
       end

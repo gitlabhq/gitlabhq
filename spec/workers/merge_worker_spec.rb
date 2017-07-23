@@ -15,7 +15,7 @@ describe MergeWorker do
     it 'clears cache of source repo after removing source branch' do
       expect(source_project.repository.branch_names).to include('markdown')
 
-      MergeWorker.new.perform(
+      described_class.new.perform(
         merge_request.id, merge_request.author_id,
         commit_message: 'wow such merge',
         should_remove_source_branch: true)

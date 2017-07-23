@@ -38,6 +38,38 @@
   }
 }
 
+.pipeline-info {
+  .status-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .mr-widget-pipeline-graph {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 -6px 0 0;
+
+    .dropdown-menu {
+      margin-top: 11px;
+    }
+  }
+}
+
+.branch-info .commit-icon {
+  margin-right: 3px;
+
+  svg {
+    top: 3px;
+  }
+}
+
 /*
  * Commit message textarea for web editor and
  * custom merge request message
@@ -103,14 +135,21 @@
 
 .text-expander {
   display: inline-block;
-  background: $gray-light;
+  background: $white-light;
   color: $gl-text-color-secondary;
   padding: 0 5px;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
   margin-left: 5px;
-  line-height: 1;
+  font-size: $gl-font-size;
+  line-height: $gl-font-size;
+  outline: none;
+
+  &.open {
+    background: $gray-light;
+    box-shadow: inset 0 0 2px rgba($black, 0.2);
+  }
 
   &:hover {
     background-color: darken($gray-light, 10%);
@@ -124,7 +163,6 @@
 
 .avatar-cell {
   width: 46px;
-  padding-left: 10px;
 
   img {
     margin-right: 0;
@@ -136,7 +174,6 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-grow: 1;
-  padding-left: 10px;
 
   .merge-request-branches & {
     flex-direction: column;
@@ -169,11 +206,11 @@
       margin-left: $gl-padding;
     }
   }
-}
 
-.commit-short-id {
-  font-family: $monospace_font;
-  font-weight: 600;
+  .commit-sha {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
 .commit,
@@ -191,7 +228,7 @@
     margin: 10px 0;
     background: $gray-light;
     display: none;
-    white-space: pre-line;
+    white-space: pre-wrap;
     word-break: normal;
 
     pre {
@@ -213,8 +250,8 @@
     }
 
     .committed_ago {
-      float: right;
       @extend .cgray;
+      float: right;
     }
   }
 }
@@ -234,7 +271,7 @@
     }
   }
 
-  .commit-id {
+  .commit-sha {
     color: $gl-link-color;
   }
 

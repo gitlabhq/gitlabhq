@@ -7,7 +7,7 @@ RSpec.shared_examples 'paginated snippets' do |remote: false|
   context 'clicking on the link to the second page' do
     before do
       click_link('2')
-      wait_for_ajax if remote
+      wait_for_requests if remote
     end
 
     it 'shows the remaining snippets' do

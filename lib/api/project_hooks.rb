@@ -13,7 +13,7 @@ module API
         optional :merge_requests_events, type: Boolean, desc: "Trigger hook on merge request events"
         optional :tag_push_events, type: Boolean, desc: "Trigger hook on tag push events"
         optional :note_events, type: Boolean, desc: "Trigger hook on note(comment) events"
-        optional :build_events, type: Boolean, desc: "Trigger hook on build events"
+        optional :job_events, type: Boolean, desc: "Trigger hook on job events"
         optional :pipeline_events, type: Boolean, desc: "Trigger hook on pipeline events"
         optional :wiki_page_events, type: Boolean, desc: "Trigger hook on wiki events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"
@@ -24,7 +24,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get project hooks' do
         success Entities::ProjectHook
       end
@@ -53,7 +53,9 @@ module API
         use :project_hook_properties
       end
       post ":id/hooks" do
-        hook = user_project.hooks.new(declared_params(include_missing: false))
+        hook_params = declared_params(include_missing: false)
+
+        hook = user_project.hooks.new(hook_params)
 
         if hook.save
           present hook, with: Entities::ProjectHook
@@ -74,7 +76,9 @@ module API
       put ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
-        if hook.update_attributes(declared_params(include_missing: false))
+        update_params = declared_params(include_missing: false)
+
+        if hook.update_attributes(update_params)
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
@@ -92,6 +96,7 @@ module API
       delete ":id/hooks/:hook_id" do
         hook = user_project.hooks.find(params.delete(:hook_id))
 
+        status 204
         hook.destroy
       end
     end

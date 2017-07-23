@@ -1,16 +1,15 @@
 - content_for(:title, 'Auth Error')
-%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
-  %h1
-    422
+
 .container
+  = render "shared/errors/graphic_422.svg"
   %h3 Sign-in using #{@provider} auth failed
+
+  %p.light.subtitle Sign-in failed because #{@error}.
+
+  %p Try logging in using your username or email. If you have forgotten your password, try recovering it
+
+  = link_to "Sign in", new_session_path(:user), class: 'btn primary'
+  = link_to "Recover password", new_password_path(resource_name), class: 'btn secondary'
+
   %hr
-  %p Sign-in failed because #{@error}.
-  %p There are couple of steps you can take:
-
-%ul
-  %li Try logging in using your email
-  %li Try logging in using your username
-  %li If you have forgotten your password, try recovering it using #{ link_to "Password recovery", new_password_path(resource_name) }
-
-%p If none of the options work, try contacting the GitLab administrator.
+  %p.light If none of the options work, try contacting a GitLab administrator.

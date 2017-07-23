@@ -31,6 +31,7 @@ $border-radius-small: 3px !default;
 //
 $text-color: $gl-text-color;
 $link-color: $gl-link-color;
+$link-hover-color: $gl-link-hover-color;
 
 
 //== Typography
@@ -73,9 +74,9 @@ $pagination-hover-color: $gl-text-color;
 $pagination-hover-bg: $row-hover;
 $pagination-hover-border: $border-color;
 
-$pagination-active-color: $blue-dark;
-$pagination-active-bg: $white-light;
-$pagination-active-border: $border-color;
+$pagination-active-color: $white-light;
+$pagination-active-bg: $gl-link-color;
+$pagination-active-border: $gl-link-color;
 
 $pagination-disabled-color: #cdcdcd;
 $pagination-disabled-bg: $gray-light;
@@ -135,8 +136,8 @@ $well-border: #eee;
 //
 //##
 
-$code-color: #c7254e;
-$code-bg: #f9f2f4;
+$code-color: $red-600;
+$code-bg: lighten($red-50, 2%);
 
 $kbd-color: $white-light;
 $kbd-bg: #333;

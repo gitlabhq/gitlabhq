@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-describe Issue, 'Spammable' do
+describe Spammable do
   let(:issue) { create(:issue, description: 'Test Desc.') }
 
   describe 'Associations' do
+    subject { build(:issue) }
+
     it { is_expected.to have_one(:user_agent_detail).dependent(:destroy) }
   end
 

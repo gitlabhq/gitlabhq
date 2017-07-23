@@ -1,6 +1,7 @@
 /* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
-/* global Cookies */
-/* global Vue */
+
+import Vue from 'vue';
+import Cookies from 'js-cookie';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};

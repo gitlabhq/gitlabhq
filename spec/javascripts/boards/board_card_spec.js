@@ -1,15 +1,18 @@
-/* global Vue */
 /* global List */
+/* global ListAssignee */
 /* global ListLabel */
 /* global listObj */
 /* global boardsMockInterceptor */
 /* global BoardService */
 
-require('~/boards/models/list');
-require('~/boards/models/label');
-require('~/boards/stores/boards_store');
-const boardCard = require('~/boards/components/board_card').default;
-require('./mock_data');
+import Vue from 'vue';
+import '~/boards/models/assignee';
+
+import '~/boards/models/list';
+import '~/boards/models/label';
+import '~/boards/stores/boards_store';
+import boardCard from '~/boards/components/board_card';
+import './mock_data';
 
 describe('Issue card', () => {
   let vm;
@@ -127,6 +130,23 @@ describe('Issue card', () => {
       triggerEvent('mouseup', vm.$el.querySelector('button'));
 
       expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+    });
+
+    it('does not set detail issue if img is clicked', (done) => {
+      vm.issue.assignees = [new ListAssignee({
+        id: 1,
+        name: 'testing 123',
+        username: 'test',
+        avatar: 'test_image',
+      })];
+
+      Vue.nextTick(() => {
+        triggerEvent('mouseup', vm.$el.querySelector('img'));
+
+        expect(gl.issueBoards.BoardsStore.detail.issue).toEqual({});
+
+        done();
+      });
     });
 
     it('does not set detail issue if showDetail is false after mouseup', () => {

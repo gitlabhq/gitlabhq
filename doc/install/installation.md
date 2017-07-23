@@ -64,7 +64,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
 
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
@@ -109,13 +109,19 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-**Note:** The current supported Ruby versions are 2.1.x and 2.3.x. 2.3.x is preferred, and support for 2.1.x will be dropped in the future.
+The Ruby interpreter is required to run GitLab.
+
+**Note:** The current supported Ruby (MRI) version is 2.3.x. GitLab 9.0 dropped
+support for Ruby 2.1.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.
+advise everyone to follow the instructions below to use a system Ruby.  
+
+Linux distributions generally have older versions of Ruby available, so these
+instructions are designed to install Ruby from the official source code.
 
 Remove the old Ruby 1.8 if present:
 
@@ -131,26 +137,25 @@ Download Ruby and compile it:
     make
     sudo make install
 
-Install the Bundler Gem:
+Then install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
-gitlab-git-http-server). This is a small daemon written in Go. To install
-gitlab-workhorse we need a Go compiler. The instructions below assume you
-use 64-bit Linux. You can find downloads for other platforms at the [Go download
+Since GitLab 8.0, GitLab has several daemons written in Go. To install
+GitLab we need a Go compiler. The instructions below assume you use 64-bit
+Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
 
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
+    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.3.linux-amd64.tar.gz
+    rm go1.8.3.linux-amd64.tar.gz
 
 ## 4. Node
 
@@ -160,7 +165,7 @@ In many distros the versions provided by the official package  repositories
 are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
     # install yarn
@@ -179,7 +184,8 @@ Create a `git` user for GitLab:
 We recommend using a PostgreSQL database. For MySQL check the
 [MySQL setup guide](database_mysql.md).
 
-> **Note**: because we need to make use of extensions you need at least pgsql 9.1.
+> **Note**: because we need to make use of extensions and concurrent index removal,
+you need at least PostgreSQL 9.2.
 
 1. Install the database packages:
 
@@ -288,9 +294,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-17-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-4-stable gitlab
 
-**Note:** You can change `8-17-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -414,6 +420,12 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
+**Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
+
+* Export `RUBYOPT=--disable-gems` environment variable for the processes
+* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommened for system-wide Ruby.
+* Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707)
+
 ### Install gitlab-workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
@@ -421,6 +433,11 @@ following command-line will install GitLab-Workhorse in `/home/git/gitlab-workho
 which is the recommended location.
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
+
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
+
 
 ### Initialize Database and Activate Advanced Features
 
@@ -456,6 +473,28 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
+### Install Gitaly
+
+    # Fetch Gitaly source with Git and compile with Go
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+
+You can specify a different Git repository by providing it as an extra paramter:
+
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+
+Next, make sure gitaly configured:
+
+    # Restrict Gitaly socket access
+    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
+    sudo chown git /home/git/gitlab/tmp/sockets/private
+
+    # If you are using non-default settings you need to update config.toml
+    cd /home/git/gitaly
+    sudo -u git -H editor config.toml
+
+For more information about configuring Gitaly see
+[doc/administration/gitaly](../administration/gitaly).
+
 ### Setup Logrotate
 
     sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
@@ -470,6 +509,10 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 
@@ -657,6 +700,12 @@ this is likely due to an outdated Nginx or Apache configuration, or a missing or
 misconfigured gitlab-workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
+
+### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
+
+This can happen on some platforms for some versions of the
+google-protobuf gem. The workaround is to [install a source-only
+version of this gem](google-protobuf.md).
 
 [RVM]: https://rvm.io/ "RVM Homepage"
 [rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"

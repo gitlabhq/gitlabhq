@@ -1,146 +1,161 @@
-/* eslint-disable class-methods-use-this, no-new, func-names, no-unneeded-ternary, object-shorthand, quote-props, no-param-reassign, max-len */
-/* global UsersSelect */
+/* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
 
-((global) => {
-  class Todos {
-    constructor() {
-      this.initFilters();
-      this.bindEvents();
+import UsersSelect from './users_select';
 
-      this.cleanupWrapper = this.cleanup.bind(this);
-      document.addEventListener('beforeunload', this.cleanupWrapper);
-    }
+export default class Todos {
+  constructor() {
+    this.initFilters();
+    this.bindEvents();
+    this.todo_ids = [];
 
-    cleanup() {
-      this.unbindEvents();
-      document.removeEventListener('beforeunload', this.cleanupWrapper);
-    }
+    this.cleanupWrapper = this.cleanup.bind(this);
+    document.addEventListener('beforeunload', this.cleanupWrapper);
+  }
 
-    unbindEvents() {
-      $('.js-done-todo, .js-undo-todo').off('click', this.updateStateClickedWrapper);
-      $('.js-todos-mark-all').off('click', this.allDoneClickedWrapper);
-      $('.todo').off('click', this.goToTodoUrl);
-    }
+  cleanup() {
+    this.unbindEvents();
+    document.removeEventListener('beforeunload', this.cleanupWrapper);
+  }
 
-    bindEvents() {
-      this.updateStateClickedWrapper = this.updateStateClicked.bind(this);
-      this.allDoneClickedWrapper = this.allDoneClicked.bind(this);
+  unbindEvents() {
+    $('.js-done-todo, .js-undo-todo, .js-add-todo').off('click', this.updateRowStateClickedWrapper);
+    $('.js-todos-mark-all', '.js-todos-undo-all').off('click', this.updateallStateClickedWrapper);
+    $('.todo').off('click', this.goToTodoUrl);
+  }
 
-      $('.js-done-todo, .js-undo-todo').on('click', this.updateStateClickedWrapper);
-      $('.js-todos-mark-all').on('click', this.allDoneClickedWrapper);
-      $('.todo').on('click', this.goToTodoUrl);
-    }
+  bindEvents() {
+    this.updateRowStateClickedWrapper = this.updateRowStateClicked.bind(this);
+    this.updateAllStateClickedWrapper = this.updateAllStateClicked.bind(this);
 
-    initFilters() {
-      new UsersSelect();
-      this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
-      this.initFilterDropdown($('.js-type-search'), 'type');
-      this.initFilterDropdown($('.js-action-search'), 'action_id');
+    $('.js-done-todo, .js-undo-todo, .js-add-todo').on('click', this.updateRowStateClickedWrapper);
+    $('.js-todos-mark-all, .js-todos-undo-all').on('click', this.updateAllStateClickedWrapper);
+    $('.todo').on('click', this.goToTodoUrl);
+  }
 
-      $('form.filter-form').on('submit', function (event) {
-        event.preventDefault();
-        gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
-      });
-    }
+  initFilters() {
+    this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
+    this.initFilterDropdown($('.js-type-search'), 'type');
+    this.initFilterDropdown($('.js-action-search'), 'action_id');
 
-    initFilterDropdown($dropdown, fieldName, searchFields) {
-      $dropdown.glDropdown({
-        fieldName,
-        selectable: true,
-        filterable: searchFields ? true : false,
-        search: { fields: searchFields },
-        data: $dropdown.data('data'),
-        clicked: function () {
-          return $dropdown.closest('form.filter-form').submit();
-        },
-      });
-    }
+    $('form.filter-form').on('submit', function applyFilters(event) {
+      event.preventDefault();
+      gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
+    });
+    return new UsersSelect();
+  }
 
-    updateStateClicked(e) {
-      e.preventDefault();
-      const target = e.target;
-      target.setAttribute('disabled', '');
-      target.classList.add('disabled');
-      $.ajax({
-        type: 'POST',
-        url: target.getAttribute('href'),
-        dataType: 'json',
-        data: {
-          '_method': target.getAttribute('data-method'),
-        },
-        success: (data) => {
-          this.updateState(target);
-          this.updateBadges(data);
-        },
-      });
-    }
+  initFilterDropdown($dropdown, fieldName, searchFields) {
+    $dropdown.glDropdown({
+      fieldName,
+      selectable: true,
+      filterable: searchFields ? true : false,
+      search: { fields: searchFields },
+      data: $dropdown.data('data'),
+      clicked: () => $dropdown.closest('form.filter-form').submit(),
+    });
+  }
 
-    allDoneClicked(e) {
-      e.preventDefault();
-      const $target = $(e.currentTarget);
-      $target.disable();
-      $.ajax({
-        type: 'POST',
-        url: $target.attr('href'),
-        dataType: 'json',
-        data: {
-          '_method': 'delete',
-        },
-        success: (data) => {
-          $target.remove();
-          $('.js-todos-all').html('<div class="nothing-here-block">You\'re all done!</div>');
-          this.updateBadges(data);
-        },
-      });
-    }
+  updateRowStateClicked(e) {
+    e.preventDefault();
 
-    updateState(target) {
-      const row = target.closest('li');
-      const restoreBtn = row.querySelector('.js-undo-todo');
-      const doneBtn = row.querySelector('.js-done-todo');
+    const target = e.target;
+    target.setAttribute('disabled', true);
+    target.classList.add('disabled');
+    $.ajax({
+      type: 'POST',
+      url: target.dataset.href,
+      dataType: 'json',
+      data: {
+        '_method': target.dataset.method,
+      },
+      success: (data) => {
+        this.updateRowState(target);
+        return this.updateBadges(data);
+      },
+    });
+  }
 
-      target.removeAttribute('disabled');
-      target.classList.remove('disabled');
-      target.classList.add('hidden');
+  updateRowState(target) {
+    const row = target.closest('li');
+    const restoreBtn = row.querySelector('.js-undo-todo');
+    const doneBtn = row.querySelector('.js-done-todo');
 
-      if (target === doneBtn) {
-        row.classList.add('done-reversible');
-        restoreBtn.classList.remove('hidden');
-      } else {
-        row.classList.remove('done-reversible');
-        doneBtn.classList.remove('hidden');
-      }
-    }
+    target.classList.add('hidden');
+    target.removeAttribute('disabled');
+    target.classList.remove('disabled');
 
-    updateBadges(data) {
-      $(document).trigger('todo:toggle', data.count);
-      $('.todos-pending .badge').text(data.count);
-      $('.todos-done .badge').text(data.done_count);
-    }
-
-    goToTodoUrl(e) {
-      const todoLink = this.dataset.url;
-
-      if (!todoLink) {
-        return;
-      }
-
-      if (gl.utils.isMetaClick(e)) {
-        const windowTarget = '_blank';
-        const selected = e.target;
-        e.preventDefault();
-
-        if (selected.tagName === 'IMG') {
-          const avatarUrl = selected.parentElement.getAttribute('href');
-          window.open(avatarUrl, windowTarget);
-        } else {
-          window.open(todoLink, windowTarget);
-        }
-      } else {
-        gl.utils.visitUrl(todoLink);
-      }
+    if (target === doneBtn) {
+      row.classList.add('done-reversible');
+      restoreBtn.classList.remove('hidden');
+    } else if (target === restoreBtn) {
+      row.classList.remove('done-reversible');
+      doneBtn.classList.remove('hidden');
+    } else {
+      row.parentNode.removeChild(row);
     }
   }
 
-  global.Todos = Todos;
-})(window.gl || (window.gl = {}));
+  updateAllStateClicked(e) {
+    e.preventDefault();
+
+    const target = e.currentTarget;
+    const requestData = { '_method': target.dataset.method, ids: this.todo_ids };
+    target.setAttribute('disabled', true);
+    target.classList.add('disabled');
+    $.ajax({
+      type: 'POST',
+      url: target.dataset.href,
+      dataType: 'json',
+      data: requestData,
+      success: (data) => {
+        this.updateAllState(target, data);
+        return this.updateBadges(data);
+      },
+    });
+  }
+
+  updateAllState(target, data) {
+    const markAllDoneBtn = document.querySelector('.js-todos-mark-all');
+    const undoAllBtn = document.querySelector('.js-todos-undo-all');
+    const todoListContainer = document.querySelector('.js-todos-list-container');
+    const nothingHereContainer = document.querySelector('.js-nothing-here-container');
+
+    target.removeAttribute('disabled');
+    target.classList.remove('disabled');
+
+    this.todo_ids = (target === markAllDoneBtn) ? data.updated_ids : [];
+    undoAllBtn.classList.toggle('hidden');
+    markAllDoneBtn.classList.toggle('hidden');
+    todoListContainer.classList.toggle('hidden');
+    nothingHereContainer.classList.toggle('hidden');
+  }
+
+  updateBadges(data) {
+    $(document).trigger('todo:toggle', data.count);
+    document.querySelector('.todos-pending .badge').innerHTML = data.count;
+    document.querySelector('.todos-done .badge').innerHTML = data.done_count;
+  }
+
+  goToTodoUrl(e) {
+    const todoLink = this.dataset.url;
+
+    if (!todoLink) {
+      return;
+    }
+
+    if (gl.utils.isMetaClick(e)) {
+      const windowTarget = '_blank';
+      const selected = e.target;
+      e.preventDefault();
+
+      if (selected.tagName === 'IMG') {
+        const avatarUrl = selected.parentElement.getAttribute('href');
+        window.open(avatarUrl, windowTarget);
+      } else {
+        window.open(todoLink, windowTarget);
+      }
+    } else {
+      gl.utils.visitUrl(todoLink);
+    }
+  }
+}

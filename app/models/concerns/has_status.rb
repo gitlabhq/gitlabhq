@@ -11,18 +11,21 @@ module HasStatus
 
   class_methods do
     def status_sql
-      scope = respond_to?(:exclude_ignored) ? exclude_ignored : all
+      scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all
+      scope_warnings = respond_to?(:failed_but_allowed) ? failed_but_allowed : none
 
-      builds = scope.select('count(*)').to_sql
-      created = scope.created.select('count(*)').to_sql
-      success = scope.success.select('count(*)').to_sql
-      manual = scope.manual.select('count(*)').to_sql
-      pending = scope.pending.select('count(*)').to_sql
-      running = scope.running.select('count(*)').to_sql
-      skipped = scope.skipped.select('count(*)').to_sql
-      canceled = scope.canceled.select('count(*)').to_sql
+      builds = scope_relevant.select('count(*)').to_sql
+      created = scope_relevant.created.select('count(*)').to_sql
+      success = scope_relevant.success.select('count(*)').to_sql
+      manual = scope_relevant.manual.select('count(*)').to_sql
+      pending = scope_relevant.pending.select('count(*)').to_sql
+      running = scope_relevant.running.select('count(*)').to_sql
+      skipped = scope_relevant.skipped.select('count(*)').to_sql
+      canceled = scope_relevant.canceled.select('count(*)').to_sql
+      warnings = scope_warnings.select('count(*) > 0').to_sql.presence || 'false'
 
       "(CASE
+        WHEN (#{builds})=(#{skipped}) AND (#{warnings}) THEN 'success'
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success}) THEN 'success'
         WHEN (#{builds})=(#{created}) THEN 'created'
@@ -31,6 +34,7 @@ module HasStatus
         WHEN (#{builds})=(#{created})+(#{skipped})+(#{pending}) THEN 'pending'
         WHEN (#{running})+(#{pending})>0 THEN 'running'
         WHEN (#{manual})>0 THEN 'manual'
+        WHEN (#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
     end
@@ -67,7 +71,7 @@ module HasStatus
     end
 
     scope :created, -> { where(status: 'created') }
-    scope :relevant, -> { where.not(status: 'created') }
+    scope :relevant, -> { where(status: AVAILABLE_STATUSES - ['created']) }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
@@ -75,12 +79,13 @@ module HasStatus
     scope :canceled, -> { where(status: 'canceled')  }
     scope :skipped, -> { where(status: 'skipped')  }
     scope :manual, -> { where(status: 'manual')  }
+    scope :created_or_pending, -> { where(status: [:created, :pending]) }
     scope :running_or_pending, -> { where(status: [:running, :pending]) }
     scope :finished, -> { where(status: [:success, :failed, :canceled]) }
     scope :failed_or_canceled, -> { where(status: [:failed, :canceled]) }
 
     scope :cancelable, -> do
-      where(status: [:running, :pending, :created, :manual])
+      where(status: [:running, :pending, :created])
     end
   end
 

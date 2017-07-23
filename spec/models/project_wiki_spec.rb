@@ -8,7 +8,10 @@ describe ProjectWiki, models: true do
   let(:project_wiki) { ProjectWiki.new(project, user) }
 
   subject { project_wiki }
-  before { project_wiki.wiki }
+
+  before do
+    project_wiki.wiki
+  end
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
@@ -35,10 +38,13 @@ describe ProjectWiki, models: true do
   end
 
   describe "#http_url_to_repo" do
-    it "provides the full http url to the repo" do
-      gitlab_url = Gitlab.config.gitlab.url
-      repo_http_url = "#{gitlab_url}/#{subject.path_with_namespace}.git"
-      expect(subject.http_url_to_repo).to eq(repo_http_url)
+    let(:project) { create :empty_project }
+
+    it 'returns the full http url to the repo' do
+      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
+
+      expect(project_wiki.http_url_to_repo).to eq(expected_url)
+      expect(project_wiki.http_url_to_repo).not_to include('@')
     end
   end
 
@@ -143,15 +149,15 @@ describe ProjectWiki, models: true do
   describe '#find_file' do
     before do
       file = Gollum::File.new(subject.wiki)
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('image.jpg', 'master', true).
-                   and_return(file)
-      allow_any_instance_of(Gollum::File).
-                   to receive(:mime_type).
-                   and_return('image/jpeg')
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('non-existant', 'master', true).
-                   and_return(nil)
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('image.jpg', 'master', true)
+                   .and_return(file)
+      allow_any_instance_of(Gollum::File)
+                   .to receive(:mime_type)
+                   .and_return('image/jpeg')
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('non-existant', 'master', true)
+                   .and_return(nil)
     end
 
     after do
@@ -200,9 +206,12 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.create_page('Test Page', 'This is content')
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
@@ -227,9 +236,12 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.update_page(@gollum_page, 'Yet more content', :markdown, 'Updated page again')
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
@@ -245,21 +257,42 @@ describe ProjectWiki, models: true do
     end
 
     it 'updates project activity' do
-      expect(subject).to receive(:update_project_activity)
-
       subject.delete_page(@page)
+
+      project.reload
+
+      expect(project.last_activity_at).to be_within(1.minute).of(Time.now)
+      expect(project.last_repository_updated_at).to be_within(1.minute).of(Time.now)
     end
   end
 
   describe '#create_repo!' do
     it 'creates a repository' do
-      expect(subject).to receive(:init_repo).
-        with(subject.path_with_namespace).
-        and_return(true)
+      expect(subject).to receive(:init_repo)
+        .with(subject.path_with_namespace)
+        .and_return(true)
 
       expect(subject.repository).to receive(:after_create)
 
       expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+    end
+  end
+
+  describe '#ensure_repository' do
+    it 'creates the repository if it not exist' do
+      allow(subject).to receive(:repository_exists?).and_return(false)
+
+      expect(subject).to receive(:create_repo!)
+
+      subject.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(subject).to receive(:repository_exists?).and_return(true)
+
+      expect(subject).not_to receive(:create_repo!)
+
+      subject.ensure_repository
     end
   end
 

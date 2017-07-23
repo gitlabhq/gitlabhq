@@ -4,7 +4,13 @@ resource :dashboard, controller: 'dashboard', only: [] do
   get :activity
 
   scope module: :dashboard do
-    resources :milestones, only: [:index, :show]
+    resources :milestones, only: [:index, :show] do
+      member do
+        get :merge_requests
+        get :participants
+        get :labels
+      end
+    end
     resources :labels, only: [:index]
 
     resources :groups, only: [:index]
@@ -13,6 +19,7 @@ resource :dashboard, controller: 'dashboard', only: [] do
     resources :todos, only: [:index, :destroy] do
       collection do
         delete :destroy_all
+        patch :bulk_restore
       end
       member do
         patch :restore

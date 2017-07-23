@@ -3,15 +3,19 @@ module Gitlab
     module Status
       class Success < Status::Core
         def text
-          'passed'
+          s_('CiStatusText|passed')
         end
 
         def label
-          'passed'
+          s_('CiStatusLabel|passed')
         end
 
         def icon
           'icon_status_success'
+        end
+
+        def favicon
+          'favicon_status_success'
         end
       end
     end

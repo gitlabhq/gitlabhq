@@ -8,7 +8,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get all deployments of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Deployment

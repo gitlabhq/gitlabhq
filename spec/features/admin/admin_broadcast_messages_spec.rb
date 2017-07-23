@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Admin Broadcast Messages', feature: true do
   before do
-    login_as :admin
+    sign_in(create(:admin))
     create(:broadcast_message, :expired, message: 'Migration to new server')
     visit admin_broadcast_messages_path
   end
@@ -45,7 +45,7 @@ feature 'Admin Broadcast Messages', feature: true do
 
     page.within('.broadcast-message-preview') do
       expect(page).to have_selector('strong', text: 'Markdown')
-      expect(page).to have_selector('img.emoji')
+      expect(page).to have_selector('gl-emoji[data-name="tada"]')
     end
   end
 end

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::SystemHooks, api: true  do
-  include ApiHelpers
-
+describe API::V3::SystemHooks do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let!(:hook) { create(:system_hook, url: "http://example.com") }
@@ -33,8 +31,9 @@ describe API::V3::SystemHooks, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
-        expect(json_response.first['push_events']).to be true
+        expect(json_response.first['push_events']).to be false
         expect(json_response.first['tag_push_events']).to be false
+        expect(json_response.first['repository_update_events']).to be true
       end
     end
   end

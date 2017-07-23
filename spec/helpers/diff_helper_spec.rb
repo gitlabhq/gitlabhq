@@ -8,7 +8,7 @@ describe DiffHelper do
   let(:commit) { project.commit(sample_commit.id) }
   let(:diffs) { commit.raw_diffs }
   let(:diff) { diffs.first }
-  let(:diff_refs) { [commit.parent, commit] }
+  let(:diff_refs) { commit.diff_refs }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   describe 'diff_view' do
@@ -33,17 +33,17 @@ describe DiffHelper do
 
   describe 'diff_options' do
     it 'returns no collapse false' do
-      expect(diff_options).to include(no_collapse: false)
+      expect(diff_options).to include(expanded: false)
     end
 
-    it 'returns no collapse true if expand_all_diffs' do
-      allow(controller).to receive(:params) { { expand_all_diffs: true } }
-      expect(diff_options).to include(no_collapse: true)
+    it 'returns no collapse true if expanded' do
+      allow(controller).to receive(:params) { { expanded: true } }
+      expect(diff_options).to include(expanded: true)
     end
 
     it 'returns no collapse true if action name diff_for_path' do
       allow(controller).to receive(:action_name) { 'diff_for_path' }
-      expect(diff_options).to include(no_collapse: true)
+      expect(diff_options).to include(expanded: true)
     end
 
     it 'returns paths if action name diff_for_path and param old path' do
@@ -122,10 +122,46 @@ describe DiffHelper do
     it "returns strings with marked inline diffs" do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
-      expect(marked_old_line).to eq("abc <span class='idiff left right deletion'>&#39;def&#39;</span>")
+      expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">&#39;def&#39;</span>})
       expect(marked_old_line).to be_html_safe
-      expect(marked_new_line).to eq("abc <span class='idiff left right addition'>&quot;def&quot;</span>")
+      expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">&quot;def&quot;</span>})
       expect(marked_new_line).to be_html_safe
+    end
+  end
+
+  describe '#parallel_diff_discussions' do
+    let(:discussion) { { 'abc_3_3' => 'comment' } }
+    let(:diff_file) { double(line_code: 'abc_3_3') }
+
+    before do
+      helper.instance_variable_set(:@grouped_diff_discussions, discussion)
+    end
+
+    it 'does not put comments on nonewline lines' do
+      left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('\\nonewline', 'new-nonewline', 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq([nil, nil])
+    end
+
+    it 'puts comments on added lines' do
+      left = Gitlab::Diff::Line.new('\\nonewline', 'old-nonewline', 3, 3, 3)
+      right = Gitlab::Diff::Line.new('new line', 'new', 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq([nil, 'comment'])
+    end
+
+    it 'puts comments on unchanged lines' do
+      left = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+      right = Gitlab::Diff::Line.new('unchanged line', nil, 3, 3, 3)
+
+      result = helper.parallel_diff_discussions(left, right, diff_file)
+
+      expect(result).to eq(['comment', nil])
     end
   end
 
@@ -178,6 +214,43 @@ describe DiffHelper do
       expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.new_line[data-linenumber='#{new_pos}']", text: '...'
       expect(output).to have_css 'td:nth-child(2).line_content.match.parallel', text: text
       expect(output).not_to have_css 'td:nth-child(3)'
+    end
+  end
+
+  context 'viewer related' do
+    let(:viewer) { diff_file.simple_viewer }
+
+    before do
+      assign(:project, project)
+    end
+
+    describe '#diff_render_error_reason' do
+      context 'for error :too_large' do
+        before do
+          expect(viewer).to receive(:render_error).and_return(:too_large)
+        end
+
+        it 'returns an error message' do
+          expect(helper.diff_render_error_reason(viewer)).to eq('it is too large')
+        end
+      end
+
+      context 'for error :server_side_but_stored_externally' do
+        before do
+          expect(viewer).to receive(:render_error).and_return(:server_side_but_stored_externally)
+          expect(diff_file).to receive(:external_storage).and_return(:lfs)
+        end
+
+        it 'returns an error message' do
+          expect(helper.diff_render_error_reason(viewer)).to eq('it is stored in LFS')
+        end
+      end
+    end
+
+    describe '#diff_render_error_options' do
+      it 'includes a "view the blob" link' do
+        expect(helper.diff_render_error_options(viewer)).to include(/view the blob/)
+      end
     end
   end
 end

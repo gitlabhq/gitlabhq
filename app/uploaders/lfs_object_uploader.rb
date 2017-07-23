@@ -9,11 +9,11 @@ class LfsObjectUploader < GitlabUploader
     "#{Gitlab.config.lfs.storage_path}/tmp/cache"
   end
 
-  def exists?
-    file.try(:exists?)
-  end
-
   def filename
     model.oid[4..-1]
+  end
+
+  def work_dir
+    File.join(Gitlab.config.lfs.storage_path, 'tmp', 'work')
   end
 end

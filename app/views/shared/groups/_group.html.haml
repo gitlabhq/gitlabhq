@@ -1,5 +1,6 @@
 - group_member = local_assigns[:group_member]
 - full_name = true unless local_assigns[:full_name] == false
+- group_name = full_name ? group.full_name : group.name
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" if group.description.blank?
 
@@ -16,7 +17,7 @@
   .stats
     %span
       = icon('bookmark')
-      = number_with_delimiter(group.projects.count)
+      = number_with_delimiter(group.projects.non_archived.count)
 
     %span
       = icon('users')
@@ -26,13 +27,10 @@
       = visibility_level_icon(group.visibility_level, fw: false)
 
   .avatar-container.s40
-    = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+    = link_to group do
+      = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
-    = link_to group, class: 'group-name' do
-      - if full_name
-        = group.full_name
-      - else
-        = group.name
+    = link_to group_name, group, class: 'group-name'
 
     - if group_member
       as

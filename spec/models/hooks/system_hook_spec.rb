@@ -1,11 +1,26 @@
 require "spec_helper"
 
 describe SystemHook, models: true do
+  context 'default attributes' do
+    let(:system_hook) { build(:system_hook) }
+
+    it 'sets defined default parameters' do
+      attrs = {
+        push_events: false,
+        repository_update_events: true
+      }
+      expect(system_hook).to have_attributes(attrs)
+    end
+  end
+
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
     let(:project)     { create(:empty_project, namespace: user.namespace) }
     let(:group)       { create(:group) }
+    let(:params) do
+      { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: 'mydummypass' }
+    end
 
     before do
       WebMock.stub_request(:post, system_hook.url)
@@ -29,7 +44,7 @@ describe SystemHook, models: true do
     end
 
     it "user_create hook" do
-      create(:user)
+      Users::CreateService.new(nil, params).execute
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /user_create/,
@@ -100,6 +115,36 @@ describe SystemHook, models: true do
         body: /user_remove_from_group/,
         headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'System Hook' }
       ).once
+    end
+  end
+
+  describe '.repository_update_hooks' do
+    it 'returns hooks for repository update events only' do
+      hook = create(:system_hook, repository_update_events: true)
+      create(:system_hook, repository_update_events: false)
+      expect(SystemHook.repository_update_hooks).to eq([hook])
+    end
+  end
+
+  describe 'execute WebHookService' do
+    let(:hook) { build(:system_hook) }
+    let(:data) { { key: 'value' } }
+    let(:hook_name) { 'system_hook' }
+
+    before do
+      expect(WebHookService).to receive(:new).with(hook, data, hook_name).and_call_original
+    end
+
+    it '#execute' do
+      expect_any_instance_of(WebHookService).to receive(:execute)
+
+      hook.execute(data, hook_name)
+    end
+
+    it '#async_execute' do
+      expect_any_instance_of(WebHookService).to receive(:async_execute)
+
+      hook.async_execute(data, hook_name)
     end
   end
 end

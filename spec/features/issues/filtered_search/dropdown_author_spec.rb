@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Dropdown author', js: true, feature: true do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -14,9 +13,10 @@ describe 'Dropdown author', js: true, feature: true do
   def send_keys_to_filtered_search(input)
     input.split("").each do |i|
       filtered_search.send_keys(i)
-      sleep 5
-      wait_for_ajax
     end
+
+    sleep 0.5
+    wait_for_requests
   end
 
   def dropdown_author_size
@@ -31,10 +31,10 @@ describe 'Dropdown author', js: true, feature: true do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -65,7 +65,7 @@ describe 'Dropdown author', js: true, feature: true do
     it 'should load all the authors when opened' do
       send_keys_to_filtered_search('author:')
 
-      expect(dropdown_author_size).to eq(3)
+      expect(dropdown_author_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
@@ -135,6 +135,25 @@ describe 'Dropdown author', js: true, feature: true do
     end
   end
 
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('author:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_author, visible: false)
+      expect_tokens([{ name: 'author', value: user.username }])
+      expect_filtered_search_input_empty
+    end
+  end
+
   describe 'input has existing content' do
     it 'opens author dropdown with existing search term' do
       filtered_search.set('searchTerm author:')
@@ -171,7 +190,7 @@ describe 'Dropdown author', js: true, feature: true do
 
       new_user = create(:user)
       project.team << [new_user, :master]
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.set('author')
       send_keys_to_filtered_search(':')
 

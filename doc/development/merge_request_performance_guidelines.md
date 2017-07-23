@@ -68,7 +68,7 @@ end
 This will end up running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations).
+["N+1 query problem"](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -116,6 +116,8 @@ Post.all.includes(:author).each do |post|
   puts post.author.name
 end
 ```
+
+Also consider using [QueryRecoder tests](query_recorder.md) to prevent a regression when eager loading.
 
 ## Memory Usage
 

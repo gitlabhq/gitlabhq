@@ -1,17 +1,16 @@
 # Full project: https://gitlab.com/pages/hexo
-image: node:4.2.2
+image: node:6.10.0
 
 pages:
-  cache:
-    paths:
-    - node_modules/
-
   script:
-  - npm install hexo-cli -g
   - npm install
-  - hexo deploy
+  - ./node_modules/hexo/bin/hexo generate
   artifacts:
     paths:
     - public
+  cache:
+    paths:
+      - node_modules
+    key: project
   only:
   - master

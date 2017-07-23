@@ -377,7 +377,7 @@ module API
             name: :ca_pem,
             type: String,
             desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
-          },
+          }
         ],
         'mattermost-slash-commands' => [
           {
@@ -501,6 +501,12 @@ module API
             desc: 'The channel name'
           }
         ],
+        'microsoft-teams' => [
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
+        ],
         'mattermost' => [
           {
             required: true,
@@ -554,7 +560,10 @@ module API
         ]
       }.freeze
 
-      resource :projects do
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
+      resource :projects, requirements: { id: %r{[^/]+} } do
         before { authenticate! }
         before { authorize_admin_project }
 
@@ -593,13 +602,13 @@ module API
         end
         get ":id/services/:service_slug" do
           service = user_project.find_or_initialize_service(params[:service_slug].underscore)
-          present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+          present service, with: Entities::ProjectService, include_passwords: current_user.admin?
         end
       end
 
       trigger_services.each do |service_slug, settings|
         helpers do
-          def chat_command_service(project, service_slug, params)
+          def slash_command_service(project, service_slug, params)
             project.services.active.where(template: false).find do |service|
               service.try(:token) == params[:token] && service.to_param == service_slug.underscore
             end
@@ -609,7 +618,7 @@ module API
         params do
           requires :id, type: String, desc: 'The ID of a project'
         end
-        resource :projects do
+        resource :projects, requirements: { id: %r{[^/]+} } do
           desc "Trigger a slash command for #{service_slug}" do
             detail 'Added in GitLab 8.13'
           end
@@ -624,7 +633,7 @@ module API
             # This is not accurate, but done to prevent leakage of the project names
             not_found!('Service') unless project
 
-            service = chat_command_service(project, service_slug, params)
+            service = slash_command_service(project, service_slug, params)
             result = service.try(:trigger, params)
 
             if result

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe API::V3::Triggers do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:trigger_token) { 'secure_token' }
@@ -51,13 +49,6 @@ describe API::V3::Triggers do
         expect(pipeline.builds.size).to eq(5)
       end
 
-      it 'creates builds on webhook from other gitlab repository and branch' do
-        expect do
-          post v3_api("/projects/#{project.id}/ref/master/trigger/builds?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
-        end.to change(project.builds, :count).by(5)
-        expect(response).to have_http_status(201)
-      end
-
       it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post v3_api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'other-branch')
         expect(response).to have_http_status(400)
@@ -86,6 +77,27 @@ describe API::V3::Triggers do
           expect(response).to have_http_status(201)
           pipeline.builds.reload
           expect(pipeline.builds.first.trigger_request.variables).to eq(variables)
+        end
+      end
+    end
+
+    context 'when triggering a pipeline from a trigger token' do
+      it 'creates builds from the ref given in the URL, not in the body' do
+        expect do
+          post v3_api("/projects/#{project.id}/ref/master/trigger/builds?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+        end.to change(project.builds, :count).by(5)
+        expect(response).to have_http_status(201)
+      end
+
+      context 'when ref contains a dot' do
+        it 'creates builds from the ref given in the URL, not in the body' do
+          project.repository.create_file(user, '.gitlab/gitlabhq/new_feature.md', 'something valid', message: 'new_feature', branch_name: 'v.1-branch')
+
+          expect do
+            post v3_api("/projects/#{project.id}/ref/v.1-branch/trigger/builds?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
+          end.to change(project.builds, :count).by(4)
+
+          expect(response).to have_http_status(201)
         end
       end
     end

@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe 'admin issues labels' do
-  include WaitForAjax
-
   let!(:bug_label) { Label.create(title: 'bug', template: true) }
   let!(:feature_label) { Label.create(title: 'feature', template: true) }
 
   before do
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   describe 'list' do
@@ -36,11 +34,11 @@ RSpec.describe 'admin issues labels' do
       page.within '.labels' do
         page.all('.btn-remove').each do |remove|
           remove.click
-          wait_for_ajax
+          wait_for_requests
         end
       end
 
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content("There are no labels yet")
       expect(page).not_to have_content('bug')

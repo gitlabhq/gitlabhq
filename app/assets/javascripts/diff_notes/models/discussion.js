@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, camelcase, guard-for-in, no-restricted-syntax, no-unused-vars, max-len */
-/* global Vue */
 /* global NoteModel */
+
+import Vue from 'vue';
 
 class DiscussionModel {
   constructor (discussionId) {
@@ -10,8 +11,8 @@ class DiscussionModel {
     this.canResolve = false;
   }
 
-  createNote (noteId, canResolve, resolved, resolved_by) {
-    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, canResolve, resolved, resolved_by));
+  createNote (noteObj) {
+    Vue.set(this.notes, noteObj.noteId, new NoteModel(this.id, noteObj));
   }
 
   deleteNote (noteId) {

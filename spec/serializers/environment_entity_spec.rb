@@ -15,4 +15,24 @@ describe EnvironmentEntity do
   it 'exposes core elements of environment' do
     expect(subject).to include(:id, :name, :state, :environment_path)
   end
+
+  context 'metrics disabled' do
+    before do
+      allow(environment).to receive(:has_metrics?).and_return(false)
+    end
+
+    it "doesn't expose metrics path" do
+      expect(subject).not_to include(:metrics_path)
+    end
+  end
+
+  context 'metrics enabled' do
+    before do
+      allow(environment).to receive(:has_metrics?).and_return(true)
+    end
+
+    it 'exposes metrics path' do
+      expect(subject).to include(:metrics_path)
+    end
+  end
 end

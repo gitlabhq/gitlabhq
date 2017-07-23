@@ -1,29 +1,43 @@
-/* eslint-disable no-new, no-param-reassign */
-/* global Vue, CommitsPipelineStore, PipelinesService, Flash */
+import Vue from 'vue';
+import commitPipelinesTable from './pipelines_table.vue';
 
-window.Vue = require('vue');
-require('./pipelines_table');
 /**
- * Commits View > Pipelines Tab > Pipelines Table.
- * Merge Request View > Pipelines Tab > Pipelines Table.
- *
- * Renders Pipelines table in pipelines tab in the commits show view.
- * Renders Pipelines table in pipelines tab in the merge request show view.
+ * Used in:
+ *  - Commit details View > Pipelines Tab > Pipelines Table.
+ *  - Merge Request details View > Pipelines Tab > Pipelines Table.
+ *  - New Merge Request View > Pipelines Tab > Pipelines Table.
  */
 
-$(() => {
-  window.gl = window.gl || {};
-  gl.commits = gl.commits || {};
-  gl.commits.pipelines = gl.commits.pipelines || {};
+const CommitPipelinesTable = Vue.extend(commitPipelinesTable);
 
-  if (gl.commits.PipelinesTableBundle) {
-    gl.commits.PipelinesTableBundle.$destroy(true);
-  }
+// export for use in merge_request_tabs.js (TODO: remove this hack when we understand how to load
+// vue.js in merge_request_tabs.js)
+window.gl = window.gl || {};
+window.gl.CommitPipelinesTable = CommitPipelinesTable;
 
+document.addEventListener('DOMContentLoaded', () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-  gl.commits.pipelines.PipelinesTableBundle = new gl.commits.pipelines.PipelinesTableView();
 
-  if (pipelineTableViewEl && pipelineTableViewEl.dataset.disableInitialization === undefined) {
-    gl.commits.pipelines.PipelinesTableBundle.$mount(pipelineTableViewEl);
+  if (pipelineTableViewEl) {
+      // Update MR and Commits tabs
+    pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
+      if (event.detail.pipelines &&
+        event.detail.pipelines.count &&
+        event.detail.pipelines.count.all) {
+        const badge = document.querySelector('.js-pipelines-mr-count');
+
+        badge.textContent = event.detail.pipelines.count.all;
+      }
+    });
+
+    if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
+      const table = new CommitPipelinesTable({
+        propsData: {
+          endpoint: pipelineTableViewEl.dataset.endpoint,
+          helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+        },
+      }).$mount();
+      pipelineTableViewEl.appendChild(table.$el);
+    }
   }
 });

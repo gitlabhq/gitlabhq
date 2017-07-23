@@ -1,13 +1,16 @@
-const Vue = require('vue');
-require('~/flash');
-const EnvironmentsFolderViewComponent = require('~/environments/folder/environments_folder_view');
-const { environmentsList } = require('../mock_data');
+import Vue from 'vue';
+import '~/flash';
+import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
+import { environmentsList } from '../mock_data';
+import { headersInterceptor } from '../../helpers/vue_resource_helper';
 
 describe('Environments Folder View', () => {
   preloadFixtures('static/environments/environments_folder_view.html.raw');
+  let EnvironmentsFolderViewComponent;
 
   beforeEach(() => {
     loadFixtures('static/environments/environments_folder_view.html.raw');
+    EnvironmentsFolderViewComponent = Vue.extend(environmentsFolderViewComponent);
     window.history.pushState({}, null, 'environments/folders/build');
   });
 
@@ -34,6 +37,8 @@ describe('Environments Folder View', () => {
 
     beforeEach(() => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
+      Vue.http.interceptors.push(headersInterceptor);
+
       component = new EnvironmentsFolderViewComponent({
         el: document.querySelector('#environments-folder-list-view'),
       });
@@ -43,13 +48,15 @@ describe('Environments Folder View', () => {
       Vue.http.interceptors = _.without(
         Vue.http.interceptors, environmentsResponseInterceptor,
       );
+      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
     });
 
     it('should render a table with environments', (done) => {
       setTimeout(() => {
+        expect(component.$el.querySelectorAll('table')).toBeDefined();
         expect(
-          component.$el.querySelectorAll('table tbody tr').length,
-        ).toEqual(2);
+          component.$el.querySelector('.environment-name').textContent.trim(),
+        ).toEqual(environmentsList[0].name);
         done();
       }, 0);
     });

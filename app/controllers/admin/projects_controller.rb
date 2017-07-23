@@ -3,6 +3,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_action :group, only: [:show, :transfer]
 
   def index
+    params[:sort] ||= 'latest_activity_desc'
     @projects = Project.with_statistics
     @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
@@ -39,14 +40,14 @@ class Admin::ProjectsController < Admin::ApplicationController
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
     @project.reload
-    redirect_to admin_namespace_project_path(@project.namespace, @project)
+    redirect_to admin_project_path(@project)
   end
 
   def repository_check
     RepositoryCheck::SingleRepositoryWorker.perform_async(@project.id)
 
     redirect_to(
-      admin_namespace_project_path(@project.namespace, @project),
+      admin_project_path(@project),
       notice: 'Repository check was triggered.'
     )
   end

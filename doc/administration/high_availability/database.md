@@ -13,10 +13,12 @@ Database Service (RDS) that runs PostgreSQL.
 
 If you use a cloud-managed service, or provide your own PostgreSQL:
 
+1. Setup PostgreSQL according to the
+   [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
-   This step is covered in [Configuring GitLab for HA](gitlab.md)
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ## Configure using Omnibus
 
@@ -25,7 +27,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
    steps on the download page.
 1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    Be sure to change the `external_url` to match your eventual GitLab front-end
-   URL.
+   URL. If there is a directive listed below that you do not see in the configuration, be sure to add it.
 
     ```ruby
     external_url 'https://gitlab.example.com'
@@ -37,6 +39,8 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
     unicorn['enable'] = false
     sidekiq['enable'] = false
     redis['enable'] = false
+    prometheus['enable'] = false
+    gitaly['enable'] = false
     gitlab_workhorse['enable'] = false
     mailroom['enable'] = false
 
@@ -105,6 +109,8 @@ If you use a cloud-managed service, or provide your own PostgreSQL:
 1. Exit the database prompt by typing `\q` and Enter.
 1. Exit the `gitlab-psql` user by running `exit` twice.
 1. Run `sudo gitlab-ctl reconfigure` a final time.
+1. Configure the GitLab application servers with the appropriate details.
+   This step is covered in [Configuring GitLab for HA](gitlab.md).
 
 ---
 

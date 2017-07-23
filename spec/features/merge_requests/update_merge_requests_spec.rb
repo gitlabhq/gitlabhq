@@ -1,21 +1,19 @@
 require 'rails_helper'
 
 feature 'Multiple merge requests updating from merge_requests#index', feature: true do
-  include WaitForAjax
-
   let!(:user)    { create(:user)}
   let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
   end
 
   context 'status', js: true do
     describe 'close merge request' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it 'closes merge request' do
@@ -28,7 +26,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
     describe 'reopen merge request' do
       before do
         merge_request.close
-        visit namespace_project_merge_requests_path(project.namespace, project, state: 'closed')
+        visit project_merge_requests_path(project, state: 'closed')
       end
 
       it 'reopens merge request' do
@@ -42,7 +40,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   context 'assignee', js: true do
     describe 'set assignee' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "updates merge request with assignee" do
@@ -58,7 +56,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       before do
         merge_request.assignee = user
         merge_request.save
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "removes assignee from the merge request" do
@@ -74,7 +72,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
 
     describe 'set milestone' do
       before do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "updates merge request with milestone" do
@@ -88,7 +86,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       before do
         merge_request.milestone = milestone
         merge_request.save
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
       end
 
       it "removes milestone from the merge request" do
@@ -100,16 +98,18 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   end
 
   def change_status(text)
-    find('#check_all_issues').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
     find('.js-issue-status').click
     find('.dropdown-menu-status a', text: text).click
     click_update_merge_requests_button
   end
 
   def change_assignee(text)
-    find('#check_all_issues').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
     find('.js-update-assignee').click
-    wait_for_ajax
+    wait_for_requests
 
     page.within '.dropdown-menu-user' do
       click_link text
@@ -119,14 +119,15 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   end
 
   def change_milestone(text)
-    find('#check_all_issues').click
-    find('.issues_bulk_update .js-milestone-select').click
+    click_button 'Edit Merge Requests'
+    find('#check-all-issues').click
+    find('.issues-bulk-update .js-milestone-select').click
     find('.dropdown-menu-milestone a', text: text).click
     click_update_merge_requests_button
   end
 
   def click_update_merge_requests_button
-    find('.update_selected_issues').click
-    wait_for_ajax
+    find('.update-selected-issues').click
+    wait_for_requests
   end
 end

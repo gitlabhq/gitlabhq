@@ -26,7 +26,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         before { authorize_admin_project }
 
         desc "Disable project's runner" do
@@ -50,7 +50,7 @@ module API
 
       helpers do
         def authenticate_delete_runner!(runner)
-          return if current_user.is_admin?
+          return if current_user.admin?
           forbidden!("Runner is shared") if runner.is_shared?
           forbidden!("Runner associated with more than one project") if runner.projects.count > 1
           forbidden!("No access granted") unless user_can_access_runner?(runner)

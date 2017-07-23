@@ -1,6 +1,6 @@
 class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   include LoginHelpers
-  include GitlabRoutingHelper
+  include WaitForRequests
 
   step 'I click on the revert button' do
     find("a[href='#modal-revert-commit']").click
@@ -15,6 +15,7 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
 
   step 'I should see the revert merge request notice' do
     page.should have_content('The merge request has been successfully reverted.')
+    wait_for_requests
   end
 
   step 'I should not see the revert button' do
@@ -26,12 +27,12 @@ class Spinach::Features::RevertMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on Accept Merge Request' do
-    click_button('Accept Merge Request')
+    click_button('Merge')
   end
 
   step 'I am signed in as a developer of the project' do
     @user = create(:user) { |u| @project.add_developer(u) }
-    login_as(@user)
+    sign_in(@user)
   end
 
   step 'There is an open Merge Request' do

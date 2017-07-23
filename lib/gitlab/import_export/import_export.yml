@@ -26,7 +26,9 @@ project_tree:
     - notes:
       - :author
       - :events
-    - :merge_request_diff
+    - merge_request_diff:
+      - :merge_request_diff_commits
+      - :merge_request_diff_files
     - :events
     - :timelogs
     - label_links:
@@ -38,22 +40,21 @@ project_tree:
     - notes:
       - :author
       - :events
+    - :stages
     - :statuses
   - :triggers
-  - :deploy_keys
+  - :pipeline_schedules
   - :services
   - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
+  - protected_tags:
+    - :create_access_levels
   - :project_feature
 
 # Only include the following attributes for the models specified.
 included_attributes:
-  project:
-    - :description
-    - :visibility_level
-    - :archived
   user:
     - :id
     - :email
@@ -63,16 +64,48 @@ included_attributes:
 
 # Do not include the following attributes for the models specified.
 excluded_attributes:
+  project:
+    - :name
+    - :path
+    - :namespace_id
+    - :creator_id
+    - :import_url
+    - :import_status
+    - :avatar
+    - :import_type
+    - :import_source
+    - :import_error
+    - :mirror
+    - :runners_token
+    - :repository_storage
+    - :repository_read_only
+    - :lfs_enabled
+    - :import_jid
+    - :created_at
+    - :updated_at
+    - :import_jid
+    - :import_jid
+    - :id
+    - :star_count
+    - :last_activity_at
+    - :last_repository_updated_at
+    - :last_repository_check_at
   snippets:
     - :expired_at
   merge_request_diff:
     - :st_diffs
+  merge_request_diff_files:
+    - :diff
   issues:
     - :milestone_id
   merge_requests:
     - :milestone_id
+    - :ref_fetched
   award_emoji:
     - :awardable_id
+  statuses:
+    - :trace
+    - :token
 
 methods:
   labels:
@@ -85,3 +118,9 @@ methods:
     - :type
   merge_request_diff:
     - :utf8_st_diffs
+  merge_request_diff_files:
+    - :utf8_diff
+  merge_requests:
+    - :diff_head_sha
+  project:
+    - :description_html

@@ -1,12 +1,14 @@
 class SnippetsController < ApplicationController
+  include RendersNotes
   include ToggleAwardEmoji
   include SpammableActions
   include SnippetsActions
+  include RendersBlob
 
-  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :download]
+  before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
-  before_action :authorize_read_snippet!, only: [:show, :raw, :download]
+  before_action :authorize_read_snippet!, only: [:show, :raw]
 
   # Allow modify snippet
   before_action :authorize_update_snippet!, only: [:edit, :update]
@@ -14,7 +16,7 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_action :authorize_admin_snippet!, only: [:destroy]
 
-  skip_before_action :authenticate_user!, only: [:index, :show, :raw, :download]
+  skip_before_action :authenticate_user!, only: [:index, :show, :raw]
 
   layout 'snippets'
   respond_to :html
@@ -25,12 +27,8 @@ class SnippetsController < ApplicationController
 
       return render_404 unless @user
 
-      @snippets = SnippetsFinder.new.execute(current_user, {
-        filter: :by_user,
-        user: @user,
-        scope: params[:scope]
-      })
-      .page(params[:page])
+      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope])
+        .execute.page(params[:page])
 
       render 'index'
     else
@@ -47,6 +45,8 @@ class SnippetsController < ApplicationController
 
     @snippet = CreateSnippetService.new(nil, current_user, create_params).execute
 
+    move_temporary_files if @snippet.valid? && params[:files]
+
     recaptcha_check_with_fallback { render :new }
   end
 
@@ -59,6 +59,24 @@ class SnippetsController < ApplicationController
   end
 
   def show
+    blob = @snippet.blob
+    conditionally_expand_blob(blob)
+
+    @note = Note.new(noteable: @snippet)
+    @noteable = @snippet
+
+    @discussions = @snippet.discussions
+    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
+
+      format.json do
+        render_blob_json(blob)
+      end
+    end
   end
 
   def destroy
@@ -66,34 +84,41 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path
+    redirect_to snippets_path, status: 302
   end
 
-  def download
-    send_data(
-      convert_line_endings(@snippet.content),
-      type: 'text/plain; charset=utf-8',
-      filename: @snippet.sanitized_file_name
-    )
+  def preview_markdown
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text], skip_project_check: true),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   protected
 
   def snippet
-    @snippet ||= if current_user
-                   PersonalSnippet.where("author_id = ? OR visibility_level IN (?)",
-                     current_user.id,
-                     [Snippet::PUBLIC, Snippet::INTERNAL]).
-                     find(params[:id])
-                 else
-                   PersonalSnippet.find(params[:id])
-                 end
+    @snippet ||= PersonalSnippet.find_by(id: params[:id])
   end
+
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet
 
+  def spammable_path
+    snippet_path(@snippet)
+  end
+
   def authorize_read_snippet!
-    authenticate_user! unless can?(current_user, :read_personal_snippet, @snippet)
+    return if can?(current_user, :read_personal_snippet, @snippet)
+
+    if current_user
+      render_404
+    else
+      authenticate_user!
+    end
   end
 
   def authorize_update_snippet!
@@ -105,6 +130,12 @@ class SnippetsController < ApplicationController
   end
 
   def snippet_params
-    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level, :description)
+  end
+
+  def move_temporary_files
+    params[:files].each do |file|
+      FileMover.new(file, @snippet).execute
+    end
   end
 end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Runners do
-  include ApiHelpers
   include StubGitlabCalls
 
   let(:registration_token) { 'abcdefg123456' }
@@ -13,11 +12,14 @@ describe Ci::API::Runners do
 
   describe "POST /runners/register" do
     context 'when runner token is provided' do
-      before { post ci_api("/runners/register"), token: registration_token }
+      before do
+        post ci_api("/runners/register"), token: registration_token
+      end
 
       it 'creates runner with default values' do
         expect(response).to have_http_status 201
         expect(Ci::Runner.first.run_untagged).to be true
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
       end
     end
 
@@ -69,11 +71,16 @@ describe Ci::API::Runners do
 
     context 'when project token is provided' do
       let(:project) { FactoryGirl.create(:empty_project) }
-      before { post ci_api("/runners/register"), token: project.runners_token }
+
+      before do
+        post ci_api("/runners/register"), token: project.runners_token
+      end
 
       it 'creates runner' do
         expect(response).to have_http_status 201
         expect(project.runners.size).to eq(1)
+        expect(Ci::Runner.first.token).not_to eq(registration_token)
+        expect(Ci::Runner.first.token).not_to eq(project.runners_token)
       end
     end
 

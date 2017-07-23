@@ -125,4 +125,50 @@ describe Todo, models: true do
       expect(subject.target_reference).to eq issue.to_reference(full: true)
     end
   end
+
+  describe '#self_added?' do
+    let(:user_1) { build(:user) }
+
+    before do
+      subject.user = user_1
+    end
+
+    it 'is true when the user is the author' do
+      subject.author = user_1
+
+      expect(subject).to be_self_added
+    end
+
+    it 'is false when the user is not the author' do
+      subject.author = build(:user)
+
+      expect(subject).not_to be_self_added
+    end
+  end
+
+  describe '#self_assigned?' do
+    let(:user_1) { build(:user) }
+
+    before do
+      subject.user = user_1
+      subject.author = user_1
+      subject.action = Todo::ASSIGNED
+    end
+
+    it 'is true when todo is ASSIGNED and self_added' do
+      expect(subject).to be_self_assigned
+    end
+
+    it 'is false when the todo is not ASSIGNED' do
+      subject.action = Todo::MENTIONED
+
+      expect(subject).not_to be_self_assigned
+    end
+
+    it 'is false when todo is not self_added' do
+      subject.author = build(:user)
+
+      expect(subject).not_to be_self_assigned
+    end
+  end
 end

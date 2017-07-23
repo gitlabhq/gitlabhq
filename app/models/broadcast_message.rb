@@ -16,7 +16,7 @@ class BroadcastMessage < ActiveRecord::Base
 
   def self.current
     Rails.cache.fetch("broadcast_message_current", expires_in: 1.minute) do
-      where("ends_at > :now AND starts_at <= :now", now: Time.zone.now).last
+      where('ends_at > :now AND starts_at <= :now', now: Time.zone.now).order([:created_at, :id]).to_a
     end
   end
 

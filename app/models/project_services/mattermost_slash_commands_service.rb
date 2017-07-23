@@ -1,4 +1,4 @@
-class MattermostSlashCommandsService < ChatSlashCommandsService
+class MattermostSlashCommandsService < SlashCommandsService
   include TriggersHelper
 
   prop_accessor :token
@@ -20,8 +20,8 @@ class MattermostSlashCommandsService < ChatSlashCommandsService
   end
 
   def configure(user, params)
-    token = Mattermost::Command.new(user).
-      create(command(params))
+    token = Mattermost::Command.new(user)
+      .create(command(params))
 
     update(active: true, token: token) if token
   rescue Mattermost::Error => e

@@ -2,40 +2,34 @@ require 'spec_helper'
 
 describe GitlabRoutingHelper do
   describe 'Project URL helpers' do
-    describe '#project_members_url' do
-      let(:project) { build_stubbed(:empty_project) }
-
-      it { expect(project_members_url(project)).to eq namespace_project_project_members_url(project.namespace, project) }
-    end
-
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
 
-      it { expect(project_member_path(project_member)).to eq namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member) }
+      it { expect(project_member_path(project_member)).to eq project_project_member_path(project_member.source, project_member) }
     end
 
     describe '#request_access_project_members_path' do
       let(:project) { build_stubbed(:empty_project) }
 
-      it { expect(request_access_project_members_path(project)).to eq request_access_namespace_project_project_members_path(project.namespace, project) }
+      it { expect(request_access_project_members_path(project)).to eq request_access_project_project_members_path(project) }
     end
 
     describe '#leave_project_members_path' do
       let(:project) { build_stubbed(:empty_project) }
 
-      it { expect(leave_project_members_path(project)).to eq leave_namespace_project_project_members_path(project.namespace, project) }
+      it { expect(leave_project_members_path(project)).to eq leave_project_project_members_path(project) }
     end
 
     describe '#approve_access_request_project_member_path' do
       let(:project_member) { create(:project_member) }
 
-      it { expect(approve_access_request_project_member_path(project_member)).to eq approve_access_request_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member) }
+      it { expect(approve_access_request_project_member_path(project_member)).to eq approve_access_request_project_project_member_path(project_member.source, project_member) }
     end
 
     describe '#resend_invite_project_member_path' do
       let(:project_member) { create(:project_member) }
 
-      it { expect(resend_invite_project_member_path(project_member)).to eq resend_invite_namespace_project_project_member_path(project_member.source.namespace, project_member.source, project_member) }
+      it { expect(resend_invite_project_member_path(project_member)).to eq resend_invite_project_project_member_path(project_member.source, project_member) }
     end
   end
 

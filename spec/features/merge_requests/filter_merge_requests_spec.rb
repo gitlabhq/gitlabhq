@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'Filter merge requests', feature: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
-  include WaitForAjax
 
   let!(:project)   { create(:project) }
   let!(:group)     { create(:group) }
@@ -15,10 +14,10 @@ describe 'Filter merge requests', feature: true do
   before do
     project.team << [user, :master]
     group.add_developer(user)
-    login_as(user)
+    sign_in(user)
     create(:merge_request, source_project: project, target_project: project)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   describe 'for assignee from mr#index' do
@@ -41,13 +40,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_visual_tokens()
       end
@@ -74,13 +73,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_milestone_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_milestone_visual_tokens()
       end
@@ -133,21 +132,13 @@ describe 'Filter merge requests', feature: true do
     end
   end
 
-  describe 'for assignee and label from issues#index' do
+  describe 'for assignee and label from mr#index' do
     let(:search_query) { "assignee:@#{user.username} label:~#{label.title}" }
 
     before do
-      input_filtered_search("assignee:@#{user.username}")
+      input_filtered_search(search_query)
 
-      expect_mr_list_count(1)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
-      expect_filtered_search_input_empty
-
-      input_filtered_search_keys("label:~#{label.title} ")
-
-      expect_mr_list_count(1)
-
-      find("#state-opened[href=\"#{URI.parse(current_url).path}?assignee_username=#{user.username}&label_name%5B%5D=#{label.title}&scope=all&state=opened\"]")
+      expect_mr_list_count(0)
     end
 
     context 'assignee and label', js: true do
@@ -164,13 +155,13 @@ describe 'Filter merge requests', feature: true do
       end
 
       it 'does not change when closed link is clicked' do
-        find('.issues-state-filters a', text: "Closed").click
+        find('.issues-state-filters [data-state="closed"]').click
 
         expect_assignee_label_visual_tokens()
       end
 
       it 'does not change when all link is clicked' do
-        find('.issues-state-filters a', text: "All").click
+        find('.issues-state-filters [data-state="all"]').click
 
         expect_assignee_label_visual_tokens()
       end
@@ -194,7 +185,7 @@ describe 'Filter merge requests', feature: true do
         assignee: user)
       mr.labels << bug_label
 
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      visit project_merge_requests_path(project)
     end
 
     context 'only text', js: true do
@@ -278,7 +269,7 @@ describe 'Filter merge requests', feature: true do
       mr1.labels << bug_label
       mr2.labels << bug_label
 
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      visit project_merge_requests_path(project)
     end
 
     it 'is able to filter and sort merge requests' do
@@ -290,7 +281,7 @@ describe 'Filter merge requests', feature: true do
       page.within '.dropdown-menu-sort' do
         click_link 'Oldest created'
       end
-      wait_for_ajax
+      wait_for_requests
 
       page.within '.mr-list' do
         expect(page).to have_content('Frontend')
@@ -300,7 +291,7 @@ describe 'Filter merge requests', feature: true do
 
   describe 'filter by assignee id', js: true do
     it 'filter by current user' do
-      visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: user.id)
+      visit project_merge_requests_path(project, assignee_id: user.id)
 
       expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
@@ -310,7 +301,7 @@ describe 'Filter merge requests', feature: true do
       new_user = create(:user)
       project.add_developer(new_user)
 
-      visit namespace_project_merge_requests_path(project.namespace, project, assignee_id: new_user.id)
+      visit project_merge_requests_path(project, assignee_id: new_user.id)
 
       expect_tokens([{ name: 'assignee', value: "@#{new_user.username}" }])
       expect_filtered_search_input_empty
@@ -319,7 +310,7 @@ describe 'Filter merge requests', feature: true do
 
   describe 'filter by author id', js: true do
     it 'filter by current user' do
-      visit namespace_project_merge_requests_path(project.namespace, project, author_id: user.id)
+      visit project_merge_requests_path(project, author_id: user.id)
 
       expect_tokens([{ name: 'author', value: "@#{user.username}" }])
       expect_filtered_search_input_empty
@@ -329,7 +320,7 @@ describe 'Filter merge requests', feature: true do
       new_user = create(:user)
       project.add_developer(new_user)
 
-      visit namespace_project_merge_requests_path(project.namespace, project, author_id: new_user.id)
+      visit project_merge_requests_path(project, author_id: new_user.id)
 
       expect_tokens([{ name: 'author', value: "@#{new_user.username}" }])
       expect_filtered_search_input_empty

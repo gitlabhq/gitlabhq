@@ -2,38 +2,34 @@ class PostReceive
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  def perform(repo_path, identifier, changes)
-    if repository_storage = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1]['path'].to_s) }
-      repo_path.gsub!(repository_storage[1]['path'].to_s, "")
-    else
-      log("Check gitlab.yml config for correct repositories.storages values. No repository storage path matches \"#{repo_path}\"")
+  def perform(gl_repository, identifier, changes)
+    project, is_wiki = Gitlab::GlRepository.parse(gl_repository)
+
+    if project.nil?
+      log("Triggered hook for non-existing project with gl_repository \"#{gl_repository}\"")
+      return false
     end
 
     changes = Base64.decode64(changes) unless changes.include?(' ')
     # Use Sidekiq.logger so arguments can be correlated with execution
     # time and thread ID's.
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
-    post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)
+    post_received = Gitlab::GitPostReceive.new(project, identifier, changes)
 
-    if post_received.project.nil?
-      log("Triggered hook for non-existing project with full path \"#{repo_path}\"")
-      return false
-    end
-
-    if post_received.wiki?
-      # Nothing defined here yet.
-    elsif post_received.regular_project?
-      process_project_changes(post_received)
+    if is_wiki
+      process_wiki_changes(post_received)
     else
-      log("Triggered hook for unidentifiable repository type with full path \"#{repo_path}\"")
-      false
+      process_project_changes(post_received)
     end
   end
 
-  def process_project_changes(post_received)
-    post_received.changes.each do |change|
-      oldrev, newrev, ref = change.strip.split(' ')
+  private
 
+  def process_project_changes(post_received)
+    changes = []
+    refs = Set.new
+
+    post_received.changes_refs do |oldrev, newrev, ref|
       @user ||= post_received.identify(newrev)
 
       unless @user
@@ -46,10 +42,22 @@ class PostReceive
       elsif Gitlab::Git.branch_ref?(ref)
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
+
+      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
+      refs << ref
     end
+
+    after_project_changes_hooks(post_received, @user, refs.to_a, changes)
   end
 
-  private
+  def after_project_changes_hooks(post_received, user, refs, changes)
+    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, user, changes, refs)
+    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+  end
+
+  def process_wiki_changes(post_received)
+    # Nothing defined here yet.
+  end
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")

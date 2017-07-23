@@ -1,8 +1,19 @@
 resources :snippets, concerns: :awardable do
   member do
-    get 'raw'
-    get 'download'
+    get :raw
     post :mark_as_spam
+  end
+
+  collection do
+    post :preview_markdown
+  end
+
+  scope module: :snippets do
+    resources :notes, only: [:index, :create, :destroy, :update], concerns: :awardable, constraints: { id: /\d+/ } do
+      member do
+        delete :delete_attachment
+      end
+    end
   end
 end
 

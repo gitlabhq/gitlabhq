@@ -1,19 +1,18 @@
 namespace :gitlab do
   namespace :shell do
     desc "GitLab | Install or upgrade gitlab-shell"
-    task :install, [:tag, :repo] => :environment do |t, args|
+    task :install, [:repo] => :environment do |t, args|
       warn_user_is_not_gitlab
 
       default_version = Gitlab::Shell.version_required
-      default_version_tag = "v#{default_version}"
-      args.with_defaults(tag: default_version_tag, repo: 'https://gitlab.com/gitlab-org/gitlab-shell.git')
+      args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitlab-shell.git')
 
       gitlab_url = Gitlab.config.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += '/' unless gitlab_url.end_with?('/')
       target_dir = Gitlab.config.gitlab_shell.path
 
-      checkout_or_clone_tag(tag: default_version_tag, repo: args.repo, target_dir: target_dir)
+      checkout_or_clone_version(version: default_version, repo: args.repo, target_dir: target_dir)
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
@@ -42,8 +41,14 @@ namespace :gitlab do
         # Generate config.yml based on existing gitlab settings
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
-        # Launch installation process
-        system(*%w(bin/install) + repository_storage_paths_args)
+        [
+          %w(bin/install) + repository_storage_paths_args,
+          %w(bin/compile)
+        ].each do |cmd|
+          unless Kernel.system(*cmd)
+            raise "command failed: #{cmd.join(' ')}"
+          end
+        end
       end
 
       # (Re)create hooks

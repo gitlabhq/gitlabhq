@@ -1,0 +1,37 @@
+<script>
+  import ciIcon from '../../../vue_shared/components/ci_icon.vue';
+
+  /**
+   * Component that renders both the CI icon status and the job name.
+   * Used in
+   *  - Badge component
+   *  - Dropdown badge components
+   */
+  export default {
+    props: {
+      name: {
+        type: String,
+        required: true,
+      },
+
+      status: {
+        type: Object,
+        required: true,
+      },
+    },
+
+    components: {
+      ciIcon,
+    },
+  };
+</script>
+<template>
+  <span>
+    <ci-icon
+      :status="status" />
+
+    <span class="ci-status-text">
+      {{name}}
+    </span>
+  </span>
+</template>

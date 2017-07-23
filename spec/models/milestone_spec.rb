@@ -6,9 +6,6 @@ describe Milestone, models: true do
       allow(subject).to receive(:set_iid).and_return(false)
     end
 
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:project) }
-
     describe 'start_date' do
       it 'adds an error when start_date is greated then due_date' do
         milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
@@ -37,17 +34,42 @@ describe Milestone, models: true do
     end
   end
 
-  describe "unique milestone title per project" do
-    it "does not accept the same title in a project twice" do
-      new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
-      expect(new_milestone).not_to be_valid
+  describe "unique milestone title" do
+    context "per project" do
+      it "does not accept the same title in a project twice" do
+        new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "accepts the same title in another project" do
+        project = create(:empty_project)
+        new_milestone = Milestone.new(project: project, title: milestone.title)
+
+        expect(new_milestone).to be_valid
+      end
     end
 
-    it "accepts the same title in another project" do
-      project = build(:empty_project)
-      new_milestone = Milestone.new(project: project, title: milestone.title)
+    context "per group" do
+      let(:group) { create(:group) }
+      let(:milestone) { create(:milestone, group: group) }
 
-      expect(new_milestone).to be_valid
+      before do
+        project.update(group: group)
+      end
+
+      it "does not accept the same title in a group twice" do
+        new_milestone = Milestone.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "does not accept the same title of a child project milestone" do
+        create(:milestone, project: group.projects.first)
+
+        new_milestone = Milestone.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
     end
   end
 
@@ -109,18 +131,6 @@ describe Milestone, models: true do
     it { expect(milestone.percent_complete(user)).to eq(75) }
   end
 
-  describe :items_count do
-    before do
-      milestone.issues << create(:issue, project: project)
-      milestone.issues << create(:closed_issue, project: project)
-      milestone.merge_requests << create(:merge_request)
-    end
-
-    it { expect(milestone.closed_items_count(user)).to eq(1) }
-    it { expect(milestone.total_items_count(user)).to eq(3) }
-    it { expect(milestone.is_empty?(user)).to be_falsey }
-  end
-
   describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end
@@ -156,35 +166,6 @@ describe Milestone, models: true do
     end
   end
 
-  describe '#sort_issues' do
-    let(:milestone) { create(:milestone) }
-
-    let(:issue1) { create(:issue, milestone: milestone, position: 1) }
-    let(:issue2) { create(:issue, milestone: milestone, position: 2) }
-    let(:issue3) { create(:issue, milestone: milestone, position: 3) }
-    let(:issue4) { create(:issue, position: 42) }
-
-    it 'sorts the given issues' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id])
-
-      issue1.reload
-      issue2.reload
-      issue3.reload
-
-      expect(issue1.position).to eq(3)
-      expect(issue2.position).to eq(2)
-      expect(issue3.position).to eq(1)
-    end
-
-    it 'ignores issues not part of the milestone' do
-      milestone.sort_issues([issue3.id, issue2.id, issue1.id, issue4.id])
-
-      issue4.reload
-
-      expect(issue4.position).to eq(42)
-    end
-  end
-
   describe '.search' do
     let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
@@ -205,13 +186,13 @@ describe Milestone, models: true do
     end
 
     it 'returns milestones with a partially matching description' do
-      expect(described_class.search(milestone.description[0..2])).
-        to eq([milestone])
+      expect(described_class.search(milestone.description[0..2]))
+        .to eq([milestone])
     end
 
     it 'returns milestones with a matching description regardless of the casing' do
-      expect(described_class.search(milestone.description.upcase)).
-        to eq([milestone])
+      expect(described_class.search(milestone.description.upcase))
+        .to eq([milestone])
     end
   end
 
@@ -259,6 +240,19 @@ describe Milestone, models: true do
     it 'supports a cross-project reference' do
       another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
       expect(milestone.to_reference(another_project)).to eq "sample-project%1"
+    end
+  end
+
+  describe '#participants' do
+    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:milestone) { build(:milestone, iid: 1, project: project) }
+
+    it 'returns participants without duplicates' do
+      user = create :user
+      create :issue, project: project, milestone: milestone, assignees: [user]
+      create :issue, project: project, milestone: milestone, assignees: [user]
+
+      expect(milestone.participants).to eq [user]
     end
   end
 end

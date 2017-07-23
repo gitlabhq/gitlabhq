@@ -1,4 +1,0 @@
----
-title: 'API: Return 204 for all delete endpoints'
-merge_request: 9397
-author: Robert Schilling

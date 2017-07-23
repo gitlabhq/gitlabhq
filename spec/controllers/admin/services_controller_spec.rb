@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Admin::ServicesController do
   let(:admin) { create(:admin) }
 
-  before { sign_in(admin) }
+  before do
+    sign_in(admin)
+  end
 
   describe 'GET #edit' do
     let!(:project) { create(:empty_project) }
@@ -21,6 +23,38 @@ describe Admin::ServicesController do
           expect(response).to have_http_status(200)
         end
       end
+    end
+  end
+
+  describe "#update" do
+    let(:project) { create(:empty_project) }
+    let!(:service) do
+      RedmineService.create(
+        project: project,
+        active: false,
+        template: true,
+        properties: {
+          project_url: 'http://abc',
+          issues_url: 'http://abc',
+          new_issue_url: 'http://abc'
+        }
+      )
+    end
+
+    it 'calls the propagation worker when service is active' do
+      expect(PropagateServiceTemplateWorker).to receive(:perform_async).with(service.id)
+
+      put :update, id: service.id, service: { active: true }
+
+      expect(response).to have_http_status(302)
+    end
+
+    it 'does not call the propagation worker when service is not active' do
+      expect(PropagateServiceTemplateWorker).not_to receive(:perform_async)
+
+      put :update, id: service.id, service: { properties: {} }
+
+      expect(response).to have_http_status(302)
     end
   end
 end

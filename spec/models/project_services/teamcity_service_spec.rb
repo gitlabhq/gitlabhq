@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TeamcityService, models: true, caching: true do
+describe TeamcityService, :use_clean_rails_memory_store_caching, models: true do
   include ReactiveCachingHelpers
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
@@ -24,7 +24,9 @@ describe TeamcityService, models: true, caching: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:build_type) }
       it { is_expected.to validate_presence_of(:teamcity_url) }
@@ -60,7 +62,9 @@ describe TeamcityService, models: true, caching: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:build_type) }
       it { is_expected.not_to validate_presence_of(:teamcity_url) }
@@ -201,10 +205,12 @@ describe TeamcityService, models: true, caching: true do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://mic:password@gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    auth = %w(mic password)
+
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})
 
-    WebMock.stub_request(:get, teamcity_full_url).to_return(
+    WebMock.stub_request(:get, teamcity_full_url).with(basic_auth: auth).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body

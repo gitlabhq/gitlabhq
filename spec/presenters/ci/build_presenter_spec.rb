@@ -47,8 +47,8 @@ describe Ci::BuildPresenter do
     context 'when build is erased' do
       before do
         expect(presenter).to receive(:erased_by_user?).and_return(true)
-        expect(build).to receive(:erased_by).
-          and_return(double(:user, name: 'John Doe'))
+        expect(build).to receive(:erased_by)
+          .and_return(double(:user, name: 'John Doe'))
       end
 
       it 'returns the name of the eraser' do
@@ -57,9 +57,35 @@ describe Ci::BuildPresenter do
     end
   end
 
+  describe '#status_title' do
+    context 'when build is auto-canceled' do
+      before do
+        expect(build).to receive(:auto_canceled?).and_return(true)
+        expect(build).to receive(:auto_canceled_by_id).and_return(1)
+      end
+
+      it 'shows that the build is auto-canceled' do
+        status_title = presenter.status_title
+
+        expect(status_title).to include('auto-canceled')
+        expect(status_title).to include('Pipeline #1')
+      end
+    end
+
+    context 'when build is not auto-canceled' do
+      before do
+        expect(build).to receive(:auto_canceled?).and_return(false)
+      end
+
+      it 'does not have a status title' do
+        expect(presenter.status_title).to be_nil
+      end
+    end
+  end
+
   describe 'quack like a Ci::Build permission-wise' do
     context 'user is not allowed' do
-      let(:project) { build_stubbed(:empty_project, public_builds: false) }
+      let(:project) { create(:empty_project, public_builds: false) }
 
       it 'returns false' do
         expect(presenter.can?(nil, :read_build)).to be_falsy
@@ -67,7 +93,7 @@ describe Ci::BuildPresenter do
     end
 
     context 'user is allowed' do
-      let(:project) { build_stubbed(:empty_project, :public) }
+      let(:project) { create(:empty_project, :public) }
 
       it 'returns true' do
         expect(presenter.can?(nil, :read_build)).to be_truthy

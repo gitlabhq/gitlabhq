@@ -1,4 +1,6 @@
 /* global ListIssue */
+import eventHub from '../eventhub';
+
 const Store = gl.issueBoards.BoardsStore;
 
 export default {
@@ -15,7 +17,7 @@ export default {
   methods: {
     submit(e) {
       e.preventDefault();
-      if (this.title.trim() === '') return;
+      if (this.title.trim() === '') return Promise.resolve();
 
       this.error = false;
 
@@ -24,9 +26,13 @@ export default {
         title: this.title,
         labels,
         subscribed: true,
+        assignees: [],
       });
 
-      this.list.newIssue(issue)
+      eventHub.$emit(`scroll-board-list-${this.list.id}`);
+      this.cancel();
+
+      return this.list.newIssue(issue)
         .then(() => {
           // Need this because our jQuery very kindly disables buttons on ALL form submissions
           $(this.$refs.submitButton).enable();
@@ -44,12 +50,10 @@ export default {
           // Show error message
           this.error = true;
         });
-
-      this.cancel();
     },
     cancel() {
       this.title = '';
-      gl.IssueBoardsApp.$emit(`hide-issue-form-${this.list.id}`);
+      eventHub.$emit(`hide-issue-form-${this.list.id}`);
     },
   },
   mounted() {
@@ -72,6 +76,7 @@ export default {
           type="text"
           v-model="title"
           ref="input"
+          autocomplete="off"
           :id="list.id + '-title'" />
         <div class="clearfix prepend-top-10">
           <button class="btn btn-success pull-left"

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request closing issues message', feature: true do
+feature 'Merge Request closing issues message', feature: true, js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}
@@ -20,9 +20,10 @@ feature 'Merge Request closing issues message', feature: true do
   before do
     project.team << [user, :master]
 
-    login_as user
+    sign_in user
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
+    wait_for_requests
   end
 
   context 'not closing or mentioning any issue' do
@@ -35,7 +36,7 @@ feature 'Merge Request closing issues message', feature: true do
     let(:merge_request_description) { "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Accepting this merge request will close issues #{issue_1.to_reference} and #{issue_2.to_reference}")
+      expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -51,7 +52,8 @@ feature 'Merge Request closing issues message', feature: true do
     let(:merge_request_title) { "closes #{issue_1.to_reference}\n\n refers to #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Accepting this merge request will close issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+      expect(page).to have_content("Closes issue #{issue_1.to_reference}.")
+      expect(page).to have_content("Issue #{issue_2.to_reference} is mentioned but will not be closed.")
     end
   end
 
@@ -59,7 +61,7 @@ feature 'Merge Request closing issues message', feature: true do
     let(:merge_request_title) { "closing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Accepting this merge request will close issues #{issue_1.to_reference} and #{issue_2.to_reference}")
+      expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -75,7 +77,8 @@ feature 'Merge Request closing issues message', feature: true do
     let(:merge_request_title) { "closes #{issue_1.to_reference}\n\n refers to #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Accepting this merge request will close issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+      expect(page).to have_content("Closes issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+      expect(page).to have_content("Issue #{issue_2.to_reference} is mentioned but will not be closed.")
     end
   end
 end

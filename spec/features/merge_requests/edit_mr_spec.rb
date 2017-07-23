@@ -8,9 +8,9 @@ feature 'Edit Merge Request', feature: true do
   before do
     project.team << [user, :master]
 
-    login_as user
+    sign_in user
 
-    visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit edit_project_merge_request_path(project, merge_request)
   end
 
   context 'editing a MR' do
@@ -29,15 +29,16 @@ feature 'Edit Merge Request', feature: true do
       expect(page).to have_content 'Someone edited the merge request the same time you did'
     end
 
-    it 'allows to unselect "Remove source branch"' do
+    it 'allows to unselect "Remove source branch"', js: true do
       merge_request.update(merge_params: { 'force_remove_source_branch' => '1' })
       expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
 
-      visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit edit_project_merge_request_path(project, merge_request)
       uncheck 'Remove source branch when merge request is accepted'
 
       click_button 'Save changes'
 
+      expect(page).to have_unchecked_field 'remove-source-branch-input'
       expect(page).to have_content 'Remove source branch'
     end
 

@@ -66,8 +66,8 @@ describe Projects::CommitController do
       end
 
       it "does not escape Html" do
-        allow_any_instance_of(Commit).to receive(:"to_#{format}").
-          and_return('HTML entities &<>" ')
+        allow_any_instance_of(Commit).to receive(:"to_#{format}")
+          .and_return('HTML entities &<>" ')
 
         go(id: commit.id, format: format)
 
@@ -169,7 +169,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: commit.id)
 
-        expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
+        expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully reverted.')
       end
     end
@@ -191,7 +191,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: commit.id)
 
-        expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, commit.id)
+        expect(response).to redirect_to project_commit_path(project, commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot revert this commit automatically.')
       end
     end
@@ -218,7 +218,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: master_pickable_commit.id)
 
-        expect(response).to redirect_to namespace_project_commits_path(project.namespace, project, 'master')
+        expect(response).to redirect_to project_commits_path(project, 'master')
         expect(flash[:notice]).to eq('The commit has been successfully cherry-picked.')
       end
     end
@@ -240,7 +240,7 @@ describe Projects::CommitController do
             start_branch: 'master',
             id: master_pickable_commit.id)
 
-        expect(response).to redirect_to namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
+        expect(response).to redirect_to project_commit_path(project, master_pickable_commit.id)
         expect(flash[:alert]).to match('Sorry, we cannot cherry-pick this commit automatically.')
       end
     end
@@ -266,8 +266,8 @@ describe Projects::CommitController do
             diff_for_path(id: commit2.id, old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
-            expect(assigns(:comments_target)).to eq(noteable_type: 'Commit',
-                                                    commit_id: commit2.id)
+            expect(assigns(:new_diff_note_attrs)).to eq(noteable_type: 'Commit',
+                                                        commit_id: commit2.id)
           end
 
           it 'only renders the diffs for the path given' do
@@ -281,7 +281,9 @@ describe Projects::CommitController do
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(id: commit.id, old_path: existing_path.succ, new_path: existing_path.succ) }
+          before do
+            diff_for_path(id: commit.id, old_path: existing_path.succ, new_path: existing_path.succ)
+          end
 
           it 'returns a 404' do
             expect(response).to have_http_status(404)
@@ -302,7 +304,9 @@ describe Projects::CommitController do
     end
 
     context 'when the commit does not exist' do
-      before { diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path) }
+      before do
+        diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path)
+      end
 
       it 'returns a 404' do
         expect(response).to have_http_status(404)
@@ -339,7 +343,8 @@ describe Projects::CommitController do
             get_pipelines(id: commit.id, format: :json)
 
             expect(response).to be_ok
-            expect(JSON.parse(response.body)).not_to be_empty
+            expect(JSON.parse(response.body)['pipelines']).not_to be_empty
+            expect(JSON.parse(response.body)['count']['all']).to eq 1
           end
         end
       end

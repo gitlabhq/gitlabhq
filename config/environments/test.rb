@@ -1,11 +1,19 @@
 Rails.application.configure do
+  # Make sure the middleware is inserted first in middleware chain
+  config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestBlockerMiddleware')
+
   # Settings specified here will take precedence over those in config/application.rb
 
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
-  config.cache_classes = false
+
+  # Enabling caching of classes slows start-up time because all controllers
+  # are loaded at initalization, but it reduces memory and load because files
+  # are not reloaded with every request. For example, caching is not necessary
+  # for loading database migrations but useful for handling Knapsack specs.
+  config.cache_classes = ENV['CACHE_CLASSES'] == 'true'
 
   # Configure static asset server for tests with Cache-Control for performance
   config.assets.digest = false
@@ -35,4 +43,9 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   config.active_job.queue_adapter = :test
+
+  if ENV['CI'] && !ENV['RAILS_ENABLE_TEST_LOG']
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
+    config.log_level = :fatal
+  end
 end

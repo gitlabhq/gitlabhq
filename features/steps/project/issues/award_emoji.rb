@@ -5,7 +5,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I visit "Bugfix" issue page' do
-    visit namespace_project_issue_path(@project.namespace, @project, @issue)
+    visit project_issue_path(@project, @issue)
   end
 
   step 'I click the thumbsup award Emoji' do
@@ -24,7 +24,9 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
 
   step 'I click to emoji in the picker' do
     page.within '.emoji-menu-content' do
-      page.first('.js-emoji-btn').click
+      emoji_button = page.first('.js-emoji-btn')
+      emoji_button.hover
+      emoji_button.click
     end
   end
 
@@ -32,8 +34,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     page.within '.awards' do
       expect do
         page.find('.js-emoji-btn.active').click
-        sleep 0.3
-      end.to change{ page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
+        wait_for_requests
+      end.to change { page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
     end
   end
 
@@ -45,7 +47,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I have new comment with emoji added' do
-    expect(page).to have_selector ".emoji[title=':smile:']"
+    expect(page).to have_selector 'gl-emoji[data-name="smile"]'
   end
 
   step 'I have award added' do
@@ -85,7 +87,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I search "hand"' do
-    fill_in 'emoji_search', with: 'hand'
+    fill_in 'emoji-menu-search', with: 'hand'
   end
 
   step 'I see search result for "hand"' do
@@ -99,7 +101,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'The search field is focused' do
-    expect(page).to have_selector('#emoji_search')
-    expect(page.evaluate_script('document.activeElement.id')).to eq('emoji_search')
+    expect(page).to have_selector('.js-emoji-menu-search')
+    expect(page.evaluate_script("document.activeElement.classList.contains('js-emoji-menu-search')")).to eq(true)
   end
 end

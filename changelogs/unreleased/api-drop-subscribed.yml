@@ -1,5 +1,0 @@
----
-title: Remove "subscribed" field from API responses returning list of issues or merge
-  requests
-merge_request: 9661
-author:

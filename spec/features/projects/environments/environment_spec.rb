@@ -6,12 +6,13 @@ feature 'Environment', :feature do
   given(:role) { :developer }
 
   background do
-    login_as(user)
+    sign_in(user)
     project.team << [user, role]
   end
 
   feature 'environment details page' do
     given!(:environment) { create(:environment, project: project) }
+    given!(:permissions) { }
     given!(:deployment) { }
     given!(:action) { }
 
@@ -62,18 +63,31 @@ feature 'Environment', :feature do
                                        name: 'deploy to production')
           end
 
-          scenario 'does show a play button' do
-            expect(page).to have_link(action.name.humanize)
+          context 'when user has ability to trigger deployment' do
+            given(:permissions) do
+              create(:protected_branch, :developers_can_merge,
+                     name: action.ref, project: project)
+            end
+
+            it 'does show a play button' do
+              expect(page).to have_link(action.name.humanize)
+            end
+
+            it 'does allow to play manual action' do
+              expect(action).to be_manual
+
+              expect { click_link(action.name.humanize) }
+                .not_to change { Ci::Pipeline.count }
+
+              expect(page).to have_content(action.name)
+              expect(action.reload).to be_pending
+            end
           end
 
-          scenario 'does allow to play manual action' do
-            expect(action).to be_manual
-
-            expect { click_link(action.name.humanize) }
-              .not_to change { Ci::Pipeline.count }
-
-            expect(page).to have_content(action.name)
-            expect(action.reload).to be_pending
+          context 'when user has no ability to trigger a deployment' do
+            it 'does not show a play button' do
+              expect(page).not_to have_link(action.name.humanize)
+            end
           end
 
           context 'with external_url' do
@@ -100,7 +114,7 @@ feature 'Environment', :feature do
                 before do
                   # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
                   allow_any_instance_of(Environment).to receive(:terminals) { nil }
-                  visit terminal_namespace_project_environment_path(project.namespace, project, environment)
+                  visit terminal_project_environment_path(project, environment)
                 end
 
                 it 'displays a web terminal' do
@@ -132,10 +146,23 @@ feature 'Environment', :feature do
                                     on_stop: 'close_app')
               end
 
-              scenario 'does allow to stop environment' do
-                click_link('Stop')
+              context 'when user has ability to stop environment' do
+                given(:permissions) do
+                  create(:protected_branch, :developers_can_merge,
+                         name: action.ref, project: project)
+                end
 
-                expect(page).to have_content('close_app')
+                it 'allows to stop environment' do
+                  click_link('Stop')
+
+                  expect(page).to have_content('close_app')
+                end
+              end
+
+              context 'when user has no ability to stop environment' do
+                it 'does not allow to stop environment' do
+                  expect(page).to have_no_link('Stop')
+                end
               end
 
               context 'for reporter' do
@@ -144,12 +171,6 @@ feature 'Environment', :feature do
                 scenario 'does not show stop button' do
                   expect(page).not_to have_link('Stop')
                 end
-              end
-            end
-
-            context 'without stop action' do
-              scenario 'does allow to stop environment' do
-                click_link('Stop')
               end
             end
           end
@@ -162,6 +183,23 @@ feature 'Environment', :feature do
             end
           end
         end
+      end
+    end
+  end
+
+  feature 'environment folders', :js do
+    context 'when folder name contains special charaters' do
+      before do
+        create(:environment, project: project,
+                             name: 'staging-1.0/review',
+                             state: :available)
+
+        visit folder_project_environments_path(project, id: 'staging-1.0')
+      end
+
+      it 'renders a correct environment folder' do
+        expect(page).to have_http_status(:ok)
+        expect(page).to have_content('Environments / staging-1.0')
       end
     end
   end
@@ -181,7 +219,7 @@ feature 'Environment', :feature do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit namespace_project_branches_path(project.namespace, project)
+      visit project_branches_path(project, search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }
@@ -209,12 +247,10 @@ feature 'Environment', :feature do
   end
 
   def visit_environment(environment)
-    visit namespace_project_environment_path(environment.project.namespace,
-                                             environment.project,
-                                             environment)
+    visit project_environment_path(environment.project, environment)
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 end

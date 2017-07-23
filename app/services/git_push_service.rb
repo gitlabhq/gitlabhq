@@ -67,7 +67,7 @@ class GitPushService < BaseService
       paths = Set.new
 
       @push_commits.each do |commit|
-        commit.raw_diffs(deltas_only: true).each do |diff|
+        commit.raw_deltas.each do |diff|
           paths << diff.new_path
         end
       end
@@ -85,8 +85,10 @@ class GitPushService < BaseService
     default = is_default_branch?
 
     push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
-      ProcessCommitWorker.
-        perform_async(project.id, current_user.id, commit.to_hash, default)
+      if commit.matches_cross_reference_regex?
+        ProcessCommitWorker
+          .perform_async(project.id, current_user.id, commit.to_hash, default)
+      end
     end
   end
 
@@ -99,12 +101,12 @@ class GitPushService < BaseService
     UpdateMergeRequestsWorker
       .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
-    SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
-
     EventCreateService.new.push(@project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
+    
+    SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute
 
     if push_remove_branch?
       AfterBranchDeleteService
@@ -127,7 +129,7 @@ class GitPushService < BaseService
     project.change_head(branch_name)
 
     # Set protection on the default branch if configured
-    if current_application_settings.default_branch_protection != PROTECTION_NONE && !@project.protected_branch?(@project.default_branch)
+    if current_application_settings.default_branch_protection != PROTECTION_NONE && !ProtectedBranch.protected?(@project, @project.default_branch)
 
       params = {
         name: @project.default_branch,

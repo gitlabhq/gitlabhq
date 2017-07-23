@@ -42,6 +42,9 @@ TestResult.xml
 [Rr]eleasePS/
 dlldata.c
 
+# Benchmark Results
+BenchmarkDotNet.Artifacts/
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json
@@ -166,7 +169,7 @@ PublishScripts/
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
 #!**/packages/repositories.config
-# NuGet v3's project.json files produces more ignoreable files
+# NuGet v3's project.json files produces more ignorable files
 *.nuget.props
 *.nuget.targets
 
@@ -183,6 +186,7 @@ AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml
 _pkginfo.txt
+*.appx
 
 # Visual Studio cache files
 # files ending in .cache can be ignored
@@ -219,6 +223,7 @@ UpgradeLog*.htm
 # SQL Server files
 *.mdf
 *.ldf
+*.ndf
 
 # Business Intelligence projects
 *.rdl.data
@@ -276,3 +281,15 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/**
 # !tools/packages.config
+
+# Tabs Studio
+*.tss
+
+# Telerik's JustMock configuration file
+*.jmconfig
+
+# BizTalk build output
+*.btp.cs
+*.btm.cs
+*.odx.cs
+*.xsd.cs

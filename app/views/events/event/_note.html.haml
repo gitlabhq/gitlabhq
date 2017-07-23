@@ -1,3 +1,5 @@
+= icon_for_profile_event(event)
+
 .event-title
   %span.author_name= link_to_author event
   = event.action_name
@@ -15,6 +17,6 @@
         = link_to note.attachment.url, target: '_blank' do
           = image_tag note.attachment.url, class: 'note-image-attach'
       - else
-        = link_to note.attachment.url, target: "_blank", class: 'note-file-attach' do
+        = link_to note.attachment.url, target: '_blank',  class: 'note-file-attach' do
           %i.fa.fa-paperclip
           = note.attachment_identifier

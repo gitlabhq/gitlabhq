@@ -2,13 +2,13 @@ require 'spec_helper'
 
 RSpec.describe 'admin manage applications', feature: true do
   before do
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   it do
     visit admin_applications_path
 
-    click_on 'New Application'
+    click_on 'New application'
     expect(page).to have_content('New application')
 
     fill_in :doorkeeper_application_name, with: 'test'

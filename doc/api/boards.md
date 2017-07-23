@@ -1,4 +1,4 @@
-# Boards
+# Issue Boards API
 
 Every API call to boards must be authenticated.
 
@@ -15,7 +15,7 @@ GET /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`   | integer  | yes    | The ID of a project |
+| `id`   | integer/string  | yes    | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/boards
@@ -63,7 +63,7 @@ Example response:
 ## List board lists
 
 Get a list of the board's lists.
-Does not include `backlog` and `done` lists
+Does not include `backlog` and `closed` lists
 
 ```
 GET /projects/:id/boards/:board_id/lists
@@ -71,7 +71,7 @@ GET /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`   | integer  | yes    | The ID of a project |
+| `id`   | integer/string  | yes    | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`   | integer  | yes    | The ID of a board |
 
 ```bash
@@ -122,7 +122,7 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes   | The ID of a project |
+| `id`      | integer/string | yes   | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`   | integer  | yes    | The ID of a board |
 | `list_id`| integer | yes   | The ID of a board's list |
 
@@ -154,7 +154,7 @@ POST /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`   | integer  | yes    | The ID of a board |
 | `label_id`         | integer  | yes | The ID of a label |
 
@@ -186,7 +186,7 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`   | integer  | yes    | The ID of a board |
 | `list_id`      | integer | yes | The ID of a board's list |
 | `position`         | integer  | yes  | The position of the list |
@@ -219,7 +219,7 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer | yes | The ID of a project |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id`   | integer  | yes    | The ID of a board |
 | `list_id`      | integer | yes | The ID of a board's list |
 

@@ -47,12 +47,12 @@ class BambooService < CiService
   def fields
     [
         { type: 'text', name: 'bamboo_url',
-          placeholder: 'Bamboo root URL like https://bamboo.example.com' },
+          placeholder: 'Bamboo root URL like https://bamboo.example.com', required: true },
         { type: 'text', name: 'build_key',
-          placeholder: 'Bamboo build plan key like KEY' },
+          placeholder: 'Bamboo build plan key like KEY', required: true },
         { type: 'text', name: 'username',
           placeholder: 'A user with API access, if applicable' },
-        { type: 'password', name: 'password' },
+        { type: 'password', name: 'password' }
     ]
   end
 

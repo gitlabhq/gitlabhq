@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::BroadcastMessages, api: true do
-  include ApiHelpers
-
+describe API::V3::BroadcastMessages do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
 

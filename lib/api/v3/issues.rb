@@ -8,6 +8,7 @@ module API
       helpers do
         def find_issues(args = {})
           args = params.merge(args)
+          args = convert_parameters_from_legacy_format(args)
 
           args.delete(:id)
           args[:milestone_title] = args.delete(:milestone)
@@ -51,7 +52,7 @@ module API
 
       resource :issues do
         desc "Get currently authenticated user's issues" do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -61,40 +62,40 @@ module API
         get do
           issues = find_issues(scope: 'authored')
 
-          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
+          present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user
         end
       end
 
       params do
         requires :id, type: String, desc: 'The ID of a group'
       end
-      resource :groups do
+      resource :groups, requirements: { id: %r{[^/]+} } do
         desc 'Get a list of group issues' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
-          optional :state, type: String, values: %w[opened closed all], default: 'opened',
+          optional :state, type: String, values: %w[opened closed all], default: 'all',
                            desc: 'Return opened, closed, or all issues'
           use :issues_params
         end
         get ":id/issues" do
           group = find_group!(params[:id])
 
-          issues = find_issues(group_id: group.id, state: params[:state] || 'opened', match_all_labels: true)
+          issues = find_issues(group_id: group.id, match_all_labels: true)
 
-          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user
+          present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user
         end
       end
 
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         include TimeTrackingEndpoints
 
         desc 'Get a list of project issues' do
           detail 'iid filter is deprecated have been removed on V4'
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           optional :state, type: String, values: %w[opened closed all], default: 'all',
@@ -103,26 +104,26 @@ module API
           use :issues_params
         end
         get ":id/issues" do
-          project = find_project(params[:id])
+          project = find_project!(params[:id])
 
           issues = find_issues(project_id: project.id)
 
-          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user, project: user_project
+          present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
         end
 
         desc 'Get a single project issue' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
         end
         get ":id/issues/:issue_id" do
           issue = find_project_issue(params[:issue_id])
-          present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+          present issue, with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
         end
 
         desc 'Create a new project issue' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           requires :title, type: String, desc: 'The title of an issue'
@@ -139,12 +140,8 @@ module API
           end
 
           issue_params = declared_params(include_missing: false)
-
-          if merge_request_iid = params[:merge_request_for_resolving_discussions]
-            issue_params[:merge_request_for_resolving_discussions] = MergeRequestsFinder.new(current_user, project_id: user_project.id).
-              execute.
-              find_by(iid: merge_request_iid)
-          end
+          issue_params = issue_params.merge(merge_request_to_resolve_discussions_of: issue_params.delete(:merge_request_for_resolving_discussions))
+          issue_params = convert_parameters_from_legacy_format(issue_params)
 
           issue = ::Issues::CreateService.new(user_project,
                                               current_user,
@@ -152,14 +149,14 @@ module API
           render_spam_error! if issue.spam?
 
           if issue.valid?
-            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+            present issue, with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
           else
             render_validation_error!(issue)
           end
         end
 
         desc 'Update an existing issue' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
@@ -181,6 +178,7 @@ module API
           end
 
           update_params = declared_params(include_missing: false).merge(request: request, api: true)
+          update_params = convert_parameters_from_legacy_format(update_params)
 
           issue = ::Issues::UpdateService.new(user_project,
                                               current_user,
@@ -189,14 +187,14 @@ module API
           render_spam_error! if issue.spam?
 
           if issue.valid?
-            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+            present issue, with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
           else
             render_validation_error!(issue)
           end
         end
 
         desc 'Move an existing issue' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           requires :issue_id, type: Integer, desc: 'The ID of a project issue'
@@ -211,7 +209,7 @@ module API
 
           begin
             issue = ::Issues::MoveService.new(user_project, current_user).execute(issue, new_project)
-            present issue, with: ::API::Entities::Issue, current_user: current_user, project: user_project
+            present issue, with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
           rescue ::Issues::MoveService::MoveError => error
             render_api_error!(error.message, 400)
           end

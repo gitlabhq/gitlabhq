@@ -20,17 +20,29 @@
   color: $text;
   border-color: $border;
 
+  > .icon {
+    color: $text;
+  }
+
   &:hover,
   &:focus {
     background-color: $hover-background;
     border-color: $hover-border;
     color: $hover-text;
+
+    > .icon {
+      color: $hover-text;
+    }
   }
 
   &:active {
     background-color: $active-background;
     border-color: $active-border;
     color: $hover-text;
+
+    > .icon {
+      color: $hover-text;
+    }
   }
 }
 
@@ -68,23 +80,19 @@
 }
 
 @mixin btn-green {
-  @include btn-color($green-light, $border-green-light, $green-normal, $border-green-normal, $green-dark, $border-green-dark, $white-light);
+  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white-light);
 }
 
 @mixin btn-blue {
-  @include btn-color($blue-light, $border-blue-light, $blue-normal, $border-blue-normal, $blue-dark, $border-blue-dark, $white-light);
-}
-
-@mixin btn-blue-medium {
-  @include btn-color($blue-medium-light, $border-blue-light, $blue-medium, $border-blue-normal, $blue-medium-dark, $border-blue-dark, $white-light);
+  @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-light);
 }
 
 @mixin btn-orange {
-  @include btn-color($orange-light, $border-orange-light, $orange-normal, $border-orange-normal, $orange-dark, $border-orange-dark, $white-light);
+  @include btn-color($orange-500, $orange-600, $orange-600, $orange-700, $orange-700, $orange-800, $white-light);
 }
 
 @mixin btn-red {
-  @include btn-color($red-light, $border-red-light, $red-normal, $border-red-normal, $red-dark, $border-red-dark, $white-light);
+  @include btn-color($red-500, $red-600, $red-600, $red-700, $red-700, $red-800, $white-light);
 }
 
 @mixin btn-gray {
@@ -145,11 +153,11 @@
     &.btn-new,
     &.btn-create,
     &.btn-save {
-      @include btn-outline($white-light, $border-green-light, $border-green-light, $green-light, $white-light, $border-green-light, $green-normal, $border-green-normal);
+      @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 
     &.btn-remove {
-      @include btn-outline($white-light, $border-red-light, $border-red-light, $red-light, $white-light, $border-red-light, $red-normal, $border-red-normal);
+      @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
     }
   }
 
@@ -157,11 +165,8 @@
     @include btn-gray;
   }
 
-  &.btn-primary {
-    @include btn-blue-medium;
-  }
-
   &.btn-info,
+  &.btn-primary,
   &.btn-register {
     @include btn-blue;
   }
@@ -170,12 +175,13 @@
     @include btn-orange;
   }
 
-  &.btn-close {
-    @include btn-outline($white-light, $border-orange-light, $border-orange-light, $orange-light, $white-light, $border-orange-light, $orange-normal, $border-orange-normal);
+  &.btn-close,
+  &.btn-close-color {
+    @include btn-outline($white-light, $orange-600, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
   }
 
   &.btn-spam {
-    @include btn-outline($white-light, $border-red-light, $border-red-light, $red-light, $white-light, $border-red-light, $red-normal, $border-red-normal);
+    @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
   }
 
   &.btn-danger,
@@ -188,7 +194,8 @@
     float: right;
   }
 
-  &.btn-reopen {
+  &.btn-reopen,
+  .btn-reopen-color {
     /* should be same as parent class for now */
   }
 
@@ -360,12 +367,22 @@
 
 .btn-inverted {
   &-secondary {
-    @include btn-outline($white-light, $border-blue-light, $border-blue-light, $blue-light, $white-light, $border-blue-light, $blue-normal, $border-blue-normal);
+    @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
   }
 }
 
 @media (max-width: $screen-xs-max) {
   .btn-wide-on-xs {
     width: 100%;
+  }
+}
+
+.btn-blank {
+  padding: 0;
+  background: transparent;
+  border: 0;
+
+  &:focus {
+    outline: 0;
   }
 }

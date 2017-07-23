@@ -9,8 +9,6 @@ class DashboardController < Dashboard::ApplicationController
   respond_to :html
 
   def activity
-    @last_push = current_user.recent_push
-
     respond_to do |format|
       format.html
 
@@ -26,7 +24,7 @@ class DashboardController < Dashboard::ApplicationController
   def load_events
     projects =
       if params[:filter] == "starred"
-        current_user.viewable_starred_projects
+        ProjectsFinder.new(current_user: current_user, params: { starred: true }).execute
       else
         current_user.authorized_projects
       end

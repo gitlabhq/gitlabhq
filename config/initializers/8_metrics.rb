@@ -20,13 +20,17 @@ def instrument_classes(instrumentation)
 
   # Path to search => prefix to strip from constant
   paths_to_instrument = {
-    %w(app finders)               => %w(app finders),
-    %w(app mailers emails)        => %w(app mailers),
-    %w(app services **)           => %w(app services),
-    %w(lib gitlab conflicts)      => ['lib'],
-    %w(lib gitlab diff)           => ['lib'],
-    %w(lib gitlab email message)  => ['lib'],
-    %w(lib gitlab checks)         => ['lib']
+    %w(app finders)                => %w(app finders),
+    %w(app mailers emails)         => %w(app mailers),
+    # Don't instrument `app/services/concerns`
+    # It contains modules that are included in the services.
+    # The services themselves are instrumented so the methods from the modules
+    # are included.
+    %w(app services [^concerns]**) => %w(app services),
+    %w(lib gitlab conflicts)       => ['lib'],
+    %w(lib gitlab diff)            => ['lib'],
+    %w(lib gitlab email message)   => ['lib'],
+    %w(lib gitlab checks)          => ['lib']
   }
 
   paths_to_instrument.each do |(path, prefix)|
@@ -109,8 +113,18 @@ def instrument_classes(instrumentation)
 
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
+
+  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
+  instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
 # rubocop:enable Metrics/AbcSize
+
+Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+
+Gitlab::Application.configure do |config|
+  # 0 should be Sentry to catch errors in this middleware
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
+end
 
 if Gitlab::Metrics.enabled?
   require 'pathname'
@@ -120,9 +134,9 @@ if Gitlab::Metrics.enabled?
 
   # These are manually require'd so the classes are registered properly with
   # ActiveSupport.
-  require 'gitlab/metrics/subscribers/action_view'
-  require 'gitlab/metrics/subscribers/active_record'
-  require 'gitlab/metrics/subscribers/rails_cache'
+  require_dependency 'gitlab/metrics/subscribers/action_view'
+  require_dependency 'gitlab/metrics/subscribers/active_record'
+  require_dependency 'gitlab/metrics/subscribers/rails_cache'
 
   Gitlab::Application.configure do |config|
     config.middleware.use(Gitlab::Metrics::RackMiddleware)
@@ -147,8 +161,8 @@ if Gitlab::Metrics.enabled?
       ActiveRecord::Querying.public_instance_methods(false).map(&:to_s)
     )
 
-    Gitlab::Metrics::Instrumentation.
-      instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
+    Gitlab::Metrics::Instrumentation
+      .instrument_class_hierarchy(ActiveRecord::Base) do |klass, method|
         # Instrumenting the ApplicationSetting class can lead to an infinite
         # loop. Since the data is cached any way we don't really need to
         # instrument it.
@@ -160,6 +174,10 @@ if Gitlab::Metrics.enabled?
           loc && loc[0].start_with?(models) && method.source =~ regex
         end
       end
+
+    # Ability is in app/models, is not an ActiveRecord model, but should still
+    # be instrumented.
+    Gitlab::Metrics::Instrumentation.instrument_methods(Ability)
   end
 
   Gitlab::Metrics::Instrumentation.configure do |config|
@@ -168,7 +186,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::Sampler.new.start
+  Gitlab::Metrics::InfluxSampler.initialize_instance.start
 
   module TrackNewRedisConnections
     def connect(*args)

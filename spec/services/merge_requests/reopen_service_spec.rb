@@ -14,6 +14,8 @@ describe MergeRequests::ReopenService, services: true do
   end
 
   describe '#execute' do
+    it_behaves_like 'cache counters invalidator'
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, {}) }
 
@@ -29,8 +31,8 @@ describe MergeRequests::ReopenService, services: true do
       it { expect(merge_request).to be_reopened }
 
       it 'executes hooks with reopen action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(merge_request, 'reopen')
+        expect(service).to have_received(:execute_hooks)
+                               .with(merge_request, 'reopen')
       end
 
       it 'sends email to user2 about reopen of merge_request' do

@@ -1,8 +1,9 @@
-.ci-status-icon-success {
-  color: $gl-success;
+.ci-status-icon-success,
+.ci-status-icon-passed {
+  color: $green-500;
 
   svg {
-    fill: $gl-success;
+    fill: $green-500;
   }
 }
 
@@ -17,18 +18,18 @@
 .ci-status-icon-pending,
 .ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
-  color: $gl-warning;
+  color: $orange-500;
 
   svg {
-    fill: $gl-warning;
+    fill: $orange-500;
   }
 }
 
 .ci-status-icon-running {
-  color: $blue-normal;
+  color: $blue-400;
 
   svg {
-    fill: $blue-normal;
+    fill: $blue-400;
   }
 }
 
@@ -63,4 +64,8 @@
   &:hover {
     text-decoration: none;
   }
+}
+
+.user-avatar-link {
+  text-decoration: none;
 }

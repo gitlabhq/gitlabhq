@@ -26,8 +26,22 @@
       margin-bottom: 5px;
     }
 
-    & > .form-group {
+    > .form-group {
       padding-left: 0;
+    }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    background: transparent;
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
     }
   }
 
@@ -69,7 +83,7 @@
       border: 1px solid $border-color;
     }
 
-    & + .select2 a {
+    + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -247,7 +261,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -364,10 +377,11 @@ a.deploy-project-label {
 }
 
 .breadcrumb.repo-breadcrumb {
+  flex: 1;
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 36px;
+  line-height: 34px;
   margin: 0;
 
   > li + li::before {
@@ -382,10 +396,6 @@ a.deploy-project-label {
   .dropdown-menu {
     width: 240px;
   }
-}
-
-.last-push-widget {
-  margin-top: -1px;
 }
 
 .fork-namespaces {
@@ -459,34 +469,13 @@ a.deploy-project-label {
     flex-wrap: wrap;
 
     .btn {
-      margin: 0 10px 10px 0;
       padding: 8px;
+      margin-left: 10px;
     }
 
     > div {
+      margin-bottom: 10px;
       padding-left: 0;
-
-      &:last-child {
-        margin-bottom: 0;
-
-        .btn {
-          margin-right: 0;
-        }
-      }
-    }
-  }
-}
-
-.page-sidebar-pinned {
-  .project-stats .nav > li.right {
-    @media (min-width: $screen-lg-min) {
-      float: none;
-    }
-  }
-
-  .download-button {
-    @media (min-width: $screen-lg-min) {
-      margin-left: 0;
     }
   }
 }
@@ -494,11 +483,12 @@ a.deploy-project-label {
 .project-stats {
   font-size: 0;
   text-align: center;
+  max-width: 100%;
+  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -582,54 +572,70 @@ pre.light-well {
 /*
  * Projects list rendered on dashboard and user page
  */
-
 .projects-list {
   @include basic-list;
+  display: flex;
+  flex-direction: column;
 
-  .project-row {
-    border-color: $white-normal;
+  // Disable Flexbox for admin page
+  &.admin-projects {
+    display: block;
 
-    .project-full-name {
-      @include str-truncated;
-
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
-    }
-
-    .controls {
-      line-height: $list-text-height;
-
-      .badge {
-        @media (max-width: $screen-xs-max) {
-          display: none;
-        }
-      }
-
-      a:hover {
-        text-decoration: none;
-      }
-
-      > span {
-        margin-left: 10px;
-      }
-
-      svg {
-        position: relative;
-        top: 2px;
-      }
-    }
-
-    .description p {
-      @media (max-width: $screen-xs-max) {
-        max-width: 50%;
-      }
+    .project-row {
+      display: block;
     }
   }
 
-  .bottom {
-    padding-top: $gl-padding;
-    padding-bottom: 0;
+  .project-row {
+    @include basic-list-stats;
+    display: flex;
+    align-items: center;
+  }
+
+  h3 {
+    font-size: $gl-font-size;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  .avatar-container,
+  .controls {
+    flex: 0 0 auto;
+  }
+
+  .avatar-container {
+    align-self: flex-start;
+
+    > a {
+      width: 100%;
+    }
+  }
+
+  .project-details {
+    min-width: 0;
+
+    p,
+    .commit-row-message {
+      @include str-truncated(100%);
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .ci-status-link {
+    display: inline-block;
+    line-height: 17px;
+    vertical-align: middle;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -641,59 +647,6 @@ pre.light-well {
 .commits-search-form {
   .input-short {
     min-width: 200px;
-  }
-}
-
-.project-last-commit {
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  padding: 12px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
   }
 }
 
@@ -738,14 +691,26 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.protected-branches-list {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
+  @include dropdown-link;
+
+  width: 100%;
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.protected-branches-list,
+.protected-tags-list {
   margin-bottom: 30px;
 
   a {
@@ -774,6 +739,18 @@ pre.light-well {
     td:not(:last-child) {
       border-right: solid 1px transparent;
     }
+  }
+}
+
+.protected-tags-list,
+.protected-branches-list {
+  .dropdown-menu-toggle {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .flash-container {
+    padding: 0;
   }
 }
 
@@ -808,7 +785,8 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
 
     @media (min-width: $screen-sm-min) {
@@ -825,14 +803,6 @@ pre.light-well {
     @media (min-width: $screen-sm-min) {
       margin-top: 0;
       width: auto;
-    }
-  }
-
-  .inline-input-group {
-    width: 100%;
-
-    @media (min-width: $screen-sm-min) {
-      width: 250px;
     }
   }
 }
@@ -917,27 +887,23 @@ pre.light-well {
   }
 
   .variable-key {
-    width: 300px;
-    max-width: 300px;
+    max-width: 120px;
     overflow: hidden;
     word-wrap: break-word;
-
-    // override bootstrap
-    white-space: normal!important;
-
-    @media (max-width: $screen-sm-max) {
-      width: 150px;
-      max-width: 150px;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .variable-value {
-    @media(max-width: $screen-xs-max) {
-      width: 150px;
-      max-width: 150px;
-      overflow: hidden;
-      word-wrap: break-word;
-    }
+    max-width: 150px;
+    overflow: hidden;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .variable-menu {
+    text-align: right;
   }
 }
 

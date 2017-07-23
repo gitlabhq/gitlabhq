@@ -17,6 +17,10 @@ describe Gitlab::Ci::Status::Pending do
     it { expect(subject.icon).to eq 'icon_status_pending' }
   end
 
+  describe '#favicon' do
+    it { expect(subject.favicon).to eq 'favicon_status_pending' }
+  end
+
   describe '#group' do
     it { expect(subject.group).to eq 'pending' }
   end

@@ -4,7 +4,7 @@ module Gitlab
       class RepositoryPush
         attr_reader :author_id, :ref, :action
 
-        include Gitlab::Routing.url_helpers
+        include Gitlab::Routing
         include DiffHelper
 
         delegate :namespace, :name_with_namespace, to: :project, prefix: :project
@@ -42,7 +42,7 @@ module Gitlab
           return unless compare
 
           # This diff is more moderated in number of files and lines
-          @diffs ||= compare.diffs(max_files: 30, max_lines: 5000, no_collapse: true).diff_files
+          @diffs ||= compare.diffs(max_files: 30, max_lines: 5000, expanded: true).diff_files
         end
 
         def diffs_count
@@ -96,20 +96,13 @@ module Gitlab
         def target_url
           if @action == :push && commits
             if commits.length > 1
-              namespace_project_compare_url(project_namespace,
-                                            project,
-                                            from: compare.start_commit,
-                                            to:   compare.head_commit)
+              project_compare_url(project, from: compare.start_commit, to: compare.head_commit)
             else
-              namespace_project_commit_url(project_namespace,
-                                           project,
-                                           commits.first)
+              project_commit_url(project, commits.first)
             end
           else
             unless @action == :delete
-              namespace_project_tree_url(project_namespace,
-                                         project,
-                                         ref_name)
+              project_tree_url(project, ref_name)
             end
           end
         end

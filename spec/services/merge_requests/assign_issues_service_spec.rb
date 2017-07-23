@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::AssignIssuesService, services: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue.to_reference}") }
   let(:service) { described_class.new(project, user, merge_request: merge_request) }
@@ -15,14 +15,14 @@ describe MergeRequests::AssignIssuesService, services: true do
     expect(service.assignable_issues.map(&:id)).to include(issue.id)
   end
 
-  it 'ignores issues already assigned to any user' do
-    issue.update!(assignee: create(:user))
+  it 'ignores issues the user cannot update assignee on' do
+    project.team.truncate
 
     expect(service.assignable_issues).to be_empty
   end
 
-  it 'ignores issues the user cannot update assignee on' do
-    project.team.truncate
+  it 'ignores issues already assigned to any user' do
+    issue.assignees = [create(:user)]
 
     expect(service.assignable_issues).to be_empty
   end
@@ -44,7 +44,7 @@ describe MergeRequests::AssignIssuesService, services: true do
   end
 
   it 'assigns these to the merge request owner' do
-    expect { service.execute }.to change { issue.reload.assignee }.to(user)
+    expect { service.execute }.to change { issue.assignees.first }.to(user)
   end
 
   it 'ignores external issues' do

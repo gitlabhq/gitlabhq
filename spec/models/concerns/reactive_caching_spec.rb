@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ReactiveCaching, caching: true do
+describe ReactiveCaching, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   class CacheTest
@@ -40,7 +40,10 @@ describe ReactiveCaching, caching: true do
   let(:instance) { CacheTest.new(666, &calculation) }
 
   describe '#with_reactive_cache' do
-    before { stub_reactive_cache }
+    before do
+      stub_reactive_cache
+    end
+
     subject(:go!) { instance.result }
 
     context 'when cache is empty' do
@@ -60,12 +63,17 @@ describe ReactiveCaching, caching: true do
     end
 
     context 'when the cache is full' do
-      before { stub_reactive_cache(instance, 4) }
+      before do
+        stub_reactive_cache(instance, 4)
+      end
 
       it { is_expected.to eq(2) }
 
       context 'and expired' do
-        before { invalidate_reactive_cache(instance) }
+        before do
+          invalidate_reactive_cache(instance)
+        end
+
         it { is_expected.to be_nil }
       end
     end
@@ -84,7 +92,9 @@ describe ReactiveCaching, caching: true do
     subject(:go!) { instance.exclusively_update_reactive_cache! }
 
     context 'when the lease is free and lifetime is not exceeded' do
-      before { stub_reactive_cache(instance, "preexisting") }
+      before do
+        stub_reactive_cache(instance, "preexisting")
+      end
 
       it 'takes and releases the lease' do
         expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return("000000")
@@ -106,7 +116,10 @@ describe ReactiveCaching, caching: true do
       end
 
       context 'and #calculate_reactive_cache raises an exception' do
-        before { stub_reactive_cache(instance, "preexisting") }
+        before do
+          stub_reactive_cache(instance, "preexisting")
+        end
+
         let(:calculation) { -> { raise "foo"} }
 
         it 'leaves the cache untouched' do

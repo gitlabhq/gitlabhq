@@ -1,76 +1,93 @@
 require 'rails_helper'
 
-feature 'Resolving all open discussions in a merge request from an issue', feature: true do
+feature 'Resolving all open discussions in a merge request from an issue', feature: true, js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, only_allow_merge_if_all_discussions_are_resolved: true) }
+  let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
-  let!(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request, noteable: merge_request, project: project)]).first }
+  let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
-  before do
-    project.team << [user, :master]
-    login_as user
-  end
-
-  context 'with the internal tracker disabled' do
+  describe 'as a user with access to the project' do
     before do
-      project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      project.team << [user, :master]
+      sign_in user
+      visit project_merge_request_path(project, merge_request)
     end
 
-    it 'does not show a link to create a new issue' do
-      expect(page).not_to have_link 'open an issue to resolve them later'
-    end
-  end
-
-  context 'merge request has discussions that need to be resolved' do
-    before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    it 'shows a button to resolve all discussions by creating a new issue' do
+      within('#resolve-count-app') do
+        expect(page).to have_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+      end
     end
 
-    it 'shows a warning that the merge request contains unresolved discussions' do
-      expect(page).to have_content 'This merge request has unresolved discussions'
-    end
+    context 'resolving the discussion' do
+      before do
+        click_button 'Resolve discussion'
+      end
 
-    it 'has a link to resolve all discussions by creating an issue' do
-      page.within '.mr-widget-body' do
-        expect(page).to have_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+      it 'hides the link for creating a new issue' do
+        expect(page).not_to have_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
     end
 
     context 'creating an issue for discussions' do
       before do
-        page.click_link 'open an issue to resolve them later', href: new_namespace_project_issue_path(project.namespace, project, merge_request_for_resolving_discussions: merge_request.iid)
+        click_link "Resolve all discussions in new issue", href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
       end
 
-      it 'shows an issue with the title filled in' do
-        title_field = page.find_field('issue[title]')
+      it_behaves_like 'creating an issue for a discussion'
+    end
 
-        expect(title_field.value).to include(merge_request.title)
+    context 'for a project where all discussions need to be resolved before merging' do
+      before do
+        project.update_attribute(:only_allow_merge_if_all_discussions_are_resolved, true)
       end
 
-      it 'has a mention of the discussion in the description'  do
-        description_field = page.find_field('issue[description]')
+      context 'with the internal tracker disabled' do
+        before do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+          visit project_merge_request_path(project, merge_request)
+        end
 
-        expect(description_field.value).to include(discussion.first_note.note)
+        it 'does not show a link to create a new issue' do
+          expect(page).not_to have_link 'Create an issue to resolve them later'
+        end
       end
 
-      it 'has a hidden field for the merge request' do
-        merge_request_field = find('#merge_request_for_resolving_discussions', visible: false)
+      context 'merge request has discussions that need to be resolved' do
+        before do
+          visit project_merge_request_path(project, merge_request)
+        end
 
-        expect(merge_request_field.value).to eq(merge_request.iid.to_s)
+        it 'shows a warning that the merge request contains unresolved discussions' do
+          expect(page).to have_content 'There are unresolved discussions.'
+        end
+
+        it 'has a link to resolve all discussions by creating an issue' do
+          page.within '.mr-widget-body' do
+            expect(page).to have_link 'Create an issue to resolve them later', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+          end
+        end
+
+        context 'creating an issue for discussions' do
+          before do
+            page.click_link 'Create an issue to resolve them later', href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+          end
+
+          it_behaves_like 'creating an issue for a discussion'
+        end
       end
+    end
+  end
 
-      it 'can create a new issue for the project' do
-        expect { click_button 'Submit issue' }.to change { project.issues.reload.size }.by(1)
-      end
+  describe 'as a reporter' do
+    before do
+      project.team << [user, :reporter]
+      sign_in user
+      visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+    end
 
-      it 'resolves the discussion in the merge request' do
-        click_button 'Submit issue'
-
-        discussion.first_note.reload
-
-        expect(discussion.resolved?).to eq(true)
-      end
+    it 'Shows a notice to ask someone else to resolve the discussions' do
+      expect(page).to have_content("The discussions at #{merge_request.to_reference} will stay unresolved. Ask someone with permission to resolve them.")
     end
   end
 end

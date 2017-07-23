@@ -1,36 +1,23 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe ServiceHook, models: true do
-  describe "Associations" do
+  describe 'associations' do
     it { is_expected.to belong_to :service }
   end
 
-  describe "execute" do
-    before(:each) do
-      @service_hook = create(:service_hook)
-      @data = { project_id: 1, data: {} }
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:service) }
+  end
 
-      WebMock.stub_request(:post, @service_hook.url)
-    end
+  describe 'execute' do
+    let(:hook) { build(:service_hook) }
+    let(:data) { { key: 'value' } }
 
-    it "POSTs to the webhook URL" do
-      @service_hook.execute(@data)
-      expect(WebMock).to have_requested(:post, @service_hook.url).with(
-        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Service Hook' }
-      ).once
-    end
+    it '#execute' do
+      expect(WebHookService).to receive(:new).with(hook, data, 'service_hook').and_call_original
+      expect_any_instance_of(WebHookService).to receive(:execute)
 
-    it "POSTs the data as JSON" do
-      @service_hook.execute(@data)
-      expect(WebMock).to have_requested(:post, @service_hook.url).with(
-        headers: { 'Content-Type' => 'application/json', 'X-Gitlab-Event' => 'Service Hook' }
-      ).once
-    end
-
-    it "catches exceptions" do
-      expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
-
-      expect { @service_hook.execute(@data) }.to raise_error(RuntimeError)
+      hook.execute(data)
     end
   end
 end

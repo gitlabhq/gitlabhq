@@ -22,11 +22,40 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'blob search' do
-    let(:project) { create(:project, :repository) }
-    let(:results) { described_class.new(user, project, 'files').objects('blobs') }
+    let(:project) { create(:project, :public, :repository) }
+
+    subject(:results) { described_class.new(user, project, 'files').objects('blobs') }
+
+    context 'when repository is disabled' do
+      let(:project) { create(:project, :public, :repository, :repository_disabled) }
+
+      it 'hides blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when repository is internal' do
+      let(:project) { create(:project, :public, :repository, :repository_private) }
+
+      it 'finds blobs for members' do
+        project.add_reporter(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
 
     it 'finds by name' do
-      expect(results).to include(["files/images/wm.svg", nil])
+      expect(results.map(&:first)).to include('files/images/wm.svg')
     end
 
     it 'finds by content' do
@@ -41,8 +70,10 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
       subject { described_class.parse_search_result(search_result) }
 
-      it "returns a valid OpenStruct object" do
-        is_expected.to be_an OpenStruct
+      it "returns a valid FoundBlob" do
+        is_expected.to be_an Gitlab::SearchResults::FoundBlob
+        expect(subject.id).to be_nil
+        expect(subject.path).to eq('CHANGELOG')
         expect(subject.filename).to eq('CHANGELOG')
         expect(subject.basename).to eq('CHANGELOG')
         expect(subject.ref).to eq('master')
@@ -53,6 +84,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when filename has extension" do
         let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
+        it { expect(subject.path).to eq('CONTRIBUTE.md') }
         it { expect(subject.filename).to eq('CONTRIBUTE.md') }
         it { expect(subject.basename).to eq('CONTRIBUTE') }
       end
@@ -60,9 +92,50 @@ describe Gitlab::ProjectSearchResults, lib: true do
       context "when file under directory" do
         let(:search_result) { "master:a/b/c.md:5:a b c\n" }
 
+        it { expect(subject.path).to eq('a/b/c.md') }
         it { expect(subject.filename).to eq('a/b/c.md') }
         it { expect(subject.basename).to eq('a/b/c') }
       end
+    end
+  end
+
+  describe 'wiki search' do
+    let(:project) { create(:project, :public) }
+    let(:wiki) { build(:project_wiki, project: project) }
+    let!(:wiki_page) { wiki.create_page('Title', 'Content') }
+
+    subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
+
+    context 'when wiki is disabled' do
+      let(:project) { create(:project, :public, :wiki_disabled) }
+
+      it 'hides wiki blobs from members' do
+        project.add_reporter(user)
+
+        is_expected.to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when wiki is internal' do
+      let(:project) { create(:project, :public, :wiki_private) }
+
+      it 'finds wiki blobs for guest' do
+        project.add_guest(user)
+
+        is_expected.not_to be_empty
+      end
+
+      it 'hides wiki blobs from non-members' do
+        is_expected.to be_empty
+      end
+    end
+
+    it 'finds by content' do
+      expect(results).to include("master:Title.md:1:Content\n")
     end
   end
 
@@ -75,7 +148,6 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'confidential issues' do
-    let(:project) { create(:empty_project) }
     let(:query) { 'issue' }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }
@@ -85,7 +157,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:project) { create(:empty_project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
-    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
+    let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
     it 'does not list project confidential issues for non project members' do
       results = described_class.new(non_member, project, query)
@@ -273,6 +345,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     context 'by commit hash' do
       let(:project) { create(:project, :public, :repository) }
       let(:commit) { project.repository.commit('0b4bc9a') }
+
       commit_hashes = { short: '0b4bc9a', full: '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
       commit_hashes.each do |type, commit_hash|

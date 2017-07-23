@@ -157,7 +157,7 @@ module Gitlab
       end
 
       def restore_source_branch(pull_request)
-        project.repository.fetch_ref(repo_url, "pull/#{pull_request.number}/head", pull_request.source_branch_name)
+        project.repository.create_branch(pull_request.source_branch_name, pull_request.source_branch_sha)
       end
 
       def restore_target_branch(pull_request)
@@ -171,6 +171,8 @@ module Gitlab
       end
 
       def clean_up_restored_branches(pull_request)
+        return if pull_request.opened?
+
         remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
         remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
       end

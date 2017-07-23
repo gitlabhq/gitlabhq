@@ -23,6 +23,14 @@ body {
   }
 }
 
+.content-wrapper {
+  padding-bottom: 100px;
+
+  &:not(.page-with-layout-nav) {
+    margin-top: $header-height;
+  }
+}
+
 .container {
   padding-top: 0;
   z-index: 5;
@@ -42,6 +50,10 @@ body {
 
   &.limit-container-width {
     max-width: $limited-layout-width;
+  }
+
+  &.limit-container-width-sm {
+    max-width: $limited-layout-width-sm;
   }
 }
 
@@ -72,28 +84,28 @@ body {
   /* Stripe the background colors so that adjacent alert-warnings are distinct from one another */
   .alert-warning {
     transition: background-color 0.15s, border-color 0.15s;
-    background-color: lighten($gl-warning, 4%);
-    border-color: lighten($gl-warning, 4%);
+    background-color: $orange-500;
+    border-color: $orange-500;
   }
 
   .alert-warning + .alert-warning {
-    background-color: $gl-warning;
-    border-color: $gl-warning;
+    background-color: $orange-600;
+    border-color: $orange-600;
   }
 
   .alert-warning + .alert-warning + .alert-warning {
-    background-color: darken($gl-warning, 4%);
-    border-color: darken($gl-warning, 4%);
+    background-color: $orange-700;
+    border-color: $orange-700;
   }
 
   .alert-warning + .alert-warning + .alert-warning + .alert-warning {
-    background-color: darken($gl-warning, 8%);
-    border-color: darken($gl-warning, 8%);
+    background-color: $orange-800;
+    border-color: $orange-800;
   }
 
   .alert-warning:only-of-type {
-    background-color: $gl-warning;
-    border-color: $gl-warning;
+    background-color: $orange-500;
+    border-color: $orange-500;
   }
 }
 

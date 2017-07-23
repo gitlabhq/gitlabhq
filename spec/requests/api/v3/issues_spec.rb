@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues, api: true  do
-  include ApiHelpers
+describe API::V3::Issues do
   include EmailHelpers
 
   let(:user)        { create(:user) }
@@ -15,11 +14,11 @@ describe API::V3::Issues, api: true  do
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
@@ -27,17 +26,17 @@ describe API::V3::Issues, api: true  do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
-           created_at: generate(:issue_created_at),
+           assignees: [assignee],
+           created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
-           created_at: generate(:issue_created_at),
+           created_at: generate(:past_time),
            updated_at: 1.hour.ago
   end
   let!(:label) do
@@ -248,7 +247,7 @@ describe API::V3::Issues, api: true  do
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -259,13 +258,13 @@ describe API::V3::Issues, api: true  do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago
@@ -285,8 +284,16 @@ describe API::V3::Issues, api: true  do
     end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
+    it 'returns all group issues (including opened and closed)' do
+      get v3_api(base_url, admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(3)
+    end
+
     it 'returns group issues without confidential issues for non project members' do
-      get v3_api(base_url, non_member)
+      get v3_api("#{base_url}?state=opened", non_member)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -295,7 +302,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for author' do
-      get v3_api(base_url, author)
+      get v3_api("#{base_url}?state=opened", author)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -303,7 +310,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for assignee' do
-      get v3_api(base_url, assignee)
+      get v3_api("#{base_url}?state=opened", assignee)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -311,7 +318,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group issues with confidential issues for project members' do
-      get v3_api(base_url, user)
+      get v3_api("#{base_url}?state=opened", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -319,7 +326,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns group confidential issues for admin' do
-      get v3_api(base_url, admin)
+      get v3_api("#{base_url}?state=opened", admin)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -368,7 +375,7 @@ describe API::V3::Issues, api: true  do
     end
 
     it 'returns an array of issues in given milestone' do
-      get v3_api("#{base_url}?milestone=#{group_milestone.title}", user)
+      get v3_api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
 
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -438,6 +445,12 @@ describe API::V3::Issues, api: true  do
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
+
+    it 'returns 404 when project does not exist' do
+      get v3_api('/projects/1000/issues', non_member)
+
+      expect(response).to have_http_status(404)
+    end
 
     it "returns 404 on private projects for other users" do
       private_project = create(:empty_project, :private)
@@ -724,13 +737,14 @@ describe API::V3::Issues, api: true  do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2'
+        title: 'new issue', labels: 'label, label2', assignee_id: assignee.id
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['assignee']['name']).to eq(assignee.name)
     end
 
     it 'creates a new confidential project issue' do
@@ -810,7 +824,7 @@ describe API::V3::Issues, api: true  do
     end
 
     context 'resolving issues in a merge request' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
       before do
@@ -1124,6 +1138,22 @@ describe API::V3::Issues, api: true  do
 
       expect(response).to have_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update assignee' do
+    it 'updates an issue with no assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']).to eq(nil)
+    end
+
+    it 'updates an issue with assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']['name']).to eq(user2.name)
     end
   end
 

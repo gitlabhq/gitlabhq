@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Prioritize labels', feature: true do
-  include WaitForAjax
   include DragTo
 
   let(:user)     { create(:user) }
@@ -15,17 +14,17 @@ feature 'Prioritize labels', feature: true do
     before do
       project.team << [user, :developer]
 
-      login_as user
+      sign_in user
     end
 
     scenario 'user can prioritize a group label', js: true do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
 
       page.within('.other-labels') do
         all('.js-toggle-priority')[1].click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('feature')
       end
 
@@ -38,13 +37,13 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can unprioritize a group label', js: true do
       create(:label_priority, project: project, label: feature, priority: 1)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       page.within('.prioritized-labels') do
         expect(page).to have_content('feature')
 
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -54,13 +53,13 @@ feature 'Prioritize labels', feature: true do
     end
 
     scenario 'user can prioritize a project label', js: true do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content('Star labels to start sorting by priority')
 
       page.within('.other-labels') do
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -73,13 +72,13 @@ feature 'Prioritize labels', feature: true do
     scenario 'user can unprioritize a project label', js: true do
       create(:label_priority, project: project, label: bug, priority: 1)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       page.within('.prioritized-labels') do
         expect(page).to have_content('bug')
 
         first('.js-toggle-priority').click
-        wait_for_ajax
+        wait_for_requests
         expect(page).not_to have_content('bug')
       end
 
@@ -93,7 +92,7 @@ feature 'Prioritize labels', feature: true do
       create(:label_priority, project: project, label: bug, priority: 1)
       create(:label_priority, project: project, label: feature, priority: 2)
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'feature'
@@ -108,7 +107,7 @@ feature 'Prioritize labels', feature: true do
       end
 
       refresh
-      wait_for_ajax
+      wait_for_requests
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('feature')
@@ -121,9 +120,9 @@ feature 'Prioritize labels', feature: true do
     it 'does not prioritize labels' do
       guest = create(:user)
 
-      login_as guest
+      sign_in guest
 
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'wontfix'
@@ -134,7 +133,7 @@ feature 'Prioritize labels', feature: true do
 
   context 'as a non signed in user' do
     it 'does not prioritize labels' do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'wontfix'

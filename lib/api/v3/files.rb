@@ -6,7 +6,7 @@ module API
           {
             file_path: attrs[:file_path],
             start_branch: attrs[:branch],
-            target_branch: attrs[:branch],
+            branch_name: attrs[:branch],
             commit_message: attrs[:commit_message],
             file_content: attrs[:content],
             file_content_encoding: attrs[:encoding],
@@ -40,7 +40,7 @@ module API
       params do
         requires :id, type: String, desc: 'The project ID'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a file from repository'
         params do
           requires :file_path, type: String, desc: 'The path to the file. Ex. lib/class.rb'
@@ -56,7 +56,7 @@ module API
           blob = repo.blob_at(commit.sha, params[:file_path])
           not_found!('File') unless blob
 
-          blob.load_all_data!(repo)
+          blob.load_all_data!
           status(200)
 
           {
@@ -123,7 +123,7 @@ module API
           file_params = declared_params(include_missing: false)
           file_params[:branch] = file_params.delete(:branch_name)
 
-          result = ::Files::DestroyService.new(user_project, current_user, commit_params(file_params)).execute
+          result = ::Files::DeleteService.new(user_project, current_user, commit_params(file_params)).execute
 
           if result[:status] == :success
             status(200)

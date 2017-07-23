@@ -61,12 +61,12 @@ module SharedProject
 
   step 'I visit my empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "Shop" activity page' do
     project = Project.find_by(name: 'Shop')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'project "Shop" has push event' do
@@ -101,7 +101,7 @@ module SharedProject
   end
 
   step 'I should see project settings' do
-    expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
+    expect(current_path).to eq edit_project_path(@project)
     expect(page).to have_content("Project name")
     expect(page).to have_content("Sharing & Permissions")
   end
@@ -239,11 +239,6 @@ module SharedProject
     create(:label, project: project, title: 'enhancement')
   end
 
-  step 'project "Shop" has issue: "bug report"' do
-    project = Project.find_by(name: "Shop")
-    create(:issue, project: project, title: "bug report")
-  end
-
   step 'project "Shop" has CI enabled' do
     project = Project.find_by(name: "Shop")
     project.enable_ci
@@ -251,13 +246,14 @@ module SharedProject
 
   step 'project "Shop" has CI build' do
     project = Project.find_by(name: "Shop")
-    create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master', status: 'skipped'
+    pipeline = create :ci_pipeline, project: project, sha: project.commit.sha, ref: 'master'
+    pipeline.skip
   end
 
   step 'I should see last commit with CI status' do
-    page.within ".project-last-commit" do
+    page.within ".blob-commit-info" do
       expect(page).to have_content(project.commit.sha[0..6])
-      expect(page).to have_content("skipped")
+      expect(page).to have_link("Commit: skipped")
     end
   end
 
@@ -271,6 +267,10 @@ module SharedProject
 
   step 'public access for builds is disabled' do
     @project.update(public_builds: false)
+  end
+
+  step 'project "Shop" has a "Bugfix MR" merge request open' do
+    create(:merge_request, title: "Bugfix MR", target_project: project, source_project: project, author: project.users.first)
   end
 
   def user_owns_project(user_name:, project_name:, visibility: :private)

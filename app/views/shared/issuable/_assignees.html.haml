@@ -1,0 +1,14 @@
+- max_render = 3
+- max = [max_render, issue.assignees.length].min
+
+- issue.assignees.take(max).each do |assignee|
+  = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
+
+- if issue.assignees.length > max_render
+  - counter = issue.assignees.length - max_render
+
+  %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old', 'original-title' => "+#{counter} more assignees" } }
+    - if counter < 99
+      = "+#{counter}"
+    - else
+      99+

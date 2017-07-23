@@ -90,6 +90,11 @@ module API
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
 
+    def find_project_snippet(id)
+      finder_params = { project: user_project }
+      SnippetsFinder.new(current_user, finder_params).execute.find(id)
+    end
+
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
@@ -97,7 +102,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user
+      unauthorized! unless current_user && can?(initial_current_user, :access_api)
     end
 
     def authenticate_non_get!
@@ -113,10 +118,10 @@ module API
 
     def authenticated_as_admin!
       authenticate!
-      forbidden! unless current_user.is_admin?
+      forbidden! unless current_user.admin?
     end
 
-    def authorize!(action, subject = nil)
+    def authorize!(action, subject = :global)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -134,7 +139,7 @@ module API
       end
     end
 
-    def can?(object, action, subject)
+    def can?(object, action, subject = :global)
       Ability.allowed?(object, action, subject)
     end
 
@@ -153,7 +158,7 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end
@@ -251,29 +256,20 @@ module API
 
     # project helpers
 
-    def filter_projects(projects)
-      if params[:membership]
-        projects = projects.merge(current_user.authorized_projects)
-      end
-
-      if params[:owned]
-        projects = projects.merge(current_user.owned_projects)
-      end
-
-      if params[:starred]
-        projects = projects.merge(current_user.starred_projects)
-      end
-
-      if params[:search].present?
-        projects = projects.search(params[:search])
-      end
-
-      if params[:visibility].present?
-        projects = projects.search_by_visibility(params[:visibility])
-      end
-
-      projects = projects.where(archived: params[:archived])
+    def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
+    end
+
+    def project_finder_params
+      finder_params = {}
+      finder_params[:owned] = true if params[:owned].present?
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = params[:archived]
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params
     end
 
     # file helpers
@@ -296,7 +292,7 @@ module API
       UploadedFile.new(
         file_path,
         params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream',
+        params["#{field}.type"] || 'application/octet-stream'
       )
     end
 
@@ -313,6 +309,16 @@ module API
         body
       else
         file path
+      end
+    end
+
+    def present_artifacts!(artifacts_file)
+      return not_found! unless artifacts_file.exists?
+
+      if artifacts_file.file_storage?
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      else
+        redirect_to(artifacts_file.url)
       end
     end
 
@@ -337,8 +343,8 @@ module API
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
+        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
         @initial_current_user ||= find_user_from_warden
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
@@ -353,7 +359,7 @@ module API
       return unless sudo_identifier
       return unless initial_current_user
 
-      unless initial_current_user.is_admin?
+      unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
@@ -401,6 +407,23 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    # An array of scopes that were registered (using `allow_access_with_scope`)
+    # for the current endpoint class. It also returns scopes registered on
+    # `API::API`, since these are meant to apply to all API routes.
+    def scopes_registered_for_endpoint
+      @scopes_registered_for_endpoint ||=
+        begin
+          endpoint_classes = [options[:for].presence, ::API::API].compact
+          endpoint_classes.reduce([]) do |memo, endpoint|
+            if endpoint.respond_to?(:allowed_scopes)
+              memo.concat(endpoint.allowed_scopes)
+            else
+              memo
+            end
+          end
+        end
     end
   end
 end

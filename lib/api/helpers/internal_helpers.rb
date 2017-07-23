@@ -1,48 +1,23 @@
 module API
   module Helpers
     module InternalHelpers
-      # Project paths may be any of the following:
-      #   * /repository/storage/path/namespace/project
-      #   * /namespace/project
-      #   * namespace/project
-      #
-      # In addition, they may have a '.git' extension and multiple namespaces
-      #
-      # Transform all these cases to 'namespace/project'
-      def clean_project_path(project_path, storages = Gitlab.config.repositories.storages.values)
-        project_path = project_path.sub(/\.git\z/, '')
-
-        storages.each do |storage|
-          storage_path = File.expand_path(storage['path'])
-
-          if project_path.start_with?(storage_path)
-            project_path = project_path.sub(storage_path, '')
-            break
-          end
-        end
-
-        project_path.sub(/\A\//, '')
-      end
-
-      def project_path
-        @project_path ||= clean_project_path(params[:project])
-      end
+      SSH_GITALY_FEATURES = {
+        'git-receive-pack' => :ssh_receive_pack,
+        'git-upload-pack' => :ssh_upload_pack
+      }.freeze
 
       def wiki?
-        @wiki ||= project_path.end_with?('.wiki') &&
-          !Project.find_by_full_path(project_path)
+        set_project unless defined?(@wiki)
+        @wiki
       end
 
       def project
-        @project ||= begin
-          # Check for *.wiki repositories.
-          # Strip out the .wiki from the pathname before finding the
-          # project. This applies the correct project permissions to
-          # the wiki repository as well.
-          project_path.chomp!('.wiki') if wiki?
+        set_project unless defined?(@project)
+        @project
+      end
 
-          Project.find_by_full_path(project_path)
-        end
+      def redirected_path
+        @redirected_path
       end
 
       def ssh_authentication_abilities
@@ -53,12 +28,63 @@ module API
         ]
       end
 
-      def parse_allowed_environment_variables
-        return if params[:env].blank?
+      def parse_env
+        return {} if params[:env].blank?
 
         JSON.parse(params[:env])
-
       rescue JSON::ParserError
+        {}
+      end
+
+      def log_user_activity(actor)
+        commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
+
+        ::Users::ActivityService.new(actor, 'Git SSH').execute if commands.include?(params[:action])
+      end
+
+      private
+
+      def set_project
+        if params[:gl_repository]
+          @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
+          @redirected_path = nil
+        else
+          @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
+        end
+      end
+
+      # Project id to pass between components that don't share/don't have
+      # access to the same filesystem mounts
+      def gl_repository
+        Gitlab::GlRepository.gl_repository(project, wiki?)
+      end
+
+      # Return the repository depending on whether we want the wiki or the
+      # regular repository
+      def repository
+        if wiki?
+          project.wiki.repository
+        else
+          project.repository
+        end
+      end
+
+      # Return the repository full path so that gitlab-shell has it when
+      # handling ssh commands
+      def repository_path
+        repository.path_to_repo
+      end
+
+      # Return the Gitaly Address if it is enabled
+      def gitaly_payload(action)
+        feature = SSH_GITALY_FEATURES[action]
+        return unless feature && Gitlab::GitalyClient.feature_enabled?(feature)
+
+        {
+          repository: repository.gitaly_repository,
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        }
       end
     end
   end

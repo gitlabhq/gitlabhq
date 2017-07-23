@@ -17,7 +17,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of the project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authorize_admin_project }
 
       desc "Get a specific project's deploy keys" do
@@ -47,6 +47,7 @@ module API
       params do
         requires :key, type: String, desc: 'The new deploy key'
         requires :title, type: String, desc: 'The name of the deploy key'
+        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
       end
       post ":id/deploy_keys" do
         params[:key].strip!
@@ -69,6 +70,27 @@ module API
         # Create a new deploy key
         key = DeployKey.new(declared_params(include_missing: false))
         if key.valid? && user_project.deploy_keys << key
+          present key, with: Entities::SSHKey
+        else
+          render_validation_error!(key)
+        end
+      end
+
+      desc 'Update an existing deploy key for a project' do
+        success Entities::SSHKey
+      end
+      params do
+        requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        optional :title, type: String, desc: 'The name of the deploy key'
+        optional :can_push, type: Boolean, desc: "Can deploy key push to the project's repository"
+        at_least_one_of :title, :can_push
+      end
+      put ":id/deploy_keys/:key_id" do
+        key = DeployKey.find(params.delete(:key_id))
+
+        authorize!(:update_deploy_key, key)
+
+        if key.update_attributes(declared_params(include_missing: false))
           present key, with: Entities::SSHKey
         else
           render_validation_error!(key)
@@ -103,6 +125,7 @@ module API
         key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
         not_found!('Deploy Key') unless key
 
+        status 204
         key.destroy
       end
     end

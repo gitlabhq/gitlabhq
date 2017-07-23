@@ -10,6 +10,11 @@ in your GitLab instance sitewide. This configuration is optional, users will
 still be able to import their GitHub repositories with a
 [personal access token][gh-token].
 
+>**Note:**
+Administrators of a GitLab instance (Community or Enterprise Edition) can also
+use the [GitHub rake task][gh-rake] to import projects from GitHub without the
+constrains of a Sidekiq worker.
+
 - At its current state, GitHub importer can import:
   - the repository description (GitLab 7.7+)
   - the Git repository data (GitLab 7.7+)
@@ -112,5 +117,6 @@ You can also choose a different name for the project and a different namespace,
 if you have the privileges to do so.
 
 [gh-import]: ../../integration/github.md "GitHub integration"
+[gh-rake]: ../../administration/raketasks/github_import.md "GitHub rake task"
 [gh-integration]: #authorize-access-to-your-repositories-using-the-github-integration
 [gh-token]: #authorize-access-to-your-repositories-using-a-personal-access-token

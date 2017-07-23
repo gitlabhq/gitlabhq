@@ -8,11 +8,11 @@ module API
       resource :snippets do
         helpers do
           def snippets_for_current_user
-            SnippetsFinder.new.execute(current_user, filter: :by_user, user: current_user)
+            SnippetsFinder.new(current_user, author: current_user).execute
           end
 
           def public_snippets
-            SnippetsFinder.new.execute(current_user, filter: :public)
+            SnippetsFinder.new(current_user, visibility: Snippet::PUBLIC).execute
           end
         end
 

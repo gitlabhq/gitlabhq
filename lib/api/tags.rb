@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get a project repository tags' do
         success Entities::RepoTag
       end
@@ -44,8 +44,8 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
 
-        result = ::Tags::CreateService.new(user_project, current_user).
-          execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+        result = ::Tags::CreateService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
           present result[:tag],
@@ -63,8 +63,8 @@ module API
       delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = ::Tags::DestroyService.new(user_project, current_user).
-          execute(params[:tag_name])
+        result = ::Tags::DestroyService.new(user_project, current_user)
+          .execute(params[:tag_name])
 
         if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
@@ -81,8 +81,8 @@ module API
       post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = CreateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+        result = CreateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
@@ -101,8 +101,8 @@ module API
       put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
 
-        result = UpdateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+        result = UpdateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release

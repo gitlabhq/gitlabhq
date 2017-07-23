@@ -17,6 +17,10 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :access_requestable do
       request_access_enabled true
     end

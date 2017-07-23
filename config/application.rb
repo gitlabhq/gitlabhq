@@ -6,7 +6,9 @@ Bundler.require(:default, Rails.env)
 
 module Gitlab
   class Application < Rails::Application
-    require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/redis/cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/queues')
+    require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -22,11 +24,12 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W(#{config.root}/lib
-                                     #{config.root}/app/models/ci
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
-                                     #{config.root}/app/workers/concerns))
+                                     #{config.root}/app/workers/concerns
+                                     #{config.root}/app/services/concerns
+                                     #{config.root}/app/finders/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -38,6 +41,9 @@ module Gitlab
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
+
+    # Translation for AR attrs is not working well for POROs like WikiPage
+    config.gettext_i18n_rails.use_for_active_record_attributes = false
 
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
@@ -62,6 +68,7 @@ module Gitlab
       hook
       import_url
       incoming_email_token
+      rss_token
       key
       otp_attempt
       password
@@ -91,6 +98,8 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    # Support legacy unicode file named img emojis, `1F939.png`
+    config.assets.paths << Gemojione.images_path
     config.assets.paths << "vendor/assets/fonts"
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
@@ -99,9 +108,12 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
-    config.assets.precompile << "u2f.js"
     config.assets.precompile << "vendor/assets/fonts/*"
+    config.assets.precompile << "test.css"
+    config.assets.precompile << "new_nav.css"
+    config.assets.precompile << "new_sidebar.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -132,15 +144,15 @@ module Gitlab
       end
     end
 
-    # Use Redis caching across all environments
-    redis_config_hash = Gitlab::Redis.params
-    redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
-    redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+    # Use caching across all environments
+    caching_config_hash = Gitlab::Redis::Cache.params
+    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
+    caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     if Sidekiq.server? # threaded context
-      redis_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
-      redis_config_hash[:pool_timeout] = 1
+      caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+      caching_config_hash[:pool_timeout] = 1
     end
-    config.cache_store = :redis_store, redis_config_hash
+    config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
 
@@ -148,9 +160,28 @@ module Gitlab
 
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
+    ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     config.generators do |g|
       g.factory_girl false
+    end
+
+    config.after_initialize do
+      Rails.application.reload_routes!
+
+      project_url_helpers = Module.new do
+        extend ActiveSupport::Concern
+
+        Gitlab::Application.routes.named_routes.helper_names.each do |name|
+          next unless name.include?('namespace_project')
+
+          define_method(name.sub('namespace_project', 'project')) do |project, *args|
+            send(name, project&.namespace, project, *args)
+          end
+        end
+      end
+
+      Gitlab::Routing.add_helpers(project_url_helpers)
     end
   end
 end

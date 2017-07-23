@@ -5,10 +5,10 @@
 
 Cycle Analytics measures the time it takes to go from an [idea to production] for
 each project you have. This is achieved by not only indicating the total time it
-takes to reach at that point, but the total time is broken down into the
+takes to reach that point, but the total time is broken down into the
 multiple stages an idea has to pass through to be shipped.
 
-Cycle Analytics is that it is tightly coupled with the [GitLab flow] and
+Cycle Analytics is tightly coupled with the [GitLab flow] and
 calculates a separate median for each stage.
 
 ## Overview

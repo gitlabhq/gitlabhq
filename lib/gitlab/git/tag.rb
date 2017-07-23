@@ -1,10 +1,12 @@
+# Gitaly note: JV: no RPC's here.
+#
 module Gitlab
   module Git
     class Tag < Ref
       attr_reader :object_sha
 
-      def initialize(repository, name, target, message = nil)
-        super(repository, name, target)
+      def initialize(repository, name, target, target_commit, message = nil)
+        super(repository, name, target, target_commit)
 
         @message = message
       end

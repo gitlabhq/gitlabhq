@@ -1,22 +1,21 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-alert */
-/* global Vue */
 
-(() => {
-  window.gl = window.gl || {};
-  window.gl.issueBoards = window.gl.issueBoards || {};
+import Vue from 'vue';
 
-  gl.issueBoards.BoardDelete = Vue.extend({
-    props: {
-      list: Object
-    },
-    methods: {
-      deleteBoard () {
-        $(this.$el).tooltip('hide');
+window.gl = window.gl || {};
+window.gl.issueBoards = window.gl.issueBoards || {};
 
-        if (confirm('Are you sure you want to delete this list?')) {
-          this.list.destroy();
-        }
+gl.issueBoards.BoardDelete = Vue.extend({
+  props: {
+    list: Object
+  },
+  methods: {
+    deleteBoard () {
+      $(this.$el).tooltip('hide');
+
+      if (confirm('Are you sure you want to delete this list?')) {
+        this.list.destroy();
       }
     }
-  });
-})();
+  }
+});

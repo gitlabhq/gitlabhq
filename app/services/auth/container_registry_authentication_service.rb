@@ -17,6 +17,7 @@ module Auth
     end
 
     def self.full_access_token(*names)
+      names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
@@ -37,13 +38,13 @@ module Auth
     private
 
     def authorized_token(*accesses)
-      token = JSONWebToken::RSAToken.new(registry.key)
-      token.issuer = registry.issuer
-      token.audience = params[:service]
-      token.subject = current_user.try(:username)
-      token.expire_time = self.class.token_expire_at
-      token[:access] = accesses.compact
-      token
+      JSONWebToken::RSAToken.new(registry.key).tap do |token|
+        token.issuer = registry.issuer
+        token.audience = params[:service]
+        token.subject = current_user.try(:username)
+        token.expire_time = self.class.token_expire_at
+        token[:access] = accesses.compact
+      end
     end
 
     def scope
@@ -55,20 +56,43 @@ module Auth
     def process_scope(scope)
       type, name, actions = scope.split(':', 3)
       actions = actions.split(',')
+      path = ContainerRegistry::Path.new(name)
+
       return unless type == 'repository'
 
-      process_repository_access(type, name, actions)
+      process_repository_access(type, path, actions)
     end
 
-    def process_repository_access(type, name, actions)
-      requested_project = Project.find_by_full_path(name)
+    def process_repository_access(type, path, actions)
+      return unless path.valid?
+
+      requested_project = path.repository_project
+
       return unless requested_project
 
       actions = actions.select do |action|
         can_access?(requested_project, action)
       end
 
-      { type: type, name: name, actions: actions } if actions.present?
+      return unless actions.present?
+
+      # At this point user/build is already authenticated.
+      #
+      ensure_container_repository!(path, actions)
+
+      { type: type, name: path.to_s, actions: actions }
+    end
+
+    ##
+    # Because we do not have two way communication with registry yet,
+    # we create a container repository image resource when push to the
+    # registry is successfuly authorized.
+    #
+    def ensure_container_repository!(path, actions)
+      return if path.has_repository?
+      return unless actions.include?('push')
+
+      ContainerRepository.create_from_path!(path)
     end
 
     def can_access?(requested_project, requested_action)
@@ -101,6 +125,11 @@ module Auth
         can?(current_user, :read_container_image, requested_project)
     end
 
+    ##
+    # We still support legacy pipeline triggers which do not have associated
+    # actor. New permissions model and new triggers are always associated with
+    # an actor, so this should be improved in 10.0 version of GitLab.
+    #
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates
       has_authentication_ability?(:build_create_container_image) &&
@@ -113,14 +142,11 @@ module Auth
     end
 
     def error(code, status:, message: '')
-      {
-        errors: [{ code: code, message: message }],
-        http_status: status
-      }
+      { errors: [{ code: code, message: message }], http_status: status }
     end
 
     def has_authentication_ability?(capability)
-      (@authentication_abilities || []).include?(capability)
+      @authentication_abilities.to_a.include?(capability)
     end
   end
 end

@@ -56,14 +56,14 @@ gitlab_workhorse_log="$app_root/log/gitlab-workhorse.log"
 # The value of -listen-http must be set to `gitlab.yml > pages > external_http`
 # as well. For example:
 #
-#   -listen-http 1.1.1.1:80
+#   -listen-http 1.1.1.1:80 -listen-http [2001::1]:80
 #
 # To enable HTTPS support for custom domains add the `-listen-https`,
 # `-root-cert` and `-root-key` directives in `gitlab_pages_options` below.
 # The value of -listen-https must be set to `gitlab.yml > pages > external_https`
 # as well. For example:
 #
-#   -listen-https 1.1.1.1:443 -root-cert /path/to/example.com.crt -root-key /path/to/example.com.key
+#   -listen-https 1.1.1.1:443 -listen-http [2001::1]:443 -root-cert /path/to/example.com.crt -root-key /path/to/example.com.key
 #
 # The -pages-domain must be specified the same as in `gitlab.yml > pages > host`.
 # Set `gitlab_pages_enabled=true` if you want to enable the Pages feature.
@@ -84,3 +84,9 @@ mail_room_pid_path="$pid_path/mail_room.pid"
 # shell other than "bash"
 # The default is "/bin/bash"
 shell_path="/bin/bash"
+
+# This variable controls whether the init script starts/stops Gitaly
+gitaly_enabled=true
+gitaly_dir=$(cd $app_root/../gitaly 2> /dev/null && pwd)
+gitaly_pid_path="$pid_path/gitaly.pid"
+gitaly_log="$app_root/log/gitaly.log"

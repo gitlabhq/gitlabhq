@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Templates, api: true  do
-  include ApiHelpers
-
+describe API::V3::Templates do
   shared_examples_for 'the Template Entity' do |path|
     before { get v3_api(path) }
 

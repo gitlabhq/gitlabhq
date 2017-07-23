@@ -49,11 +49,12 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
       instance = described_class.new('Foo')
       3.times { instance.whitelist }
 
-      expect(instance.whitelist[:transformers].size).to eq 5
+      expect(instance.whitelist[:transformers].size).to eq 4
     end
 
-    it 'allows syntax highlighting' do
-      exp = act = %q{<pre class="code highlight white c"><code><span class="k">def</span></code></pre>}
+    it 'sanitizes `class` attribute from all elements' do
+      act = %q{<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
+      exp = %q{<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
       expect(filter(act).to_html).to eq exp
     end
 
@@ -94,6 +95,22 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     it 'allows `details` elements' do
       exp = act = '<details>long text goes here</details>'
       expect(filter(act).to_html).to eq exp
+    end
+
+    it 'allows `data-math-style` attribute on `code` and `pre` elements' do
+      html = <<-HTML
+      <pre class="code" data-math-style="inline">something</pre>
+      <code class="code" data-math-style="inline">something</code>
+      <div class="code" data-math-style="inline">something</div>
+      HTML
+
+      output = <<-HTML
+      <pre data-math-style="inline">something</pre>
+      <code data-math-style="inline">something</code>
+      <div>something</div>
+      HTML
+
+      expect(filter(html).to_html).to eq(output)
     end
 
     it 'removes `rel` attribute from `a` elements' do
@@ -204,8 +221,8 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'disallows invalid URIs' do
-      expect(Addressable::URI).to receive(:parse).with('foo://example.com').
-        and_raise(Addressable::URI::InvalidURIError)
+      expect(Addressable::URI).to receive(:parse).with('foo://example.com')
+        .and_raise(Addressable::URI::InvalidURIError)
 
       input = '<a href="foo://example.com">Foo</a>'
       output = filter(input)

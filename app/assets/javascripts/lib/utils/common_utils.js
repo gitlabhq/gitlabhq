@@ -2,6 +2,8 @@
 (function() {
   (function(w) {
     var base;
+    const faviconEl = document.getElementById('favicon');
+    const originalFavicon = faviconEl ? faviconEl.getAttribute('href') : null;
     w.gl || (w.gl = {});
     (base = w.gl).utils || (base.utils = {});
     w.gl.utils.isInGroupsPage = function() {
@@ -33,6 +35,14 @@
       });
     };
 
+    w.gl.utils.ajaxPost = function(url, data) {
+      return $.ajax({
+        type: 'POST',
+        url: url,
+        data: data,
+      });
+    };
+
     w.gl.utils.extractLast = function(term) {
       return this.split(term).pop();
     };
@@ -43,6 +53,10 @@
       } else {
         return val;
       }
+    };
+
+    gl.utils.updateTooltipTitle = function($tooltipEl, newTitle) {
+      return $tooltipEl.attr('title', newTitle).tooltip('fixTitle');
     };
 
     w.gl.utils.disableButtonIfEmptyField = function(field_selector, button_selector, event_name) {
@@ -72,18 +86,25 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
+      var fixedTabs = document.querySelector('.js-tabs-affix');
+      var fixedNav = document.querySelector('.navbar-gitlab');
+
+      var adjustment = 0;
+      if (fixedNav) adjustment -= fixedNav.offsetHeight;
+
       // scroll to user-generated markdown anchor if we cannot find a match
       if (document.getElementById(hash) === null) {
         var target = document.getElementById('user-content-' + hash);
         if (target && target.scrollIntoView) {
           target.scrollIntoView(true);
+          window.scrollBy(0, adjustment);
         }
       } else {
         // only adjust for fixedTabs when not targeting user-generated content
-        var fixedTabs = document.querySelector('.js-tabs-affix');
         if (fixedTabs) {
-          window.scrollBy(0, -fixedTabs.offsetHeight);
+          adjustment -= fixedTabs.offsetHeight;
         }
+        window.scrollBy(0, adjustment);
       }
     };
 
@@ -121,7 +142,10 @@
     gl.utils.getUrlParamsArray = function () {
       // We can trust that each param has one & since values containing & will be encoded
       // Remove the first character of search as it is always ?
-      return window.location.search.slice(1).split('&');
+      return window.location.search.slice(1).split('&').map((param) => {
+        const split = param.split('=');
+        return [decodeURI(split[0]), split[1]].join('=');
+      });
     };
 
     gl.utils.isMetaKey = function(e) {
@@ -150,8 +174,8 @@
       if the name does not exist this function will return `null`
       otherwise it will return the value of the param key provided
     */
-    w.gl.utils.getParameterByName = (name) => {
-      const url = window.location.href;
+    w.gl.utils.getParameterByName = (name, parseUrl) => {
+      const url = parseUrl || window.location.href;
       name = name.replace(/[[\]]/g, '\\$&');
       const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
       const results = regex.exec(url);
@@ -163,7 +187,10 @@
     w.gl.utils.getSelectedFragment = () => {
       const selection = window.getSelection();
       if (selection.rangeCount === 0) return null;
-      const documentFragment = selection.getRangeAt(0).cloneContents();
+      const documentFragment = document.createDocumentFragment();
+      for (let i = 0; i < selection.rangeCount; i += 1) {
+        documentFragment.appendChild(selection.getRangeAt(i).cloneContents());
+      }
       if (documentFragment.textContent.length === 0) return null;
 
       return documentFragment;
@@ -178,10 +205,12 @@
 
       const textBefore = value.substring(0, selectionStart);
       const textAfter = value.substring(selectionEnd, value.length);
-      const newText = textBefore + text + textAfter;
+
+      const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+      const newText = textBefore + insertedText + textAfter;
 
       target.value = newText;
-      target.selectionStart = target.selectionEnd = selectionStart + text.length;
+      target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
       // Trigger autosave
       $(target).trigger('input');
@@ -232,6 +261,22 @@
     };
 
     /**
+      this will take in the getAllResponseHeaders result and normalize them
+      this way we don't run into production issues when nginx gives us lowercased header keys
+    */
+    w.gl.utils.normalizeCRLFHeaders = (headers) => {
+      const headersObject = {};
+      const headersArray = headers.split('\n');
+
+      headersArray.forEach((header) => {
+        const keyValue = header.split(': ');
+        headersObject[keyValue[0]] = keyValue[1];
+      });
+
+      return w.gl.utils.normalizeHeaders(headersObject);
+    };
+
+    /**
      * Parses pagination object string values into numbers.
      *
      * @param {Object} paginationInformation
@@ -247,7 +292,7 @@
     });
 
     /**
-     * Updates the search parameter of a URL given the parameter and values provided.
+     * Updates the search parameter of a URL given the parameter and value provided.
      *
      * If no search params are present we'll add it.
      * If param for page is already present, we'll update it
@@ -262,17 +307,24 @@
       let search;
       const locationSearch = window.location.search;
 
-      if (locationSearch.length === 0) {
+      if (locationSearch.length) {
+        const parameters = locationSearch.substring(1, locationSearch.length)
+          .split('&')
+          .reduce((acc, element) => {
+            const val = element.split('=');
+            acc[val[0]] = decodeURIComponent(val[1]);
+            return acc;
+          }, {});
+
+        parameters[param] = value;
+
+        const toString = Object.keys(parameters)
+          .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
+          .join('&');
+
+        search = `?${toString}`;
+      } else {
         search = `?${param}=${value}`;
-      }
-
-      if (locationSearch.indexOf(param) !== -1) {
-        const regex = new RegExp(param + '=\\d');
-        search = locationSearch.replace(regex, `${param}=${value}`);
-      }
-
-      if (locationSearch.length && locationSearch.indexOf(param) === -1) {
-        search = `${locationSearch}&${param}=${value}`;
       }
 
       return search;
@@ -336,6 +388,35 @@
         };
 
         fn(next, stop);
+      });
+    };
+
+    w.gl.utils.setFavicon = (faviconPath) => {
+      if (faviconEl && faviconPath) {
+        faviconEl.setAttribute('href', faviconPath);
+      }
+    };
+
+    w.gl.utils.resetFavicon = () => {
+      if (faviconEl) {
+        faviconEl.setAttribute('href', originalFavicon);
+      }
+    };
+
+    w.gl.utils.setCiStatusFavicon = (pageUrl) => {
+      $.ajax({
+        url: pageUrl,
+        dataType: 'json',
+        success: function(data) {
+          if (data && data.favicon) {
+            gl.utils.setFavicon(data.favicon);
+          } else {
+            gl.utils.resetFavicon();
+          }
+        },
+        error: function() {
+          gl.utils.resetFavicon();
+        }
       });
     };
   })(window);

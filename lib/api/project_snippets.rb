@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?
@@ -17,8 +17,7 @@ module API
         end
 
         def snippets_for_current_user
-          finder_params = { filter: :by_project, project: user_project }
-          SnippetsFinder.new.execute(current_user, finder_params)
+          SnippetsFinder.new(current_user, project: user_project).execute
         end
       end
 
@@ -50,6 +49,7 @@ module API
         requires :title, type: String, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
         requires :code, type: String, desc: 'The content of the snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
@@ -78,6 +78,7 @@ module API
         optional :title, type: String, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :code, type: String, desc: 'The content of the snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
@@ -115,6 +116,7 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
+        status 204
         snippet.destroy
       end
 
@@ -129,6 +131,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a project snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
+      end
+      get ":id/snippets/:snippet_id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

@@ -13,7 +13,7 @@ describe 'CycleAnalytics#plan', feature: true do
     data_fn: -> (context) do
       {
         issue: context.create(:issue, project: context.project),
-        branch_name: context.random_git_name
+        branch_name: context.generate(:branch)
       }
     end,
     start_time_conditions: [["issue associated with a milestone",
@@ -35,7 +35,7 @@ describe 'CycleAnalytics#plan', feature: true do
 
   context "when a regular label (instead of a list label) is added to the issue" do
     it "returns nil" do
-      branch_name = random_git_name
+      branch_name = generate(:branch)
       label = create(:label)
       issue = create(:issue, project: project)
       issue.update(label_ids: [label.id])

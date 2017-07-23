@@ -1,24 +1,20 @@
+# A note on merge request or commit diffs, using the legacy implementation.
+#
+# All new diff notes are of the type `DiffNote`, but any diff notes created
+# before the introduction of the new implementation still use `LegacyDiffNote`.
+#
+# A note of this type is never resolvable.
 class LegacyDiffNote < Note
   include NoteOnDiff
 
-  serialize :st_diff
+  serialize :st_diff # rubocop:disable Cop/ActiveRecordSerialize
 
   validates :line_code, presence: true, line_code: true
 
   before_create :set_diff
 
-  class << self
-    def build_discussion_id(noteable_type, noteable_id, line_code)
-      [super(noteable_type, noteable_id), line_code].join("-")
-    end
-  end
-
-  def legacy_diff_note?
-    true
-  end
-
-  def diff_attributes
-    { line_code: line_code }
+  def discussion_class(*)
+    LegacyDiffDiscussion
   end
 
   def project_repository
@@ -46,7 +42,7 @@ class LegacyDiffNote < Note
   end
 
   def for_line?(line)
-    !line.meta? && diff_file.line_code(line) == self.line_code
+    line.discussable? && diff_file.line_code(line) == self.line_code
   end
 
   def original_line_code
@@ -60,11 +56,12 @@ class LegacyDiffNote < Note
   #
   # If the note's current diff cannot be matched in the MergeRequest's current
   # diff, it's considered inactive.
-  def active?
+  def active?(diff_refs = nil)
     return @active if defined?(@active)
     return true if for_commit?
     return true unless diff_line
     return false unless noteable
+    return false if diff_refs && diff_refs != noteable.diff_refs
 
     noteable_diff = find_noteable_diff
 
@@ -118,9 +115,5 @@ class LegacyDiffNote < Note
   def find_noteable_diff
     diffs = noteable.raw_diffs(Commit.max_diff_options)
     diffs.find { |d| d.new_path == self.diff.new_path }
-  end
-
-  def build_discussion_id
-    self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 end

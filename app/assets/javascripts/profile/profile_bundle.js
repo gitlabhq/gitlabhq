@@ -1,2 +1,2 @@
-require('./gl_crop');
-require('./profile');
+import './gl_crop';
+import './profile';

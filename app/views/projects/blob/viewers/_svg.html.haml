@@ -1,0 +1,4 @@
+- blob = viewer.blob
+- data = sanitize_svg_data(blob.data)
+.file-content.image_file
+  %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(data)}", alt: blob.name }

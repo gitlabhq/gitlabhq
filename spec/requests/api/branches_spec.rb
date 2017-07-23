@@ -1,81 +1,148 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Branches, api: true  do
-  include ApiHelpers
-
+describe API::Branches do
   let(:user) { create(:user) }
-  let(:user2) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
-  let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
+  let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
   let!(:branch_name) { 'feature' }
   let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
-  let!(:branch_with_dot) { CreateBranchService.new(project, user).execute("with.1.2.3", "master") }
+  let(:branch_with_dot) { CreateBranchService.new(project, user).execute("with.1.2.3", "master")[:branch] }
 
   describe "GET /projects/:id/repository/branches" do
-    it "returns an array of project branches" do
-      project.repository.expire_all_method_caches
+    let(:route) { "/projects/#{project.id}/repository/branches" }
 
-      get api("/projects/#{project.id}/repository/branches", user), per_page: 100
+    shared_examples_for 'repository branches' do
+      it 'returns the repository branches' do
+        get api(route, current_user), per_page: 100
 
-      expect(response).to have_http_status(200)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      branch_names = json_response.map { |x| x['name'] }
-      expect(branch_names).to match_array(project.repository.branch_names)
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        branch_names = json_response.map { |x| x['name'] }
+        expect(branch_names).to match_array(project.repository.branch_names)
+      end
+
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository branches' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like 'repository branches' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
+      end
     end
   end
 
   describe "GET /projects/:id/repository/branches/:branch" do
-    it "returns the branch information for a single branch" do
-      get api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
-      expect(response).to have_http_status(200)
+    let(:route) { "/projects/#{project.id}/repository/branches/#{branch_name}" }
 
-      expect(json_response['name']).to eq(branch_name)
-      json_commit = json_response['commit']
-      expect(json_commit['id']).to eq(branch_sha)
-      expect(json_commit).to have_key('short_id')
-      expect(json_commit).to have_key('title')
-      expect(json_commit).to have_key('message')
-      expect(json_commit).to have_key('author_name')
-      expect(json_commit).to have_key('author_email')
-      expect(json_commit).to have_key('authored_date')
-      expect(json_commit).to have_key('committer_name')
-      expect(json_commit).to have_key('committer_email')
-      expect(json_commit).to have_key('committed_date')
-      expect(json_commit).to have_key('parent_ids')
-      expect(json_response['merged']).to eq(false)
-      expect(json_response['protected']).to eq(false)
-      expect(json_response['developers_can_push']).to eq(false)
-      expect(json_response['developers_can_merge']).to eq(false)
-    end
-
-    it "returns the branch information for a single branch with dots in the name" do
-      get api("/projects/#{project.id}/repository/branches/with.1.2.3", user)
-
-      expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq("with.1.2.3")
-    end
-
-    context 'on a merged branch' do
-      it "returns the branch information for a single branch" do
-        get api("/projects/#{project.id}/repository/branches/merge-test", user)
+    shared_examples_for 'repository branch' do |merged: false|
+      it 'returns the repository branch' do
+        get api(route, current_user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq('merge-test')
-        expect(json_response['merged']).to eq(true)
+        expect(json_response['name']).to eq(branch_name)
+        expect(json_response['merged']).to eq(merged)
+        expect(json_response['protected']).to eq(false)
+        expect(json_response['developers_can_push']).to eq(false)
+        expect(json_response['developers_can_merge']).to eq(false)
+
+        json_commit = json_response['commit']
+        expect(json_commit['id']).to eq(branch_sha)
+        expect(json_commit).to have_key('short_id')
+        expect(json_commit).to have_key('title')
+        expect(json_commit).to have_key('message')
+        expect(json_commit).to have_key('author_name')
+        expect(json_commit).to have_key('author_email')
+        expect(json_commit).to have_key('authored_date')
+        expect(json_commit).to have_key('committer_name')
+        expect(json_commit).to have_key('committer_email')
+        expect(json_commit).to have_key('committed_date')
+        expect(json_commit).to have_key('parent_ids')
+      end
+
+      context 'when branch does not exist' do
+        let(:branch_name) { 'unknown' }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+          let(:message) { '404 Branch Not Found' }
+        end
+      end
+
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
       end
     end
 
-    it "returns a 403 error if guest" do
-      get api("/projects/#{project.id}/repository/branches", user2)
-      expect(response).to have_http_status(403)
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository branch' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
     end
 
-    it "returns a 404 error if branch is not available" do
-      get api("/projects/#{project.id}/repository/branches/unknown", user)
-      expect(response).to have_http_status(404)
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      let(:current_user) { user }
+      it_behaves_like 'repository branch'
+
+      context 'when branch contains a dot' do
+        let(:branch_name) { branch_with_dot.name }
+        let(:branch_sha) { project.commit('master').sha }
+
+        it_behaves_like 'repository branch'
+      end
+
+      context 'when branch is merged' do
+        let(:branch_name) { 'merge-test' }
+        let(:branch_sha) { project.commit('merge-test').sha }
+
+        it_behaves_like 'repository branch', merged: true
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { get api(route, guest) }
+      end
     end
   end
 
@@ -93,10 +160,10 @@ describe API::Branches, api: true  do
       end
 
       it "protects a single branch with dots in the name" do
-        put api("/projects/#{project.id}/repository/branches/with.1.2.3/protect", user)
+        put api("/projects/#{project.id}/repository/branches/#{branch_with_dot.name}/protect", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['name']).to eq("with.1.2.3")
+        expect(json_response['name']).to eq(branch_with_dot.name)
         expect(json_response['protected']).to eq(true)
       end
 
@@ -234,7 +301,7 @@ describe API::Branches, api: true  do
     end
 
     it "returns a 403 error if guest" do
-      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user2)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", guest)
       expect(response).to have_http_status(403)
     end
   end
@@ -250,10 +317,10 @@ describe API::Branches, api: true  do
     end
 
     it "update branches with dots in branch name" do
-      put api("/projects/#{project.id}/repository/branches/with.1.2.3/unprotect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_with_dot.name}/unprotect", user)
 
       expect(response).to have_http_status(200)
-      expect(json_response['name']).to eq("with.1.2.3")
+      expect(json_response['name']).to eq(branch_with_dot.name)
       expect(json_response['protected']).to eq(false)
     end
 
@@ -282,7 +349,7 @@ describe API::Branches, api: true  do
     end
 
     it "denies for user without push access" do
-      post api("/projects/#{project.id}/repository/branches", user2),
+      post api("/projects/#{project.id}/repository/branches", guest),
            branch: branch_name,
            ref: branch_sha
       expect(response).to have_http_status(403)
@@ -330,7 +397,7 @@ describe API::Branches, api: true  do
     end
 
     it "removes a branch with dots in the branch name" do
-      delete api("/projects/#{project.id}/repository/branches/with.1.2.3", user)
+      delete api("/projects/#{project.id}/repository/branches/#{branch_with_dot.name}", user)
 
       expect(response).to have_http_status(204)
     end
@@ -338,19 +405,6 @@ describe API::Branches, api: true  do
     it 'returns 404 if branch not exists' do
       delete api("/projects/#{project.id}/repository/branches/foobar", user)
       expect(response).to have_http_status(404)
-    end
-
-    it "removes protected branch" do
-      create(:protected_branch, project: project, name: branch_name)
-      delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Protected branch cant be removed')
-    end
-
-    it "does not remove HEAD branch" do
-      delete api("/projects/#{project.id}/repository/branches/master", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Cannot remove HEAD branch')
     end
   end
 
@@ -367,7 +421,7 @@ describe API::Branches, api: true  do
     end
 
     it 'returns a 403 error if guest' do
-      delete api("/projects/#{project.id}/repository/merged_branches", user2)
+      delete api("/projects/#{project.id}/repository/merged_branches", guest)
       expect(response).to have_http_status(403)
     end
   end

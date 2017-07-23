@@ -24,16 +24,16 @@ module Banzai
         # Only push these customizations once
         return if customized?(whitelist[:transformers])
 
-        # Allow code highlighting
-        whitelist[:attributes]['pre'] = %w(class v-pre)
-        whitelist[:attributes]['span'] = %w(class)
-
         # Allow table alignment
         whitelist[:attributes]['th'] = %w(style)
         whitelist[:attributes]['td'] = %w(style)
 
         # Allow span elements
         whitelist[:elements].push('span')
+
+        # Allow data-math-style attribute in order to support LaTeX formatting
+        whitelist[:attributes]['code'] = %w(data-math-style)
+        whitelist[:attributes]['pre'] = %w(data-math-style)
 
         # Allow html5 details/summary elements
         whitelist[:elements].push('details')
@@ -51,9 +51,6 @@ module Banzai
 
         # Remove `rel` attribute from `a` elements
         whitelist[:transformers].push(self.class.remove_rel)
-
-        # Remove `class` attribute from non-highlight spans
-        whitelist[:transformers].push(self.class.clean_spans)
 
         whitelist
       end
@@ -82,21 +79,6 @@ module Banzai
             if env[:node_name] == 'a'
               env[:node].remove_attribute('rel')
             end
-          end
-        end
-
-        def clean_spans
-          lambda do |env|
-            node = env[:node]
-
-            return unless node.name == 'span'
-            return unless node.has_attribute?('class')
-
-            unless node.ancestors.any? { |n| n.name.casecmp('pre').zero? }
-              node.remove_attribute('class')
-            end
-
-            { node_whitelist: [node] }
           end
         end
       end

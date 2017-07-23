@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', feature: true, js: true do
-  include WaitForAjax
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
@@ -9,10 +8,22 @@ feature 'GFM autocomplete', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    sign_in(user)
+    visit project_issue_path(project, issue)
 
-    wait_for_ajax
+    wait_for_requests
+  end
+
+  it 'updates issue descripton with GFM reference' do
+    find('.issuable-edit').click
+
+    find('#issue-description').native.send_keys("@#{user.name[0...3]}")
+
+    find('.atwho-view .cur').trigger('click')
+
+    click_button 'Save changes'
+
+    expect(find('.description')).to have_content(user.to_reference)
   end
 
   it 'opens autocomplete menu when field starts with text' do
@@ -41,9 +52,36 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-58')).not_to have_selector('.cur:first-of-type')
+  end
+
+  it 'does not open autocomplete menu when ":" is prefixed by a number and letters' do
+    note = find('#note_note')
+
+    # Number.
+    page.within '.timeline-content-form' do
+      note.native.send_keys('7:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
+
+    # ASCII letter.
+    page.within '.timeline-content-form' do
+      note.set('')
+      note.native.send_keys('w:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
+
+    # Non-ASCII letter.
+    page.within '.timeline-content-form' do
+      note.set('')
+      note.native.send_keys('Ё:')
+    end
+
+    expect(page).not_to have_selector('.atwho-view')
   end
 
   it 'selects the first item for assignee dropdowns' do
@@ -54,7 +92,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
   end
@@ -67,7 +105,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-64')).to have_content(user.name)
   end
@@ -80,7 +118,7 @@ feature 'GFM autocomplete', feature: true, js: true do
 
     expect(page).to have_selector('.atwho-container')
 
-    wait_for_ajax
+    wait_for_requests
 
     expect(find('#at-view-58')).to have_selector('.cur:first-of-type')
   end
@@ -182,7 +220,7 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect(page).not_to have_selector('.atwho-view')
     end
 
-    it 'triggers autocomplete after selecting a slash command' do
+    it 'triggers autocomplete after selecting a quick action' do
       note = find('#note_note')
       page.within '.timeline-content-form' do
         note.native.send_keys('')

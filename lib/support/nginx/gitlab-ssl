@@ -85,6 +85,13 @@ server {
   ## [Optional] Enable HTTP Strict Transport Security
   # add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
 
+  ## Real IP Module Config
+  ## http://nginx.org/en/docs/http/ngx_http_realip_module.html
+  real_ip_header X-Real-IP; ## X-Real-IP or X-Forwarded-For or proxy_protocol
+  real_ip_recursive off;    ## If you enable 'on'
+  ## If you have a trusted IP address, uncomment it and set it
+  # set_real_ip_from YOUR_TRUSTED_ADDRESS; ## Replace this with something like 192.168.1.0/24
+
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;

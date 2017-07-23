@@ -1,13 +1,43 @@
 require 'spec_helper'
 
-describe API::V3::Users, api: true  do
-  include ApiHelpers
-
+describe API::V3::Users do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
   let(:email)   { create(:email, user: user) }
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
+
+  describe 'GET /users' do
+    context 'when authenticated' do
+      it 'returns an array of users' do
+        get v3_api('/users', user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        username = user.username
+        expect(json_response.detect do |user|
+          user['username'] == username
+        end['username']).to eq(username)
+      end
+    end
+
+    context 'when authenticated as user' do
+      it 'does not reveal the `is_admin` flag of the user' do
+        get v3_api('/users', user)
+
+        expect(json_response.first.keys).not_to include 'is_admin'
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it 'reveals the `is_admin` flag of the user' do
+        get v3_api('/users', admin)
+
+        expect(json_response.first.keys).to include 'is_admin'
+      end
+    end
+  end
 
   describe 'GET /user/:id/keys' do
     before { admin }
@@ -36,6 +66,19 @@ describe API::V3::Users, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(key.title)
       end
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { "/users/#{user.id}/keys" }
+      let(:api_call) { method(:v3_api) }
+
+      before do
+        user.keys << key
+        user.save
+      end
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -257,10 +300,38 @@ describe API::V3::Users, api: true  do
     end
 
     it 'returns a 404 error if not found' do
-      get v3_api('/users/42/events', user)
+      get v3_api('/users/420/events', user)
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+  end
+
+  describe 'POST /users' do
+    it 'creates confirmed user when confirm parameter is false' do
+      optional_attributes = { confirm: false }
+      attributes = attributes_for(:user).merge(optional_attributes)
+
+      post v3_api('/users', admin), attributes
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).to be_confirmed
+    end
+
+    it 'does not reveal the `is_admin` flag of the user' do
+      post v3_api('/users', admin), attributes_for(:user)
+
+      expect(json_response['is_admin']).to be_nil
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:v3_api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 end

@@ -1,8 +1,6 @@
 require "spec_helper"
 
-describe API::V3::Services, api: true  do
-  include ApiHelpers
-
+describe API::V3::Services do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 

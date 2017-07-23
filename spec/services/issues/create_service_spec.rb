@@ -6,10 +6,10 @@ describe Issues::CreateService, services: true do
 
   describe '#execute' do
     let(:issue) { described_class.new(project, user, opts).execute }
+    let(:assignee) { create(:user) }
+    let(:milestone) { create(:milestone, project: project) }
 
     context 'when params are valid' do
-      let(:assignee) { create(:user) }
-      let(:milestone) { create(:milestone, project: project) }
       let(:labels) { create_pair(:label, project: project) }
 
       before do
@@ -20,7 +20,7 @@ describe Issues::CreateService, services: true do
       let(:opts) do
         { title: 'Awesome issue',
           description: 'please fix',
-          assignee_id: assignee.id,
+          assignee_ids: [assignee.id],
           label_ids: labels.map(&:id),
           milestone_id: milestone.id,
           due_date: Date.tomorrow }
@@ -29,7 +29,7 @@ describe Issues::CreateService, services: true do
       it 'creates the issue with the given params' do
         expect(issue).to be_persisted
         expect(issue.title).to eq('Awesome issue')
-        expect(issue.assignee).to eq assignee
+        expect(issue.assignees).to eq [assignee]
         expect(issue.labels).to match_array labels
         expect(issue.milestone).to eq milestone
         expect(issue.due_date).to eq Date.tomorrow
@@ -37,6 +37,7 @@ describe Issues::CreateService, services: true do
 
       context 'when current user cannot admin issues in the project' do
         let(:guest) { create(:user) }
+
         before do
           project.team << [guest, :guest]
         end
@@ -47,7 +48,7 @@ describe Issues::CreateService, services: true do
           expect(issue).to be_persisted
           expect(issue.title).to eq('Awesome issue')
           expect(issue.description).to eq('please fix')
-          expect(issue.assignee).to be_nil
+          expect(issue.assignees).to be_empty
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
@@ -117,6 +118,22 @@ describe Issues::CreateService, services: true do
         end
       end
 
+      context 'when assignee is set' do
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            assignees: [assignee] }
+        end
+
+        it 'invalidates open issues counter for assignees when issue is assigned' do
+          project.team << [assignee, :master]
+
+          described_class.new(project, user, opts).execute
+
+          expect(assignee.assigned_open_issues_count).to eq 1
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 
@@ -136,50 +153,164 @@ describe Issues::CreateService, services: true do
       end
     end
 
-    it_behaves_like 'issuable create service'
+    context 'issue create service' do
+      context 'assignees' do
+        before do
+          project.team << [user, :master]
+        end
 
-    it_behaves_like 'new issuable record that supports slash commands'
+        it 'removes assignee when user id is invalid' do
+          opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }
 
-    context 'for a merge request' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to be_empty
+        end
+
+        it 'removes assignee when user id is 0' do
+          opts = { title: 'Title', description: 'Description',  assignee_ids: [0] }
+
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to be_empty
+        end
+
+        it 'saves assignee when user id is valid' do
+          project.team << [assignee, :master]
+          opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
+
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.assignees).to eq([assignee])
+        end
+
+        context "when issuable feature is private" do
+          before do
+            project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE,
+                                           merge_requests_access_level: ProjectFeature::PRIVATE)
+          end
+
+          levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+          levels.each do |level|
+            it "removes not authorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+              project.update(visibility_level: level)
+              opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
+
+              issue = described_class.new(project, user, opts).execute
+
+              expect(issue.assignees).to be_empty
+            end
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'new issuable record that supports quick actions'
+
+    context 'Quick actions' do
+      context 'with assignee and milestone in params and command' do
+        let(:opts) do
+          {
+            assignee_ids: [create(:user).id],
+            milestone_id: 1,
+            title: 'Title',
+            description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}")
+          }
+        end
+
+        before do
+          project.team << [user, :master]
+          project.team << [assignee, :master]
+        end
+
+        it 'assigns and sets milestone to issuable from command' do
+          expect(issue).to be_persisted
+          expect(issue.assignees).to eq([assignee])
+          expect(issue.milestone).to eq(milestone)
+        end
+      end
+    end
+
+    context 'resolving discussions' do
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
-      let(:opts) { { merge_request_for_resolving_discussions: merge_request } }
 
       before do
         project.team << [user, :master]
       end
 
-      it 'resolves the discussion for the merge request' do
-        described_class.new(project, user, opts).execute
-        discussion.first_note.reload
+      describe 'for a single discussion' do
+        let(:opts) { { discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid } }
 
-        expect(discussion.resolved?).to be(true)
+        it 'resolves the discussion' do
+          described_class.new(project, user, opts).execute
+          discussion.first_note.reload
+
+          expect(discussion.resolved?).to be(true)
+        end
+
+        it 'added a system note to the discussion' do
+          described_class.new(project, user, opts).execute
+
+          reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
+
+          expect(reloaded_discussion.last_note.system).to eq(true)
+        end
+
+        it 'assigns the title and description for the issue' do
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.title).not_to be_nil
+          expect(issue.description).not_to be_nil
+        end
+
+        it 'can set nil explicitly to the title and description' do
+          issue = described_class.new(project, user,
+                                      merge_request_to_resolve_discussions_of: merge_request,
+                                      description: nil,
+                                      title: nil).execute
+
+          expect(issue.description).to be_nil
+          expect(issue.title).to be_nil
+        end
       end
 
-      it 'added a system note to the discussion' do
-        described_class.new(project, user, opts).execute
+      describe 'for a merge request' do
+        let(:opts) { { merge_request_to_resolve_discussions_of: merge_request.iid } }
 
-        reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
+        it 'resolves the discussion' do
+          described_class.new(project, user, opts).execute
+          discussion.first_note.reload
 
-        expect(reloaded_discussion.last_note.system).to eq(true)
-      end
+          expect(discussion.resolved?).to be(true)
+        end
 
-      it 'assigns the title and description for the issue' do
-        issue = described_class.new(project, user, opts).execute
+        it 'added a system note to the discussion' do
+          described_class.new(project, user, opts).execute
 
-        expect(issue.title).not_to be_nil
-        expect(issue.description).not_to be_nil
-      end
+          reloaded_discussion = MergeRequest.find(merge_request.id).discussions.first
 
-      it 'can set nil explicityly to the title and description' do
-        issue = described_class.new(project, user,
-                                    merge_request_for_resolving_discussions: merge_request,
-                                    description: nil,
-                                    title: nil).execute
+          expect(reloaded_discussion.last_note.system).to eq(true)
+        end
 
-        expect(issue.description).to be_nil
-        expect(issue.title).to be_nil
+        it 'assigns the title and description for the issue' do
+          issue = described_class.new(project, user, opts).execute
+
+          expect(issue.title).not_to be_nil
+          expect(issue.description).not_to be_nil
+        end
+
+        it 'can set nil explicitly to the title and description' do
+          issue = described_class.new(project, user,
+                                      merge_request_to_resolve_discussions_of: merge_request,
+                                      description: nil,
+                                      title: nil).execute
+
+          expect(issue.description).to be_nil
+          expect(issue.title).to be_nil
+        end
       end
     end
 

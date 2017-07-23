@@ -10,6 +10,8 @@
   border-radius: $avatar_radius;
   border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
+  &.s18 { @include avatar-size(18px, 6px); }
+  &.s19 { @include avatar-size(19px, 6px); }
   &.s20 { @include avatar-size(20px, 7px); }
   &.s24 { @include avatar-size(24px, 8px); }
   &.s26 { @include avatar-size(26px, 8px); }
@@ -58,7 +60,7 @@
   }
 
   &:not([href]):hover {
-    border-color: rgba($avatar-border, .2);
+    border-color: darken($avatar-border, 10%);
   }
 }
 
@@ -92,4 +94,15 @@
     margin: 0;
     align-self: center;
   }
+}
+
+.avatar-counter {
+  background-color: $gray-darkest;
+  color: $white-light;
+  border: 1px solid $avatar-border;
+  border-radius: 1em;
+  font-family: $regular_font;
+  font-size: 9px;
+  line-height: 16px;
+  text-align: center;
 }

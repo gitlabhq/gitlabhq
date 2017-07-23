@@ -8,21 +8,23 @@ module GroupsHelper
       group = Group.find_by_full_path(group)
     end
 
-    group.try(:avatar_url) || image_path('no_group_avatar.png')
+    group.try(:avatar_url) || ActionController::Base.helpers.image_path('no_group_avatar.png')
   end
 
   def group_title(group, name = nil, url = nil)
+    @has_group_title = true
     full_title = ''
 
-    group.ancestors.each do |parent|
-      full_title += link_to(simple_sanitize(parent.name), group_path(parent))
-      full_title += ' / '.html_safe
+    group.ancestors.reverse.each do |parent|
+      full_title += group_title_link(parent, hidable: true)
+
+      full_title += '<span class="hidable"> / </span>'.html_safe
     end
 
-    full_title += link_to(simple_sanitize(group.name), group_path(group))
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url) if name
+    full_title += group_title_link(group)
+    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
 
-    content_tag :span do
+    content_tag :span, class: 'group-title' do
       full_title.html_safe
     end
   end
@@ -54,5 +56,26 @@ module GroupsHelper
 
   def group_issues(group)
     IssuesFinder.new(current_user, group_id: group.id).execute
+  end
+
+  def remove_group_message(group)
+    _("You are going to remove %{group_name}.\nRemoved groups CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+      { group_name: group.name }
+  end
+
+  private
+
+  def group_title_link(group, hidable: false)
+    link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
+      output =
+        if show_new_nav?
+          image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
+        else
+          ""
+        end
+
+      output << simple_sanitize(group.name)
+      output.html_safe
+    end
   end
 end

@@ -16,7 +16,7 @@ feature 'Merge request created from fork' do
 
   background do
     fork_project.team << [user, :master]
-    login_as user
+    sign_in user
   end
 
   scenario 'user can access merge request' do
@@ -31,7 +31,7 @@ feature 'Merge request created from fork' do
       fork_project.destroy!
     end
 
-    scenario 'user can access merge request' do
+    scenario 'user can access merge request', js: true do
       visit_merge_request(merge_request)
 
       expect(page).to have_content 'Test merge request'
@@ -56,18 +56,14 @@ feature 'Merge request created from fork' do
       visit_merge_request(merge_request)
       page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
-      page.within('table.ci-table') do
+      page.within('.ci-table') do
         expect(page).to have_content pipeline.status
         expect(page).to have_content pipeline.id
       end
-
-      expect(page.find('a.btn-remove')[:href])
-        .to include fork_project.path_with_namespace
     end
   end
 
   def visit_merge_request(mr)
-    visit namespace_project_merge_request_path(project.namespace,
-                                               project, mr)
+    visit project_merge_request_path(project, mr)
   end
 end

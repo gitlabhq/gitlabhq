@@ -7,11 +7,11 @@ class Projects::TriggersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def create
-    @trigger = project.triggers.create(create_params.merge(owner: current_user))
+    @trigger = project.triggers.create(trigger_params.merge(owner: current_user))
 
     if @trigger.valid?
       flash[:notice] = 'Trigger was created successfully.'
@@ -19,7 +19,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = 'You could not create a new trigger.'
     end
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def take_ownership
@@ -29,15 +29,15 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = 'You could not take ownership of trigger.'
     end
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def edit
   end
 
   def update
-    if trigger.update(update_params)
-      redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project), notice: 'Trigger was successfully updated.'
+    if trigger.update(trigger_params)
+      redirect_to project_settings_ci_cd_path(@project), notice: 'Trigger was successfully updated.'
     else
       render action: "edit"
     end
@@ -50,7 +50,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = "Could not remove the trigger."
     end
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project), status: 302
   end
 
   private
@@ -67,11 +67,9 @@ class Projects::TriggersController < Projects::ApplicationController
     @trigger ||= project.triggers.find(params[:id]) || render_404
   end
 
-  def create_params
-    params.require(:trigger).permit(:description)
-  end
-
-  def update_params
-    params.require(:trigger).permit(:description)
+  def trigger_params
+    params.require(:trigger).permit(
+      :description
+    )
   end
 end

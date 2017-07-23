@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Task Lists', feature: true do
   include Warden::Test::Helpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -59,15 +59,16 @@ feature 'Task Lists', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
-  describe 'for Issues' do
-    describe 'multiple tasks' do
+  describe 'for Issues', feature: true do
+    describe 'multiple tasks', js: true do
       let!(:issue) { create(:issue, description: markdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 6)
@@ -76,38 +77,38 @@ feature 'Task Lists', feature: true do
 
       it 'contains the required selectors' do
         visit_issue(project, issue)
+        wait_for_requests
 
-        container = '.detail-page-description .description.js-task-list-container'
-
-        expect(page).to have_selector(container)
-        expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
-        expect(page).to have_selector("#{container} .js-task-list-field")
-        expect(page).to have_selector('form.js-issuable-update')
+        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
         expect(page).to have_selector('a.btn-close')
       end
 
       it 'is only editable by author' do
         visit_issue(project, issue)
-        expect(page).to have_selector('.js-task-list-container')
+        wait_for_requests
+
+        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
 
         logout(:user)
-
         login_as(user2)
         visit current_path
-        expect(page).not_to have_selector('.js-task-list-container')
+        wait_for_requests
+
+        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
 
-    describe 'single incomplete task' do
+    describe 'single incomplete task', js: true do
       let!(:issue) { create(:issue, description: singleIncompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -115,16 +116,18 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
+
         expect(page).to have_content("0 of 1 task completed")
       end
     end
 
-    describe 'single complete task' do
+    describe 'single complete task', js: true do
       let!(:issue) { create(:issue, description: singleCompleteMarkdown, author: user, project: project) }
 
       it 'renders' do
         visit_issue(project, issue)
+        wait_for_requests
 
         expect(page).to have_selector('ul.task-list',      count: 1)
         expect(page).to have_selector('li.task-list-item', count: 1)
@@ -132,7 +135,8 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on Issues#index' do
-        visit namespace_project_issues_path(project.namespace, project)
+        visit project_issues_path(project)
+
         expect(page).to have_content("1 of 1 task completed")
       end
     end
@@ -140,7 +144,9 @@ feature 'Task Lists', feature: true do
     describe 'nested tasks', js: true do
       let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
 
-      before { visit_issue(project, issue) }
+      before do
+        visit_issue(project, issue)
+      end
 
       it 'renders' do
         expect(page).to have_selector('ul.task-list',      count: 2)
@@ -236,10 +242,11 @@ feature 'Task Lists', feature: true do
 
   describe 'for Merge Requests' do
     def visit_merge_request(project, merge)
-      visit namespace_project_merge_request_path(project.namespace, project, merge)
+      visit project_merge_request_path(project, merge)
     end
 
     describe 'multiple tasks' do
+      let(:project) { create(:project, :repository) }
       let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
 
       it 'renders for description' do
@@ -274,7 +281,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("2 of 6 tasks completed")
       end
     end
@@ -291,7 +298,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("0 of 1 task completed")
       end
     end
@@ -308,7 +315,7 @@ feature 'Task Lists', feature: true do
       end
 
       it 'provides a summary on MergeRequests#index' do
-        visit namespace_project_merge_requests_path(project.namespace, project)
+        visit project_merge_requests_path(project)
         expect(page).to have_content("1 of 1 task completed")
       end
     end

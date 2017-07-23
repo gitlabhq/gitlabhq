@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::AccessRequests, api: true  do
-  include ApiHelpers
-
+describe API::AccessRequests do
   let(:master) { create(:user) }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }

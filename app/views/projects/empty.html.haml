@@ -1,10 +1,12 @@
 - @no_container = true
+- flash_message_container = show_new_nav? ? :new_global_flash : :flash_message
 
-= content_for :flash_message do
+= content_for flash_message_container do
   - if current_user && can?(current_user, :download_code, @project)
     = render 'shared/no_ssh'
     = render 'shared/no_password'
 
+= render "projects/head"
 = render "home_panel"
 
 .row-content-block.second-block.center
@@ -59,7 +61,7 @@
               git init
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git add .
-              git commit
+              git commit -m "Initial commit"
               git push -u origin master
 
         %fieldset

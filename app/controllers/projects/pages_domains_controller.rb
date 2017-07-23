@@ -1,6 +1,7 @@
 class Projects::PagesDomainsController < Projects::ApplicationController
   layout 'project_settings'
 
+  before_action :require_pages_enabled!
   before_action :authorize_update_pages!, except: [:show]
   before_action :domain, only: [:show, :destroy]
 
@@ -15,7 +16,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     @domain = @project.pages_domains.create(pages_domain_params)
 
     if @domain.valid?
-      redirect_to namespace_project_pages_path(@project.namespace, @project)
+      redirect_to project_pages_path(@project)
     else
       render 'new'
     end
@@ -26,8 +27,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to(namespace_project_pages_path(@project.namespace, @project),
-                    notice: 'Domain was removed')
+        redirect_to project_pages_path(@project),
+                    status: 302,
+                    notice: 'Domain was removed'
       end
       format.js
     end

@@ -1,22 +1,58 @@
+##
+# DEPRECATED
+#
+# These helpers are deprecated in favor of detailed CI/CD statuses.
+#
+# See 'detailed_status?` method and `Gitlab::Ci::Status` module.
+#
 module CiStatusHelper
   def ci_status_path(pipeline)
     project = pipeline.project
-    namespace_project_pipeline_path(project.namespace, project, pipeline)
+    project_pipeline_path(project, pipeline)
   end
 
-  # Is used by Commit and Merge Request Widget
   def ci_label_for_status(status)
     if detailed_status?(status)
       return status.label
     end
 
+    label = case status
+            when 'success'
+              'passed'
+            when 'success_with_warnings'
+              'passed with warnings'
+            when 'manual'
+              'waiting for manual action'
+            else
+              status
+            end
+    translation = "CiStatusLabel|#{label}"
+    s_(translation)
+  end
+
+  def ci_text_for_status(status)
+    if detailed_status?(status)
+      return status.text
+    end
+
     case status
     when 'success'
-      'passed'
+      s_('CiStatusText|passed')
     when 'success_with_warnings'
-      'passed with warnings'
+      s_('CiStatusText|passed')
+    when 'manual'
+      s_('CiStatusText|blocked')
     else
-      status
+      # All states are already being translated inside the detailed statuses:
+      # :running => Gitlab::Ci::Status::Running
+      # :skipped => Gitlab::Ci::Status::Skipped
+      # :failed => Gitlab::Ci::Status::Failed
+      # :success => Gitlab::Ci::Status::Success
+      # :canceled => Gitlab::Ci::Status::Canceled
+      # The following states are customized above:
+      # :manual => Gitlab::Ci::Status::Manual
+      status_translation = "CiStatusText|#{status}"
+      s_(status_translation)
     end
   end
 
@@ -57,12 +93,24 @@ module CiStatusHelper
     custom_icon(icon_name)
   end
 
+  def pipeline_status_cache_key(pipeline_status)
+    "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
+  end
+
+  def render_project_pipeline_status(pipeline_status, tooltip_placement: 'auto left')
+    project = pipeline_status.project
+    path = pipelines_project_commit_path(project, pipeline_status.sha)
+
+    render_status_with_link(
+      'commit',
+      pipeline_status.status,
+      path,
+      tooltip_placement: tooltip_placement)
+  end
+
   def render_commit_status(commit, ref: nil, tooltip_placement: 'auto left')
     project = commit.project
-    path = pipelines_namespace_project_commit_path(
-      project.namespace,
-      project,
-      commit)
+    path = pipelines_project_commit_path(project, commit)
 
     render_status_with_link(
       'commit',
@@ -73,7 +121,7 @@ module CiStatusHelper
 
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')
     project = pipeline.project
-    path = namespace_project_pipeline_path(project.namespace, project, pipeline)
+    path = project_pipeline_path(project, pipeline)
     render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
   end
 

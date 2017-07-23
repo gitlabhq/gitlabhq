@@ -27,11 +27,11 @@ module SharedBuilds
   end
 
   step 'I visit recent build details page' do
-    visit namespace_project_build_path(@project.namespace, @project, @build)
+    visit project_job_path(@project, @build)
   end
 
   step 'I visit project builds page' do
-    visit namespace_project_builds_path(@project.namespace, @project)
+    visit project_jobs_path(@project)
   end
 
   step 'recent build has artifacts available' do
@@ -47,7 +47,7 @@ module SharedBuilds
   end
 
   step 'recent build has a build trace' do
-    @build.trace = 'job trace'
+    @build.trace.set('job trace')
   end
 
   step 'download of build artifacts archive starts' do
@@ -56,7 +56,7 @@ module SharedBuilds
   end
 
   step 'I access artifacts download page' do
-    visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build)
+    visit download_project_job_artifacts_path(@project, @build)
   end
 
   step 'I see details of a build' do

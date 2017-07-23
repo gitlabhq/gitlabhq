@@ -1,10 +1,13 @@
 require 'spec_helper'
 
 feature 'Merge request conflict resolution', js: true, feature: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:project) { create(:project) }
+
+  before do
+    # In order to have the diffs collapsed, we need to disable the increase feature
+    stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
+  end
 
   def create_merge_request(source_branch)
     create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project) do |mr|
@@ -25,13 +28,13 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       within find('.diff-file', text: 'files/ruby/popen.rb') do
         expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
@@ -55,23 +58,23 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
-        wait_for_ajax
+        wait_for_requests
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_ajax
+      wait_for_requests
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
 
       click_on 'Changes'
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).to have_content('One morning')
       expect(page).to have_content('Gregor Samsa woke from troubled dreams')
@@ -81,20 +84,24 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   context 'can be resolved in the UI' do
     before do
       project.team << [user, :developer]
-      login_as(user)
+      sign_in(user)
     end
 
     context 'the conflicts are resolvable' do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
-      before { visit namespace_project_merge_request_path(project.namespace, project, merge_request) }
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
 
       it 'shows a link to the conflict resolution page' do
         expect(page).to have_link('conflicts', href: /\/conflicts\Z/)
       end
 
       context 'in Inline view mode' do
-        before { click_link('conflicts', href: /\/conflicts\Z/) }
+        before do
+          click_link('conflicts', href: /\/conflicts\Z/)
+        end
 
         include_examples "conflicts are resolved in Interactive mode"
         include_examples "conflicts are resolved in Edit inline mode"
@@ -102,7 +109,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       context 'in Parallel view mode' do
         before do
-          click_link('conflicts', href: /\/conflicts\Z/) 
+          click_link('conflicts', href: /\/conflicts\Z/)
           click_button 'Side-by-side'
         end
 
@@ -115,7 +122,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       let(:merge_request) { create_merge_request('conflict-contains-conflict-markers') }
 
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
         click_link('conflicts', href: /\/conflicts\Z/)
       end
 
@@ -128,21 +135,21 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
-          wait_for_ajax
+          wait_for_requests
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 
         click_button 'Commit conflict resolution'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('All merge conflicts were resolved')
 
         merge_request.reload_diff
 
         click_on 'Changes'
-        wait_for_ajax
+        wait_for_requests
         click_link 'Expand all'
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content('Gregor Samsa woke from troubled dreams')
       end
@@ -153,7 +160,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
     'conflict-too-large' => 'when the conflicts contain a large file',
     'conflict-binary-file' => 'when the conflicts contain a binary file',
     'conflict-missing-side' => 'when the conflicts contain a file edited in one branch and deleted in another',
-    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file',
+    'conflict-non-utf8' => 'when the conflicts contain a non-UTF-8 file'
   }.freeze
 
   UNRESOLVABLE_CONFLICTS.each do |source_branch, description|
@@ -162,9 +169,9 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       before do
         project.team << [user, :developer]
-        login_as(user)
+        sign_in(user)
 
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'does not show a link to the conflict resolution page' do
@@ -173,7 +180,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       it 'shows an error if the conflicts page is visited directly' do
         visit current_url + '/conflicts'
-        wait_for_ajax
+        wait_for_requests
 
         expect(find('#conflicts')).to have_content('Please try to resolve them locally.')
       end

@@ -1,12 +1,17 @@
+# Gitaly note: JV: looks like this is only used by GitHooksService in
+# app/services. We shouldn't bother migrating this until we know how
+# GitHooksService will be migrated.
+
 module Gitlab
   module Git
     class Hook
       GL_PROTOCOL = 'web'.freeze
       attr_reader :name, :repo_path, :path
 
-      def initialize(name, repo_path)
+      def initialize(name, project)
         @name = name
-        @repo_path = repo_path
+        @project = project
+        @repo_path = project.repository.path
         @path = File.join(repo_path.strip, 'hooks', name)
       end
 
@@ -38,7 +43,8 @@ module Gitlab
         vars = {
           'GL_ID' => gl_id,
           'PWD' => repo_path,
-          'GL_PROTOCOL' => GL_PROTOCOL
+          'GL_PROTOCOL' => GL_PROTOCOL,
+          'GL_REPOSITORY' => Gitlab::GlRepository.gl_repository(@project, false)
         }
 
         options = {

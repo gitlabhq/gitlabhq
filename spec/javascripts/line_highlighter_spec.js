@@ -1,22 +1,18 @@
 /* eslint-disable space-before-function-paren, no-var, no-param-reassign, quotes, prefer-template, no-else-return, new-cap, dot-notation, no-return-assign, comma-dangle, no-new, one-var, one-var-declaration-per-line, jasmine/no-spec-dupes, no-underscore-dangle, max-len */
 /* global LineHighlighter */
 
-require('~/line_highlighter');
+import '~/line_highlighter';
 
 (function() {
   describe('LineHighlighter', function() {
     var clickLine;
     preloadFixtures('static/line_highlighter.html.raw');
-    clickLine = function(number, eventData) {
-      var e;
-      if (eventData == null) {
-        eventData = {};
-      }
+    clickLine = function(number, eventData = {}) {
       if ($.isEmptyObject(eventData)) {
-        return $("#L" + number).mousedown().click();
+        return $("#L" + number).click();
       } else {
-        e = $.Event('mousedown', eventData);
-        return $("#L" + number).trigger(e).click();
+        const e = $.Event('click', eventData);
+        return $("#L" + number).trigger(e);
       }
     };
     beforeEach(function() {
@@ -62,13 +58,7 @@ require('~/line_highlighter');
         return expect(func).not.toThrow();
       });
     });
-    describe('#clickHandler', function() {
-      it('discards the mousedown event', function() {
-        var spy;
-        spy = spyOnEvent('a[data-line-number]', 'mousedown');
-        clickLine(13);
-        return expect(spy).toHaveBeenPrevented();
-      });
+    describe('clickHandler', function() {
       it('handles clicking on a child icon element', function() {
         var spy;
         spy = spyOn(this["class"], 'setHash').and.callThrough();
@@ -186,7 +176,7 @@ require('~/line_highlighter');
         });
       });
     });
-    describe('#hashToRange', function() {
+    describe('hashToRange', function() {
       beforeEach(function() {
         return this.subject = this["class"].hashToRange;
       });
@@ -200,7 +190,7 @@ require('~/line_highlighter');
         return expect(this.subject('#foo')).toEqual([null, null]);
       });
     });
-    describe('#highlightLine', function() {
+    describe('highlightLine', function() {
       beforeEach(function() {
         return this.subject = this["class"].highlightLine;
       });
@@ -213,7 +203,7 @@ require('~/line_highlighter');
         return expect($('#LC13')).toHaveClass(this.css);
       });
     });
-    return describe('#setHash', function() {
+    return describe('setHash', function() {
       beforeEach(function() {
         return this.subject = this["class"].setHash;
       });

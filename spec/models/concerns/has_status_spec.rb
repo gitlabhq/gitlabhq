@@ -48,7 +48,7 @@ describe HasStatus do
           [create(type, status: :failed, allow_failure: true)]
         end
 
-        it { is_expected.to eq 'skipped' }
+        it { is_expected.to eq 'success' }
       end
 
       context 'success and canceled' do
@@ -110,6 +110,24 @@ describe HasStatus do
         it { is_expected.to eq 'running' }
       end
 
+      context 'when one status finished and second is still created' do
+        let!(:statuses) do
+          [create(type, status: :success), create(type, status: :created)]
+        end
+
+        it { is_expected.to eq 'running' }
+      end
+
+      context 'when there is a manual status before created status' do
+        let!(:statuses) do
+          [create(type, status: :success),
+           create(type, status: :manual, allow_failure: false),
+           create(type, status: :created)]
+        end
+
+        it { is_expected.to eq 'manual' }
+      end
+
       context 'when one status is a blocking manual action' do
         let!(:statuses) do
           [create(type, status: :failed),
@@ -150,8 +168,8 @@ describe HasStatus do
 
           describe ".#{status}" do
             it 'contains the job' do
-              expect(CommitStatus.public_send(status).all).
-                to contain_exactly(job)
+              expect(CommitStatus.public_send(status).all)
+                .to contain_exactly(job)
             end
           end
 
@@ -209,6 +227,18 @@ describe HasStatus do
       end
 
       %i[created failed success].each do |status|
+        it_behaves_like 'not containing the job', status
+      end
+    end
+
+    describe '.created_or_pending' do
+      subject { CommitStatus.created_or_pending }
+
+      %i[created pending].each do |status|
+        it_behaves_like 'containing the job', status
+      end
+
+      %i[running failed success].each do |status|
         it_behaves_like 'not containing the job', status
       end
     end

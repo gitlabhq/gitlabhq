@@ -2,7 +2,10 @@ require 'mime/types'
 
 module API
   class CommitStatuses < Grape::API
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       include PaginationParams
 
       before { authenticate! }
@@ -11,7 +14,6 @@ module API
         success Entities::CommitStatus
       end
       params do
-        requires :id,    type: String, desc: 'The ID of a project'
         requires :sha,   type: String, desc: 'The commit hash'
         optional :ref,   type: String, desc: 'The ref'
         optional :stage, type: String, desc: 'The stage'
@@ -37,7 +39,6 @@ module API
         success Entities::CommitStatus
       end
       params do
-        requires :id,          type: String,  desc: 'The ID of a project'
         requires :sha,         type: String,  desc: 'The commit hash'
         requires :state,       type: String,  desc: 'The state of the status',
                                values: %w(pending running success failed canceled)
@@ -67,7 +68,14 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
+        pipeline = @project.pipeline_for(ref, commit.sha)
+        unless pipeline
+          pipeline = @project.pipelines.create!(
+            source: :external,
+            sha: commit.sha,
+            ref: ref,
+            user: current_user)
+        end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,
@@ -99,6 +107,9 @@ module API
           else
             render_api_error!('invalid state', 400)
           end
+
+          MergeRequest.where(source_project: @project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e

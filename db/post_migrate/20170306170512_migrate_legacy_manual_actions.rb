@@ -4,6 +4,8 @@ class MigrateLegacyManualActions < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
+    disable_statement_timeout
+
     execute <<-EOS
       UPDATE ci_builds SET status = 'manual', allow_failure = true
         WHERE ci_builds.when = 'manual' AND ci_builds.status = 'skipped';
@@ -11,6 +13,8 @@ class MigrateLegacyManualActions < ActiveRecord::Migration
   end
 
   def down
+    disable_statement_timeout
+
     execute <<-EOS
       UPDATE ci_builds SET status = 'skipped', allow_failure = false
         WHERE ci_builds.when = 'manual' AND ci_builds.status = 'manual';

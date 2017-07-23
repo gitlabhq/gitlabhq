@@ -7,7 +7,7 @@ feature 'Developer views empty project instructions', feature: true do
   background do
     project.team << [developer, :developer]
 
-    login_as(developer)
+    sign_in(developer)
   end
 
   context 'without an SSH key' do
@@ -47,7 +47,7 @@ feature 'Developer views empty project instructions', feature: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def select_protocol(protocol)
@@ -56,14 +56,8 @@ feature 'Developer views empty project instructions', feature: true do
   end
 
   def expect_instructions_for(protocol)
-    url = 
-      case protocol
-      when 'ssh'
-        project.ssh_url_to_repo
-      when 'http'
-        project.http_url_to_repo(developer)
-      end
+    msg = :"#{protocol.downcase}_url_to_repo"
 
-    expect(page).to have_content("git clone #{url}")
+    expect(page).to have_content("git clone #{project.send(msg)}")
   end
 end

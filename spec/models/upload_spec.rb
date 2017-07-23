@@ -54,8 +54,8 @@ describe Upload, type: :model do
         uploader: 'AvatarUploader'
       )
 
-      expect { described_class.remove_path(__FILE__) }.
-        to change { described_class.count }.from(1).to(0)
+      expect { described_class.remove_path(__FILE__) }
+        .to change { described_class.count }.from(1).to(0)
     end
   end
 

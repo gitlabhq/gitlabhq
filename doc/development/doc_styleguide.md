@@ -3,6 +3,8 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
+See also [writing documentation](writing_documentation.md).
+
 ## Location and naming of documents
 
 >**Note:**
@@ -27,6 +29,8 @@ The table below shows what kind of documentation goes where.
 | `doc/legal/` | Legal documents about contributing to GitLab. |
 | `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
 | `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+| `doc/topics/` | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs) |
+| `doc/articles/` | [Technical Articles](writing_documentation.md#technical-articles): user guides, admin guides, technical overviews, tutorials (`doc/articles/article-title/index.md`). |
 
 ---
 
@@ -56,6 +60,10 @@ The table below shows what kind of documentation goes where.
          own document located at `doc/user/admin_area/settings/`. For example,
          the **Visibility and Access Controls** category should have a document
          located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. For technical articles, place their images under `doc/articles/article-title/img/`.
 
 ---
 
@@ -190,10 +198,17 @@ You can combine one or more of the following:
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`.
+  could be `twitter_login_screen.png`. [**Exception**: images for
+  [articles](writing_documentation.md#technical-articles) should be
+  put in a directory called `img` underneath `/articles/article_title/img/`, therefore,
+  there's no need to prepend the document name to their filenames.]
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
+- Compress all images with <https://tinypng.com/> or similar tool.
+- Compress gifs with <https://ezgif.com/optimize> or similar toll.
+- Images should be used (only when necessary) to _illustrate_ the description
+of a process, not to _replace_ it.
 
 Inside the document:
 
@@ -373,8 +388,8 @@ the style below as a guide:
 1. Save the file and [restart] GitLab for the changes to take effect.
 
 
-[reconfigure]: path/to/administration/gitlab_restart.md#omnibus-gitlab-reconfigure
-[restart]: path/to/administration/gitlab_restart.md#installations-from-source
+[reconfigure]: path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: path/to/administration/restart_gitlab.md#installations-from-source
 ````
 
 In this case:

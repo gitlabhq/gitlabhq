@@ -1,21 +1,21 @@
 /* eslint-disable comma-dangle, one-var, no-unused-vars */
-/* global Vue */
 /* global BoardService */
 /* global boardsMockInterceptor */
-/* global Cookies */
 /* global listObj */
 /* global listObjDuplicate */
 /* global ListIssue */
 
-require('~/lib/utils/url_utility');
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/services/board_service');
-require('~/boards/stores/boards_store');
-require('./mock_data');
-require('es6-promise').polyfill();
+import Vue from 'vue';
+import Cookies from 'js-cookie';
+
+import '~/lib/utils/url_utility';
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/services/board_service';
+import '~/boards/stores/boards_store';
+import './mock_data';
 
 describe('Store', () => {
   beforeEach(() => {
@@ -50,9 +50,9 @@ describe('Store', () => {
 
     it('finds list by ID', () => {
       gl.issueBoards.BoardsStore.addList(listObj);
-      const list = gl.issueBoards.BoardsStore.findList('id', 1);
+      const list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
 
-      expect(list.id).toBe(1);
+      expect(list.id).toBe(listObj.id);
     });
 
     it('finds list by type', () => {
@@ -64,7 +64,7 @@ describe('Store', () => {
 
     it('gets issue when new list added', (done) => {
       gl.issueBoards.BoardsStore.addList(listObj);
-      const list = gl.issueBoards.BoardsStore.findList('id', 1);
+      const list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
@@ -89,9 +89,9 @@ describe('Store', () => {
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
       setTimeout(() => {
-        const list = gl.issueBoards.BoardsStore.findList('id', 1);
+        const list = gl.issueBoards.BoardsStore.findList('id', listObj.id);
         expect(list).toBeDefined();
-        expect(list.id).toBe(1);
+        expect(list.id).toBe(listObj.id);
         expect(list.position).toBe(0);
         done();
       }, 0);
@@ -106,9 +106,9 @@ describe('Store', () => {
       expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(false);
     });
 
-    it('check for blank state adding when done list exist', () => {
+    it('check for blank state adding when closed list exist', () => {
       gl.issueBoards.BoardsStore.addList({
-        list_type: 'done'
+        list_type: 'closed'
       });
 
       expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(true);
@@ -126,7 +126,7 @@ describe('Store', () => {
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
-      gl.issueBoards.BoardsStore.removeList(1, 'label');
+      gl.issueBoards.BoardsStore.removeList(listObj.id, 'label');
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
     });
@@ -137,7 +137,7 @@ describe('Store', () => {
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-      gl.issueBoards.BoardsStore.moveList(listOne, ['2', '1']);
+      gl.issueBoards.BoardsStore.moveList(listOne, [listObjDuplicate.id, listObj.id]);
 
       expect(listOne.position).toBe(1);
     });
@@ -212,7 +212,8 @@ describe('Store', () => {
         title: 'Testing',
         iid: 2,
         confidential: false,
-        labels: []
+        labels: [],
+        assignees: [],
       });
       const list = gl.issueBoards.BoardsStore.addList(listObj);
 

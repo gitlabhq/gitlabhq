@@ -4,7 +4,7 @@ describe 'Profile account page', feature: true do
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'when signup is enabled' do
@@ -44,6 +44,21 @@ describe 'Profile account page', feature: true do
       click_link('Reset private token')
 
       expect(find('#private-token').value).not_to eq(previous_token)
+    end
+  end
+
+  describe 'when I reset RSS token' do
+    before do
+      visit profile_account_path
+    end
+
+    it 'resets RSS token' do
+      previous_token = find("#rss-token").value
+
+      click_link('Reset RSS token')
+
+      expect(page).to have_content 'RSS token was successfully reset'
+      expect(find('#rss-token').value).not_to eq(previous_token)
     end
   end
 

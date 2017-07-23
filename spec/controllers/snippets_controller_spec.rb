@@ -3,6 +3,34 @@ require 'spec_helper'
 describe SnippetsController do
   let(:user) { create(:user) }
 
+  describe 'GET #index' do
+    let(:user) { create(:user) }
+
+    context 'when username parameter is present' do
+      it 'renders snippets of a user when username is present' do
+        get :index, username: user.username
+
+        expect(response).to render_template(:index)
+      end
+    end
+
+    context 'when username parameter is not present' do
+      it 'redirects to explore snippets page when user is not logged in' do
+        get :index
+
+        expect(response).to redirect_to(explore_snippets_path)
+      end
+
+      it 'redirects to snippets dashboard page when user is logged in' do
+        sign_in(user)
+
+        get :index
+
+        expect(response).to redirect_to(dashboard_snippets_path)
+      end
+    end
+  end
+
   describe 'GET #new' do
     context 'when signed in' do
       before do
@@ -132,7 +160,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, id: 'doesntexist'
 
-          expect(response).to have_http_status(404)
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
@@ -143,10 +171,48 @@ describe SnippetsController do
       sign_in(user)
 
       post :create, {
-        personal_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+        personal_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
 
       Snippet.last
+    end
+
+    it 'creates the snippet correctly' do
+      snippet = create_snippet(visibility_level: Snippet::PRIVATE)
+
+      expect(snippet.title).to eq('Title')
+      expect(snippet.content).to eq('Content')
+      expect(snippet.description).to eq('Description')
+    end
+
+    context 'when the snippet description contains a file' do
+      let(:picture_file) { '/system/temp/secret56/picture.jpg' }
+      let(:text_file) { '/system/temp/secret78/text.txt' }
+      let(:description) do
+        "Description with picture: ![picture](/uploads#{picture_file}) and "\
+        "text: [text.txt](/uploads#{text_file})"
+      end
+
+      before do
+        allow(FileUtils).to receive(:mkdir_p)
+        allow(FileUtils).to receive(:move)
+      end
+
+      subject { create_snippet({ description: description }, { files: [picture_file, text_file] }) }
+
+      it 'creates the snippet' do
+        expect { subject }.to change { Snippet.count }.by(1)
+      end
+
+      it 'stores the snippet description correctly' do
+        snippet = subject
+
+        expected_description = "Description with picture: "\
+          "![picture](/uploads/system/personal_snippet/#{snippet.id}/secret56/picture.jpg) and "\
+          "text: [text.txt](/uploads/system/personal_snippet/#{snippet.id}/secret78/text.txt)"
+
+        expect(snippet.description).to eq(expected_description)
+      end
     end
 
     context 'when the snippet is spam' do
@@ -156,20 +222,20 @@ describe SnippetsController do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
-            to change { Snippet.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PRIVATE) }
+            .to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            not_to change { Snippet.count }
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .not_to change { Snippet.count }
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :new with recaptcha disabled' do
@@ -230,8 +296,8 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'updates the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { snippet.reload.title }.to('Foo')
+          expect { update_snippet(title: 'Foo') }
+            .to change { snippet.reload.title }.to('Foo')
         end
       end
 
@@ -239,13 +305,13 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -275,7 +341,7 @@ describe SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(snippet_path(snippet))
           end
         end
       end
@@ -284,13 +350,13 @@ describe SnippetsController do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the shippet' do
-          expect { update_snippet(title: 'Foo') }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo') }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo') }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -350,144 +416,140 @@ describe SnippetsController do
     end
   end
 
-  %w(raw download).each do |action|
-    describe "GET #{action}" do
-      context 'when the personal snippet is private' do
-        let(:personal_snippet) { create(:personal_snippet, :private, author: user) }
+  describe "GET #raw" do
+    context 'when the personal snippet is private' do
+      let(:personal_snippet) { create(:personal_snippet, :private, author: user) }
 
-        context 'when signed in' do
-          before do
-            sign_in(user)
-          end
-
-          context 'when signed in user is not the author' do
-            let(:other_author) { create(:author) }
-            let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
-
-            it 'responds with status 404' do
-              get action, id: other_personal_snippet.to_param
-
-              expect(response).to have_http_status(404)
-            end
-          end
-
-          context 'when signed in user is the author' do
-            before { get action, id: personal_snippet.to_param }
-
-            it 'responds with status 200' do
-              expect(assigns(:snippet)).to eq(personal_snippet)
-              expect(response).to have_http_status(200)
-            end
-
-            it 'has expected headers' do
-              expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
-
-              if action == :download
-                expect(response.header['Content-Disposition']).to match(/attachment/)
-              elsif action == :raw
-                expect(response.header['Content-Disposition']).to match(/inline/)
-              end
-            end
-          end
+      context 'when signed in' do
+        before do
+          sign_in(user)
         end
 
-        context 'when not signed in' do
-          it 'redirects to the sign in page' do
-            get action, id: personal_snippet.to_param
-
-            expect(response).to redirect_to(new_user_session_path)
-          end
-        end
-      end
-
-      context 'when the personal snippet is internal' do
-        let(:personal_snippet) { create(:personal_snippet, :internal, author: user) }
-
-        context 'when signed in' do
-          before do
-            sign_in(user)
-          end
-
-          it 'responds with status 200' do
-            get action, id: personal_snippet.to_param
-
-            expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response).to have_http_status(200)
-          end
-        end
-
-        context 'when not signed in' do
-          it 'redirects to the sign in page' do
-            get action, id: personal_snippet.to_param
-
-            expect(response).to redirect_to(new_user_session_path)
-          end
-        end
-      end
-
-      context 'when the personal snippet is public' do
-        let(:personal_snippet) { create(:personal_snippet, :public, author: user) }
-
-        context 'when signed in' do
-          before do
-            sign_in(user)
-          end
-
-          it 'responds with status 200' do
-            get action, id: personal_snippet.to_param
-
-            expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response).to have_http_status(200)
-          end
-
-          context 'CRLF line ending' do
-            let(:personal_snippet) do
-              create(:personal_snippet, :public, author: user, content: "first line\r\nsecond line\r\nthird line")
-            end
-
-            it 'returns LF line endings by default' do
-              get action, id: personal_snippet.to_param
-
-              expect(response.body).to eq("first line\nsecond line\nthird line")
-            end
-
-            it 'does not convert line endings when parameter present' do
-              get action, id: personal_snippet.to_param, line_ending: :raw
-
-              expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
-            end
-          end
-        end
-
-        context 'when not signed in' do
-          it 'responds with status 200' do
-            get action, id: personal_snippet.to_param
-
-            expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response).to have_http_status(200)
-          end
-        end
-      end
-
-      context 'when the personal snippet does not exist' do
-        context 'when signed in' do
-          before do
-            sign_in(user)
-          end
+        context 'when signed in user is not the author' do
+          let(:other_author) { create(:author) }
+          let(:other_personal_snippet) { create(:personal_snippet, :private, author: other_author) }
 
           it 'responds with status 404' do
-            get action, id: 'doesntexist'
+            get :raw, id: other_personal_snippet.to_param
 
             expect(response).to have_http_status(404)
           end
         end
 
-        context 'when not signed in' do
-          it 'responds with status 404' do
-            get action, id: 'doesntexist'
-
-            expect(response).to have_http_status(404)
+        context 'when signed in user is the author' do
+          before do
+            get :raw, id: personal_snippet.to_param
           end
+
+          it 'responds with status 200' do
+            expect(assigns(:snippet)).to eq(personal_snippet)
+            expect(response).to have_http_status(200)
+          end
+
+          it 'has expected headers' do
+            expect(response.header['Content-Type']).to eq('text/plain; charset=utf-8')
+
+            expect(response.header['Content-Disposition']).to match(/inline/)
+          end
+        end
+      end
+
+      context 'when not signed in' do
+        it 'redirects to the sign in page' do
+          get :raw, id: personal_snippet.to_param
+
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    context 'when the personal snippet is internal' do
+      let(:personal_snippet) { create(:personal_snippet, :internal, author: user) }
+
+      context 'when signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it 'responds with status 200' do
+          get :raw, id: personal_snippet.to_param
+
+          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(response).to have_http_status(200)
+        end
+      end
+
+      context 'when not signed in' do
+        it 'redirects to the sign in page' do
+          get :raw, id: personal_snippet.to_param
+
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    context 'when the personal snippet is public' do
+      let(:personal_snippet) { create(:personal_snippet, :public, author: user) }
+
+      context 'when signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it 'responds with status 200' do
+          get :raw, id: personal_snippet.to_param
+
+          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(response).to have_http_status(200)
+        end
+
+        context 'CRLF line ending' do
+          let(:personal_snippet) do
+            create(:personal_snippet, :public, author: user, content: "first line\r\nsecond line\r\nthird line")
+          end
+
+          it 'returns LF line endings by default' do
+            get :raw, id: personal_snippet.to_param
+
+            expect(response.body).to eq("first line\nsecond line\nthird line")
+          end
+
+          it 'does not convert line endings when parameter present' do
+            get :raw, id: personal_snippet.to_param, line_ending: :raw
+
+            expect(response.body).to eq("first line\r\nsecond line\r\nthird line")
+          end
+        end
+      end
+
+      context 'when not signed in' do
+        it 'responds with status 200' do
+          get :raw, id: personal_snippet.to_param
+
+          expect(assigns(:snippet)).to eq(personal_snippet)
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+
+    context 'when the personal snippet does not exist' do
+      context 'when signed in' do
+        before do
+          sign_in(user)
+        end
+
+        it 'responds with status 404' do
+          get :raw, id: 'doesntexist'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when not signed in' do
+        it 'redirects to the sign in path' do
+          get :raw, id: 'doesntexist'
+
+          expect(response).to redirect_to(new_user_session_path)
         end
       end
     end
@@ -519,6 +581,18 @@ describe SnippetsController do
 
         expect(response.status).to eq(200)
       end
+    end
+  end
+
+  describe 'POST #preview_markdown' do
+    let(:snippet) { create(:personal_snippet, :public) }
+
+    it 'renders json in a correct format' do
+      sign_in(user)
+
+      post :preview_markdown, id: snippet, text: '*Markdown* text'
+
+      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
   end
 end

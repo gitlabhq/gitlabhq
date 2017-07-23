@@ -1,4 +1,0 @@
----
-title: 'API: Remove `DELETE projects/:id/deploy_keys/:key_id/disable`'
-merge_request: 9365
-author: Robert Schilling

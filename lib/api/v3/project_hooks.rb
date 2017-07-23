@@ -25,7 +25,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get project hooks' do
           success ::API::V3::Entities::ProjectHook
         end

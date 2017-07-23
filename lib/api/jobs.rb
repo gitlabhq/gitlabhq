@@ -7,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -118,7 +118,7 @@ module API
         content_type 'text/plain'
         env['api.format'] = :binary
 
-        trace = build.trace
+        trace = build.trace.raw
         body trace
       end
 
@@ -132,6 +132,7 @@ module API
         authorize_update_builds!
 
         build = get_build!(params[:job_id])
+        authorize!(:update_build, build)
 
         build.cancel
 
@@ -148,6 +149,7 @@ module API
         authorize_update_builds!
 
         build = get_build!(params[:job_id])
+        authorize!(:update_build, build)
         return forbidden!('Job is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
@@ -165,6 +167,7 @@ module API
         authorize_update_builds!
 
         build = get_build!(params[:job_id])
+        authorize!(:update_build, build)
         return forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
@@ -181,6 +184,7 @@ module API
         authorize_update_builds!
 
         build = get_build!(params[:job_id])
+        authorize!(:update_build, build)
         return not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
@@ -201,6 +205,7 @@ module API
 
         build = get_build!(params[:job_id])
 
+        authorize!(:update_build, build)
         bad_request!("Unplayable Job") unless build.playable?
 
         build.play(current_user)
@@ -211,22 +216,12 @@ module API
     end
 
     helpers do
-      def get_build(id)
+      def find_build(id)
         user_project.builds.find_by(id: id.to_i)
       end
 
       def get_build!(id)
-        get_build(id) || not_found!
-      end
-
-      def present_artifacts!(artifacts_file)
-        if !artifacts_file.file_storage?
-          redirect_to(build.artifacts_file.url)
-        elsif artifacts_file.exists?
-          present_file!(artifacts_file.path, artifacts_file.filename)
-        else
-          not_found!
-        end
+        find_build(id) || not_found!
       end
 
       def filter_builds(builds, scope)

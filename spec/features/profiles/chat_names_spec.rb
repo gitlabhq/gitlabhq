@@ -5,7 +5,7 @@ feature 'Profile > Chat', feature: true do
   given(:service) { create(:service) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'uses authorization link' do

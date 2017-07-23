@@ -1,7 +1,7 @@
 module MilestonesHelper
   def milestones_filter_path(opts = {})
     if @project
-      namespace_project_milestones_path(@project.namespace, @project, opts)
+      project_milestones_path(@project, opts)
     elsif @group
       group_milestones_path(@group, opts)
     else
@@ -11,7 +11,7 @@ module MilestonesHelper
 
   def milestones_label_path(opts = {})
     if @project
-      namespace_project_issues_path(@project.namespace, @project, opts)
+      project_issues_path(@project, opts)
     elsif @group
       issues_group_path(@group, opts)
     else
@@ -19,8 +19,8 @@ module MilestonesHelper
     end
   end
 
-  def milestones_browse_issuables_path(milestone, type:)
-    opts = { milestone_title: milestone.title }
+  def milestones_browse_issuables_path(milestone, state: nil, type:)
+    opts = { milestone_title: milestone.title, state: state }
 
     if @project
       polymorphic_path([@project.namespace.becomes(Namespace), @project, type], opts)
@@ -54,8 +54,10 @@ module MilestonesHelper
   def milestone_class_for_state(param, check, match_blank_param = false)
     if match_blank_param
       'active' if param.blank? || param == check
+    elsif param == check
+      'active'
     else
-      'active' if param == check
+      check
     end
   end
 
@@ -73,7 +75,9 @@ module MilestonesHelper
   def milestones_filter_dropdown_path
     project = @target_project || @project
     if project
-      namespace_project_milestones_path(project.namespace, project, :json)
+      project_milestones_path(project, :json)
+    elsif @group
+      group_milestones_path(@group, :json)
     else
       dashboard_milestones_path(:json)
     end
@@ -82,16 +86,19 @@ module MilestonesHelper
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
-    elsif milestone.due_date
-      days    = milestone.remaining_days
-      content = content_tag(:strong, days)
-      content << " #{'day'.pluralize(days)} remaining"
     elsif milestone.upcoming?
       content_tag(:strong, 'Upcoming')
+    elsif milestone.due_date
+      time_ago = time_ago_in_words(milestone.due_date)
+      content = time_ago.gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
+      content.slice!("about ")
+      content << " remaining"
+      content.html_safe
     elsif milestone.start_date && milestone.start_date.past?
       days    = milestone.elapsed_days
       content = content_tag(:strong, days)
       content << " #{'day'.pluralize(days)} elapsed"
+      content.html_safe
     end
   end
 
@@ -110,6 +117,46 @@ module MilestonesHelper
       else
         "starts on #{milestone.start_date.to_s(:medium)}"
       end
+    end
+  end
+
+  def milestone_merge_request_tab_path(milestone)
+    if @project
+      merge_requests_project_milestone_path(@project, milestone, format: :json)
+    elsif @group
+      merge_requests_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      merge_requests_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_participants_tab_path(milestone)
+    if @project
+      participants_project_milestone_path(@project, milestone, format: :json)
+    elsif @group
+      participants_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      participants_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def milestone_labels_tab_path(milestone)
+    if @project
+      labels_project_milestone_path(@project, milestone, format: :json)
+    elsif @group
+      labels_group_milestone_path(@group, milestone.safe_title, title: milestone.title, format: :json)
+    else
+      labels_dashboard_milestone_path(milestone, title: milestone.title, format: :json)
+    end
+  end
+
+  def group_milestone_route(milestone, params = {})
+    params = nil if params.empty?
+
+    if milestone.is_legacy_group_milestone?
+      group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: params)
+    else
+      group_milestone_path(@group, milestone.iid, milestone: params)
     end
   end
 end

@@ -1,6 +1,6 @@
 # rubocop:disable all
 class MigrateCiEmails < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def up
     # This inserts a new service: BuildsEmailService

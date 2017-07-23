@@ -5,7 +5,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I click link "Fork"' do
     expect(page).to have_content "Shop"
-    click_link "Fork project"
+    click_link "Fork"
   end
 
   step 'I am a member of project "Shop"' do
@@ -42,8 +42,9 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   end
 
   step 'I click link "New merge request"' do
-    expect(page).to have_content(/new merge request/i)
-    click_link "New Merge Request"
+    page.within '#content-body' do
+      page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
+    end
   end
 
   step 'I should see the new merge request page for my namespace' do
@@ -52,7 +53,7 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
 
   step 'I visit the forks page of the "Shop" project' do
     @project = Project.where(name: 'Shop').last
-    visit namespace_project_forks_path(@project.namespace, @project)
+    visit project_forks_path(@project)
   end
 
   step 'I should see my fork on the list' do

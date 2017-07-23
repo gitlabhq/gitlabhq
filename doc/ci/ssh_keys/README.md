@@ -30,13 +30,22 @@ This is the universal solution which works with any type of executor
 ## SSH keys when using the Docker executor
 
 You will first need to create an SSH key pair. For more information, follow the
-instructions to [generate an SSH key](../../ssh/README.md). Do not add a comment
-to the SSH key, or the `before_script` will prompt for a passphrase.
+instructions to [generate an SSH key](../../ssh/README.md). Do not add a
+passphrase to the SSH key, or the `before_script` will prompt for it.
 
 Then, create a new **Secret Variable** in your project settings on GitLab
-following **Settings > Variables**. As **Key** add the name `SSH_PRIVATE_KEY`
-and in the **Value** field paste the content of your _private_ key that you
-created earlier.
+following **Settings > Pipelines** and look for the "Secret Variables" section.
+As **Key** add the name `SSH_PRIVATE_KEY` and in the **Value** field paste the 
+content of your _private_ key that you created earlier.
+
+It is also good practice to check the server's own public key to make sure you
+are not being targeted by a man-in-the-middle attack. To do this, add another
+variable named `SSH_SERVER_HOSTKEYS`. To find out the hostkeys of your server, run
+the `ssh-keyscan YOUR_SERVER` command from a trusted network (ideally, from the
+server itself), and paste its output into the `SSH_SERVER_HOSTKEY` variable. If
+you need to connect to multiple servers, concatenate all the server public keys
+that you collected into the **Value** of the variable. There must be one key per
+line.
 
 Next you need to modify your `.gitlab-ci.yml` with a `before_script` action.
 Add it to the top:
@@ -59,6 +68,11 @@ before_script:
   # you will overwrite your user's SSH config.
   - mkdir -p ~/.ssh
   - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  # In order to properly check the server's host key, assuming you created the
+  # SSH_SERVER_HOSTKEYS variable previously, uncomment the following two lines
+  # instead.
+  # - mkdir -p ~/.ssh
+  # - '[[ -f /.dockerenv ]] && echo "$SSH_SERVER_HOSTKEYS" > ~/.ssh/known_hosts'
 ```
 
 As a final step, add the _public_ key from the one you created earlier to the

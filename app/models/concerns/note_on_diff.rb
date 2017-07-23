@@ -1,3 +1,4 @@
+# Contains functionality shared between `DiffNote` and `LegacyDiffNote`.
 module NoteOnDiff
   extend ActiveSupport::Concern
 
@@ -25,11 +26,11 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
-  def can_be_award_emoji?
-    false
+  def active?(diff_refs = nil)
+    raise NotImplementedError
   end
 
-  def to_discussion
-    Discussion.new([self])
+  def created_at_diff?(diff_refs)
+    false
   end
 end

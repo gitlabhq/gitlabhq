@@ -1,4 +1,4 @@
-# Users
+# Users API
 
 ## List users
 
@@ -72,6 +72,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": "2012-06-01T11:41:01Z",
     "confirmed_at": "2012-05-23T09:05:22Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 2,
     "projects_limit": 100,
     "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -104,6 +105,7 @@ GET /users
     "organization": "",
     "last_sign_in_at": null,
     "confirmed_at": "2012-05-30T16:53:06.148Z",
+    "last_activity_on": "2012-05-23",
     "color_scheme_id": 3,
     "projects_limit": 100,
     "current_sign_in_at": "2014-03-19T17:54:13Z",
@@ -130,7 +132,25 @@ For example:
 GET /users?username=jack_smith
 ```
 
+You can also lookup users by external UID and provider:
+
+```
+GET /users?extern_uid=:extern_uid&provider=:provider
+```
+
+For example:
+
+```
+GET /users?extern_uid=1234567&provider=github
+```
+
 You can search for users who are external with: `/users?external=true`
+
+You can search users by creation date time range with:
+
+```
+GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
+```
 
 ## Single user
 
@@ -155,7 +175,6 @@ Parameters:
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -196,6 +215,7 @@ Parameters:
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -240,6 +260,7 @@ Parameters:
 - `can_create_group` (optional) - User can create groups - true or false
 - `confirm` (optional)          - Require confirmation - true (default) or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 
@@ -268,6 +289,7 @@ Parameters:
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
 - `external` (optional)         - Flags the user as external - true or false(default)
+- `avatar` (optional)           - Image file for user's avatar
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -289,6 +311,9 @@ DELETE /users/:id
 Parameters:
 
 - `id` (required) - The ID of the user
+- `hard_delete` (optional) - If true, contributions that would usually be
+  [moved to the ghost user](../user/profile/account/delete_account.md#associated-records)
+  will be deleted instead, as well as groups owned solely by this user.
 
 ## User
 
@@ -310,7 +335,6 @@ GET /user
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
   "web_url": "http://localhost:3000/john_smith",
   "created_at": "2012-05-23T08:00:58Z",
-  "is_admin": false,
   "bio": null,
   "location": null,
   "skype": "",
@@ -320,6 +344,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -339,7 +364,7 @@ GET /user
 
 Parameters:
 
-- `sudo` (required) - the ID of a user
+- `sudo` (optional) - the ID of a user to make the call in their place
 
 ```
 GET /user
@@ -365,6 +390,7 @@ GET /user
   "organization": "",
   "last_sign_in_at": "2012-06-01T11:41:01Z",
   "confirmed_at": "2012-05-23T09:05:22Z",
+  "last_activity_on": "2012-05-23",
   "color_scheme_id": 2,
   "projects_limit": 100,
   "current_sign_in_at": "2012-06-02T06:36:55Z",
@@ -686,152 +712,15 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 ### Get user contribution events
 
-Get the contribution events for the specified user, sorted from newest to oldest.
+Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
-```
-GET /users/:id/events
-```
 
-Parameters:
+## Get all impersonation tokens of a user
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the user |
+> Requires admin permissions.
 
-```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
-```
-
-Example response:
-
-```json
-[
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 830,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Public project search field",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "opened",
-    "target_id": null,
-    "target_type": null,
-    "author_id": 1,
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "john",
-    "data": {
-      "before": "50d4420237a9de7be1304607147aec22e4a14af7",
-      "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-      "ref": "refs/heads/master",
-      "user_id": 1,
-      "user_name": "Dmitriy Zaporozhets",
-      "repository": {
-        "name": "gitlabhq",
-        "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
-        "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
-        "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
-      },
-      "commits": [
-        {
-          "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "message": "Add simple search to projects in public area",
-          "timestamp": "2013-05-13T18:18:08+00:00",
-          "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "author": {
-            "name": "Dmitriy Zaporozhets",
-            "email": "dmitriy.zaporozhets@gmail.com"
-          }
-        }
-      ],
-      "total_commits_count": 1
-    },
-    "target_title": null
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "closed",
-    "target_id": 840,
-    "target_type": "Issue",
-    "author_id": 1,
-    "data": null,
-    "target_title": "Finish & merge Code search PR",
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  },
-  {
-    "title": null,
-    "project_id": 15,
-    "action_name": "commented on",
-    "target_id": 1312,
-    "target_type": "Note",
-    "author_id": 1,
-    "data": null,
-    "target_title": null,
-    "created_at": "2015-12-04T10:33:58.089Z",
-    "note": {
-      "id": 1312,
-      "body": "What an awesome day!",
-      "attachment": null,
-      "author": {
-        "name": "Dmitriy Zaporozhets",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-        "web_url": "http://localhost:3000/root"
-      },
-      "created_at": "2015-12-04T10:33:56.698Z",
-      "system": false,
-      "noteable_id": 377,
-      "noteable_type": "Issue"
-    },
-    "author": {
-      "name": "Dmitriy Zaporozhets",
-      "username": "root",
-      "id": 1,
-      "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
-    },
-    "author_username": "root"
-  }
-]
-```
-
-## Retrieve user impersonation tokens
-
-It retrieves every impersonation token of the user. Note that only administrators can do this.
-This function takes pagination parameters `page` and `per_page` to restrict the list of impersonation tokens.
+It retrieves every impersonation token of the user. Use the pagination
+parameters `page` and `per_page` to restrict the list of impersonation tokens.
 
 ```
 GET /users/:user_id/impersonation_tokens
@@ -842,27 +731,50 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `user_id` | integer | yes | The ID of the user |
-| `state`   | string | no | filter tokens based on state (all, active, inactive) |
+| `state`   | string  | no | filter tokens based on state (`all`, `active`, `inactive`) |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
 
 Example response:
+
 ```json
 [
-  {
-    "id": 1,
-    "name": "mytoken",
-    "revoked": false,
-    "expires_at": "2017-01-04",
-    "scopes": ['api'],
-    "active": true,
-    "impersonation": true,
-    "token": "9koXpg98eAheJpvBs5tK"
-  }
+   {
+      "active" : true,
+      "token" : "EsMo-vhKfXGwX9RKrwiy",
+      "scopes" : [
+         "api"
+      ],
+      "revoked" : false,
+      "name" : "mytoken",
+      "id" : 2,
+      "created_at" : "2017-03-17T17:18:09.283Z",
+      "impersonation" : true,
+      "expires_at" : "2017-04-04"
+   },
+   {
+      "active" : false,
+      "scopes" : [
+         "read_user"
+      ],
+      "revoked" : true,
+      "token" : "ZcZRpLeEuQRprkRjYydY",
+      "name" : "mytoken2",
+      "created_at" : "2017-03-17T17:19:28.697Z",
+      "id" : 3,
+      "impersonation" : true,
+      "expires_at" : "2017-04-14"
+   }
 ]
 ```
 
-## Show a user's impersonation token
+## Get an impersonation token of a user
 
-It shows a user's impersonation token. Note that only administrators can do this.
+> Requires admin permissions.
+
+It shows a user's impersonation token.
 
 ```
 GET /users/:user_id/impersonation_tokens/:impersonation_token_id
@@ -875,11 +787,35 @@ Parameters:
 | `user_id` | integer | yes | The ID of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
 
-## Create a impersonation token
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/2
+```
+
+Example response:
+
+```json
+{
+   "active" : true,
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "scopes" : [
+      "api"
+   ],
+   "revoked" : false,
+   "name" : "mytoken",
+   "id" : 2,
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "impersonation" : true,
+   "expires_at" : "2017-04-04"
+}
+```
+
+## Create an impersonation token
+
+> Requires admin permissions.
 
 It creates a new impersonation token. Note that only administrators can do this.
 You are only able to create impersonation tokens to impersonate the user and perform
-both API calls and Git reads and writes. The user will not see these tokens in his profile
+both API calls and Git reads and writes. The user will not see these tokens in their profile
 settings page.
 
 ```
@@ -891,30 +827,44 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `user_id` | integer | yes | The ID of the user |
-| `name` | string | yes | The name of the impersonation token |
-| `expires_at` | date | no | The expiration date of the impersonation token |
-| `scopes` | array | no | The array of scopes of the impersonation token (api, read_user) |
+| `name`    | string  | yes | The name of the impersonation token |
+| `expires_at` | date | no  | The expiration date of the impersonation token in ISO format (`YYYY-MM-DD`)|
+| `scopes` | array    | yes | The array of scopes of the impersonation token (`api`, `read_user`) |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "name=mytoken" --data "expires_at=2017-04-04" --data "scopes[]=api" https://gitlab.example.com/api/v4/users/42/impersonation_tokens
+```
 
 Example response:
+
 ```json
 {
-  "id": 1,
-  "name": "mytoken",
-  "revoked": false,
-  "expires_at": "2017-01-04",
-  "scopes": ['api'],
-  "active": true,
-  "impersonation": true,
-  "token": "9koXpg98eAheJpvBs5tK"
+   "id" : 2,
+   "revoked" : false,
+   "scopes" : [
+      "api"
+   ],
+   "token" : "EsMo-vhKfXGwX9RKrwiy",
+   "active" : true,
+   "impersonation" : true,
+   "name" : "mytoken",
+   "created_at" : "2017-03-17T17:18:09.283Z",
+   "expires_at" : "2017-04-04"
 }
 ```
 
 ## Revoke an impersonation token
 
-It revokes an impersonation token. Note that only administrators can revoke impersonation tokens.
+> Requires admin permissions.
+
+It revokes an impersonation token.
 
 ```
 DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
+```
+
+```
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1
 ```
 
 Parameters:
@@ -923,3 +873,55 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `user_id` | integer | yes | The ID of the user |
 | `impersonation_token_id` | integer | yes | The ID of the impersonation token |
+
+### Get user activities (admin only)
+
+>**Note:** This API endpoint is only available on 8.15 (EE) and 9.1 (CE) and above.
+
+Get the last activity date for all users, sorted from oldest to newest.
+
+The activities that update the timestamp are:
+
+  - Git HTTP/SSH activities (such as clone, push)
+  - User logging in into GitLab
+
+By default, it shows the activity for all users in the last 6 months, but this can be
+amended by using the `from` parameter.
+
+```
+GET /user/activities
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `from` | string | no | Date string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`. Defaults to 6 months ago. |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/user/activities
+```
+
+Example response:
+
+```json
+[
+  {
+    "username": "user1",
+    "last_activity_on": "2015-12-14",
+    "last_activity_at": "2015-12-14"
+  },
+  {
+    "username": "user2",
+    "last_activity_on": "2015-12-15",
+    "last_activity_at": "2015-12-15"
+  },
+  {
+    "username": "user3",
+    "last_activity_on": "2015-12-16",
+    "last_activity_at": "2015-12-16"
+  }
+]
+```
+
+Please note that `last_activity_at` is deprecated, please use `last_activity_on`.

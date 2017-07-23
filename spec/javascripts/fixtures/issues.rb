@@ -36,6 +36,17 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     render_issue(example.description, issue)
   end
 
+  it 'issues/issue_list.html.raw' do |example|
+    create(:issue, project: project)
+
+    get :index,
+      namespace_id: project.namespace.to_param,
+      project_id: project
+
+    expect(response).to be_success
+    store_frontend_fixture(response, example.description)
+  end
+
   private
 
   def render_issue(fixture_file_name, issue)

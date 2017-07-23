@@ -16,6 +16,14 @@ body.modal-open {
   overflow: hidden;
 }
 
-.modal .modal-dialog {
-  width: 860px;
+@media (min-width: $screen-md-min) {
+  .modal-dialog {
+    width: 860px;
+  }
+}
+
+@media (min-width: $screen-lg-min) {
+  .modal-full {
+    width: 98%;
+  }
 }

@@ -1,13 +1,16 @@
 - page_title 'Preferences'
+- @content_class = "limit-container-width" unless fluid_layout
 = render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Syntax highlighting theme
     %p
-      This setting allow you to customize the appearance of the syntax.
-  .col-lg-9.syntax-theme
+      This setting allows you to customize the appearance of the syntax.
+      = succeed '.' do
+        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'syntax-highlighting-theme'), target: '_blank'
+  .col-lg-8.syntax-theme
     - Gitlab::ColorSchemes.each do |scheme|
       = label_tag do
         .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
@@ -15,12 +18,36 @@
         = scheme.name
   .col-sm-12
     %hr
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar#new-navigation
+    %h4.prepend-top-0
+      New Navigation
+    %p
+      This setting allows you to turn on or off the new upcoming navigation concept.
+  .col-lg-8.syntax-theme
+    .nav-wip
+      %p
+        The new navigation is currently a work-in-progress concept and is currently only usable on wide-screens. There are a number of improvements that we are working on in order to further refine our navigation.
+      %p
+        %a{ href: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/32794', target: 'blank' } Learn more
+        about the improvements that are coming soon!
+    = label_tag do
+      .preview= image_tag "old_nav.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }
+      Old
+    = label_tag do
+      .preview= image_tag "new_nav.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav", checked: show_new_nav? }
+      New
+  .col-sm-12
+    %hr
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Behavior
     %p
       This setting allows you to customize the behavior of the system layout and default views.
-  .col-lg-9
+      = succeed '.' do
+        = link_to 'Learn more', help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank'
+  .col-lg-8
     .form-group
       = f.label :layout, class: 'label-light' do
         Layout width
@@ -29,15 +56,13 @@
         Choose between fixed (max. 1200px) and fluid (100%) application layout.
     .form-group
       = f.label :dashboard, class: 'label-light' do
-        Default Dashboard
-        = link_to('(?)', help_page_path('profile/preferences') + '#default-dashboard', target: '_blank')
+        Default dashboard
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
     .form-group
       = f.label :project_view, class: 'label-light' do
-        Project view
-        = link_to('(?)', help_page_path('profile/preferences') + '#default-project-view', target: '_blank')
+        Project home page content
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .help-block
-        Choose what content you want to see on a project's home page.
+        Choose what content you want to see on a project’s home page
     .form-group
       = f.submit 'Save changes', class: 'btn btn-save'

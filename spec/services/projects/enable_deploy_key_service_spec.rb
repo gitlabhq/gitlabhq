@@ -21,6 +21,16 @@ describe Projects::EnableDeployKeyService, services: true do
     end
   end
 
+  context 'add the same key twice' do
+    before do
+      project.deploy_keys << deploy_key
+    end
+
+    it 'returns existing key' do
+      expect(service.execute).to eq(deploy_key)
+    end
+  end
+
   def service
     Projects::EnableDeployKeyService.new(project, user, params)
   end

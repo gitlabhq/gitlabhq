@@ -5,7 +5,7 @@ describe Gitlab::ImportExport::Reader, lib: true  do
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {
-      only: [:name, :path],
+      except: [:id, :created_at],
       include: [:issues, :labels,
                 { merge_requests: {
                   only: [:id],

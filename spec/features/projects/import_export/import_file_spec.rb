@@ -19,7 +19,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     let!(:namespace) { create(:namespace, name: "asd", owner: user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'user imports an exported project successfully' do
@@ -53,7 +53,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
       select2(namespace.id, from: '#project_namespace_id')
       fill_in :project_path, with: project.name, visible: true
       click_link 'GitLab export'
-
       attach_file('file', file)
       click_on 'Import project'
 
@@ -69,19 +68,15 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
 
       select2(namespace.id, from: '#project_namespace_id')
 
-      # click on disabled element
-      find(:link, 'GitLab export').trigger('click')
-
-      page.within('.flash-container') do
-        expect(page).to have_content('Please enter path and name')
-      end
+      # Check for tooltip disabled import button
+      expect(find('.import_gitlab_project')['title']).to eq('Please enter a valid project name.')
     end
   end
 
   context 'when limited to the default user namespace' do
     let(:user) { create(:user) }
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'passes correct namespace ID in the URL' do
@@ -102,6 +97,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   end
 
   def project_hook_exists?(project)
-    Gitlab::Git::Hook.new('post-receive', project.repository.path).exists?
+    Gitlab::Git::Hook.new('post-receive', project).exists?
   end
 end

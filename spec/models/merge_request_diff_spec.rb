@@ -36,7 +36,9 @@ describe MergeRequestDiff, models: true do
     end
 
     context 'when the raw diffs are empty' do
-      before { mr_diff.update_attributes(st_diffs: '') }
+      before do
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
+      end
 
       it 'returns an empty DiffCollection' do
         expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
@@ -45,7 +47,10 @@ describe MergeRequestDiff, models: true do
     end
 
     context 'when the raw diffs have invalid content' do
-      before { mr_diff.update_attributes(st_diffs: ["--broken-diff"]) }
+      before do
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
+        mr_diff.update_attributes(st_diffs: ["--broken-diff"])
+      end
 
       it 'returns an empty DiffCollection' do
         expect(mr_diff.raw_diffs.to_a).to be_empty
@@ -93,7 +98,7 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
+      allow_any_instance_of(MergeRequestDiff).to receive_message_chain(:compare, :commits)
         .and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff
@@ -102,14 +107,14 @@ describe MergeRequestDiff, models: true do
     end
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     it 'returns all commits SHA using serialized commits' do
       subject.st_commits = [
         { id: 'sha1' },
         { id: 'sha2' }
       ]
 
-      expect(subject.commits_sha).to eq(%w(sha1 sha2))
+      expect(subject.commit_shas).to eq(%w(sha1 sha2))
     end
   end
 
@@ -137,6 +142,17 @@ describe MergeRequestDiff, models: true do
       ]
 
       expect(subject.commits_count).to eq 2
+    end
+  end
+
+  describe '#utf8_st_diffs' do
+    it 'does not raise error when a hash value is in binary' do
+      subject.st_diffs = [
+        { diff: "\0" },
+        { diff: "\x05\x00\x68\x65\x6c\x6c\x6f" }
+      ]
+
+      expect { subject.utf8_st_diffs }.not_to raise_error
     end
   end
 end

@@ -19,10 +19,10 @@ class PushoverService < Service
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: 'Your application key' },
-      { type: 'text', name: 'user_key', placeholder: 'Your user key' },
+      { type: 'text', name: 'api_key', placeholder: 'Your application key', required: true },
+      { type: 'text', name: 'user_key', placeholder: 'Your user key', required: true },
       { type: 'text', name: 'device', placeholder: 'Leave blank for all active devices' },
-      { type: 'select', name: 'priority', choices:
+      { type: 'select', name: 'priority', required: true, choices:
         [
           ['Lowest Priority', -2],
           ['Low Priority', -1],
@@ -55,7 +55,7 @@ class PushoverService < Service
           ['Pushover Echo (long)', 'echo'],
           ['Up Down (long)', 'updown'],
           ['None (silent)', 'none']
-        ] },
+        ] }
     ]
   end
 

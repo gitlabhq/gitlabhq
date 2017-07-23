@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Deployments, api: true  do
-  include ApiHelpers
-
+describe API::Deployments do
   let(:user)        { create(:user) }
   let(:non_member)  { create(:user) }
   let(:project)     { deployment.environment.project }

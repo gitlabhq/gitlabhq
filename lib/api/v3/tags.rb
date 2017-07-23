@@ -6,7 +6,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a project repository tags' do
           success ::API::Entities::RepoTag
         end
@@ -22,8 +22,8 @@ module API
         delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
           authorize_push_project
 
-          result = ::Tags::DestroyService.new(user_project, current_user).
-            execute(params[:tag_name])
+          result = ::Tags::DestroyService.new(user_project, current_user)
+            .execute(params[:tag_name])
 
           if result[:status] == :success
             status(200)

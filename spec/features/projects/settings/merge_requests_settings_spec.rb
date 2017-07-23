@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 feature 'Project settings > Merge Requests', feature: true, js: true do
-  include GitlabRoutingHelper
-
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
   end
 
   context 'when Merge Request and Pipelines are initially enabled' do
@@ -60,6 +58,29 @@ feature 'Project settings > Merge Requests', feature: true, js: true do
 
       expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
       expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
+    end
+  end
+
+  describe 'Checkbox to enable merge request link' do
+    before do
+      visit edit_project_path(project)
+    end
+
+    scenario 'is initially checked' do
+      checkbox = find_field('project_printing_merge_request_link_enabled')
+      expect(checkbox).to be_checked
+    end
+
+    scenario 'when unchecked sets :printing_merge_request_link_enabled to false' do
+      uncheck('project_printing_merge_request_link_enabled')
+      click_on('Save')
+
+      # Wait for save to complete and page to reload
+      checkbox = find_field('project_printing_merge_request_link_enabled')
+      expect(checkbox).not_to be_checked
+
+      project.reload
+      expect(project.printing_merge_request_link_enabled).to be(false)
     end
   end
 end

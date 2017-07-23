@@ -5,8 +5,8 @@ describe PagesDomain, models: true do
     it { is_expected.to belong_to(:project) }
   end
 
-  describe :validate_domain do
-    subject { build(:pages_domain, domain: domain) }
+  describe 'validate domain' do
+    subject(:pages_domain) { build(:pages_domain, domain: domain) }
 
     context 'is unique' do
       let(:domain) { 'my.domain.com' }
@@ -14,36 +14,25 @@ describe PagesDomain, models: true do
       it { is_expected.to validate_uniqueness_of(:domain) }
     end
 
-    context 'valid domain' do
-      let(:domain) { 'my.domain.com' }
+    {
+      'my.domain.com'    => true,
+      '123.456.789'      => true,
+      '0x12345.com'      => true,
+      '0123123'          => true,
+      '_foo.com'         => false,
+      'reserved.com'     => false,
+      'a.reserved.com'   => false,
+      nil                => false
+    }.each do |value, validity|
+      context "domain #{value.inspect} validity" do
+        before do
+          allow(Settings.pages).to receive(:host).and_return('reserved.com')
+        end
 
-      it { is_expected.to be_valid }
-    end
+        let(:domain) { value }
 
-    context 'valid hexadecimal-looking domain' do
-      let(:domain) { '0x12345.com'}
-
-      it { is_expected.to be_valid }
-    end
-
-    context 'no domain' do
-      let(:domain) { nil }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'invalid domain' do
-      let(:domain) { '0123123' }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'domain from .example.com' do
-      let(:domain) { 'my.domain.com' }
-
-      before { allow(Settings.pages).to receive(:host).and_return('domain.com') }
-
-      it { is_expected.not_to be_valid }
+        it { expect(pages_domain.valid?).to eq(validity) }
+      end
     end
   end
 
@@ -75,7 +64,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :url do
+  describe '#url' do
     subject { domain.url }
 
     context 'without the certificate' do
@@ -91,7 +80,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :has_matching_key? do
+  describe '#has_matching_key?' do
     subject { domain.has_matching_key? }
 
     context 'for matching key' do
@@ -107,7 +96,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :has_intermediates? do
+  describe '#has_intermediates?' do
     subject { domain.has_intermediates? }
 
     context 'for self signed' do
@@ -133,7 +122,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :expired? do
+  describe '#expired?' do
     subject { domain.expired? }
 
     context 'for valid' do
@@ -149,7 +138,7 @@ describe PagesDomain, models: true do
     end
   end
 
-  describe :subject do
+  describe '#subject' do
     let(:domain) { build(:pages_domain, :with_certificate) }
 
     subject { domain.subject }
@@ -157,7 +146,7 @@ describe PagesDomain, models: true do
     it { is_expected.to eq('/CN=test-certificate') }
   end
 
-  describe :certificate_text do
+  describe '#certificate_text' do
     let(:domain) { build(:pages_domain, :with_certificate) }
 
     subject { domain.certificate_text }

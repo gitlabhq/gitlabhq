@@ -6,6 +6,13 @@
 # https://github.com/gradle/gradle
 image: java:8
 
+# Disable the Gradle daemon for Continuous Integration servers as correctness
+# is usually a priority over speed in CI environments. Using a fresh
+# runtime for each build is more reliable since the runtime is completely
+# isolated from any previous builds.
+variables:
+    GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
 # Make the gradle wrapper executable. This essentially downloads a copy of
 # Gradle to build the project with.
 # https://docs.gradle.org/current/userguide/gradle_wrapper.html

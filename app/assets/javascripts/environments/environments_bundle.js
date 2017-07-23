@@ -1,13 +1,10 @@
-const EnvironmentsComponent = require('./components/environment');
+import Vue from 'vue';
+import EnvironmentsComponent from './components/environment.vue';
 
-$(() => {
-  window.gl = window.gl || {};
-
-  if (gl.EnvironmentsListApp) {
-    gl.EnvironmentsListApp.$destroy(true);
-  }
-
-  gl.EnvironmentsListApp = new EnvironmentsComponent({
-    el: document.querySelector('#environments-list-view'),
-  });
-});
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '#environments-list-view',
+  components: {
+    'environments-table-app': EnvironmentsComponent,
+  },
+  render: createElement => createElement('environments-table-app'),
+}));

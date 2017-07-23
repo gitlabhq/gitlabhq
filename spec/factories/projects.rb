@@ -1,3 +1,5 @@
+require_relative '../support/test_env'
+
 FactoryGirl.define do
   # Project without repository
   #
@@ -24,6 +26,22 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :import_scheduled do
+      import_status :scheduled
+    end
+
+    trait :import_started do
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_status :finished
+    end
+
+    trait :import_failed do
+      import_status :failed
+    end
+
     trait :archived do
       archived true
     end
@@ -32,13 +50,17 @@ FactoryGirl.define do
       request_access_enabled true
     end
 
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
+    end
+
     trait :repository do
       # no-op... for now!
     end
 
     trait :empty_repo do
       after(:create) do |project|
-        project.create_repository
+        raise "Failed to create repository!" unless project.create_repository
 
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
@@ -48,7 +70,7 @@ FactoryGirl.define do
 
     trait :broken_repo do
       after(:create) do |project|
-        project.create_repository
+        raise "Failed to create repository!" unless project.create_repository
 
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
       end
@@ -56,7 +78,9 @@ FactoryGirl.define do
 
     trait :test_repo do
       after :create do |project|
-        TestEnv.copy_repo(project)
+        TestEnv.copy_repo(project,
+          bare_repo: TestEnv.factory_repo_path_bare,
+          refs: TestEnv::BRANCH_SHA)
       end
     end
 
@@ -94,8 +118,8 @@ FactoryGirl.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.
-        update_attributes!(
+      project.project_feature
+        .update_attributes!(
           wiki_access_level: evaluator.wiki_access_level,
           builds_access_level: builds_access_level,
           snippets_access_level: evaluator.snippets_access_level,
@@ -103,6 +127,18 @@ FactoryGirl.define do
           merge_requests_access_level: merge_requests_access_level,
           repository_access_level: evaluator.repository_access_level
         )
+
+      # Normally the class Projects::CreateService is used for creating
+      # projects, and this class takes care of making sure the owner and current
+      # user have access to the project. Our specs don't use said service class,
+      # thus we must manually refresh things here.
+      owner = project.owner
+
+      if owner && owner.is_a?(User) && !project.pending_delete
+        project.members.create!(user: owner, access_level: Gitlab::Access::MASTER)
+      end
+
+      project.group&.refresh_members_authorized_projects
     end
   end
 
@@ -135,7 +171,9 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.factory_repo_path_bare,
+        refs: TestEnv::BRANCH_SHA)
 
       if evaluator.create_template
         args = evaluator.create_template
@@ -168,7 +206,9 @@ FactoryGirl.define do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
-      TestEnv.copy_forked_repo_with_submodules(project)
+      TestEnv.copy_repo(project,
+        bare_repo: TestEnv.forked_repo_path_bare,
+        refs: TestEnv::FORKED_BRANCH_SHA)
     end
   end
 
@@ -180,7 +220,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )

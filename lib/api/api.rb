@@ -2,10 +2,13 @@ module API
   class API < Grape::API
     include APIGuard
 
+    allow_access_with_scope :api
+
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
       helpers ::API::V3::Helpers
+      helpers ::API::Helpers::CommonHelpers
 
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
@@ -43,7 +46,10 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { allow_access_with_scope :api }
+    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
+    before { Gitlab::I18n.locale = current_user&.preferred_language }
+
+    after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
@@ -77,6 +83,7 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::SentryHelper
     helpers ::API::Helpers
+    helpers ::API::Helpers::CommonHelpers
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
@@ -89,6 +96,8 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Events
+    mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Internal
@@ -105,6 +114,7 @@ module API
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets

@@ -1,4 +1,4 @@
-# Application settings
+# Application settings API
 
 These API calls allow you to read and modify GitLab instance application
 settings as appear in `/admin/application_settings`. You have to be an
@@ -25,7 +25,7 @@ Example response:
    "id" : 1,
    "default_branch_protection" : 2,
    "restricted_visibility_levels" : [],
-   "signin_enabled" : true,
+   "password_authentication_enabled" : true,
    "after_sign_out_path" : null,
    "max_attachment_size" : 10,
    "user_oauth_applications" : true,
@@ -48,7 +48,8 @@ Example response:
    "koding_url": null,
    "plantuml_enabled": false,
    "plantuml_url": null,
-   "terminal_max_session_time": 0
+   "terminal_max_session_time": 0,
+   "polling_interval_multiplier": 1.0
 }
 ```
 
@@ -62,7 +63,7 @@ PUT /application/settings
 | --------- | ---- | :------: | ----------- |
 | `default_projects_limit` | integer  | no | Project limit per user. Default is `100000` |
 | `signup_enabled`    | boolean | no  | Enable registration. Default is `true`. |
-| `signin_enabled`    | boolean | no  | Enable login via a GitLab account. Default is `true`. |
+| `password_authentication_enabled`    | boolean | no  | Enable authentication via a GitLab account password. Default is `true`. |
 | `gravatar_enabled`  | boolean | no  | Enable Gravatar |
 | `sign_in_text`      | string  | no  | Text on login page |
 | `home_page_url`     | string  | no  | Redirect to this URL when not logged in |
@@ -88,6 +89,7 @@ PUT /application/settings
 | `plantuml_enabled` | boolean | no | Enable PlantUML integration. Default is `false`. |
 | `plantuml_url` | string | yes (if `plantuml_enabled` is `true`) |  The PlantUML instance URL for integration. |
 | `terminal_max_session_time` | integer | no | Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time. |
+| `polling_interval_multiplier` | decimal | no | Interval multiplier used by endpoints that perform polling. Set to 0 to disable polling. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -100,7 +102,7 @@ Example response:
   "id": 1,
   "default_projects_limit": 100000,
   "signup_enabled": true,
-  "signin_enabled": true,
+  "password_authentication_enabled": true,
   "gravatar_enabled": true,
   "sign_in_text": "",
   "created_at": "2015-06-12T15:51:55.432Z",
@@ -124,6 +126,7 @@ Example response:
   "koding_url": null,
   "plantuml_enabled": false,
   "plantuml_url": null,
-  "terminal_max_session_time": 0
+  "terminal_max_session_time": 0,
+  "polling_interval_multiplier": 1.0
 }
 ```

@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal', :feature, :js do
-  include WaitForAjax
-  include WaitForVueResource
-
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
@@ -17,10 +14,24 @@ describe 'Issue Boards add issue modal', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+    visit project_board_path(project, board)
+    wait_for_requests
+  end
+
+  it 'resets filtered search state' do
+    visit project_board_path(project, board, search: 'testing')
+
+    wait_for_requests
+
+    click_button('Add issues')
+
+    page.within('.add-issues-modal') do
+      expect(find('.form-control').value).to eq('')
+      expect(page).to have_selector('.clear-search', visible: false)
+      expect(find('.form-control')[:placeholder]).to eq('Search or filter results...')
+    end
   end
 
   context 'modal interaction' do
@@ -51,7 +62,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     end
 
     it 'does not show tooltip on add issues button' do
-      button = page.find('.issue-boards-search button', text: 'Add issues')
+      button = page.find('.filter-dropdown-container button', text: 'Add issues')
 
       expect(button[:title]).not_to eq("Please add a list to your board first")
     end
@@ -61,7 +72,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     before do
       click_button('Add issues')
 
-      wait_for_vue_resource
+      wait_for_requests
     end
 
     it 'loads issues' do
@@ -94,7 +105,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
         click_button('Add issues')
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.add-issues-modal') do
           expect(find('.add-issues-footer')).not_to have_button(planning.title)
@@ -107,6 +118,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys(issue.title)
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_requests
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -115,6 +129,9 @@ describe 'Issue Boards add issue modal', :feature, :js do
       it 'returns no issues' do
         page.within('.add-issues-modal') do
           find('.form-control').native.send_keys('testing search')
+          find('.form-control').native.send_keys(:enter)
+
+          wait_for_requests
 
           expect(page).not_to have_selector('.card')
           expect(page).not_to have_content("You haven't added any issues to your project yet")
@@ -125,7 +142,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
     context 'selecing issues' do
       it 'selects single issue' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           page.within('.nav-links') do
             expect(page).to have_content('Selected issues 1')
@@ -135,7 +152,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'changes button text' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           expect(first('.add-issues-footer .btn')).to have_content('Add 1 issue')
         end
@@ -143,7 +160,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'changes button text with plural' do
         page.within('.add-issues-modal') do
-          all('.card').each do |el|
+          all('.card .card-number').each do |el|
             el.click
           end
 
@@ -153,7 +170,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'shows only selected issues on selected tab' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_link 'Selected issues'
 
@@ -183,7 +200,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'selects all that arent already selected' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           expect(page).to have_selector('.is-active', count: 1)
 
@@ -195,11 +212,11 @@ describe 'Issue Boards add issue modal', :feature, :js do
 
       it 'unselects from selected tab' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_link 'Selected issues'
 
-          first('.card').click
+          first('.card .card-number').click
 
           expect(page).not_to have_selector('.is-active')
         end
@@ -209,19 +226,19 @@ describe 'Issue Boards add issue modal', :feature, :js do
     context 'adding issues' do
       it 'adds to board' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_button 'Add 1 issue'
         end
 
-        page.within(first('.board')) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page).to have_selector('.card')
         end
       end
 
       it 'adds to second list' do
         page.within('.add-issues-modal') do
-          first('.card').click
+          first('.card .card-number').click
 
           click_button planning.title
 
@@ -230,7 +247,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(find('.board:nth-child(3)')) do
           expect(page).to have_selector('.card')
         end
       end

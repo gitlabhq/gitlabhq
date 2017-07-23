@@ -1,4 +1,5 @@
-# Profile Settings
+# Profile settings
 
-- [Preferences](preferences.md)
-- [Two-factor Authentication (2FA)](two_factor_authentication.md)
+- [Preferences](../user/profile/preferences.md)
+- [Two-factor Authentication (2FA)](../user/profile/account/two_factor_authentication.md)
+- [Deleting your account](../user/profile/account/delete_account.md)

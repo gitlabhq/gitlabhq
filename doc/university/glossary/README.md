@@ -1,4 +1,3 @@
-
 ## What is the Glossary
 
 This contains a simplified list and definitions of some of the terms that you will encounter in your day to day activities when working with GitLab.
@@ -10,7 +9,7 @@ User authentication by combination of 2 different steps during login. This allow
 
 ### Access Levels
 
-Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](../../permissions/permissions.md
+Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](../../user/permissions.md)
 
 ### Active Directory (AD)
 
@@ -333,7 +332,7 @@ A [platform](https://www.meteor.com) for building javascript apps.
 
 ### Milestones
 
-Allow you to [organize issues](https://docs.gitlab.com/ce/workflow/milestones.html) and merge requests in GitLab into a cohesive group, optionally setting a due date. A common use is keeping track of an upcoming software version. Milestones are created per-project.
+Allow you to [organize issues](../../user/project/milestones/index.md) and merge requests in GitLab into a cohesive group, optionally setting a due date. A common use is keeping track of an upcoming software version. Milestones are created per-project.
 
 ### Mirror Repositories
 
@@ -410,6 +409,10 @@ An [object-relational](https://en.wikipedia.org/wiki/PostgreSQL) database. Toute
 ### Protected Branches
 
 A [feature](https://docs.gitlab.com/ce/user/project/protected_branches.html) that protects branches from unauthorized pushes, force pushing or deletion.
+
+### Protected Tags
+
+A [feature](https://docs.gitlab.com/ce/user/project/protected_tags.html) that protects tags from unauthorized creation, update or deletion
 
 ### Pull
 

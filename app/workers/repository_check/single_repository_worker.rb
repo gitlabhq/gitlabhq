@@ -7,7 +7,7 @@ module RepositoryCheck
       project = Project.find(project_id)
       project.update_columns(
         last_repository_check_failed: !check(project),
-        last_repository_check_at: Time.now,
+        last_repository_check_at: Time.now
       )
     end
 

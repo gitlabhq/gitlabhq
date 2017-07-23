@@ -1,20 +1,20 @@
-/* global pipeline, Vue */
-
-require('~/flash');
-require('~/commit/pipelines/pipelines_store');
-require('~/commit/pipelines/pipelines_service');
-require('~/commit/pipelines/pipelines_table');
-require('~/vue_shared/vue_resource_interceptor');
-const pipeline = require('./mock_data');
+import Vue from 'vue';
+import pipelinesTable from '~/commit/pipelines/pipelines_table.vue';
 
 describe('Pipelines table in Commits and Merge requests', () => {
-  preloadFixtures('static/pipelines_table.html.raw');
+  const jsonFixtureName = 'pipelines/pipelines.json';
+  let pipeline;
+  let PipelinesTable;
+
+  preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    loadFixtures('static/pipelines_table.html.raw');
+    PipelinesTable = Vue.extend(pipelinesTable);
+    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    pipeline = pipelines.find(p => p.id === 1);
   });
 
-  describe('successfull request', () => {
+  describe('successful request', () => {
     describe('without pipelines', () => {
       const pipelinesEmptyResponse = (request, next) => {
         next(request.respondWith(JSON.stringify([]), {
@@ -22,23 +22,29 @@ describe('Pipelines table in Commits and Merge requests', () => {
         }));
       };
 
-      beforeEach(() => {
+      beforeEach(function () {
         Vue.http.interceptors.push(pipelinesEmptyResponse);
+
+        this.component = new PipelinesTable({
+          propsData: {
+            endpoint: 'endpoint',
+            helpPagePath: 'foo',
+          },
+        }).$mount();
       });
 
-      afterEach(() => {
+      afterEach(function () {
         Vue.http.interceptors = _.without(
           Vue.http.interceptors, pipelinesEmptyResponse,
         );
+        this.component.$destroy();
       });
 
-      it('should render the empty state', (done) => {
-        const component = new gl.commits.pipelines.PipelinesTableView({
-          el: document.querySelector('#commit-pipeline-table-view'),
-        });
-
+      it('should render the empty state', function (done) {
         setTimeout(() => {
-          expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain('No pipelines to show');
+          expect(this.component.$el.querySelector('.empty-state')).toBeDefined();
+          expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+          expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
         }, 1);
       });
@@ -53,23 +59,65 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(pipelinesResponse);
+
+        this.component = new PipelinesTable({
+          propsData: {
+            endpoint: 'endpoint',
+            helpPagePath: 'foo',
+          },
+        }).$mount();
       });
 
       afterEach(() => {
         Vue.http.interceptors = _.without(
           Vue.http.interceptors, pipelinesResponse,
         );
+        this.component.$destroy();
       });
 
       it('should render a table with the received pipelines', (done) => {
-        const component = new gl.commits.pipelines.PipelinesTableView({
-          el: document.querySelector('#commit-pipeline-table-view'),
-        });
-
         setTimeout(() => {
-          expect(component.$el.querySelectorAll('table > tbody > tr').length).toEqual(1);
+          expect(this.component.$el.querySelectorAll('.ci-table .commit').length).toEqual(1);
+          expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+          expect(this.component.$el.querySelector('.empty-state')).toBe(null);
+          expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBe(null);
           done();
         }, 0);
+      });
+    });
+
+    describe('pipeline badge counts', () => {
+      const pipelinesResponse = (request, next) => {
+        next(request.respondWith(JSON.stringify([pipeline]), {
+          status: 200,
+        }));
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(pipelinesResponse);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, pipelinesResponse);
+        this.component.$destroy();
+      });
+
+      it('should receive update-pipelines-count event', (done) => {
+        const element = document.createElement('div');
+        document.body.appendChild(element);
+
+        element.addEventListener('update-pipelines-count', (event) => {
+          expect(event.detail.pipelines).toEqual([pipeline]);
+          done();
+        });
+
+        this.component = new PipelinesTable({
+          propsData: {
+            endpoint: 'endpoint',
+            helpPagePath: 'foo',
+          },
+        }).$mount();
+        element.appendChild(this.component.$el);
       });
     });
   });
@@ -81,23 +129,30 @@ describe('Pipelines table in Commits and Merge requests', () => {
       }));
     };
 
-    beforeEach(() => {
+    beforeEach(function () {
       Vue.http.interceptors.push(pipelinesErrorResponse);
+
+      this.component = new PipelinesTable({
+        propsData: {
+          endpoint: 'endpoint',
+          helpPagePath: 'foo',
+        },
+      }).$mount();
     });
 
-    afterEach(() => {
+    afterEach(function () {
       Vue.http.interceptors = _.without(
         Vue.http.interceptors, pipelinesErrorResponse,
       );
+      this.component.$destroy();
     });
 
-    it('should render empty state', (done) => {
-      const component = new gl.commits.pipelines.PipelinesTableView({
-        el: document.querySelector('#commit-pipeline-table-view'),
-      });
-
+    it('should render error state', function (done) {
       setTimeout(() => {
-        expect(component.$el.querySelector('.js-blank-state-title').textContent).toContain('No pipelines to show');
+        expect(this.component.$el.querySelector('.js-pipelines-error-state')).toBeDefined();
+        expect(this.component.$el.querySelector('.realtime-loading')).toBe(null);
+        expect(this.component.$el.querySelector('.js-empty-state')).toBe(null);
+        expect(this.component.$el.querySelector('.ci-table')).toBe(null);
         done();
       }, 0);
     });

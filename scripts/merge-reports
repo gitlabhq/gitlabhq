@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'json'
-require 'yaml'
 
 main_report_file = ARGV.shift
 unless main_report_file

@@ -9,8 +9,9 @@ and a list of **user-defined variables**.
 The variables can be overwritten and they take precedence over each other in
 this order:
 
-1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables)
+1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
+1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -27,93 +28,56 @@ Some of the predefined environment variables are available only if a minimum
 version of [GitLab Runner][runner] is used. Consult the table below to find the
 version of Runner required.
 
-| Variable                | GitLab | Runner | Description |
-|-------------------------|--------|--------|-------------|
-| **CI**                  | all    | 0.4    | Mark that job is executed in CI environment |
-| **GITLAB_CI**           | all    | all    | Mark that job is executed in GitLab CI environment |
-| **CI_SERVER**           | all    | all    | Mark that job is executed in CI environment |
-| **CI_SERVER_NAME**      | all    | all    | The name of CI server that is used to coordinate jobs |
-| **CI_SERVER_VERSION**   | all    | all    | GitLab version that is used to schedule jobs |
-| **CI_SERVER_REVISION**  | all    | all    | GitLab revision that is used to schedule jobs |
-| **CI_BUILD_ID**         | all    | all    | The unique id of the current job that GitLab CI uses internally. Deprecated, use CI_JOB_ID |
-| **CI_JOB_ID**           | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
-| **CI_BUILD_REF**        | all    | all    | The commit revision for which project is built. Deprecated, use CI_COMMIT_REF |
-| **CI_COMMIT_SHA**       | 9.0    | all    | The commit revision for which project is built |
-| **CI_BUILD_TAG**        | all    | 0.5    | The commit tag name. Present only when building tags. Deprecated, use CI_COMMIT_TAG |
-| **CI_COMMIT_TAG**       | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
-| **CI_BUILD_NAME**       | all    | 0.5    | The name of the job as defined in `.gitlab-ci.yml`. Deprecated, use CI_JOB_NAME |
-| **CI_JOB_NAME**         | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
-| **CI_BUILD_STAGE**      | all    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml`. Deprecated, use CI_JOB_STAGE |
-| **CI_JOB_STAGE**        | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built. Deprecated, use CI_COMMIT_REF_NAME |
-| **CI_COMMIT_REF_NAME**  | 9.0    | all    | The branch or tag name for which project is built |
-| **CI_BUILD_REF_SLUG**   | 8.15   | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. Deprecated, use CI_COMMIT_REF_SLUG |
-| **CI_COMMIT_REF_SLUG**  | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
-| **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository. Deprecated, use CI_REPOSITORY |
-| **CI_REPOSITORY_URL**   | 9.0    | all    | The URL to clone the Git repository |
-| **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that job was [triggered]. Deprecated, use CI_PIPELINE_TRIGGERED |
-| **CI_PIPELINE_TRIGGERED** | all  | all    | The flag to indicate that job was [triggered] |
-| **CI_BUILD_MANUAL**     | 8.12   | all    | The flag to indicate that job was manually started. Deprecated, use CI_JOB_MANUAL |
-| **CI_JOB_MANUAL**       | 8.12   | all    | The flag to indicate that job was manually started |
-| **CI_BUILD_TOKEN**      | all    | 1.2    | Token used for authenticating with the GitLab Container Registry. Deprecated, use CI_JOB_TOKEN |
-| **CI_JOB_TOKEN**        | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
-| **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
-| **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_NAME**     | 8.10   | 0.5    | The project name that is currently being built |
-| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
-| **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
-| **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
-| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the job is run |
-| **CI_ENVIRONMENT_NAME** | 8.15   | all    | The name of the environment for this job |
-| **CI_ENVIRONMENT_SLUG** | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
-| **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
-| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
-| **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
-| **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
-| **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
-| **CI_DEBUG_TRACE**      | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
-| **GET_SOURCES_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to fetch sources running a job |
-| **ARTIFACT_DOWNLOAD_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to download artifacts running a job |
-| **RESTORE_CACHE_ATTEMPTS** | 8.15    | 1.9    | Number of attempts to restore the cache running a job |
-| **GITLAB_USER_ID**      | 8.12   | all    | The id of the user who started the job |
-| **GITLAB_USER_EMAIL**   | 8.12   | all    | The email of the user who started the job |
-| **CI_REGISTRY_USER**    | 9.0    | all    | The username to use to push containers to the GitLab Container Registry |
-| **CI_REGISTRY_PASSWORD** | 9.0   | all    | The password to use to push containers to the GitLab Container Registry |
+>**Note:**
+Starting with GitLab 9.0, we have deprecated some variables. Read the
+[9.0 Renaming](#9-0-renaming) section to find out their replacements. **You are
+strongly advised to use the new variables as we will remove the old ones in
+future GitLab releases.**
 
-Example values:
-
-```bash
-export CI_JOB_ID="50"
-export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
-export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY="https://gitab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
-export CI_COMMIT_TAG="1.0.0"
-export CI_JOB_NAME="spec:other"
-export CI_JOB_STAGE="test"
-export CI_JOB_MANUAL="true"
-export CI_JOB_TRIGGERED="true"
-export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
-export CI_PIPELINE_ID="1000"
-export CI_PROJECT_ID="34"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
-export CI_PROJECT_NAME="gitlab-ce"
-export CI_PROJECT_NAMESPACE="gitlab-org"
-export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
-export CI_REGISTRY="registry.example.com"
-export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
-export CI_RUNNER_ID="10"
-export CI_RUNNER_DESCRIPTION="my runner"
-export CI_RUNNER_TAGS="docker, linux"
-export CI_SERVER="yes"
-export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="70606bf"
-export CI_SERVER_VERSION="8.9.0"
-export GITLAB_USER_ID="42"
-export GITLAB_USER_EMAIL="user@example.com"
-export CI_REGISTRY_USER="gitlab-ci-token"
-export CI_REGISTRY_PASSWORD="longalfanumstring"
-```
+| Variable                        | GitLab | Runner | Description |
+|-------------------------------- |--------|--------|-------------|
+| **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
+| **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
+| **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
+| **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
+| **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
+| **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
+| **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
+| **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
+| **CI_JOB_ID**                   | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
+| **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
+| **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
+| **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
+| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
+| **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
+| **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
+| **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
+| **CI_RUNNER_TAGS**              | 8.10   | 0.5    | The defined runner tags |
+| **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
+| **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
+| **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
+| **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
+| **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
+| **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
+| **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
+| **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
+| **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
+| **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
+| **CI_REGISTRY_IMAGE**           | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
+| **CI_REGISTRY_PASSWORD**        | 9.0    | all    | The password to use to push containers to the GitLab Container Registry |
+| **CI_REGISTRY_USER**            | 9.0    | all    | The username to use to push containers to the GitLab Container Registry |
+| **CI_SERVER**                   | all    | all    | Mark that job is executed in CI environment |
+| **CI_SERVER_NAME**              | all    | all    | The name of CI server that is used to coordinate jobs |
+| **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
+| **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
+| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
+| **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
+| **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
+| **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
+| **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
+| **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 
 ## 9.0 Renaming
 
@@ -121,19 +85,19 @@ To follow conventions of naming across GitLab, and to futher move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
-| 8.X name | 9.0 name |
-|----------|----------|
-| CI_BUILD_ID | CI_JOB_ID |
-| CI_BUILD_REF | CI_COMMIT_SHA |
-| CI_BUILD_TAG | CI_COMMIT_TAG |
-| CI_BUILD_REF_NAME | CI_COMMIT_REF_NAME |
-| CI_BUILD_REF_SLUG | CI_COMMIT_REF_SLUG |
-| CI_BUILD_NAME | CI_JOB_NAME |
-| CI_BUILD_STAGE | CI_JOB_STAGE |
-| CI_BUILD_REPO | CI_REPOSITORY |
-| CI_BUILD_TRIGGERED | CI_PIPELINE_TRIGGERED |
-| CI_BUILD_MANUAL | CI_JOB_MANUAL |
-| CI_BUILD_TOKEN | CI_JOB_TOKEN |
+| 8.x name              | 9.0+ name               |
+| --------------------- |------------------------ |
+| `CI_BUILD_ID`         | `CI_JOB_ID`             |
+| `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
+| `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
+| `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
+| `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
+| `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
+| `CI_BUILD_STAGE`      | `CI_JOB_STAGE`          |
+| `CI_BUILD_REPO`       | `CI_REPOSITORY_URL`     |
+| `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
+| `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
+| `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 
 ## `.gitlab-ci.yaml` defined variables
 
@@ -158,11 +122,11 @@ The YAML-defined variables are also set to all created
 tune them.
 
 Variables can be defined at a global level, but also at a job level. To turn off
-global defined variables in your job, define an empty array:
+global defined variables in your job, define an empty hash:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 You are able to use other variables inside your variable definition (or escape them with `$$`):
@@ -179,23 +143,44 @@ script:
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
+- Group-level secret variables added in GitLab 9.4.
 - Be aware that secret variables are not masked, and their values can be shown
   in the job logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
 
-GitLab CI allows you to define per-project **secret variables** that are set in
-the build environment. The secret variables are stored out of the repository
-(`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
-available in the build environment. It's the recommended method to use for
-storing things like passwords, secret keys and credentials.
+GitLab CI allows you to define per-project or per-group **secret variables**
+that are set in the build environment. The secret variables are stored out of
+the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available in the build environment. It's the recommended method to
+use for storing things like passwords, secret keys and credentials.
 
-Secret variables can be added by going to your project's
-**Settings ➔ CI/CD Pipelines**, then finding the section called
-**Secret Variables**.
+Project-level secret variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
 
-Once you set them, they will be available for all subsequent jobs.
+Likewise, group-level secret variables can be added by going to your group's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+Any variables of [subgroups] will be inherited recursively.
+
+Once you set them, they will be available for all subsequent pipelines. You can also
+[protect your variables](#protected-secret-variables).
+
+### Protected secret variables
+
+>**Notes:**
+This feature requires GitLab 9.3 or higher.
+
+Secret variables could be protected. Whenever a secret variable is
+protected, it would only be securely passed to pipelines running on the
+[protected branches] or [protected tags]. The other pipelines would not get any
+protected variables.
+
+Protected variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called
+**Secret variables**, and check *Protected*.
+
+Once you set them, they will be available for all subsequent pipelines.
 
 ## Deployment variables
 
@@ -276,18 +261,18 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI=true
 ++ export CI_DEBUG_TRACE=false
 ++ CI_DEBUG_TRACE=false
-++ export CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ export CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ export CI_BUILD_REF_NAME=master
-++ CI_BUILD_REF_NAME=master
-++ export CI_BUILD_ID=7046507
-++ CI_BUILD_ID=7046507
-++ export CI_BUILD_REPO=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
-++ CI_BUILD_REPO=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
-++ export CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
-++ CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_REF_NAME=master
+++ CI_COMMIT_REF_NAME=master
+++ export CI_JOB_ID=7046507
+++ CI_JOB_ID=7046507
+++ export CI_REPOSITORY_URL=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
+++ CI_REPOSITORY_URL=https://gitlab-ci-token:xxxxxxxxxxxxxxxxxxxx@example.com/gitlab-examples/ci-debug-trace.git
+++ export CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
 ++ export CI_PROJECT_ID=1796893
 ++ CI_PROJECT_ID=1796893
 ++ export CI_PROJECT_DIR=/builds/gitlab-examples/ci-debug-trace
@@ -306,20 +291,20 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI=true
 ++ export GITLAB_CI=true
 ++ GITLAB_CI=true
-++ export CI_BUILD_ID=7046507
-++ CI_BUILD_ID=7046507
-++ export CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
-++ CI_BUILD_TOKEN=xxxxxxxxxxxxxxxxxxxx
-++ export CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_BUILD_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ export CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_BUILD_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ export CI_BUILD_REF_NAME=master
-++ CI_BUILD_REF_NAME=master
-++ export CI_BUILD_NAME=debug_trace
-++ CI_BUILD_NAME=debug_trace
-++ export CI_BUILD_STAGE=test
-++ CI_BUILD_STAGE=test
+++ export CI_JOB_ID=7046507
+++ CI_JOB_ID=7046507
+++ export CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ CI_JOB_TOKEN=xxxxxxxxxxxxxxxxxxxx
+++ export CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_REF=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ CI_COMMIT_BEFORE_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
+++ export CI_COMMIT_REF_NAME=master
+++ CI_COMMIT_REF_NAME=master
+++ export CI_COMMIT_NAME=debug_trace
+++ CI_JOB_NAME=debug_trace
+++ export CI_JOB_STAGE=test
+++ CI_JOB_STAGE=test
 ++ export CI_SERVER_NAME=GitLab
 ++ CI_SERVER_NAME=GitLab
 ++ export CI_SERVER_VERSION=8.14.3-ee
@@ -351,7 +336,7 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ export GITLAB_USER_ID=42
 ++ GITLAB_USER_ID=42
 ++ export GITLAB_USER_EMAIL=user@example.com
-++ GITLAB_USER_EMAIL=axilleas@axilleas.me
+++ GITLAB_USER_EMAIL=user@example.com
 ++ export VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ VERY_SECURE_VARIABLE=imaverysecurevariable
 ++ mkdir -p /builds/gitlab-examples/ci-debug-trace.tmp
@@ -367,26 +352,92 @@ All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
 In most cases `bash` or `sh` is used to execute the job script.
 
-To access the variables (predefined and user-defined) in a `bash`/`sh` environment,
-prefix the variable name with the dollar sign (`$`):
+To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
 
-```
+| Shell                | Usage           |
+|----------------------|-----------------|
+| bash/sh              | `$variable`     |
+| windows batch        | `%variable%`    |
+| PowerShell           | `$env:variable` |
+
+To access environment variables in bash, prefix the variable name with (`$`):
+
+```yaml
 job_name:
   script:
-    - echo $CI_job_ID
+    - echo $CI_JOB_ID
+```
+
+To access environment variables in **Windows Batch**, surround the variable
+with (`%`):
+
+```yaml
+job_name:
+  script:
+    - echo %CI_JOB_ID%
+```
+
+To access environment variables in a **Windows PowerShell** environment, prefix
+the variable name with (`$env:`):
+
+```yaml
+job_name:
+  script:
+    - echo $env:CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,
 but be aware that this will also expose the values of all the secret variables
 you set, in the job log:
 
-```
+```yaml
 job_name:
   script:
     - export
 ```
 
+Example values:
+
+```bash
+export CI_JOB_ID="50"
+export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
+export CI_COMMIT_REF_NAME="master"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_COMMIT_TAG="1.0.0"
+export CI_JOB_NAME="spec:other"
+export CI_JOB_STAGE="test"
+export CI_JOB_MANUAL="true"
+export CI_JOB_TRIGGERED="true"
+export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
+export CI_PIPELINE_ID="1000"
+export CI_PROJECT_ID="34"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PROJECT_NAME="gitlab-ce"
+export CI_PROJECT_NAMESPACE="gitlab-org"
+export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY="registry.example.com"
+export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
+export CI_RUNNER_ID="10"
+export CI_RUNNER_DESCRIPTION="my runner"
+export CI_RUNNER_TAGS="docker, linux"
+export CI_SERVER="yes"
+export CI_SERVER_NAME="GitLab"
+export CI_SERVER_REVISION="70606bf"
+export CI_SERVER_VERSION="8.9.0"
+export GITLAB_USER_ID="42"
+export GITLAB_USER_EMAIL="user@example.com"
+export CI_REGISTRY_USER="gitlab-ci-token"
+export CI_REGISTRY_PASSWORD="longalfanumstring"
+```
+
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[envs]: ../environments.md
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md
 [runner]: https://docs.gitlab.com/runner/
+[shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[subgroups]: ../../user/group/subgroups/index.md

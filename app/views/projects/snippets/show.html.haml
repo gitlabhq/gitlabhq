@@ -1,18 +1,13 @@
-- page_title @snippet.title, "Snippets"
+- @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
+- page_title "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 = render 'shared/snippets/header'
 
 .project-snippets
   %article.file-holder.snippet-file-content
-    .js-file-title.file-title
-      = blob_icon 0, @snippet.file_name
-      = @snippet.file_name
-      .file-actions
-        = clipboard_button(clipboard_target: ".blob-content[data-blob-id='#{@snippet.id}']", class: "btn btn-sm")
-        = link_to 'Raw', raw_namespace_project_snippet_path(@project.namespace, @project, @snippet), class: "btn btn-sm", target: "_blank"
     = render 'shared/snippets/blob'
 
   .row-content-block.top-block.content-component-block
     = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-  #notes= render "projects/notes/notes_with_form"
+  #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => true

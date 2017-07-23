@@ -1,4 +1,4 @@
-class GroupMembersFinder < Projects::ApplicationController
+class GroupMembersFinder
   def initialize(group)
     @group = group
   end
@@ -8,9 +8,9 @@ class GroupMembersFinder < Projects::ApplicationController
 
     return group_members unless @group.parent
 
-    parents_members = GroupMember.non_request.
-      where(source_id: @group.ancestors.select(:id)).
-      where.not(user_id: @group.users.select(:id))
+    parents_members = GroupMember.non_request
+      .where(source_id: @group.ancestors.select(:id))
+      .where.not(user_id: @group.users.select(:id))
 
     wheres = ["members.id IN (#{group_members.select(:id).to_sql})"]
     wheres << "members.id IN (#{parents_members.select(:id).to_sql})"

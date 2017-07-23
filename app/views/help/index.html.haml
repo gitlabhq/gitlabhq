@@ -1,10 +1,15 @@
 %div
+- if current_application_settings.help_page_text.present?
+  = markdown_field(current_application_settings, :help_page_text)
+  %hr
+
+- unless current_application_settings.help_page_hide_commercial_content?
   %h1
     GitLab
     Community Edition
     - if user_signed_in?
       %span= Gitlab::VERSION
-      %small= Gitlab::REVISION
+      %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
       = version_status_badge
   %p.slead
     GitLab is open source software to collaborate on code.
@@ -17,25 +22,21 @@
     %br
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
-    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
-    - if current_application_settings.help_page_text.present?
-      %hr
-      = markdown_field(current_application_settings, :help_page_text)
+    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
+  %hr
 
-%hr
-
-.row
+.row.prepend-top-default
   .col-md-8
     .documentation-index
-      = preserve do
-        = markdown(@help_index)
+      = markdown(@help_index)
   .col-md-4
     .panel.panel-default
       .panel-heading
         Quick help
       %ul.well-list
-        %li= link_to 'See our website for getting help', promo_url + '/getting-help/'
+        %li= link_to 'See our website for getting help', support_url
         %li= link_to 'Use the search bar on the top of this page', '#', onclick: 'Shortcuts.focusSearch(event)'
         %li= link_to 'Use shortcuts', '#', onclick: 'Shortcuts.toggleHelp()'
-        %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
-        %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'
+        - unless current_application_settings.help_page_hide_commercial_content?
+          %li= link_to 'Get a support subscription', 'https://about.gitlab.com/pricing/'
+          %li= link_to 'Compare GitLab editions', 'https://about.gitlab.com/features/#compare'

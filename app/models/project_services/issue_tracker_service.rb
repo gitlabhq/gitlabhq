@@ -1,9 +1,14 @@
 class IssueTrackerService < Service
+  validate :one_issue_tracker, if: :activated?, on: :manual_change
+
   default_value_for :category, 'issue_tracker'
 
   # Pattern used to extract links from comments
   # Override this method on services that uses different patterns
-  def reference_pattern
+  # This pattern does not support cross-project references
+  # The other code assumes that this pattern is a superset of all
+  # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
+  def self.reference_pattern
     @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
   end
 
@@ -15,7 +20,7 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
+  def issue_tracker_path
     project_url
   end
 
@@ -30,9 +35,9 @@ class IssueTrackerService < Service
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },
-      { type: 'text', name: 'project_url', placeholder: 'Project url' },
-      { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
-      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
+      { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
+      { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
+      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
     ]
   end
 
@@ -74,7 +79,7 @@ class IssueTrackerService < Service
         message = "#{self.type} received response #{response.code} when attempting to connect to #{self.project_url}"
         result = true
       end
-    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED => error
+    rescue HTTParty::Error, Timeout::Error, SocketError, Errno::ECONNRESET, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError => error
       message = "#{self.type} had an error when trying to connect to #{self.project_url}: #{error.message}"
     end
     Rails.logger.info(message)
@@ -91,5 +96,14 @@ class IssueTrackerService < Service
 
   def issues_tracker
     Gitlab.config.issues_tracker[to_param]
+  end
+
+  def one_issue_tracker
+    return if template?
+    return if project.blank?
+
+    if project.services.external_issue_trackers.where.not(id: id).any?
+      errors.add(:base, 'Another issue tracker is already in use. Only one issue tracker service can be active at a time')
+    end
   end
 end

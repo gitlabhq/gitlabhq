@@ -1,7 +1,8 @@
 /* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-new, no-param-reassign, max-len */
-/* global Vue */
 /* global ace */
 /* global Flash */
+
+import Vue from 'vue';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};

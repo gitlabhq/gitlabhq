@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor, lib: true do
+  describe GitlabCiYamlProcessor, :lib do
+    subject { described_class.new(config, path) }
     let(:path) { 'path' }
 
     describe 'our current .gitlab-ci.yml' do
@@ -27,6 +28,28 @@ module Ci
           it 'includes coverage regexp in build attributes' do
             expect(subject)
               .to include(coverage_regex: 'Code coverage: \d+\.\d+')
+          end
+        end
+      end
+
+      describe 'retry entry' do
+        context 'when retry count is specified' do
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec', retry: 1 })
+          end
+
+          it 'includes retry count in build options attribute' do
+            expect(subject[:options]).to include(retry: 1)
+          end
+        end
+
+        context 'when retry count is not specified' do
+          let(:config) do
+            YAML.dump(rspec: { script: 'rspec' })
+          end
+
+          it 'does not persist retry count in the database' do
+            expect(subject[:options]).not_to have_key(:retry)
           end
         end
       end
@@ -82,6 +105,67 @@ module Ci
       end
     end
 
+    describe '#stage_seeds' do
+      context 'when no refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod' },
+                    rspec: { stage: 'test', script: 'rspec' },
+                    spinach: { stage: 'test', script: 'spinach' })
+        end
+
+        let(:pipeline) { create(:ci_empty_pipeline) }
+
+        it 'correctly fabricates a stage seeds object' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 2
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.second.stage[:name]).to eq 'deploy'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'rspec'
+          expect(seeds.first.builds.dig(1, :name)).to eq 'spinach'
+          expect(seeds.second.builds.dig(0, :name)).to eq 'production'
+        end
+      end
+
+      context 'when refs policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['master'] },
+                    spinach: { stage: 'test', script: 'spinach', only: ['tags'] })
+        end
+
+        let(:pipeline) do
+          create(:ci_empty_pipeline, ref: 'feature', tag: true)
+        end
+
+        it 'returns stage seeds only assigned to master to master' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+        end
+      end
+
+      context 'when source policy is specified' do
+        let(:config) do
+          YAML.dump(production: { stage: 'deploy', script: 'cap prod', only: ['triggers'] },
+                    spinach: { stage: 'test', script: 'spinach', only: ['schedules'] })
+        end
+
+        let(:pipeline) do
+          create(:ci_empty_pipeline, source: :schedule)
+        end
+
+        it 'returns stage seeds only assigned to schedules' do
+          seeds = subject.stage_seeds(pipeline)
+
+          expect(seeds.size).to eq 1
+          expect(seeds.first.stage[:name]).to eq 'test'
+          expect(seeds.first.builds.dig(0, :name)).to eq 'spinach'
+        end
+      end
+    end
+
     describe "#builds_for_ref" do
       let(:type) { 'test' }
 
@@ -101,7 +185,10 @@ module Ci
           commands: "pwd\nrspec",
           coverage_regex: nil,
           tag_list: [],
-          options: {},
+          options: {
+            before_script: ["pwd"],
+            script: ["rspec"]
+          },
           allow_failure: false,
           when: "on_success",
           environment: nil,
@@ -176,26 +263,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
         end
 
-        it "returns builds if only has a triggers keyword specified and a trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["triggers"] }
-                             })
+        it "returns builds if only has special keywords specified and source matches" do
+          possibilities = [{ keyword: 'pushes', source: 'push' },
+                           { keyword: 'web', source: 'web' },
+                           { keyword: 'triggers', source: 'trigger' },
+                           { keyword: 'schedules', source: 'schedule' },
+                           { keyword: 'api', source: 'api' },
+                           { keyword: 'external', source: 'external' }]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, true).size).to eq(1)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+          end
         end
 
-        it "does not return builds if only has a triggers keyword specified and no trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, only: ["triggers"] }
-                             })
+        it "does not return builds if only has special keywords specified and source doesn't match" do
+          possibilities = [{ keyword: 'pushes', source: 'web' },
+                           { keyword: 'web', source: 'push' },
+                           { keyword: 'triggers', source: 'schedule' },
+                           { keyword: 'schedules', source: 'external' },
+                           { keyword: 'api', source: 'trigger' },
+                           { keyword: 'external', source: 'api' }]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, only: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(0)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+          end
         end
 
         it "returns builds if only has current repository path" do
@@ -225,7 +330,7 @@ module Ci
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", only: %w(master deploy) },
                                staging: { script: "deploy", type: "deploy", only: %w(master deploy) },
-                               production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] },
+                               production: { script: "deploy", type: "deploy", only: ["master@path", "deploy"] }
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, 'fork')
@@ -332,26 +437,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
         end
 
-        it "does not return builds if except has a triggers keyword specified and a trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["triggers"] }
-                             })
+        it "does not return builds if except has special keywords specified and source matches" do
+          possibilities = [{ keyword: 'pushes', source: 'push' },
+                           { keyword: 'web', source: 'web' },
+                           { keyword: 'triggers', source: 'trigger' },
+                           { keyword: 'schedules', source: 'schedule' },
+                           { keyword: 'api', source: 'api' },
+                           { keyword: 'external', source: 'external' }]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, true).size).to eq(0)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(0)
+          end
         end
 
-        it "returns builds if except has a triggers keyword specified and no trigger is provided" do
-          config = YAML.dump({
-                               before_script: ["pwd"],
-                               rspec: { script: "rspec", type: type, except: ["triggers"] }
-                             })
+        it "returns builds if except has special keywords specified and source doesn't match" do
+          possibilities = [{ keyword: 'pushes', source: 'web' },
+                           { keyword: 'web', source: 'push' },
+                           { keyword: 'triggers', source: 'schedule' },
+                           { keyword: 'schedules', source: 'external' },
+                           { keyword: 'api', source: 'trigger' },
+                           { keyword: 'external', source: 'api' }]
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+          possibilities.each do |possibility|
+            config = YAML.dump({
+                                 before_script: ["pwd"],
+                                 rspec: { script: "rspec", type: type, except: [possibility[:keyword]] }
+                               })
 
-          expect(config_processor.builds_for_stage_and_ref(type, "deploy").size).to eq(1)
+            config_processor = GitlabCiYamlProcessor.new(config, path)
+
+            expect(config_processor.builds_for_stage_and_ref(type, "deploy", false, possibility[:source]).size).to eq(1)
+          end
         end
 
         it "does not return builds if except has current repository path" do
@@ -381,7 +504,7 @@ module Ci
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", except: ["master", "deploy", "test@fork"] },
                                staging: { script: "deploy", type: "deploy", except: ["master"] },
-                               production: { script: "deploy", type: "deploy", except: ["master@fork"] },
+                               production: { script: "deploy", type: "deploy", except: ["master@fork"] }
                              })
 
           config_processor = GitlabCiYamlProcessor.new(config, 'fork')
@@ -498,62 +621,134 @@ module Ci
     end
 
     describe "Image and service handling" do
-      it "returns image and service when defined" do
-        config = YAML.dump({
-                             image: "ruby:2.1",
-                             services: ["mysql"],
-                             before_script: ["pwd"],
-                             rspec: { script: "rspec" }
-                           })
+      context "when extended docker configuration is used" do
+        it "returns image and service when defined" do
+          config = YAML.dump({ image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
+                               services: ["mysql", { name: "docker:dind", alias: "docker",
+                                                     entrypoint: ["/usr/local/bin/init", "run"],
+                                                     command: ["/usr/local/bin/init", "run"] }],
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" } })
 
-        config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          stage: "test",
-          stage_idx: 1,
-          name: "rspec",
-          commands: "pwd\nrspec",
-          coverage_regex: nil,
-          tag_list: [],
-          options: {
-            image: "ruby:2.1",
-            services: ["mysql"]
-          },
-          allow_failure: false,
-          when: "on_success",
-          environment: nil,
-          yaml_variables: []
-        })
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.1", entrypoint: ["/usr/local/bin/init", "run"] },
+              services: [{ name: "mysql" },
+                         { name: "docker:dind", alias: "docker", entrypoint: ["/usr/local/bin/init", "run"],
+                           command: ["/usr/local/bin/init", "run"] }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
+
+        it "returns image and service when overridden for job" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql"],
+                               before_script: ["pwd"],
+                               rspec: { image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+                                        services: [{ name: "postgresql", alias: "db-pg",
+                                                     entrypoint: ["/usr/local/bin/init", "run"],
+                                                     command: ["/usr/local/bin/init", "run"] }, "docker:dind"],
+                                        script: "rspec" } })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.5", entrypoint: ["/usr/local/bin/init", "run"] },
+              services: [{ name: "postgresql", alias: "db-pg", entrypoint: ["/usr/local/bin/init", "run"],
+                           command: ["/usr/local/bin/init", "run"] },
+                         { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
       end
 
-      it "returns image and service when overridden for job" do
-        config = YAML.dump({
-                             image:         "ruby:2.1",
-                             services:      ["mysql"],
-                             before_script: ["pwd"],
-                             rspec:         { image: "ruby:2.5", services: ["postgresql"], script: "rspec" }
-                           })
+      context "when etended docker configuration is not used" do
+        it "returns image and service when defined" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql", "docker:dind"],
+                               before_script: ["pwd"],
+                               rspec: { script: "rspec" } })
 
-        config_processor = GitlabCiYamlProcessor.new(config, path)
+          config_processor = GitlabCiYamlProcessor.new(config, path)
 
-        expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
-        expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          stage: "test",
-          stage_idx: 1,
-          name: "rspec",
-          commands: "pwd\nrspec",
-          coverage_regex: nil,
-          tag_list: [],
-          options: {
-            image: "ruby:2.5",
-            services: ["postgresql"]
-          },
-          allow_failure: false,
-          when: "on_success",
-          environment: nil,
-          yaml_variables: []
-        })
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.1" },
+              services: [{ name: "mysql" }, { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
+
+        it "returns image and service when overridden for job" do
+          config = YAML.dump({ image: "ruby:2.1",
+                               services: ["mysql"],
+                               before_script: ["pwd"],
+                               rspec: { image: "ruby:2.5", services: ["postgresql", "docker:dind"], script: "rspec" } })
+
+          config_processor = GitlabCiYamlProcessor.new(config, path)
+
+          expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
+          expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
+            stage: "test",
+            stage_idx: 1,
+            name: "rspec",
+            commands: "pwd\nrspec",
+            coverage_regex: nil,
+            tag_list: [],
+            options: {
+              before_script: ["pwd"],
+              script: ["rspec"],
+              image: { name: "ruby:2.5" },
+              services: [{ name: "postgresql" }, { name: "docker:dind" }]
+            },
+            allow_failure: false,
+            when: "on_success",
+            environment: nil,
+            yaml_variables: []
+          })
+        end
       end
     end
 
@@ -717,6 +912,7 @@ module Ci
           paths: ["logs/", "binaries/"],
           untracked: true,
           key: 'key',
+          policy: 'pull-push'
         )
       end
 
@@ -735,6 +931,7 @@ module Ci
           paths: ["logs/", "binaries/"],
           untracked: true,
           key: 'key',
+          policy: 'pull-push'
         )
       end
 
@@ -743,7 +940,7 @@ module Ci
                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'global' },
                              rspec: {
                                script: "rspec",
-                               cache: { paths: ["test/"], untracked: false, key: 'local' },
+                               cache: { paths: ["test/"], untracked: false, key: 'local' }
                              }
                            })
 
@@ -754,6 +951,7 @@ module Ci
           paths: ["test/"],
           untracked: false,
           key: 'local',
+          policy: 'pull-push'
         )
       end
     end
@@ -786,8 +984,10 @@ module Ci
           coverage_regex: nil,
           tag_list: [],
           options: {
-            image: "ruby:2.1",
-            services: ["mysql"],
+            before_script: ["pwd"],
+            script: ["rspec"],
+            image: { name: "ruby:2.1" },
+            services: [{ name: "mysql" }],
             artifacts: {
               name: "custom_name",
               paths: ["logs/", "binaries/"],
@@ -997,7 +1197,9 @@ module Ci
             commands: "test",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["test"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1043,7 +1245,9 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["execute-script-for-job"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1056,7 +1260,9 @@ module Ci
             commands: "execute-script-for-job",
             coverage_regex: nil,
             tag_list: [],
-            options: {},
+            options: {
+              script: ["execute-script-for-job"]
+            },
             when: "on_success",
             allow_failure: false,
             environment: nil,
@@ -1163,7 +1369,7 @@ EOT
         config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image config should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image config should be a hash or a string")
       end
 
       it "returns errors if job name is blank" do
@@ -1184,35 +1390,35 @@ EOT
         config = YAML.dump({ rspec: { script: "test", image: ["test"] } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:image config should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:image config should be a hash or a string")
       end
 
       it "returns errors if services parameter is not an array" do
         config = YAML.dump({ services: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be a array")
       end
 
       it "returns errors if services parameter is not an array of strings" do
         config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "service config should be a hash or a string")
       end
 
       it "returns errors if job services parameter is not an array" do
         config = YAML.dump({ rspec: { script: "test", services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:services config should be a array")
       end
 
       it "returns errors if job services parameter is not an array of strings" do
         config = YAML.dump({ rspec: { script: "test", services: [10, "test"] } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "service config should be a hash or a string")
       end
 
       it "returns error if job configuration is invalid" do
@@ -1226,7 +1432,7 @@ EOT
         config = YAML.dump({ extra: { script: 'rspec', services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra:services config should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra:services config should be a array")
       end
 
       it "returns errors if there are no jobs defined" do

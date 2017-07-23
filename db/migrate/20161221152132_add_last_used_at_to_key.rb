@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Datetime
 class AddLastUsedAtToKey < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

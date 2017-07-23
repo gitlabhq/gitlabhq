@@ -57,7 +57,7 @@ sudo -u git -H bundle clean
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 
 # Clean up assets and cache
-sudo -u git -H bundle exec rake gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production
+sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production
 ```
 
 ### 4. Update gitlab-workhorse to the corresponding version
@@ -75,6 +75,7 @@ cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags
 sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION` -b v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
+sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
 ```
 
 ### 6. Start application

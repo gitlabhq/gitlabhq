@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-undef, no-else-return, prefer-arrow-callback, max-len, no-console */
+/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len, no-console */
+/* global katex */
+
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
 //

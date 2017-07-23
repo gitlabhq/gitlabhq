@@ -8,17 +8,17 @@ feature 'toggler_behavior', js: true, feature: true do
   let(:fragment_id) { "#note_#{note.id}" }
 
   before do
-    login_as :admin
+    sign_in(create(:admin))
     project = merge_request.source_project
     page.current_window.resize_to(1000, 300)
-    visit "#{namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment_id}"
+    visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"
   end
 
   describe 'scroll position' do
     it 'should be scrolled down to fragment' do
       page_height = page.current_window.size[1]
       page_scroll_y = page.evaluate_script("window.scrollY")
-      fragment_position_top = page.evaluate_script("$('#{fragment_id}').offset().top")
+      fragment_position_top = page.evaluate_script("Math.round($('#{fragment_id}').offset().top)")
       expect(find('.js-toggle-content').visible?).to eq true
       expect(find(fragment_id).visible?).to eq true
       expect(fragment_position_top).to be >= page_scroll_y

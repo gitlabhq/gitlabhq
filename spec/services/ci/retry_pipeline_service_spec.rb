@@ -6,8 +6,26 @@ describe Ci::RetryPipelineService, '#execute', :services do
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
 
-  context 'when user has ability to modify pipeline' do
-    let(:user) { create(:admin) }
+  context 'when user has full ability to modify pipeline' do
+    before do
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: pipeline.ref, project: project)
+    end
+
+    context 'when there are already retried jobs present' do
+      before do
+        create_build('rspec', :canceled, 0, retried: true)
+        create_build('rspec', :failed, 0)
+      end
+
+      it 'does not retry jobs that has already been retried' do
+        expect(statuses.first).to be_retried
+        expect { service.execute(pipeline) }
+          .to change { CommitStatus.count }.by(1)
+      end
+    end
 
     context 'when there are failed builds in the last stage' do
       before do
@@ -211,6 +229,46 @@ describe Ci::RetryPipelineService, '#execute', :services do
     it 'raises an error' do
       expect { service.execute(pipeline) }
         .to raise_error Gitlab::Access::AccessDeniedError
+    end
+  end
+
+  context 'when user is not allowed to trigger manual action' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'when there is a failed manual action present' do
+      before do
+        create_build('test', :failed, 0)
+        create_build('deploy', :failed, 0, when: :manual)
+        create_build('verify', :canceled, 1)
+      end
+
+      it 'does not reprocess manual action' do
+        service.execute(pipeline)
+
+        expect(build('test')).to be_pending
+        expect(build('deploy')).to be_failed
+        expect(build('verify')).to be_created
+        expect(pipeline.reload).to be_running
+      end
+    end
+
+    context 'when there is a failed manual action in later stage' do
+      before do
+        create_build('test', :failed, 0)
+        create_build('deploy', :failed, 1, when: :manual)
+        create_build('verify', :canceled, 2)
+      end
+
+      it 'does not reprocess manual action' do
+        service.execute(pipeline)
+
+        expect(build('test')).to be_pending
+        expect(build('deploy')).to be_failed
+        expect(build('verify')).to be_created
+        expect(pipeline.reload).to be_running
+      end
     end
   end
 

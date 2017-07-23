@@ -50,8 +50,8 @@ class ProjectTeam
   end
 
   def add_users(users, access_level, current_user: nil, expires_at: nil)
-    ProjectMember.add_users_to_projects(
-      [project.id],
+    ProjectMember.add_users(
+      project,
       users,
       access_level,
       current_user: current_user,
@@ -167,14 +167,24 @@ class ProjectTeam
       access = RequestStore.store[key]
     end
 
-    # Lookup only the IDs we need
+    # Look up only the IDs we need
     user_ids = user_ids - access.keys
-    users_access = project.project_authorizations.
-      where(user: user_ids).
-      group(:user_id).
-      maximum(:access_level)
+
+    return access if user_ids.empty?
+
+    users_access = project.project_authorizations
+      .where(user: user_ids)
+      .group(:user_id)
+      .maximum(:access_level)
 
     access.merge!(users_access)
+
+    missing_user_ids = user_ids - users_access.keys
+
+    missing_user_ids.each do |user_id|
+      access[user_id] = Gitlab::Access::NO_ACCESS
+    end
+
     access
   end
 

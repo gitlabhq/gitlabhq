@@ -7,7 +7,7 @@ module Banzai
     #
     class RedactorFilter < HTML::Pipeline::Filter
       def call
-        Redactor.new(project, current_user).redact([doc])
+        Redactor.new(project, current_user).redact([doc]) unless context[:skip_redaction]
 
         doc
       end

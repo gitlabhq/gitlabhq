@@ -1,5 +1,6 @@
-/* global Vue */
 /* global dateFormat */
+
+import Vue from 'vue';
 
 Vue.filter('due-date', (value) => {
   const date = new Date(value);

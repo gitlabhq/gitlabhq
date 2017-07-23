@@ -28,7 +28,7 @@
 .note-edit-form {
   .note-form-actions {
     position: relative;
-    margin-top: $gl-padding;
+    margin: $gl-padding 0 0;
   }
 
   .note-preview-holder {
@@ -111,21 +111,57 @@
   margin-top: 0;
   text-align: center;
   font-size: 12px;
+  align-items: center;
 
-  @media (max-width: $screen-sm-max) {
+  @media (max-width: $screen-md-max) {
     // On smaller devices the warning becomes the fourth item in the list,
     // rather than centering, and grows to span the full width of the
     // comment area.
     order: 4;
-    -webkit-order: 4;
+    margin: 6px auto;
+    width: 100%;
+  }
+
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+.right-sidebar-expanded {
+  .confidential-issue-warning {
+    // When the sidebar is open the warning becomes the fourth item in the list,
+    // rather than centering, and grows to span the full width of the
+    // comment area.
+    order: 4;
     margin: 6px auto;
     width: 100%;
   }
 }
 
+
 .discussion-form {
-  padding: $gl-padding-top $gl-padding;
+  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-notes .disabled-comment {
+  padding: 6px 0;
+}
+
+.notes.notes-form > li.timeline-entry {
+  @include notes-media('max', $screen-sm-max) {
+    padding: 0;
+  }
+
+  .timeline-content {
+    @include notes-media('max', $screen-sm-max) {
+      margin: 0;
+    }
+  }
+
+  .timeline-entry-inner {
+    border: 0;
+  }
 }
 
 .note-edit-form {
@@ -148,14 +184,22 @@
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
+
+  &.alert-dismissable {
+    .close {
+      color: $white-light;
+      opacity: 0.85;
+      font-weight: normal;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .discussion-body,
 .diff-file {
-  .notes .note {
-    padding: 10px 15px;
-  }
-
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
@@ -178,8 +222,25 @@
       padding-right: 5px;
     }
 
-    &:last-child {
-      padding-left: 5px;
+  }
+
+  .discussion-actions {
+    display: table;
+
+    .new-issue-for-discussion path {
+      fill: $gray-darkest;
+    }
+
+    .btn-group {
+      display: table-cell;
+
+      &:first-child {
+        padding-right: 0;
+      }
+
+      &:first-child:not(:last-child) > div {
+        border-right: 0;
+      }
     }
   }
 
@@ -248,6 +309,7 @@
 .toolbar-text {
   font-size: 14px;
   line-height: 16px;
+  margin-top: 2px;
 
   @media (min-width: $screen-md-min) {
     float: left;
@@ -280,4 +342,87 @@
     left: 0;
     margin-bottom: 10px;
   }
+}
+
+.comment-type-dropdown {
+  .comment-btn {
+    width: auto;
+  }
+
+  .dropdown-toggle {
+    float: right;
+
+    .toggle-icon {
+      color: $white-light;
+      padding-right: 2px;
+      margin-top: 2px;
+    }
+  }
+
+  .dropdown-menu {
+    top: initial;
+    bottom: 40px;
+    width: 298px;
+  }
+
+
+  @media (max-width: $screen-xs-max) {
+    display: flex;
+    width: 100%;
+    margin-bottom: 10px;
+
+    .comment-btn {
+      flex-grow: 1;
+      flex-shrink: 0;
+      width: auto;
+    }
+
+    .dropdown-toggle {
+      flex-grow: 0;
+      flex-shrink: 1;
+      width: auto;
+    }
+  }
+}
+
+.uploading-container {
+  float: right;
+
+  @media (max-width: $screen-xs-max) {
+    float: left;
+    margin-top: 5px;
+  }
+}
+
+.uploading-error-icon,
+.uploading-error-message {
+  color: $gl-text-red;
+}
+
+.uploading-error-message {
+  @media (max-width: $screen-xs-max) {
+    &::after {
+      content: "\a";
+      white-space: pre;
+    }
+  }
+}
+
+.uploading-progress {
+  margin-right: 5px;
+}
+
+.attach-new-file,
+.button-attach-file,
+.retry-uploading-link {
+  color: $gl-link-color;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.markdown-selector {
+  color: $gl-link-color;
 }

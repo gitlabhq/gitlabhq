@@ -1,6 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
+# rubocop:disable RemoveIndex
 class RemoveRedundantIndexes < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
@@ -68,7 +69,7 @@ class RemoveRedundantIndexes < ActiveRecord::Migration
       [:namespaces, 'index_namespaces_on_created_at_and_id'],
       [:notes, 'index_notes_on_created_at_and_id'],
       [:projects, 'index_projects_on_created_at_and_id'],
-      [:users, 'index_users_on_created_at_and_id'],
+      [:users, 'index_users_on_created_at_and_id']
     ]
 
     transaction do

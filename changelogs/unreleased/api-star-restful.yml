@@ -1,4 +1,0 @@
----
-title: 'API: Moved `DELETE /projects/:id/star` to `POST /projects/:id/unstar`'
-merge_request: 9328
-author: Robert Schilling

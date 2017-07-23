@@ -15,6 +15,16 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     link_to('text', '', class: 'gfm', data: data)
   end
 
+  it 'skips when the skip_redaction flag is set' do
+    user = create(:user)
+    project = create(:empty_project)
+
+    link = reference_link(project: project.id, reference_type: 'test')
+    doc = filter(link, current_user: user, skip_redaction: true)
+
+    expect(doc.css('a').length).to eq 1
+  end
+
   context 'with data-project' do
     let(:parser_class) do
       Class.new(Banzai::ReferenceParser::BaseParser) do
@@ -23,13 +33,15 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     before do
-      allow(Banzai::ReferenceParser).to receive(:[]).
-        with('test').
-        and_return(parser_class)
+      allow(Banzai::ReferenceParser).to receive(:[])
+        .with('test')
+        .and_return(parser_class)
     end
 
     context 'valid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true) }
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true)
+      end
 
       it 'allows permitted Project references' do
         user = create(:user)
@@ -44,7 +56,9 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     context 'invalid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false) }
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false)
+      end
 
       it 'removes unpermitted references' do
         user = create(:user)
@@ -103,7 +117,7 @@ describe Banzai::Filter::RedactorFilter, lib: true do
       it 'allows references for assignee' do
         assignee = create(:user)
         project = create(:empty_project, :public)
-        issue = create(:issue, :confidential, project: project, assignee: assignee)
+        issue = create(:issue, :confidential, project: project, assignees: [assignee])
 
         link = reference_link(project: project.id, issue: issue.id, reference_type: 'issue')
         doc = filter(link, current_user: assignee)

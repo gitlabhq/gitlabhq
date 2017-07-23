@@ -1,4 +1,0 @@
----
-title: Expose pipelines as PipelineBasic `api/v3/projects/:id/pipelines`
-merge_request: 8875
-author:

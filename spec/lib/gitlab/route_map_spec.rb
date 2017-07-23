@@ -4,43 +4,43 @@ describe Gitlab::RouteMap, lib: true do
   describe '#initialize' do
     context 'when the data is not YAML' do
       it 'raises an error' do
-        expect { described_class.new('"') }.
-          to raise_error(Gitlab::RouteMap::FormatError, /valid YAML/)
+        expect { described_class.new('"') }
+          .to raise_error(Gitlab::RouteMap::FormatError, /valid YAML/)
       end
     end
 
     context 'when the data is not a YAML array' do
       it 'raises an error' do
-        expect { described_class.new(YAML.dump('foo')) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /an array/)
+        expect { described_class.new(YAML.dump('foo')) }
+          .to raise_error(Gitlab::RouteMap::FormatError, /an array/)
       end
     end
 
     context 'when an entry is not a hash' do
       it 'raises an error' do
-        expect { described_class.new(YAML.dump(['foo'])) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /a hash/)
+        expect { described_class.new(YAML.dump(['foo'])) }
+          .to raise_error(Gitlab::RouteMap::FormatError, /a hash/)
       end
     end
 
     context 'when an entry does not have a source key' do
       it 'raises an error' do
-        expect { described_class.new(YAML.dump([{ 'public' => 'index.html' }])) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /source key/)
+        expect { described_class.new(YAML.dump([{ 'public' => 'index.html' }])) }
+          .to raise_error(Gitlab::RouteMap::FormatError, /source key/)
       end
     end
 
     context 'when an entry does not have a public key' do
       it 'raises an error' do
-        expect { described_class.new(YAML.dump([{ 'source' => '/index\.html/' }])) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /public key/)
+        expect { described_class.new(YAML.dump([{ 'source' => '/index\.html/' }])) }
+          .to raise_error(Gitlab::RouteMap::FormatError, /public key/)
       end
     end
 
     context 'when an entry source is not a valid regex' do
       it 'raises an error' do
-        expect { described_class.new(YAML.dump([{ 'source' => '/[/', 'public' => 'index.html' }])) }.
-          to raise_error(Gitlab::RouteMap::FormatError, /regular expression/)
+        expect { described_class.new(YAML.dump([{ 'source' => '/[/', 'public' => 'index.html' }])) }
+          .to raise_error(Gitlab::RouteMap::FormatError, /regular expression/)
       end
     end
 
@@ -55,6 +55,19 @@ describe Gitlab::RouteMap, lib: true do
   end
 
   describe '#public_path_for_source_path' do
+    context 'malicious regexp' do
+      include_examples 'malicious regexp'
+
+      subject do
+        map = described_class.new(<<-"MAP".strip_heredoc)
+        - source: '#{malicious_regexp}'
+          public: '/'
+        MAP
+
+        map.public_path_for_source_path(malicious_text)
+      end
+    end
+
     subject do
       described_class.new(<<-'MAP'.strip_heredoc)
         # Team data

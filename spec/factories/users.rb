@@ -1,14 +1,16 @@
 FactoryGirl.define do
-  sequence(:name) { FFaker::Name.name }
-
   factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
-    email { FFaker::Internet.email }
-    name
-    sequence(:username) { |n| "#{FFaker::Internet.user_name}#{n}" }
+    email { generate(:email) }
+    name { generate(:name) }
+    username { generate(:username) }
     password "12345678"
     confirmed_at { Time.now }
     confirmation_token { nil }
     can_create_group true
+
+    before(:create) do |user|
+      user.ensure_rss_token
+    end
 
     trait :admin do
       admin true
@@ -29,6 +31,10 @@ FactoryGirl.define do
     trait :ghost do
       ghost true
       after(:build) { |user, _| user.block! }
+    end
+
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
     trait :two_factor_via_otp do

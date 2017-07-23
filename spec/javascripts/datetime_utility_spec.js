@@ -1,7 +1,31 @@
-require('~/lib/utils/datetime_utility');
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 
 (() => {
   describe('Date time utils', () => {
+    describe('timeFor', () => {
+      it('returns `past due` when in past', () => {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() - 1);
+
+        expect(
+          gl.utils.timeFor(date),
+        ).toBe('Past due');
+      });
+
+      it('returns remaining time when in the future', () => {
+        const date = new Date();
+        date.setFullYear(date.getFullYear() + 1);
+
+        // Add a day to prevent a transient error. If date is even 1 second
+        // short of a full year, timeFor will return '11 months remaining'
+        date.setDate(date.getDate() + 1);
+
+        expect(
+          gl.utils.timeFor(date),
+        ).toBe('1 year remaining');
+      });
+    });
+
     describe('get day name', () => {
       it('should return Sunday', () => {
         const day = gl.utils.getDayName(new Date('07/17/2016'));
@@ -60,6 +84,15 @@ require('~/lib/utils/datetime_utility');
         const difference = gl.utils.getDayDifference(firstDay, secondDay);
         expect(difference).toBe(365);
       });
+    });
+  });
+
+  describe('timeIntervalInWords', () => {
+    it('should return string with number of minutes and seconds', () => {
+      expect(timeIntervalInWords(9.54)).toEqual('9 seconds');
+      expect(timeIntervalInWords(1)).toEqual('1 second');
+      expect(timeIntervalInWords(200)).toEqual('3 minutes 20 seconds');
+      expect(timeIntervalInWords(6008)).toEqual('100 minutes 8 seconds');
     });
   });
 })();

@@ -49,7 +49,7 @@ module Banzai
       # Check if project belongs to a group which
       # user can read.
       def can_read_group_reference?(node, user, groups)
-        node_group = groups[node.attr('data-group').to_i]
+        node_group = groups[node]
 
         node_group && can?(user, :read_group, node_group)
       end
@@ -74,8 +74,8 @@ module Banzai
           if project && project_id && project.id == project_id.to_i
             true
           elsif project_id && user_id
-            project = projects[project_id.to_i]
-            user = users[user_id.to_i]
+            project = projects[node]
+            user = users[node]
 
             project && user ? project.team.member?(user) : false
           else
@@ -99,11 +99,11 @@ module Banzai
       def find_users_for_projects(ids)
         return [] if ids.empty?
 
-        collection_objects_for_ids(Project, ids).
-          flat_map { |p| p.team.members.to_a }
+        collection_objects_for_ids(Project, ids)
+          .flat_map { |p| p.team.members.to_a }
       end
 
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         can?(user, :read_project, ref_project)
       end
     end

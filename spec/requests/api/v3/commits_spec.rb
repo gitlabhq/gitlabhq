@@ -1,12 +1,10 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::V3::Commits, api: true do
-  include ApiHelpers
+describe API::V3::Commits do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
-  let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
   let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
@@ -88,7 +86,7 @@ describe API::V3::Commits, api: true do
     end
   end
 
-  describe "Create a commit with multiple files and actions" do
+  describe "POST /projects/:id/repository/commits" do
     let!(:url) { "/projects/#{project.id}/repository/commits" }
 
     it 'returns a 403 unauthorized for user without permissions' do
@@ -103,7 +101,7 @@ describe API::V3::Commits, api: true do
       expect(response).to have_http_status(400)
     end
 
-    context :create do
+    describe 'create' do
       let(:message) { 'Created file' }
       let!(:invalid_c_params) do
         {
@@ -147,8 +145,9 @@ describe API::V3::Commits, api: true do
         expect(response).to have_http_status(400)
       end
 
-      context 'with project path in URL' do
-        let(:url) { "/projects/#{project.full_path.gsub('/', '%2F')}/repository/commits" }
+      context 'with project path containing a dot in URL' do
+        let!(:user) { create(:user, username: 'foo.bar') }
+        let(:url) { "/projects/#{CGI.escape(project.full_path)}/repository/commits" }
 
         it 'a new file in project repo' do
           post v3_api(url, user), valid_c_params
@@ -158,7 +157,7 @@ describe API::V3::Commits, api: true do
       end
     end
 
-    context :delete do
+    describe 'delete' do
       let(:message) { 'Deleted file' }
       let!(:invalid_d_params) do
         {
@@ -199,7 +198,7 @@ describe API::V3::Commits, api: true do
       end
     end
 
-    context :move do
+    describe 'move' do
       let(:message) { 'Moved file' }
       let!(:invalid_m_params) do
         {
@@ -244,7 +243,7 @@ describe API::V3::Commits, api: true do
       end
     end
 
-    context :update do
+    describe 'update' do
       let(:message) { 'Updated file' }
       let!(:invalid_u_params) do
         {
@@ -387,7 +386,7 @@ describe API::V3::Commits, api: true do
       end
 
       it "returns status for CI" do
-        pipeline = project.ensure_pipeline('master', project.repository.commit.sha)
+        pipeline = project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
         pipeline.update(status: 'success')
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
@@ -397,7 +396,7 @@ describe API::V3::Commits, api: true do
       end
 
       it "returns status for CI when pipeline is created" do
-        project.ensure_pipeline('master', project.repository.commit.sha)
+        project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
 
         get v3_api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
@@ -484,8 +483,7 @@ describe API::V3::Commits, api: true do
         post v3_api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('Sorry, we cannot cherry-pick this commit automatically.
-                     A cherry-pick may have already been performed with this commit, or a more recent commit may have updated some of its content.')
+        expect(json_response['message']).to include('Sorry, we cannot cherry-pick this commit automatically.')
       end
 
       it 'returns 400 if you are not allowed to push to the target branch' do

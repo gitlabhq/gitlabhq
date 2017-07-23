@@ -4,24 +4,50 @@ module Ci
     include HasStatus
     include Importable
     include AfterCommitQueue
+    include Presentable
 
-    self.table_name = 'ci_commits'
-
-    belongs_to :project, foreign_key: :gl_project_id
+    belongs_to :project
     belongs_to :user
+    belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
+    belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
 
+    has_many :stages
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, foreign_key: :commit_id
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id
+    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
+
+    # Merge requests for which the current pipeline is running against
+    # the merge request's latest commit.
+    has_many :merge_requests, foreign_key: "head_pipeline_id"
+
+    has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :retryable_builds, -> { latest.failed_or_canceled }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
+    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+    has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
+
+    has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
 
+    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
     after_create :keep_around_commits, unless: :importing?
+
+    enum source: {
+      unknown: nil,
+      push: 1,
+      web: 2,
+      trigger: 3,
+      schedule: 4,
+      api: 5,
+      external: 6
+    }
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -66,23 +92,32 @@ module Ci
         pipeline.update_duration
       end
 
+      before_transition any => [:manual] do |pipeline|
+        pipeline.update_duration
+      end
+
+      before_transition canceled: any - [:canceled] do |pipeline|
+        pipeline.auto_canceled_by = nil
+      end
+
       after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition any => [:success] do |pipeline|
-        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
       after_transition [:created, :pending, :running] => :success do |pipeline|
-        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(id) }
+        pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
       after_transition do |pipeline, transition|
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineHooksWorker.perform_async(id)
+          PipelineHooksWorker.perform_async(pipeline.id)
+          ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end
       end
 
@@ -105,6 +140,7 @@ module Ci
         where(id: max_id)
       end
     end
+    scope :internal, -> { where(source: internal_sources) }
 
     def self.latest_status(ref = nil)
       latest(ref).status
@@ -112,6 +148,12 @@ module Ci
 
     def self.latest_successful_for(ref)
       success.latest(ref).order(id: :desc).first
+    end
+
+    def self.latest_successful_for_refs(refs)
+      success.latest(refs).order(id: :desc).each_with_object({}) do |pipeline, hash|
+        hash[pipeline.ref] ||= pipeline
+      end
     end
 
     def self.truncate_sha(sha)
@@ -122,21 +164,25 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
-    def stage(name)
-      stage = Ci::Stage.new(self, name: name)
-      stage unless stage.statuses_count.zero?
+    def self.internal_sources
+      sources.reject { |source| source == "external" }.values
     end
 
     def stages_count
       statuses.select(:stage).distinct.count
     end
 
-    def stages_name
-      statuses.order(:stage_idx).distinct.
-        pluck(:stage, :stage_idx).map(&:first)
+    def stages_names
+      statuses.order(:stage_idx).distinct
+        .pluck(:stage, :stage_idx).map(&:first)
     end
 
-    def stages
+    def legacy_stage(name)
+      stage = Ci::LegacyStage.new(self, name: name)
+      stage unless stage.statuses_count.zero?
+    end
+
+    def legacy_stages
       # TODO, this needs refactoring, see gitlab-ce#26481.
 
       stages_query = statuses
@@ -144,24 +190,15 @@ module Ci
 
       status_sql = statuses.latest.where('stage=sg.stage').status_sql
 
-      warnings_sql = statuses.latest.select('COUNT(*) > 0')
+      warnings_sql = statuses.latest.select('COUNT(*)')
         .where('stage=sg.stage').failed_but_allowed.to_sql
 
       stages_with_statuses = CommitStatus.from(stages_query, :sg)
         .pluck('sg.stage', status_sql, "(#{warnings_sql})")
 
       stages_with_statuses.map do |stage|
-        Ci::Stage.new(self, Hash[%i[name status warnings].zip(stage)])
+        Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
       end
-    end
-
-    def artifacts
-      builds.latest.with_artifacts_not_expired.includes(project: [:namespace])
-    end
-
-    # For now the only user who participates is the user who triggered
-    def participants(_current_user = nil)
-      Array(user)
     end
 
     def valid_commit_sha
@@ -200,27 +237,37 @@ module Ci
       !tag?
     end
 
-    def manual_actions
-      builds.latest.manual_actions.includes(project: [:namespace])
-    end
-
     def stuck?
-      builds.pending.any?(&:stuck?)
+      pending_builds.any?(&:stuck?)
     end
 
     def retryable?
-      builds.latest.failed_or_canceled.any?(&:retryable?)
+      retryable_builds.any?
     end
 
     def cancelable?
-      statuses.cancelable.any?
+      cancelable_statuses.any?
+    end
+
+    def auto_canceled?
+      canceled? && auto_canceled_by_id?
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(
-        statuses.cancelable) do |cancelable|
-          cancelable.find_each(&:cancel)
+      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+        cancelable.find_each do |job|
+          yield(job) if block_given?
+          job.cancel
         end
+      end
+    end
+
+    def auto_cancel_running(pipeline)
+      update(auto_canceled_by: pipeline)
+
+      cancel_running do |job|
+        job.auto_canceled_by = pipeline
+      end
     end
 
     def retry_failed(current_user)
@@ -239,10 +286,6 @@ module Ci
       commit.sha == sha
     end
 
-    def triggered?
-      trigger_requests.any?
-    end
-
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
@@ -254,12 +297,14 @@ module Ci
       end
     end
 
-    def config_builds_attributes
+    def stage_seeds
       return [] unless config_processor
 
-      config_processor.
-        builds_for_ref(ref, tag?, trigger_requests.first).
-        sort_by { |build| build[:stage_idx] }
+      @stage_seeds ||= config_processor.stage_seeds(self)
+    end
+
+    def has_stage_seeds?
+      stage_seeds.any?
     end
 
     def has_warnings?
@@ -267,7 +312,7 @@ module Ci
     end
 
     def config_processor
-      return nil unless ci_yaml_file
+      return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
@@ -281,10 +326,24 @@ module Ci
       end
     end
 
+    def ci_yaml_file_path
+      if project.ci_config_path.blank?
+        '.gitlab-ci.yml'
+      else
+        project.ci_config_path
+      end
+    end
+
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = project.repository.gitlab_ci_yml_for(sha) rescue nil
+      @ci_yaml_file = begin
+        project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+      rescue Rugged::ReferenceError, GRPC::NotFound, GRPC::Internal
+        self.yaml_errors =
+          "Failed to load CI/CD config file at #{ci_yaml_file_path}"
+        nil
+      end
     end
 
     def has_yaml_errors?
@@ -332,7 +391,8 @@ module Ci
 
     def predefined_variables
       [
-        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: ci_yaml_file_path, public: true }
       ]
     end
 
@@ -355,12 +415,9 @@ module Ci
       project.execute_services(data, :pipeline_hooks)
     end
 
-    # Merge requests for which the current pipeline is running against
-    # the merge request's latest commit.
-    def merge_requests
-      @merge_requests ||= project.merge_requests
-        .where(source_branch: self.ref)
-        .select { |merge_request| merge_request.head_pipeline.try(:id) == self.id }
+    # All the merge requests for which the current pipeline runs/ran against
+    def all_merge_requests
+      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
     end
 
     def detailed_status(current_user)

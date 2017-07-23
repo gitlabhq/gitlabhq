@@ -11,7 +11,6 @@
   > li {
     padding: 10px 15px;
     min-height: 20px;
-    border-bottom: 1px solid $list-border-light;
     border-bottom: 1px solid $list-border;
 
     &::after {
@@ -122,7 +121,7 @@ ul.content-list {
     }
 
     .member-group-link {
-      color: $blue-normal;
+      color: $blue-600;
     }
 
     .description {
@@ -152,6 +151,7 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.has-tooltip,
         &:last-child {
           margin-right: 0;
 
@@ -236,6 +236,8 @@ ul.content-list {
 ul.controls {
   float: right;
   list-style: none;
+  display: flex;
+  align-items: center;
 
   .btn {
     padding: 10px 14px;
@@ -255,11 +257,124 @@ ul.controls {
       .avatar-inline {
         margin-left: 0;
         margin-right: 0;
+        margin-bottom: 0;
       }
     }
+  }
+
+  .issuable-pipeline-broken a,
+  .issuable-pipeline-status a,
+  .author_link {
+    display: flex;
   }
 }
 
 ul.indent-list {
   padding: 10px 0 0 30px;
+}
+
+
+// Specific styles for tree list
+.group-list-tree {
+  .folder-toggle-wrap {
+    float: left;
+    line-height: $list-text-height;
+    font-size: 0;
+
+    span {
+      font-size: $gl-font-size;
+    }
+  }
+
+  .folder-caret,
+  .folder-icon {
+    display: inline-block;
+  }
+
+  .folder-caret {
+    width: 15px;
+  }
+
+  .folder-icon {
+    width: 20px;
+  }
+
+  > .group-row:not(.has-subgroups) {
+    .folder-caret .fa {
+      opacity: 0;
+    }
+  }
+
+  .content-list li:last-child {
+    padding-bottom: 0;
+  }
+
+  .group-list-tree {
+    margin-bottom: 0;
+    margin-left: 30px;
+    position: relative;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 0;
+      position: absolute;
+      top: 5px;
+      bottom: 0;
+      left: -16px;
+      border-left: 2px solid $border-white-normal;
+    }
+
+    .group-row {
+      position: relative;
+
+      &::before {
+        content: "";
+        display: block;
+        width: 10px;
+        height: 0;
+        border-top: 2px solid $border-white-normal;
+        position: absolute;
+        top: 30px;
+        left: -16px;
+      }
+
+      &:last-child::before {
+        background: $white-light;
+        height: auto;
+        top: 30px;
+        bottom: 0;
+      }
+    }
+  }
+
+  .group-row {
+    padding: 0;
+    border: none;
+
+    &:last-of-type {
+      .group-row-contents:not(:hover) {
+        border-bottom: 1px solid transparent;
+      }
+    }
+  }
+
+  .group-row-contents {
+    padding: 10px 10px 8px;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px $white-normal;
+
+    &:hover {
+      border-color: $row-hover-border;
+      background-color: $row-hover;
+      cursor: pointer;
+    }
+  }
+}
+
+.js-groups-list-holder {
+  .groups-list-loading {
+    font-size: 34px;
+    text-align: center;
+  }
 }

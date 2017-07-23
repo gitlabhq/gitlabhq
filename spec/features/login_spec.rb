@@ -36,15 +36,27 @@ feature 'Login', feature: true do
     it 'prevents the user from logging in' do
       user = create(:user, :blocked)
 
-      login_with(user)
+      gitlab_sign_in(user)
 
       expect(page).to have_content('Your account has been blocked.')
     end
 
-    it 'does not update Devise trackable attributes' do
+    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
       user = create(:user, :blocked)
 
-      expect { login_with(user) }.not_to change { user.reload.sign_in_count }
+      expect { gitlab_sign_in(user) }.not_to change { user.reload.sign_in_count }
+    end
+  end
+
+  describe 'with the ghost user' do
+    it 'disallows login' do
+      gitlab_sign_in(User.ghost)
+
+      expect(page).to have_content('Invalid Login or password.')
+    end
+
+    it 'does not update Devise trackable attributes', :clean_gitlab_redis_shared_state do
+      expect { gitlab_sign_in(User.ghost) }.not_to change { User.ghost.reload.sign_in_count }
     end
   end
 
@@ -58,7 +70,7 @@ feature 'Login', feature: true do
       let(:user) { create(:user, :two_factor) }
 
       before do
-        login_with(user, remember: true)
+        gitlab_sign_in(user, remember: true)
         expect(page).to have_content('Two-Factor Authentication')
       end
 
@@ -110,8 +122,8 @@ feature 'Login', feature: true do
           end
 
           it 'invalidates the used code' do
-            expect { enter_code(codes.sample) }.
-              to change { user.reload.otp_backup_codes.size }.by(-1)
+            expect { enter_code(codes.sample) }
+              .to change { user.reload.otp_backup_codes.size }.by(-1)
           end
         end
 
@@ -131,31 +143,10 @@ feature 'Login', feature: true do
     end
 
     context 'logging in via OAuth' do
-      def saml_config
-        OpenStruct.new(name: 'saml', label: 'saml', args: {
-          assertion_consumer_service_url: 'https://localhost:3443/users/auth/saml/callback',
-          idp_cert_fingerprint: '26:43:2C:47:AF:F0:6B:D0:07:9C:AD:A3:74:FE:5D:94:5F:4E:9E:52',
-          idp_sso_target_url: 'https://idp.example.com/sso/saml',
-          issuer: 'https://localhost:3443/',
-          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-        })
-      end
-
-      def stub_omniauth_config(messages)
-        Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
-        Rails.application.routes.disable_clear_and_finalize = true
-        Rails.application.routes.draw do
-          post '/users/auth/saml' => 'omniauth_callbacks#saml'
-        end
-        allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: saml_config)
-        allow(Gitlab.config.omniauth).to receive_messages(messages)
-        expect_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
-      end
-
       it 'shows 2FA prompt after OAuth login' do
-        stub_omniauth_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [saml_config])
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
         user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
-        login_via('saml', user, 'my-uid')
+        gitlab_sign_in_via('saml', user, 'my-uid')
 
         expect(page).to have_content('Two-Factor Authentication')
         enter_code(user.current_otp)
@@ -168,71 +159,146 @@ feature 'Login', feature: true do
     let(:user) { create(:user) }
 
     it 'allows basic login' do
-      login_with(user)
+      gitlab_sign_in(user)
       expect(current_path).to eq root_path
     end
 
     it 'does not show a "You are already signed in." error message' do
-      login_with(user)
+      gitlab_sign_in(user)
       expect(page).not_to have_content('You are already signed in.')
     end
 
     it 'blocks invalid login' do
       user = create(:user, password: 'not-the-default')
 
-      login_with(user)
+      gitlab_sign_in(user)
       expect(page).to have_content('Invalid Login or password.')
     end
   end
 
   describe 'with required two-factor authentication enabled' do
     let(:user) { create(:user) }
-    before(:each) { stub_application_setting(require_two_factor_authentication: true) }
+    #  TODO: otp_grace_period_started_at
 
-    context 'with grace period defined' do
-      before(:each) do
-        stub_application_setting(two_factor_grace_period: 48)
-        login_with(user)
+    context 'global setting' do
+      before do
+        stub_application_setting(require_two_factor_authentication: true)
       end
 
-      context 'within the grace period' do
-        it 'redirects to two-factor configuration page' do
-          expect(current_path).to eq profile_two_factor_auth_path
-          expect(page).to have_content('You must enable Two-Factor Authentication for your account before')
+      context 'with grace period defined' do
+        before do
+          stub_application_setting(two_factor_grace_period: 48)
+          gitlab_sign_in(user)
         end
 
-        it 'allows skipping two-factor configuration', js: true do
-          expect(current_path).to eq profile_two_factor_auth_path
+        context 'within the grace period' do
+          it 'redirects to two-factor configuration page' do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).to have_content('The global settings require you to enable Two-Factor Authentication for your account. You need to do this before ')
+          end
 
-          click_link 'Configure it later'
-          expect(current_path).to eq root_path
+          it 'allows skipping two-factor configuration', js: true do
+            expect(current_path).to eq profile_two_factor_auth_path
+
+            click_link 'Configure it later'
+            expect(current_path).to eq root_path
+          end
+        end
+
+        context 'after the grace period' do
+          let(:user) { create(:user, otp_grace_period_started_at: 9999.hours.ago) }
+
+          it 'redirects to two-factor configuration page' do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).to have_content(
+              'The global settings require you to enable Two-Factor Authentication for your account.'
+            )
+          end
+
+          it 'disallows skipping two-factor configuration', js: true do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).not_to have_link('Configure it later')
+          end
         end
       end
 
-      context 'after the grace period' do
-        let(:user) { create(:user, otp_grace_period_started_at: 9999.hours.ago) }
+      context 'without grace period defined' do
+        before do
+          stub_application_setting(two_factor_grace_period: 0)
+          gitlab_sign_in(user)
+        end
 
         it 'redirects to two-factor configuration page' do
           expect(current_path).to eq profile_two_factor_auth_path
-          expect(page).to have_content('You must enable Two-Factor Authentication for your account.')
-        end
-
-        it 'disallows skipping two-factor configuration', js: true do
-          expect(current_path).to eq profile_two_factor_auth_path
-          expect(page).not_to have_link('Configure it later')
+          expect(page).to have_content(
+            'The global settings require you to enable Two-Factor Authentication for your account.'
+          )
         end
       end
     end
 
-    context 'without grace period defined' do
-      before(:each) do
-        stub_application_setting(two_factor_grace_period: 0)
-        login_with(user)
+    context 'group setting' do
+      before do
+        group1 = create :group, name: 'Group 1', require_two_factor_authentication: true
+        group1.add_user(user, GroupMember::DEVELOPER)
+        group2 = create :group, name: 'Group 2', require_two_factor_authentication: true
+        group2.add_user(user, GroupMember::DEVELOPER)
       end
 
-      it 'redirects to two-factor configuration page' do
-        expect(current_path).to eq profile_two_factor_auth_path
-        expect(page).to have_content('You must enable Two-Factor Authentication for your account.')
+      context 'with grace period defined' do
+        before do
+          stub_application_setting(two_factor_grace_period: 48)
+          gitlab_sign_in(user)
+        end
+
+        context 'within the grace period' do
+          it 'redirects to two-factor configuration page' do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).to have_content(
+              'The group settings for Group 1 and Group 2 require you to enable ' \
+              'Two-Factor Authentication for your account. You need to do this ' \
+              'before ')
+          end
+
+          it 'allows skipping two-factor configuration', js: true do
+            expect(current_path).to eq profile_two_factor_auth_path
+
+            click_link 'Configure it later'
+            expect(current_path).to eq root_path
+          end
+        end
+
+        context 'after the grace period' do
+          let(:user) { create(:user, otp_grace_period_started_at: 9999.hours.ago) }
+
+          it 'redirects to two-factor configuration page' do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).to have_content(
+              'The group settings for Group 1 and Group 2 require you to enable ' \
+              'Two-Factor Authentication for your account.'
+            )
+          end
+
+          it 'disallows skipping two-factor configuration', js: true do
+            expect(current_path).to eq profile_two_factor_auth_path
+            expect(page).not_to have_link('Configure it later')
+          end
+        end
+      end
+
+      context 'without grace period defined' do
+        before do
+          stub_application_setting(two_factor_grace_period: 0)
+          gitlab_sign_in(user)
+        end
+
+        it 'redirects to two-factor configuration page' do
+          expect(current_path).to eq profile_two_factor_auth_path
+          expect(page).to have_content(
+            'The group settings for Group 1 and Group 2 require you to enable ' \
+            'Two-Factor Authentication for your account.'
+          )
+        end
       end
     end
   end

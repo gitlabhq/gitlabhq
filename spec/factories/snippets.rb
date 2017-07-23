@@ -1,17 +1,10 @@
 FactoryGirl.define do
-  sequence :title, aliases: [:content] do
-    FFaker::Lorem.sentence
-  end
-
-  sequence :file_name do
-    FFaker::Internet.user_name
-  end
-
   factory :snippet do
     author
-    title
-    content
-    file_name
+    title { generate(:title) }
+    content { generate(:title) }
+    description { generate(:title) }
+    file_name { generate(:filename) }
 
     trait :public do
       visibility_level Snippet::PUBLIC
@@ -24,5 +17,12 @@ FactoryGirl.define do
     trait :private do
       visibility_level Snippet::PRIVATE
     end
+  end
+
+  factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
+    project factory: :empty_project
+  end
+
+  factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
   end
 end

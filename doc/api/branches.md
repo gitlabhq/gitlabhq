@@ -1,8 +1,10 @@
-# Branches
+# Branches API
 
 ## List repository branches
 
 Get a list of repository branches from a project, sorted by name alphabetically.
+This endpoint can be accessed without authentication if the repository is
+publicly accessible.
 
 ```
 GET /projects/:id/repository/branches
@@ -10,7 +12,7 @@ GET /projects/:id/repository/branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/repository/branches
@@ -48,7 +50,8 @@ Example response:
 
 ## Get single repository branch
 
-Get a single project repository branch.
+Get a single project repository branch. This endpoint can be accessed without
+authentication if the repository is publicly accessible.
 
 ```
 GET /projects/:id/repository/branches/:branch
@@ -56,7 +59,7 @@ GET /projects/:id/repository/branches/:branch
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `branch` | string | yes | The name of the branch |
 
 ```bash
@@ -106,7 +109,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `branch` | string | yes | The name of the branch |
 | `developers_can_push` | boolean | no | Flag if developers can push to the branch |
 | `developers_can_merge` | boolean | no | Flag if developers can merge to the branch |
@@ -154,7 +157,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a project |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `branch` | string | yes | The name of the branch |
 
 Example response:
@@ -192,7 +195,7 @@ POST /projects/:id/repository/branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`          | integer | yes | The ID of a project |
+| `id`          | integer | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `branch` | string  | yes | The name of the branch |
 | `ref`         | string  | yes | The branch name or commit SHA to create branch from |
 
@@ -235,7 +238,7 @@ DELETE /projects/:id/repository/branches/:branch
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `branch`  | string  | yes | The name of the branch |
 
 In case of an error, an explaining message is provided.
@@ -248,13 +251,15 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gi
 
 Will delete all branches that are merged into the project's default branch.
 
+Protected branches will not be deleted as part of this operation.
+
 ```
 DELETE /projects/:id/repository/merged_branches
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of a project |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 
 ```bash

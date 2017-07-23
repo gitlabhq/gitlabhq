@@ -38,11 +38,11 @@ module ContainerRegistry
     end
 
     def delete
-      client.delete_blob(repository.name, digest)
+      client.delete_blob(repository.path, digest)
     end
 
     def data
-      @data ||= client.blob(repository.name, digest, type)
+      @data ||= client.blob(repository.path, digest, type)
     end
   end
 end

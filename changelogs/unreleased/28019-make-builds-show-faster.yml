@@ -1,4 +1,0 @@
----
-title: Avoid calling Build#trace_with_state for performance
-merge_request: 9149
-author: Takuya Noguchi

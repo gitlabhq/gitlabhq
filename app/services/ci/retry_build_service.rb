@@ -1,12 +1,12 @@
 module Ci
   class RetryBuildService < ::BaseService
     CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
-                         allow_failure stage stage_idx trigger_request
+                         allow_failure stage_id stage stage_idx trigger_request
                          yaml_variables when environment coverage_regex
                          description tag_list].freeze
 
     def execute(build)
-      reprocess(build).tap do |new_build|
+      reprocess!(build).tap do |new_build|
         build.pipeline.mark_as_processable_after_stage(build.stage_idx)
 
         new_build.enqueue!
@@ -17,7 +17,7 @@ module Ci
       end
     end
 
-    def reprocess(build)
+    def reprocess!(build)
       unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
       end
@@ -28,7 +28,14 @@ module Ci
 
       attributes.push([:user, current_user])
 
-      project.builds.create(Hash[attributes])
+      Ci::Build.transaction do
+        # mark all other builds of that name as retried
+        build.pipeline.builds.latest
+          .where(name: build.name)
+          .update_all(retried: true)
+
+        project.builds.create!(Hash[attributes])
+      end
     end
   end
 end

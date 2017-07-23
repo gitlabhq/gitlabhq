@@ -19,7 +19,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'no discussions' do
     before do
       project.team << [user, :master]
-      login_as user
+      sign_in user
       note.destroy
       visit_merge_request
     end
@@ -33,7 +33,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'as authorized user' do
     before do
       project.team << [user, :master]
-      login_as user
+      sign_in user
       visit_merge_request
     end
 
@@ -191,13 +191,15 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     context 'multiple notes' do
       before do
-        create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+        create(:diff_note_on_merge_request, project: project, noteable: merge_request, in_reply_to: note)
         visit_merge_request
       end
 
       it 'does not mark discussion as resolved when resolving single note' do
         page.first '.diff-content .note' do
           first('.line-resolve-btn').click
+
+          expect(page).to have_selector('.note-action-button .loading')
           expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
@@ -273,7 +275,7 @@ feature 'Diff notes resolve', feature: true, js: true do
         end
 
         page.within '.line-resolve-all-container' do
-          page.find('.discussion-next-btn').click
+          page.find('.discussion-next-btn').trigger('click')
         end
 
         expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
@@ -296,7 +298,7 @@ feature 'Diff notes resolve', feature: true, js: true do
       it 'displays next discussion even if hidden' do
         page.all('.note-discussion').each do |discussion|
           page.within discussion do
-            click_link 'Toggle discussion'
+            click_button 'Toggle discussion'
           end
         end
 
@@ -400,7 +402,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     before do
       project.team << [guest, :guest]
-      login_as guest
+      sign_in guest
     end
 
     context 'someone elses merge request' do
@@ -477,13 +479,13 @@ feature 'Diff notes resolve', feature: true, js: true do
       it 'shows resolved icon' do
         expect(page).to have_content '1/1 discussion resolved'
 
-        click_link 'Toggle discussion'
+        click_button 'Toggle discussion'
         expect(page).to have_selector('.line-resolve-btn.is-active')
       end
 
       it 'does not allow user to click resolve button' do
         expect(page).to have_selector('.line-resolve-btn.is-disabled')
-        click_link 'Toggle discussion'
+        click_button 'Toggle discussion'
 
         expect(page).to have_selector('.line-resolve-btn.is-disabled')
       end
@@ -492,6 +494,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
   def visit_merge_request(mr = nil)
     mr = mr || merge_request
-    visit namespace_project_merge_request_path(mr.project.namespace, mr.project, mr)
+    visit project_merge_request_path(mr.project, mr)
   end
 end

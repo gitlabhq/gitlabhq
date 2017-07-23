@@ -62,6 +62,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       fail_running_or_pending
 
       expect(builds_statuses).to eq %w(failed pending)
+
+      fail_running_or_pending
+
+      expect(pipeline.reload).to be_success
     end
   end
 
@@ -268,6 +272,24 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'when there are only manual actions in stages' do
+    before do
+      create_build('image', stage_idx: 0, when: 'manual', allow_failure: true)
+      create_build('build', stage_idx: 1, when: 'manual', allow_failure: true)
+      create_build('deploy', stage_idx: 2, when: 'manual')
+      create_build('check', stage_idx: 3)
+
+      process_pipeline
+    end
+
+    it 'processes all jobs until blocking actions encountered' do
+      expect(all_builds_statuses).to eq(%w[manual manual manual created])
+      expect(all_builds_names).to eq(%w[image build deploy check])
+
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   context 'when blocking manual actions are defined' do
     before do
       create_build('code:test', stage_idx: 0)
@@ -314,6 +336,14 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when pipeline is promoted sequentially up to the end' do
+      before do
+        # Users need ability to merge into a branch in order to trigger
+        # protected manual actions.
+        #
+        create(:protected_branch, :developers_can_merge,
+               name: 'master', project: project)
+      end
+
       it 'properly processes entire pipeline' do
         process_pipeline
 
@@ -418,62 +448,47 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
-  context 'when there are builds that are not created yet' do
-    let(:pipeline) do
-      create(:ci_pipeline, config: config)
-    end
+  context 'updates a list of retried builds' do
+    subject { described_class.retried.order(:id) }
 
-    let(:config) do
-      { rspec: { stage: 'test', script: 'rspec' },
-        deploy: { stage: 'deploy', script: 'rsync' } }
-    end
+    let!(:build_retried) { create_build('build') }
+    let!(:build) { create_build('build') }
+    let!(:test) { create_build('test') }
 
+    it 'returns unique statuses' do
+      process_pipeline
+
+      expect(all_builds.latest).to contain_exactly(build, test)
+      expect(all_builds.retried).to contain_exactly(build_retried)
+    end
+  end
+
+  context 'when builds with auto-retries are configured' do
     before do
-      create_build('linux', stage: 'build', stage_idx: 0)
-      create_build('mac', stage: 'build', stage_idx: 0)
+      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
+      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
     end
 
-    it 'processes the pipeline' do
-      # Currently we have five builds with state created
-      #
-      expect(builds.count).to eq(0)
-      expect(all_builds.count).to eq(2)
+    it 'automatically retries builds in a valid order' do
+      expect(process_pipeline).to be_truthy
 
-      # Process builds service will enqueue builds from the first stage.
-      #
-      process_pipeline
+      fail_running_or_pending
 
-      expect(builds.count).to eq(2)
-      expect(all_builds.count).to eq(2)
+      expect(builds_names).to eq %w[build:1 build:1]
+      expect(builds_statuses).to eq %w[failed pending]
 
-      # When builds succeed we will enqueue remaining builds.
-      #
-      # We will have 2 succeeded, 1 pending (from stage test), total 4 (two
-      # additional build from `.gitlab-ci.yml`).
-      #
-      succeed_pending
-      process_pipeline
+      succeed_running_or_pending
 
-      expect(builds.success.count).to eq(2)
-      expect(builds.pending.count).to eq(1)
-      expect(all_builds.count).to eq(4)
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success pending]
 
-      # When pending merge_when_pipeline_succeeds in stage test, we enqueue deploy stage.
-      #
-      succeed_pending
-      process_pipeline
+      succeed_running_or_pending
 
-      expect(builds.pending.count).to eq(1)
-      expect(builds.success.count).to eq(3)
-      expect(all_builds.count).to eq(4)
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success success]
 
-      # When the last one succeeds we have 4 successful builds.
-      #
-      succeed_pending
-      process_pipeline
-
-      expect(builds.success.count).to eq(4)
-      expect(all_builds.count).to eq(4)
+      expect(pipeline.reload).to be_success
     end
   end
 
@@ -491,6 +506,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def builds_names
     builds.pluck(:name)
+  end
+
+  def all_builds_names
+    all_builds.pluck(:name)
   end
 
   def builds_statuses
@@ -521,7 +540,9 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     builds.find_by(name: name).play(user)
   end
 
-  delegate :manual_actions, to: :pipeline
+  def manual_actions
+    pipeline.manual_actions(true)
+  end
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)

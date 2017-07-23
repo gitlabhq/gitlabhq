@@ -57,8 +57,13 @@
         visibility: hidden;
       }
 
-      &:hover i {
-        visibility: visible;
+      &:hover,
+      &:focus {
+        outline: none;
+
+        i {
+          visibility: visible;
+        }
       }
     }
   }

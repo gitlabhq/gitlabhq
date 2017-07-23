@@ -6,44 +6,53 @@ describe Service, models: true do
     it { is_expected.to have_one :service_hook }
   end
 
+  describe 'Validations' do
+    it { is_expected.to validate_presence_of(:type) }
+  end
+
   describe "Test Button" do
-    before do
-      @service = Service.new
-    end
+    describe '#can_test?' do
+      let(:service) { create(:service, project: project) }
 
-    describe "Testable" do
-      let(:project) { create(:project, :repository) }
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :repository) }
 
-      before do
-        allow(@service).to receive(:project).and_return(project)
-        @testable = @service.can_test?
+        it 'returns true' do
+          expect(service.can_test?).to be true
+        end
       end
 
-      describe '#can_test?' do
-        it { expect(@testable).to eq(true) }
-      end
+      context 'when repository is empty' do
+        let(:project) { create(:empty_project) }
 
-      describe '#test' do
-        let(:data) { 'test' }
-
-        it 'test runs execute' do
-          expect(@service).to receive(:execute).with(data)
-
-          @service.test(data)
+        it 'returns true' do
+          expect(service.can_test?).to be true
         end
       end
     end
 
-    describe "With commits" do
-      let(:project) { create(:project, :repository) }
+    describe '#test' do
+      let(:data) { 'test' }
+      let(:service) { create(:service, project: project) }
 
-      before do
-        allow(@service).to receive(:project).and_return(project)
-        @testable = @service.can_test?
+      context 'when repository is not empty' do
+        let(:project) { create(:project, :repository) }
+
+        it 'test runs execute' do
+          expect(service).to receive(:execute).with(data)
+
+          service.test(data)
+        end
       end
 
-      describe '#can_test?' do
-        it { expect(@testable).to eq(true) }
+      context 'when repository is empty' do
+        let(:project) { create(:empty_project) }
+
+        it 'test runs execute' do
+          expect(service).to receive(:execute).with(data)
+
+          service.test(data)
+        end
       end
     end
   end

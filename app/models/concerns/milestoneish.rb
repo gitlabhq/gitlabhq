@@ -40,8 +40,16 @@ module Milestoneish
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
       IssuesFinder.new(user, issues_finder_params)
-        .execute.where(milestone_id: milestoneish_ids)
+        .execute.preload(:assignees).where(milestone_id: milestoneish_ids)
     end
+  end
+
+  def sorted_issues(user)
+    issues_visible_to_user(user).preload_associations.sort('label_priority')
+  end
+
+  def sorted_merge_requests
+    merge_requests.sort('label_priority')
   end
 
   def upcoming?
@@ -60,6 +68,22 @@ module Milestoneish
 
   def expired?
     due_date && due_date.past?
+  end
+
+  def is_group_milestone?
+    false
+  end
+
+  def is_project_milestone?
+    false
+  end
+
+  def is_legacy_group_milestone?
+    false
+  end
+
+  def is_dashboard_milestone?
+    false
   end
 
   private

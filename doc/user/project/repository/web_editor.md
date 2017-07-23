@@ -109,11 +109,18 @@ the title of the issue and as suffix it will have its ID. Thus, the example
 screenshot above will yield a branch named
 `2-et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum`.
 
+Since GitLab 9.0, when you click the `New branch` in an empty repository project, GitLab automatically creates the master branch, commits a blank `README.md` file to it and creates and redirects you to a new branch based on the issue title.
+If your [project is already configured with a deployment service][project-services-doc] (e.g. Kubernetes), GitLab takes one step further and prompts you to set up [auto deploy][auto-deploy-doc] by helping you create a `.gitlab-ci.yml` file.
+
+
 After the branch is created, you can edit files in the repository to fix
 the issue. When a merge request is created based on the newly created branch,
 the description field will automatically display the [issue closing pattern]
 `Closes #ID`, where `ID` the ID of the issue. This will close the issue once the
 merge request is merged.
+
+[project-services-doc]: ../integrations/project_services.md
+[auto-deploy-doc]: ../../../ci/autodeploy/index.md
 
 ### Create a new branch from a project's dashboard
 

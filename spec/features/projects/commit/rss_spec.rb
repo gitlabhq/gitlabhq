@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 feature 'Project Commits RSS' do
+  let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:path) { namespace_project_commits_path(project.namespace, project, :master) }
+  let(:path) { project_commits_path(project, :master) }
 
   context 'when signed in' do
     before do
-      user = create(:user)
       project.team << [user, :developer]
-      login_as(user)
+      sign_in(user)
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's private token"
-    it_behaves_like "an autodiscoverable RSS feed with current_user's private token"
+    it_behaves_like "it has an RSS button with current_user's RSS token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
   end
 
   context 'when signed out' do
@@ -21,7 +21,7 @@ feature 'Project Commits RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without a private token"
-    it_behaves_like "an autodiscoverable RSS feed without a private token"
+    it_behaves_like "it has an RSS button without an RSS token"
+    it_behaves_like "an autodiscoverable RSS feed without an RSS token"
   end
 end

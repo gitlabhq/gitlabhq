@@ -8,31 +8,36 @@ module BlobHelper
     %w(credits changelog news copying copyright license authors)
   end
 
-  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless current_user
+  def edit_path(project = @project, ref = @ref, path = @path, options = {})
+    project_edit_blob_path(project,
+                                     tree_join(ref, path),
+                                     options[:link_opts])
+  end
 
+  def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
 
-    return unless blob
+    return unless blob && blob.readable_text?
 
-    edit_path = namespace_project_edit_blob_path(project.namespace, project,
-                                     tree_join(ref, path),
-                                     options[:link_opts])
+    common_classes = "btn js-edit-blob #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      button_tag "Edit", class: "btn disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
-    elsif can_edit_blob?(blob, project, ref)
-      link_to "Edit", edit_path, class: 'btn btn-sm'
-    elsif can?(current_user, :fork_project, project)
+      button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+    # This condition applies to anonymous or users who can edit directly
+    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
+      link_to 'Edit', edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+    elsif current_user && can?(current_user, :fork_project, project)
       continue_params = {
-        to:     edit_path,
+        to: edit_path(project, ref, path, options),
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
+      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-      link_to "Edit", fork_path, class: 'btn', method: :post
+      button_tag 'Edit',
+        class: "#{common_classes} js-edit-blob-link-fork-toggler",
+        data: { action: 'edit', fork_path: fork_path }
     end
   end
 
@@ -43,21 +48,25 @@ module BlobHelper
 
     return unless blob
 
+    common_classes = "btn btn-#{btn_class}"
+
     if !on_top_of_branch?(project, ref)
-      button_tag label, class: "btn btn-#{btn_class} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
-    elsif blob.lfs_pointer?
-      button_tag label, class: "btn btn-#{btn_class} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
-    elsif can_edit_blob?(blob, project, ref)
-      button_tag label, class: "btn btn-#{btn_class}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
+      button_tag label, class: "#{common_classes} disabled has-tooltip", title: "You can only #{action} files when you are on a branch", data: { container: 'body' }
+    elsif blob.stored_externally?
+      button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
+    elsif can_modify_blob?(blob, project, ref)
+      button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
     elsif can?(current_user, :fork_project, project)
       continue_params = {
-        to:     request.fullpath,
+        to: request.fullpath,
         notice: edit_in_new_fork_notice + " Try to #{action} this file again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(project.namespace, project, namespace_key: current_user.namespace.id, continue: continue_params)
+      fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-      link_to label, fork_path, class: "btn btn-#{btn_class}", method: :post
+      button_tag label,
+        class: "#{common_classes} js-edit-blob-link-fork-toggler",
+        data: { action: action, fork_path: fork_path }
     end
   end
 
@@ -85,8 +94,8 @@ module BlobHelper
     )
   end
 
-  def can_edit_blob?(blob, project = @project, ref = @ref)
-    !blob.lfs_pointer? && can_edit_tree?(project, ref)
+  def can_modify_blob?(blob, project = @project, ref = @ref)
+    !blob.stored_externally? && can_edit_tree?(project, ref)
   end
 
   def leave_edit_message
@@ -97,7 +106,7 @@ module BlobHelper
     if Gitlab::MarkupHelper.previewable?(filename)
       'Preview'
     else
-      'Preview Changes'
+      'Preview changes'
     end
   end
 
@@ -109,24 +118,25 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_text_viewable?(blob)
-    blob && blob.text? && !blob.lfs_pointer? && !blob.only_display_raw?
-  end
-
-  def blob_size(blob)
-    if blob.lfs_pointer?
-      blob.lfs_size
-    else
-      blob.size
+  def blob_raw_url
+    if @build && @entry
+      raw_project_job_artifacts_path(@project, @build, path: @entry.path)
+    elsif @snippet
+      if @snippet.project_id
+        raw_project_snippet_path(@project, @snippet)
+      else
+        raw_snippet_path(@snippet)
+      end
+    elsif @blob
+      project_raw_path(@project, @id)
     end
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
   # elements and attributes. Note that this whitelist is by no means complete
   # and may omit some elements.
-  def sanitize_svg(blob)
-    blob.data = Gitlab::Sanitizers::SVG.clean(blob.data)
-    blob
+  def sanitize_svg_data(data)
+    Gitlab::Sanitizers::SVG.clean(data)
   end
 
   # If we blindly set the 'real' content type when serving a Git blob we
@@ -202,5 +212,81 @@ module BlobHelper
       'assets-prefix' => Gitlab::Application.config.assets.prefix,
       'blob-language' => @blob && @blob.language.try(:ace_mode)
     }
+  end
+
+  def copy_file_path_button(file_path)
+    clipboard_button(text: file_path, gfm: "`#{file_path}`", class: 'btn-clipboard btn-transparent prepend-left-5', title: 'Copy file path to clipboard')
+  end
+
+  def copy_blob_source_button(blob)
+    return unless blob.rendered_as_text?(ignore_errors: false)
+
+    clipboard_button(target: ".blob-content[data-blob-id='#{blob.id}']", class: "btn btn-sm js-copy-blob-source-btn", title: "Copy source to clipboard")
+  end
+
+  def open_raw_blob_button(blob)
+    return if blob.empty?
+
+    if blob.raw_binary? || blob.stored_externally?
+      icon = icon('download')
+      title = 'Download'
+    else
+      icon = icon('file-code-o')
+      title = 'Open raw'
+    end
+
+    link_to icon, blob_raw_url, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+  end
+
+  def blob_render_error_reason(viewer)
+    case viewer.render_error
+    when :collapsed
+      "it is larger than #{number_to_human_size(viewer.collapse_limit)}"
+    when :too_large
+      "it is larger than #{number_to_human_size(viewer.size_limit)}"
+    when :server_side_but_stored_externally
+      case viewer.blob.external_storage
+      when :lfs
+        'it is stored in LFS'
+      when :build_artifact
+        'it is stored as a job artifact'
+      else
+        'it is stored externally'
+      end
+    end
+  end
+
+  def blob_render_error_options(viewer)
+    error = viewer.render_error
+    options = []
+
+    if error == :collapsed
+      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
+    end
+
+    # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,
+    # so don't bother switching.
+    if viewer.rich? && viewer.blob.rendered_as_text? && error != :server_side_but_stored_externally
+      options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
+    end
+
+    options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')
+
+    options
+  end
+
+  def contribution_options(project)
+    options = []
+
+    if can?(current_user, :create_issue, project)
+      options << link_to("submit an issue", new_project_issue_path(project))
+    end
+
+    merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
+    if merge_project
+      options << link_to("create a merge request", project_new_merge_request_path(project))
+    end
+
+    options
   end
 end

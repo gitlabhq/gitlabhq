@@ -50,12 +50,12 @@ class TeamcityService < CiService
   def fields
     [
       { type: 'text', name: 'teamcity_url',
-        placeholder: 'TeamCity root URL like https://teamcity.example.com' },
+        placeholder: 'TeamCity root URL like https://teamcity.example.com', required: true },
       { type: 'text', name: 'build_type',
-        placeholder: 'Build configuration ID' },
+        placeholder: 'Build configuration ID', required: true },
       { type: 'text', name: 'username',
         placeholder: 'A user with permissions to trigger a manual build' },
-      { type: 'password', name: 'password' },
+      { type: 'password', name: 'password' }
     ]
   end
 
@@ -78,7 +78,7 @@ class TeamcityService < CiService
 
     auth = {
       username: username,
-      password: password,
+      password: password
     }
 
     branch = Gitlab::Git.ref_name(data[:ref])

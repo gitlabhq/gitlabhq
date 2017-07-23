@@ -1,4 +1,4 @@
-# Validate the .gitlab-ci.yml
+# Validate the .gitlab-ci.yml (API)
 
 > [Introduced][ce-5953] in GitLab 8.12.
 

@@ -9,6 +9,8 @@ module Gitlab
     end
 
     def self.valid?(url)
+      return false unless url
+
       Addressable::URI.parse(url.strip)
 
       true

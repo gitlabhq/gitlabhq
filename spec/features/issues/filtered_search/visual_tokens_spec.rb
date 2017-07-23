@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Visual tokens', js: true, feature: true do
   include FilteredSearchHelpers
+  include WaitForRequests
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -24,16 +25,16 @@ describe 'Visual tokens', js: true, feature: true do
   before do
     project.add_user(user, :master)
     project.add_user(user_rock, :master)
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'editing author token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
     end
 
     it 'opens author dropdown' do
@@ -70,7 +71,8 @@ describe 'Visual tokens', js: true, feature: true do
       end
 
       it 'changes value in visual token' do
-        expect(first('.tokens-container .filtered-search-token .value').text).to eq("@#{user_rock.username}")
+        wait_for_requests
+        expect(first('.tokens-container .filtered-search-token .value').text).to eq("#{user_rock.name}")
       end
 
       it 'moves input to the right' do
@@ -131,7 +133,7 @@ describe 'Visual tokens', js: true, feature: true do
   describe 'editing milestone token' do
     before do
       input_filtered_search('milestone:%10.0 author:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       first('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item')
     end
 
@@ -242,6 +244,23 @@ describe 'Visual tokens', js: true, feature: true do
     end
   end
 
+  describe 'editing a search term while editing another filter token' do
+    before do
+      input_filtered_search('author assignee:', submit: false)
+      first('.tokens-container .filtered-search-term').double_click
+    end
+
+    it 'opens hint dropdown' do
+      expect(page).to have_css('#js-dropdown-hint', visible: true)
+    end
+
+    it 'opens author dropdown' do
+      find('#js-dropdown-hint .filter-dropdown .filter-dropdown-item', text: 'author').click
+
+      expect(page).to have_css('#js-dropdown-author', visible: true)
+    end
+  end
+
   describe 'add new token after editing existing token' do
     before do
       input_filtered_search('author:@root assignee:none', submit: false)
@@ -312,11 +331,24 @@ describe 'Visual tokens', js: true, feature: true do
     it 'does not tokenize incomplete token' do
       filtered_search.send_keys('author:')
 
-      find('#content-body').click
+      find('body').click
       token = page.all('.tokens-container .js-visual-token')[1]
 
       expect_filtered_search_input_empty
       expect(token.find('.name').text).to eq('Author')
+    end
+  end
+
+  describe 'search using incomplete visual tokens' do
+    before do
+      input_filtered_search('author:@root assignee:none', extra_space: false)
+    end
+
+    it 'tokenizes the search term to complete visual token' do
+      expect_tokens([
+        { name: 'author', value: '@root' },
+        { name: 'assignee', value: 'none' }
+      ])
     end
   end
 end

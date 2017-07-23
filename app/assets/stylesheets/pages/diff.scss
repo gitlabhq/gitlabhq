@@ -1,38 +1,6 @@
 // Common
 .diff-file {
-  border: 1px solid $border-color;
   margin-bottom: $gl-padding;
-  border-radius: 3px;
-
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
-
-  .diff-header {
-    position: relative;
-    background: $gray-light;
-    border-bottom: 1px solid $border-color;
-    padding: 10px 16px;
-    color: $gl-text-color;
-    z-index: 10;
-    border-radius: 3px 3px 0 0;
-
-    .diff-title {
-      font-family: $monospace_font;
-      word-break: break-all;
-      display: block;
-
-      .file-mode {
-        color: $file-mode-changed;
-      }
-    }
-
-    .commit-short-id {
-      font-family: $monospace_font;
-      font-size: smaller;
-    }
-  }
 
   .file-title,
   .file-title-flex-parent {
@@ -52,8 +20,6 @@
   }
 
   .diff-content {
-    overflow: auto;
-    overflow-y: hidden;
     background: $white-light;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
@@ -106,6 +72,10 @@
         span {
           white-space: pre-wrap;
         }
+
+        .line {
+          word-wrap: break-word;
+        }
       }
     }
 
@@ -113,12 +83,16 @@
       td.line_content.parallel {
         width: 46%;
       }
+
+      .add-diff-note {
+        margin-left: -55px;
+      }
     }
 
     .old_line,
     .new_line {
+      @include user-select(none);
       margin: 0;
-      padding: 0;
       border: none;
       padding: 0 5px;
       border-right: 1px solid;
@@ -126,7 +100,6 @@
       min-width: 35px;
       max-width: 50px;
       width: 35px;
-      @include user-select(none);
 
       a {
         float: left;
@@ -175,14 +148,10 @@
         }
       }
     }
-
-    .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
-    }
   }
 
   .image {
-    background: $diff-image-bg;
+    background: $file-image-bg;
     text-align: center;
     padding: 30px;
 
@@ -385,12 +354,12 @@
       }
 
       &.active {
+        cursor: default;
+        color: $gl-text-color;
+
         &:hover {
           text-decoration: none;
         }
-
-        cursor: default;
-        color: $gl-text-color;
       }
 
       &.disabled {
@@ -417,14 +386,23 @@
   float: right;
 }
 
-.diffs {
-  .content-block {
-    border-bottom: none;
-  }
-}
-
 .files-changed {
   border-bottom: none;
+}
+
+.diff-stats-summary-toggler {
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  color: $gl-link-color;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    outline: none;
+    text-decoration: underline;
+    color: $gl-link-hover-color;
+  }
 }
 
 // Mobile
@@ -488,5 +466,96 @@
         content: attr(data-linenumber);
       }
     }
+  }
+}
+
+.diff-comment-avatar-holders {
+  position: absolute;
+  height: 19px;
+  width: 19px;
+  margin-left: -15px;
+  z-index: 100;
+
+  &:hover {
+    .diff-comment-avatar,
+    .diff-comments-more-count {
+      @for $i from 1 through 4 {
+        $x-pos: 14px;
+
+        &:nth-child(#{$i}) {
+          @if $i == 4 {
+            $x-pos: 14.5px;
+          }
+
+          transform: translateX((($i * $x-pos) - $x-pos));
+
+          &:hover {
+            transform: translateX((($i * $x-pos) - $x-pos));
+          }
+        }
+      }
+    }
+
+    .diff-comments-more-count {
+      padding-left: 2px;
+      padding-right: 2px;
+      width: auto;
+    }
+  }
+}
+
+.diff-comment-avatar,
+.diff-comments-more-count {
+  position: absolute;
+  left: 0;
+  width: 19px;
+  height: 19px;
+  margin-right: 0;
+  border-color: $white-light;
+  cursor: pointer;
+  transition: all .1s ease-out;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      z-index: (4 - $i);
+    }
+  }
+}
+
+.diff-comments-more-count {
+  width: 19px;
+  min-width: 19px;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+}
+
+.diff-comments-more-count,
+.diff-notes-collapse {
+  @extend .avatar-counter;
+}
+
+.diff-notes-collapse {
+  position: relative;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  transition: transform .1s ease-out;
+  z-index: 100;
+
+  svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -5.5px;
+    margin-top: -5.5px;
+  }
+
+  path {
+    fill: $white-light;
+  }
+
+  &:focus {
+    outline: 0;
   }
 }

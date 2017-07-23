@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequests::MergeWhenPipelineSucceedsService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:mr_merge_if_green_enabled) do
     create(:merge_request, merge_when_pipeline_succeeds: true, merge_user: user,
@@ -79,7 +79,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
     context 'when triggered by pipeline with valid ref and sha' do
       let(:triggering_pipeline) do
         create(:ci_pipeline, project: project, ref: merge_request_ref,
-                             sha: merge_request_head, status: 'success')
+                             sha: merge_request_head, status: 'success',
+                             head_pipeline_of: mr_merge_if_green_enabled)
       end
 
       it "merges all merge requests with merge when the pipeline succeeds enabled" do
@@ -121,7 +122,8 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
 
       let(:conflict_pipeline) do
         create(:ci_pipeline, project: project, ref: mr_conflict.source_branch,
-                             sha: mr_conflict.diff_head_sha, status: 'success')
+                             sha: mr_conflict.diff_head_sha, status: 'success',
+                             head_pipeline_of: mr_conflict)
       end
 
       it 'does not merge the merge request' do

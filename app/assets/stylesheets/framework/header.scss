@@ -24,19 +24,35 @@ header {
 
   &.navbar-gitlab {
     padding: 0 16px;
-    z-index: 100;
+    z-index: 400;
     margin-bottom: 0;
-    height: $header-height;
+    min-height: $header-height;
     background-color: $gray-light;
     border: none;
     border-bottom: 1px solid $border-color;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    color: $gl-text-color-secondary;
+    border-radius: 0;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
     }
 
     &.with-horizontal-nav {
-      border-bottom: none;
+      border-bottom: 0;
+
+      .navbar-border {
+        height: 1px;
+        position: absolute;
+        right: 0;
+        left: 0;
+        bottom: -1px;
+        background-color: $border-color;
+        opacity: 0;
+      }
     }
 
     .container-fluid {
@@ -45,13 +61,13 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-text-color-secondary;
+        color: currentColor;
         font-size: 18px;
         padding: 0;
-        margin: ($header-height - 28) / 2 0;
+        margin: (($header-height - 28) / 2) 3px;
         margin-left: 8px;
         height: 28px;
-        min-width: 28px;
+        min-width: 32px;
         line-height: 28px;
         text-align: center;
 
@@ -70,24 +86,38 @@ header {
         &:hover,
         &:focus,
         &:active {
-          background-color: $gray-light;
+          background-color: transparent;
           color: $gl-text-color;
 
-          .todos-pending-count {
-            background: darken($todo-alert-blue, 10%);
+          svg {
+            fill: $gl-text-color;
           }
         }
 
         .fa-caret-down {
           font-size: 14px;
         }
+
+        .fa-chevron-down {
+          position: relative;
+          top: -3px;
+          font-size: 10px;
+        }
+
+        svg {
+          position: relative;
+          top: 2px;
+          height: 17px;
+          // hack to get SVG to line up with FA icons
+          width: 23px;
+          fill: currentColor;
+        }
       }
 
       .navbar-toggle {
         color: $nav-toggle-gray;
-        margin: 6px 0;
+        margin: 5px 0;
         border-radius: 0;
-        position: absolute;
         right: -10px;
         padding: 6px 10px;
 
@@ -135,13 +165,11 @@ header {
   }
 
   .header-content {
+    display: flex;
+    justify-content: space-between;
     position: relative;
-    height: $header-height;
+    min-height: $header-height;
     padding-left: 30px;
-
-    @media (min-width: $screen-sm-min) {
-      padding-right: 0;
-    }
 
     .dropdown-menu {
       margin-top: -5px;
@@ -149,7 +177,7 @@ header {
 
     .header-logo {
       display: inline-block;
-      margin: 0 7px 0 2px;
+      margin: 0 12px 0 2px;
       position: relative;
       top: 10px;
       transition-duration: .3s;
@@ -164,34 +192,48 @@ header {
       }
     }
 
+    .group-name-toggle {
+      margin: 3px 5px;
+    }
+
+    .group-title {
+      &.is-hidden {
+        .hidable:not(:last-of-type) {
+          display: none;
+        }
+      }
+    }
+
+    .title-container {
+      display: flex;
+      align-items: flex-start;
+      flex: 1 1 auto;
+      padding-top: 14px;
+      overflow: hidden;
+    }
+
     .title {
       position: relative;
       padding-right: 20px;
       margin: 0;
       font-size: 18px;
+      line-height: 22px;
       display: inline-block;
-      line-height: $header-height;
       font-weight: normal;
       color: $gl-text-color;
-      overflow: hidden;
-      text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
 
-      @media (max-width: $screen-xs-max) {
-        max-width: 190px;
+      &.wrap {
+        white-space: normal;
       }
 
-      @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
-        max-width: 428px;
-      }
-
-      @media (min-width: $screen-lg-min) {
-        max-width: 685px;
+      &.initializing {
+        opacity: 0;
       }
 
       a {
-        color: $gl-text-color;
+        color: currentColor;
 
         &:hover {
           text-decoration: underline;
@@ -204,10 +246,10 @@ header {
         border: transparent;
         background: transparent;
         position: absolute;
+        top: 2px;
         right: 3px;
         width: 12px;
         line-height: 19px;
-        margin-top: (($header-height - 19) / 2);
         padding: 0;
         font-size: 10px;
         text-align: center;
@@ -225,15 +267,12 @@ header {
     }
 
     .navbar-collapse {
-      float: right;
+      flex: 0 0 auto;
       border-top: none;
-
-      @media (min-width: $screen-md-min) {
-        padding: 0;
-      }
+      padding: 0;
 
       @media (max-width: $screen-xs-max) {
-        float: none;
+        flex: 1 1 auto;
       }
     }
   }
@@ -243,14 +282,34 @@ header {
   }
 
   .impersonation i {
-    color: $red-normal;
+    color: $red-500;
   }
 }
 
-.page-sidebar-pinned.right-sidebar-expanded {
-  @media (max-width: $screen-md-max) {
-    .header-content .title {
-      width: 300px;
+.navbar-nav {
+  li {
+    .badge {
+      position: inherit;
+      top: -3px;
+      font-weight: normal;
+      margin-left: -12px;
+      font-size: 11px;
+      color: $white-light;
+      padding: 1px 5px 2px;
+      border-radius: 7px;
+      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+
+      &.issues-count {
+        background-color: $green-500;
+      }
+
+      &.merge-requests-count {
+        background-color: $orange-600;
+      }
+
+      &.todos-count {
+        background-color: $blue-500;
+      }
     }
   }
 }
@@ -271,7 +330,7 @@ header {
       padding-left: 5px;
 
       .nav > li:not(.hidden-xs) {
-        display: table-cell!important;
+        display: table-cell !important;
         width: 25%;
 
         a {
@@ -292,8 +351,19 @@ header {
 
 .header-user {
   .dropdown-menu-nav {
+    width: auto;
     min-width: 140px;
     margin-top: -5px;
+    color: $gl-text-color;
+    left: auto;
+
+    .current-user {
+      padding: 5px 18px;
+
+      .user-name {
+        display: block;
+      }
+    }
   }
 }
 

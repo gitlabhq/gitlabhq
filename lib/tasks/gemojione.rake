@@ -1,8 +1,11 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
-  task digests: :environment do
+  task digests: ['yarn:check', 'environment'] do
     require 'digest/sha2'
     require 'json'
+
+    # We don't have `node_modules` available in built versions of GitLab
+    FileUtils.cp_r(Rails.root.join('node_modules', 'emoji-unicode-version', 'emoji-unicode-version-map.json'), File.join(Rails.root, 'fixtures', 'emojis'))
 
     dir = Gemojione.images_path
     resultant_emoji_map = {}
@@ -16,8 +19,9 @@ namespace :gemojione do
         entry = {
           category: emoji_hash['category'],
           moji: emoji_hash['moji'],
+          description: emoji_hash['description'],
           unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),
-          digest: hash_digest,
+          digest: hash_digest
         }
 
         resultant_emoji_map[name] = entry

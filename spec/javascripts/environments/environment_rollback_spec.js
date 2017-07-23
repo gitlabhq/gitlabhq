@@ -1,24 +1,12 @@
-const RollbackComponent = require('~/environments/components/environment_rollback');
+import Vue from 'vue';
+import rollbackComp from '~/environments/components/environment_rollback.vue';
 
 describe('Rollback Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
-
   const retryURL = 'https://gitlab.com/retry';
+  let RollbackComponent;
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
-  });
-
-  it('Should link to the provided retryUrl', () => {
-    const component = new RollbackComponent({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        retryUrl: retryURL,
-        isLastDeployment: true,
-      },
-    });
-
-    expect(component.$el.getAttribute('href')).toEqual(retryURL);
+    RollbackComponent = Vue.extend(rollbackComp);
   });
 
   it('Should render Re-deploy label when isLastDeployment is true', () => {
@@ -28,7 +16,7 @@ describe('Rollback Component', () => {
         retryUrl: retryURL,
         isLastDeployment: true,
       },
-    });
+    }).$mount();
 
     expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
   });
@@ -40,7 +28,7 @@ describe('Rollback Component', () => {
         retryUrl: retryURL,
         isLastDeployment: false,
       },
-    });
+    }).$mount();
 
     expect(component.$el.querySelector('span').textContent).toContain('Rollback');
   });

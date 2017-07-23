@@ -8,15 +8,17 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
     find(".table.active-tokens")
   end
 
-  def inactive_impersonation_tokens
-    find(".table.inactive-tokens")
+  def no_personal_access_tokens_message
+    find(".settings-message")
   end
 
-  before { login_as(admin) }
+  before do
+    sign_in(admin)
+  end
 
   describe "token creation" do
     it "allows creation of a token" do
-      name = FFaker::Product.brand
+      name = 'Hello World'
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
       fill_in "Name", with: name
@@ -30,7 +32,7 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
       check "api"
       check "read_user"
 
-      expect { click_on "Create Impersonation Token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
+      expect { click_on "Create impersonation token" }.to change { PersonalAccessTokensFinder.new(impersonation: true).execute.count }
       expect(active_impersonation_tokens).to have_text(name)
       expect(active_impersonation_tokens).to have_text('In')
       expect(active_impersonation_tokens).to have_text('api')
@@ -58,15 +60,17 @@ describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
 
       click_on "Revoke"
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
 
-    it "moves expired tokens to the 'inactive' section" do
+    it "removes expired tokens from 'active' section" do
       impersonation_token.update(expires_at: 5.days.ago)
 
       visit admin_user_impersonation_tokens_path(user_id: user.username)
 
-      expect(inactive_impersonation_tokens).to have_text(impersonation_token.name)
+      expect(page).to have_selector(".settings-message")
+      expect(no_personal_access_tokens_message).to have_text("This user has no active Impersonation Tokens.")
     end
   end
 end

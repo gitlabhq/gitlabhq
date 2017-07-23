@@ -2,11 +2,15 @@
 - page_title "Branches"
 = render "projects/commits/head"
 
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
+
 %div{ class: container_class }
   .top-area.adjust
-    .nav-text
-      Protected branches can be managed in
-      = link_to 'project settings', namespace_project_protected_branches_path(@project.namespace, @project)
+    - if can?(current_user, :admin_project, @project)
+      .nav-text
+        Protected branches can be managed in
+        = link_to 'project settings', project_protected_branches_path(@project)
 
     .nav-controls
       = form_tag(filter_branches_path, method: :get) do
@@ -15,21 +19,19 @@
       .dropdown.inline>
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.light
-            = projects_sort_options_hash[@sort]
+            = branches_sort_options_hash[@sort]
           = icon('chevron-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
-          %li
-            = link_to filter_branches_path(sort: sort_value_name) do
-              = sort_title_name
-            = link_to filter_branches_path(sort: sort_value_recently_updated) do
-              = sort_title_recently_updated
-            = link_to filter_branches_path(sort: sort_value_oldest_updated) do
-              = sort_title_oldest_updated
+        %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+          %li.dropdown-header
+            Sort by
+          - branches_sort_options_hash.each do |value, title|
+            %li
+              = link_to title, filter_branches_path(sort: value), class: ("is-active" if @sort == value)
 
       - if can? current_user, :push_code, @project
-        = link_to namespace_project_merged_branches_path(@project.namespace, @project), class: 'btn btn-inverted btn-remove has-tooltip', title: "Delete all branches that are merged into '#{@project.repository.root_ref}'", method: :delete, data: { confirm: "Deleting the merged branches cannot be undone. Are you sure?", container: 'body' } do
+        = link_to project_merged_branches_path(@project), class: 'btn btn-inverted btn-remove has-tooltip', title: "Delete all branches that are merged into '#{@project.repository.root_ref}'", method: :delete, data: { confirm: "Deleting the merged branches cannot be undone. Are you sure?", container: 'body' } do
           Delete merged branches
-        = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
+        = link_to new_project_branch_path(@project), class: 'btn btn-create' do
           New branch
 
   - if @branches.any?
@@ -39,3 +41,5 @@
     = paginate @branches, theme: 'gitlab'
   - else
     .nothing-here-block No branches to show
+
+= render 'projects/branches/delete_protected_modal'

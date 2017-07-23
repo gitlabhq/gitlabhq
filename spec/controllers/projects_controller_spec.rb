@@ -29,7 +29,9 @@ describe ProjectsController do
 
   describe "GET show" do
     context "user not project member" do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       context "user does not have access to project" do
         let(:private_project) { create(:empty_project, :private) }
@@ -78,10 +80,12 @@ describe ProjectsController do
 
         it 'shows issues list page if wiki is disabled' do
           project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+          create(:issue, project: project)
 
           get :show, namespace_id: project.namespace, id: project
 
           expect(response).to render_template('projects/issues/_issues')
+          expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 
         it 'shows customize workflow page if wiki and issues are disabled' do
@@ -106,7 +110,9 @@ describe ProjectsController do
     context "project with empty repo" do
       let(:empty_project) { create(:project_empty_repo, :public) }
 
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
@@ -126,7 +132,9 @@ describe ProjectsController do
     context "project with broken repo" do
       let(:empty_project) { create(:project_broken_repo, :public) }
 
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
@@ -167,26 +175,6 @@ describe ProjectsController do
       end
     end
 
-    context "when requested with case sensitive namespace and project path" do
-      context "when there is a match with the same casing" do
-        it "loads the project" do
-          get :show, namespace_id: public_project.namespace, id: public_project
-
-          expect(assigns(:project)).to eq(public_project)
-          expect(response).to have_http_status(200)
-        end
-      end
-
-      context "when there is a match with different casing" do
-        it "redirects to the normalized path" do
-          get :show, namespace_id: public_project.namespace, id: public_project.path.upcase
-
-          expect(assigns(:project)).to eq(public_project)
-          expect(response).to redirect_to("/#{public_project.full_path}")
-        end
-      end
-    end
-
     context "when the url contains .atom" do
       let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
 
@@ -222,22 +210,88 @@ describe ProjectsController do
     render_views
 
     let(:admin) { create(:admin) }
+    let(:project) { create(:project, :repository) }
 
-    it "sets the repository to the right path after a rename" do
-      project = create(:project, :repository)
-      new_path = 'renamed_path'
-      project_params = { path: new_path }
-      controller.instance_variable_set(:@project, project)
+    before do
+      sign_in(admin)
+    end
+
+    context 'when only renaming a project path' do
+      it "sets the repository to the right path after a rename" do
+        expect { update_project path: 'renamed_path' }
+          .to change { project.reload.path }
+
+        expect(project.path).to include 'renamed_path'
+        expect(assigns(:repository).path).to include project.path
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project has container repositories with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+      end
+
+      it 'does not allow to rename the project' do
+        expect { update_project path: 'renamed_path' }
+          .not_to change { project.reload.path }
+
+        expect(controller).to set_flash[:alert].to(/container registry tags/)
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    def update_project(**parameters)
+      put :update,
+          namespace_id: project.namespace.path,
+          id: project.path,
+          project: parameters
+    end
+  end
+
+  describe '#transfer' do
+    render_views
+
+    let(:project) { create(:project) }
+    let(:admin) { create(:admin) }
+    let(:new_namespace) { create(:namespace) }
+
+    it 'updates namespace' do
       sign_in(admin)
 
-      put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: project_params
+      put :transfer,
+          namespace_id: project.namespace.path,
+          new_namespace_id: new_namespace.id,
+          id: project.path,
+          format: :js
 
-      expect(project.repository.path).to include(new_path)
-      expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response).to have_http_status(302)
+      project.reload
+
+      expect(project.namespace).to eq(new_namespace)
+      expect(response).to have_http_status(200)
+    end
+
+    context 'when new namespace is empty' do
+      it 'project namespace is not changed' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer,
+            namespace_id: old_namespace.path,
+            new_namespace_id: nil,
+            id: project.path,
+            format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_http_status(200)
+        expect(flash[:alert]).to eq 'Please select a new namespace for your project.'
+      end
     end
   end
 
@@ -395,5 +449,122 @@ describe ProjectsController do
       expect(parsed_body["Tags"]).to include("v1.0.0")
       expect(parsed_body["Commits"]).to include("123456")
     end
+  end
+
+  describe 'POST #preview_markdown' do
+    it 'renders json in a correct format' do
+      sign_in(user)
+
+      post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
+
+      expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+  end
+
+  describe '#ensure_canonical_path' do
+    before do
+      sign_in(user)
+    end
+
+    context 'for a GET request' do
+      context 'when requesting the canonical path' do
+        context "with exactly matching casing" do
+          it "loads the project" do
+            get :show, namespace_id: public_project.namespace, id: public_project
+
+            expect(assigns(:project)).to eq(public_project)
+            expect(response).to have_http_status(200)
+          end
+        end
+
+        context "with different casing" do
+          it "redirects to the normalized path" do
+            get :show, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+            expect(assigns(:project)).to eq(public_project)
+            expect(response).to redirect_to("/#{public_project.full_path}")
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'redirects to the canonical path' do
+          get :show, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to redirect_to(public_project)
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+        end
+
+        it 'redirects to the canonical path (testing non-show action)' do
+          get :refs, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to redirect_to(refs_project_path(public_project))
+          expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
+        end
+      end
+    end
+
+    context 'for a POST request' do
+      context 'when requesting the canonical path with different casing' do
+        it 'does not 404' do
+          post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+          expect(response).not_to have_http_status(404)
+        end
+
+        it 'does not redirect to the correct casing' do
+          post :toggle_star, namespace_id: public_project.namespace, id: public_project.path.upcase
+
+          expect(response).not_to have_http_status(301)
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { public_project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'returns not found' do
+          post :toggle_star, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'for a DELETE request' do
+      before do
+        sign_in(create(:admin))
+      end
+
+      context 'when requesting the canonical path with different casing' do
+        it 'does not 404' do
+          delete :destroy, namespace_id: project.namespace, id: project.path.upcase
+
+          expect(response).not_to have_http_status(404)
+        end
+
+        it 'does not redirect to the correct casing' do
+          delete :destroy, namespace_id: project.namespace, id: project.path.upcase
+
+          expect(response).not_to have_http_status(301)
+        end
+      end
+
+      context 'when requesting a redirected path' do
+        let!(:redirect_route) { project.redirect_routes.create!(path: "foo/bar") }
+
+        it 'returns not found' do
+          delete :destroy, namespace_id: 'foo', id: 'bar'
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+  end
+
+  def project_moved_message(redirect_route, project)
+    "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end
 end

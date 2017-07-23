@@ -26,7 +26,7 @@ require 'erb'
 
 describe 'GitLab Markdown', feature: true do
   include Capybara::Node::Matchers
-  include GitlabMarkdownHelper
+  include MarkupHelper
   include MarkdownMatchers
 
   # Sometimes it can be useful to see the parsed output of the Markdown document
@@ -58,8 +58,8 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'allows Markdown in tables' do
-        expect(doc.at_css('td:contains("Baz")').children.to_html).
-          to eq '<strong>Baz</strong>'
+        expect(doc.at_css('td:contains("Baz")').children.to_html)
+          .to eq '<strong>Baz</strong>'
       end
 
       it 'parses fenced code blocks' do
@@ -158,14 +158,14 @@ describe 'GitLab Markdown', feature: true do
     describe 'Edge Cases' do
       it 'allows markup inside link elements' do
         aggregate_failures do
-          expect(doc.at_css('a[href="#link-emphasis"]').to_html).
-            to eq %{<a href="#link-emphasis"><em>text</em></a>}
+          expect(doc.at_css('a[href="#link-emphasis"]').to_html)
+            .to eq %{<a href="#link-emphasis"><em>text</em></a>}
 
-          expect(doc.at_css('a[href="#link-strong"]').to_html).
-            to eq %{<a href="#link-strong"><strong>text</strong></a>}
+          expect(doc.at_css('a[href="#link-strong"]').to_html)
+            .to eq %{<a href="#link-strong"><strong>text</strong></a>}
 
-          expect(doc.at_css('a[href="#link-code"]').to_html).
-            to eq %{<a href="#link-code"><code>text</code></a>}
+          expect(doc.at_css('a[href="#link-code"]').to_html)
+            .to eq %{<a href="#link-code"><code>text</code></a>}
         end
       end
     end

@@ -28,7 +28,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
     if @group.save
       @group.add_owner(current_user)
-      redirect_to [:admin, @group], notice: 'Group was successfully created.'
+      redirect_to [:admin, @group], notice: "Group '#{@group.name}' was successfully created."
     else
       render "new"
     end
@@ -43,15 +43,22 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def members_update
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user: current_user)
+    member_params = params.permit(:user_ids, :access_level, :expires_at)
+    result = Members::CreateService.new(@group, current_user, member_params.merge(limit: -1)).execute
 
-    redirect_to [:admin, @group], notice: 'Users were successfully added.'
+    if result[:status] == :success
+      redirect_to [:admin, @group], notice: 'Users were successfully added.'
+    else
+      redirect_to [:admin, @group], alert: result[:message]
+    end
   end
 
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to admin_groups_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to admin_groups_path,
+                status: 302,
+                alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   private
@@ -72,7 +79,9 @@ class Admin::GroupsController < Admin::ApplicationController
       :name,
       :path,
       :request_access_enabled,
-      :visibility_level
+      :visibility_level,
+      :require_two_factor_authentication,
+      :two_factor_grace_period
     ]
   end
 end

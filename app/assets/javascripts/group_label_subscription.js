@@ -1,53 +1,52 @@
 /* eslint-disable func-names, object-shorthand, comma-dangle, wrap-iife, space-before-function-paren, no-param-reassign, max-len */
 
-(function(global) {
-  class GroupLabelSubscription {
-    constructor(container) {
-      const $container = $(container);
-      this.$dropdown = $container.find('.dropdown');
-      this.$subscribeButtons = $container.find('.js-subscribe-button');
-      this.$unsubscribeButtons = $container.find('.js-unsubscribe-button');
+class GroupLabelSubscription {
+  constructor(container) {
+    const $container = $(container);
+    this.$dropdown = $container.find('.dropdown');
+    this.$subscribeButtons = $container.find('.js-subscribe-button');
+    this.$unsubscribeButtons = $container.find('.js-unsubscribe-button');
 
-      this.$subscribeButtons.on('click', this.subscribe.bind(this));
-      this.$unsubscribeButtons.on('click', this.unsubscribe.bind(this));
-    }
-
-    unsubscribe(event) {
-      event.preventDefault();
-
-      const url = this.$unsubscribeButtons.attr('data-url');
-
-      $.ajax({
-        type: 'POST',
-        url: url
-      }).done(() => {
-        this.toggleSubscriptionButtons();
-        this.$unsubscribeButtons.removeAttr('data-url');
-      });
-    }
-
-    subscribe(event) {
-      event.preventDefault();
-
-      const $btn = $(event.currentTarget);
-      const url = $btn.attr('data-url');
-
-      this.$unsubscribeButtons.attr('data-url', url);
-
-      $.ajax({
-        type: 'POST',
-        url: url
-      }).done(() => {
-        this.toggleSubscriptionButtons();
-      });
-    }
-
-    toggleSubscriptionButtons() {
-      this.$dropdown.toggleClass('hidden');
-      this.$subscribeButtons.toggleClass('hidden');
-      this.$unsubscribeButtons.toggleClass('hidden');
-    }
+    this.$subscribeButtons.on('click', this.subscribe.bind(this));
+    this.$unsubscribeButtons.on('click', this.unsubscribe.bind(this));
   }
 
-  global.GroupLabelSubscription = GroupLabelSubscription;
-})(window.gl || (window.gl = {}));
+  unsubscribe(event) {
+    event.preventDefault();
+
+    const url = this.$unsubscribeButtons.attr('data-url');
+
+    $.ajax({
+      type: 'POST',
+      url: url
+    }).done(() => {
+      this.toggleSubscriptionButtons();
+      this.$unsubscribeButtons.removeAttr('data-url');
+    });
+  }
+
+  subscribe(event) {
+    event.preventDefault();
+
+    const $btn = $(event.currentTarget);
+    const url = $btn.attr('data-url');
+
+    this.$unsubscribeButtons.attr('data-url', url);
+
+    $.ajax({
+      type: 'POST',
+      url: url
+    }).done(() => {
+      this.toggleSubscriptionButtons();
+    });
+  }
+
+  toggleSubscriptionButtons() {
+    this.$dropdown.toggleClass('hidden');
+    this.$subscribeButtons.toggleClass('hidden');
+    this.$unsubscribeButtons.toggleClass('hidden');
+  }
+}
+
+window.gl = window.gl || {};
+window.gl.GroupLabelSubscription = GroupLabelSubscription;

@@ -20,7 +20,7 @@ describe Gitlab::CycleAnalytics::BaseEventFetcher do
 
   before do
     allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return(Issue.all)
-    allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:serialize) do |event|
+    allow_any_instance_of(described_class).to receive(:serialize) do |event|
       event
     end
 

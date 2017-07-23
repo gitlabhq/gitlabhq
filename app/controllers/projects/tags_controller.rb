@@ -14,7 +14,9 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = TagsFinder.new(@repository, params).execute
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
-    @releases = project.releases.where(tag: @tags.map(&:name))
+    tag_names = @tags.map(&:name)
+    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @releases = project.releases.where(tag: tag_names)
   end
 
   def show
@@ -27,27 +29,43 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    result = Tags::CreateService.new(@project, current_user).
-      execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+    result = Tags::CreateService.new(@project, current_user)
+      .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
     if result[:status] == :success
       @tag = result[:tag]
 
-      redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
+      redirect_to project_tag_path(@project, @tag.name)
     else
       @error = result[:message]
+      @message = params[:message]
+      @release_description = params[:release_description]
       render action: 'new'
     end
   end
 
   def destroy
-    Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
-      format.html do
-        redirect_to namespace_project_tags_path(@project.namespace, @project)
+      if result[:status] == :success
+        format.html do
+          redirect_to project_tags_path(@project), status: 303
+        end
+
+        format.js
+      else
+        @error = result[:message]
+
+        format.html do
+          redirect_to project_tags_path(@project),
+            alert: @error, status: 303
+        end
+
+        format.js do
+          render status: :unprocessable_entity
+        end
       end
-      format.js
     end
   end
 end

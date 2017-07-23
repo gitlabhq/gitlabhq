@@ -164,6 +164,11 @@ Style/DefWithParentheses:
 Style/Documentation:
   Enabled: false
 
+# Multi-line method chaining should be done with leading dots.
+Style/DotPosition:
+  Enabled: true
+  EnforcedStyle: leading
+
 # This cop checks for uses of double negation (!!) to convert something
 # to a boolean value. As this is both cryptic and usually redundant, it
 # should be avoided.
@@ -390,6 +395,15 @@ Style/OpMethod:
 Style/ParenthesesAroundCondition:
   Enabled: true
 
+# This cop (by default) checks for uses of methods Hash#has_key? and
+# Hash#has_value? where it enforces Hash#key? and Hash#value?
+# It is configurable to enforce the inverse, using `verbose` method
+# names also.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: short, verbose
+Style/PreferredHashMethods:
+  Enabled: false
+
 # Checks for an obsolete RuntimeException argument in raise/fail.
 Style/RedundantException:
   Enabled: true
@@ -494,7 +508,13 @@ Style/TrailingBlankLines:
 
 # This cop checks for trailing comma in array and hash literals.
 Style/TrailingCommaInLiteral:
-  Enabled: false
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+# This cop checks for trailing comma in argument lists.
+Style/TrailingCommaInArguments:
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
 
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
@@ -533,13 +553,17 @@ Style/WhileUntilModifier:
 Style/WordArray:
   Enabled: true
 
+# Use `proc` instead of `Proc.new`.
+Style/Proc:
+  Enabled: true
+
 # Metrics #####################################################################
 
 # A calculated magnitude based on number of assignments,
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 60
+  Max: 57.08
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -558,7 +582,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 17
+  Max: 16
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -941,6 +965,10 @@ RSpec/AnyInstance:
 RSpec/BeEql:
   Enabled: true
 
+# We don't enforce this as we use this technique in a few places.
+RSpec/BeforeAfterAll:
+  Enabled: false
+
 # Check that the first argument to the top level describe is the tested class or
 # module.
 RSpec/DescribeClass:
@@ -950,10 +978,20 @@ RSpec/DescribeClass:
 RSpec/DescribeMethod:
   Enabled: false
 
+# Avoid describing symbols.
+RSpec/DescribeSymbol:
+  Enabled: true
+
 # Checks that the second argument to top level describe is the tested method
 # name.
 RSpec/DescribedClass:
-  Enabled: false
+  Enabled: true
+
+# Checks if an example group does not include any tests.
+RSpec/EmptyExampleGroup:
+  Enabled: true
+  CustomIncludeMethods:
+    - run_permission_checks
 
 # Checks for long example.
 RSpec/ExampleLength:
@@ -973,16 +1011,28 @@ RSpec/ExampleWording:
 RSpec/ExpectActual:
   Enabled: true
 
+# Checks for opportunities to use `expect { … }.to output`.
+RSpec/ExpectOutput:
+  Enabled: true
+
 # Checks the file and folder naming of the spec file.
 RSpec/FilePath:
-  Enabled: false
-  CustomTransform:
-    RuboCop: rubocop
-    RSpec: rspec
+  Enabled: true
+  IgnoreMethods: true
+  Exclude:
+    - 'qa/**/*'
+    - 'spec/javascripts/fixtures/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks if there are focused specs.
 RSpec/Focus:
   Enabled: true
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: is_expected, should
+RSpec/ImplicitExpect:
+  Enabled: true
+  EnforcedStyle: is_expected
 
 # Checks for the usage of instance variables.
 RSpec/InstanceVariable:
@@ -1028,6 +1078,13 @@ RSpec/NotToNot:
 # Check for repeated description strings in example groups.
 RSpec/RepeatedDescription:
   Enabled: false
+
+# Ensure RSpec hook blocks are always multi-line.
+RSpec/SingleLineHook:
+  Enabled: true
+  Exclude:
+    - 'spec/factories/*'
+    - 'spec/requests/api/v3/*'
 
 # Checks for stubbed test subjects.
 RSpec/SubjectStub:

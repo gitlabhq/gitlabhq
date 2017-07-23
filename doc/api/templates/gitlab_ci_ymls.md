@@ -1,4 +1,4 @@
-# GitLab CI YMLs
+# GitLab CI YMLs API
 
 ## List GitLab CI YML templates
 

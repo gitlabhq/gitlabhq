@@ -1,0 +1,44 @@
+%p
+  %strong Request URL:
+  POST
+  = hook_log.url
+  = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
+
+%p
+  %strong Trigger:
+  %td.hidden-xs
+    %span.label.label-gray.deploy-project-label
+      = hook_log.trigger.singularize.titleize
+%p
+  %strong Elapsed time:
+  #{number_with_precision(hook_log.execution_duration, precision: 2)} ms
+%p
+  %strong Request time:
+  = time_ago_with_tooltip(hook_log.created_at)
+
+%hr
+
+- if hook_log.internal_error_message.present?
+  .bs-callout.bs-callout-danger
+    = hook_log.internal_error_message
+
+%h5 Request headers:
+%pre
+  - hook_log.request_headers.each do |k,v|
+    <strong>#{k}:</strong> #{v}
+    %br
+
+%h5 Request body:
+%pre
+  :plain
+    #{JSON.pretty_generate(hook_log.request_data)}
+%h5 Response headers:
+%pre
+  - hook_log.response_headers.each do |k,v|
+    <strong>#{k}:</strong> #{v}
+    %br
+
+%h5 Response body:
+%pre
+  :plain
+    #{hook_log.response_body}

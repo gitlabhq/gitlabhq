@@ -10,10 +10,14 @@ describe PagesService, services: true do
   end
 
   context 'execute asynchronously for pages job' do
-    before { build.name = 'pages' }
+    before do
+      build.name = 'pages'
+    end
 
     context 'on success' do
-      before { build.success }
+      before do
+        build.success
+      end
 
       it 'executes worker' do
         expect(PagesWorker).to receive(:perform_async)
@@ -23,7 +27,9 @@ describe PagesService, services: true do
 
     %w(pending running failed canceled).each do |status|
       context "on #{status}" do
-        before { build.status = status }
+        before do
+          build.status = status
+        end
 
         it 'does not execute worker' do
           expect(PagesWorker).not_to receive(:perform_async)

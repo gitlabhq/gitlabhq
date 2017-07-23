@@ -9,13 +9,15 @@ module API
       { type: 'snippet', find_by: :id }
     ].freeze
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       AWARDABLES.each do |awardable_params|
         awardable_string = awardable_params[:type].pluralize
         awardable_id_string = "#{awardable_params[:type]}_#{awardable_params[:find_by]}"
 
         params do
-          requires :id, type: String, desc: 'The ID of a project'
           requires :"#{awardable_id_string}", type: Integer, desc: "The ID of an Issue, Merge Request or Snippet"
         end
 
@@ -86,6 +88,7 @@ module API
 
             unauthorized! unless award.user == current_user || current_user.admin?
 
+            status 204
             award.destroy
           end
         end

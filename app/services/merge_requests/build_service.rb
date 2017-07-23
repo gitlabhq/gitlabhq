@@ -6,7 +6,7 @@ module MergeRequests
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
-      merge_request.can_be_created  = branches_valid? && source_branch_specified? && target_branch_specified?
+      merge_request.can_be_created  = branches_valid?
 
       compare_branches if branches_present?
       assign_title_and_description if merge_request.can_be_created
@@ -21,12 +21,14 @@ module MergeRequests
     delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
 
     def find_source_project
-      source_project || project
+      return source_project if source_project.present? && can?(current_user, :read_project, source_project)
+
+      project
     end
 
     def find_target_project
       return target_project if target_project.present? && can?(current_user, :read_project, target_project)
-      project.forked_from_project || project
+      project.default_merge_request_target
     end
 
     def find_target_branch

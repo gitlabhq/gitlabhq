@@ -7,14 +7,16 @@ describe Projects::IssuesController do
 
   describe "GET #index" do
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', project_url: 'http://test.com')
+      end
+
       it 'redirects to the external issue tracker' do
-        external = double(project_path: 'https://example.com/project')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :index, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/project')
+        expect(response).to redirect_to(service.issue_tracker_path)
       end
     end
 
@@ -35,7 +37,7 @@ describe Projects::IssuesController do
       it "returns 301 if request path doesn't match project path" do
         get :index, namespace_id: project.namespace, project_id: project.path.upcase
 
-        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+        expect(response).to redirect_to(project_issues_path(project))
       end
 
       it "returns 404 when issues are disabled" do
@@ -83,10 +85,28 @@ describe Projects::IssuesController do
         expect(assigns(:issues).current_page).to eq(last_page)
         expect(response).to have_http_status(200)
       end
+
+      it 'does not redirect to external sites when provided a host field' do
+        external_host = "www.example.com"
+        get :index,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          page: (last_page + 1).to_param,
+          host: external_host
+
+        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
     end
   end
 
   describe 'GET #new' do
+    it 'redirects to signin if not logged in' do
+      get :new, namespace_id: project.namespace, project_id: project
+
+      expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
     context 'internal issue tracker' do
       before do
         sign_in(user)
@@ -104,7 +124,16 @@ describe Projects::IssuesController do
         project_with_repository.team << [user, :developer]
         mr = create(:merge_request_with_diff_notes, source_project: project_with_repository)
 
-        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_for_resolving_discussions: mr.iid
+        get :new, namespace_id: project_with_repository.namespace, project_id: project_with_repository, merge_request_to_resolve_discussions_of: mr.iid
+
+        expect(assigns(:issue).title).not_to be_empty
+        expect(assigns(:issue).description).not_to be_empty
+      end
+
+      it 'fills in an issue for a discussion' do
+        note = create(:note_on_merge_request, project: project)
+
+        get :new, namespace_id: project.namespace.path, project_id: project, merge_request_to_resolve_discussions_of: note.noteable.iid, discussion_to_resolve: note.discussion_id
 
         expect(assigns(:issue).title).not_to be_empty
         expect(assigns(:issue).description).not_to be_empty
@@ -112,14 +141,47 @@ describe Projects::IssuesController do
     end
 
     context 'external issue tracker' do
+      let!(:service) do
+        create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker', new_issue_url: 'http://test.com')
+      end
+
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
+
       it 'redirects to the external issue tracker' do
-        external = double(new_issue_path: 'https://example.com/issues/new')
-        allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :new, namespace_id: project.namespace, project_id: project
 
-        expect(response).to redirect_to('https://example.com/issues/new')
+        expect(response).to redirect_to('http://test.com')
+      end
+    end
+  end
+
+  describe 'Redirect after sign in' do
+    context 'with an AJAX request' do
+      it 'does not store the visited URL' do
+        xhr :get,
+          :show,
+          format: :json,
+          namespace_id: project.namespace,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to be_blank
+      end
+    end
+
+    context 'without an AJAX request' do
+      it 'stores the visited URL' do
+        get :show,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid
+
+        expect(session['user_return_to']).to eq("/#{project.namespace.to_param}/#{project.to_param}/issues/#{issue.iid}")
       end
     end
   end
@@ -132,11 +194,31 @@ describe Projects::IssuesController do
 
     it_behaves_like 'update invalid issuable', Issue
 
+    context 'changing the assignee' do
+      it 'limits the attributes exposed on the assignee' do
+        assignee = create(:user)
+        project.add_developer(assignee)
+
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: issue.iid,
+          issue: { assignee_ids: [assignee.id] },
+          format: :json
+        body = JSON.parse(response.body)
+
+        expect(body['assignees'].first.keys)
+          .to match_array(%w(id name username avatar_url state web_url))
+      end
+    end
+
     context 'when moving issue to another private project' do
       let(:another_project) { create(:empty_project, :private) }
 
       context 'when user has access to move issue' do
-        before { another_project.team << [user, :reporter] }
+        before do
+          another_project.team << [user, :reporter]
+        end
 
         it 'moves issue to another project' do
           move_issue
@@ -174,16 +256,21 @@ describe Projects::IssuesController do
         end
 
         context 'when an issue is identified as spam' do
-          before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
+          before do
+            allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+          end
 
           context 'when captcha is not verified' do
             def update_spam_issue
               update_issue(title: 'Spam Title', description: 'Spam lives here')
             end
 
-            before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
+            before do
+              allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            end
 
             it 'rejects an issue recognized as a spam' do
+              expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
               expect { update_spam_issue }.not_to change{ issue.reload.title }
             end
 
@@ -203,10 +290,27 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders verify template' do
-              update_spam_issue
+            context 'as HTML' do
+              it 'renders verify template' do
+                update_spam_issue
 
-              expect(response).to render_template(:verify)
+                expect(response).to render_template(:verify)
+              end
+            end
+
+            context 'as JSON' do
+              before do
+                update_issue({ title: 'Spam Title', description: 'Spam lives here' }, format: :json)
+              end
+
+              it 'renders json errors' do
+                expect(json_response)
+                  .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              end
+
+              it 'returns 422 status' do
+                expect(response).to have_http_status(422)
+              end
             end
           end
 
@@ -228,8 +332,8 @@ describe Projects::IssuesController do
             it 'redirect to issue page' do
               update_verified_issue
 
-              expect(response).
-                to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+              expect(response)
+                .to redirect_to(project_issue_path(project, issue))
             end
 
             it 'accepts an issue after recaptcha is verified' do
@@ -243,8 +347,8 @@ describe Projects::IssuesController do
             it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
               spam_log = create(:spam_log)
 
-              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }.
-                not_to change { SpamLog.last.recaptcha_verified }
+              expect { update_issue(spam_log_id: spam_log.id, recaptcha_verification: true) }
+                .not_to change { SpamLog.last.recaptcha_verified }
             end
           end
         end
@@ -281,7 +385,7 @@ describe Projects::IssuesController do
     let(:admin) { create(:admin) }
     let!(:issue) { create(:issue, project: project) }
     let!(:unescaped_parameter_value) { create(:issue, :confidential, project: project, author: author) }
-    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
+    let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignees: [assignee]) }
 
     describe 'GET #index' do
       it 'does not list confidential issues for guests' do
@@ -412,6 +516,36 @@ describe Projects::IssuesController do
       end
     end
 
+    describe 'GET #realtime_changes' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :realtime_changes,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+
+      context 'when an issue was edited by a deleted user' do
+        let(:deleted_user) { create(:user) }
+
+        before do
+          project.team << [user, :developer]
+
+          issue.update!(last_edited_by: deleted_user, last_edited_at: Time.now)
+
+          deleted_user.destroy
+          sign_in(user)
+        end
+
+        it 'returns 200' do
+          go(id: issue.iid)
+
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+
     describe 'GET #edit' do
       it_behaves_like 'restricted action', success: 200
 
@@ -452,7 +586,7 @@ describe Projects::IssuesController do
     end
 
     context 'resolving discussions in MergeRequest' do
-      let(:discussion) { Discussion.for_diff_notes([create(:diff_note_on_merge_request)]).first }
+      let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
@@ -462,11 +596,11 @@ describe Projects::IssuesController do
       end
 
       let(:merge_request_params) do
-        { merge_request_for_resolving_discussions: merge_request.iid }
+        { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
-      def post_issue(issue_params)
-        post :create, namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_for_resolving_discussions: merge_request.iid
+      def post_issue(issue_params, other_params: {})
+        post :create, { namespace_id: project.namespace.to_param, project_id: project, issue: issue_params, merge_request_to_resolve_discussions_of: merge_request.iid }.merge(other_params)
       end
 
       it 'creates an issue for the project' do
@@ -484,6 +618,27 @@ describe Projects::IssuesController do
         discussion.first_note.reload
 
         expect(discussion.resolved?).to eq(true)
+      end
+
+      it 'sets a flash message' do
+        post_issue(title: 'Hello')
+
+        expect(flash[:notice]).to eq('Resolved all discussions.')
+      end
+
+      describe "resolving a single discussion" do
+        before do
+          post_issue({ title: 'Hello' }, other_params: { discussion_to_resolve: discussion.id })
+        end
+        it 'resolves a single discussion' do
+          discussion.first_note.reload
+
+          expect(discussion.resolved?).to eq(true)
+        end
+
+        it 'sets a flash message that one discussion was resolved' do
+          expect(flash[:notice]).to eq('Resolved 1 discussion.')
+        end
       end
     end
 
@@ -505,14 +660,18 @@ describe Projects::IssuesController do
       end
 
       context 'when an issue is identified as spam' do
-        before { allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true) }
+        before do
+          allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
+        end
 
         context 'when captcha is not verified' do
           def post_spam_issue
             post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
-          before { allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false) }
+          before do
+            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+          end
 
           it 'rejects an issue recognized as a spam' do
             expect { post_spam_issue }.not_to change(Issue, :count)
@@ -560,8 +719,8 @@ describe Projects::IssuesController do
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }.
-              not_to change { SpamLog.last.recaptcha_verified }
+            expect { post_new_issue({}, { spam_log_id: spam_log.id, recaptcha_verification: true } ) }
+              .not_to change { SpamLog.last.recaptcha_verified }
           end
         end
       end
@@ -577,7 +736,7 @@ describe Projects::IssuesController do
       end
     end
 
-    context 'when description has slash commands' do
+    context 'when description has quick actions' do
       before do
         sign_in(user)
       end
@@ -624,7 +783,10 @@ describe Projects::IssuesController do
 
   describe "DELETE #destroy" do
     context "when the user is a developer" do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
+
       it "rejects a developer to destroy an issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
         expect(response).to have_http_status(404)
@@ -636,7 +798,9 @@ describe Projects::IssuesController do
       let(:namespace) { create(:namespace, owner: owner) }
       let(:project)   { create(:empty_project, namespace: namespace) }
 
-      before { sign_in(owner) }
+      before do
+        sign_in(owner)
+      end
 
       it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
@@ -666,6 +830,30 @@ describe Projects::IssuesController do
       end.to change { issue.award_emoji.count }.by(1)
 
       expect(response).to have_http_status(200)
+    end
+  end
+
+  describe 'POST create_merge_request' do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'creates a new merge request' do
+      expect { create_merge_request }.to change(project.merge_requests, :count).by(1)
+    end
+
+    it 'render merge request as json' do
+      create_merge_request
+
+      expect(response).to match_response_schema('merge_request')
+    end
+
+    def create_merge_request
+      post :create_merge_request, namespace_id: project.namespace.to_param,
+                                  project_id: project.to_param,
+                                  id: issue.to_param,
+                                  format: :json
     end
   end
 end

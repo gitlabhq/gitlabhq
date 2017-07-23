@@ -19,10 +19,10 @@ of your project and select the **Kubernetes** service to configure it.
 
 The Kubernetes service takes the following arguments:
 
-1. Kubernetes namespace
 1. API URL
-1. Service token
 1. Custom CA bundle
+1. Kubernetes namespace
+1. Service token
 
 The API URL is the URL that GitLab uses to access the Kubernetes API. Kubernetes
 exposes several APIs - we want the "base" URL that is common to all of them,
@@ -48,9 +48,14 @@ GitLab CI build environment:
 
 - `KUBE_URL` - equal to the API URL
 - `KUBE_TOKEN`
-- `KUBE_NAMESPACE`
-- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path to a file containing PEM data.
+- `KUBE_NAMESPACE` - The Kubernetes namespace is auto-generated if not specified.
+  The default value is `<project_name>-<project_id>`. You can overwrite it to
+  use different one if needed, otherwise the `KUBE_NAMESPACE` variable will
+  receive the default value.
+- `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
+  to a file containing PEM data.
 - `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
+- `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
 
 ## Web terminals
 
@@ -60,7 +65,7 @@ to use terminals. Support is currently limited to the first container in the
 first pod of your environment.
 
 When enabled, the Kubernetes service adds [web terminal](../../../ci/environments.md#web-terminals)
-support to your environments. This is based on the `exec` functionality found in
+support to your [environments](../../../ci/environments.md). This is based on the `exec` functionality found in
 Docker and Kubernetes, so you get a new shell session within your existing
 containers. To use this integration, you should deploy to Kubernetes using
 the deployment variables above, ensuring any pods you create are labelled with

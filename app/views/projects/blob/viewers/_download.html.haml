@@ -1,0 +1,7 @@
+.file-content.blob_file.blob-no-preview
+  .center
+    = link_to blob_raw_url do
+      %h1.light
+        = icon('download')
+      %h4
+        Download (#{number_to_human_size(viewer.blob.raw_size)})

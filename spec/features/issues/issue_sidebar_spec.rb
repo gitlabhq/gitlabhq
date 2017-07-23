@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
-  include WaitForAjax
   include MobileHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   context 'assignee', js: true do
@@ -23,7 +23,7 @@ feature 'Issue Sidebar', feature: true do
 
       find('.block.assignee .edit-link').click
 
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'shows author in assignee dropdown' do
@@ -37,10 +37,42 @@ feature 'Issue Sidebar', feature: true do
         find('.dropdown-input-field').native.send_keys user2.name
         sleep 1 # Required to wait for end of input delay
 
-        wait_for_ajax
+        wait_for_requests
 
         expect(page).to have_content(user2.name)
       end
+    end
+
+    it 'assigns yourself' do
+      find('.block.assignee .dropdown-menu-toggle').click
+
+      click_button 'assign yourself'
+
+      wait_for_requests
+
+      find('.block.assignee .edit-link').click
+
+      page.within '.dropdown-menu-user' do
+        expect(page.find('.dropdown-header')).to be_visible
+        expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
+      end
+    end
+
+    it 'keeps your filtered term after filtering and dismissing the dropdown' do
+      find('.dropdown-input-field').native.send_keys user2.name
+
+      wait_for_requests
+
+      page.within '.dropdown-menu-user' do
+        expect(page).not_to have_content 'Unassigned'
+        click_link user2.name
+      end
+
+      find('.js-right-sidebar').click
+      find('.block.assignee .edit-link').click
+
+      expect(page.all('.dropdown-menu-user li').length).to eq(1)
+      expect(find('.dropdown-input-field').value).to eq(user2.name)
     end
   end
 
@@ -56,10 +88,12 @@ feature 'Issue Sidebar', feature: true do
         # Resize the window
         resize_screen_sm
         # Make sure the sidebar is collapsed
+        find(sidebar_selector)
         expect(page).to have_css(sidebar_selector)
         # Once is collapsed let's open the sidebard and reload
         open_issue_sidebar
         refresh
+        find(sidebar_selector)
         expect(page).to have_css(sidebar_selector)
         # Restore the window size as it was including the sidebar
         restore_window_size
@@ -132,13 +166,11 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   def open_issue_sidebar
-    page.within('aside.right-sidebar.right-sidebar-collapsed') do
-      find('.js-sidebar-toggle').click
-      sleep 1
-    end
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
+    find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

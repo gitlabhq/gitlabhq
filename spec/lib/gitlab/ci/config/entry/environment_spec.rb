@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Environment do
   let(:entry) { described_class.new(config) }
 
-  before { entry.compose! }
+  before do
+    entry.compose!
+  end
 
   context 'when configuration is a string' do
     let(:config) { 'production' }
@@ -151,8 +153,8 @@ describe Gitlab::Ci::Config::Entry::Environment do
 
   context 'when variables are used for environment' do
     let(:config) do
-      { name: 'review/$CI_BUILD_REF_NAME',
-        url: 'https://$CI_BUILD_REF_NAME.review.gitlab.com' }
+      { name: 'review/$CI_COMMIT_REF_NAME',
+        url: 'https://$CI_COMMIT_REF_NAME.review.gitlab.com' }
     end
 
     describe '#valid?' do

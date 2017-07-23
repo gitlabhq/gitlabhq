@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Members::DestroyService, services: true do
   let(:user) { create(:user) }
   let(:member_user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:group) { create(:group, :public) }
 
   shared_examples 'a service raising ActiveRecord::RecordNotFound' do
@@ -104,8 +104,8 @@ describe Members::DestroyService, services: true do
         let(:params) { { id: project.members.find_by!(user_id: user.id).id } }
 
         it 'destroys the member' do
-          expect { described_class.new(project, user, params).execute }.
-            to change { project.members.count }.by(-1)
+          expect { described_class.new(project, user, params).execute }
+            .to change { project.members.count }.by(-1)
         end
       end
     end

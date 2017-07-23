@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Projects, api: true do
-  include ApiHelpers
+describe API::V3::Projects do
   include Gitlab::CurrentSettings
 
   let(:user) { create(:user) }
@@ -11,8 +10,7 @@ describe API::V3::Projects, api: true do
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, :master, user: user, project: project) }
-  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
+  let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
@@ -26,7 +24,7 @@ describe API::V3::Projects, api: true do
     issues_enabled: false, wiki_enabled: false,
     snippets_enabled: false)
   end
-  let(:project_member3) do
+  let(:project_member2) do
     create(:project_member,
     user: user4,
     project: project3,
@@ -126,6 +124,36 @@ describe API::V3::Projects, api: true do
         end
       end
 
+      context 'and using archived' do
+        let!(:archived_project) { create(:empty_project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived project' do
+          get v3_api('/projects?archived=true', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(archived_project.id)
+        end
+
+        it 'returns non-archived project' do
+          get v3_api('/projects?archived=false', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(project.id)
+        end
+
+        it 'returns all project' do
+          get v3_api('/projects', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+        end
+      end
+
       context 'and using sorting' do
         before do
           project2
@@ -167,7 +195,7 @@ describe API::V3::Projects, api: true do
 
         expect(json_response).to satisfy do |response|
           response.one? do |entry|
-            entry.has_key?('permissions') &&
+            entry.key?('permissions') &&
               entry['name'] == project.name &&
               entry['owner']['username'] == user.username
           end
@@ -228,7 +256,7 @@ describe API::V3::Projects, api: true do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }
 
         project4.statistics.update!(attributes)
@@ -287,7 +315,7 @@ describe API::V3::Projects, api: true do
     let(:public_project) { create(:empty_project, :public) }
 
     before do
-      project_member2
+      project_member
       user3.update_attributes(starred_projects: [project, project2, project3, public_project])
     end
 
@@ -303,15 +331,15 @@ describe API::V3::Projects, api: true do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post v3_api('/projects', user2), name: 'foo' }.
-          to change {Project.count}.by(0)
+        expect { post v3_api('/projects', user2), name: 'foo' }
+          .to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
     it 'creates new project without path but with name and returns 201' do
-      expect { post v3_api('/projects', user), name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -321,8 +349,8 @@ describe API::V3::Projects, api: true do
     end
 
     it 'creates new project without name but with path and returns 201' do
-      expect { post v3_api('/projects', user), path: 'foo_project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), path: 'foo_project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -332,8 +360,8 @@ describe API::V3::Projects, api: true do
     end
 
     it 'creates new project name and path and returns 201' do
-      expect { post v3_api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), path: 'foo-Project', name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -356,7 +384,6 @@ describe API::V3::Projects, api: true do
     it "assigns attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -492,8 +519,8 @@ describe API::V3::Projects, api: true do
     end
 
     it 'responds with 400 on failure and not project' do
-      expect { post v3_api("/projects/user/#{user.id}", admin) }.
-        not_to change { Project.count }
+      expect { post v3_api("/projects/user/#{user.id}", admin) }
+        .not_to change { Project.count }
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('name is missing')
@@ -501,7 +528,6 @@ describe API::V3::Projects, api: true do
 
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -625,7 +651,6 @@ describe API::V3::Projects, api: true do
     context 'when authenticated' do
       before do
         project
-        project_member
       end
 
       it 'returns a project by id' do
@@ -710,6 +735,7 @@ describe API::V3::Projects, api: true do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
+          'parent_id' => nil
         })
       end
 
@@ -721,8 +747,8 @@ describe API::V3::Projects, api: true do
             get v3_api("/projects", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response.first['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response.first['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
@@ -733,8 +759,8 @@ describe API::V3::Projects, api: true do
             get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -749,8 +775,8 @@ describe API::V3::Projects, api: true do
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']).to be_nil
-            expect(json_response['permissions']['group_access']['access_level']).
-            to eq(Gitlab::Access::OWNER)
+            expect(json_response['permissions']['group_access']['access_level'])
+            .to eq(Gitlab::Access::OWNER)
           end
         end
       end
@@ -817,8 +843,7 @@ describe API::V3::Projects, api: true do
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
       it 'returns the project users' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
+        member = project.owner
 
         get v3_api("/projects/#{project.id}/users", current_user)
 
@@ -949,7 +974,7 @@ describe API::V3::Projects, api: true do
     end
   end
 
-  describe :fork_admin do
+  describe 'fork management' do
     let(:project_fork_target) { create(:empty_project) }
     let(:project_fork_source) { create(:empty_project, :public) }
 
@@ -1166,8 +1191,8 @@ describe API::V3::Projects, api: true do
     before { user4 }
     before { project3 }
     before { project4 }
-    before { project_member3 }
     before { project_member2 }
+    before { project_member }
 
     context 'when unauthenticated' do
       it 'returns authentication error' do

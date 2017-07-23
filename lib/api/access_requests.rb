@@ -10,7 +10,7 @@ module API
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
-      resource source_type.pluralize do
+      resource source_type.pluralize, requirements: { id: %r{[^/]+} } do
         desc "Gets a list of access requests for a #{source_type}." do
           detail 'This feature was introduced in GitLab 8.11.'
           success Entities::AccessRequester
@@ -68,8 +68,9 @@ module API
         delete ":id/access_requests/:user_id" do
           source = find_source(source_type, params[:id])
 
-          ::Members::DestroyService.new(source, current_user, params).
-            execute(:requesters)
+          status 204
+          ::Members::DestroyService.new(source, current_user, params)
+            .execute(:requesters)
         end
       end
     end

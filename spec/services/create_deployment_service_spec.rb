@@ -1,156 +1,117 @@
 require 'spec_helper'
 
 describe CreateDeploymentService, services: true do
-  let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
+  let(:options) { nil }
 
-  let(:service) { described_class.new(project, user, params) }
+  let(:job) do
+    create(:ci_build,
+      ref: 'master',
+      tag: false,
+      environment: 'production',
+      options: { environment: options })
+  end
+
+  let(:project) { job.project }
+
+  let!(:environment) do
+    create(:environment, project: project, name: 'production')
+  end
+
+  let(:service) { described_class.new(job) }
 
   describe '#execute' do
-    let(:options) { nil }
-    let(:params) do
-      {
-        environment: 'production',
-        ref: 'master',
-        tag: false,
-        sha: '97de212e80737a608d939f648d959671fb0a0142',
-        options: options
-      }
-    end
-
     subject { service.execute }
 
-    context 'when no environments exist' do
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
-      end
-
-      it 'does create a deployment' do
+    context 'when environment exists' do
+      it 'creates a deployment' do
         expect(subject).to be_persisted
       end
     end
 
-    context 'when environment exist' do
-      let!(:environment) { create(:environment, project: project, name: 'production') }
-
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
-      end
-
-      it 'does create a deployment' do
-        expect(subject).to be_persisted
-      end
-
-      context 'and start action is defined' do
-        let(:options) { { action: 'start' } }
-
-        context 'and environment is stopped' do
-          before do
-            environment.stop
-          end
-
-          it 'makes environment available' do
-            subject
-
-            expect(environment.reload).to be_available
-          end
-
-          it 'does create a deployment' do
-            expect(subject).to be_persisted
-          end
-        end
-      end
-
-      context 'and stop action is defined' do
-        let(:options) { { action: 'stop' } }
-
-        context 'and environment is available' do
-          before do
-            environment.start
-          end
-
-          it 'makes environment stopped' do
-            subject
-
-            expect(environment.reload).to be_stopped
-          end
-
-          it 'does not create a deployment' do
-            expect(subject).to be_nil
-          end
-        end
-      end
-    end
-
-    context 'for environment with invalid name' do
-      let(:params) do
-        {
-          environment: 'name,with,commas',
-          ref: 'master',
-          tag: false,
-          sha: '97de212e80737a608d939f648d959671fb0a0142'
-        }
-      end
-
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
-      end
+    context 'when environment does not exist' do
+      let(:environment) {}
 
       it 'does not create a deployment' do
-        expect(subject).to be_nil
+        expect do
+          expect(subject).to be_nil
+        end.not_to change { Deployment.count }
       end
     end
 
-    context 'when variables are used' do
-      let(:params) do
-        {
-          environment: 'review-apps/$CI_BUILD_REF_NAME',
-          ref: 'master',
-          tag: false,
-          sha: '97de212e80737a608d939f648d959671fb0a0142',
-          options: {
-            name: 'review-apps/$CI_BUILD_REF_NAME',
-            url: 'http://$CI_BUILD_REF_NAME.review-apps.gitlab.com'
-          },
-          variables: [
-            { key: 'CI_BUILD_REF_NAME', value: 'feature-review-apps' }
-          ]
-        }
-      end
+    context 'when start action is defined' do
+      let(:options) { { action: 'start' } }
 
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
-
-        expect(subject.environment.name).to eq('review-apps/feature-review-apps')
-        expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
-      end
-
-      it 'does create a new deployment' do
-        expect(subject).to be_persisted
-      end
-
-      context 'and environment exist' do
-        let!(:environment) { create(:environment, project: project, name: 'review-apps/feature-review-apps') }
-
-        it 'does not create a new environment' do
-          expect { subject }.not_to change { Environment.count }
+      context 'and environment is stopped' do
+        before do
+          environment.stop
         end
 
-        it 'updates external url' do
+        it 'makes environment available' do
           subject
 
-          expect(subject.environment.name).to eq('review-apps/feature-review-apps')
-          expect(subject.environment.external_url).to eq('http://feature-review-apps.review-apps.gitlab.com')
+          expect(environment.reload).to be_available
         end
 
-        it 'does create a new deployment' do
+        it 'creates a deployment' do
           expect(subject).to be_persisted
         end
       end
     end
 
+    context 'when stop action is defined' do
+      let(:options) { { action: 'stop' } }
+
+      context 'and environment is available' do
+        before do
+          environment.start
+        end
+
+        it 'makes environment stopped' do
+          subject
+
+          expect(environment.reload).to be_stopped
+        end
+
+        it 'does not create a deployment' do
+          expect(subject).to be_nil
+        end
+      end
+    end
+
+    context 'when variables are used' do
+      let(:options) do
+        { name: 'review-apps/$CI_COMMIT_REF_NAME',
+          url: 'http://$CI_COMMIT_REF_NAME.review-apps.gitlab.com' }
+      end
+
+      before do
+        environment.update(name: 'review-apps/master')
+        job.update(environment: 'review-apps/$CI_COMMIT_REF_NAME')
+      end
+
+      it 'creates a new deployment' do
+        expect(subject).to be_persisted
+      end
+
+      it 'does not create a new environment' do
+        expect { subject }.not_to change { Environment.count }
+      end
+
+      it 'updates external url' do
+        subject
+
+        expect(subject.environment.name).to eq('review-apps/master')
+        expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')
+      end
+    end
+
     context 'when project was removed' do
-      let(:project) { nil }
+      let(:environment) {}
+
+      before do
+        job.update(project: nil)
+      end
 
       it 'does not create deployment or environment' do
         expect { subject }.not_to raise_error
@@ -161,35 +122,82 @@ describe CreateDeploymentService, services: true do
     end
   end
 
-  describe 'processing of builds' do
-    let(:environment) { nil }
+  describe '#expanded_environment_url' do
+    subject { service.send(:expanded_environment_url) }
 
-    shared_examples 'does not create environment and deployment' do
-      it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
+    context 'when yaml environment uses $CI_COMMIT_REF_NAME' do
+      let(:job) do
+        create(:ci_build,
+               ref: 'master',
+               options: { environment: { url: 'http://review/$CI_COMMIT_REF_NAME' } })
       end
 
+      it { is_expected.to eq('http://review/master') }
+    end
+
+    context 'when yaml environment uses $CI_ENVIRONMENT_SLUG' do
+      let(:job) do
+        create(:ci_build,
+               ref: 'master',
+               environment: 'production',
+               options: { environment: { url: 'http://review/$CI_ENVIRONMENT_SLUG' } })
+      end
+
+      let!(:environment) do
+        create(:environment,
+          project: job.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: 'http://review/old')
+      end
+
+      it { is_expected.to eq('http://review/prod-slug') }
+    end
+
+    context 'when yaml environment uses yaml_variables containing symbol keys' do
+      let(:job) do
+        create(:ci_build,
+               yaml_variables: [{ key: :APP_HOST, value: 'host' }],
+               options: { environment: { url: 'http://review/$APP_HOST' } })
+      end
+
+      it { is_expected.to eq('http://review/host') }
+    end
+
+    context 'when yaml environment does not have url' do
+      let(:job) { create(:ci_build, environment: 'staging') }
+
+      let!(:environment) do
+        create(:environment, project: job.project, name: job.environment)
+      end
+
+      it 'returns the external_url from persisted environment' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe 'processing of builds' do
+    shared_examples 'does not create deployment' do
       it 'does not create a new deployment' do
         expect { subject }.not_to change { Deployment.count }
       end
 
       it 'does not call a service' do
         expect_any_instance_of(described_class).not_to receive(:execute)
+
         subject
       end
     end
 
-    shared_examples 'does create environment and deployment' do
-      it 'does create a new environment' do
-        expect { subject }.to change { Environment.count }.by(1)
-      end
-
-      it 'does create a new deployment' do
+    shared_examples 'creates deployment' do
+      it 'creates a new deployment' do
         expect { subject }.to change { Deployment.count }.by(1)
       end
 
-      it 'does call a service' do
+      it 'calls a service' do
         expect_any_instance_of(described_class).to receive(:execute)
+
         subject
       end
 
@@ -199,7 +207,7 @@ describe CreateDeploymentService, services: true do
         expect(Deployment.last.deployable).to eq(deployable)
       end
 
-      it 'create environment has URL set' do
+      it 'updates environment URL' do
         subject
 
         expect(Deployment.last.environment.external_url).not_to be_nil
@@ -207,41 +215,39 @@ describe CreateDeploymentService, services: true do
     end
 
     context 'without environment specified' do
-      let(:build) { create(:ci_build, project: project) }
+      let(:job) { create(:ci_build) }
 
-      it_behaves_like 'does not create environment and deployment' do
-        subject { build.success }
+      it_behaves_like 'does not create deployment' do
+        subject { job.success }
       end
     end
 
     context 'when environment is specified' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production', options: options) }
+      let(:deployable) { job }
+
       let(:options) do
         { environment: { name: 'production', url: 'http://gitlab.com' } }
       end
 
-      context 'when build succeeds' do
-        it_behaves_like 'does create environment and deployment' do
-          let(:deployable) { build }
-
-          subject { build.success }
+      context 'when job succeeds' do
+        it_behaves_like 'creates deployment' do
+          subject { job.success }
         end
       end
 
-      context 'when build fails' do
-        it_behaves_like 'does not create environment and deployment' do
-          subject { build.drop }
+      context 'when job fails' do
+        it_behaves_like 'does not create deployment' do
+          subject { job.drop }
         end
       end
 
-      context 'when build is retried' do
-        it_behaves_like 'does create environment and deployment' do
+      context 'when job is retried' do
+        it_behaves_like 'creates deployment' do
           before do
             project.add_developer(user)
           end
 
-          let(:deployable) { Ci::Build.retry(build, user) }
+          let(:deployable) { Ci::Build.retry(job, user) }
 
           subject { deployable.success }
         end
@@ -250,19 +256,12 @@ describe CreateDeploymentService, services: true do
   end
 
   describe "merge request metrics" do
-    let(:params) do
-      {
-        environment: 'production',
-        ref: 'master',
-        tag: false,
-        sha: '97de212e80737a608d939f648d959671fb0a0142b',
-      }
-    end
-
     let(:merge_request) { create(:merge_request, target_branch: 'master', source_branch: 'feature', source_project: project) }
 
     context "while updating the 'first_deployed_to_production_at' time" do
-      before { merge_request.mark_as_merged }
+      before do
+        merge_request.mark_as_merged
+      end
 
       context "for merge requests merged before the current deploy" do
         it "sets the time if the deploy's environment is 'production'" do
@@ -273,8 +272,8 @@ describe CreateDeploymentService, services: true do
         end
 
         it "doesn't set the time if the deploy's environment is not 'production'" do
-          staging_params = params.merge(environment: 'staging')
-          service = described_class.new(project, user, staging_params)
+          job.update(environment: 'staging')
+          service = described_class.new(job)
           service.execute
 
           expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
@@ -298,7 +297,7 @@ describe CreateDeploymentService, services: true do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
 
             # Current deploy
-            service = described_class.new(project, user, params)
+            service = described_class.new(job)
             Timecop.freeze(time + 12.hours) { service.execute }
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_like_time(time)
@@ -318,7 +317,7 @@ describe CreateDeploymentService, services: true do
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil
 
             # Current deploy
-            service = described_class.new(project, user, params)
+            service = described_class.new(job)
             Timecop.freeze(time + 12.hours) { service.execute }
 
             expect(merge_request.reload.metrics.first_deployed_to_production_at).to be_nil

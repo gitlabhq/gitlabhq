@@ -2,7 +2,7 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
-  serialize :properties, JSON
+  serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
   default_value_for :push_events, true
@@ -12,7 +12,7 @@ class Service < ActiveRecord::Base
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
-  default_value_for :build_events, true
+  default_value_for :job_events, true
   default_value_for :pipeline_events, true
   default_value_for :wiki_page_events, true
 
@@ -25,7 +25,8 @@ class Service < ActiveRecord::Base
   belongs_to :project, inverse_of: :services
   has_one :service_hook
 
-  validates :project_id, presence: true, unless: Proc.new { |service| service.template? }
+  validates :project_id, presence: true, unless: proc { |service| service.template? }
+  validates :type, presence: true
 
   scope :visible, -> { where.not(type: 'GitlabIssueTrackerService') }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
@@ -39,7 +40,7 @@ class Service < ActiveRecord::Base
   scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
-  scope :build_hooks, -> { where(build_events: true, active: true) }
+  scope :job_hooks, -> { where(job_events: true, active: true) }
   scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
@@ -48,6 +49,14 @@ class Service < ActiveRecord::Base
 
   def activated?
     active
+  end
+
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
   end
 
   def template?
@@ -131,7 +140,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_test?
-    !project.empty_repo?
+    true
   end
 
   # reason why service cannot be tested
@@ -215,7 +224,6 @@ class Service < ActiveRecord::Base
       assembla
       bamboo
       buildkite
-      builds_email
       bugzilla
       campfire
       custom_issue_tracker
@@ -238,8 +246,11 @@ class Service < ActiveRecord::Base
       slack_slash_commands
       slack
       teamcity
+      microsoft_teams
     ]
-    service_names << 'mock_ci' if Rails.env.development?
+    if Rails.env.development?
+      service_names += %w[mock_ci mock_deployment mock_monitoring]
+    end
 
     service_names.sort_by(&:downcase)
   end

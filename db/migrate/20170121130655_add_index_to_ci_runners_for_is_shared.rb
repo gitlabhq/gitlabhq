@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddIndexToCiRunnersForIsShared < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

@@ -125,25 +125,16 @@ applications and U2F devices.
 ## Personal access tokens
 
 When 2FA is enabled, you can no longer use your normal account password to
-authenticate with Git over HTTPS on the command line, you must use a personal
-access token instead.
-
-1. Log in to your GitLab account.
-1. Go to your **Profile Settings**.
-1. Go to **Access Tokens**.
-1. Choose a name and expiry date for the token.
-1. Click on **Create Personal Access Token**.
-1. Save the personal access token somewhere safe.
-
-When using Git over HTTPS on the command line, enter the personal access token
-into the password field.
+authenticate with Git over HTTPS on the command line or when using
+[GitLab's API][api], you must use a [personal access token][pat] instead.
 
 ## Recovery options
 
 To disable two-factor authentication on your account (for example, if you
 have lost your code generation device) you can:
+
 * [Use a saved recovery code](#use-a-saved-recovery-code)
-* [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-SSH)
+* [Generate new recovery codes using SSH](#generate-new-recovery-codes-using-ssh)
 * [Ask a GitLab administrator to disable two-factor authentication on your account](#ask-a-gitlab-administrator-to-disable-two-factor-authentication-on-your-account)
 
 ### Use a saved recovery code
@@ -154,8 +145,9 @@ codes. If you saved these codes, you can use one of them to sign in.
 To use a recovery code, enter your username/email and password on the GitLab
 sign-in page. When prompted for a two-factor code, enter the recovery code.
 
-> **Note:** Once you use a recovery code, you cannot re-use it. You can still
- use the other recovery codes you saved.
+>**Note:**
+Once you use a recovery code, you cannot re-use it. You can still use the other
+recovery codes you saved.
 
 ### Generate new recovery codes using SSH
 
@@ -190,11 +182,14 @@ a new set of recovery codes with SSH.
     two-factor code. Then, visit your Profile Settings and add a new device
     so you do not lose access to your account again.
     ```
-3. Go to the GitLab sign-in page and enter your username/email and password. When prompted for a two-factor code, enter one of the recovery codes obtained
-from the command-line output.
 
-> **Note:** After signing in, visit your **Profile Settings -> Account**  immediately to set up two-factor authentication with a new
-  device.
+3. Go to the GitLab sign-in page and enter your username/email and password.
+   When prompted for a two-factor code, enter one of the recovery codes obtained
+   from the command-line output.
+
+>**Note:**
+After signing in, visit your **Profile settings > Account**  immediately to set
+up two-factor authentication with a new device.
 
 ### Ask a GitLab administrator to disable two-factor authentication on your account
 
@@ -206,12 +201,23 @@ Sign in and re-enable two-factor authentication as soon as possible.
 ## Note to GitLab administrators
 
 - You need to take special care to that 2FA keeps working after
-[restoring a GitLab backup](../../../raketasks/backup_restore.md).
-
+  [restoring a GitLab backup](../../../raketasks/backup_restore.md).
 - To ensure 2FA authorizes correctly with TOTP server, you may want to ensure
-your GitLab server's time is synchronized via a service like NTP.  Otherwise,
-you may have cases where authorization always fails because of time differences.
+  your GitLab server's time is synchronized via a service like NTP.  Otherwise,
+  you may have cases where authorization always fails because of time differences.
+- The GitLab U2F implementation does _not_ work when the GitLab instance is accessed from
+  multiple hostnames, or FQDNs. Each U2F registration is linked to the _current hostname_ at
+  the time of registration, and cannot be used for other hostnames/FQDNs.
+
+    For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:
+
+    - The user logs in via `first.host.xyz` and registers their U2F key.
+    - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication suceeds.
+    - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
+    the U2F key has only been registered on `first.host.xyz`.
 
 [Google Authenticator]: https://support.google.com/accounts/answer/1066447?hl=en
 [FreeOTP]: https://freeotp.github.io/
 [YubiKey]: https://www.yubico.com/products/yubikey-hardware/
+[api]: ../../../api/README.md
+[pat]: ../personal_access_tokens.md

@@ -3,8 +3,10 @@ class BaseSerializer
     @request = EntityRequest.new(parameters)
   end
 
-  def represent(resource, opts = {})
-    self.class.entity_class
+  def represent(resource, opts = {}, entity_class = nil)
+    entity_class = entity_class || self.class.entity_class
+
+    entity_class
       .represent(resource, opts.merge(request: @request))
       .as_json
   end

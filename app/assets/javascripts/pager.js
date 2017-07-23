@@ -1,12 +1,17 @@
+import '~/lib/utils/common_utils';
+import '~/lib/utils/url_utility';
+
 (() => {
   const ENDLESS_SCROLL_BOTTOM_PX = 400;
   const ENDLESS_SCROLL_FIRE_DELAY_MS = 1000;
 
   const Pager = {
-    init(limit = 0, preload = false, disable = false, callback = $.noop) {
+    init(limit = 0, preload = false, disable = false, prepareData = $.noop, callback = $.noop) {
+      this.url = $('.content_list').data('href') || gl.utils.removeParams(['limit', 'offset']);
       this.limit = limit;
-      this.offset = this.limit;
+      this.offset = parseInt(gl.utils.getParameterByName('offset'), 10) || this.limit;
       this.disable = disable;
+      this.prepareData = prepareData;
       this.callback = callback;
       this.loading = $('.loading').first();
       if (preload) {
@@ -20,12 +25,12 @@
       this.loading.show();
       $.ajax({
         type: 'GET',
-        url: $('.content_list').data('href') || window.location.href,
+        url: this.url,
         data: `limit=${this.limit}&offset=${this.offset}`,
         dataType: 'json',
         error: () => this.loading.hide(),
         success: (data) => {
-          this.append(data.count, data.html);
+          this.append(data.count, this.prepareData(data.html));
           this.callback();
 
           // keep loading until we've filled the viewport height

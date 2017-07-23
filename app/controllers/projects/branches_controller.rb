@@ -12,13 +12,15 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = BranchesFinder.new(@repository, params).execute
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
-    @max_commits = @branches.reduce(0) do |memo, branch|
-      diverging_commit_counts = repository.diverging_commit_counts(branch)
-      [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
-    end
-
     respond_to do |format|
-      format.html
+      format.html do
+        @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
+
+        @max_commits = @branches.reduce(0) do |memo, branch|
+          diverging_commit_counts = repository.diverging_commit_counts(branch)
+          [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+        end
+      end
       format.json do
         render json: @branches.map(&:name)
       end
@@ -35,47 +37,60 @@ class Projects::BranchesController < Projects::ApplicationController
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
 
-    result = CreateBranchService.new(project, current_user).
-        execute(branch_name, ref)
+    result = CreateBranchService.new(project, current_user)
+        .execute(branch_name, ref)
 
     if params[:issue_iid]
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
       SystemNoteService.new_issue_branch(issue, @project, current_user, branch_name) if issue
     end
 
-    if result[:status] == :success
-      @branch = result[:branch]
-
-      if redirect_to_autodeploy
-        redirect_to(
-          url_to_autodeploy_setup(project, branch_name),
-          notice: view_context.autodeploy_flash_notice(branch_name))
-      else
-        redirect_to namespace_project_tree_path(@project.namespace, @project,
-                                                @branch.name)
+    respond_to do |format|
+      format.html do
+        if result[:status] == :success
+          if redirect_to_autodeploy
+            redirect_to url_to_autodeploy_setup(project, branch_name),
+              notice: view_context.autodeploy_flash_notice(branch_name)
+          else
+            redirect_to project_tree_path(@project, branch_name)
+          end
+        else
+          @error = result[:message]
+          render action: 'new'
+        end
       end
-    else
-      @error = result[:message]
-      render action: 'new'
+
+      format.json do
+        if result[:status] == :success
+          render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
+        else
+          render json: result[:messsage], status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def destroy
     @branch_name = Addressable::URI.unescape(params[:id])
-    status = DeleteBranchService.new(project, current_user).execute(@branch_name)
+    result = DeleteBranchService.new(project, current_user).execute(@branch_name)
+
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_branches_path(@project.namespace,
-                                                    @project), status: 303
+        flash_type = result[:status] == :error ? :alert : :notice
+        flash[flash_type] = result[:message]
+
+        redirect_to project_branches_path(@project), status: 303
       end
-      format.js { render nothing: true, status: status[:return_code] }
+
+      format.js { render nothing: true, status: result[:return_code] }
+      format.json { render json: { message: result[:message] }, status: result[:return_code] }
     end
   end
 
   def destroy_all_merged
     DeleteMergedBranchesService.new(@project, current_user).async_execute
 
-    redirect_to namespace_project_branches_path(@project.namespace, @project),
+    redirect_to project_branches_path(@project),
       notice: 'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'
   end
 
@@ -91,8 +106,7 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def url_to_autodeploy_setup(project, branch_name)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       branch_name,
       file_name: '.gitlab-ci.yml',

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'OpenID Connect requests' do
-  include ApiHelpers
-
   let(:user) { create :user }
   let(:access_grant) { create :oauth_access_grant, application: application, resource_owner_id: user.id }
   let(:access_token) { create :oauth_access_token, application: application, resource_owner_id: user.id }
@@ -63,7 +61,7 @@ describe 'OpenID Connect requests' do
           email: private_email.email,
           public_email: public_email.email,
           website_url: 'https://example.com',
-          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png"),
+          avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png")
         )
       end
 
@@ -81,7 +79,7 @@ describe 'OpenID Connect requests' do
           'email_verified' => true,
           'website'        => 'https://example.com',
           'profile'        => 'http://localhost/alice',
-          'picture'        => "http://localhost/uploads/user/avatar/#{user.id}/dk.png",
+          'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png"
         })
       end
     end
@@ -100,7 +98,7 @@ describe 'OpenID Connect requests' do
         expect(@payload['sub']).to eq hashed_subject
       end
 
-      it 'includes the time of the last authentication' do
+      it 'includes the time of the last authentication', :clean_gitlab_redis_shared_state do
         expect(@payload['auth_time']).to eq user.current_sign_in_at.to_i
       end
 

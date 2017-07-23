@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Files, api: true  do
-  include ApiHelpers
+describe API::Files do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace ) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
@@ -11,23 +10,12 @@ describe API::Files, api: true  do
       ref: 'master'
     }
   end
-  let(:author_email) { FFaker::Internet.email }
+  let(:author_email) { 'user@example.org' }
+  let(:author_name) { 'John Doe' }
 
-  # I have to remove periods from the end of the name
-  # This happened when the user's name had a suffix (i.e. "Sr.")
-  # This seems to be what git does under the hood. For example, this commit:
-  #
-  # $ git commit --author='Foo Sr. <foo@example.com>' -m 'Where's my trailing period?'
-  #
-  # results in this:
-  #
-  # $ git show --pretty
-  # ...
-  # Author: Foo Sr <foo@example.com>
-  # ...
-  let(:author_name) { FFaker::Name.name.chomp("\.") }
-
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
@@ -217,8 +205,8 @@ describe API::Files, api: true  do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file).
-        and_return(false)
+      allow_any_instance_of(Repository).to receive(:create_file)
+        .and_raise(Repository::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 
@@ -272,6 +260,25 @@ describe API::Files, api: true  do
       expect(last_commit.author_name).to eq(user.name)
     end
 
+    it "returns a 400 bad request if update existing file with stale last commit id" do
+      params_with_stale_id = valid_params.merge(last_commit_id: 'stale')
+
+      put api(route(file_path), user), params_with_stale_id
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+    end
+
+    it "updates existing file in project repo with accepts correct last commit id" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = valid_params.merge(last_commit_id: last_commit.id)
+
+      put api(route(file_path), user), params_with_correct_id
+
+      expect(response).to have_http_status(200)
+    end
+
     it "returns a 400 bad request if no params given" do
       put api(route(file_path), user)
 
@@ -312,8 +319,8 @@ describe API::Files, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 if fails to create file" do
-      allow_any_instance_of(Repository).to receive(:delete_file).and_return(false)
+    it "returns a 400 if fails to delete file" do
+      allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Repository::CommitError, 'Cannot delete file')
 
       delete api(route(file_path), user), valid_params
 
@@ -343,7 +350,7 @@ describe API::Files, api: true  do
     end
     let(:get_params) do
       {
-        ref: 'master',
+        ref: 'master'
       }
     end
 

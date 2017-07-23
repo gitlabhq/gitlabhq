@@ -1,5 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
+  include Devise::Controllers::Rememberable
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
@@ -67,7 +68,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def omniauth_error
     @provider = params[:provider]
     @error = params[:error]
-    render 'errors/omniauth_error', layout: "errors", status: 422
+    render 'errors/omniauth_error', layout: "oauth_error", status: 422
   end
 
   def cas3
@@ -115,8 +116,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted? && @user.valid?
       log_audit_event(@user, with: oauth['provider'])
       if @user.two_factor_enabled?
+        params[:remember_me] = '1' if remember_me?
         prompt_for_two_factor(@user)
       else
+        remember_me(@user) if remember_me?
         sign_in_and_redirect(@user)
       end
     else
@@ -144,7 +147,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def log_audit_event(user, options = {})
-    AuditEventService.new(user, user, options).
-      for_authentication.security_event
+    AuditEventService.new(user, user, options)
+      .for_authentication.security_event
+  end
+
+  def remember_me?
+    request_params = request.env['omniauth.params']
+    (request_params['remember_me'] == '1') if request_params.present?
   end
 end

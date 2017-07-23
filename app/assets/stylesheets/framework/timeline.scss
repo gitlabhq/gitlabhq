@@ -1,32 +1,11 @@
 .timeline {
   @include basic-list;
-
   margin: 0;
   padding: 0;
 
-  .timeline-entry {
-    padding: $gl-padding $gl-btn-padding 11px;
-    border-color: $white-normal;
-    color: $gl-text-color;
-    border-bottom: 1px solid $border-white-light;
-
-    &:target {
-      background: $line-target-blue;
-    }
-
-    .avatar {
-      margin-right: 15px;
-    }
-
-    .controls {
-      padding-top: 10px;
-      float: right;
-    }
-  }
-
-  .note-text {
-    p:last-child {
-      margin-bottom: 0;
+  &::before {
+    @include notes-media('max', $screen-xs-min) {
+      background: none;
     }
   }
 
@@ -43,13 +22,15 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
-  .timeline {
-    &::before {
-      background: none;
-    }
+.timeline-entry {
+  border-color: $white-normal;
+  color: $gl-text-color;
+  border-bottom: 1px solid $border-white-light;
 
-    .timeline-entry .timeline-entry-inner {
+  .timeline-entry-inner {
+    position: relative;
+
+    @include notes-media('max', $screen-xs-min) {
       .timeline-icon {
         display: none;
       }
@@ -58,6 +39,24 @@
         margin-left: 0;
       }
     }
+  }
+
+  &:target,
+  &.target {
+    background: $line-target-blue;
+
+    &.system-note .note-body .note-text.system-note-commit-list::after {
+      background: linear-gradient(rgba($line-target-blue, 0.1) -100px, $line-target-blue 100%);
+    }
+  }
+
+  .avatar {
+    margin-right: 15px;
+  }
+
+  .controls {
+    padding-top: 10px;
+    float: right;
   }
 }
 

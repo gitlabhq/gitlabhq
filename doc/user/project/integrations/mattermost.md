@@ -28,7 +28,6 @@ There, you will see a checkbox with the following events that can be triggered:
 - Merge request
 - Note
 - Tag push
-- Build
 - Pipeline
 - Wiki page
 
@@ -41,7 +40,6 @@ At the end, fill in your Mattermost details:
 | ----- | ----------- |
 | **Webhook**  | The incoming webhook URL which you have to setup on Mattermost, it will be something like: http://mattermost.example/hooks/5xo… |
 | **Username** | Optional username which can be on messages sent to Mattermost. Fill this in if you want to change the username of the bot. |
-| **Notify only broken builds** | If you choose to enable the **Build** event and you want to be only notified about failed builds. |
 | **Notify only broken pipelines** | If you choose to enable the **Pipeline** event and you want to be only notified about failed pipelines. |
 
 ![Mattermost configuration](img/mattermost_configuration.png)

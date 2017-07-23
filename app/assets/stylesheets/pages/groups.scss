@@ -9,16 +9,15 @@
   }
 }
 
-.group-row {
-  .stats {
-    float: right;
-    line-height: $list-text-height;
-    color: $gl-text-color;
+.group-root-path {
+  max-width: 40vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: nowrap;
+}
 
-    span {
-      margin-right: 15px;
-    }
-  }
+.group-row {
+  @include basic-list-stats;
 }
 
 .ldap-group-links {
@@ -88,4 +87,25 @@
   display: block;
   color: $gl-text-color-secondary;
   margin-top: 10px;
+}
+
+.explore-groups.landing {
+  .inner-content {
+    padding: 0;
+
+    p {
+      margin: 7px 0 0;
+      max-width: 480px;
+      padding: 0 $gl-padding;
+
+      @media (max-width: $screen-sm-min) {
+        margin: 0 auto;
+      }
+    }
+  }
+
+  svg {
+    width: 62px;
+    height: 50px;
+  }
 }

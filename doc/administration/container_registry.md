@@ -1,10 +1,7 @@
 # GitLab Container Registry administration
 
-> [Introduced][ce-4040] in GitLab 8.8.
-
----
-
 > **Notes:**
+- [Introduced][ce-4040] in GitLab 8.8.
 - Container Registry manifest `v1` support was added in GitLab 8.9 to support
   Docker versions earlier than 1.10.
 - This document is about the admin guide. To learn how to use GitLab Container
@@ -514,8 +511,8 @@ configurable in future releases.
 
 ## Configure Container Registry notifications
 
-You can configure the Container Registry to send webhook notifications in 
-response to events happening within the registry.  
+You can configure the Container Registry to send webhook notifications in
+response to events happening within the registry.
 
 Read more about the Container Registry notifications config options in the
 [Docker Registry notifications documentation][notifications-config].
@@ -568,12 +565,25 @@ notifications:
       backoff: 1000
 ```
 
-## Changelog
+## Using self-signed certificates with Container Registry
 
-**GitLab 8.8 ([source docs][8-8-docs])**
+If you're using a self-signed certificate with your Container Registry, you
+might encounter issues during the CI jobs like the following:
 
-- GitLab Container Registry feature was introduced.
+```
+Error response from daemon: Get registry.example.com/v1/users/: x509: certificate signed by unknown authority
+```
 
+The Docker daemon running the command expects a cert signed by a recognized CA,
+thus the error above.
+
+While GitLab doesn't support using self-signed certificates with Container
+Registry out of the box, it is possible to make it work if you follow
+[Docker's documentation][docker-insecure]. You may find some additional
+information in [issue 18239][ce-18239].
+
+[ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
+[docker-insecure]: https://docs.docker.com/registry/insecure/#using-self-signed-certificates
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [wildcard certificate]: https://en.wikipedia.org/wiki/Wildcard_certificate

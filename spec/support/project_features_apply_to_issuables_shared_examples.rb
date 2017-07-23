@@ -18,7 +18,7 @@ shared_examples 'project features apply to issuables' do |klass|
 
   before do
     _ = issuable
-    login_as(user) if user
+    gitlab_sign_in(user) if user
     visit path
   end
 

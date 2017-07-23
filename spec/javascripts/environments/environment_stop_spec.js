@@ -1,28 +1,31 @@
-const StopComponent = require('~/environments/components/environment_stop');
+import Vue from 'vue';
+import stopComp from '~/environments/components/environment_stop.vue';
 
 describe('Stop Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
-
-  let stopURL;
+  let StopComponent;
   let component;
+  const stopURL = '/stop';
 
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    StopComponent = Vue.extend(stopComp);
+    spyOn(window, 'confirm').and.returnValue(true);
 
-    stopURL = '/stop';
     component = new StopComponent({
-      el: document.querySelector('.test-dom-element'),
       propsData: {
         stopUrl: stopURL,
       },
+    }).$mount();
+  });
+
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Stop');
     });
   });
 
-  it('should link to the provided URL', () => {
-    expect(component.$el.getAttribute('href')).toEqual(stopURL);
-  });
-
-  it('should have a data-confirm attribute', () => {
-    expect(component.$el.getAttribute('data-confirm')).toEqual('Are you sure you want to stop this environment?');
+  it('should render a button to stop the environment', () => {
+    expect(component.$el.tagName).toEqual('BUTTON');
+    expect(component.$el.getAttribute('data-original-title')).toEqual('Stop');
+    expect(component.$el.getAttribute('aria-label')).toEqual('Stop');
   });
 });

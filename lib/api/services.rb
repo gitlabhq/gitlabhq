@@ -107,26 +107,6 @@ module API
           desc: 'Enable SSL verification for communication'
         }
       ],
-      'builds-email' => [
-        {
-          required: true,
-          name: :recipients,
-          type: String,
-          desc: 'Comma-separated list of recipient email addresses'
-        },
-        {
-          required: false,
-          name: :add_pusher,
-          type: Boolean,
-          desc: 'Add pusher to recipients list'
-        },
-        {
-          required: false,
-          name: :notify_only_broken_jobs,
-          type: Boolean,
-          desc: 'Notify only broken jobs'
-        }
-      ],
       'campfire' => [
         {
           required: true,
@@ -324,7 +304,13 @@ module API
           required: true,
           name: :url,
           type: String,
-          desc: 'The URL to the JIRA project which is being linked to this GitLab project, e.g., https://jira.example.com'
+          desc: 'The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., https://jira.example.com'
+        },
+        {
+          required: false,
+          name: :api_url,
+          type: String,
+          desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
           required: true,
@@ -376,7 +362,7 @@ module API
           name: :ca_pem,
           type: String,
           desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
-        },
+        }
       ],
       'mattermost-slash-commands' => [
         {
@@ -403,9 +389,9 @@ module API
         },
         {
           required: false,
-          name: :notify_only_broken_jobs,
+          name: :notify_only_broken_pipelines,
           type: Boolean,
-          desc: 'Notify only broken jobs'
+          desc: 'Notify only broken pipelines'
         }
       ],
       'pivotaltracker' => [
@@ -508,6 +494,14 @@ module API
           desc: 'The channel name'
         }
       ],
+      'microsoft-teams' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/…'
+        }
+      ],
       'mattermost' => [
         {
           required: true,
@@ -550,7 +544,6 @@ module API
       BambooService,
       BugzillaService,
       BuildkiteService,
-      BuildsEmailService,
       CampfireService,
       CustomIssueTrackerService,
       DroneCiService,
@@ -571,7 +564,8 @@ module API
       RedmineService,
       SlackService,
       MattermostService,
-      TeamcityService,
+      MicrosoftTeamsService,
+      TeamcityService
     ]
 
     if Rails.env.development?
@@ -583,8 +577,14 @@ module API
           desc: 'URL to the mock service'
         }
       ]
+      services['mock-deployment'] = []
+      services['mock-monitoring'] = []
 
-      service_classes << MockCiService
+      service_classes += [
+        MockCiService,
+        MockDeploymentService,
+        MockMonitoringService
+      ]
     end
 
     trigger_services = {
@@ -604,7 +604,10 @@ module API
       ]
     }.freeze
 
-    resource :projects do
+    params do
+      requires :id, type: String, desc: 'The ID of a project'
+    end
+    resource :projects, requirements: { id: %r{[^/]+} } do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -645,7 +648,7 @@ module API
           service_params = declared_params(include_missing: false).merge(active: true)
 
           if service.update_attributes(service_params)
-            present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+            present service, with: Entities::ProjectService, include_passwords: current_user.admin?
           else
             render_api_error!('400 Bad Request', 400)
           end
@@ -676,13 +679,13 @@ module API
       end
       get ":id/services/:service_slug" do
         service = user_project.find_or_initialize_service(params[:service_slug].underscore)
-        present service, with: Entities::ProjectService, include_passwords: current_user.is_admin?
+        present service, with: Entities::ProjectService, include_passwords: current_user.admin?
       end
     end
 
     trigger_services.each do |service_slug, settings|
       helpers do
-        def chat_command_service(project, service_slug, params)
+        def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
@@ -692,7 +695,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end
@@ -707,7 +710,7 @@ module API
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = chat_command_service(project, service_slug, params)
+          service = slash_command_service(project, service_slug, params)
           result = service.try(:trigger, params)
 
           if result

@@ -1,7 +1,7 @@
 class GroupsController < Groups::ApplicationController
-  include FilterProjects
   include IssuesAction
   include MergeRequestsAction
+  include ParamsBackwardCompatibility
 
   respond_to :html
 
@@ -12,8 +12,8 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
-  # Load group projects
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
+  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]
@@ -58,13 +58,15 @@ class GroupsController < Groups::ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
     end
   end
 
   def subgroups
-    @nested_groups = group.children
+    return not_found unless Group.supports_nested_groups?
+
+    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
     @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
@@ -99,26 +101,27 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   protected
 
   def setup_projects
+    set_non_archived_param
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+
     options = {}
     options[:only_owned] = true if params[:shared] == '0'
     options[:only_shared] = true if params[:shared] == '1'
 
-    @projects = GroupProjectsFinder.new(group, options).execute(current_user)
+    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
     @projects = @projects.includes(:namespace)
-    @projects = @projects.sorted_by_activity
-    @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.page(params[:page]) if params[:name].blank?
   end
 
   def authorize_create_group!
-    unless can?(current_user, :create_group, nil)
+    unless can?(current_user, :create_group)
       return render_404
     end
   end
@@ -150,7 +153,9 @@ class GroupsController < Groups::ApplicationController
       :visibility_level,
       :parent_id,
       :create_chat_team,
-      :chat_team_name
+      :chat_team_name,
+      :require_two_factor_authentication,
+      :two_factor_grace_period
     ]
   end
 
@@ -162,8 +167,15 @@ class GroupsController < Groups::ApplicationController
 
   def user_actions
     if current_user
-      @last_push = current_user.recent_push
       @notification_setting = current_user.notification_settings_for(group)
     end
+  end
+
+  def build_canonical_path(group)
+    return group_path(group) if action_name == 'show' # root group path
+
+    params[:id] = group.to_param
+
+    url_for(params)
   end
 end

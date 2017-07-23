@@ -1,4 +1,3 @@
-
 require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
@@ -32,6 +31,8 @@ module Gitlab
 
         raise UnknownIncomingEmail unless handler
 
+        Gitlab::Metrics.add_event(:receive_email, handler.metrics_params)
+
         handler.execute
       end
 
@@ -56,9 +57,8 @@ module Gitlab
       end
 
       def key_from_additional_headers(mail)
-        references = ensure_references_array(mail.references)
-
-        find_key_from_references(references)
+        find_key_from_references(mail) ||
+          find_key_from_delivered_to_header(mail)
       end
 
       def ensure_references_array(references)
@@ -69,12 +69,21 @@ module Gitlab
           # Handle emails from clients which append with commas,
           # example clients are Microsoft exchange and iOS app
           Gitlab::IncomingEmail.scan_fallback_references(references)
+        when nil
+          []
         end
       end
 
-      def find_key_from_references(references)
-        references.find do |mail_id|
+      def find_key_from_references(mail)
+        ensure_references_array(mail.references).find do |mail_id|
           key = Gitlab::IncomingEmail.key_from_fallback_message_id(mail_id)
+          break key if key
+        end
+      end
+
+      def find_key_from_delivered_to_header(mail)
+        Array(mail[:delivered_to]).find do |header|
+          key = Gitlab::IncomingEmail.key_from_address(header.value)
           break key if key
         end
       end

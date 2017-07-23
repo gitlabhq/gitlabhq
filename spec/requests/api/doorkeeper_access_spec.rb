@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::API, api: true do
-  include ApiHelpers
-
+describe 'doorkeeper access' do
   let!(:user) { create(:user) }
   let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
   let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api" }

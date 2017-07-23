@@ -1,4 +1,4 @@
-const environmentsList = [
+export const environmentsList = [
   {
     name: 'DEV',
     size: 1,
@@ -30,7 +30,7 @@ const environmentsList = [
   },
 ];
 
-const serverData = [
+export const serverData = [
   {
     name: 'DEV',
     size: 1,
@@ -67,7 +67,7 @@ const serverData = [
   },
 ];
 
-const environment = {
+export const environment = {
   name: 'DEV',
   size: 1,
   latest: {
@@ -85,8 +85,18 @@ const environment = {
   },
 };
 
-module.exports = {
-  environmentsList,
-  environment,
-  serverData,
+export const folder = {
+  folderName: 'build',
+  size: 5,
+  id: 12,
+  name: 'build/update-README',
+  state: 'available',
+  external_url: null,
+  environment_type: 'build',
+  last_deployment: null,
+  'stop_action?': false,
+  environment_path: '/root/review-app/environments/12',
+  stop_path: '/root/review-app/environments/12/stop',
+  created_at: '2017-02-01T19:42:18.400Z',
+  updated_at: '2017-02-01T19:42:18.400Z',
 };

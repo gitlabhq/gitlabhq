@@ -1,4 +1,7 @@
 .awards {
+  display: flex;
+  flex-wrap: wrap;
+
   .emoji-icon {
     width: 20px;
     height: 20px;
@@ -10,7 +13,7 @@
   top: 0;
   margin-top: 3px;
   padding: $gl-padding;
-  z-index: 9;
+  z-index: 300;
   width: 300px;
   font-size: 14px;
   background-color: $white-light;
@@ -21,7 +24,7 @@
   opacity: 0;
   transform: scale(.2);
   transform-origin: 0 -45px;
-  transition: .3s cubic-bezier(.67,.06,.19,1.44);
+  transition: .3s cubic-bezier(.67, .06, .19, 1.44);
   transition-property: transform, opacity;
 
   &.is-aligned-right {
@@ -37,6 +40,15 @@
   .emoji-menu-content {
     height: 300px;
     overflow-y: scroll;
+  }
+
+  .disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      transform: none;
+    }
   }
 }
 
@@ -91,15 +103,18 @@
 
 .award-menu-holder {
   display: inline-block;
-  position: relative;
+
+  .tooltip {
+    white-space: nowrap;
+  }
 }
 
 .award-control {
-  margin: 3px 5px 3px 0;
-  padding: 5px 6px;
+  margin: 4px 8px 4px 0;
   outline: 0;
-
-  line-height: 1;
+  position: relative;
+  display: block;
+  float: left;
 
   &.disabled {
     cursor: default;
@@ -115,16 +130,61 @@
 
   &.active,
   &:hover,
-  &:active {
+  &:active,
+  &.is-active {
     background-color: $row-hover;
     border-color: $row-hover-border;
     box-shadow: none;
     outline: 0;
+
+    .award-control-icon svg {
+      background: $award-emoji-positive-add-bg;
+
+      path {
+        fill: $award-emoji-positive-add-lines;
+      }
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+      transform: scale(1.15);
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+      transform: scale(1);
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &.user-authored {
+    cursor: default;
+    opacity: 0.65;
+
+    &:hover,
+    &:active {
+      background-color: $white-light;
+      border-color: $border-color;
+    }
   }
 
   &.btn {
     &:focus {
       outline: 0;
+    }
+
+    .award-control-icon {
+      margin: 0;
     }
   }
 
@@ -140,10 +200,12 @@
   }
 
   .icon,
+  gl-emoji,
   .award-control-icon {
-    float: left;
-    margin-right: 5px;
-    font-size: 18px;
+    vertical-align: middle;
+    margin-right: 0.15em;
+    font-size: 1.5em;
+    line-height: 1;
   }
 
   .award-control-icon-loading {
@@ -153,5 +215,30 @@
   .award-control-icon {
     color: $border-gray-normal;
     margin-top: 1px;
+    padding: 0 2px;
+
+    svg {
+      margin-bottom: 1px;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+
+      path {
+        fill: $border-gray-normal;
+      }
+    }
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    @include transition(opacity, transform);
+    position: absolute;
+    left: 10px;
+    bottom: 6px;
+    opacity: 0;
+  }
+
+  .award-control-text {
+    vertical-align: middle;
   }
 }

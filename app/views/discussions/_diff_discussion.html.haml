@@ -2,5 +2,5 @@
 %tr.notes_holder{ class: ('hide' unless expanded) }
   %td.notes_line{ colspan: 2 }
   %td.notes_content
-    .content
-      = render "discussions/notes", discussion: discussion
+    .content{ class: ('hide' unless expanded) }
+      = render partial: "discussions/notes", collection: discussions, as: :discussion

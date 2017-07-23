@@ -107,12 +107,13 @@ module Network
     def find_commits(skip = 0)
       opts = {
         max_count: self.class.max_count,
-        skip: skip
+        skip: skip,
+        order: :date
       }
 
       opts[:ref] = @commit.id if @filter_ref
 
-      @repo.find_commits(opts)
+      Gitlab::Git::Commit.find_all(@repo.raw_repository, opts)
     end
 
     def commits_sort_by_ref

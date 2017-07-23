@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::AwardEmoji, api: true  do
-  include ApiHelpers
+describe API::AwardEmoji do
   let(:user)            { create(:user) }
   let!(:project)        { create(:empty_project) }
   let(:issue)           { create(:issue, project: project) }
@@ -10,7 +9,9 @@ describe API::AwardEmoji, api: true  do
   let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
   let!(:note)           { create(:note, project: project, noteable: issue) }
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji" do
     context 'on an issue' do

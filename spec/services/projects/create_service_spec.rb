@@ -27,6 +27,22 @@ describe Projects::CreateService, '#execute', services: true do
     end
   end
 
+  context "admin creates project with other user's namespace_id" do
+    it 'sets the correct permissions' do
+      admin = create(:admin)
+      opts = {
+        name: 'GitLab',
+        namespace_id: user.namespace.id
+      }
+      project = create_project(admin, opts)
+
+      expect(project).to be_persisted
+      expect(project.owner).to eq(user)
+      expect(project.team.masters).to include(user, admin)
+      expect(project.namespace).to eq(user.namespace)
+    end
+  end
+
   context 'group namespace' do
     let(:group) do
       create(:group).tap do |group|
@@ -99,7 +115,7 @@ describe Projects::CreateService, '#execute', services: true do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
 
       opts.merge!(
-        visibility_level: Gitlab::VisibilityLevel.options['Public']
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC
       )
     end
 
@@ -141,6 +157,18 @@ describe Projects::CreateService, '#execute', services: true do
       project = create_project(user, opts)
 
       expect(project.services.count).to eq 1
+    end
+  end
+
+  context 'when a bad service template is created' do
+    it 'reports an error in the imported project' do
+      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-ce'
+      create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
+
+      project = create_project(user, opts)
+
+      expect(project.errors.full_messages_for(:base).first).to match(/Unable to save project. Error: Unable to save DroneCiService/)
+      expect(project.services.count).to eq 0
     end
   end
 

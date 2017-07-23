@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'spec_helper'
 
-describe API::Projects, api: true  do
-  include ApiHelpers
+describe API::Projects do
   include Gitlab::CurrentSettings
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -11,8 +11,7 @@ describe API::Projects, api: true  do
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
-  let(:project_member) { create(:project_member, :master, user: user, project: project) }
-  let(:project_member2) { create(:project_member, :developer, user: user3, project: project) }
+  let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
     create(:project,
@@ -24,9 +23,10 @@ describe API::Projects, api: true  do
     namespace: user.namespace,
     merge_requests_enabled: false,
     issues_enabled: false, wiki_enabled: false,
+    builds_enabled: false,
     snippets_enabled: false)
   end
-  let(:project_member3) do
+  let(:project_member2) do
     create(:project_member,
     user: user4,
     project: project3,
@@ -52,6 +52,24 @@ describe API::Projects, api: true  do
       end
     end
 
+    shared_examples_for 'projects response without N + 1 queries' do
+      it 'avoids N + 1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api('/projects', current_user)
+        end.count
+
+        if defined?(additional_project)
+          additional_project
+        else
+          create(:empty_project, :public)
+        end
+
+        expect do
+          get api('/projects', current_user)
+        end.not_to exceed_query_limit(control_count + 8)
+      end
+    end
+
     let!(:public_project) { create(:empty_project, :public, name: 'public_project') }
     before do
       project
@@ -62,9 +80,13 @@ describe API::Projects, api: true  do
 
     context 'when unauthenticated' do
       it_behaves_like 'projects response' do
-        let(:filter) { {} }
+        let(:filter) { { search: project.name } }
+        let(:current_user) { user }
+        let(:projects) { [project] }
+      end
+
+      it_behaves_like 'projects response without N + 1 queries' do
         let(:current_user) { nil }
-        let(:projects) { [public_project] }
       end
     end
 
@@ -73,6 +95,21 @@ describe API::Projects, api: true  do
         let(:filter) { {} }
         let(:current_user) { user }
         let(:projects) { [public_project, project, project2, project3] }
+      end
+
+      it_behaves_like 'projects response without N + 1 queries' do
+        let(:current_user) { user }
+      end
+
+      context 'when some projects are in a group' do
+        before do
+          create(:empty_project, :public, group: create(:group))
+        end
+
+        it_behaves_like 'projects response without N + 1 queries' do
+          let(:current_user) { user }
+          let(:additional_project) { create(:empty_project, :public, group: create(:group)) }
+        end
       end
 
       it 'includes the project labels as the tag_list' do
@@ -209,7 +246,7 @@ describe API::Projects, api: true  do
         let(:public_project) { create(:empty_project, :public) }
 
         before do
-          project_member2
+          project_member
           user3.update_attributes(starred_projects: [project, project2, project3, public_project])
         end
 
@@ -288,15 +325,15 @@ describe API::Projects, api: true  do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post api('/projects', user2), name: 'foo' }.
-          to change {Project.count}.by(0)
+        expect { post api('/projects', user2), name: 'foo' }
+          .to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
     it 'creates new project without path but with name and returns 201' do
-      expect { post api('/projects', user), name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+      expect { post api('/projects', user), name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -306,8 +343,8 @@ describe API::Projects, api: true  do
     end
 
     it 'creates new project without name but with path and returns 201' do
-      expect { post api('/projects', user), path: 'foo_project' }.
-        to change { Project.count }.by(1)
+      expect { post api('/projects', user), path: 'foo_project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -316,15 +353,15 @@ describe API::Projects, api: true  do
       expect(project.path).to eq('foo_project')
     end
 
-    it 'creates new project name and path and returns 201' do
-      expect { post api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+    it 'creates new project with name and path and returns 201' do
+      expect { post api('/projects', user), path: 'path-project-Foo', name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
 
       expect(project.name).to eq('Foo Project')
-      expect(project.path).to eq('foo-Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'creates last project before reaching project limit' do
@@ -341,16 +378,19 @@ describe API::Projects, api: true  do
     it "assigns attributes to project" do
       project = attributes_for(:project, {
         path: 'camelCasePath',
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
+        jobs_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
         only_allow_merge_if_pipeline_succeeds: false,
         request_access_enabled: true,
-        only_allow_merge_if_all_discussions_are_resolved: false
+        only_allow_merge_if_all_discussions_are_resolved: false,
+        ci_config_path: 'a/custom/path'
       })
 
       post api('/projects', user), project
+
+      expect(response).to have_http_status(201)
 
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
@@ -386,6 +426,23 @@ describe API::Projects, api: true  do
       post api('/projects', user), project
 
       expect(json_response['visibility']).to eq('private')
+    end
+
+    it 'sets tag list to a project' do
+      project = attributes_for(:project, tag_list: %w[tagFirst tagSecond])
+
+      post api('/projects', user), project
+
+      expect(json_response['tag_list']).to eq(%w[tagFirst tagSecond])
+    end
+
+    it 'uploads avatar for project a project' do
+      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+
+      post api('/projects', user), project
+
+      project_id = json_response['id']
+      expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
     it 'sets a project as allowing merge even if build fails' do
@@ -424,6 +481,14 @@ describe API::Projects, api: true  do
       expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to be_truthy
     end
 
+    it 'ignores import_url when it is nil' do
+      project = attributes_for(:project, { import_url: nil })
+
+      post api('/projects', user), project
+
+      expect(response).to have_http_status(201)
+    end
+
     context 'when a visibility level is restricted' do
       let(:project_param) { attributes_for(:project, visibility: 'public') }
 
@@ -448,18 +513,55 @@ describe API::Projects, api: true  do
     end
   end
 
-  describe 'POST /projects/user/:id' do
-    before { project }
-    before { admin }
+  describe 'GET /users/:user_id/projects/' do
+    let!(:public_project) { create(:empty_project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
-    it 'creates new project without path and return 201' do
-      expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
+    it 'returns error when user not found' do
+      get api('/users/9999/projects/')
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns projects filtered by user' do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+  end
+
+  describe 'POST /projects/user/:id' do
+    before do
+      expect(project).to be_persisted
+    end
+
+    it 'creates new project without path but with name and return 201' do
+      expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('foo-project')
+    end
+
+    it 'creates new project with name and path and returns 201' do
+      expect { post api("/projects/user/#{user.id}", admin), path: 'path-project-Foo', name: 'Foo Project' }
+        .to change { Project.count }.by(1)
+      expect(response).to have_http_status(201)
+
+      project = Project.first
+
+      expect(project.name).to eq('Foo Project')
+      expect(project.path).to eq('path-project-Foo')
     end
 
     it 'responds with 400 on failure and not project' do
-      expect { post api("/projects/user/#{user.id}", admin) }.
-        not_to change { Project.count }
+      expect { post api("/projects/user/#{user.id}", admin) }
+        .not_to change { Project.count }
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('name is missing')
@@ -467,7 +569,6 @@ describe API::Projects, api: true  do
 
     it 'assigns attributes to project' do
       project = attributes_for(:project, {
-        description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false,
@@ -539,7 +640,9 @@ describe API::Projects, api: true  do
   end
 
   describe "POST /projects/:id/uploads" do
-    before { project }
+    before do
+      project
+    end
 
     it "uploads the file and returns its info" do
       post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
@@ -602,10 +705,13 @@ describe API::Projects, api: true  do
         expect(json_response['shared_runners_enabled']).to be_present
         expect(json_response['creator_id']).to be_present
         expect(json_response['namespace']).to be_present
+        expect(json_response['import_status']).to be_present
+        expect(json_response).to include("import_error")
         expect(json_response['avatar_url']).to be_nil
         expect(json_response['star_count']).to be_present
         expect(json_response['forks_count']).to be_present
         expect(json_response['public_jobs']).to be_present
+        expect(json_response['ci_config_path']).to be_nil
         expect(json_response['shared_with_groups']).to be_an Array
         expect(json_response['shared_with_groups'].length).to eq(1)
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
@@ -652,19 +758,50 @@ describe API::Projects, api: true  do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
+          'parent_id' => nil
         })
+      end
+
+      it "does not include statistics by default" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to include 'statistics'
+      end
+
+      it "includes statistics if requested" do
+        get api("/projects/#{project.id}", user), statistics: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to include 'statistics'
+      end
+
+      it "includes import_error if user can admin project" do
+        get api("/projects/#{project.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to include("import_error")
+      end
+
+      it "does not include import_error if user cannot admin project" do
+        get api("/projects/#{project.id}", user3)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).not_to include("import_error")
       end
 
       describe 'permissions' do
         context 'all projects' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'contains permission information' do
             get api("/projects", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response.first['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response.first['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
@@ -675,8 +812,8 @@ describe API::Projects, api: true  do
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -684,75 +821,19 @@ describe API::Projects, api: true  do
         context 'group project' do
           let(:project2) { create(:empty_project, group: create(:group)) }
 
-          before { project2.group.add_owner(user) }
+          before do
+            project2.group.add_owner(user)
+          end
 
           it 'sets the owner and return 200' do
             get api("/projects/#{project2.id}", user)
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']).to be_nil
-            expect(json_response['permissions']['group_access']['access_level']).
-            to eq(Gitlab::Access::OWNER)
+            expect(json_response['permissions']['group_access']['access_level'])
+            .to eq(Gitlab::Access::OWNER)
           end
         end
-      end
-    end
-  end
-
-  describe 'GET /projects/:id/events' do
-    shared_examples_for 'project events response' do
-      it 'returns the project events' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
-        note = create(:note_on_issue, note: 'What an awesome day!', project: project)
-        EventCreateService.new.leave_note(note, note.author)
-
-        get api("/projects/#{project.id}/events", current_user)
-
-        expect(response).to have_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-
-        first_event = json_response.first
-        expect(first_event['action_name']).to eq('commented on')
-        expect(first_event['note']['body']).to eq('What an awesome day!')
-
-        last_event = json_response.last
-
-        expect(last_event['action_name']).to eq('joined')
-        expect(last_event['project_id'].to_i).to eq(project.id)
-        expect(last_event['author_username']).to eq(member.username)
-        expect(last_event['author']['name']).to eq(member.name)
-      end
-    end
-
-    context 'when unauthenticated' do
-      it_behaves_like 'project events response' do
-        let(:project) { create(:empty_project, :public) }
-        let(:current_user) { nil }
-      end
-    end
-
-    context 'when authenticated' do
-      context 'valid request' do
-        it_behaves_like 'project events response' do
-          let(:current_user) { user }
-        end
-      end
-
-      it 'returns a 404 error if not found' do
-        get api('/projects/42/events', user)
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Project Not Found')
-      end
-
-      it 'returns a 404 error if user is not a member' do
-        other_user = create(:user)
-
-        get api("/projects/#{project.id}/events", other_user)
-
-        expect(response).to have_http_status(404)
       end
     end
   end
@@ -760,10 +841,9 @@ describe API::Projects, api: true  do
   describe 'GET /projects/:id/users' do
     shared_examples_for 'project users response' do
       it 'returns the project users' do
-        member = create(:user)
-        create(:project_member, :developer, user: member, project: project)
-
         get api("/projects/#{project.id}/users", current_user)
+
+        user = project.namespace.owner
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -771,8 +851,8 @@ describe API::Projects, api: true  do
         expect(json_response.size).to eq(1)
 
         first_user = json_response.first
-        expect(first_user['username']).to eq(member.username)
-        expect(first_user['name']).to eq(member.name)
+        expect(first_user['username']).to eq(user.username)
+        expect(first_user['name']).to eq(user.name)
         expect(first_user.keys).to contain_exactly(*%w[name username id state avatar_url web_url])
       end
     end
@@ -809,7 +889,9 @@ describe API::Projects, api: true  do
   end
 
   describe 'GET /projects/:id/snippets' do
-    before { snippet }
+    before do
+      snippet
+    end
 
     it 'returns an array of project snippets' do
       get api("/projects/#{project.id}/snippets", user)
@@ -866,7 +948,9 @@ describe API::Projects, api: true  do
   end
 
   describe 'DELETE /projects/:id/snippets/:snippet_id' do
-    before { snippet }
+    before do
+      snippet
+    end
 
     it 'deletes existing project snippet' do
       expect do
@@ -894,7 +978,7 @@ describe API::Projects, api: true  do
     end
   end
 
-  describe :fork_admin do
+  describe 'fork management' do
     let(:project_fork_target) { create(:empty_project) }
     let(:project_fork_source) { create(:empty_project, :public) }
 
@@ -1061,19 +1145,32 @@ describe API::Projects, api: true  do
   end
 
   describe 'PUT /projects/:id' do
-    before { project }
-    before { user }
-    before { user3 }
-    before { user4 }
-    before { project3 }
-    before { project4 }
-    before { project_member3 }
-    before { project_member2 }
+    before do
+      expect(project).to be_persisted
+      expect(user).to be_persisted
+      expect(user3).to be_persisted
+      expect(user4).to be_persisted
+      expect(project3).to be_persisted
+      expect(project4).to be_persisted
+      expect(project_member2).to be_persisted
+      expect(project_member).to be_persisted
+    end
+
+    it 'returns 400 when nothing sent' do
+      project_param = {}
+
+      put api("/projects/#{project.id}", user), project_param
+
+      expect(response).to have_http_status(400)
+      expect(json_response['error']).to match('at least one parameter must be provided')
+    end
 
     context 'when unauthenticated' do
       it 'returns authentication error' do
         project_param = { name: 'bar' }
+
         put api("/projects/#{project.id}"), project_param
+
         expect(response).to have_http_status(401)
       end
     end
@@ -1081,8 +1178,11 @@ describe API::Projects, api: true  do
     context 'when authenticated as project owner' do
       it 'updates name' do
         project_param = { name: 'bar' }
+
         put api("/projects/#{project.id}", user), project_param
+
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1090,8 +1190,11 @@ describe API::Projects, api: true  do
 
       it 'updates visibility_level' do
         project_param = { visibility: 'public' }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1100,17 +1203,23 @@ describe API::Projects, api: true  do
       it 'updates visibility_level from public to private' do
         project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+
         expect(json_response['visibility']).to eq('private')
       end
 
       it 'does not update name to existing name' do
         project_param = { name: project3.name }
+
         put api("/projects/#{project.id}", user), project_param
+
         expect(response).to have_http_status(400)
         expect(json_response['message']['name']).to eq(['has already been taken'])
       end
@@ -1126,8 +1235,23 @@ describe API::Projects, api: true  do
 
       it 'updates path & name to existing path & name in different namespace' do
         project_param = { path: project4.path, name: project4.name }
+
         put api("/projects/#{project3.id}", user), project_param
+
         expect(response).to have_http_status(200)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'updates jobs_enabled' do
+        project_param = { jobs_enabled: true }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_http_status(200)
+
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
@@ -1380,6 +1504,8 @@ describe API::Projects, api: true  do
         expect(json_response['owner']['id']).to eq(user2.id)
         expect(json_response['namespace']['id']).to eq(user2.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
       end
 
       it 'forks if user is admin' do
@@ -1391,6 +1517,8 @@ describe API::Projects, api: true  do
         expect(json_response['owner']['id']).to eq(admin.id)
         expect(json_response['namespace']['id']).to eq(admin.namespace.id)
         expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
       end
 
       it 'fails on missing project access for the project to fork' do
@@ -1511,7 +1639,7 @@ describe API::Projects, api: true  do
 
     context 'when authenticated as developer' do
       before do
-        project_member2
+        project_member
       end
 
       it 'returns forbidden error' do

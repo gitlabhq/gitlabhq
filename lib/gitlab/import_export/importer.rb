@@ -9,7 +9,7 @@ module Gitlab
       end
 
       def execute
-        if import_file && check_version! && [project_tree, avatar_restorer, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
+        if import_file && check_version! && [repo_restorer, wiki_restorer, project_tree, avatar_restorer, uploads_restorer].all?(&:restore)
           project_tree.restored_project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))

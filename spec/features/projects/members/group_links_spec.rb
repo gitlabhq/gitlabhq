@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Projects > Members > Anonymous user sees members', feature: true, js: true do
-  include WaitForAjax
-
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:empty_project, :public) }
@@ -11,8 +9,8 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     project.team << [user, :master]
     @group_link = create(:project_group_link, project: project, group: group)
 
-    login_as(user)
-    visit namespace_project_settings_members_path(project.namespace, project)
+    sign_in(user)
+    visit project_settings_members_path(project)
   end
 
   it 'updates group access level' do
@@ -22,9 +20,9 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
       click_link 'Guest'
     end
 
-    wait_for_ajax
+    wait_for_requests
 
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_settings_members_path(project)
 
     expect(first('.group_member')).to have_content('Guest')
   end
@@ -33,7 +31,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     tomorrow = Date.today + 3
 
     fill_in "member_expires_at_#{group.id}", with: tomorrow.strftime("%F")
-    wait_for_ajax
+    wait_for_requests
 
     page.within(find('li.group_member')) do
       expect(page).to have_content('Expires in')
@@ -44,7 +42,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     page.within(first('.group_member')) do
       find('.btn-remove').click
     end
-    wait_for_ajax
+    wait_for_requests
 
     expect(page).not_to have_selector('.group_member')
   end

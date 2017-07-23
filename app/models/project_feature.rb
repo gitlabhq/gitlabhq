@@ -27,6 +27,13 @@ class ProjectFeature < ActiveRecord::Base
 
       "#{feature}_access_level".to_sym
     end
+
+    def quoted_access_level_column(feature)
+      attribute = connection.quote_column_name(access_level_attribute(feature))
+      table = connection.quote_table_name(table_name)
+
+      "#{table}.#{attribute}"
+    end
   end
 
   # Default scopes force us to unscope here since a service may need to check
@@ -44,8 +51,11 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
   def feature_available?(feature, user)
-    access_level = public_send(ProjectFeature.access_level_attribute(feature))
-    get_permission(user, access_level)
+    get_permission(user, access_level(feature))
+  end
+
+  def access_level(feature)
+    public_send(ProjectFeature.access_level_attribute(feature))
   end
 
   def builds_enabled?
@@ -83,7 +93,7 @@ class ProjectFeature < ActiveRecord::Base
     when DISABLED
       false
     when PRIVATE
-      user && (project.team.member?(user) || user.admin?)
+      user && (project.team.member?(user) || user.full_private_access?)
     when ENABLED
       true
     else

@@ -6,6 +6,26 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, namespace: namespace, path: 'merge-requests-project') }
+  let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
+  let(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
+  let(:pipeline) do
+    create(
+      :ci_pipeline,
+      project: merge_request.source_project,
+      ref: merge_request.source_branch,
+      sha: merge_request.diff_head_sha
+    )
+  end
+  let(:path) { "files/ruby/popen.rb" }
+  let(:position) do
+    Gitlab::Diff::Position.new(
+      old_path: path,
+      new_path: path,
+      old_line: nil,
+      new_line: 14,
+      diff_refs: merge_request.diff_refs
+    )
+  end
 
   render_views
 
@@ -18,7 +38,20 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   end
 
   it 'merge_requests/merge_request_with_task_list.html.raw' do |example|
-    merge_request = create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item')
+    create(:ci_build, :pending, pipeline: pipeline)
+
+    render_merge_request(example.description, merge_request)
+  end
+
+  it 'merge_requests/merged_merge_request.html.raw' do |example|
+    allow_any_instance_of(MergeRequest).to receive(:source_branch_exists?).and_return(true)
+    allow_any_instance_of(MergeRequest).to receive(:can_remove_source_branch?).and_return(true)
+    render_merge_request(example.description, merged_merge_request)
+  end
+
+  it 'merge_requests/diff_comment.html.raw' do |example|
+    create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
+    create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
     render_merge_request(example.description, merge_request)
   end
 
@@ -28,7 +61,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
-      id: merge_request.to_param
+      id: merge_request.to_param,
+      format: :html
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

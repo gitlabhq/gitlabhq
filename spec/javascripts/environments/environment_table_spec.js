@@ -1,4 +1,5 @@
-const EnvironmentTable = require('~/environments/components/environments_table');
+import Vue from 'vue';
+import environmentTableComp from '~/environments/components/environments_table.vue';
 
 describe('Environment item', () => {
   preloadFixtures('static/environments/element.html.raw');
@@ -16,15 +17,18 @@ describe('Environment item', () => {
       },
     };
 
+    const EnvironmentTable = Vue.extend(environmentTableComp);
+
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
       propsData: {
         environments: [{ mockItem }],
         canCreateDeployment: false,
         canReadEnvironment: true,
+        service: {},
       },
-    });
+    }).$mount();
 
-    expect(component.$el.tagName).toEqual('TABLE');
+    expect(component.$el.getAttribute('class')).toContain('ci-table');
   });
 });

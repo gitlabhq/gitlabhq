@@ -13,12 +13,12 @@ feature 'Merge request issue assignment', js: true, feature: true do
   end
 
   def visit_merge_request(current_user = nil)
-    login_as(current_user || user)
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(current_user || user)
+    visit project_merge_request_path(project, merge_request)
   end
 
   context 'logged in as author' do
-    scenario 'updates related issues' do
+    it 'updates related issues' do
       visit_merge_request
       click_link "Assign yourself to these issues"
 
@@ -33,7 +33,7 @@ feature 'Merge request issue assignment', js: true, feature: true do
     end
 
     it "doesn't display if related issues are already assigned" do
-      [issue1, issue2].each { |issue| issue.update!(assignee: user) }
+      [issue1, issue2].each { |issue| issue.update!(assignees: [user]) }
 
       visit_merge_request
 

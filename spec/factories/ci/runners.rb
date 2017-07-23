@@ -1,8 +1,6 @@
 FactoryGirl.define do
   factory :ci_runner, class: Ci::Runner do
-    sequence :description do |n|
-      "My runner#{n}"
-    end
+    sequence(:description) { |n| "My runner#{n}" }
 
     platform  "darwin"
     is_shared false

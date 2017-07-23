@@ -5,14 +5,14 @@ module API
     subscribable_types = {
       'merge_requests' => proc { |id| find_merge_request_with_access(id, :update_merge_request) },
       'issues' => proc { |id| find_project_issue(id) },
-      'labels' => proc { |id| find_project_label(id) },
+      'labels' => proc { |id| find_project_label(id) }
     }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
       requires :subscribable_id, type: String, desc: 'The ID of a resource'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       subscribable_types.each do |type, finder|
         type_singularized = type.singularize
         entity_class = Entities.const_get(type_singularized.camelcase)

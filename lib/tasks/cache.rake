@@ -5,12 +5,12 @@ namespace :cache do
 
     desc "GitLab | Clear redis cache"
     task redis: :environment do
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::Cache.with do |redis|
         cursor = REDIS_SCAN_START_STOP
         loop do
           cursor, keys = redis.scan(
             cursor,
-            match: "#{Gitlab::Redis::CACHE_NAMESPACE}*",
+            match: "#{Gitlab::Redis::Cache::CACHE_NAMESPACE}*",
             count: REDIS_CLEAR_BATCH_SIZE
           )
 
@@ -21,12 +21,7 @@ namespace :cache do
       end
     end
 
-    desc "GitLab | Clear database cache (in the background)"
-    task db: :environment do
-      ClearDatabaseCacheWorker.perform_async
-    end
-
-    task all: [:db, :redis]
+    task all: [:redis]
   end
 
   task clear: 'cache:clear:redis'

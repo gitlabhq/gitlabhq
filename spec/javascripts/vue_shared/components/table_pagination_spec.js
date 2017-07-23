@@ -1,158 +1,188 @@
-require('~/lib/utils/common_utils');
-require('~/vue_shared/components/table_pagination');
+import Vue from 'vue';
+import paginationComp from '~/vue_shared/components/table_pagination.vue';
 
 describe('Pagination component', () => {
   let component;
+  let PaginationComponent;
+  let spy;
+  let mountComponet;
 
-  const changeChanges = {
-    one: '',
-  };
+  beforeEach(() => {
+    spy = jasmine.createSpy('spy');
+    PaginationComponent = Vue.extend(paginationComp);
 
-  const change = (one) => {
-    changeChanges.one = one;
-  };
+    mountComponet = function (props) {
+      return new PaginationComponent({
+        propsData: props,
+      }).$mount();
+    };
+  });
 
-  it('should render and start at page 1', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
+  describe('render', () => {
+    describe('prev button', () => {
+      it('should be disabled and non clickable', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 2,
+            page: 1,
+            perPage: 20,
+            previousPage: NaN,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
 
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
-        pageInfo: {
-          totalPages: 10,
-          nextPage: 2,
-          previousPage: '',
-        },
-        change,
-      },
+        expect(
+          component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
+          ).toEqual(true);
+
+        component.$el.querySelector('.js-previous-button a').click();
+
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('should be enabled and clickable', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 3,
+            page: 2,
+            perPage: 20,
+            previousPage: 1,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
+
+        component.$el.querySelector('.js-previous-button a').click();
+
+        expect(spy).toHaveBeenCalledWith(1);
+      });
     });
 
-    expect(component.$el.classList).toContain('gl-pagination');
+    describe('first button', () => {
+      it('should call the change callback with the first page', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 3,
+            page: 2,
+            perPage: 20,
+            previousPage: 1,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
 
-    component.changePage({ target: { innerText: '1' } });
+        const button = component.$el.querySelector('.js-first-button a');
 
-    expect(changeChanges.one).toEqual(1);
-  });
+        expect(button.textContent.trim()).toEqual('« First');
 
-  it('should go to the previous page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
+        button.click();
 
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
-        pageInfo: {
-          totalPages: 10,
-          nextPage: 3,
-          previousPage: 1,
-        },
-        change,
-      },
+        expect(spy).toHaveBeenCalledWith(1);
+      });
     });
 
-    component.changePage({ target: { innerText: 'Prev' } });
+    describe('last button', () => {
+      it('should call the change callback with the last page', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 3,
+            page: 2,
+            perPage: 20,
+            previousPage: 1,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
 
-    expect(changeChanges.one).toEqual(1);
-  });
+        const button = component.$el.querySelector('.js-last-button a');
 
-  it('should go to the next page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
+        expect(button.textContent.trim()).toEqual('Last »');
 
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
-        pageInfo: {
-          totalPages: 10,
-          nextPage: 5,
-          previousPage: 3,
-        },
-        change,
-      },
+        button.click();
+
+        expect(spy).toHaveBeenCalledWith(5);
+      });
     });
 
-    component.changePage({ target: { innerText: 'Next' } });
+    describe('next button', () => {
+      it('should be disabled and non clickable', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 5,
+            page: 5,
+            perPage: 20,
+            previousPage: 1,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
 
-    expect(changeChanges.one).toEqual(5);
-  });
+        expect(
+          component.$el.querySelector('.js-next-button').textContent.trim(),
+        ).toEqual('Next');
 
-  it('should go to the last page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
+        component.$el.querySelector('.js-next-button a').click();
 
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
-        pageInfo: {
-          totalPages: 10,
-          nextPage: 5,
-          previousPage: 3,
-        },
-        change,
-      },
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it('should be enabled and clickable', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 4,
+            page: 3,
+            perPage: 20,
+            previousPage: 2,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
+
+        component.$el.querySelector('.js-next-button a').click();
+
+        expect(spy).toHaveBeenCalledWith(4);
+      });
     });
 
-    component.changePage({ target: { innerText: 'Last >>' } });
+    describe('numbered buttons', () => {
+      it('should render 5 pages', () => {
+        component = mountComponet({
+          pageInfo: {
+            nextPage: 4,
+            page: 3,
+            perPage: 20,
+            previousPage: 2,
+            total: 84,
+            totalPages: 5,
+          },
+          change: spy,
+        });
 
-    expect(changeChanges.one).toEqual(10);
-  });
-
-  it('should go to the first page', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
-        pageInfo: {
-          totalPages: 10,
-          nextPage: 5,
-          previousPage: 3,
-        },
-        change,
-      },
+        expect(component.$el.querySelectorAll('.page').length).toEqual(5);
+      });
     });
 
-    component.changePage({ target: { innerText: '<< First' } });
-
-    expect(changeChanges.one).toEqual(1);
-  });
-
-  it('should do nothing', () => {
-    setFixtures('<div class="test-pagination-container"></div>');
-
-    component = new window.gl.VueGlPagination({
-      el: document.querySelector('.test-pagination-container'),
-      propsData: {
+    it('should render the spread operator', () => {
+      component = mountComponet({
         pageInfo: {
+          nextPage: 4,
+          page: 3,
+          perPage: 20,
+          previousPage: 2,
+          total: 84,
           totalPages: 10,
-          nextPage: 2,
-          previousPage: '',
         },
-        change,
-      },
+        change: spy,
+      });
+
+      expect(component.$el.querySelector('.separator').textContent.trim()).toEqual('...');
     });
-
-    component.changePage({ target: { innerText: '...' } });
-
-    expect(changeChanges.one).toEqual(1);
-  });
-});
-
-describe('paramHelper', () => {
-  it('can parse url parameters correctly', () => {
-    window.history.pushState({}, null, '?scope=all&p=2');
-
-    const scope = gl.utils.getParameterByName('scope');
-    const p = gl.utils.getParameterByName('p');
-
-    expect(scope).toEqual('all');
-    expect(p).toEqual('2');
-  });
-
-  it('returns null if param not in url', () => {
-    window.history.pushState({}, null, '?p=2');
-
-    const scope = gl.utils.getParameterByName('scope');
-    const p = gl.utils.getParameterByName('p');
-
-    expect(scope).toEqual(null);
-    expect(p).toEqual('2');
   });
 });

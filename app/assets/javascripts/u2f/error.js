@@ -2,12 +2,10 @@
 /* global u2f */
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.U2FError = (function() {
     function U2FError(errorCode, u2fFlowType) {
       this.errorCode = errorCode;
-      this.message = bind(this.message, this);
+      this.message = this.message.bind(this);
       this.httpsDisabled = window.location.protocol !== 'https:';
       this.u2fFlowType = u2fFlowType;
     }

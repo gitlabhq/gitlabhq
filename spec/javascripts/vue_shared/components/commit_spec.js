@@ -1,13 +1,17 @@
-require('~/vue_shared/components/commit');
+import Vue from 'vue';
+import commitComp from '~/vue_shared/components/commit.vue';
 
 describe('Commit component', () => {
   let props;
   let component;
+  let CommitComponent;
+
+  beforeEach(() => {
+    CommitComponent = Vue.extend(commitComp);
+  });
 
   it('should render a code-fork icon if it does not represent a tag', () => {
-    setFixtures('<div class="test-commit-container"></div>');
-    component = new window.gl.CommitComponent({
-      el: document.querySelector('.test-commit-container'),
+    component = new CommitComponent({
       propsData: {
         tag: false,
         commitRef: {
@@ -18,20 +22,19 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
+          path: '/jschatz1',
           username: 'jschatz1',
         },
       },
-    });
+    }).$mount();
 
     expect(component.$el.querySelector('.icon-container i').classList).toContain('fa-code-fork');
   });
 
   describe('Given all the props', () => {
     beforeEach(() => {
-      setFixtures('<div class="test-commit-container"></div>');
-
       props = {
         tag: true,
         commitRef: {
@@ -42,17 +45,17 @@ describe('Commit component', () => {
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
-          avatar_url: 'https://gitlab.com/uploads/user/avatar/300478/avatar.png',
+          avatar_url: 'https://gitlab.com/uploads/-/system/user/avatar/300478/avatar.png',
           web_url: 'https://gitlab.com/jschatz1',
+          path: '/jschatz1',
           username: 'jschatz1',
         },
         commitIconSvg: '<svg></svg>',
       };
 
-      component = new window.gl.CommitComponent({
-        el: document.querySelector('.test-commit-container'),
+      component = new CommitComponent({
         propsData: props,
-      });
+      }).$mount();
     });
 
     it('should render a tag icon if it represents a tag', () => {
@@ -60,16 +63,16 @@ describe('Commit component', () => {
     });
 
     it('should render a link to the ref url', () => {
-      expect(component.$el.querySelector('.branch-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
+      expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(props.commitRef.ref_url);
     });
 
     it('should render the ref name', () => {
-      expect(component.$el.querySelector('.branch-name').textContent).toContain(props.commitRef.name);
+      expect(component.$el.querySelector('.ref-name').textContent).toContain(props.commitRef.name);
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
-      expect(component.$el.querySelector('.commit-id').getAttribute('href')).toEqual(props.commitUrl);
-      expect(component.$el.querySelector('.commit-id').textContent).toContain(props.shortSha);
+      expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(props.commitUrl);
+      expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
     });
 
     it('should render the given commitIconSvg', () => {
@@ -80,12 +83,12 @@ describe('Commit component', () => {
       it('should render a link to the author profile', () => {
         expect(
           component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href'),
-        ).toEqual(props.author.web_url);
+        ).toEqual(props.author.path);
       });
 
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
-          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('title'),
+          component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('data-original-title'),
         ).toContain(props.author.username);
         expect(
           component.$el.querySelector('.commit-title .avatar-image-container img').getAttribute('alt'),
@@ -105,7 +108,6 @@ describe('Commit component', () => {
 
   describe('When commit title is not provided', () => {
     it('should render default message', () => {
-      setFixtures('<div class="test-commit-container"></div>');
       props = {
         tag: false,
         commitRef: {
@@ -118,10 +120,9 @@ describe('Commit component', () => {
         author: {},
       };
 
-      component = new window.gl.CommitComponent({
-        el: document.querySelector('.test-commit-container'),
+      component = new CommitComponent({
         propsData: props,
-      });
+      }).$mount();
 
       expect(
         component.$el.querySelector('.commit-title span').textContent,

@@ -65,14 +65,14 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   # Example: 'Paris' or 'Acme, Ltd.'
   label: 'LDAP'
-  
+
   # Example: 'ldap.mydomain.com'
   host: '_your_ldap_server'
   # This port is an example, it is sometimes different but it is always an integer and not a string
   port: 389
-  uid: 'sAMAccountName'
+  uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
   method: 'plain' # "tls" or "ssl" or "plain"
-  
+
   # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
@@ -228,8 +228,13 @@ Tip: If you want to limit access to the nested members of an Active Directory
 group you can use the following syntax:
 
 ```
-(memberOf=CN=My Group,DC=Example,DC=com)
+(memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
+
+Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
+https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
+nested members in the user filter should not be confused with 
+[group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by
 omniauth-ldap.

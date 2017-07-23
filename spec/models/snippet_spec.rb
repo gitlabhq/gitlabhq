@@ -5,7 +5,6 @@ describe Snippet, models: true do
     subject { described_class }
 
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
-    it { is_expected.to include_module(Linguist::BlobHelper) }
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
@@ -132,46 +131,6 @@ describe Snippet, models: true do
     end
   end
 
-  describe '.accessible_to' do
-    let(:author)  { create(:author) }
-    let(:project) { create(:empty_project) }
-
-    let!(:public_snippet)   { create(:snippet, :public) }
-    let!(:internal_snippet) { create(:snippet, :internal) }
-    let!(:private_snippet)  { create(:snippet, :private, author: author) }
-
-    let!(:project_public_snippet)   { create(:snippet, :public, project: project) }
-    let!(:project_internal_snippet) { create(:snippet, :internal, project: project) }
-    let!(:project_private_snippet)  { create(:snippet, :private, project: project) }
-
-    it 'returns only public snippets when user is blank' do
-      expect(described_class.accessible_to(nil)).to match_array [public_snippet, project_public_snippet]
-    end
-
-    it 'returns only public, and internal snippets for regular users' do
-      user = create(:user)
-
-      expect(described_class.accessible_to(user)).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet]
-    end
-
-    it 'returns public, internal snippets and project private snippets for project members' do
-      member = create(:user)
-      project.team << [member, :developer]
-
-      expect(described_class.accessible_to(member)).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
-    end
-
-    it 'returns private snippets where the user is the author' do
-      expect(described_class.accessible_to(author)).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet]
-    end
-
-    it 'returns all snippets when for admins' do
-      admin = create(:admin)
-
-      expect(described_class.accessible_to(admin)).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
-    end
-  end
-
   describe '#participants' do
     let(:project) { create(:empty_project, :public) }
     let(:snippet) { create(:snippet, content: 'foo', project: project) }
@@ -196,6 +155,61 @@ describe Snippet, models: true do
 
     it 'includes the note authors' do
       expect(snippet.participants).to include(note1.author, note2.author)
+    end
+  end
+
+  describe '#check_for_spam' do
+    let(:snippet) { create :snippet, visibility_level: visibility_level }
+
+    subject do
+      snippet.assign_attributes(title: title)
+      snippet.check_for_spam?
+    end
+
+    context 'when public and spammable attributes changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { 'woo' }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when private' do
+      let(:visibility_level) { Snippet::PRIVATE }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+
+      it 'returns true when switching to public' do
+        snippet.save!
+        snippet.visibility_level = Snippet::PUBLIC
+
+        expect(snippet.check_for_spam?).to be_truthy
+      end
+    end
+
+    context 'when spammable attributes have not changed' do
+      let(:visibility_level) { Snippet::PUBLIC }
+      let(:title) { snippet.title }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#blob' do
+    let(:snippet) { create(:snippet) }
+
+    it 'returns a blob representing the snippet data' do
+      blob = snippet.blob
+
+      expect(blob).to be_a(Blob)
+      expect(blob.path).to eq(snippet.file_name)
+      expect(blob.data).to eq(snippet.content)
     end
   end
 end

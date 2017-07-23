@@ -23,7 +23,7 @@ class MarkdownFeature
   # Direct references ----------------------------------------------------------
 
   def project
-    @project ||= create(:project).tap do |project|
+    @project ||= create(:project, :repository).tap do |project|
       project.team << [user, :master]
     end
   end
@@ -80,7 +80,7 @@ class MarkdownFeature
   def xproject
     @xproject ||= begin
       group = create(:group, :nested)
-      create(:project, namespace: group) do |project|
+      create(:project, :repository, namespace: group) do |project|
         project.team << [user, :developer]
       end
     end

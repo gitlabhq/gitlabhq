@@ -60,8 +60,10 @@ Feature: Profile
     Then I should see a password error message
 
   Scenario: I visit history tab
-    Given I have activity
-    When I visit Audit Log page
+    Given I logout
+    And I sign in via the UI
+    And I have activity
+    When I visit Authentication log page
     Then I should see my activity
 
   Scenario: I visit my user page

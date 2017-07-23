@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Dropdown assignee', :feature, :js do
   include FilteredSearchHelpers
-  include WaitForAjax
 
   let!(:project) { create(:empty_project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -24,10 +23,10 @@ describe 'Dropdown assignee', :feature, :js do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -59,7 +58,7 @@ describe 'Dropdown assignee', :feature, :js do
     it 'should load all the assignees when opened' do
       filtered_search.set('assignee:')
 
-      expect(dropdown_assignee_size).to eq(3)
+      expect(dropdown_assignee_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
@@ -158,6 +157,25 @@ describe 'Dropdown assignee', :feature, :js do
     end
   end
 
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('assignee:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_assignee, visible: false)
+      expect_tokens([{ name: 'assignee', value: user.username }])
+      expect_filtered_search_input_empty
+    end
+  end
+
   describe 'input has existing content' do
     it 'opens assignee dropdown with existing search term' do
       filtered_search.set('searchTerm assignee:')
@@ -194,7 +212,7 @@ describe 'Dropdown assignee', :feature, :js do
 
       new_user = create(:user)
       project.team << [new_user, :master]
-      find('.filtered-search-input-container .clear-search').click
+      find('.filtered-search-box .clear-search').click
       filtered_search.set('assignee')
       filtered_search.send_keys(':')
 

@@ -74,7 +74,6 @@
   display: inline;
 
   a {
-    color: $blue-dark;
     text-decoration: none;
   }
 }
@@ -231,6 +230,14 @@
     font-size: 0;
   }
 
+  .fade-right {
+    right: 0;
+  }
+
+  .fade-left {
+    left: 0;
+  }
+
   @media (max-width: $screen-xs-max) {
     .cover-block {
       padding-top: 20px;
@@ -279,40 +286,108 @@ table.u2f-registrations {
 }
 
 .user-callout {
-  margin: 0 auto;
+  margin: 20px -5px 0;
 
   .bordered-box {
-    border: 1px solid $border-color;
+    border: 1px solid $blue-300;
     border-radius: $border-radius-default;
+    background-color: $blue-25;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .landing {
-    margin-top: $gl-padding;
-    margin-bottom: $gl-padding;
+    padding: 32px;
 
     .close {
-      margin-right: 20px;
-    }
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      opacity: 1;
 
-    .dismiss-icon {
-      float: right;
-      cursor: pointer;
-      color: $cycle-analytics-dismiss-icon-color;
+      .dismiss-icon {
+        float: right;
+        cursor: pointer;
+        color: $blue-300;
+      }
+
+      &:hover {
+        background-color: transparent;
+        border: 0;
+
+        .dismiss-icon {
+          color: $blue-400;
+        }
+      }
     }
 
     .svg-container {
-      text-align: center;
+      margin-right: 30px;
+      display: inline-block;
 
       svg {
-        width: 136px;
-        height: 136px;
+        height: 110px;
+        vertical-align: top;
       }
+
+      &.convdev {
+        margin: 0 0 0 30px;
+
+        svg {
+          height: 127px;
+        }
+      }
+    }
+
+    .user-callout-copy {
+      display: inline-block;
+      vertical-align: top;
+      max-width: 570px;
     }
   }
 
   @media(max-width: $screen-xs-max) {
-    .inner-content {
-      padding-left: 30px;
+    text-align: center;
+
+    .bordered-box {
+      display: block;
     }
+
+    .landing {
+      .svg-container,
+      .user-callout-copy {
+        margin: 0 auto;
+        display: block;
+
+        svg {
+          height: 75px;
+        }
+
+        &.convdev {
+          margin: $gl-padding auto 0;
+
+          svg {
+            height: 120px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.nav-wip {
+  border: 1px solid $blue-500;
+  background: $blue-25;
+  padding: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  a {
+    color: $blue-500;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
   }
 }

@@ -1,4 +1,5 @@
 module Ci
-  class PipelinePolicy < BuildPolicy
+  class PipelinePolicy < BasePolicy
+    delegate { @subject.project }
   end
 end

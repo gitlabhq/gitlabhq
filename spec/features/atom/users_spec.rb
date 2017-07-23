@@ -11,6 +11,13 @@ describe "User Feed", feature: true  do
       end
     end
 
+    context 'user atom feed via RSS token' do
+      it "renders user atom feed" do
+        visit user_path(user, :atom, rss_token: user.rss_token)
+        expect(body).to have_selector('feed title')
+      end
+    end
+
     context 'feed content' do
       let(:project) { create(:project) }
       let(:issue) do
@@ -40,7 +47,7 @@ describe "User Feed", feature: true  do
         issue_event(issue, user)
         note_event(note, user)
         merge_request_event(merge_request, user)
-        visit user_path(user, :atom, private_token: user.private_token)
+        visit user_path(user, :atom, rss_token: user.rss_token)
       end
 
       it 'has issue opened event' do
@@ -48,12 +55,12 @@ describe "User Feed", feature: true  do
       end
 
       it 'has issue comment event' do
-        expect(body).
-          to have_content("#{safe_name} commented on issue ##{issue.iid}")
+        expect(body)
+          .to have_content("#{safe_name} commented on issue ##{issue.iid}")
       end
 
       it 'has XHTML summaries in issue descriptions' do
-        expect(body).to match /we have a bug!<\/p>\n\n<hr ?\/>\n\n<p dir="auto">I guess/
+        expect(body).to match /<hr ?\/>/
       end
 
       it 'has XHTML summaries in notes' do

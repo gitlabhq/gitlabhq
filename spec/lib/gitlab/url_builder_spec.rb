@@ -97,12 +97,23 @@ describe Gitlab::UrlBuilder, lib: true do
         end
       end
 
+      context 'on a PersonalSnippet' do
+        it 'returns a proper URL' do
+          personal_snippet = create(:personal_snippet)
+          note = build_stubbed(:note_on_personal_snippet, noteable: personal_snippet)
+
+          url = described_class.build(note)
+
+          expect(url).to eq "#{Settings.gitlab['url']}/snippets/#{note.noteable_id}#note_#{note.id}"
+        end
+      end
+
       context 'on another object' do
         it 'returns a proper URL' do
           project = build_stubbed(:empty_project)
 
-          expect { described_class.build(project) }.
-            to raise_error(NotImplementedError, 'No URL builder defined for Project')
+          expect { described_class.build(project) }
+            .to raise_error(NotImplementedError, 'No URL builder defined for Project')
         end
       end
     end

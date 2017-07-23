@@ -16,6 +16,11 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
     expect(reference_filter(act).to_html).to eq(exp)
   end
 
+  it 'ignores references with text before the @ sign' do
+    exp = act = "Hey foo#{reference}"
+    expect(reference_filter(act).to_html).to eq(exp)
+  end
+
   %w(pre code a style).each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
       exp = act = "<#{elem}>Hey #{reference}</#{elem}>"
@@ -38,7 +43,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       expect(doc.css('a').length).to eq 1
       expect(doc.css('a').first.attr('href'))
-        .to eq urls.namespace_project_url(project.namespace, project)
+        .to eq urls.project_url(project)
     end
 
     it 'includes a data-author attribute when there is an author' do
@@ -81,6 +86,14 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
       doc = reference_filter("Hey #{user.to_reference}")
       expect(doc.css('a').length).to eq 1
+    end
+
+    it 'links to a User with different case-sensitivity' do
+      user = create(:user, username: 'RescueRanger')
+
+      doc = reference_filter("Hey #{user.to_reference.upcase}")
+      expect(doc.css('a').length).to eq 1
+      expect(doc.css('a').text).to eq(user.to_reference)
     end
 
     it 'includes a data-user attribute' do

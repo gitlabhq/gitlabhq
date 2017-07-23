@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::DeployKeys, api: true  do
-  include ApiHelpers
-
+describe API::V3::DeployKeys do
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
   let(:project)     { create(:empty_project, creator_id: user.id) }
@@ -106,6 +104,15 @@ describe API::V3::DeployKeys, api: true  do
         end.to change { project2.deploy_keys.count }.by(1)
 
         expect(response).to have_http_status(201)
+      end
+
+      it 'accepts can_push parameter' do
+        key_attrs = attributes_for :write_access_key
+
+        post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
+
+        expect(response).to have_http_status(201)
+        expect(json_response['can_push']).to eq(true)
       end
     end
 

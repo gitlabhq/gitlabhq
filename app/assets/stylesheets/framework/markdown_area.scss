@@ -120,6 +120,10 @@
     // Ensure that image does not exceed viewport
     max-height: calc(100vh - 100px);
   }
+
+  table {
+    @include markdown-table;
+  }
 }
 
 .toolbar-group {
@@ -161,12 +165,23 @@
 
   .cur {
     .avatar {
-      border: 1px solid $white-light;
       @include disableAllAnimation;
+      border: 1px solid $white-light;
     }
   }
 
   ul > li {
     white-space: nowrap;
+  }
+}
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

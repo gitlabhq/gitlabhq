@@ -32,7 +32,7 @@ module Projects
         issuable: noteable,
         current_user: current_user
       }
-      SlashCommands::InterpretService.command_definitions.map do |definition|
+      QuickActions::InterpretService.command_definitions.map do |definition|
         next unless definition.available?(opts)
 
         definition.to_h(opts)

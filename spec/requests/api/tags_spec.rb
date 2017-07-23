@@ -1,8 +1,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::Tags, api: true  do
-  include ApiHelpers
+describe API::Tags do
   include RepoHelpers
 
   let(:user) { create(:user) }

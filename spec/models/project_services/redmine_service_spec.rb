@@ -8,7 +8,9 @@ describe RedmineService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:project_url) }
       it { is_expected.to validate_presence_of(:issues_url) }
@@ -19,7 +21,9 @@ describe RedmineService, models: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:project_url) }
       it { is_expected.not_to validate_presence_of(:issues_url) }
@@ -27,11 +31,11 @@ describe RedmineService, models: true do
     end
   end
 
-  describe '#reference_pattern' do
+  describe '.reference_pattern' do
     it_behaves_like 'allows project key on reference pattern'
 
     it 'does allow # on the reference' do
-      expect(subject.reference_pattern.match('#123')[:issue]).to eq('123')
+      expect(described_class.reference_pattern.match('#123')[:issue]).to eq('123')
     end
   end
 end

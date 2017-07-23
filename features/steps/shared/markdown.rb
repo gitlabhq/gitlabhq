@@ -3,7 +3,7 @@ module SharedMarkdown
 
   def header_should_have_correct_id_and_link(level, text, id, parent = ".wiki")
     node = find("#{parent} h#{level} a#user-content-#{id}")
-    expect(node[:href]).to eq "##{id}"
+    expect(node[:href]).to end_with "##{id}"
 
     # Work around a weird Capybara behavior where calling `parent` on a node
     # returns the whole document, not the node's actual parent element
@@ -30,7 +30,7 @@ module SharedMarkdown
   end
 
   step 'I should see the Markdown write tab' do
-    expect(find('.gfm-form')).to have_css('.js-md-write-button', visible: true)
+    expect(first('.gfm-form')).to have_link('Write', visible: true)
   end
 
   step 'I should see the Markdown preview' do
@@ -40,7 +40,7 @@ module SharedMarkdown
   step 'The Markdown preview tab should display rendered Markdown' do
     page.within('.gfm-form') do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
+      expect(find('.js-md-preview')).to have_css('gl-emoji', visible: true)
     end
   end
 
@@ -49,9 +49,9 @@ module SharedMarkdown
   end
 
   step 'I preview a description text like "Bug fixed :smile:"' do
-    page.within('.gfm-form') do
+    page.within(first('.gfm-form')) do
       fill_in 'Description', with: 'Bug fixed :smile:'
-      find('.js-md-preview-button').click
+      click_link 'Preview'
     end
   end
 

@@ -1,15 +1,15 @@
 /* eslint-disable comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
-/* global Api */
+import Api from '../api';
 
-require('../blob/template_selector');
+import TemplateSelector from '../blob/template_selector';
 
 ((global) => {
-  class IssuableTemplateSelector extends gl.TemplateSelector {
+  class IssuableTemplateSelector extends TemplateSelector {
     constructor(...args) {
       super(...args);
       this.projectPath = this.dropdown.data('project-path');
       this.namespacePath = this.dropdown.data('namespace-path');
-      this.issuableType = this.wrapper.data('issuable-type');
+      this.issuableType = this.$dropdownContainer.data('issuable-type');
       this.titleInput = $(`#${this.issuableType}_title`);
 
       const initialQuery = {
@@ -41,16 +41,16 @@ require('../blob/template_selector');
     }
 
     setInputValueToTemplateContent() {
-      // `this.requestFileSuccess` sets the value of the description input field
+      // `this.setEditorContent` sets the value of the description input field
       // to the content of the template selected.
       if (this.titleInput.val() === '') {
         // If the title has not yet been set, focus the title input and
         // skip focusing the description input by setting `true` as the
-        // `skipFocus` option to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, { skipFocus: true });
+        // `skipFocus` option to `setEditorContent`.
+        this.setEditorContent(this.currentTemplate, { skipFocus: true });
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate, { skipFocus: false });
+        this.setEditorContent(this.currentTemplate, { skipFocus: false });
       }
       return;
     }

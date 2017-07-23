@@ -1,19 +1,10 @@
 /* global CommitsList */
 
-require('vendor/jquery.endless-scroll');
-require('~/pager');
-require('~/commits');
+import 'vendor/jquery.endless-scroll';
+import '~/pager';
+import '~/commits';
 
 (() => {
-  // TODO: remove this hack!
-  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  let phantomjs;
-  try {
-    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
-  } catch (err) {
-    phantomjs = false;
-  }
-
   describe('Commits List', () => {
     beforeEach(() => {
       setFixtures(`
@@ -28,6 +19,32 @@ require('~/commits');
       expect(CommitsList).toBeDefined();
     });
 
+    describe('processCommits', () => {
+      it('should join commit headers', () => {
+        CommitsList.$contentList = $(`
+          <div>
+            <li class="commit-header" data-day="2016-09-20">
+              <span class="day">20 Sep, 2016</span>
+              <span class="commits-count">1 commit</span>
+            </li>
+            <li class="commit"></li>
+          </div>
+        `);
+
+        const data = `
+          <li class="commit-header" data-day="2016-09-20">
+            <span class="day">20 Sep, 2016</span>
+            <span class="commits-count">1 commit</span>
+          </li>
+          <li class="commit"></li>
+        `;
+
+        // The last commit header should be removed
+        // since the previous one has the same data-day value.
+        expect(CommitsList.processCommits(data).find('li.commit-header').length).toBe(0);
+      });
+    });
+
     describe('on entering input', () => {
       let ajaxSpy;
 
@@ -35,9 +52,7 @@ require('~/commits');
         CommitsList.init(25);
         CommitsList.searchField.val('');
 
-        if (!phantomjs) {
-          spyOn(history, 'replaceState').and.stub();
-        }
+        spyOn(history, 'replaceState').and.stub();
         ajaxSpy = spyOn(jQuery, 'ajax').and.callFake((req) => {
           req.success({
             data: '<li>Result</li>',

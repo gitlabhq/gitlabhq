@@ -10,12 +10,12 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I search for "Foo"' do
     fill_in "dashboard_search", with: "Foo"
-    click_button "Search"
+    find('.btn-search').trigger('click')
   end
 
   step 'I search for "rspec"' do
     fill_in "dashboard_search", with: "rspec"
-    click_button "Search"
+    find('.btn-search').trigger('click')
   end
 
   step 'I search for "rspec" on project page' do
@@ -25,7 +25,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I search for "Wiki content"' do
     fill_in "dashboard_search", with: "content"
-    click_button "Search"
+    find('.btn-search').trigger('click')
   end
 
   step 'I click "Issues" link' do
@@ -35,7 +35,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I click project "Shop" link' do
-    click_button 'Project'
+    find('.js-search-project-dropdown').trigger('click')
     page.within '.project-filter' do
       click_link project.name_with_namespace
     end

@@ -28,7 +28,7 @@ describe AsanaService, models: true do
         commits: messages.map do |m|
           {
             message: m,
-            url: 'https://gitlab.com/',
+            url: 'https://gitlab.com/'
           }
         end
       }

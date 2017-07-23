@@ -1,47 +1,59 @@
-# GitLab Contributing Process
+## GitLab Core Team & GitLab Inc. Contribution Process
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Purpose of describing the contributing process](#purpose-of-describing-the-contributing-process)
+- [Common actions](#common-actions)
+  - [Merge request coaching](#merge-request-coaching)
+- [Assigning issues](#assigning-issues)
+- [Be kind](#be-kind)
+- [Feature freeze on the 7th for the release on the 22nd](#feature-freeze-on-the-7th-for-the-release-on-the-22nd)
+  - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
+  - [On the 7th](#on-the-7th)
+  - [After the 7th](#after-the-7th)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+  - [Retrospective](#retrospective)
+  - [Kickoff](#kickoff)
+- [Copy & paste responses](#copy--paste-responses)
+  - [Improperly formatted issue](#improperly-formatted-issue)
+  - [Issue report for old version](#issue-report-for-old-version)
+  - [Support requests and configuration questions](#support-requests-and-configuration-questions)
+  - [Code format](#code-format)
+  - [Issue fixed in newer version](#issue-fixed-in-newer-version)
+  - [Improperly formatted merge request](#improperly-formatted-merge-request)
+  - [Inactivity close of an issue](#inactivity-close-of-an-issue)
+  - [Inactivity close of a merge request](#inactivity-close-of-a-merge-request)
+  - [Accepting merge requests](#accepting-merge-requests)
+  - [Only accepting merge requests with green tests](#only-accepting-merge-requests-with-green-tests)
+  - [Closing down the issue tracker on GitHub](#closing-down-the-issue-tracker-on-github)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
 
 ## Purpose of describing the contributing process
 
-Below we describe the contributing process to GitLab for two reasons. So that
-contributors know what to expect from maintainers (possible responses, friendly
-treatment, etc.). And so that maintainers know what to expect from contributors
-(use the latest version, ensure that the issue is addressed, friendly treatment,
-etc.).
+Below we describe the contributing process to GitLab for two reasons:
+
+1. Contributors know what to expect from maintainers (possible responses, friendly
+  treatment, etc.)
+1. Maintainers know what to expect from contributors (use the latest version,
+  ensure that the issue is addressed, friendly treatment, etc.).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Common actions
 
-### Issue triaging
-
-Our issue triage policies are [described in our handbook]. You are very welcome
-to help the GitLab team triage issues. We also organize [issue bash events] once
-every quarter.
-
-The most important thing is making sure valid issues receive feedback from the
-development team. Therefore the priority is mentioning developers that can help
-on those issues. Please select someone with relevant experience from
-[GitLab team][team]. If there is nobody mentioned with that expertise
-look in the commit history for the affected files to find someone. Avoid
-mentioning the lead developer, this is the person that is least likely to give a
-timely response. If the involvement of the lead developer is needed the other
-core team members will mention this person.
-
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
-[issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
-
 ### Merge request coaching
 
 Several people from the [GitLab team][team] are helping community members to get
-their contributions accepted by meeting our [Definition of done](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done).
+their contributions accepted by meeting our [Definition of done][done].
 
 What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
-
-## Workflow labels
-
-Labelling issues is described in the [GitLab Inc engineering workflow].
-
-[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 
 ## Assigning issues
 
@@ -57,19 +69,72 @@ star, smile, etc.). Some good tips about code reviews can be found in our
 
 [Code Review Guidelines]: https://docs.gitlab.com/ce/development/code_review.html
 
-## Feature Freeze
+## Feature freeze on the 7th for the release on the 22nd
 
-After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
+After the 7th (Pacific Standard Time Zone) of each month, RC1 of the upcoming release (to be shipped on the 22nd) is created and deployed to GitLab.com and the stable branch for this release is frozen, which means master is no longer merged into it.
 Merge requests may still be merged into master during this period,
 but they will go into the _next_ release, unless they are manually cherry-picked into the stable branch.
 By freezing the stable branches 2 weeks prior to a release, we reduce the risk of a last minute merge request potentially breaking things.
 
+### Between the 1st and the 7th
+
+These types of merge requests for the upcoming release need special consideration:
+
+* **Large features**: a large feature is one that is highlighted in the kick-off
+  and the release blogpost; typically this will have its own channel in Slack
+  and a dedicated team with front-end, back-end, and UX.
+* **Small features**: any other feature request.
+
+**Large features** must be with a maintainer **by the 1st**. This means that:
+
+* There is a merge request (even if it's WIP).
+* The person (or people, if it needs a frontend and backend maintainer) who will
+  ultimately be responsible for merging this have been pinged on the MR.
+
+It's OK if merge request isn't completely done, but this allows the maintainer
+enough time to make the decision about whether this can make it in before the
+freeze. If the maintainer doesn't think it will make it, they should inform the
+developers working on it and the Product Manager responsible for the feature.
+
+The maintainer can also choose to assign a reviewer to perform an initial
+review, but this way the maintainer is unlikely to be surprised by receiving an
+MR later in the cycle.
+
+**Small features** must be with a reviewer (not necessarily maintainer) **by the
+3rd**.
+
+Most merge requests from the community do not have a specific release
+target. However, if one does and falls into either of the above categories, it's
+the reviewer's responsibility to manage the above communication and assignment
+on behalf of the community member.
+
+### On the 7th
+
+Merge requests should still be complete, following the
+[definition of done][done]. The single exception is documentation, and this can
+only be left until after the freeze if:
+
+* There is a follow-up issue to add documentation.
+* It is assigned to the person writing documentation for this feature, and they
+  are aware of it.
+* It is in the correct milestone, with the ~Deliverable label.
+
+All Community Edition merge requests from GitLab team members merged on the
+freeze date (the 7th) should have a corresponding Enterprise Edition merge
+request, even if there are no conflicts. This is to reduce the size of the
+subsequent EE merge, as we often merge a lot to CE on the release date. For more
+information, see
+[limit conflicts with EE when developing on CE][limit_ee_conflicts].
+
+### After the 7th
+
 Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
 and security issues will be cherry-picked into the stable branch.
 Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be released in the next RC (before the 22nd) or patch release (after the 22nd).
+These fixes will be shipped in the next RC for that release if it is before the 22nd.
+If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
 
-If you think a merge request should go into the upcoming release even though it does not meet these requirements,
+If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
 
 1. a Release Manager
@@ -92,6 +157,29 @@ release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set, so that release managers can find and pick them.
 Merge requests without a milestone and this label will
 not be merged into any stable branches.
+
+## Release retrospective and kickoff
+
+### Retrospective
+
+After each release, we have a retrospective call where we discuss what went well,
+what went wrong, and what we can improve for the next release. The
+[retrospective notes] are public and you are invited to comment on them.
+If you're interested, you can even join the
+[retrospective call][retro-kickoff-call], on the first working day after the
+22nd at 6pm CET / 9am PST.
+
+### Kickoff
+
+Before working on the next release, we have a
+kickoff call to explain what we expect to ship in the next release. The
+[kickoff notes] are public and you are invited to comment on them.
+If you're interested, you can even join the [kickoff call][retro-kickoff-call],
+on the first working day after the 7th at 6pm CET / 9am PST..
+
+[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
+[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
+[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
 
 ## Copy & paste responses
 
@@ -158,3 +246,5 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 [contribution acceptance criteria]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
+[done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
+[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html

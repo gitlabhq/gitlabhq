@@ -1,5 +1,0 @@
----
-title: Use webpack CommonsChunkPlugin to place common javascript libraries in their
-  own bundles
-merge_request: 9647
-author:

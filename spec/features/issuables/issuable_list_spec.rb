@@ -8,7 +8,7 @@ describe 'issuable list', feature: true do
 
   before do
     project.add_user(user, :developer)
-    login_as(user)
+    sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end
 
@@ -39,23 +39,26 @@ describe 'issuable list', feature: true do
 
   def visit_issuable_list(issuable_type)
     if issuable_type == :issue
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     else
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      visit project_merge_requests_path(project)
     end
   end
 
   def create_issuables(issuable_type)
-    3.times do
+    3.times do |n|
       issuable =
         if issuable_type == :issue
           create(:issue, project: project, author: user)
         else
-          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: FFaker::Name.name)
+          create(:merge_request, source_project: project, source_branch: generate(:branch))
+          source_branch = FFaker::Name.name
+          pipeline = create(:ci_empty_pipeline, project: project, ref: source_branch, status: %w(running failed success).sample, sha: 'any')
+          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: source_branch, head_pipeline: pipeline)
         end
 
       2.times do
-        create(:note_on_issue, noteable: issuable, project: project, note: 'Test note')
+        create(:note_on_issue, noteable: issuable, project: project)
       end
 
       create(:award_emoji, :downvote, awardable: issuable)
@@ -65,11 +68,10 @@ describe 'issuable list', feature: true do
     if issuable_type == :issue
       issue = Issue.reorder(:iid).first
       merge_request = create(:merge_request,
-                              title: FFaker::Lorem.sentence,
                               source_project: project,
-                              source_branch: FFaker::Name.name)
+                              source_branch: generate(:branch))
 
-      MergeRequestsClosingIssues.create!(issue: issue, merge_request: merge_request)
+      create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
     end
   end
 end

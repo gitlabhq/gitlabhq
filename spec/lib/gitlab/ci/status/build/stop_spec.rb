@@ -19,7 +19,9 @@ describe Gitlab::Ci::Status::Build::Stop do
 
     describe '#has_action?' do
       context 'when user is allowed to update build' do
-        before { build.project.team << [user, :developer] }
+        before do
+          build.project.team << [user, :developer]
+        end
 
         it { is_expected.to have_action }
       end

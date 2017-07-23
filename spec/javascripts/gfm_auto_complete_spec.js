@@ -1,13 +1,15 @@
 /* eslint no-param-reassign: "off" */
 
-require('~/gfm_auto_complete');
-require('vendor/jquery.caret');
-require('vendor/jquery.atwho');
+import GfmAutoComplete from '~/gfm_auto_complete';
 
-const global = window.gl || (window.gl = {});
-const GfmAutoComplete = global.GfmAutoComplete;
+import 'vendor/jquery.caret';
+import 'vendor/jquery.atwho';
 
 describe('GfmAutoComplete', function () {
+  const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
+    fetchData: () => {},
+  });
+
   describe('DefaultOptions.sorter', function () {
     describe('assets loading', function () {
       beforeEach(function () {
@@ -16,7 +18,7 @@ describe('GfmAutoComplete', function () {
         this.atwhoInstance = { setting: {} };
         this.items = [];
 
-        this.sorterValue = GfmAutoComplete.DefaultOptions.sorter
+        this.sorterValue = gfmAutoCompleteCallbacks.sorter
           .call(this.atwhoInstance, '', this.items);
       });
 
@@ -38,7 +40,7 @@ describe('GfmAutoComplete', function () {
       it('should enable highlightFirst if alwaysHighlightFirst is set', function () {
         const atwhoInstance = { setting: { alwaysHighlightFirst: true } };
 
-        GfmAutoComplete.DefaultOptions.sorter.call(atwhoInstance);
+        gfmAutoCompleteCallbacks.sorter.call(atwhoInstance);
 
         expect(atwhoInstance.setting.highlightFirst).toBe(true);
       });
@@ -46,7 +48,7 @@ describe('GfmAutoComplete', function () {
       it('should enable highlightFirst if a query is present', function () {
         const atwhoInstance = { setting: {} };
 
-        GfmAutoComplete.DefaultOptions.sorter.call(atwhoInstance, 'query');
+        gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, 'query');
 
         expect(atwhoInstance.setting.highlightFirst).toBe(true);
       });
@@ -58,7 +60,7 @@ describe('GfmAutoComplete', function () {
         const items = [];
         const searchKey = 'searchKey';
 
-        GfmAutoComplete.DefaultOptions.sorter.call(atwhoInstance, query, items, searchKey);
+        gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, query, items, searchKey);
 
         expect($.fn.atwho.default.callbacks.sorter).toHaveBeenCalledWith(query, items, searchKey);
       });
@@ -67,7 +69,7 @@ describe('GfmAutoComplete', function () {
 
   describe('DefaultOptions.matcher', function () {
     const defaultMatcher = (context, flag, subtext) => (
-      GfmAutoComplete.DefaultOptions.matcher.call(context, flag, subtext)
+      gfmAutoCompleteCallbacks.matcher.call(context, flag, subtext)
     );
 
     const flagsUseDefaultMatcher = ['@', '#', '!', '~', '%'];

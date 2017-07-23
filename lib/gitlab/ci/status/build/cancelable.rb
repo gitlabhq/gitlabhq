@@ -2,9 +2,7 @@ module Gitlab
   module Ci
     module Status
       module Build
-        class Cancelable < SimpleDelegator
-          include Status::Extended
-
+        class Cancelable < Status::Extended
           def has_action?
             can?(user, :update_build, subject)
           end
@@ -14,9 +12,7 @@ module Gitlab
           end
 
           def action_path
-            cancel_namespace_project_build_path(subject.project.namespace,
-                                                subject.project,
-                                                subject)
+            cancel_project_job_path(subject.project, subject)
           end
 
           def action_method

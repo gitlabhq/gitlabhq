@@ -1,3 +1,5 @@
+@import "./issues/issue_count_badge";
+
 .issues-list {
   .issue {
     padding: 10px 0 10px $gl-padding;
@@ -16,6 +18,15 @@
       margin-bottom: 3px;
      }
   }
+}
+
+.issue-realtime-pre-pulse {
+  opacity: 0;
+}
+
+.issue-realtime-trigger-pulse {
+  transition: opacity $fade-in-duration linear;
+  opacity: 1;
 }
 
 .check-all-holder {
@@ -42,9 +53,22 @@ ul.related-merge-requests > li {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  align-items: center;
 
   .merge-request-id {
     flex-shrink: 0;
+  }
+
+  .merge-request-info {
+    margin-left: 5px;
+  }
+
+  .row_title {
+    vertical-align: bottom;
+  }
+
+  gl-emoji {
+    font-size: 1em;
   }
 }
 
@@ -56,7 +80,6 @@ ul.related-merge-requests > li {
 
 .merge-request-id {
   display: inline-block;
-  width: 3em;
 }
 
 .merge-request-status {
@@ -66,21 +89,17 @@ ul.related-merge-requests > li {
   height: 20px;
   border-radius: 3px;
   line-height: 18px;
-  border: 1px solid;
 
   &.merged {
-    border-color: darken($blue-normal, 10%);
-    background: $blue-normal;
+    background: $blue-500;
   }
 
   &.closed {
-    border-color: darken($red-normal, 10%);
-    background: $red-normal;
+    background: $red-500;
   }
 
   &.open {
-    border: 1px solid darken($green-normal, 10%);
-    background: $green-normal;
+    background: $green-500;
   }
 }
 
@@ -102,11 +121,15 @@ ul.related-merge-requests > li {
   }
 }
 
-.merge-request-ci-status {
+.merge-request-ci-status,
+.related-merge-requests {
+  .ci-status-link {
+    display: block;
+    margin-right: 5px;
+  }
+
   svg {
-    margin-right: 4px;
-    position: relative;
-    top: 1px;
+    display: block;
   }
 }
 
@@ -156,4 +179,91 @@ ul.related-merge-requests > li {
 
 .recaptcha {
   margin-bottom: 30px;
+}
+
+.new-branch-col {
+  padding-top: 10px;
+}
+
+.create-mr-dropdown-wrap {
+  .btn-group:not(.hide) {
+    display: flex;
+  }
+
+  .js-create-merge-request {
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+
+  .dropdown-menu {
+    width: 300px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    display: none;
+  }
+
+  .dropdown-toggle {
+    .fa-caret-down {
+      pointer-events: none;
+      color: inherit;
+      margin-left: 0;
+    }
+  }
+
+  li:not(.divider) {
+    padding: 6px;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+
+    &.droplab-item-selected {
+      .icon-container {
+        i {
+          visibility: visible;
+        }
+      }
+    }
+
+    .icon-container {
+      float: left;
+      padding-left: 6px;
+
+      i {
+        visibility: hidden;
+      }
+    }
+
+    .description {
+      padding-left: 30px;
+      font-size: 13px;
+
+      strong {
+        display: block;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .emoji-block .row {
+    display: flex;
+
+    .new-branch-col {
+      padding-top: 0;
+      text-align: right;
+      align-self: center;
+    }
+
+    .create-mr-dropdown-wrap {
+      .btn-group:not(.hide) {
+        display: inline-block;
+      }
+    }
+  }
 }

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::Groups, api: true  do
-  include ApiHelpers
+describe API::Groups do
   include UploadHelpers
 
   let(:user1) { create(:user, can_create_group: false) }
@@ -74,7 +73,7 @@ describe API::Groups, api: true  do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }.stringify_keys
         exposed_attributes = attributes.dup
         exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
@@ -179,7 +178,7 @@ describe API::Groups, api: true  do
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
-        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
@@ -430,7 +429,7 @@ describe API::Groups, api: true  do
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
-      it "creates a nested group" do
+      it "creates a nested group", :nested_groups do
         parent = create(:group)
         parent.add_owner(user3)
         group = attributes_for(:group, { parent_id: parent.id })
@@ -514,8 +513,8 @@ describe API::Groups, api: true  do
     let(:project_path) { project.full_path.gsub('/', '%2F') }
 
     before(:each) do
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:execute).and_return(true)
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:execute).and_return(true)
     end
 
     context "when authenticated as user" do

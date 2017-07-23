@@ -22,13 +22,6 @@
 }
 
 @media (min-width: $screen-sm-min) {
-  .issues-filters,
-  .issues_bulk_update {
-    .dropdown-menu-toggle {
-      width: 132px;
-    }
-  }
-
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -56,7 +49,7 @@
   }
 }
 
-.filtered-search-container {
+.filtered-search-wrapper {
   display: -webkit-flex;
   display: flex;
 
@@ -76,12 +69,21 @@
   }
 
   .input-token {
-    flex: 1;
-    -webkit-flex: 1;
+    max-width: 200px;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      color: inherit;
+    }
   }
 
-  .filtered-search-token + .input-token:not(:last-child) {
-    max-width: 200px;
+  .input-token:only-child,
+  .input-token:last-child {
+    flex: 1;
+    -webkit-flex: 1;
+    max-width: inherit;
   }
 }
 
@@ -89,6 +91,7 @@
 .filtered-search-term {
   display: -webkit-flex;
   display: flex;
+  flex-shrink: 0;
   margin-top: 5px;
   margin-bottom: 5px;
 
@@ -111,21 +114,62 @@
     text-transform: capitalize;
   }
 
-  .value {
+  .value-container {
     background-color: $white-normal;
     color: $filter-value-text-color;
     border-radius: 0 2px 2px 0;
     margin-right: 5px;
+    padding-right: 8px;
   }
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
+  .value {
+    padding-right: 0;
+  }
+
+  .remove-token {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 0;
+
+    .fa-close {
+      color: $gl-text-color-secondary;
     }
 
-    .value {
-      background-color: $filter-value-selected-color;
+    &:hover .fa-close {
+      color: $gl-text-color;
     }
+
+    &.inverted {
+      .fa-close {
+        color: $gl-text-color-secondary-inverted;
+      }
+
+      &:hover .fa-close {
+        color: $gl-text-color-inverted;
+      }
+    }
+  }
+}
+
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
+  .name {
+    background-color: $filter-name-selected-color;
+  }
+
+  .value-container {
+    box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
+  }
+}
+
+.droplab-dropdown li.filtered-search-token {
+  padding: 0;
+
+  &:hover,
+  &:focus {
+    background-color: inherit;
+    color: inherit;
   }
 }
 
@@ -144,44 +188,46 @@
 .scroll-container {
   display: -webkit-flex;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: nowrap;
   width: 100%;
 }
 
-.filtered-search-input-container {
+.filtered-search-box {
+  position: relative;
+  flex: 1;
   display: -webkit-flex;
   display: flex;
-  position: relative;
   width: 100%;
+  min-width: 0;
   border: 1px solid $border-color;
   background-color: $white-light;
-  max-width: 87%;
 
   @media (max-width: $screen-xs-min) {
-    -webkit-flex: 1 1 100%;
-    flex: 1 1 100%;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
     margin-bottom: 10px;
+  }
 
-    .dropdown-menu {
-      width: auto;
-      left: 0;
-      right: 0;
-      max-width: none;
-      min-width: 100%;
-    }
+  &:hover {
+    @extend .form-control:hover;
+  }
+
+  &.focus,
+  &.focus:hover {
+    border-color: $dropdown-input-focus-border;
+    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+  }
+
+  &.focus .fa-filter {
+    color: $common-gray-dark;
   }
 
   .form-control {
     position: relative;
     min-width: 200px;
-    padding-left: 0;
-    padding-right: 25px;
+    padding: 5px 25px 6px 0;
     border-color: transparent;
-
-    &:focus ~ .fa-filter {
-      color: $common-gray-dark;
-    }
 
     &:focus,
     &:hover {
@@ -207,9 +253,6 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: absolute;
-    right: 0;
-    height: 100%;
     outline: none;
     z-index: 1;
 
@@ -219,20 +262,123 @@
   }
 }
 
-.dropdown-menu .filter-dropdown-item {
-  padding: 0;
+.filtered-search-box-input-container {
+  flex: 1;
+  position: relative;
+  // Fix PhantomJS not supporting `flex: 1;` properly.
+  // This is important because it can change the expected `e.target` when clicking things in tests.
+  // See https://gitlab.com/gitlab-org/gitlab-ce/blob/b54acba8b732688c59fe2f38510c469dc86ee499/spec/features/issues/filtered_search/visual_tokens_spec.rb#L61
+  // - With `width: 100%`: `e.target` = `.tokens-container`, https://i.imgur.com/jGq7wbx.png
+  // - Without `width: 100%`: `e.target` = `.filtered-search`, https://i.imgur.com/cNI2CyT.png
+  width: 100%;
+  min-width: 0;
 }
 
-.filter-dropdown {
-  max-height: 215px;
+.filtered-search-input-dropdown-menu {
+  max-height: 225px;
+  max-width: 280px;
   overflow: auto;
+
+  @media (max-width: $screen-xs-min) {
+    width: auto;
+    left: 0;
+    right: 0;
+    max-width: none;
+    min-width: 100%;
+  }
 }
 
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-  .issues-details-filters {
-    .dropdown-menu-toggle {
-      width: 100px;
+.filtered-search-history-dropdown-wrapper {
+  position: static;
+  display: flex;
+  flex-direction: column;
+}
+
+.filtered-search-history-dropdown-toggle-button {
+  flex: 1;
+  width: auto;
+  border-radius: 0;
+  border: 0;
+  border-right: 1px solid $border-color;
+  color: $gl-text-color-secondary;
+  transition: color 0.1s linear;
+
+  &:hover,
+  &:focus {
+    color: $gl-text-color;
+    border-color: $dropdown-input-focus-border;
+    outline: none;
+
+    svg {
+      fill: $gl-text-color;
     }
+  }
+
+  svg {
+    height: 14px;
+    width: 14px;
+    fill: $gl-text-color-secondary;
+    vertical-align: middle;
+  }
+
+  .dropdown-toggle-text {
+    display: inline-block;
+    color: inherit;
+
+    .fa {
+      vertical-align: middle;
+      color: inherit;
+    }
+  }
+}
+
+.filtered-search-history-dropdown {
+  width: 40%;
+
+  @media (max-width: $screen-xs-min) {
+    left: 0;
+    right: 0;
+    max-width: none;
+  }
+}
+
+.filtered-search-history-dropdown-content {
+  max-height: none;
+}
+
+.filtered-search-history-dropdown-item,
+.filtered-search-history-clear-button {
+  @include dropdown-link;
+
+  overflow: hidden;
+  width: 100%;
+  margin: 0.5em 0;
+
+  background-color: transparent;
+  border: 0;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.filtered-search-history-dropdown-token {
+  display: inline;
+
+  &:not(:last-child) {
+    margin-right: 0.3em;
+  }
+
+  > .value {
+    font-weight: 600;
+  }
+}
+
+.filter-dropdown-container {
+  display: -webkit-flex;
+  display: flex;
+
+  .dropdown-toggle {
+    line-height: 22px;
   }
 }
 
@@ -242,7 +388,9 @@
     background-color: $white-light;
     border-top: 0;
   }
+}
 
+@media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
     .dropdown {
@@ -283,6 +431,7 @@
 
     .fa {
       width: 15px;
+      line-height: $line-height-base;
     }
 
     .dropdown-label-box {
@@ -315,19 +464,18 @@
     -webkit-flex-direction: column;
     flex-direction: column;
 
-    &> span {
+    > span {
       white-space: normal;
       word-break: break-all;
     }
   }
 }
 
-.filter-dropdown-item.dropdown-active {
-  .btn {
-    @extend %filter-dropdown-item-btn-hover;
-  }
+.filter-dropdown-item.droplab-item-active .btn {
+  @extend %filter-dropdown-item-btn-hover;
 }
 
 .filter-dropdown-loading {
   padding: 8px 16px;
+  text-align: center;
 }

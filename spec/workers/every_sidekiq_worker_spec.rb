@@ -5,8 +5,8 @@ describe 'Every Sidekiq worker' do
     root = Rails.root.join('app', 'workers')
     concerns = root.join('concerns').to_s
 
-    workers = Dir[root.join('**', '*.rb')].
-      reject { |path| path.start_with?(concerns) }
+    workers = Dir[root.join('**', '*.rb')]
+      .reject { |path| path.start_with?(concerns) }
 
     workers.map do |path|
       ns = Pathname.new(path).relative_path_from(root).to_s.gsub('.rb', '')
@@ -22,9 +22,9 @@ describe 'Every Sidekiq worker' do
   end
 
   it 'uses the cronjob queue when the worker runs as a cronjob' do
-    cron_workers = Settings.cron_jobs.
-      map { |job_name, options| options['job_class'].constantize }.
-      to_set
+    cron_workers = Settings.cron_jobs
+      .map { |job_name, options| options['job_class'].constantize }
+      .to_set
 
     workers.each do |worker|
       next unless cron_workers.include?(worker)

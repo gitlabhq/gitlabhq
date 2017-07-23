@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Ci::API::Builds do
-  include ApiHelpers
-
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: %w(mysql ruby)) }
   let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
   let(:last_update) { nil }
@@ -71,6 +69,72 @@ describe Ci::API::Builds do
         end
       end
 
+      context 'when an old image syntax is used' do
+        before do
+          build.update!(options: { image: 'codeclimate' })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "image" => "codeclimate" })
+        end
+      end
+
+      context 'when a new image syntax is used' do
+        before do
+          build.update!(options: { image: { name: 'codeclimate' } })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "image" => "codeclimate" })
+        end
+      end
+
+      context 'when an old service syntax is used' do
+        before do
+          build.update!(options: { services: ['mysql'] })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "services" => ["mysql"] })
+        end
+      end
+
+      context 'when a new service syntax is used' do
+        before do
+          build.update!(options: { services: [name: 'mysql'] })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "services" => ["mysql"] })
+        end
+      end
+
+      context 'when no image or service is defined' do
+        before do
+          build.update!(options: {})
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+      
+          expect(json_response["options"]).to be_empty
+        end
+      end
+
       context 'when there is a pending build' do
         it 'starts a build' do
           register_builds info: { platform: :darwin }
@@ -81,8 +145,8 @@ describe Ci::API::Builds do
           expect(runner.reload.platform).to eq("darwin")
           expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true }
           )
         end
@@ -93,8 +157,8 @@ describe Ci::API::Builds do
 
         context 'when concurrently updating build' do
           before do
-            expect_any_instance_of(Ci::Build).to receive(:run!).
-              and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+            expect_any_instance_of(Ci::Build).to receive(:run!)
+              .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
           end
 
           it 'returns a conflict' do
@@ -137,6 +201,18 @@ describe Ci::API::Builds do
               expect(json_response).to have_key('credentials')
               expect(json_response['credentials']).not_to include(registry_credentials)
             end
+          end
+        end
+
+        context 'when docker configuration options are used' do
+          let!(:build) { create(:ci_build, :extended_options, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+
+          it 'starts a build' do
+            register_builds info: { platform: :darwin }
+
+            expect(response).to have_http_status(201)
+            expect(json_response['options']['image']).to eq('ruby:2.1')
+            expect(json_response['options']['services']).to eq(['postgres', 'docker:dind'])
           end
         end
       end
@@ -182,12 +258,12 @@ describe Ci::API::Builds do
 
           expect(response).to have_http_status(201)
           expect(json_response["variables"]).to include(
-            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-            { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
+            { "key" => "CI_JOB_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_JOB_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_PIPELINE_TRIGGERED", "value" => "true", "public" => true },
             { "key" => "DB_NAME", "value" => "postgres", "public" => true },
             { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
-            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },
+            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false }
           )
         end
       end
@@ -231,7 +307,9 @@ describe Ci::API::Builds do
         end
 
         context 'when runner is allowed to pick untagged builds' do
-          before { runner.update_column(:run_untagged, true) }
+          before do
+            runner.update_column(:run_untagged, true)
+          end
 
           it 'picks build' do
             register_builds
@@ -285,7 +363,7 @@ describe Ci::API::Builds do
       end
 
       it 'does not override trace information when no trace is given' do
-        expect(build.reload.trace).to eq 'BUILD TRACE'
+        expect(build.reload.trace.raw).to eq 'BUILD TRACE'
       end
 
       context 'job has been erased' do
@@ -309,9 +387,11 @@ describe Ci::API::Builds do
 
       def patch_the_trace(content = ' appended', request_headers = nil)
         unless request_headers
-          offset = build.trace_length
-          limit = offset + content.length - 1
-          request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          build.trace.read do |stream|
+            offset = stream.size
+            limit = offset + content.length - 1
+            request_headers = headers.merge({ 'Content-Range' => "#{offset}-#{limit}" })
+          end
         end
 
         Timecop.travel(build.updated_at + update_interval) do
@@ -335,7 +415,7 @@ describe Ci::API::Builds do
       context 'when request is valid' do
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Build-Status'
         end
@@ -346,7 +426,7 @@ describe Ci::API::Builds do
           it 'changes the build trace' do
             patch_the_trace
 
-            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(build.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -355,7 +435,7 @@ describe Ci::API::Builds do
             it "doesn't change the build.trace" do
               force_patch_the_trace
 
-              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+              expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -368,7 +448,7 @@ describe Ci::API::Builds do
           it 'changes the build.trace' do
             patch_the_trace
 
-            expect(build.reload.trace).to eq 'BUILD TRACE appended appended'
+            expect(build.reload.trace.raw).to eq 'BUILD TRACE appended appended'
           end
 
           context 'when Runner makes a force-patch' do
@@ -377,7 +457,7 @@ describe Ci::API::Builds do
             it "doesn't change the build.trace" do
               force_patch_the_trace
 
-              expect(build.reload.trace).to eq 'BUILD TRACE appended'
+              expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
             end
           end
         end
@@ -403,7 +483,7 @@ describe Ci::API::Builds do
 
         it 'gets correct response' do
           expect(response.status).to eq 202
-          expect(build.reload.trace).to eq 'BUILD TRACE appended'
+          expect(build.reload.trace.raw).to eq 'BUILD TRACE appended'
           expect(response.header).to have_key 'Range'
           expect(response.header).to have_key 'Build-Status'
         end
@@ -455,7 +535,9 @@ describe Ci::API::Builds do
       let(:token) { build.token }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => token) }
 
-      before { build.run! }
+      before do
+        build.run!
+      end
 
       describe "POST /builds/:id/artifacts/authorize" do
         context "authorizes posting artifact to running build" do
@@ -511,7 +593,9 @@ describe Ci::API::Builds do
         end
 
         context 'authorization token is invalid' do
-          before { post authorize_url, { token: 'invalid', filesize: 100 } }
+          before do
+            post authorize_url, { token: 'invalid', filesize: 100 }
+          end
 
           it 'responds with forbidden' do
             expect(response).to have_http_status(403)
@@ -652,8 +736,8 @@ describe Ci::API::Builds do
                 build.reload
                 expect(response).to have_http_status(201)
                 expect(json_response['artifacts_expire_at']).not_to be_empty
-                expect(build.artifacts_expire_at).
-                  to be_within(5.minutes).of(7.days.from_now)
+                expect(build.artifacts_expire_at)
+                  .to be_within(5.minutes).of(7.days.from_now)
               end
             end
 

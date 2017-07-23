@@ -1,23 +1,35 @@
-/* eslint-disable func-names, prefer-arrow-callback, no-unused-vars,
-no-param-reassign, no-plusplus */
-/* global Vue */
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 
+Vue.use(VueResource);
+
+// Maintain a global counter for active requests
+// see: spec/support/wait_for_requests.rb
 Vue.http.interceptors.push((request, next) => {
-  Vue.activeResources = Vue.activeResources ? Vue.activeResources + 1 : 1;
+  window.activeVueResources = window.activeVueResources || 0;
+  window.activeVueResources += 1;
 
-  next((response) => {
-    if (typeof response.data === 'string') {
-      response.data = JSON.parse(response.data);
-    }
-
-    Vue.activeResources--;
+  next(() => {
+    window.activeVueResources -= 1;
   });
 });
 
+// Inject CSRF token and parse headers.
+// New Vue Resource version uses Headers, we are expecting a plain object to render pagination
+// and polling.
 Vue.http.interceptors.push((request, next) => {
-  // needed in order to not break the tests.
   if ($.rails) {
-    request.headers['X-CSRF-Token'] = $.rails.csrfToken();
+    request.headers.set('X-CSRF-Token', $.rails.csrfToken());
   }
-  next();
+
+  next((response) => {
+    // Headers object has a `forEach` property that iterates through all values.
+    const headers = {};
+
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+    // eslint-disable-next-line no-param-reassign
+    response.headers = headers;
+  });
 });

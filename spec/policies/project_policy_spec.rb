@@ -43,7 +43,7 @@ describe ProjectPolicy, models: true do
 
   let(:master_permissions) do
     %i[
-      push_code_to_protected_branches update_project_snippet update_environment
+      delete_protected_branch update_project_snippet update_environment
       update_deployment admin_milestone admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
@@ -73,37 +73,45 @@ describe ProjectPolicy, models: true do
     project.team << [reporter, :reporter]
   end
 
+  def expect_allowed(*permissions)
+    permissions.each { |p| is_expected.to be_allowed(p) }
+  end
+
+  def expect_disallowed(*permissions)
+    permissions.each { |p| is_expected.not_to be_allowed(p) }
+  end
+
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
-    project = create(:project, :private)
+    project = create(:empty_project, :private)
     issue   = create(:issue, project: project)
     user    = issue.author
 
-    expect(project.team.member?(issue.author)).to eq(false)
+    expect(project.team.member?(issue.author)).to be false
 
-    expect(BasePolicy.class_for(project).abilities(user, project).can_set).
-      not_to include(:read_issue)
-
-    expect(Ability.allowed?(user, :read_issue, project)).to be_falsy
+    expect(Ability).not_to be_allowed(user, :read_issue, project)
   end
 
-  it 'does not include the wiki permissions when the feature is disabled' do
-    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
-    wiki_permissions = [:read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code]
+  context 'when the feature is disabled' do
+    subject { described_class.new(owner, project) }
 
-    permissions = described_class.abilities(owner, project).to_set
+    before do
+      project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+    end
 
-    expect(permissions).not_to include(*wiki_permissions)
+    it 'does not include the wiki permissions' do
+      expect_disallowed :read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code
+    end
   end
 
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
-    subject { described_class.abilities(current_user, project).to_set }
+    subject { described_class.new(current_user, project) }
 
     context 'with no user' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_empty }
+      it { is_expected.to be_banned }
     end
 
     context 'guests' do
@@ -114,18 +122,18 @@ describe ProjectPolicy, models: true do
       end
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.not_to include(*reporter_public_build_permissions)
-        is_expected.not_to include(*team_member_reporter_permissions)
-        is_expected.not_to include(*developer_permissions)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_disallowed(*reporter_public_build_permissions)
+        expect_disallowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
 
       context 'public builds enabled' do
         it do
-          is_expected.to include(*guest_permissions)
-          is_expected.to include(:read_build, :read_pipeline)
+          expect_allowed(*guest_permissions)
+          expect_allowed(:read_build, :read_pipeline)
         end
       end
 
@@ -135,8 +143,20 @@ describe ProjectPolicy, models: true do
         end
 
         it do
-          is_expected.to include(*guest_permissions)
-          is_expected.not_to include(:read_build, :read_pipeline)
+          expect_allowed(*guest_permissions)
+          expect_disallowed(:read_build, :read_pipeline)
+        end
+      end
+
+      context 'when builds are disabled' do
+        before do
+          project.project_feature.update(
+            builds_access_level: ProjectFeature::DISABLED)
+        end
+
+        it do
+          expect_disallowed(:read_build)
+          expect_allowed(:read_pipeline)
         end
       end
     end
@@ -145,12 +165,13 @@ describe ProjectPolicy, models: true do
       let(:current_user) { reporter }
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.to include(*reporter_permissions)
-        is_expected.to include(*team_member_reporter_permissions)
-        is_expected.not_to include(*developer_permissions)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -158,12 +179,12 @@ describe ProjectPolicy, models: true do
       let(:current_user) { dev }
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.to include(*reporter_permissions)
-        is_expected.to include(*team_member_reporter_permissions)
-        is_expected.to include(*developer_permissions)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -171,12 +192,12 @@ describe ProjectPolicy, models: true do
       let(:current_user) { master }
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.to include(*reporter_permissions)
-        is_expected.to include(*team_member_reporter_permissions)
-        is_expected.to include(*developer_permissions)
-        is_expected.to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -184,12 +205,12 @@ describe ProjectPolicy, models: true do
       let(:current_user) { owner }
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.to include(*reporter_permissions)
-        is_expected.to include(*team_member_reporter_permissions)
-        is_expected.to include(*developer_permissions)
-        is_expected.to include(*master_permissions)
-        is_expected.to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*team_member_reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*master_permissions)
+        expect_allowed(*owner_permissions)
       end
     end
 
@@ -197,12 +218,12 @@ describe ProjectPolicy, models: true do
       let(:current_user) { admin }
 
       it do
-        is_expected.to include(*guest_permissions)
-        is_expected.to include(*reporter_permissions)
-        is_expected.not_to include(*team_member_reporter_permissions)
-        is_expected.to include(*developer_permissions)
-        is_expected.to include(*master_permissions)
-        is_expected.to include(*owner_permissions)
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_disallowed(*team_member_reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*master_permissions)
+        expect_allowed(*owner_permissions)
       end
     end
   end

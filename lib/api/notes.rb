@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       NOTEABLE_TYPES.each do |noteable_type|
         noteables_str = noteable_type.to_s.underscore.pluralize
 
@@ -21,7 +21,7 @@ module API
           use :pagination
         end
         get ":id/#{noteables_str}/:noteable_id/notes" do
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
 
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
             # We exclude notes that are cross-references and that cannot be viewed
@@ -33,8 +33,8 @@ module API
               # paginate() only works with a relation. This could lead to a
               # mismatch between the pagination headers info and the actual notes
               # array returned, but this is really a edge-case.
-              paginate(noteable.notes).
-              reject { |n| n.cross_reference_not_visible_for?(current_user) }
+              paginate(noteable.notes)
+              .reject { |n| n.cross_reference_not_visible_for?(current_user) }
             present notes, with: Entities::Note
           else
             not_found!("Notes")
@@ -49,7 +49,7 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
           note = noteable.notes.find(params[:note_id])
           can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
 
@@ -69,16 +69,16 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
         end
         post ":id/#{noteables_str}/:noteable_id/notes" do
+          noteable = find_project_noteable(noteables_str, params[:noteable_id])
+
           opts = {
             note: params[:body],
             noteable_type: noteables_str.classify,
-            noteable_id: params[:noteable_id]
+            noteable_id: noteable.id
           }
 
-          noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
-
           if can?(current_user, noteable_read_ability_name(noteable), noteable)
-            if params[:created_at] && (current_user.is_admin? || user_project.owner == current_user)
+            if params[:created_at] && (current_user.admin? || user_project.owner == current_user)
               opts[:created_at] = params[:created_at]
             end
 
@@ -131,12 +131,17 @@ module API
           note = user_project.notes.find(params[:note_id])
           authorize! :admin_note, note
 
+          status 204
           ::Notes::DestroyService.new(user_project, current_user).execute(note)
         end
       end
     end
 
     helpers do
+      def find_project_noteable(noteables_str, noteable_id)
+        public_send("find_project_#{noteables_str.singularize}", noteable_id)
+      end
+
       def noteable_read_ability_name(noteable)
         "read_#{noteable.class.to_s.underscore}".to_sym
       end

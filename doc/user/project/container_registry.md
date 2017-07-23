@@ -8,8 +8,9 @@
   Registry across your GitLab instance, visit the
   [administrator documentation](../../administration/container_registry.md).
 - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
-  to pass a personal access token instead of your password in order to login to
-  GitLab's Container Registry.
+  to pass a [personal access token][pat] instead of your password in order to
+  login to GitLab's Container Registry.
+- Multiple level image names support was added in GitLab 9.1
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
@@ -38,6 +39,14 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 
 ## Build and push images
 
+>**Notes:**
+- Moving or renaming existing container registry repositories is not supported
+once you have pushed images because the images are signed, and the
+signature includes the repository name.
+- To move or rename a repository with a container registry you will have to
+delete all existing images.
+
+
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
 credentials.
@@ -54,18 +63,25 @@ sure that you are using the Registry URL with the namespace and project name
 that is hosted on GitLab:
 
 ```
-docker build -t registry.example.com/group/project .
-docker push registry.example.com/group/project
+docker build -t registry.example.com/group/project/image .
+docker push registry.example.com/group/project/image
 ```
 
 Your image will be named after the following scheme:
 
 ```
-<registry URL>/<namespace>/<project>
+<registry URL>/<namespace>/<project>/<image>
 ```
 
-As such, the name of the image is unique, but you can differentiate the images
-using tags.
+GitLab supports up to three levels of image repository names.
+
+Following examples of image tags are valid:
+
+```
+registry.example.com/group/project:some-tag
+registry.example.com/group/project/image:latest
+registry.example.com/group/project/my/image:rc1
+```
 
 ## Use images from GitLab Container Registry
 
@@ -73,7 +89,7 @@ To download and run a container from images hosted in GitLab Container Registry,
 use `docker run`:
 
 ```
-docker run [options] registry.example.com/group/project [arguments]
+docker run [options] registry.example.com/group/project/image [arguments]
 ```
 
 For more information on running Docker containers, visit the
@@ -87,8 +103,6 @@ and click **Registry** in the project menu.
 This view will show you all tags in your project and will easily allow you to
 delete them.
 
-![Container Registry panel](img/container_registry_panel.png)
-
 ## Build and push images using GitLab CI
 
 > **Note:**
@@ -98,12 +112,13 @@ Make sure that your GitLab Runner is configured to allow building Docker images 
 following the [Using Docker Build](../../ci/docker/using_docker_build.md)
 and [Using the GitLab Container Registry documentation](../../ci/docker/using_docker_build.md#using-the-gitlab-container-registry).
 
-## Limitations
+## Using with private projects
 
-In order to use a container image from your private project as an `image:` in
-your `.gitlab-ci.yml`, you have to follow the
-[Using a private Docker Registry][private-docker]
-documentation. This workflow will be simplified in the future.
+> [Introduced][ce-11845] in GitLab 9.3.
+
+If a project is private, credentials will need to be provided for authorization.
+The preferred way to do this, is by using [personal access tokens][pat].
+The minimal scope needed is `read_registry`.
 
 ## Troubleshooting the GitLab Container Registry
 
@@ -136,7 +151,7 @@ A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
 ```
-The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test]
+The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
 a08f14ef632e: Pushing [==================================================>] 2.048 kB
@@ -229,7 +244,7 @@ a container image. You may need to run as root to do this. For example:
 
 ```sh
 docker login s3-testing.myregistry.com:4567
-docker push s3-testing.myregistry.com:4567/root/docker-test
+docker push s3-testing.myregistry.com:4567/root/docker-test/docker-image
 ```
 
 In the example above, we see the following trace on the mitmproxy window:
@@ -248,5 +263,6 @@ The solution: check the [IAM permissions again](https://docs.docker.com/registry
 Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
+[ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
-[private-docker]: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#using-a-private-docker-registry
+[pat]: ../profile/personal_access_tokens.md

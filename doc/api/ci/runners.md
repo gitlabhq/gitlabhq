@@ -1,4 +1,4 @@
-# Runners API
+# Register and Delete Runners API
 
 API used by Runners to register and delete themselves.
 

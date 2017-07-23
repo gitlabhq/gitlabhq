@@ -1,0 +1,19 @@
+- blame = local_assigns.fetch(:blame, false)
+.js-file-title.file-title-flex-parent
+  = render 'projects/blob/header_content', blob: blob
+
+  .file-actions.hidden-xs
+    = render 'projects/blob/viewer_switcher', blob: blob unless blame
+
+    .btn-group{ role: "group" }<
+      = copy_blob_source_button(blob) unless blame
+      = open_raw_blob_button(blob)
+      = view_on_environment_button(@commit.sha, @path, @environment) if @environment
+
+    .btn-group{ role: "group" }<
+      = edit_blob_link
+      - if current_user
+        = replace_blob_link
+        = delete_blob_link
+
+= render 'projects/fork_suggestion'

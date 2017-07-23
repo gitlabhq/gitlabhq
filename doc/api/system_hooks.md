@@ -1,4 +1,4 @@
-# System hooks
+# System hooks API
 
 All methods require administrator authorization.
 

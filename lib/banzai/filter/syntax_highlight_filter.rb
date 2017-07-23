@@ -5,8 +5,6 @@ module Banzai
     # HTML Filter to highlight fenced code blocks
     #
     class SyntaxHighlightFilter < HTML::Pipeline::Filter
-      include Rouge::Plugins::Redcarpet
-
       def call
         doc.search('pre > code').each do |node|
           highlight_node(node)
@@ -16,14 +14,14 @@ module Banzai
       end
 
       def highlight_node(node)
-        language = node.attr('class')
+        language = node.attr('lang')
         code = node.text
         css_classes = "code highlight"
         lexer = lexer_for(language)
         lang = lexer.tag
 
         begin
-          code = format(lex(lexer, code))
+          code = Rouge::Formatters::HTMLGitlab.format(lex(lexer, code), tag: lang)
 
           css_classes << " js-syntax-highlight #{lang}"
         rescue
@@ -45,10 +43,6 @@ module Banzai
         lexer.lex(code)
       end
 
-      def format(tokens)
-        rouge_formatter.format(tokens)
-      end
-
       def lexer_for(language)
         (Rouge::Lexer.find(language) || Rouge::Lexers::PlainText).new
       end
@@ -56,11 +50,6 @@ module Banzai
       def replace_parent_pre_element(node, highlighted)
         # Replace the parent `pre` element with the entire highlighted block
         node.parent.replace(highlighted)
-      end
-
-      # Override Rouge::Plugins::Redcarpet#rouge_formatter
-      def rouge_formatter(lexer = nil)
-        @rouge_formatter ||= Rouge::Formatters::HTML.new
       end
     end
   end

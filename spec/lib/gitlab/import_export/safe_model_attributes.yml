@@ -15,6 +15,7 @@ Issue:
 - updated_by_id
 - confidential
 - deleted_at
+- closed_at
 - due_date
 - moved_to_id
 - lock_version
@@ -22,6 +23,8 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+- last_edited_at
+- last_edited_by_id
 Event:
 - id
 - target_type
@@ -51,6 +54,7 @@ Note:
 - type
 - position
 - original_position
+- change_position
 - resolved_at
 - resolved_by_id
 - discussion_id
@@ -78,6 +82,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date
@@ -88,6 +93,7 @@ Milestone:
 ProjectSnippet:
 - id
 - title
+- description
 - content
 - author_id
 - project_id
@@ -153,6 +159,9 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- last_edited_at
+- last_edited_by_id
+- head_pipeline_id
 MergeRequestDiff:
 - id
 - state
@@ -164,9 +173,32 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
+MergeRequestDiffFile:
+- merge_request_diff_id
+- relative_order
+- new_file
+- renamed_file
+- deleted_file
+- new_path
+- old_path
+- a_mode
+- b_mode
+- too_large
 Ci::Pipeline:
 - id
 - project_id
+- source
 - ref
 - sha
 - before_sha
@@ -176,13 +208,21 @@ Ci::Pipeline:
 - tag
 - yaml_errors
 - committed_at
-- gl_project_id
 - status
 - started_at
 - finished_at
 - duration
 - user_id
 - lock_version
+- auto_canceled_by_id
+- pipeline_schedule_id
+Ci::Stage:
+- id
+- name
+- project_id
+- pipeline_id
+- created_at
+- updated_at
 CommitStatus:
 - id
 - project_id
@@ -204,6 +244,7 @@ CommitStatus:
 - stage
 - trigger_request_id
 - stage_idx
+- stage_id
 - tag
 - ref
 - user_id
@@ -211,7 +252,6 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
-- gl_project_id
 - artifacts_metadata
 - erased_by_id
 - erased_at
@@ -224,6 +264,8 @@ CommitStatus:
 - token
 - lock_version
 - coverage_regex
+- auto_canceled_by_id
+- retried
 Ci::Variable:
 - id
 - project_id
@@ -232,7 +274,6 @@ Ci::Variable:
 - encrypted_value
 - encrypted_value_salt
 - encrypted_value_iv
-- gl_project_id
 Ci::Trigger:
 - id
 - token
@@ -240,9 +281,22 @@ Ci::Trigger:
 - deleted_at
 - created_at
 - updated_at
-- gl_project_id
 - owner_id
 - description
+- ref
+Ci::PipelineSchedule:
+- id
+- description
+- ref
+- cron
+- cron_timezone
+- next_run_at
+- project_id
+- owner_id
+- active
+- deleted_at
+- created_at
+- updated_at
 DeployKey:
 - id
 - user_id
@@ -272,7 +326,7 @@ Service:
 - tag_push_events
 - note_events
 - pipeline_events
-- build_events
+- job_events
 - category
 - default
 - wiki_page_events
@@ -292,12 +346,19 @@ ProjectHook:
 - note_events
 - pipeline_events
 - enable_ssl_verification
-- build_events
+- job_events
 - wiki_page_events
 - token
 - group_id
 - confidential_issues_events
+- repository_update_events
 ProtectedBranch:
+- id
+- project_id
+- name
+- created_at
+- updated_at
+ProtectedTag:
 - id
 - project_id
 - name
@@ -311,6 +372,30 @@ Project:
 - snippets_enabled
 - visibility_level
 - archived
+- created_at
+- updated_at
+- last_activity_at
+- star_count
+- ci_id
+- shared_runners_enabled
+- build_coverage_regex
+- build_allow_git_fetchs
+- build_timeout
+- pending_delete
+- public_builds
+- last_repository_check_failed
+- last_repository_check_at
+- container_registry_enabled
+- only_allow_merge_if_pipeline_succeeds
+- has_external_issue_tracker
+- request_access_enabled
+- has_external_wiki
+- only_allow_merge_if_all_discussions_are_resolved
+- auto_cancel_pending_pipelines
+- printing_merge_request_link_enabled
+- build_allow_git_fetch
+- last_repository_updated_at
+- ci_config_path
 Author:
 - name
 ProjectFeature:
@@ -336,6 +421,14 @@ ProtectedBranch::PushAccessLevel:
 - access_level
 - created_at
 - updated_at
+ProtectedTag::CreateAccessLevel:
+- id
+- protected_tag_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
 AwardEmoji:
 - id
 - user_id

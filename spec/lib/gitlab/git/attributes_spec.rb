@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Git::Attributes, seed_helper: true do
   let(:path) do
-    File.join(SEED_REPOSITORY_PATH, 'with-git-attributes.git')
+    File.join(SEED_STORAGE_PATH, 'with-git-attributes.git')
   end
 
   subject { described_class.new(path) }
@@ -14,13 +14,13 @@ describe Gitlab::Git::Attributes, seed_helper: true do
       end
 
       it 'returns a Hash containing multiple attributes' do
-        expect(subject.attributes('test.sh')).
-          to eq({ 'eol' => 'lf', 'gitlab-language' => 'shell' })
+        expect(subject.attributes('test.sh'))
+          .to eq({ 'eol' => 'lf', 'gitlab-language' => 'shell' })
       end
 
       it 'returns a Hash containing attributes for a file with multiple extensions' do
-        expect(subject.attributes('test.haml.html')).
-          to eq({ 'gitlab-language' => 'haml' })
+        expect(subject.attributes('test.haml.html'))
+          .to eq({ 'gitlab-language' => 'haml' })
       end
 
       it 'returns a Hash containing attributes for a file in a directory' do
@@ -28,8 +28,8 @@ describe Gitlab::Git::Attributes, seed_helper: true do
       end
 
       it 'returns a Hash containing attributes with query string parameters' do
-        expect(subject.attributes('foo.cgi')).
-          to eq({ 'key' => 'value?p1=v1&p2=v2' })
+        expect(subject.attributes('foo.cgi'))
+          .to eq({ 'key' => 'value?p1=v1&p2=v2' })
       end
 
       it 'returns a Hash containing the attributes for an absolute path' do
@@ -39,11 +39,11 @@ describe Gitlab::Git::Attributes, seed_helper: true do
       it 'returns a Hash containing the attributes when a pattern is defined using an absolute path' do
         # When a path is given without a leading slash it should still match
         # patterns defined with a leading slash.
-        expect(subject.attributes('foo.png')).
-          to eq({ 'gitlab-language' => 'png' })
+        expect(subject.attributes('foo.png'))
+          .to eq({ 'gitlab-language' => 'png' })
 
-        expect(subject.attributes('/foo.png')).
-          to eq({ 'gitlab-language' => 'png' })
+        expect(subject.attributes('/foo.png'))
+          .to eq({ 'gitlab-language' => 'png' })
       end
 
       it 'returns an empty Hash for a defined path without attributes' do
@@ -74,8 +74,8 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     end
 
     it 'parses an entry that uses a tab to separate the pattern and attributes' do
-      expect(subject.patterns[File.join(path, '*.md')]).
-        to eq({ 'gitlab-language' => 'markdown' })
+      expect(subject.patterns[File.join(path, '*.md')])
+        .to eq({ 'gitlab-language' => 'markdown' })
     end
 
     it 'stores patterns in reverse order' do
@@ -91,9 +91,9 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     end
 
     it 'does not parse anything when the attributes file does not exist' do
-      expect(File).to receive(:exist?).
-        with(File.join(path, 'info/attributes')).
-        and_return(false)
+      expect(File).to receive(:exist?)
+        .with(File.join(path, 'info/attributes'))
+        .and_return(false)
 
       expect(subject.patterns).to eq({})
     end
@@ -115,13 +115,13 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     it 'parses multiple attributes' do
       input = 'boolean key=value -negated'
 
-      expect(subject.parse_attributes(input)).
-        to eq({ 'boolean' => true, 'key' => 'value', 'negated' => false })
+      expect(subject.parse_attributes(input))
+        .to eq({ 'boolean' => true, 'key' => 'value', 'negated' => false })
     end
 
     it 'parses attributes with query string parameters' do
-      expect(subject.parse_attributes('foo=bar?baz=1')).
-        to eq({ 'foo' => 'bar?baz=1' })
+      expect(subject.parse_attributes('foo=bar?baz=1'))
+        .to eq({ 'foo' => 'bar?baz=1' })
     end
   end
 
@@ -133,15 +133,15 @@ describe Gitlab::Git::Attributes, seed_helper: true do
     end
 
     it 'does not yield when the attributes file does not exist' do
-      expect(File).to receive(:exist?).
-        with(File.join(path, 'info/attributes')).
-        and_return(false)
+      expect(File).to receive(:exist?)
+        .with(File.join(path, 'info/attributes'))
+        .and_return(false)
 
       expect { |b| subject.each_line(&b) }.not_to yield_control
     end
 
     it 'does not yield when the attributes file has an unsupported encoding' do
-      path = File.join(SEED_REPOSITORY_PATH, 'with-invalid-git-attributes.git')
+      path = File.join(SEED_STORAGE_PATH, 'with-invalid-git-attributes.git')
       attrs = described_class.new(path)
 
       expect { |b| attrs.each_line(&b) }.not_to yield_control

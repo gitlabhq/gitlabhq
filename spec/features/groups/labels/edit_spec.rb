@@ -7,7 +7,7 @@ feature 'Edit group label', feature: true do
 
   background do
     group.add_owner(user)
-    login_as(user)
+    sign_in(user)
     visit edit_group_label_path(group, label)
   end
 

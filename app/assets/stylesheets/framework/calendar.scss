@@ -5,7 +5,7 @@
   direction: rtl;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
 }
 

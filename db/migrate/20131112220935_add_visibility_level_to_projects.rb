@@ -1,6 +1,6 @@
 # rubocop:disable all
 class AddVisibilityLevelToProjects < ActiveRecord::Migration
-  include Gitlab::Database
+  include Gitlab::Database::MigrationHelpers
 
   def self.up
     add_column :projects, :visibility_level, :integer, :default => 0, :null => false

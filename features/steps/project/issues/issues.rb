@@ -28,7 +28,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    find('.issues-state-filters a', text: "Closed").click
+    find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
   step 'I click button "Unsubscribe"' do
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters [data-state="all"] span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
@@ -61,8 +61,10 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     expect(page).to have_content "Tweet control"
   end
 
-  step 'I click link "New Issue"' do
-    page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+  step 'I click link "New issue"' do
+    page.within '#content-body' do
+      page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+    end
   end
 
   step 'I click "author" dropdown' do
@@ -245,7 +247,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When 'I visit empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I see empty project details with ssh clone info' do
@@ -257,12 +259,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When "I visit project \"Community\" issues page" do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   When "I visit empty project's issues page" do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   step 'I leave a comment with code block' do
@@ -342,17 +344,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I should not see assignee field' do
     page.within '.issue-form' do
       expect(page).not_to have_content("Assign to")
-    end
-  end
-
-  step 'another user adds a comment with text "Yay!" to issue "Release 0.4"' do
-    issue = Issue.find_by!(title: 'Release 0.4')
-    create(:note_on_issue, noteable: issue, project: project, note: 'Yay!')
-  end
-
-  step 'I should see a new comment with text "Yay!"' do
-    page.within '#notes' do
-      expect(page).to have_content('Yay!')
     end
   end
 

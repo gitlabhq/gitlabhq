@@ -37,7 +37,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
 
     it "does not mark existing ldap user as changed" do
-      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain', ldap_email: true)
+      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain', external_email: true, email_provider: 'ldapmain')
       expect(ldap_user.changed?).to be_falsey
     end
   end
@@ -57,7 +57,7 @@ describe Gitlab::LDAP::User, lib: true do
     end
   end
 
-  describe :find_or_create do
+  describe 'find or create' do
     it "finds the user if already existing" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
 
@@ -108,6 +108,31 @@ describe Gitlab::LDAP::User, lib: true do
     it "creates a new user if not found" do
       expect{ ldap_user.save }.to change{ User.count }.by(1)
     end
+
+    context 'when signup is disabled' do
+      before do
+        stub_application_setting signup_enabled: false
+      end
+
+      it 'creates the user' do
+        ldap_user.save
+
+        expect(gl_user).to be_persisted
+      end
+    end
+
+    context 'when user confirmation email is enabled' do
+      before do
+        stub_application_setting send_user_confirmation_email: true
+      end
+
+      it 'creates and confirms the user anyway' do
+        ldap_user.save
+
+        expect(gl_user).to be_persisted
+        expect(gl_user).to be_confirmed
+      end
+    end
   end
 
   describe 'updating email' do
@@ -116,8 +141,12 @@ describe Gitlab::LDAP::User, lib: true do
         expect(ldap_user.gl_user.email).to eq(info[:email])
       end
 
-      it "has ldap_email set to true" do
-        expect(ldap_user.gl_user.ldap_email?).to be(true)
+      it "has external_email set to true" do
+        expect(ldap_user.gl_user.external_email?).to be(true)
+      end
+
+      it "has email_provider set to provider" do
+        expect(ldap_user.gl_user.email_provider).to eql 'ldapmain'
       end
     end
 
@@ -130,21 +159,23 @@ describe Gitlab::LDAP::User, lib: true do
         expect(ldap_user.gl_user.temp_oauth_email?).to be(true)
       end
 
-      it "has ldap_email set to false" do
-        expect(ldap_user.gl_user.ldap_email?).to be(false)
+      it "has external_email set to false" do
+        expect(ldap_user.gl_user.external_email?).to be(false)
       end
     end
   end
 
   describe 'blocking' do
     def configure_block(value)
-      allow_any_instance_of(Gitlab::LDAP::Config).
-        to receive(:block_auto_created_users).and_return(value)
+      allow_any_instance_of(Gitlab::LDAP::Config)
+        .to receive(:block_auto_created_users).and_return(value)
     end
 
     context 'signup' do
       context 'dont block on create' do
-        before { configure_block(false) }
+        before do
+          configure_block(false)
+        end
 
         it do
           ldap_user.save
@@ -154,7 +185,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'block on create' do
-        before { configure_block(true) }
+        before do
+          configure_block(true)
+        end
 
         it do
           ldap_user.save
@@ -171,7 +204,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'dont block on create' do
-        before { configure_block(false) }
+        before do
+          configure_block(false)
+        end
 
         it do
           ldap_user.save
@@ -181,7 +216,9 @@ describe Gitlab::LDAP::User, lib: true do
       end
 
       context 'block on create' do
-        before { configure_block(true) }
+        before do
+          configure_block(true)
+        end
 
         it do
           ldap_user.save

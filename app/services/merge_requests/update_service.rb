@@ -7,7 +7,7 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
-      merge_from_slash_command(merge_request) if params[:merge]
+      merge_from_quick_action(merge_request) if params[:merge]
 
       if merge_request.closed_without_fork?
         params.except!(:target_branch, :force_remove_source_branch)
@@ -21,14 +21,17 @@ module MergeRequests
       update(merge_request)
     end
 
-    def handle_changes(merge_request, old_labels: [], old_mentioned_users: [])
+    def handle_changes(merge_request, options)
+      old_labels = options[:old_labels] || []
+      old_mentioned_users = options[:old_mentioned_users] || []
+
       if has_changes?(merge_request, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
 
       if merge_request.previous_changes.include?('title') ||
           merge_request.previous_changes.include?('description')
-        todo_service.update_merge_request(merge_request, current_user)
+        todo_service.update_merge_request(merge_request, current_user, old_mentioned_users)
       end
 
       if merge_request.previous_changes.include?('target_branch')
@@ -71,9 +74,9 @@ module MergeRequests
       end
     end
 
-    def merge_from_slash_command(merge_request)
+    def merge_from_quick_action(merge_request)
       last_diff_sha = params.delete(:merge)
-      return unless merge_request.mergeable_with_slash_command?(current_user, last_diff_sha: last_diff_sha)
+      return unless merge_request.mergeable_with_quick_action?(current_user, last_diff_sha: last_diff_sha)
 
       merge_request.update(merge_error: nil)
 

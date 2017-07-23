@@ -2,29 +2,28 @@ require 'spec_helper'
 
 describe EnvironmentSerializer do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   let(:json) do
     described_class
-      .new(user: user, project: project)
+      .new(current_user: user, project: project)
       .represent(resource)
   end
 
   context 'when there is a single object provided' do
-    before do
-      create(:ci_build, :manual, name: 'manual1',
-                                 pipeline: deployable.pipeline)
-    end
-
+    let(:project) { create(:project, :repository) }
+    let(:deployable) { create(:ci_build) }
     let(:deployment) do
       create(:deployment, deployable: deployable,
                           user: user,
                           project: project,
                           sha: project.commit.id)
     end
-
-    let(:deployable) { create(:ci_build) }
     let(:resource) { deployment.environment }
+
+    before do
+      create(:ci_build, :manual, name: 'manual1', pipeline: deployable.pipeline)
+    end
 
     it 'contains important elements of environment' do
       expect(json)
@@ -63,7 +62,9 @@ describe EnvironmentSerializer do
     subject { serializer.represent(resource) }
 
     context 'when there is a single environment' do
-      before { create(:environment, name: 'staging') }
+      before do
+        create(:environment, name: 'staging')
+      end
 
       it 'represents one standalone environment' do
         expect(subject.count).to eq 1
@@ -139,7 +140,9 @@ describe EnvironmentSerializer do
 
     context 'when resource is paginatable relation' do
       context 'when there is a single environment object in relation' do
-        before { create(:environment) }
+        before do
+          create(:environment)
+        end
 
         it 'serializes environments' do
           expect(subject.first).to have_key :id
@@ -147,7 +150,9 @@ describe EnvironmentSerializer do
       end
 
       context 'when multiple environment objects are serialized' do
-        before { create_list(:environment, 3) }
+        before do
+          create_list(:environment, 3)
+        end
 
         it 'serializes appropriate number of objects' do
           expect(subject.count).to be 2

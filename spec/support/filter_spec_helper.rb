@@ -63,9 +63,9 @@ module FilterSpecHelper
   #
   # Returns a String
   def invalidate_reference(reference)
-    if reference =~ /\A(.+)?.\d+\z/
+    if reference =~ /\A(.+)?[^\d]\d+\z/
       # Integer-based reference with optional project prefix
-      reference.gsub(/\d+\z/) { |i| i.to_i + 1 }
+      reference.gsub(/\d+\z/) { |i| i.to_i + 10_000 }
     elsif reference =~ /\A(.+@)?(\h{7,40}\z)/
       # SHA-based reference with optional prefix
       reference.gsub(/\h{7,40}\z/) { |v| v.reverse }

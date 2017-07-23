@@ -11,11 +11,15 @@
     "gon": false,
     "localStorage": false
   },
+  "parser": "babel-eslint",
   "plugins": [
     "filenames",
-    "import"
+    "import",
+    "html",
+    "promise"
   ],
   "settings": {
+    "html/html-extensions": [".html", ".html.raw", ".vue"],
     "import/resolver": {
       "webpack": {
         "config": "./config/webpack.config.js"
@@ -24,6 +28,8 @@
   },
   "rules": {
     "filenames/match-regex": [2, "^[a-z0-9_]+$"],
-    "no-multiple-empty-lines": ["error", { "max": 1 }]
+    "import/no-commonjs": "error",
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "promise/catch-or-return": "error"
   }
 }

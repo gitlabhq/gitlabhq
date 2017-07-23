@@ -1,5 +1,6 @@
 /* eslint-disable space-before-function-paren, comma-dangle, no-param-reassign, camelcase, max-len, no-unused-vars */
-/* global Vue */
+
+import Vue from 'vue';
 
 class BoardService {
   constructor (root, bulkUpdatePath, boardId) {
@@ -21,11 +22,6 @@ class BoardService {
         method: 'POST',
         url: bulkUpdatePath,
       },
-    });
-
-    Vue.http.interceptors.push((request, next) => {
-      request.headers['X-CSRF-Token'] = $.rails.csrfToken();
-      next();
     });
   }
 

@@ -74,13 +74,17 @@ describe Gitlab::LDAP::Adapter, lib: true do
     subject { adapter.dn_matches_filter?(:dn, :filter) }
 
     context "when the search result is non-empty" do
-      before { allow(adapter).to receive(:ldap_search).and_return([:foo]) }
+      before do
+        allow(adapter).to receive(:ldap_search).and_return([:foo])
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context "when the search result is empty" do
-      before { allow(adapter).to receive(:ldap_search).and_return([]) }
+      before do
+        allow(adapter).to receive(:ldap_search).and_return([])
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -91,13 +95,17 @@ describe Gitlab::LDAP::Adapter, lib: true do
 
     context "when the search is successful" do
       context "and the result is non-empty" do
-        before { allow(ldap).to receive(:search).and_return([:foo]) }
+        before do
+          allow(ldap).to receive(:search).and_return([:foo])
+        end
 
         it { is_expected.to eq [:foo] }
       end
 
       context "and the result is empty" do
-        before { allow(ldap).to receive(:search).and_return([]) }
+        before do
+          allow(ldap).to receive(:search).and_return([])
+        end
 
         it { is_expected.to eq [] }
       end

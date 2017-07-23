@@ -46,9 +46,7 @@ describe 'bin/changelog' do
 
     it 'parses -h' do
       expect do
-        $stdout = StringIO.new
-
-        described_class.parse(%w[foo -h bar])
+        expect { described_class.parse(%w[foo -h bar]) }.to output.to_stdout
       end.to raise_error(SystemExit)
     end
 

@@ -7,7 +7,7 @@ feature 'Environments page', :feature, :js do
 
   background do
     project.team << [user, role]
-    login_as(user)
+    sign_in(user)
   end
 
   given!(:environment) { }
@@ -22,6 +22,46 @@ feature 'Environments page', :feature, :js do
     scenario 'shows "Available" and "Stopped" tab with links' do
       expect(page).to have_link('Available')
       expect(page).to have_link('Stopped')
+    end
+
+    describe 'with one available environment' do
+      given(:environment) { create(:environment, project: project, state: :available) }
+
+      describe 'in available tab page' do
+        it 'should show one environment' do
+          visit project_environments_path(project, scope: 'available')
+          expect(page).to have_css('.environments-container')
+          expect(page.all('.environment-name').length).to eq(1)
+        end
+      end
+
+      describe 'in stopped tab page' do
+        it 'should show no environments' do
+          visit project_environments_path(project, scope: 'stopped')
+          expect(page).to have_css('.environments-container')
+          expect(page).to have_content('You don\'t have any environments right now')
+        end
+      end
+    end
+
+    describe 'with one stopped environment' do
+      given(:environment) { create(:environment, project: project, state: :stopped) }
+
+      describe 'in available tab page' do
+        it 'should show no environments' do
+          visit project_environments_path(project, scope: 'available')
+          expect(page).to have_css('.environments-container')
+          expect(page).to have_content('You don\'t have any environments right now')
+        end
+      end
+
+      describe 'in stopped tab page' do
+        it 'should show one environment' do
+          visit project_environments_path(project, scope: 'stopped')
+          expect(page).to have_css('.environments-container')
+          expect(page.all('.environment-name').length).to eq(1)
+        end
+      end
     end
   end
 
@@ -111,10 +151,8 @@ feature 'Environments page', :feature, :js do
           find('.js-dropdown-play-icon-container').click
           expect(page).to have_content(action.name.humanize)
 
-          expect { click_link(action.name.humanize) }
+          expect { find('.js-manual-action-link').trigger('click') }
             .not_to change { Ci::Pipeline.count }
-
-          expect(action.reload).to be_pending
         end
 
         scenario 'does show build name and id' do
@@ -156,12 +194,6 @@ feature 'Environments page', :feature, :js do
 
           scenario 'does show stop button' do
             expect(page).to have_selector('.stop-env-link')
-          end
-
-          scenario 'starts build when stop button clicked' do
-            find('.stop-env-link').click
-
-            expect(page).to have_content('close_app')
           end
 
           context 'for reporter' do
@@ -207,7 +239,9 @@ feature 'Environments page', :feature, :js do
 
     context 'when logged as developer' do
       before do
-        click_link 'New environment'
+        within(".top-area") do
+          click_link 'New environment'
+        end
       end
 
       context 'for valid name' do
@@ -243,10 +277,10 @@ feature 'Environments page', :feature, :js do
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 
   def visit_environments(project)
-    visit namespace_project_environments_path(project.namespace, project)
+    visit project_environments_path(project)
   end
 end

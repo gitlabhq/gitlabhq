@@ -55,9 +55,6 @@ describe Gitlab::GithubImport::Importer, lib: true do
       allow_any_instance_of(Octokit::Client).to receive(:releases).and_return([release1, release2])
     end
 
-    let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
-    let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
-    let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
     let(:label1) do
       double(
         name: 'Bug',
@@ -127,32 +124,6 @@ describe Gitlab::GithubImport::Importer, lib: true do
       )
     end
 
-    let!(:user) { create(:user, email: octocat.email) }
-    let(:repository) { double(id: 1, fork: false) }
-    let(:source_sha) { create(:commit, project: project).id }
-    let(:source_branch) { double(ref: 'feature', repo: repository, sha: source_sha) }
-    let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
-    let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha) }
-    let(:pull_request) do
-      double(
-        number: 1347,
-        milestone: nil,
-        state: 'open',
-        title: 'New feature',
-        body: 'Please pull these awesome changes',
-        head: source_branch,
-        base: target_branch,
-        assignee: nil,
-        user: octocat,
-        created_at: created_at,
-        updated_at: updated_at,
-        closed_at: nil,
-        merged_at: nil,
-        url: "#{api_root}/repos/octocat/Hello-World/pulls/1347",
-        labels: [double(name: 'Label #2')]
-      )
-    end
-
     let(:release1) do
       double(
         tag_name: 'v1.0.0',
@@ -177,12 +148,14 @@ describe Gitlab::GithubImport::Importer, lib: true do
       )
     end
 
+    subject { described_class.new(project) }
+
     it 'returns true' do
-      expect(described_class.new(project).execute).to eq true
+      expect(subject.execute).to eq true
     end
 
     it 'does not raise an error' do
-      expect { described_class.new(project).execute }.not_to raise_error
+      expect { subject.execute }.not_to raise_error
     end
 
     it 'stores error messages' do
@@ -205,15 +178,93 @@ describe Gitlab::GithubImport::Importer, lib: true do
     end
   end
 
+  shared_examples 'Gitlab::GithubImport unit-testing' do
+    describe '#clean_up_restored_branches' do
+      subject { described_class.new(project) }
+
+      before do
+        allow(gh_pull_request).to receive(:source_branch_exists?).at_least(:once) { false }
+        allow(gh_pull_request).to receive(:target_branch_exists?).at_least(:once) { false }
+      end
+
+      context 'when pull request stills open' do
+        let(:gh_pull_request) { Gitlab::GithubImport::PullRequestFormatter.new(project, pull_request) }
+
+        it 'does not remove branches' do
+          expect(subject).not_to receive(:remove_branch)
+          subject.send(:clean_up_restored_branches, gh_pull_request)
+        end
+      end
+
+      context 'when pull request is closed' do
+        let(:gh_pull_request) { Gitlab::GithubImport::PullRequestFormatter.new(project, closed_pull_request) }
+
+        it 'does remove branches' do
+          expect(subject).to receive(:remove_branch).at_least(2).times
+          subject.send(:clean_up_restored_branches, gh_pull_request)
+        end
+      end
+    end
+  end
+
   let(:project) { create(:project, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
+  let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:credentials) { { user: 'joe' } }
+
+  let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
+  let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
+  let(:repository) { double(id: 1, fork: false) }
+  let(:source_sha) { create(:commit, project: project).id }
+  let(:source_branch) { double(ref: 'branch-merged', repo: repository, sha: source_sha, user: octocat) }
+  let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
+  let(:target_branch) { double(ref: 'master', repo: repository, sha: target_sha, user: octocat) }
+  let(:pull_request) do
+    double(
+      number: 1347,
+      milestone: nil,
+      state: 'open',
+      title: 'New feature',
+      body: 'Please pull these awesome changes',
+      head: source_branch,
+      base: target_branch,
+      assignee: nil,
+      user: octocat,
+      created_at: created_at,
+      updated_at: updated_at,
+      closed_at: nil,
+      merged_at: nil,
+      url: "#{api_root}/repos/octocat/Hello-World/pulls/1347",
+      labels: [double(name: 'Label #2')]
+    )
+  end
+  let(:closed_pull_request) do
+    double(
+      number: 1347,
+      milestone: nil,
+      state: 'closed',
+      title: 'New feature',
+      body: 'Please pull these awesome changes',
+      head: source_branch,
+      base: target_branch,
+      assignee: nil,
+      user: octocat,
+      created_at: created_at,
+      updated_at: updated_at,
+      closed_at: updated_at,
+      merged_at: nil,
+      url: "#{api_root}/repos/octocat/Hello-World/pulls/1347",
+      labels: [double(name: 'Label #2')]
+    )
+  end
 
   context 'when importing a GitHub project' do
     let(:api_root) { 'https://api.github.com' }
     let(:repo_root) { 'https://github.com' }
+    subject { described_class.new(project) }
 
     it_behaves_like 'Gitlab::GithubImport::Importer#execute'
     it_behaves_like 'Gitlab::GithubImport::Importer#execute an error occurs'
+    it_behaves_like 'Gitlab::GithubImport unit-testing'
 
     describe '#client' do
       it 'instantiates a Client' do
@@ -223,7 +274,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
           {}
         )
 
-        described_class.new(project).client
+        subject.client
       end
     end
   end
@@ -231,6 +282,8 @@ describe Gitlab::GithubImport::Importer, lib: true do
   context 'when importing a Gitea project' do
     let(:api_root) { 'https://try.gitea.io/api/v1' }
     let(:repo_root) { 'https://try.gitea.io' }
+    subject { described_class.new(project) }
+
     before do
       project.update(import_type: 'gitea', import_url: "#{repo_root}/foo/group/project.git")
     end
@@ -239,6 +292,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
       let(:expected_not_called) { [:import_releases] }
     end
     it_behaves_like 'Gitlab::GithubImport::Importer#execute an error occurs'
+    it_behaves_like 'Gitlab::GithubImport unit-testing'
 
     describe '#client' do
       it 'instantiates a Client' do
@@ -248,7 +302,7 @@ describe Gitlab::GithubImport::Importer, lib: true do
           { host: "#{repo_root}:443/foo", api_version: 'v1' }
         )
 
-        described_class.new(project).client
+        subject.client
       end
     end
   end

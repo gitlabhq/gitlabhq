@@ -8,7 +8,7 @@ module Gitlab
 
       class << self
         def extension
-          'Dockerfile'
+          '.Dockerfile'
         end
 
         def categories
@@ -18,7 +18,7 @@ module Gitlab
         end
 
         def base_dir
-          Rails.root.join('vendor/dockerfile')
+          Rails.root.join('vendor/Dockerfile')
         end
 
         def finder(project = nil)

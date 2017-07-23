@@ -10,7 +10,7 @@ class AuthorizedProjectsWorker
   end
 
   def self.bulk_perform_async(args_list)
-    Sidekiq::Client.push_bulk('class' => self, 'args' => args_list)
+    Sidekiq::Client.push_bulk('class' => self, 'queue' => sidekiq_options['queue'], 'args' => args_list)
   end
 
   def perform(user_id)

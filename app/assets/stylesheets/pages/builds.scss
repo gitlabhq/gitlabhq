@@ -6,159 +6,196 @@
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,1);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
-.build-page {
-  pre.trace {
-    background: $builds-trace-bg;
-    color: $white-light;
-    font-family: $monospace_font;
-    white-space: pre-wrap;
-    overflow: auto;
-    overflow-y: hidden;
-    font-size: 12px;
+@keyframes blinking-scroll-button {
+  0% { opacity: 0.2; }
+  25% { opacity: 0.5; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
 
-    .fa-refresh {
-      font-size: 24px;
-      margin-left: 20px;
+.build-page {
+  .build-trace-container {
+    position: relative;
+  }
+
+  .build-trace {
+    background: $black;
+    color: $gray-darkest;
+    white-space: pre;
+    overflow-x: auto;
+    font-size: 12px;
+    border-radius: 0;
+    border: none;
+
+    .bash {
+      display: block;
+    }
+  }
+
+  .top-bar {
+    height: 35px;
+    display: flex;
+    justify-content: flex-end;
+    background: $gray-light;
+    border: 1px solid $border-color;
+    color: $gl-text-color;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 50px;
+
+    &.affix {
+      top: 50px;
+    }
+
+    // with sidebar
+    &.affix.sidebar-expanded {
+      right: 306px;
+      left: 16px;
+    }
+
+    // without sidebar
+    &.affix.sidebar-collapsed {
+      right: 16px;
+      left: 16px;
+    }
+
+    &.affix-top {
+      position: absolute;
+      right: 0;
+      left: 0;
+    }
+
+    .truncated-info {
+      margin: 0 auto;
+      align-self: center;
+
+      .truncated-info-size {
+        margin: 0 5px;
+      }
+
+      .raw-link {
+        color: $gl-text-color;
+        margin-left: 5px;
+        text-decoration: underline;
+      }
+    }
+
+    .controllers {
+      display: flex;
+      font-size: 15px;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        height: 15px;
+        display: block;
+        fill: $gl-text-color;
+      }
+
+      .controllers-buttons {
+        color: $gl-text-color;
+        margin: 0 10px;
+      }
+
+      .btn-scroll.animate {
+        .first-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+          animation-delay: .3s;
+        }
+
+        .second-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+          animation-delay: .2s;
+        }
+
+        .third-triangle {
+          animation: blinking-scroll-button 1s ease infinite;
+        }
+
+        &:disabled {
+          opacity: 1;
+        }
+      }
+
+      .btn-scroll:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
     }
   }
 
   .environment-information {
-    background-color: $gray-light;
     border: 1px solid $border-color;
-    padding: 12px $gl-padding;
+    padding: 8px $gl-padding 12px;
     border-radius: $border-radius-default;
 
     svg {
       position: relative;
-      top: 1px;
+      top: 5px;
       margin-right: 5px;
-    }
-  }
-}
-
-.scroll-controls {
-  height: 100%;
-
-  .scroll-step {
-    width: 31px;
-    margin: 0 0 0 auto;
-  }
-
-  .scroll-link,
-  .autoscroll-container {
-    right: 25px;
-    z-index: 1;
-  }
-
-  .scroll-link {
-    position: fixed;
-    display: block;
-    margin-bottom: 10px;
-
-    &.scroll-top .gitlab-icon-scroll-up-hover,
-    &.scroll-top:hover .gitlab-icon-scroll-up,
-    &.scroll-bottom .gitlab-icon-scroll-down-hover,
-    &.scroll-bottom:hover .gitlab-icon-scroll-down {
-      display: none;
-    }
-
-    &.scroll-top:hover .gitlab-icon-scroll-up-hover,
-    &.scroll-bottom:hover .gitlab-icon-scroll-down-hover {
-      display: inline-block;
-    }
-
-    &.scroll-top {
-      top: 10px;
-    }
-
-    &.scroll-bottom {
-      bottom: -2px;
+      width: 22px;
+      height: 22px;
     }
   }
 
-  .autoscroll-container {
-    position: absolute;
-  }
-
-  &.sidebar-expanded {
-
-    .scroll-link,
-    .autoscroll-container {
-      right: ($gutter_width + ($gl-padding * 2));
-    }
-  }
-}
-
-.status-message {
-  display: inline-block;
-  color: $white-light;
-
-  .status-icon {
-    display: inline-block;
-    width: 16px;
-    height: 33px;
-  }
-
-  .status-text {
-    float: left;
-    opacity: 0;
-    margin-right: 10px;
-    font-weight: normal;
-    line-height: 1.8;
-    transition: opacity 1s ease-out;
-
-    &.animate {
-      animation: fade-out-status 2s ease;
-    }
-  }
-
-  &:hover .status-text {
-    opacity: 1;
+  .build-loader-animation {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    margin: auto auto 12px 2px;
+    border-radius: 50%;
+    animation: blinking-dots 1s linear infinite;
   }
 }
 
 .build-header {
-  position: relative;
-  padding: 0;
-  display: flex;
-  min-height: 58px;
-  align-items: center;
+  .ci-header-container,
+  .header-action-buttons {
+    display: flex;
+  }
 
-  @media (max-width: $screen-sm-max) {
-    padding-right: 40px;
-    margin-top: 6px;
+  .ci-header-container {
+    min-height: 54px;
+  }
 
-    .btn-inverted {
-      display: none;
+  .page-content-header {
+    padding: 10px 0 9px;
+  }
+
+  .header-action-buttons {
+    @media (max-width: $screen-xs-max) {
+      .sidebar-toggle-btn {
+        margin-top: 0;
+        margin-left: 10px;
+        max-height: 34px;
+      }
     }
   }
 
   .header-content {
-    flex: 1;
-
     a {
       color: $gl-text-color;
 
@@ -180,33 +217,8 @@
   }
 }
 
-.build-trace {
-  background: $black;
-  color: $gray-darkest;
-  white-space: pre;
-  overflow-x: auto;
-  font-size: 12px;
-
-  .fa-refresh {
-    font-size: 24px;
-  }
-
-  .bash {
-    display: block;
-  }
-
-  .build-loader-animation {
-    position: relative;
-    width: 6px;
-    height: 6px;
-    margin: auto auto 12px 2px;
-    border-radius: 50%;
-    animation: blinking-dots 1s linear infinite;
-  }
-}
-
 .right-sidebar.build-sidebar {
-  padding: $gl-padding 0;
+  padding: 0;
 
   &.right-sidebar-collapsed {
     display: none;
@@ -219,6 +231,10 @@
   .block {
     width: 100%;
 
+    &:last-child {
+      border-bottom: 1px solid $border-gray-normal;
+    }
+
     &.coverage {
       padding: 0 16px 11px;
     }
@@ -228,34 +244,43 @@
     }
   }
 
-  .js-build-variable {
+  .block-last {
+    padding: 16px 0;
+  }
+
+  .trigger-build-variable {
     color: $code-color;
   }
 
-  .js-build-value {
+  .trigger-build-value {
     padding: 2px 4px;
     color: $black;
     background-color: $white-light;
   }
 
-  .build-sidebar-header {
-    padding: 0 $gl-padding $gl-padding;
-
-    .gutter-toggle {
-      margin-top: 0;
-    }
+  .label {
+    margin-left: 2px;
   }
 
   .retry-link {
-    color: $gl-link-color;
     display: none;
 
-    &:hover {
-      text-decoration: underline;
+    .btn-inverted-secondary {
+      color: $blue-500;
+
+      &:hover {
+        color: $white-light;
+      }
     }
 
     @media (max-width: $screen-sm-max) {
       display: block;
+
+      .btn {
+        i {
+          margin-left: 5px;
+        }
+      }
     }
   }
 
@@ -278,6 +303,12 @@
       right: $gl-padding;
       left: $gl-padding;
       width: auto;
+    }
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
     }
   }
 
@@ -340,11 +371,19 @@
       }
     }
   }
+
+  .link-commit {
+    color: $blue-600;
+  }
 }
 
 .build-sidebar {
   .container-fluid.container-limited {
     max-width: 100%;
+  }
+
+  .content-wrapper {
+    padding-bottom: 6px;
   }
 }
 
@@ -358,6 +397,7 @@
 
 .build-light-text {
   color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {
@@ -365,10 +405,4 @@
   top: 50%;
   right: 0;
   margin-top: -17px;
-}
-
-@media (min-width: $screen-md-min) {
-  .sub-nav.build {
-    width: calc(100% + #{$gutter_width});
-  }
 }

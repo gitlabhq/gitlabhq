@@ -1,5 +1,0 @@
----
-title: Improves a11y in sidebar by adding aria-hidden attributes in i tags and by
-  fixing two broken aria-hidden attributes
-merge_request:
-author:

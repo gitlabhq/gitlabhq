@@ -6,7 +6,10 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
+| <kbd>n</kbd> | Main navigation |
 | <kbd>s</kbd> | Focus search |
+| <kbd>f</kbd> | Focus filter |
+| <kbd>p b</kbd> | Show/hide the Performance Bar |
 | <kbd>?</kbd> | Show/hide this dialog |
 | <kbd>⌘</kbd> + <kbd>shift</kbd> + <kbd>p</kbd> | Toggle markdown preview |
 | <kbd>↑</kbd> | Edit last comment (when focused on an empty textarea) |
@@ -36,6 +39,7 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to projects |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to issues |
 | <kbd>g</kbd> + <kbd>m</kbd> | Go to merge requests |
+| <kbd>g</kbd> + <kbd>t</kbd> | Go to todos |
 
 ## Project
 
@@ -74,3 +78,9 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>r</kbd> | Reply (quoting selected text) |
 | <kbd>e</kbd> | Edit issue/merge request |
 | <kbd>l</kbd> | Change label |
+
+## Wiki pages
+
+| Keyboard Shortcut | Description |
+| ----------------- | ----------- |
+| <kbd>e</kbd> | Edit wiki page|

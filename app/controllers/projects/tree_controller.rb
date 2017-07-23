@@ -16,13 +16,15 @@ class Projects::TreeController < Projects::ApplicationController
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
         return redirect_to(
-          namespace_project_blob_path(@project.namespace, @project,
+          project_blob_path(@project,
                                       File.join(@ref, @path))
         )
       elsif @path.present?
         return render_404
       end
     end
+
+    @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
 
     respond_to do |format|
       format.html
@@ -35,19 +37,19 @@ class Projects::TreeController < Projects::ApplicationController
     return render_404 unless @commit_params.values.all?
 
     create_commit(Files::CreateDirService,  success_notice: "The directory has been successfully created.",
-                                            success_path: namespace_project_tree_path(@project.namespace, @project, File.join(@target_branch, @dir_name)),
-                                            failure_path: namespace_project_tree_path(@project.namespace, @project, @ref))
+                                            success_path: project_tree_path(@project, File.join(@branch_name, @dir_name)),
+                                            failure_path: project_tree_path(@project, @ref))
   end
 
   private
 
   def assign_dir_vars
-    @target_branch = params[:target_branch]
+    @branch_name = params[:branch_name]
 
     @dir_name = File.join(@path, params[:dir_name])
     @commit_params = {
       file_path: @dir_name,
-      commit_message: params[:commit_message],
+      commit_message: params[:commit_message]
     }
   end
 end

@@ -6,18 +6,13 @@ functionality to GitLab.
 
 ## Accessing the project services
 
-You can find the available services under the **Integrations** page in your
-project's settings.
+You can find the available services under your project's
+**Settings ➔ Integrations** page.
 
-1. Navigate to the cog icon in the upper right corner of your project. You need
-   to have at least [master permission][permissions] on the project.
+There are more than 20 services to integrate with. Click on the one that you
+want to configure.
 
-    ![Accessing the services](img/accessing_integrations.png)
-
-1. There are more than 20 services to integrate with. Click on the one that you
-   want to configure.
-
-    ![Project services list](img/project_services.png)
+ ![Project services list](img/project_services.png)
 
 Below, you will find a list of the currently supported ones accompanied with
 comprehensive documentation.
@@ -32,7 +27,6 @@ Click on the service links to see further configuration instructions and details
 | Assembla 	| Project Management Software (Source Commits Endpoint) |
 | [Atlassian Bamboo CI](bamboo.md) | A continuous integration and build server |
 | Buildkite | Continuous integration and deployments |
-| [Builds emails](builds_emails.md) |	Email the builds status to a list of recipients |
 | [Bugzilla](bugzilla.md) | Bugzilla issue tracker |
 | Campfire | Simple web-based real-time group chat |
 | Custom Issue Tracker | Custom issue tracker |
@@ -48,9 +42,12 @@ Click on the service links to see further configuration instructions and details
 | [Kubernetes](kubernetes.md) | A containerized deployment service |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
-| [Slack Notifications](slack.md) | Receive event notifications in Slack |
-| [Slack slash commands](slack_slash_commands.md) | Slack chat and ChatOps slash commands |
+| [Microsoft teams](microsoft_teams.md) |  Receive notifications for actions that happen on GitLab into a room on Microsoft Teams using Office 365 Connectors |
+| Pipelines emails | Email the pipeline status to a list of recipients |
+| [Slack Notifications](slack.md) | Send GitLab events (e.g. issue created) to Slack as notifications |
+| [Slack slash commands](slack_slash_commands.md) | Use slash commands in Slack to control GitLab |
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
+| [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
 

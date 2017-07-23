@@ -5,7 +5,7 @@ describe RepositoryCheck::ClearWorker do
     project = create(:empty_project)
     project.update_columns(
       last_repository_check_failed: true,
-      last_repository_check_at: Time.now,
+      last_repository_check_at: Time.now
     )
 
     described_class.new.perform

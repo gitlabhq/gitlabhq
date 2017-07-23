@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-describe API::ProjectHooks, 'ProjectHooks', api: true do
-  include ApiHelpers
+describe API::ProjectHooks, 'ProjectHooks' do
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
@@ -59,7 +58,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
         expect(json_response['note_events']).to eq(hook.note_events)
-        expect(json_response['build_events']).to eq(hook.build_events)
+        expect(json_response['build_events']).to eq(hook.job_events)
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
@@ -144,7 +143,7 @@ describe API::ProjectHooks, 'ProjectHooks', api: true do
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
       expect(json_response['note_events']).to eq(hook.note_events)
-      expect(json_response['build_events']).to eq(hook.build_events)
+      expect(json_response['build_events']).to eq(hook.job_events)
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment, models: true do
-  let(:project) { create(:empty_project) }
+  set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }
@@ -31,6 +31,26 @@ describe Environment, models: true do
 
     it 'returns the environments in order of having been last deployed' do
       expect(project.environments.order_by_last_deployed_at.to_a).to eq([environment3, environment2, environment1])
+    end
+  end
+
+  describe 'state machine' do
+    it 'invalidates the cache after a change' do
+      expect(environment).to receive(:expire_etag_cache)
+
+      environment.stop
+    end
+  end
+
+  describe '#expire_etag_cache' do
+    let(:store) { Gitlab::EtagCaching::Store.new }
+
+    it 'changes the cached value' do
+      old_value = store.get(environment.etag_cache_key)
+
+      environment.stop
+
+      expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
   end
 
@@ -107,6 +127,10 @@ describe Environment, models: true do
     it 'return nil when no deployment is found' do
       expect(environment.first_deployment_for(head_commit)).to eq nil
     end
+
+    it 'returns a UTF-8 ref' do
+      expect(environment.first_deployment_for(commit).ref).to be_utf8
+    end
   end
 
   describe '#environment_type' do
@@ -135,7 +159,7 @@ describe Environment, models: true do
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
       let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when environment is available' do
         before do
@@ -191,25 +215,55 @@ describe Environment, models: true do
     end
 
     context 'when matching action is defined' do
-      let(:build) { create(:ci_build) }
-      let!(:deployment) { create(:deployment, environment: environment, deployable: build, on_stop: 'close_app') }
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
 
-      context 'when action did not yet finish' do
-        let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
+      let!(:deployment) do
+        create(:deployment, environment: environment,
+                            deployable: build,
+                            on_stop: 'close_app')
+      end
 
-        it 'returns the same action' do
-          expect(subject).to eq(close_action)
-          expect(subject.user).to eq(user)
+      context 'when user is not allowed to stop environment' do
+        let!(:close_action) do
+          create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+        end
+
+        it 'raises an exception' do
+          expect { subject }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
-      context 'if action did finish' do
-        let!(:close_action) { create(:ci_build, :manual, :success, pipeline: build.pipeline, name: 'close_app') }
+      context 'when user is allowed to stop environment' do
+        before do
+          project.add_developer(user)
 
-        it 'returns a new action of the same type' do
-          is_expected.to be_persisted
-          expect(subject.name).to eq(close_action.name)
-          expect(subject.user).to eq(user)
+          create(:protected_branch, :developers_can_merge,
+                 name: 'master', project: project)
+        end
+
+        context 'when action did not yet finish' do
+          let!(:close_action) do
+            create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
+          end
+
+          it 'returns the same action' do
+            expect(subject).to eq(close_action)
+            expect(subject.user).to eq(user)
+          end
+        end
+
+        context 'if action did finish' do
+          let!(:close_action) do
+            create(:ci_build, :manual, :success,
+                   pipeline: pipeline, name: 'close_app')
+          end
+
+          it 'returns a new action of the same type' do
+            expect(subject).to be_persisted
+            expect(subject.name).to eq(close_action.name)
+            expect(subject.user).to eq(user)
+          end
         end
       end
     end
@@ -239,7 +293,7 @@ describe Environment, models: true do
   describe '#actions_for' do
     let(:deployment) { create(:deployment, environment: environment) }
     let(:pipeline) { deployment.deployable.pipeline }
-    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_BUILD_REF_NAME' )}
+    let!(:review_action) { create(:ci_build, :manual, name: 'review-apps', pipeline: pipeline, environment: 'review/$CI_COMMIT_REF_NAME' )}
     let!(:production_action) { create(:ci_build, :manual, name: 'production', pipeline: pipeline, environment: 'production' )}
 
     it 'returns a list of actions with matching environment' do
@@ -351,7 +405,7 @@ describe Environment, models: true do
 
       it 'returns the metrics from the deployment service' do
         expect(project.monitoring_service)
-          .to receive(:metrics).with(environment)
+          .to receive(:environment_metrics).with(environment)
           .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
@@ -364,6 +418,99 @@ describe Environment, models: true do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_metrics?' do
+    subject { environment.has_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#additional_metrics' do
+    let(:project) { create(:prometheus_project) }
+    subject { environment.additional_metrics }
+
+    context 'when the environment has additional metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(true)
+      end
+
+      it 'returns the additional metrics from the deployment service' do
+        expect(project.prometheus_service).to receive(:additional_environment_metrics)
+                                                .with(environment)
+                                                .and_return(:fake_metrics)
+
+        is_expected.to eq(:fake_metrics)
+      end
+    end
+
+    context 'when the environment does not have metrics' do
+      before do
+        allow(environment).to receive(:has_additional_metrics?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#has_additional_metrics??' do
+    subject { environment.has_additional_metrics? }
+
+    context 'when the enviroment is available' do
+      context 'with a deployment service' do
+        let(:project) { create(:prometheus_project) }
+
+        context 'and a deployment' do
+          let!(:deployment) { create(:deployment, environment: environment) }
+          it { is_expected.to be_truthy }
+        end
+
+        context 'but no deployments' do
+          it { is_expected.to be_falsy }
+        end
+      end
+
+      context 'without a monitoring service' do
+        it { is_expected.to be_falsy }
+      end
+    end
+
+    context 'when the environment is unavailable' do
+      let(:project) { create(:prometheus_project) }
+
+      before do
+        environment.stop
+      end
+
+      it { is_expected.to be_falsy }
     end
   end
 
@@ -396,7 +543,7 @@ describe Environment, models: true do
       "foo**bar"                  => "foo-bar" + SUFFIX,
       "*-foo"                     => "env-foo" + SUFFIX,
       "staging-12345678-"         => "staging-12345678" + SUFFIX,
-      "staging-12345678-01234567" => "staging-12345678" + SUFFIX,
+      "staging-12345678-01234567" => "staging-12345678" + SUFFIX
     }.each do |name, matcher|
       it "returns a slug matching #{matcher}, given #{name}" do
         slug = described_class.new(name: name).generate_slug

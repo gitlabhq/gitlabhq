@@ -1,31 +1,10 @@
-- page_title "New Deploy Key"
+- page_title 'New Deploy Key'
 %h3.page-title New public deploy key
 %hr
 
 %div
   = form_for [:admin, @deploy_key], html: { class: 'deploy-key-form form-horizontal' } do |f|
-    = form_errors(@deploy_key)
-
-    .form-group
-      = f.label :title, class: "control-label"
-      .col-sm-10= f.text_field :title, class: 'form-control'
-    .form-group
-      = f.label :key, class: "control-label"
-      .col-sm-10
-        %p.light
-          Paste a machine public key here. Read more about how to generate it
-          = link_to "here", help_page_path("ssh/README")
-        = f.text_area :key, class: "form-control thin_area", rows: 5
-    .form-group
-      .control-label
-      .col-sm-10
-        = f.label :can_push do
-          = f.check_box :can_push
-          %strong Write access allowed
-        %p.light.append-bottom-0
-          Allow this key to push to repository as well? (Default only allows pull access.)
-
+    = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
-      = f.submit 'Create', class: "btn-create btn"
-      = link_to "Cancel", admin_deploy_keys_path, class: "btn btn-cancel"
-
+      = f.submit 'Create', class: 'btn-create btn'
+      = link_to 'Cancel', admin_deploy_keys_path, class: 'btn btn-cancel'

@@ -6,27 +6,27 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
   let(:repo) { double }
   let(:raw) do
     {
-      ref: 'feature',
+      ref: 'branch-merged',
       repo: repo,
       sha: commit.id
     }
   end
 
   describe '#exists?' do
-    it 'returns true when both branch, and commit exists' do
+    it 'returns true when branch exists and commit is part of the branch' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.exists?).to eq true
     end
 
-    it 'returns false when branch does not exist' do
-      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
+    it 'returns false when branch exists and commit is not part of the branch' do
+      branch = described_class.new(project, double(raw.merge(ref: 'feature')))
 
       expect(branch.exists?).to eq false
     end
 
-    it 'returns false when commit does not exist' do
-      branch = described_class.new(project, double(raw.merge(sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b')))
+    it 'returns false when branch does not exist' do
+      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
 
       expect(branch.exists?).to eq false
     end

@@ -15,10 +15,6 @@ module Banzai
         Issue
       end
 
-      def uses_reference_pattern?
-        context[:project].default_issues_tracker?
-      end
-
       def find_object(project, iid)
         issues_per_project[project][iid]
       end
@@ -38,13 +34,7 @@ module Banzai
 
           projects_per_reference.each do |path, project|
             issue_ids = references_per_project[path]
-
-            issues =
-              if project.default_issues_tracker?
-                project.issues.where(iid: issue_ids.to_a)
-              else
-                issue_ids.map { |id| ExternalIssue.new(id, project) }
-              end
+            issues = project.issues.where(iid: issue_ids.to_a)
 
             issues.each do |issue|
               hash[project][issue.iid.to_i] = issue
@@ -52,26 +42,6 @@ module Banzai
           end
 
           hash
-        end
-      end
-
-      def object_link_title(object)
-        if object.is_a?(ExternalIssue)
-          "Issue in #{object.project.external_issue_tracker.title}"
-        else
-          super
-        end
-      end
-
-      def data_attributes_for(text, project, object, link: false)
-        if object.is_a?(ExternalIssue)
-          data_attribute(
-            project: project.id,
-            external_issue: object.id,
-            reference_type: ExternalIssueReferenceFilter.reference_type
-          )
-        else
-          super
         end
       end
 

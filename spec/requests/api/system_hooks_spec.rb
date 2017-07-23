@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe API::SystemHooks, api: true  do
-  include ApiHelpers
-
+describe API::SystemHooks do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let!(:hook) { create(:system_hook, url: "http://example.com") }
 
-  before { stub_request(:post, hook.url) }
+  before do
+    stub_request(:post, hook.url)
+  end
 
   describe "GET /hooks" do
     context "when no user" do
@@ -34,8 +34,9 @@ describe API::SystemHooks, api: true  do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
-        expect(json_response.first['push_events']).to be true
+        expect(json_response.first['push_events']).to be false
         expect(json_response.first['tag_push_events']).to be false
+        expect(json_response.first['repository_update_events']).to be true
       end
     end
   end

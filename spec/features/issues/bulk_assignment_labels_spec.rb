@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Issues > Labels bulk assignment', feature: true do
-  include WaitForAjax
-
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
@@ -15,18 +13,33 @@ feature 'Issues > Labels bulk assignment', feature: true do
     before do
       project.team << [user, :master]
 
-      login_as user
+      sign_in user
+    end
+
+    context 'sidebar' do
+      before do
+        enable_bulk_update
+      end
+
+      it 'is present when bulk edit is enabled' do
+        expect(page).to have_css('.issuable-sidebar')
+      end
+
+      it 'is not present when bulk edit is disabled' do
+        disable_bulk_update
+        expect(page).not_to have_css('.issuable-sidebar')
+      end
     end
 
     context 'can bulk assign' do
       before do
-        visit namespace_project_issues_path(project.namespace, project)
+        enable_bulk_update
       end
 
       context 'a label' do
         context 'to all issues' do
           before do
-            check 'check_all_issues'
+            check 'check-all-issues'
             open_labels_dropdown ['bug']
             update_issues
           end
@@ -54,7 +67,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
       context 'multiple labels' do
         context 'to all issues' do
           before do
-            check 'check_all_issues'
+            check 'check-all-issues'
             open_labels_dropdown %w(bug feature)
             update_issues
           end
@@ -88,9 +101,10 @@ feature 'Issues > Labels bulk assignment', feature: true do
       before do
         issue2.labels << bug
         issue2.labels << feature
-        visit namespace_project_issues_path(project.namespace, project)
 
-        check 'check_all_issues'
+        enable_bulk_update
+        check 'check-all-issues'
+
         open_labels_dropdown ['bug']
         update_issues
       end
@@ -109,9 +123,8 @@ feature 'Issues > Labels bulk assignment', feature: true do
           issue2.labels << bug
           issue2.labels << feature
 
-          visit namespace_project_issues_path(project.namespace, project)
-
-          check 'check_all_issues'
+          enable_bulk_update
+          check 'check-all-issues'
           unmark_labels_in_dropdown %w(bug feature)
           update_issues
         end
@@ -129,8 +142,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           issue1.labels << bug
           issue2.labels << feature
 
-          visit namespace_project_issues_path(project.namespace, project)
-
+          enable_bulk_update
           check_issue issue1
           unmark_labels_in_dropdown ['bug']
           update_issues
@@ -149,8 +161,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           issue2.labels << bug
           issue2.labels << feature
 
-          visit namespace_project_issues_path(project.namespace, project)
-
+          enable_bulk_update
           check_issue issue1
           check_issue issue2
           unmark_labels_in_dropdown ['bug']
@@ -173,14 +184,15 @@ feature 'Issues > Labels bulk assignment', feature: true do
         before do
           issue1.labels << bug
           issue2.labels << feature
-          visit namespace_project_issues_path(project.namespace, project)
+          enable_bulk_update
         end
 
         it 'keeps labels' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
 
-          check 'check_all_issues'
+          check 'check-all-issues'
+
           open_milestone_dropdown(['First Release'])
           update_issues
 
@@ -194,14 +206,13 @@ feature 'Issues > Labels bulk assignment', feature: true do
       context 'setting a milestone and adding another label' do
         before do
           issue1.labels << bug
-
-          visit namespace_project_issues_path(project.namespace, project)
+          enable_bulk_update
         end
 
         it 'keeps existing label and new label is present' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
 
-          check 'check_all_issues'
+          check 'check-all-issues'
           open_milestone_dropdown ['First Release']
           open_labels_dropdown ['feature']
           update_issues
@@ -220,7 +231,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           issue1.labels << feature
           issue2.labels << feature
 
-          visit namespace_project_issues_path(project.namespace, project)
+          enable_bulk_update
         end
 
         it 'keeps existing label and new label is present' do
@@ -228,7 +239,8 @@ feature 'Issues > Labels bulk assignment', feature: true do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
 
-          check 'check_all_issues'
+          check 'check-all-issues'
+
           open_milestone_dropdown ['First Release']
           unmark_labels_in_dropdown ['feature']
           update_issues
@@ -250,7 +262,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           issue1.labels << bug
           issue2.labels << feature
 
-          visit namespace_project_issues_path(project.namespace, project)
+          enable_bulk_update
         end
 
         it 'keeps labels' do
@@ -259,7 +271,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
           expect(find("#issue_#{issue2.id}")).to have_content 'First Release'
 
-          check 'check_all_issues'
+          check 'check-all-issues'
           open_milestone_dropdown(['No Milestone'])
           update_issues
 
@@ -274,8 +286,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
     context 'toggling checked issues' do
       before do
         issue1.labels << bug
-
-        visit namespace_project_issues_path(project.namespace, project)
+        enable_bulk_update
       end
 
       it do
@@ -300,15 +311,15 @@ feature 'Issues > Labels bulk assignment', feature: true do
         issue1.labels << feature
         issue2.labels << bug
 
-        visit namespace_project_issues_path(project.namespace, project)
+        enable_bulk_update
       end
 
       it 'applies label from filtered results' do
-        check 'check_all_issues'
+        check 'check-all-issues'
 
-        page.within('.issues_bulk_update') do
-          click_button 'Labels'
-          wait_for_ajax
+        page.within('.issues-bulk-update') do
+          click_button 'Select labels'
+          wait_for_requests
 
           expect(find('.dropdown-menu-labels li', text: 'bug')).to have_css('.is-active')
           expect(find('.dropdown-menu-labels li', text: 'feature')).to have_css('.is-indeterminate')
@@ -335,23 +346,24 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   context 'as a guest' do
     before do
-      login_as user
+      sign_in user
 
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     end
 
     context 'cannot bulk assign labels' do
       it do
-        expect(page).not_to have_css '.check_all_issues'
+        expect(page).not_to have_button 'Edit Issues'
+        expect(page).not_to have_css '.check-all-issues'
         expect(page).not_to have_css '.issue-check'
       end
     end
   end
 
   def open_milestone_dropdown(items = [])
-    page.within('.issues_bulk_update') do
-      click_button 'Milestone'
-      wait_for_ajax
+    page.within('.issues-bulk-update') do
+      click_button 'Select milestone'
+      wait_for_requests
       items.map do |item|
         click_link item
       end
@@ -359,9 +371,9 @@ feature 'Issues > Labels bulk assignment', feature: true do
   end
 
   def open_labels_dropdown(items = [], unmark = false)
-    page.within('.issues_bulk_update') do
-      click_button 'Labels'
-      wait_for_ajax
+    page.within('.issues-bulk-update') do
+      click_button 'Select labels'
+      wait_for_requests
       items.map do |item|
         click_link item
       end
@@ -393,7 +405,16 @@ feature 'Issues > Labels bulk assignment', feature: true do
   end
 
   def update_issues
-    click_button 'Update issues'
-    wait_for_ajax
+    click_button 'Update all'
+    wait_for_requests
+  end
+
+  def enable_bulk_update
+    visit project_issues_path(project)
+    click_button 'Edit Issues'
+  end
+
+  def disable_bulk_update
+    click_button 'Cancel'
   end
 end

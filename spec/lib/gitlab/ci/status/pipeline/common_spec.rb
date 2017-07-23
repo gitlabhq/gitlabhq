@@ -17,7 +17,9 @@ describe Gitlab::Ci::Status::Pipeline::Common do
 
   describe '#has_details?' do
     context 'when user has access to read pipeline' do
-      before { project.team << [user, :developer] }
+      before do
+        project.team << [user, :developer]
+      end
 
       it { is_expected.to have_details }
     end

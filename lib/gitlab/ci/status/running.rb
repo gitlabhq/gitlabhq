@@ -3,15 +3,19 @@ module Gitlab
     module Status
       class Running < Status::Core
         def text
-          'running'
+          s_('CiStatus|running')
         end
 
         def label
-          'running'
+          s_('CiStatus|running')
         end
 
         def icon
           'icon_status_running'
+        end
+
+        def favicon
+          'favicon_status_running'
         end
       end
     end

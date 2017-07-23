@@ -47,24 +47,24 @@ describe 'gitlab:app namespace rake task' do
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
-        allow(Rake::Task["gitlab:shell:setup"]).
-          to receive(:invoke).and_return(true)
+        allow(Rake::Task["gitlab:shell:setup"])
+          .to receive(:invoke).and_return(true)
         ENV['force'] = 'yes'
       end
 
       let(:gitlab_version) { Gitlab::VERSION }
 
       it 'fails on mismatch' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: "not #{gitlab_version}" })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: "not #{gitlab_version}" })
 
-        expect { run_rake_task('gitlab:backup:restore') }.
-          to raise_error(SystemExit)
+        expect { run_rake_task('gitlab:backup:restore') }
+          .to raise_error(SystemExit)
       end
 
       it 'invokes restoration on match' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: gitlab_version })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
@@ -81,12 +81,19 @@ describe 'gitlab:app namespace rake task' do
   end # backup_restore task
 
   describe 'backup' do
+    before(:all) do
+      ENV['force'] = 'yes'
+    end
+
     def tars_glob
       Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
     end
 
     def create_backup
       FileUtils.rm tars_glob
+
+      # This reconnect makes our project fixture disappear, breaking the restore. Stub it out.
+      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
 
       # Redirect STDOUT and run the rake task
       orig_stdout = $stdout
@@ -109,7 +116,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     describe 'backup creation and deletion using custom_hooks' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
 
       before(:each) do
@@ -118,9 +125,6 @@ describe 'gitlab:app namespace rake task' do
         path = File.join(project.repository.path_to_repo, filename)
         FileUtils.mkdir_p(path)
         FileUtils.touch(File.join(path, "dummy.txt"))
-
-        # We need to use the full path instead of the relative one
-        allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(File.expand_path(Gitlab.config.gitlab_shell.path, Rails.root.to_s))
 
         ENV["SKIP"] = "db"
         create_backup
@@ -220,21 +224,26 @@ describe 'gitlab:app namespace rake task' do
     end
 
     context 'multiple repository storages' do
-      let(:project_a) { create(:project, repository_storage: 'default') }
-      let(:project_b) { create(:project, repository_storage: 'custom') }
+      let(:project_a) { create(:project, :repository, repository_storage: 'default') }
+      let(:project_b) { create(:project, :repository, repository_storage: 'custom') }
 
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
+        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
         storages = {
-          'default' => { 'path' => 'tmp/tests/default_storage' },
-          'custom' => { 'path' => 'tmp/tests/custom_storage' }
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
+          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
         # Create the projects now, after mocking the settings but before doing the backup
         project_a
         project_b
+
+        # Avoid asking gitaly about the root ref (which will fail beacuse of the
+        # mocked storages)
+        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
 
         # We only need a backup of the repositories for this test
         ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
@@ -301,8 +310,8 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'does not invoke repositories restore' do
-      allow(Rake::Task['gitlab:shell:setup']).
-        to receive(:invoke).and_return(true)
+      allow(Rake::Task['gitlab:shell:setup'])
+        .to receive(:invoke).and_return(true)
       allow($stdout).to receive :write
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
@@ -346,7 +355,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'name has human readable time' do
-      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_gitlab_backup.tar$/)
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

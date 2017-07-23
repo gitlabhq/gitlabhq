@@ -15,19 +15,27 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I visit the Project Pages' do
-    visit namespace_project_pages_path(@project.namespace, @project)
-  end
-
-  step 'I should see that GitLab Pages are disabled' do
-    expect(page).to have_content('GitLab Pages are disabled')
+    visit project_pages_path(@project)
   end
 
   step 'I should see the usage of GitLab Pages' do
     expect(page).to have_content('Configure pages')
   end
 
+  step 'I should see the "Pages" tab' do
+    page.within '.sub-nav' do
+      expect(page).to have_link('Pages')
+    end
+  end
+
+  step 'I should not see the "Pages" tab' do
+    page.within '.sub-nav' do
+      expect(page).not_to have_link('Pages')
+    end
+  end
+
   step 'pages are deployed' do
-    pipeline = @project.ensure_pipeline('HEAD', @project.commit('HEAD').sha)
+    pipeline = @project.pipelines.create(ref: 'HEAD', sha: @project.commit('HEAD').sha)
     build = build(:ci_build,
                   project: @project,
                   pipeline: pipeline,
@@ -53,13 +61,13 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'pages are exposed on external HTTP address' do
-    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
     allow(Gitlab.config.pages).to receive(:external_https).and_return(nil)
   end
 
   step 'pages are exposed on external HTTPS address' do
-    allow(Gitlab.config.pages).to receive(:external_http).and_return('1.1.1.1:80')
-    allow(Gitlab.config.pages).to receive(:external_https).and_return('1.1.1.1:443')
+    allow(Gitlab.config.pages).to receive(:external_http).and_return(['1.1.1.1:80'])
+    allow(Gitlab.config.pages).to receive(:external_https).and_return(['1.1.1.1:443'])
   end
 
   step 'I should be able to add a New Domain' do
@@ -67,7 +75,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I visit add a new Pages Domain' do
-    visit new_namespace_project_pages_domain_path(@project.namespace, @project)
+    visit new_project_pages_domain_path(@project)
   end
 
   step 'I fill the domain' do

@@ -1,12 +1,12 @@
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
 
 const listObj = {
-  id: 1,
+  id: _.random(10000),
   position: 0,
   title: 'Test',
   list_type: 'label',
   label: {
-    id: 1,
+    id: _.random(10000),
     title: 'Testing',
     color: 'red',
     description: 'testing;'
@@ -14,12 +14,12 @@ const listObj = {
 };
 
 const listObjDuplicate = {
-  id: 2,
+  id: listObj.id,
   position: 1,
   title: 'Test',
   list_type: 'label',
   label: {
-    id: 2,
+    id: listObj.label.id,
     title: 'Testing',
     color: 'red',
     description: 'testing;'
@@ -33,7 +33,8 @@ const BoardsMockData = {
         title: 'Testing',
         iid: 1,
         confidential: false,
-        labels: []
+        labels: [],
+        assignees: [],
       }],
       size: 1
     }

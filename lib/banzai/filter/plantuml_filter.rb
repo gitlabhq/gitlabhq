@@ -7,14 +7,14 @@ module Banzai
     #
     class PlantumlFilter < HTML::Pipeline::Filter
       def call
-        return doc unless doc.at('pre.plantuml') && settings.plantuml_enabled
+        return doc unless doc.at('pre > code[lang="plantuml"]') && settings.plantuml_enabled
 
         plantuml_setup
 
-        doc.css('pre.plantuml').each do |el|
+        doc.css('pre > code[lang="plantuml"]').each do |node|
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
-            Asciidoctor::PlantUml::Processor.plantuml_content(el.content, {}))
-          el.replace img_tag
+            Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {}))
+          node.parent.replace(img_tag)
         end
 
         doc

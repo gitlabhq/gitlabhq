@@ -1,8 +1,6 @@
 require "spec_helper"
 
-describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs', api: true  do
-  include ApiHelpers
-
+describe API::V3::MergeRequestDiffs, 'MergeRequestDiffs' do
   let!(:user)          { create(:user) }
   let!(:merge_request) { create(:merge_request, importing: true) }
   let!(:project)       { merge_request.target_project }

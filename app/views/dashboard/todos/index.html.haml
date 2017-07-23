@@ -1,3 +1,4 @@
+- @hide_top_links = true
 - page_title "Todos"
 - header_title "Todos", dashboard_todos_path
 
@@ -19,9 +20,13 @@
 
     .nav-controls
       - if @todos.any?(&:pending?)
-        = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete do
-          Mark all as done
-          = icon('spinner spin')
+        .append-right-default
+          = link_to destroy_all_dashboard_todos_path(todos_filter_params), class: 'btn btn-loading js-todos-mark-all', method: :delete, data: { href: destroy_all_dashboard_todos_path(todos_filter_params) } do
+            Mark all as done
+            = icon('spinner spin')
+          = link_to bulk_restore_dashboard_todos_path, class: 'btn btn-loading js-todos-undo-all hidden', method: :patch , data: { href: bulk_restore_dashboard_todos_path(todos_filter_params) } do
+            Undo mark all as done
+            = icon('spinner spin')
 
   .todos-filters
     .row-content-block.second-block
@@ -57,22 +62,25 @@
               = icon('chevron-down')
             %ul.dropdown-menu.dropdown-menu-sort
               %li
-                = link_to todos_filter_path(sort: sort_value_priority) do
-                  = sort_title_priority
+                = link_to todos_filter_path(sort: sort_value_label_priority) do
+                  = sort_title_label_priority
                 = link_to todos_filter_path(sort: sort_value_recently_created) do
                   = sort_title_recently_created
                 = link_to todos_filter_path(sort: sort_value_oldest_created) do
                   = sort_title_oldest_created
 
-
 .js-todos-all
   - if @todos.any?
-    .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }
-      .panel.panel-default.panel-small.panel-without-border
-        %ul.content-list.todos-list
-          = render @todos
-    = paginate @todos, theme: "gitlab"
-
+    .js-todos-list-container
+      .js-todos-options{ data: { per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages } }
+        .panel.panel-default.panel-without-border.panel-without-margin
+          %ul.content-list.todos-list
+            = render @todos
+      = paginate @todos, theme: "gitlab"
+    .js-nothing-here-container.todos-all-done.hidden
+      = render "shared/empty_states/icons/todos_all_done.svg"
+      %h4.text-center
+        You're all done!
   - elsif current_user.todos.any?
     .todos-all-done
       = render "shared/empty_states/icons/todos_all_done.svg"

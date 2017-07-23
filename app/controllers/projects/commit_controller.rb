@@ -2,6 +2,7 @@
 #
 # Not to be confused with CommitsController, plural.
 class Projects::CommitController < Projects::ApplicationController
+  include RendersNotes
   include CreatesCommit
   include DiffForPath
   include DiffHelper
@@ -35,9 +36,16 @@ class Projects::CommitController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: PipelineSerializer
-          .new(project: @project, user: @current_user)
-          .represent(@pipelines)
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
+        render json: {
+          pipelines: PipelineSerializer
+            .new(project: @project, current_user: @current_user)
+            .represent(@pipelines),
+          count: {
+            all: @pipelines.count
+          }
+        }
       end
     end
   end
@@ -53,9 +61,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     return render_404 if @start_branch.blank?
 
-    @target_branch = create_new_branch? ? @commit.revert_branch_name : @start_branch
-
-    @mr_target_branch = @start_branch
+    @branch_name = create_new_branch? ? @commit.revert_branch_name : @start_branch
 
     create_commit(Commits::RevertService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully reverted.",
                                           success_path: -> { successful_change_path }, failure_path: failed_change_path)
@@ -66,9 +72,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     return render_404 if @start_branch.blank?
 
-    @target_branch = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
-
-    @mr_target_branch = @start_branch
+    @branch_name = create_new_branch? ? @commit.cherry_pick_branch_name : @start_branch
 
     create_commit(Commits::CherryPickService, success_notice: "The #{@commit.change_type_title(current_user)} has been successfully cherry-picked.",
                                               success_path: -> { successful_change_path }, failure_path: failed_change_path)
@@ -81,16 +85,16 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def successful_change_path
-    referenced_merge_request_url || namespace_project_commits_url(@project.namespace, @project, @target_branch)
+    referenced_merge_request_url || project_commits_url(@project, @branch_name)
   end
 
   def failed_change_path
-    referenced_merge_request_url || namespace_project_commit_url(@project.namespace, @project, params[:id])
+    referenced_merge_request_url || project_commit_url(@project, params[:id])
   end
 
   def referenced_merge_request_url
     if merge_request = @commit.merged_merge_request(current_user)
-      namespace_project_merge_request_url(merge_request.target_project.namespace, merge_request.target_project, merge_request)
+      project_merge_request_url(merge_request.target_project, merge_request)
     end
   end
 
@@ -111,22 +115,19 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_note_vars
-    @grouped_diff_discussions = commit.notes.grouped_diff_discussions
-    @notes = commit.notes.non_diff_notes.fresh
-
-    Banzai::NoteRenderer.render(
-      @grouped_diff_discussions.values.flat_map(&:notes) + @notes,
-      @project,
-      current_user,
-    )
-
+    @noteable = @commit
     @note = @project.build_commit_note(commit)
 
-    @noteable = @commit
-    @comments_target = {
+    @new_diff_note_attrs = {
       noteable_type: 'Commit',
       commit_id: @commit.id
     }
+
+    @grouped_diff_discussions = commit.grouped_diff_discussions
+    @discussions = commit.discussions
+
+    @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
+    @notes = prepare_notes_for_rendering(@notes)
   end
 
   def assign_change_commit_vars

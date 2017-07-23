@@ -1,3 +1,4 @@
+# rubocop:disable RemoveIndex
 class AddProjectImportDataProjectIndex < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

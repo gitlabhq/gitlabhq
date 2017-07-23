@@ -51,10 +51,6 @@ describe Projects::Settings::DeployKeysPresenter do
       expect(presenter.available_project_keys).not_to be_empty
     end
 
-    it 'returns false if any available_project_keys are enabled' do
-      expect(presenter.any_available_project_keys_enabled?).to eq(true)
-    end
-
     it 'returns the available_project_keys size' do
       expect(presenter.available_project_keys_size).to eq(1)
     end

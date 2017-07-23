@@ -1,19 +1,20 @@
-const ExternalUrlComponent = require('~/environments/components/environment_external_url');
+import Vue from 'vue';
+import externalUrlComp from '~/environments/components/environment_external_url.vue';
 
 describe('External URL Component', () => {
-  preloadFixtures('static/environments/element.html.raw');
+  let ExternalUrlComponent;
+
   beforeEach(() => {
-    loadFixtures('static/environments/element.html.raw');
+    ExternalUrlComponent = Vue.extend(externalUrlComp);
   });
 
   it('should link to the provided externalUrl prop', () => {
     const externalURL = 'https://gitlab.com';
     const component = new ExternalUrlComponent({
-      el: document.querySelector('.test-dom-element'),
       propsData: {
         externalUrl: externalURL,
       },
-    });
+    }).$mount();
 
     expect(component.$el.getAttribute('href')).toEqual(externalURL);
     expect(component.$el.querySelector('fa-external-link')).toBeDefined();

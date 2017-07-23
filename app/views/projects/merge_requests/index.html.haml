@@ -1,22 +1,36 @@
 - @no_container = true
-- @bulk_edit = can?(current_user, :admin_merge_request, @project)
+- @can_bulk_update = can?(current_user, :admin_merge_request, @project)
+- merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
+- new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-= render 'projects/last_push'
+- unless @project.default_issues_tracker?
+  = content_for :sub_nav do
+    = render "projects/merge_requests/head"
 
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('filtered_search')
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
 
-%div{ class: container_class }
-  .top-area
-    = render 'shared/issuable/nav', type: :merge_requests
-    .nav-controls
-      - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-      - if merge_project
-        = link_to new_namespace_project_merge_request_path(merge_project.namespace, merge_project), class: "btn btn-new", title: "New Merge Request" do
-          New Merge Request
+- if show_new_nav?
+  - content_for :breadcrumbs_extra do
+    = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
-  = render 'shared/issuable/search_bar', type: :merge_requests
+= render 'projects/last_push'
 
-  .merge-requests-holder
-    = render 'merge_requests'
+- if @project.merge_requests.exists?
+  %div{ class: container_class }
+    .top-area
+      = render 'shared/issuable/nav', type: :merge_requests
+      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+        = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
+
+    = render 'shared/issuable/search_bar', type: :merge_requests
+
+    - if @can_bulk_update
+      = render 'shared/issuable/bulk_update_sidebar', type: :merge_requests
+
+    .merge-requests-holder
+      = render 'merge_requests'
+- else
+  = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path

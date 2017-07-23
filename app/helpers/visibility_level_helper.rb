@@ -29,11 +29,11 @@ module VisibilityLevelHelper
   def project_visibility_level_description(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      "Project access must be granted explicitly to each user."
+      _("Project access must be granted explicitly to each user.")
     when Gitlab::VisibilityLevel::INTERNAL
-      "The project can be cloned by any logged in user."
+      _("The project can be accessed by any logged in user.")
     when Gitlab::VisibilityLevel::PUBLIC
-      "The project can be cloned without any authentication."
+      _("The project can be accessed without any authentication.")
     end
   end
 
@@ -81,11 +81,13 @@ module VisibilityLevelHelper
   end
 
   def visibility_level_label(level)
-    Project.visibility_levels.key(level)
+    # The visibility level can be:
+    # 'VisibilityLevel|Private', 'VisibilityLevel|Internal', 'VisibilityLevel|Public'
+    s_(Project.visibility_levels.key(level))
   end
 
   def restricted_visibility_levels(show_all = false)
-    return [] if current_user.is_admin? && !show_all
+    return [] if current_user.admin? && !show_all
     current_application_settings.restricted_visibility_levels || []
   end
 

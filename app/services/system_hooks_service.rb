@@ -4,7 +4,7 @@ class SystemHooksService
   end
 
   def execute_hooks(data, hooks_scope = :all)
-    SystemHook.send(hooks_scope).each do |hook|
+    SystemHook.public_send(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
   end
@@ -24,10 +24,9 @@ class SystemHooksService
         key: model.key,
         id: model.id
       )
+ 
       if model.user
-        data.merge!(
-          username: model.user.username
-        )
+        data[:username] = model.user.username
       end
     when Project
       data.merge!(project_data(model))
@@ -35,8 +34,6 @@ class SystemHooksService
       if event == :rename || event == :transfer
         data[:old_path_with_namespace] = model.old_path_with_namespace
       end
-
-      data
     when User
       data.merge!({
         name: model.name,
@@ -54,11 +51,13 @@ class SystemHooksService
         path: model.path,
         group_id: model.id,
         owner_name: owner.respond_to?(:name) ? owner.name : nil,
-        owner_email: owner.respond_to?(:email) ? owner.email : nil,
+        owner_email: owner.respond_to?(:email) ? owner.email : nil
       )
     when GroupMember
       data.merge!(group_member_data(model))
     end
+    
+    data
   end
 
   def build_event_name(model, event)
@@ -114,7 +113,7 @@ class SystemHooksService
       user_name: model.user.name,
       user_email: model.user.email,
       user_id: model.user.id,
-      group_access: model.human_access,
+      group_access: model.human_access
     }
   end
 end

@@ -36,7 +36,7 @@ module Gitlab
           user: {
             id: user.try(:id),
             name: user.try(:name),
-            email: user.try(:email),
+            email: user.try(:email)
           },
 
           commit: {
@@ -49,7 +49,7 @@ module Gitlab
             status: commit.status,
             duration: commit.duration,
             started_at: commit.started_at,
-            finished_at: commit.finished_at,
+            finished_at: commit.finished_at
           },
 
           repository: {
@@ -60,7 +60,7 @@ module Gitlab
             git_http_url: project.http_url_to_repo,
             git_ssh_url: project.ssh_url_to_repo,
             visibility_level: project.visibility_level
-          },
+          }
         }
 
         data

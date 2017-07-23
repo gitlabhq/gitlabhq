@@ -7,14 +7,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedMarkdown
   include SharedDiffNote
   include SharedUser
-  include WaitForAjax
+  include WaitForRequests
 
   after do
-    wait_for_ajax if javascript_test?
+    wait_for_requests if javascript_test?
   end
 
   step 'I click link "New Merge Request"' do
-    click_link "New Merge Request"
+    page.within '#content-body' do
+      page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
+    end
   end
 
   step 'I click link "Bug NS-04"' do
@@ -26,43 +28,44 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters [data-state="all"] span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
 
   step 'I click link "Merged"' do
-    click_link "Merged"
+    find('#state-merged').trigger('click')
   end
 
   step 'I click link "Closed"' do
-    page.within('.issues-state-filters') do
-      click_link "Closed"
-    end
+    find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
   step 'I should see merge request "Wiki Feature"' do
     page.within '.merge-request' do
       expect(page).to have_content "Wiki Feature"
     end
+    wait_for_requests
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
-    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
-    expect(merge_request).to be_closed
+    expect(page).to have_content "Bug NS-04"
     expect(page).to have_content "Closed by"
+    wait_for_requests
   end
 
   step 'I should see merge request "Bug NS-04"' do
     expect(page).to have_content "Bug NS-04"
+    wait_for_requests
   end
 
   step 'I should see merge request "Feature NS-05"' do
     expect(page).to have_content "Feature NS-05"
+    wait_for_requests
   end
 
   step 'I should not see "master" branch' do
-    expect(find('.merge-request-info')).not_to have_content "master"
+    expect(find('.issuable-info')).not_to have_content "master"
   end
 
   step 'I should see "feature_conflict" branch' do
@@ -95,7 +98,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click button "Unsubscribe"' do
     click_on "Unsubscribe"
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I click link "Close"' do
@@ -253,7 +256,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I switch to the merge request\'s comments tab' do
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
   end
 
   step 'I click on the commit in the merge request' do
@@ -296,14 +299,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I change the comment "Line is wrong" to "Typo, please fix" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
+
       find('.js-note-edit').click
 
       page.within('.current-note-edit-form', visible: true) do
         fill_in 'note_note', with: 'Typo, please fix'
-        click_button 'Save Comment'
+        click_button 'Save comment'
       end
 
-      expect(page).not_to have_button 'Save Comment', disabled: true, visible: true
+      expect(page).not_to have_button 'Save comment', disabled: true, visible: true
     end
   end
 
@@ -321,13 +327,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I delete the comment "Line is wrong" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
+
       find('.js-note-delete').click
     end
   end
 
   step 'I click on the Discussion tab' do
     page.within '.merge-request-tabs' do
-      click_link 'Discussion'
+      find('.notes-tab').trigger('click')
     end
 
     # Waits for load
@@ -347,6 +356,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion by user "John Doe" has started on diff' do
+    # Trigger a refresh of notes
+    execute_script("$(document).trigger('visibilitychange');")
+    wait_for_requests
     page.within(".notes .discussion") do
       page.should have_content "#{user_exists("John Doe").name} #{user_exists("John Doe").to_reference} started a discussion"
       page.should have_content sample_commit.line_code_path
@@ -356,10 +368,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a badge of "1" next to the discussion link' do
     expect_discussion_badge_to_have_counter("1")
+    wait_for_requests
   end
 
   step 'I should see a badge of "0" next to the discussion link' do
     expect_discussion_badge_to_have_counter("0")
+    wait_for_requests
   end
 
   step 'I should see a discussion has started on commit diff' do
@@ -367,6 +381,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content sample_commit.line_code_path
       page.should have_content "Line is wrong"
+      wait_for_requests
     end
   end
 
@@ -374,16 +389,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within(".notes .discussion") do
       page.should have_content "#{current_user.name} #{current_user.to_reference} started a discussion on commit"
       page.should have_content "One comment to rule them all"
+      wait_for_requests
     end
   end
 
   step 'merge request is mergeable' do
-    expect(page).to have_button 'Accept Merge Request'
+    expect(page).to have_button 'Merge'
   end
 
   step 'I modify merge commit message' do
-    find('.modify-merge-commit-link').click
-    fill_in 'commit_message', with: 'wow such merge'
+    click_button "Modify commit message"
+    fill_in 'Commit message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -392,24 +408,26 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I accept this merge request' do
     page.within '.mr-state-widget' do
-      click_button "Accept Merge Request"
+      click_button "Merge"
     end
   end
 
   step 'I should see merged request' do
     page.within '.status-box' do
       expect(page).to have_content "Merged"
+      wait_for_requests
     end
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').click
+    first(:css, '.reopen-mr-link').trigger('click')
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
     page.within '.status-box' do
       expect(page).to have_content "Open"
     end
+    wait_for_requests
   end
 
   step 'I click link "Hide inline discussion" of the third file' do
@@ -433,6 +451,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see a comment like "Line is wrong" in the third file' do
     page.within '.files>div:nth-child(3) .note-body > .note-text' do
       expect(page).to have_visible_content "Line is wrong"
+      wait_for_requests
     end
   end
 
@@ -456,6 +475,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Comment"
     end
 
+    wait_for_requests
+
     page.within ".files>div:nth-child(2) .note-body > .note-text" do
       expect(page).to have_content "Line is correct"
     end
@@ -468,6 +489,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       fill_in "note_note", with: "Line is wrong on here"
       click_button "Comment"
     end
+
+    wait_for_requests
   end
 
   step 'I should still see a comment like "Line is correct" in the second file' do
@@ -496,6 +519,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see comments on the side-by-side diff page' do
     page.within '.files>div:nth-child(2) .parallel .note-body > .note-text' do
       expect(page).to have_visible_content "Line is correct"
+      wait_for_requests
     end
   end
 
@@ -519,7 +543,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I should see new target branch changes' do
     expect(page).to have_content 'Request to merge fix into feature'
     expect(page).to have_content 'changed target branch from merge-test to feature'
-    wait_for_ajax
+    wait_for_requests
   end
 
   step 'I click on "Email Patches"' do
@@ -537,7 +561,14 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step '"Bug NS-05" has CI status' do
     project = merge_request.source_project
     project.enable_ci
-    pipeline = create :ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch
+
+    pipeline =
+      create(:ci_pipeline,
+             project: project,
+             sha: merge_request.diff_head_sha,
+             ref: merge_request.source_branch,
+             head_pipeline_of: merge_request)
+
     create :ci_build, pipeline: pipeline
   end
 
@@ -551,12 +582,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     page.within ".mr-source-target" do
       expect(page).to have_content /([0-9]+ commits behind)/
     end
+
+    wait_for_requests
   end
 
   step 'I should not see the diverged commits count' do
     page.within ".mr-source-target" do
       expect(page).not_to have_content /([0-9]+ commit[s]? behind)/
     end
+
+    wait_for_requests
   end
 
   def merge_request
@@ -572,6 +607,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       fill_in "note_note", with: message
       click_button "Comment"
     end
+
+    wait_for_requests
+
     page.within(".notes_holder", visible: true) do
       expect(page).to have_content message
     end

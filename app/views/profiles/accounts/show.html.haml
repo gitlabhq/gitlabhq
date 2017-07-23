@@ -1,4 +1,5 @@
 - page_title "Account"
+- @content_class = "limit-container-width" unless fluid_layout
 = render 'profiles/head'
 
 - if current_user.ldap_user?
@@ -6,67 +7,49 @@
     Some options are unavailable for LDAP accounts
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      = incoming_email_token_enabled? ? "Private Tokens" : "Private Token"
+      Private Tokens
     %p
-      Keep
-      = incoming_email_token_enabled? ? "these tokens" : "this token"
-      secret, anyone with access to them can interact with GitLab as if they were you.
-  .col-lg-9.private-tokens-reset
-    .reset-action
-      %p.cgray
-        - if current_user.private_token
-          = label_tag "private-token", "Private token", class: "label-light"
-          = text_field_tag "private-token", current_user.private_token, class: "form-control", readonly: true, onclick: "this.select()"
-        - else
-          %span You don't have one yet. Click generate to fix it.
-        %p.help-block
-          Your private token is used to access the API and Atom feeds without username/password authentication.
-      .prepend-top-default
-        - if current_user.private_token
-          = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default private-token"
-        - else
-          = f.submit 'Generate', class: "btn btn-default"
+      Keep these tokens secret, anyone with access to them can interact with
+      GitLab as if they were you.
+  .col-lg-8.private-tokens-reset
+    = render partial: 'reset_token', locals: { label: 'Private token', button_label: 'Reset private token', help_text: 'Your private token is used to access the API and Atom feeds without username/password authentication.' }
+
+    = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to create urls for personalized RSS feeds.' }
+
     - if incoming_email_token_enabled?
-      .reset-action
-        %p.cgray
-          = label_tag "incoming-email-token", "Incoming Email Token", class: 'label-light'
-          = text_field_tag "incoming-email-token", current_user.incoming_email_token, class: "form-control", readonly: true, onclick: "this.select()"
-        %p.help-block
-          Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.
-        .prepend-top-default
-          = link_to 'Reset incoming email token', reset_incoming_email_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default incoming-email-token"
+      = render partial: 'reset_token', locals: { label: 'Incoming email token', button_label: 'Reset incoming email token', help_text: 'Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.' }
 
 %hr
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
+  .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Two-Factor Authentication
     %p
       Increase your account's security by enabling Two-Factor Authentication (2FA).
-  .col-lg-9
+  .col-lg-8
     %p
       Status: #{current_user.two_factor_enabled? ? 'Enabled' : 'Disabled'}
     - if current_user.two_factor_enabled?
-      = link_to 'Manage Two-Factor Authentication', profile_two_factor_auth_path, class: 'btn btn-info'
+      = link_to 'Manage two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-info'
       = link_to 'Disable', profile_two_factor_auth_path,
                 method: :delete,
                 data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
                 class: 'btn btn-danger'
     - else
       .append-bottom-10
-        = link_to 'Enable Two-Factor Authentication', profile_two_factor_auth_path, class: 'btn btn-success'
+        = link_to 'Enable two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-success'
 
 %hr
 - if button_based_providers.any?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Social sign-in
       %p
         Activate signin with one of the following services
-    .col-lg-9
+    .col-lg-8
       %label.label-light
         Connected Accounts
       %p Click on icon to activate signin with one of the following services
@@ -75,24 +58,24 @@
           .provider-btn-image
             = provider_image_tag(provider)
           - if auth_active?(provider)
-            - if provider.to_s == 'saml'
-              %a.provider-btn
-                Active
-            - else
+            - if unlink_allowed?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
                 Disconnect
+            - else
+              %a.provider-btn
+                Active
           - else
             = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
               Connect
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0.warning-title
         Change username
       %p
         Changing your username will change path to all personal projects!
-    .col-lg-9
+    .col-lg-8
       = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group
           = f.label :username, "Path", class: "label-light"
@@ -111,18 +94,14 @@
 
 - if signup_enabled?
   .row.prepend-top-default
-    .col-lg-3.profile-settings-sidebar
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0.danger-title
         Remove account
-    .col-lg-9
+    .col-lg-8
       - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
         %p
           Deleting an account has the following effects:
-        %ul
-          %li All user content like authored issues, snippets, comments will be removed
-          - rp = current_user.personal_projects.count
-          - unless rp.zero?
-            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+        = render 'users/deletion_guidance', user: current_user
         = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
       - else
         - if @user.solo_owned_groups.present?

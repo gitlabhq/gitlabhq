@@ -1,101 +1,65 @@
 require 'spec_helper'
 
-feature 'Member autocomplete', feature: true do
-  include WaitForAjax
-
-  let(:project) { create(:project, :public) }
+feature 'Member autocomplete', :js do
+  let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
-  let(:participant) { create(:user) }
   let(:author) { create(:user) }
+  let(:note) { create(:note, noteable: noteable, project: noteable.project) }
 
   before do
-    allow_any_instance_of(Commit).to receive(:author).and_return(author)
-    login_as user
+    note # actually create the note
+    sign_in(user)
   end
 
-  shared_examples "open suggestions" do
-    it 'displays suggestions' do
-      expect(page).to have_selector('.atwho-view', visible: true)
+  shared_examples "open suggestions when typing @" do
+    before do
+      page.within('.new-note') do
+        find('#note_note').send_keys('@')
+      end
     end
 
-    it 'suggests author' do
+    it 'suggests noteable author and note author' do
       page.within('.atwho-view', visible: true) do
         expect(page).to have_content(author.username)
-      end
-    end
-
-    it 'suggests participant' do
-      page.within('.atwho-view', visible: true) do
-        expect(page).to have_content(participant.username)
+        expect(page).to have_content(note.author.username)
       end
     end
   end
 
-  context 'adding a new note on a Issue', js: true do
+  context 'adding a new note on a Issue' do
+    let(:noteable) { create(:issue, author: author, project: project) }
     before do
-      issue = create(:issue, author: author, project: project)
-      create(:note, note: 'Ultralight Beam', noteable: issue,
-                    project: project, author: participant)
-      visit_issue(project, issue)
+      visit project_issue_path(project, noteable)
     end
 
-    context 'when typing @' do
-      include_examples "open suggestions"
-      before do
-        open_member_suggestions
-      end
-    end
+    include_examples "open suggestions when typing @"
   end
 
-  context 'adding a new note on a Merge Request ', js: true do
+  context 'adding a new note on a Merge Request' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:noteable) do
+      create(:merge_request, source_project: project,
+                             target_project: project, author: author)
+    end
     before do
-      merge = create(:merge_request, source_project: project, target_project: project, author: author)
-      create(:note, note: 'Ultralight Beam', noteable: merge,
-                    project: project, author: participant)
-      visit_merge_request(project, merge)
+      visit project_merge_request_path(project, noteable)
     end
 
-    context 'when typing @' do
-      include_examples "open suggestions"
-      before do
-        open_member_suggestions
-      end
-    end
+    include_examples "open suggestions when typing @"
   end
 
-  context 'adding a new note on a Commit ', js: true do
-    let(:commit)  { project.commit }
+  context 'adding a new note on a Commit' do
+    let(:project) { create(:project, :public, :repository) }
+    let(:noteable) { project.commit }
+    let(:note) { create(:note_on_commit, project: project, commit_id: project.commit.id) }
 
     before do
-      allow(commit).to receive(:author).and_return(author)
-      create(:note_on_commit, author: participant, project: project, commit_id: project.repository.commit.id, note: 'No More Parties in LA')
-      visit_commit(project, commit)
+      allow(User).to receive(:find_by_any_email)
+        .with(noteable.author_email.downcase).and_return(author)
+
+      visit project_commit_path(project, noteable)
     end
 
-    context 'when typing @' do
-      include_examples "open suggestions"
-      before do
-        open_member_suggestions
-      end
-    end
-  end
-
-  def open_member_suggestions
-    page.within('.new-note') do
-      find('#note_note').send_keys('@')
-    end
-    wait_for_ajax
-  end
-
-  def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
-  end
-
-  def visit_merge_request(project, merge)
-    visit namespace_project_merge_request_path(project.namespace, project, merge)
-  end
-
-  def visit_commit(project, commit)
-    visit namespace_project_commit_path(project.namespace, project, commit)
+    include_examples "open suggestions when typing @"
   end
 end

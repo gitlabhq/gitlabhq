@@ -41,27 +41,24 @@ module API
           (Time.now - current_runner.contacted_at) >= contacted_at_max_age
       end
 
-      def job_not_found!
-        if headers['User-Agent'].to_s =~ /gitlab(-ci-multi)?-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /
-          no_content!
-        else
-          not_found!
-        end
-      end
-
       def validate_job!(job)
         not_found! unless job
 
         yield if block_given?
 
-        forbidden!('Project has been deleted!') unless job.project
+        project = job.project
+        forbidden!('Project has been deleted!') if project.nil? || project.pending_delete?
         forbidden!('Job has been erased!') if job.erased?
       end
 
-      def authenticate_job!(job)
+      def authenticate_job!
+        job = Ci::Build.find_by_id(params[:id])
+
         validate_job!(job) do
           forbidden! unless job_token_valid?(job)
         end
+
+        job
       end
 
       def job_token_valid?(job)

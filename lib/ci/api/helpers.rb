@@ -13,10 +13,14 @@ module Ci
         forbidden! unless current_runner
       end
 
-      def authenticate_build!(build)
+      def authenticate_build!
+        build = Ci::Build.find_by_id(params[:id])
+
         validate_build!(build) do
           forbidden! unless build_token_valid?(build)
         end
+
+        build
       end
 
       def validate_build!(build)
@@ -24,7 +28,8 @@ module Ci
 
         yield if block_given?
 
-        forbidden!('Project has been deleted!') unless build.project
+        project = build.project
+        forbidden!('Project has been deleted!') if project.nil? || project.pending_delete?
         forbidden!('Build has been erased!') if build.erased?
       end
 

@@ -8,7 +8,7 @@ their phone.
 You can read more about it here:
 [Two-factor Authentication (2FA)](../profile/two_factor_authentication.md)
 
-## Enabling 2FA
+## Enforcing 2FA for all users
 
 Users on GitLab, can enable it without any admin's intervention. If you want to
 enforce everyone to setup 2FA, you can choose from two different ways:
@@ -25,6 +25,21 @@ period to `0`.
 ---
 
 ![Two factor authentication admin settings](img/two_factor_authentication_settings.png)
+
+---
+
+## Enforcing 2FA for all users in a group
+
+If you want to enforce 2FA only for certain groups, you can enable it in the
+group settings and specify a grace period as above. To change this setting you
+need to be administrator or owner of the group.
+
+If there are multiple 2FA requirements (i.e. group + all users, or multiple
+groups) the shortest grace period will be used.
+
+---
+
+![Two factor authentication group settings](img/two_factor_authentication_group_settings.png)
 
 ---
 

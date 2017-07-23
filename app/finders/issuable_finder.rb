@@ -19,7 +19,10 @@
 #     iids: integer[]
 #
 class IssuableFinder
+  include CreatedAtFilter
+
   NONE = '0'.freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   attr_accessor :current_user, :params
 
@@ -31,6 +34,7 @@ class IssuableFinder
   def execute
     items = init_collection
     items = by_scope(items)
+    items = by_created_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -61,7 +65,7 @@ class IssuableFinder
   # grouping and counting within that query.
   #
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil)
+    count_params = params.merge(state: nil, sort: nil, for_counting: true)
     labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)
@@ -83,6 +87,16 @@ class IssuableFinder
 
   def find_by!(*params)
     execute.find_by!(*params)
+  end
+
+  def state_counter_cache_key
+    cache_key(state_counter_cache_key_components)
+  end
+
+  def clear_caches!
+    state_counter_cache_key_components_permutations.each do |components|
+      Rails.cache.delete(cache_key(components))
+    end
   end
 
   def group
@@ -116,9 +130,9 @@ class IssuableFinder
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects
       elsif group
-        GroupProjectsFinder.new(group).execute(current_user)
+        GroupProjectsFinder.new(group: group, current_user: current_user).execute
       else
-        projects_finder.execute(current_user, item_project_ids(items))
+        ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids(items)).execute
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil)
@@ -141,9 +155,17 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope = Milestone.where(project_id: projects)
+        if project?
+          group_id = project.group&.id
+          project_id = project.id
+        end
 
-        scope.where(title: params[:milestone_title])
+        group_id = group.id if group
+
+        search_params =
+          { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+
+        MilestonesFinder.new(search_params).execute
       else
         Milestone.none
       end
@@ -231,7 +253,7 @@ class IssuableFinder
     when 'created-by-me', 'authored'
       items.where(author_id: current_user.id)
     when 'assigned-to-me'
-      items.where(assignee_id: current_user.id)
+      items.assigned_to(current_user)
     else
       items
     end
@@ -310,6 +332,10 @@ class IssuableFinder
     params[:milestone_title] == Milestone::Upcoming.name
   end
 
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
+  end
+
   def by_milestone(items)
     if milestones?
       if filter_by_no_milestone?
@@ -317,13 +343,10 @@ class IssuableFinder
       elsif filter_by_upcoming_milestone?
         upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
+      elsif filter_by_started_milestone?
+        items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
-        items_projects = projects(items)
-
-        if items_projects
-          items = items.where(milestones: { project_id: items_projects })
-        end
       end
     end
 
@@ -400,7 +423,19 @@ class IssuableFinder
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
   end
 
-  def projects_finder
-    @projects_finder ||= ProjectsFinder.new
+  def state_counter_cache_key_components
+    opts = params.with_indifferent_access
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
+
+    ['issuables_count', klass.to_ability_name, opts.sort]
+  end
+
+  def state_counter_cache_key_components_permutations
+    [state_counter_cache_key_components]
+  end
+
+  def cache_key(components)
+    Digest::SHA1.hexdigest(components.flatten.join('-'))
   end
 end

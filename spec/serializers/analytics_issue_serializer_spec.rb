@@ -8,7 +8,7 @@ describe AnalyticsIssueSerializer do
   end
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:resource) do
     {
       total_time: "172802.724419",
@@ -16,7 +16,7 @@ describe AnalyticsIssueSerializer do
       iid: "1",
       id: "1",
       created_at: "2016-11-12 15:04:02.948604",
-      author: user,
+      author: user
     }
   end
 

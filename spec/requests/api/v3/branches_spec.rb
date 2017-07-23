@@ -1,15 +1,14 @@
 require 'spec_helper'
 require 'mime/types'
 
-describe API::V3::Branches, api: true  do
-  include ApiHelpers
-
+describe API::V3::Branches do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
   let!(:branch_name) { 'feature' }
+  let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
   let!(:branch_with_dot) { CreateBranchService.new(project, user).execute("with.1.2.3", "master") }
 
   describe "GET /projects/:id/repository/branches" do
@@ -48,19 +47,6 @@ describe API::V3::Branches, api: true  do
       delete v3_api("/projects/#{project.id}/repository/branches/foobar", user)
       expect(response).to have_http_status(404)
     end
-
-    it "removes protected branch" do
-      create(:protected_branch, project: project, name: branch_name)
-      delete v3_api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Protected branch cant be removed')
-    end
-
-    it "does not remove HEAD branch" do
-      delete v3_api("/projects/#{project.id}/repository/branches/master", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Cannot remove HEAD branch')
-    end
   end
 
   describe "DELETE /projects/:id/repository/merged_branches" do
@@ -78,6 +64,57 @@ describe API::V3::Branches, api: true  do
       delete v3_api("/projects/#{project.id}/repository/merged_branches", user2)
 
       expect(response).to have_http_status(403)
+    end
+  end
+
+  describe "POST /projects/:id/repository/branches" do
+    it "creates a new branch" do
+      post v3_api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'feature1',
+           ref: branch_sha
+
+      expect(response).to have_http_status(201)
+
+      expect(json_response['name']).to eq('feature1')
+      expect(json_response['commit']['id']).to eq(branch_sha)
+    end
+
+    it "denies for user without push access" do
+      post v3_api("/projects/#{project.id}/repository/branches", user2),
+           branch_name: branch_name,
+           ref: branch_sha
+      expect(response).to have_http_status(403)
+    end
+
+    it 'returns 400 if branch name is invalid' do
+      post v3_api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new design',
+           ref: branch_sha
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('Branch name is invalid')
+    end
+
+    it 'returns 400 if branch already exists' do
+      post v3_api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+      expect(response).to have_http_status(201)
+
+      post v3_api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('Branch already exists')
+    end
+
+    it 'returns 400 if ref name is invalid' do
+      post v3_api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design3',
+           ref: 'foo'
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('Invalid reference name')
     end
   end
 end

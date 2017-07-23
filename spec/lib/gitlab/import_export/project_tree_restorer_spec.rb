@@ -30,6 +30,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
       end
 
+      it 'has the project html description' do
+        expect(Project.find_by_path('project').description_html).to eq('description')
+      end
+
       it 'has the same label associated to two issues' do
         expect(ProjectLabel.find_by_title('test2').issues.count).to eq(2)
       end
@@ -64,6 +68,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(ProtectedBranch.first.push_access_levels).not_to be_empty
       end
 
+      it 'contains the create access levels on a protected tag' do
+        expect(ProtectedTag.first.create_access_levels).not_to be_empty
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(title: 'test levels').first }
 
@@ -78,8 +86,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
       it 'has the correct data for merge request st_diffs' do
         # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
+        # one MergeRequestDiff uses the new format, where st_diffs is expected to be nil
 
-        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(9)
+        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(8)
+      end
+
+      it 'has the correct data for merge request diff files' do
+        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
+      end
+
+      it 'has the correct data for merge request diff commits in serialised and table formats' do
+        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
+        expect(MergeRequestDiffCommit.count).to eq(6)
+      end
+
+      it 'has the correct time for merge request st_commits' do
+        st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
+
+        expect(st_commits.first[:committed_date]).to be_kind_of(Time)
       end
 
       it 'has labels associated to label links, associated to issues' do
@@ -127,6 +151,25 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
         it 'has a new CI build token' do
           expect(Ci::Build.where(token: 'abcd')).to be_empty
+        end
+      end
+
+      context 'has restored the correct number of records' do
+        it 'has the correct number of merge requests' do
+          expect(@project.merge_requests.size).to eq(9)
+        end
+
+        it 'has the correct number of triggers' do
+          expect(@project.triggers.size).to eq(1)
+        end
+
+        it 'has the correct number of pipelines and statuses' do
+          expect(@project.pipelines.size).to eq(5)
+
+          @project.pipelines.zip([2, 2, 2, 2, 2])
+            .each do |(pipeline, expected_status_size)|
+              expect(pipeline.statuses.size).to eq(expected_status_size)
+            end
         end
       end
     end

@@ -44,7 +44,7 @@ module API
         end
 
         def set_only_allow_merge_if_pipeline_succeeds!
-          if params.has_key?(:only_allow_merge_if_build_succeeds)
+          if params.key?(:only_allow_merge_if_build_succeeds)
             params[:only_allow_merge_if_pipeline_succeeds] = params.delete(:only_allow_merge_if_build_succeeds)
           end
         end
@@ -69,7 +69,7 @@ module API
           end
 
           params :filter_params do
-            optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+            optional :archived, type: Boolean, default: nil, desc: 'Limit by archived status'
             optional :visibility, type: String, values: %w[public internal private],
                                   desc: 'Limit by visibility'
             optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
@@ -88,7 +88,7 @@ module API
             options = options.reverse_merge(
               with: ::API::V3::Entities::Project,
               current_user: current_user,
-              simple: params[:simple],
+              simple: params[:simple]
             )
 
             projects = filter_projects(projects)
@@ -107,7 +107,7 @@ module API
         end
         get '/visible' do
           entity = current_user ? ::API::V3::Entities::ProjectWithAccess : ::API::Entities::BasicProjectDetails
-          present_projects ProjectsFinder.new.execute(current_user), with: entity
+          present_projects ProjectsFinder.new(current_user: current_user).execute, with: entity
         end
 
         desc 'Get a projects list for authenticated user' do
@@ -147,7 +147,7 @@ module API
         get '/starred' do
           authenticate!
 
-          present_projects current_user.viewable_starred_projects
+          present_projects ProjectsFinder.new(current_user: current_user, params: { starred: true }).execute
         end
 
         desc 'Get all projects for admin user' do
@@ -234,7 +234,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: { id: /[^\/]+/ } do
+      resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a single project' do
           success ::API::V3::Entities::ProjectWithAccess
         end
@@ -452,7 +452,7 @@ module API
           requires :file, type: File, desc: 'The file to be uploaded'
         end
         post ":id/uploads" do
-          ::Projects::UploadService.new(user_project, params[:file]).execute
+          UploadService.new(user_project, params[:file]).execute
         end
 
         desc 'Get the users list of a project' do

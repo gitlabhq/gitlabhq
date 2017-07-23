@@ -22,7 +22,7 @@ GitLab's main typeface used throughout the UI is **Source Sans Pro**. We support
 
 
 ### Monospace typeface
-This is the typeface used for code blocks. GitLab uses the OS default font.
+This is the typeface used for code blocks and references to commits, branches, and tags (`.commit-sha` or `.ref-name`). GitLab uses the OS default font.
 - **Menlo** (Mac)
 - **Consolas** (Windows)
 - **Liberation Mono** (Linux)

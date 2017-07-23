@@ -34,7 +34,9 @@ describe StuckCiJobsWorker do
     let(:status) { 'pending' }
 
     context 'when job is not stuck' do
-      before { allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(false) }
+      before do
+        allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(false)
+      end
 
       context 'when job was not updated for more than 1 day ago' do
         let(:updated_at) { 2.days.ago }
@@ -53,7 +55,9 @@ describe StuckCiJobsWorker do
     end
 
     context 'when job is stuck' do
-      before { allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(true) }
+      before do
+        allow_any_instance_of(Ci::Build).to receive(:stuck?).and_return(true)
+      end
 
       context 'when job was not updated for more than 1 hour ago' do
         let(:updated_at) { 2.hours.ago }
@@ -93,7 +97,9 @@ describe StuckCiJobsWorker do
     let(:status) { 'running' }
     let(:updated_at) { 2.days.ago }
 
-    before { job.project.update(pending_delete: true) }
+    before do
+      job.project.update(pending_delete: true)
+    end
 
     it 'does not drop job' do
       expect_any_instance_of(Ci::Build).not_to receive(:drop)

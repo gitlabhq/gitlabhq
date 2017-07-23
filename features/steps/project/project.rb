@@ -2,6 +2,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include WaitForRequests
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
@@ -37,7 +38,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see new project avatar' do
     expect(@project.avatar).to be_instance_of AvatarUploader
     url = @project.avatar.url
-    expect(url).to eq "/uploads/project/avatar/#{@project.id}/banana_sample.gif"
+    expect(url).to eq "/uploads/-/system/project/avatar/#{@project.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -66,12 +67,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
     expect(page).not_to have_link('Remove avatar')
   end
 
-  step 'I should see project "Shop" version' do
-    page.within '.project-side' do
-      expect(page).to have_content '6.7.0.pre'
-    end
-  end
-
   step 'change project default branch' do
     select 'fix', from: 'project_default_branch'
     click_button 'Save changes'
@@ -92,6 +87,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see project "Shop" README' do
+    wait_for_requests
     page.within('.readme-holder') do
       expect(page).to have_content 'testme'
     end

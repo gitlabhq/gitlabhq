@@ -17,8 +17,21 @@ describe Ci::Build, :models do
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:deployments) }
-  it { is_expected.to validate_presence_of :ref }
-  it { is_expected.to respond_to :trace_html }
+  it { is_expected.to validate_presence_of(:ref) }
+  it { is_expected.to respond_to(:has_trace?) }
+  it { is_expected.to respond_to(:trace) }
+
+  describe '.manual_actions' do
+    let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
+    let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
+    let!(:manual_action) { create(:ci_build, :manual, pipeline: pipeline) }
+
+    subject { described_class.manual_actions }
+
+    it { is_expected.to include(manual_action) }
+    it { is_expected.to include(manual_but_succeeded) }
+    it { is_expected.not_to include(manual_but_created) }
+  end
 
   describe '#actionize' do
     context 'when build is a created' do
@@ -78,32 +91,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#append_trace' do
-    subject { build.trace_html }
-
-    context 'when build.trace hides runners token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.project.update(runners_token: token)
-        build.append_trace(token, 0)
-      end
-
-      it { is_expected.not_to include(token) }
-    end
-
-    context 'when build.trace hides build token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.update(token: token)
-        build.append_trace(token, 0)
-      end
-
-      it { is_expected.not_to include(token) }
-    end
-  end
-
   describe '#artifacts?' do
     subject { build.artifacts? }
 
@@ -120,12 +107,18 @@ describe Ci::Build, :models do
       it { is_expected.to be_truthy }
 
       context 'is expired' do
-        before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+        before do
+          build.update(artifacts_expire_at: Time.now - 7.days)
+        end
+
         it { is_expected.to be_falsy }
       end
 
       context 'is not expired' do
-        before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+        before do
+          build.update(artifacts_expire_at: Time.now + 7.days)
+        end
+
         it { is_expected.to be_truthy }
       end
     end
@@ -135,13 +128,17 @@ describe Ci::Build, :models do
     subject { build.artifacts_expired? }
 
     context 'is expired' do
-      before { build.update(artifacts_expire_at: Time.now - 7.days)  }
+      before do
+        build.update(artifacts_expire_at: Time.now - 7.days)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'is not expired' do
-      before { build.update(artifacts_expire_at: Time.now + 7.days)  }
+      before do
+        build.update(artifacts_expire_at: Time.now + 7.days)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -166,7 +163,9 @@ describe Ci::Build, :models do
     context 'when artifacts_expire_at is specified' do
       let(:expire_at) { Time.now + 7.days }
 
-      before { build.artifacts_expire_at = expire_at }
+      before do
+        build.artifacts_expire_at = expire_at
+      end
 
       it { is_expected.to be_within(5).of(expire_at - Time.now) }
     end
@@ -272,12 +271,98 @@ describe Ci::Build, :models do
 
   describe '#update_coverage' do
     context "regarding coverage_regex's value," do
-      it "saves the correct extracted coverage value" do
+      before do
         build.coverage_regex = '\(\d+.\d+\%\) covered'
-        allow(build).to receive(:trace) { 'Coverage 1033 / 1051 LOC (98.29%) covered' }
-        expect(build).to receive(:update_attributes).with(coverage: 98.29) { true }
-        expect(build.update_coverage).to be true
+        build.trace.set('Coverage 1033 / 1051 LOC (98.29%) covered')
       end
+
+      it "saves the correct extracted coverage value" do
+        expect(build.update_coverage).to be(true)
+        expect(build.coverage).to eq(98.29)
+      end
+    end
+  end
+
+  describe '#trace' do
+    subject { build.trace }
+
+    it { is_expected.to be_a(Gitlab::Ci::Trace) }
+  end
+
+  describe '#has_trace?' do
+    subject { build.has_trace? }
+
+    it "expect to call exist? method" do
+      expect_any_instance_of(Gitlab::Ci::Trace).to receive(:exist?)
+        .and_return(true)
+
+      is_expected.to be(true)
+    end
+  end
+
+  describe '#trace=' do
+    it "expect to fail trace=" do
+      expect { build.trace = "new" }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#old_trace' do
+    subject { build.old_trace }
+
+    before do
+      build.update_column(:trace, 'old trace')
+    end
+
+    it "expect to receive data from database" do
+      is_expected.to eq('old trace')
+    end
+  end
+
+  describe '#erase_old_trace!' do
+    subject { build.send(:read_attribute, :trace) }
+
+    before do
+      build.send(:write_attribute, :trace, 'old trace')
+    end
+
+    it "expect to receive data from database" do
+      build.erase_old_trace!
+
+      is_expected.to be_nil
+    end
+  end
+
+  describe '#hide_secrets' do
+    let(:subject) { build.hide_secrets(data) }
+
+    context 'hide runners token' do
+      let(:data) { 'new token data'}
+
+      before do
+        build.project.update(runners_token: 'token')
+      end
+
+      it { is_expected.to eq('new xxxxx data') }
+    end
+
+    context 'hide build token' do
+      let(:data) { 'new token data'}
+
+      before do
+        build.update(token: 'token')
+      end
+
+      it { is_expected.to eq('new xxxxx data') }
+    end
+
+    context 'hide build token' do
+      let(:data) { 'new token data'}
+
+      before do
+        build.update(token: 'token')
+      end
+
+      it { is_expected.to eq('new xxxxx data') }
     end
   end
 
@@ -438,7 +523,7 @@ describe Ci::Build, :models do
       end
 
       it 'erases build trace in trace file' do
-        expect(build.trace).to be_empty
+        expect(build).not_to have_trace
       end
 
       it 'sets erased to true' do
@@ -529,38 +614,6 @@ describe Ci::Build, :models do
           end
         end
       end
-    end
-  end
-
-  describe '#extract_coverage' do
-    context 'valid content & regex' do
-      subject { build.extract_coverage('Coverage 1033 / 1051 LOC (98.29%) covered', '\(\d+.\d+\%\) covered') }
-
-      it { is_expected.to eq(98.29) }
-    end
-
-    context 'valid content & bad regex' do
-      subject { build.extract_coverage('Coverage 1033 / 1051 LOC (98.29%) covered', 'very covered') }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'no coverage content & regex' do
-      subject { build.extract_coverage('No coverage for today :sad:', '\(\d+.\d+\%\) covered') }
-
-      it { is_expected.to be_nil }
-    end
-
-    context 'multiple results in content & regex' do
-      subject { build.extract_coverage(' (98.39%) covered. (98.29%) covered', '\(\d+.\d+\%\) covered') }
-
-      it { is_expected.to eq(98.29) }
-    end
-
-    context 'using a regex capture' do
-      subject { build.extract_coverage('TOTAL      9926   3489    65%', 'TOTAL\s+\d+\s+\d+\s+(\d{1,3}\%)') }
-
-      it { is_expected.to eq(65) }
     end
   end
 
@@ -735,40 +788,6 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#has_commands?' do
-    context 'when build has commands' do
-      let(:build) do
-        create(:ci_build, commands: 'rspec')
-      end
-
-      it 'has commands' do
-        expect(build).to have_commands
-      end
-    end
-
-    context 'when does not have commands' do
-      context 'when commands are an empty string' do
-        let(:build) do
-          create(:ci_build, commands: '')
-        end
-
-        it 'has no commands' do
-          expect(build).not_to have_commands
-        end
-      end
-
-      context 'when commands are not set at all' do
-        let(:build) do
-          create(:ci_build, commands: nil)
-        end
-
-        it 'has no commands' do
-          expect(build).not_to have_commands
-        end
-      end
-    end
-  end
-
   describe '#has_tags?' do
     context 'when build has tags' do
       subject { create(:ci_build, tag_list: ['tag']) }
@@ -780,6 +799,47 @@ describe Ci::Build, :models do
       subject { create(:ci_build, tag_list: []) }
 
       it { is_expected.not_to have_tags }
+    end
+  end
+
+  describe 'build auto retry feature' do
+    describe '#retries_count' do
+      subject { create(:ci_build, name: 'test', pipeline: pipeline) }
+
+      context 'when build has been retried several times' do
+        before do
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+        end
+
+        it 'reports a correct retry count value' do
+          expect(subject.retries_count).to eq 2
+        end
+      end
+
+      context 'when build has not been retried' do
+        it 'returns zero' do
+          expect(subject.retries_count).to eq 0
+        end
+      end
+    end
+
+    describe '#retries_max' do
+      context 'when max retries value is defined' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns a number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
+
+      context 'when max retries value is not defined' do
+        subject { create(:ci_build) }
+
+        it 'returns zero' do
+          expect(subject.retries_max).to eq 0
+        end
+      end
     end
   end
 
@@ -795,8 +855,8 @@ describe Ci::Build, :models do
 
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
-      create(factory, source_project_id: pipeline.gl_project_id,
-                      target_project_id: pipeline.gl_project_id,
+      create(factory, source_project: pipeline.project,
+                      target_project: pipeline.project,
                       source_branch: build.ref,
                       created_at: created_at)
     end
@@ -844,8 +904,8 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha).
-          and_return([pipeline.sha, pipeline2.sha])
+        allow(@merge_request).to receive(:commit_shas)
+          .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
 
@@ -895,6 +955,10 @@ describe Ci::Build, :models do
     context 'when other build is retried' do
       let!(:retried_build) { Ci::Build.retry(other_build, user) }
 
+      before do
+        retried_build.success
+      end
+
       it 'returns a retried build' do
         is_expected.to contain_exactly(retried_build)
       end
@@ -902,22 +966,30 @@ describe Ci::Build, :models do
   end
 
   describe '#persisted_environment' do
-    before do
-      @environment = create(:environment, project: project, name: "foo-#{project.default_branch}")
+    let!(:environment) do
+      create(:environment, project: project, name: "foo-#{project.default_branch}")
     end
 
     subject { build.persisted_environment }
 
-    context 'referenced literally' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
+    context 'when referenced literally' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}")
+      end
 
-      it { is_expected.to eq(@environment) }
+      it { is_expected.to eq(environment) }
     end
 
-    context 'referenced with a variable' do
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME") }
+    context 'when referenced with a variable' do
+      let(:build) do
+        create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
+      end
 
-      it { is_expected.to eq(@environment) }
+      it { is_expected.to eq(environment) }
+    end
+
+    context 'when there is no environment' do
+      it { is_expected.to be_nil }
     end
   end
 
@@ -928,26 +1000,8 @@ describe Ci::Build, :models do
       project.add_developer(user)
     end
 
-    context 'when build is manual' do
-      it 'enqueues a build' do
-        new_build = build.play(user)
-
-        expect(new_build).to be_pending
-        expect(new_build).to eq(build)
-      end
-    end
-
-    context 'when build is passed' do
-      before do
-        build.update(status: 'success')
-      end
-
-      it 'creates a new build' do
-        new_build = build.play(user)
-
-        expect(new_build).to be_pending
-        expect(new_build).not_to eq(build)
-      end
+    it 'enqueues the build' do
+      expect(build.play(user)).to be_pending
     end
   end
 
@@ -983,41 +1037,19 @@ describe Ci::Build, :models do
     it { is_expected.to eq(project.name) }
   end
 
-  describe '#raw_trace' do
-    subject { build.raw_trace }
-
-    context 'when build.trace hides runners token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.project.update(runners_token: token)
-        build.update(trace: token)
-      end
-
-      it { is_expected.not_to include(token) }
-    end
-
-    context 'when build.trace hides build token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.update(token: token)
-        build.update(trace: token)
-      end
-
-      it { is_expected.not_to include(token) }
-    end
-  end
-
   describe '#ref_slug' do
     {
-      'master'    => 'master',
-      '1-foo'     => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63    => 'a' * 63,
-      'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo',
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
+      'a' * 62 + ' '          => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1074,64 +1106,11 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#trace' do
-    it 'obfuscates project runners token' do
-      allow(build).to receive(:raw_trace).and_return("Test: #{build.project.runners_token}")
-
-      expect(build.trace).to eq("Test: xxxxxxxxxxxxxxxxxxxx")
-    end
-
-    it 'empty project runners token' do
-      allow(build).to receive(:raw_trace).and_return(test_trace)
-      # runners_token can't normally be set to nil
-      allow(build.project).to receive(:runners_token).and_return(nil)
-
-      expect(build.trace).to eq(test_trace)
-    end
-
-    context 'when build does not have trace' do
-      it 'is is empty' do
-        expect(build.trace).to be_nil
-      end
-    end
-
-    context 'when trace contains text' do
-      let(:text) { 'example output' }
-      before do
-        build.trace = text
-      end
-
-      it { expect(build.trace).to eq(text) }
-    end
-
-    context 'when trace hides runners token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.update(trace: token)
-        build.project.update(runners_token: token)
-      end
-
-      it { expect(build.trace).not_to include(token) }
-      it { expect(build.raw_trace).to include(token) }
-    end
-
-    context 'when build.trace hides build token' do
-      let(:token) { 'my_secret_token' }
-
-      before do
-        build.update(trace: token)
-        build.update(token: token)
-      end
-
-      it { expect(build.trace).not_to include(token) }
-      it { expect(build.raw_trace).to include(token) }
-    end
-  end
-
   describe '#has_expiring_artifacts?' do
     context 'when artifacts have expiration date set' do
-      before { build.update(artifacts_expire_at: 1.day.from_now) }
+      before do
+        build.update(artifacts_expire_at: 1.day.from_now)
+      end
 
       it 'has expiring artifacts' do
         expect(build).to have_expiring_artifacts
@@ -1139,71 +1118,13 @@ describe Ci::Build, :models do
     end
 
     context 'when artifacts do not have expiration date set' do
-      before { build.update(artifacts_expire_at: nil) }
+      before do
+        build.update(artifacts_expire_at: nil)
+      end
 
       it 'does not have expiring artifacts' do
         expect(build).not_to have_expiring_artifacts
       end
-    end
-  end
-
-  describe '#has_trace_file?' do
-    context 'when there is no trace' do
-      it { expect(build.has_trace_file?).to be_falsey }
-      it { expect(build.trace).to be_nil }
-    end
-
-    context 'when there is a trace' do
-      context 'when trace is stored in file' do
-        let(:build_with_trace) { create(:ci_build, :trace) }
-
-        it { expect(build_with_trace.has_trace_file?).to be_truthy }
-        it { expect(build_with_trace.trace).to eq('BUILD TRACE') }
-      end
-
-      context 'when trace is stored in old file' do
-        before do
-          allow(build.project).to receive(:ci_id).and_return(999)
-          allow(File).to receive(:exist?).with(build.path_to_trace).and_return(false)
-          allow(File).to receive(:exist?).with(build.old_path_to_trace).and_return(true)
-          allow(File).to receive(:read).with(build.old_path_to_trace).and_return(test_trace)
-        end
-
-        it { expect(build.has_trace_file?).to be_truthy }
-        it { expect(build.trace).to eq(test_trace) }
-      end
-
-      context 'when trace is stored in DB' do
-        before do
-          allow(build.project).to receive(:ci_id).and_return(nil)
-          allow(build).to receive(:read_attribute).with(:trace).and_return(test_trace)
-          allow(File).to receive(:exist?).with(build.path_to_trace).and_return(false)
-          allow(File).to receive(:exist?).with(build.old_path_to_trace).and_return(false)
-        end
-
-        it { expect(build.has_trace_file?).to be_falsey }
-        it { expect(build.trace).to eq(test_trace) }
-      end
-    end
-  end
-
-  describe '#trace_file_path' do
-    context 'when trace is stored in file' do
-      before do
-        allow(build).to receive(:has_trace_file?).and_return(true)
-        allow(build).to receive(:has_old_trace_file?).and_return(false)
-      end
-
-      it { expect(build.trace_file_path).to eq(build.path_to_trace) }
-    end
-
-    context 'when trace is stored in old file' do
-      before do
-        allow(build).to receive(:has_trace_file?).and_return(true)
-        allow(build).to receive(:has_old_trace_file?).and_return(true)
-      end
-
-      it { expect(build.trace_file_path).to eq(build.old_path_to_trace) }
     end
   end
 
@@ -1299,12 +1220,14 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
+        { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path.parameterize, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
-        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
+        { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
       ]
     end
 
@@ -1336,11 +1259,6 @@ describe Ci::Build, :models do
     end
 
     context 'when build has an environment' do
-      before do
-        build.update(environment: 'production')
-        create(:environment, project: build.project, name: 'production', slug: 'prod-slug')
-      end
-
       let(:environment_variables) do
         [
           { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
@@ -1348,7 +1266,66 @@ describe Ci::Build, :models do
         ]
       end
 
-      it { environment_variables.each { |v| is_expected.to include(v) } }
+      let!(:environment) do
+        create(:environment,
+          project: build.project,
+          name: 'production',
+          slug: 'prod-slug',
+          external_url: '')
+      end
+
+      before do
+        build.update(environment: 'production')
+      end
+
+      shared_examples 'containing environment variables' do
+        it { environment_variables.each { |v| is_expected.to include(v) } }
+      end
+
+      context 'when no URL was set' do
+        it_behaves_like 'containing environment variables'
+
+        it 'does not have CI_ENVIRONMENT_URL' do
+          keys = subject.map { |var| var[:key] }
+
+          expect(keys).not_to include('CI_ENVIRONMENT_URL')
+        end
+      end
+
+      context 'when an URL was set' do
+        let(:url) { 'http://host/test' }
+
+        before do
+          environment_variables <<
+            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+        end
+
+        context 'when the URL was set from the job' do
+          before do
+            build.update(options: { environment: { url: url } })
+          end
+
+          it_behaves_like 'containing environment variables'
+
+          context 'when variables are used in the URL, it does not expand' do
+            let(:url) { 'http://$CI_PROJECT_NAME-$CI_ENVIRONMENT_SLUG' }
+
+            it_behaves_like 'containing environment variables'
+
+            it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
+              expect(subject.last).to eq(environment_variables.last)
+            end
+          end
+        end
+
+        context 'when the URL was not set from the job, but environment' do
+          before do
+            environment.update(external_url: url)
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
+      end
     end
 
     context 'when build started manually' do
@@ -1375,16 +1352,102 @@ describe Ci::Build, :models do
       it { is_expected.to include(tag_variable) }
     end
 
-    context 'when secure variable is defined' do
-      let(:secure_variable) do
+    context 'when secret variable is defined' do
+      let(:secret_variable) do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
       before do
-        build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+        create(:ci_variable,
+               secret_variable.slice(:key, :value).merge(project: project))
       end
 
-      it { is_expected.to include(secure_variable) }
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      before do
+        create(:ci_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(project: project))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
+    end
+
+    context 'when group secret variable is defined' do
+      let(:secret_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               secret_variable.slice(:key, :value).merge(group: group))
+      end
+
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when group protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(group: group))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
     end
 
     context 'when build is for triggers' do
@@ -1403,6 +1466,23 @@ describe Ci::Build, :models do
 
       it { is_expected.to include(user_trigger_variable) }
       it { is_expected.to include(predefined_trigger_variable) }
+    end
+
+    context 'when a job was triggered by a pipeline schedule' do
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+      let!(:pipeline_schedule_variable) do
+        create(:ci_pipeline_schedule_variable,
+          key: 'SCHEDULE_VARIABLE_KEY',
+          pipeline_schedule: pipeline_schedule)
+      end
+
+      before do
+        pipeline_schedule.pipelines << pipeline
+        pipeline_schedule.reload
+      end
+
+      it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
     end
 
     context 'when yaml_variables are undefined' do
@@ -1460,7 +1540,7 @@ describe Ci::Build, :models do
         { key: 'CI_REGISTRY',  value: 'registry.example.com',  public: true }
       end
       let(:ci_registry_image) do
-        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_repository_url, public: true }
+        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_url, public: true }
       end
 
       context 'and is disabled for project' do
@@ -1505,26 +1585,83 @@ describe Ci::Build, :models do
       it { is_expected.to include(deployment_variable) }
     end
 
-    context 'returns variables in valid order' do
+    context 'when project has custom CI config path' do
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+
       before do
-        allow(build).to receive(:predefined_variables) { ['predefined'] }
-        allow(project).to receive(:predefined_variables) { ['project'] }
-        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
-        allow(build).to receive(:yaml_variables) { ['yaml'] }
-        allow(project).to receive(:secret_variables) { ['secret'] }
+        project.update(ci_config_path: 'custom')
       end
 
-      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
+      it { is_expected.to include(ci_config_path) }
+    end
+
+    context 'returns variables in valid order' do
+      let(:build_pre_var) { { key: 'build', value: 'value' } }
+      let(:project_pre_var) { { key: 'project', value: 'value' } }
+      let(:pipeline_pre_var) { { key: 'pipeline', value: 'value' } }
+      let(:build_yaml_var) { { key: 'yaml', value: 'value' } }
+
+      before do
+        allow(build).to receive(:predefined_variables) { [build_pre_var] }
+        allow(project).to receive(:predefined_variables) { [project_pre_var] }
+        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
+        allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
+      end
+
+      it do
+        is_expected.to eq(
+          [build_pre_var,
+           project_pre_var,
+           pipeline_pre_var,
+           build_yaml_var,
+           { key: 'secret', value: 'value', public: false }])
+      end
     end
   end
 
-  describe 'State transition: any => [:pending]' do
+  describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 
     it 'queues BuildQueueWorker' do
       expect(BuildQueueWorker).to receive(:perform_async).with(build.id)
 
       build.enqueue
+    end
+  end
+
+  describe 'state transition when build fails' do
+    context 'when build is configured to be retried' do
+      subject { create(:ci_build, :running, options: { retry: 3 }) }
+
+      it 'retries builds and assigns a same user to it' do
+        expect(described_class).to receive(:retry)
+          .with(subject, subject.user)
+
+        subject.drop!
+      end
+    end
+
+    context 'when build is not configured to be retried' do
+      subject { create(:ci_build, :running) }
+
+      it 'does not retry build' do
+        expect(described_class).not_to receive(:retry)
+
+        subject.drop!
+      end
+
+      it 'does not count retries when not necessary' do
+        expect(described_class).not_to receive(:retry)
+        expect_any_instance_of(described_class)
+          .not_to receive(:retries_count)
+
+        subject.drop!
+      end
     end
   end
 end

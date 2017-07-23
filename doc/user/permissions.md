@@ -7,6 +7,9 @@ project itself, the highest permission level is used.
 On public and internal projects the Guest role is not enforced. All users will
 be able to create issues, leave comments, and pull or download the project code.
 
+When a member leaves the team the all assigned Issues and Merge Requests
+will be unassigned automatically.
+
 GitLab administrators receive all permissions.
 
 To add or import a user, you can follow the [project users and members
@@ -55,6 +58,7 @@ The following table depicts the various user permission levels in a project.
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
 | Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
+| Enable/disable tag protections        |         |            |             | ✓        | ✓      |
 | Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
@@ -81,9 +85,11 @@ group.
 |-------------------------|-------|----------|-----------|--------|-------|
 | Browse group            | ✓     | ✓        | ✓         | ✓      | ✓     |
 | Edit group              |       |          |           |        | ✓     |
+| Create subgroup         |       |          |           |        | ✓     |
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+| Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 
 ## External Users
 
@@ -121,7 +127,7 @@ which visibility level you select on project settings.
 ## GitLab CI
 
 GitLab CI permissions rely on the role the user has in GitLab. There are four
-permission levels it total:
+permission levels in total:
 
 - admin
 - master
@@ -169,7 +175,7 @@ users:
 | Push container images to other projects     |                 |             |          |        |
 
 [^1]: Guest users can only view the confidential issues they created themselves
-[^2]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
+[^2]: If **Public pipelines** is enabled in **Project Settings > Pipelines**
 [^3]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^4]: Only if user is not external one.
 [^5]: Only if user is a member of the project.

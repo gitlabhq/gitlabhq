@@ -3,8 +3,8 @@ require 'spec_helper'
 describe GitTagPushService, services: true do
   include RepoHelpers
 
-  let(:user) { create :user }
-  let(:project) { create :project }
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
   let(:service) { GitTagPushService.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
 
   let(:oldrev) { Gitlab::Git::BLANK_SHA }
@@ -27,6 +27,20 @@ describe GitTagPushService, services: true do
       expect(project.repository).to receive(:expire_tags_cache)
 
       subject
+    end
+  end
+
+  describe "Pipelines" do
+    subject { service.execute }
+
+    before do
+      stub_ci_pipeline_to_return_yaml_file
+      project.team << [user, :developer]
+    end
+
+    it "creates a new pipeline" do
+      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect(Ci::Pipeline.last).to be_push
     end
   end
 

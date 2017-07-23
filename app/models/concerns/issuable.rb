@@ -14,6 +14,8 @@ module Issuable
   include Awardable
   include Taskable
   include TimeTrackable
+  include Importable
+  include Editable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -22,13 +24,14 @@ module Issuable
 
   included do
     cache_markdown_field :title, pipeline: :single_line
-    cache_markdown_field :description
+    cache_markdown_field :description, issuable_state_filter_enabled: true
 
     belongs_to :author, class_name: "User"
-    belongs_to :assignee, class_name: "User"
     belongs_to :updated_by, class_name: "User"
+    belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
-    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
+
+    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do # rubocop:disable Cop/ActiveRecordDependent
       def authors_loaded?
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:author).loaded? }
@@ -40,19 +43,22 @@ module Issuable
       end
     end
 
-    has_many :label_links, as: :target, dependent: :destroy
+    has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
-    has_many :todos, as: :target, dependent: :destroy
+    has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
 
     delegate :name,
              :email,
+             :public_email,
              to: :author,
+             allow_nil: true,
              prefix: true
 
     delegate :name,
              :email,
+             :public_email,
              to: :assignee,
              allow_nil: true,
              prefix: true
@@ -61,10 +67,7 @@ module Issuable
     validates :title, presence: true, length: { maximum: 255 }
 
     scope :authored, ->(user) { where(author_id: user) }
-    scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { reorder(id: :desc) }
-    scope :assigned, -> { where("assignee_id IS NOT NULL") }
-    scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
@@ -87,27 +90,26 @@ module Issuable
     attr_mentionable :description
 
     participant :author
-    participant :assignee
     participant :notes_with_associations
 
     strip_attributes :title
 
     acts_as_paranoid
 
-    after_save :update_assignee_cache_counts, if: :assignee_id_changed?
-    after_save :record_metrics
-
-    def update_assignee_cache_counts
-      # make sure we flush the cache for both the old *and* new assignees(if they exist)
-      previous_assignee = User.find_by_id(assignee_id_was) if assignee_id_was
-      previous_assignee&.update_cache_counts
-      assignee&.update_cache_counts
-    end
+    after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
       title_changed? || description_changed?
+    end
+
+    def allows_multiple_assignees?
+      false
+    end
+
+    def has_multiple_assignees?
+      assignees.count > 1
     end
   end
 
@@ -143,7 +145,8 @@ module Issuable
                when 'milestone_due_desc' then order_milestone_due_desc
                when 'downvotes_desc' then order_downvotes_desc
                when 'upvotes_desc' then order_upvotes_desc
-               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
+               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
                else
                  order_by(method)
                end
@@ -152,7 +155,28 @@ module Issuable
       sorted.order(id: :desc)
     end
 
-    def order_labels_priority(excluded_labels: [])
+    def order_due_date_and_labels_priority(excluded_labels: [])
+      # The order_ methods also modify the query in other ways:
+      #
+      # - For milestones, we add a JOIN.
+      # - For label priority, we change the SELECT, and add a GROUP BY.#
+      #
+      # After doing those, we need to reorder to the order we want. The existing
+      # ORDER BYs won't work because:
+      #
+      # 1. We need milestone due date first.
+      # 2. We can't ORDER BY a column that isn't in the GROUP BY and doesn't
+      #    have an aggregate function applied, so we do a useless MIN() instead.
+      #
+      milestones_due_date = 'MIN(milestones.due_date)'
+
+      order_milestone_due_asc
+        .order_labels_priority(excluded_labels: excluded_labels, extra_select_columns: [milestones_due_date])
+        .reorder(Gitlab::Database.nulls_last_order(milestones_due_date, 'ASC'),
+                Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+    end
+
+    def order_labels_priority(excluded_labels: [], extra_select_columns: [])
       params = {
         target_type: name,
         target_column: "#{table_name}.id",
@@ -162,9 +186,14 @@ module Issuable
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        group(arel_table[:id]).
-        reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+      select_columns = [
+        "#{table_name}.*",
+        "(#{highest_priority}) AS highest_priority"
+      ] + extra_select_columns
+
+      select(select_columns.join(', '))
+        .group(arel_table[:id])
+        .reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
 
     def with_label(title, sort = nil)
@@ -204,10 +233,6 @@ module Issuable
     today? && created_at == updated_at
   end
 
-  def is_being_reassigned?
-    assignee_id_changed?
-  end
-
   def open?
     opened? || reopened?
   end
@@ -232,10 +257,15 @@ module Issuable
       user: user.hook_attrs,
       project: project.hook_attrs,
       object_attributes: hook_attrs,
+      labels: labels.map(&:hook_attrs),
       # DEPRECATED
       repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
     }
-    hook_data[:assignee] = assignee.hook_attrs if assignee
+    if self.is_a?(Issue)
+      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
+    else
+      hook_data[:assignee] = assignee.hook_attrs if assignee
+    end
 
     hook_data
   end
@@ -256,17 +286,6 @@ module Issuable
   #   issuable.to_ability_name # => "merge_request"
   def to_ability_name
     self.class.to_ability_name
-  end
-
-  # Convert this Issuable class name to a format usable by notifications.
-  #
-  # Examples:
-  #
-  #   issuable.class           # => MergeRequest
-  #   issuable.human_class_name # => "merge request"
-
-  def human_class_name
-    @human_class_name ||= self.class.name.titleize.downcase
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -306,11 +325,6 @@ module Issuable
   #
   def can_move?(*)
     false
-  end
-
-  def assignee_or_author?(user)
-    # We're comparing IDs here so we don't need to load any associations.
-    author_id == user.id || assignee_id == user.id
   end
 
   def record_metrics

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/pipelines/_stage', :view do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:stage) { build(:ci_stage, pipeline: pipeline) }
 
@@ -39,9 +39,8 @@ describe 'projects/pipelines/_stage', :view do
 
   context 'when there are retried builds present' do
     before do
-      create_list(:ci_build, 2, name: 'test:build',
-                                stage: stage.name,
-                                pipeline: pipeline)
+      create(:ci_build, name: 'test:build', stage: stage.name, pipeline: pipeline, retried: true)
+      create(:ci_build, name: 'test:build', stage: stage.name, pipeline: pipeline)
     end
 
     it 'shows only latest builds' do

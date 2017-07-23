@@ -2,18 +2,17 @@ require 'spec_helper'
 
 feature 'Projects > Members > User requests access', feature: true do
   let(:user) { create(:user) }
-  let(:master) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable) }
+  let(:master) { project.owner }
 
   background do
-    project.team << [master, :master]
-    login_as(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 
   scenario 'request access feature is disabled' do
     project.update_attributes(request_access_enabled: false)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'
   end
@@ -31,15 +30,27 @@ feature 'Projects > Members > User requests access', feature: true do
     expect(page).not_to have_content 'Leave Project'
   end
 
+  context 'code access is restricted' do
+    scenario 'user can request access' do
+      project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
+                                      builds_access_level: ProjectFeature::PRIVATE,
+                                      merge_requests_access_level: ProjectFeature::PRIVATE)
+      visit project_path(project)
+
+      expect(page).to have_content 'Request Access'
+    end
+  end
+
   scenario 'user is not listed in the project members page' do
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    open_project_settings_menu
-    click_link 'Members'
+    page.within('.layout-nav .nav-links') do
+      click_link('Members')
+    end
 
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_project_members_path(project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end
@@ -61,7 +72,7 @@ feature 'Projects > Members > User requests access', feature: true do
       click_link('Settings')
     end
 
-    page.within('.page-with-layout-nav .sub-nav') do
+    page.within('.sub-nav') do
       click_link('Members')
     end
   end

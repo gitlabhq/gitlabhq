@@ -9,7 +9,7 @@ class Projects::ForksController < Projects::ApplicationController
   def index
     base_query = project.forks.includes(:creator)
 
-    @forks               = base_query.merge(ProjectsFinder.new.execute(current_user))
+    @forks               = base_query.merge(ProjectsFinder.new(current_user: current_user).execute)
     @total_forks_count   = base_query.size
     @private_forks_count = @total_forks_count - @forks.size
     @public_forks_count  = @total_forks_count - @private_forks_count
@@ -44,12 +44,12 @@ class Projects::ForksController < Projects::ApplicationController
 
     if @forked_project.saved? && @forked_project.forked?
       if @forked_project.import_in_progress?
-        redirect_to namespace_project_import_path(@forked_project.namespace, @forked_project, continue: continue_params)
+        redirect_to project_import_path(@forked_project, continue: continue_params)
       else
         if continue_params
           redirect_to continue_params[:to], notice: continue_params[:notice]
         else
-          redirect_to namespace_project_path(@forked_project.namespace, @forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
+          redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
         end
       end
     else

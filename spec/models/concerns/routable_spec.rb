@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Group, 'Routable' do
-  let!(:group) { create(:group) }
+  let!(:group) { create(:group, name: 'foo') }
 
   describe 'Validations' do
     it { is_expected.to validate_presence_of(:route) }
@@ -9,6 +9,7 @@ describe Group, 'Routable' do
 
   describe 'Associations' do
     it { is_expected.to have_one(:route).dependent(:destroy) }
+    it { is_expected.to have_many(:redirect_routes).dependent(:destroy) }
   end
 
   describe 'Callbacks' do
@@ -35,10 +36,53 @@ describe Group, 'Routable' do
   describe '.find_by_full_path' do
     let!(:nested_group) { create(:group, parent: group) }
 
-    it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
-    it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
-    it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
-    it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+    context 'without any redirect routes' do
+      it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
+      it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
+      it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
+      it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+    end
+
+    context 'with redirect routes' do
+      let!(:group_redirect_route) { group.redirect_routes.create!(path: 'bar') }
+      let!(:nested_group_redirect_route) { nested_group.redirect_routes.create!(path: nested_group.path.sub('foo', 'bar')) }
+
+      context 'without follow_redirects option' do
+        context 'with the given path not matching any route' do
+          it { expect(described_class.find_by_full_path('unknown')).to eq(nil) }
+        end
+
+        context 'with the given path matching the canonical route' do
+          it { expect(described_class.find_by_full_path(group.to_param)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group.to_param.upcase)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group.to_param)).to eq(nested_group) }
+        end
+
+        context 'with the given path matching a redirect route' do
+          it { expect(described_class.find_by_full_path(group_redirect_route.path)).to eq(nil) }
+          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase)).to eq(nil) }
+          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path)).to eq(nil) }
+        end
+      end
+
+      context 'with follow_redirects option set to true' do
+        context 'with the given path not matching any route' do
+          it { expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil) }
+        end
+
+        context 'with the given path matching the canonical route' do
+          it { expect(described_class.find_by_full_path(group.to_param, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group.to_param.upcase, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group.to_param, follow_redirects: true)).to eq(nested_group) }
+        end
+
+        context 'with the given path matching a redirect route' do
+          it { expect(described_class.find_by_full_path(group_redirect_route.path, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(group_redirect_route.path.upcase, follow_redirects: true)).to eq(group) }
+          it { expect(described_class.find_by_full_path(nested_group_redirect_route.path, follow_redirects: true)).to eq(nested_group) }
+        end
+      end
+    end
   end
 
   describe '.where_full_path_in' do
@@ -71,22 +115,34 @@ describe Group, 'Routable' do
     end
   end
 
-  describe '.member_descendants' do
-    let!(:user) { create(:user) }
-    let!(:nested_group) { create(:group, parent: group) }
-
-    before { group.add_owner(user) }
-    subject { described_class.member_descendants(user.id) }
-
-    it { is_expected.to eq([nested_group]) }
-  end
-
   describe '#full_path' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
 
     it { expect(group.full_path).to eq(group.path) }
     it { expect(nested_group.full_path).to eq("#{group.full_path}/#{nested_group.path}") }
+
+    context 'with RequestStore active', :request_store do
+      it 'does not load the route table more than once' do
+        expect(group).to receive(:uncached_full_path).once.and_call_original
+
+        3.times { group.full_path }
+        expect(group.full_path).to eq(group.path)
+      end
+    end
+  end
+
+  describe '#expires_full_path_cache' do
+    context 'with RequestStore active', :request_store do
+      it 'expires the full_path cache' do
+        expect(group.full_path).to eq('foo')
+
+        group.route.update(path: 'bar', name: 'bar')
+        group.expires_full_path_cache
+
+        expect(group.full_path).to eq('bar')
+      end
+    end
   end
 
   describe '#full_name' do

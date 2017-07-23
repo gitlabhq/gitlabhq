@@ -3,6 +3,10 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('common_d3')
   = page_specific_javascript_bundle_tag('graphs')
+
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
+
 = render 'projects/commits/head'
 
 %div{ class: container_class }
@@ -35,7 +39,7 @@
 :javascript
   $.ajax({
     type: "GET",
-    url: "#{namespace_project_graph_path(@project.namespace, @project, current_ref, format: :json)}",
+    url: "#{project_graph_path(@project, current_ref, format: :json)}",
     dataType: "json",
     success: function (data) {
       var graph = new ContributorsStatGraph();

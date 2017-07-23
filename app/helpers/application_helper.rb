@@ -68,7 +68,7 @@ module ApplicationHelper
     end
   end
 
-  def avatar_icon(user_or_email = nil, size = nil, scale = 2)
+  def avatar_icon(user_or_email = nil, size = nil, scale = 2, only_path: true)
     user =
       if user_or_email.is_a?(User)
         user_or_email
@@ -77,7 +77,7 @@ module ApplicationHelper
       end
 
     if user
-      user.avatar_url(size) || default_avatar
+      user.avatar_url(size: size, only_path: only_path) || default_avatar
     else
       gravatar_icon(user_or_email, size, scale)
     end
@@ -131,10 +131,7 @@ module ApplicationHelper
   end
 
   def body_data_page
-    path = controller.controller_path.split('/')
-    namespace = path.first if path.second
-
-    [namespace, controller.controller_name, controller.action_name].compact.join(':')
+    [*controller.controller_path.split('/'), controller.action_name].compact.join(':')
   end
 
   # shortcut for gitlab config
@@ -167,9 +164,9 @@ module ApplicationHelper
     css_classes = short_format ? 'js-short-timeago' : 'js-timeago'
     css_classes << " #{html_class}" unless html_class.blank?
 
-    element = content_tag :time, time.strftime("%b %d, %Y"),
+    element = content_tag :time, l(time, format: "%b %d, %Y"),
       class: css_classes,
-      title: time.to_time.in_time_zone.to_s(:medium),
+      title: l(time.to_time.in_time_zone, format: :timeago_tooltip),
       datetime: time.to_time.getutc.iso8601,
       data: {
         toggle: 'tooltip',
@@ -180,52 +177,20 @@ module ApplicationHelper
     element
   end
 
-  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', include_author: false)
-    return if object.updated_at == object.created_at
+  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', exclude_author: false)
+    return unless object.is_edited?
 
-    content_tag :small, class: "edited-text" do
-      output = content_tag(:span, "Edited ")
-      output << time_ago_with_tooltip(object.updated_at, placement: placement, html_class: html_class)
+    content_tag :small, class: 'edited-text' do
+      output = content_tag(:span, 'Edited ')
+      output << time_ago_with_tooltip(object.last_edited_at, placement: placement, html_class: html_class)
 
-      if include_author && object.updated_by && object.updated_by != object.author
-        output << content_tag(:span, " by ")
-        output << link_to_member(object.project, object.updated_by, avatar: false, author_class: nil)
+      if !exclude_author && object.last_edited_by
+        output << content_tag(:span, ' by ')
+        output << link_to_member(object.project, object.last_edited_by, avatar: false, author_class: nil)
       end
 
       output
     end
-  end
-
-  def render_markup(file_name, file_content)
-    if gitlab_markdown?(file_name)
-      Hamlit::RailsHelpers.preserve(markdown(file_content))
-    elsif asciidoc?(file_name)
-      asciidoc(file_content)
-    elsif plain?(file_name)
-      content_tag :pre, class: 'plain-readme' do
-        file_content
-      end
-    else
-      other_markup(file_name, file_content)
-    end
-  rescue RuntimeError
-    simple_format(file_content)
-  end
-
-  def plain?(filename)
-    Gitlab::MarkupHelper.plain?(filename)
-  end
-
-  def markup?(filename)
-    Gitlab::MarkupHelper.markup?(filename)
-  end
-
-  def gitlab_markdown?(filename)
-    Gitlab::MarkupHelper.gitlab_markdown?(filename)
-  end
-
-  def asciidoc?(filename)
-    Gitlab::MarkupHelper.asciidoc?(filename)
   end
 
   def promo_host
@@ -234,6 +199,10 @@ module ApplicationHelper
 
   def promo_url
     'https://' + promo_host
+  end
+
+  def support_url
+    current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
   def page_filter_path(options = {})
@@ -305,5 +274,31 @@ module ApplicationHelper
   #   %li{ class: active_when(params[:filter] == '1') }
   def active_when(condition)
     'active' if condition
+  end
+
+  def show_callout?(name)
+    cookies[name] != 'true'
+  end
+
+  def linkedin_url(user)
+    name = user.linkedin
+    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+      name
+    else
+      "https://www.linkedin.com/in/#{name}"
+    end
+  end
+
+  def twitter_url(user)
+    name = user.twitter
+    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+      name
+    else
+      "https://www.twitter.com/#{name}"
+    end
+  end
+
+  def show_new_nav?
+    cookies["new_nav"] == "true"
   end
 end

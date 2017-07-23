@@ -1,14 +1,4 @@
 module BranchesHelper
-  def can_remove_branch?(project, branch_name)
-    if project.protected_branch? branch_name
-      false
-    elsif branch_name == project.repository.root_ref
-      false
-    else
-      can?(current_user, :push_code, project)
-    end
-  end
-
   def filter_branches_path(options = {})
     exist_opts = {
       search: params[:search],
@@ -17,7 +7,7 @@ module BranchesHelper
 
     options = exist_opts.merge(options)
 
-    namespace_project_branches_path(@project.namespace, @project, @id, options)
+    project_branches_path(@project, @id, options)
   end
 
   def can_push_branch?(project, branch_name)
@@ -28,5 +18,9 @@ module BranchesHelper
 
   def project_branches
     options_for_select(@project.repository.branch_names, @project.default_branch)
+  end
+
+  def protected_branch?(project, branch)
+    ProtectedBranch.protected?(project, branch.name)
   end
 end

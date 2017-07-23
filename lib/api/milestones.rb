@@ -23,7 +23,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects do
+    resource :projects, requirements: { id: %r{[^/]+} } do
       desc 'Get a list of project milestones' do
         success Entities::Milestone
       end
@@ -116,7 +116,8 @@ module API
 
         finder_params = {
           project_id: user_project.id,
-          milestone_title: milestone.title
+          milestone_title: milestone.title,
+          sort: 'label_priority'
         }
 
         issues = IssuesFinder.new(current_user, finder_params).execute
@@ -138,7 +139,8 @@ module API
 
         finder_params = {
           project_id: user_project.id,
-          milestone_id: milestone.id
+          milestone_title: milestone.title,
+          sort: 'label_priority'
         }
 
         merge_requests = MergeRequestsFinder.new(current_user, finder_params).execute

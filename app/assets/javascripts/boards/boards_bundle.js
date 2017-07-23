@@ -1,25 +1,29 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
-/* global Vue */
 /* global BoardService */
+/* global Flash */
 
-window.Vue = require('vue');
-window.Vue.use(require('vue-resource'));
-require('./models/issue');
-require('./models/label');
-require('./models/list');
-require('./models/milestone');
-require('./models/user');
-require('./stores/boards_store');
-require('./stores/modal_store');
-require('./services/board_service');
-require('./mixins/modal_mixins');
-require('./mixins/sortable_default_options');
-require('./filters/due_date_filters');
-require('./components/board');
-require('./components/board_sidebar');
-require('./components/new_list_dropdown');
-require('./components/modal/index');
-require('../vue_shared/vue_resource_interceptor');
+import Vue from 'vue';
+import VueResource from 'vue-resource';
+import FilteredSearchBoards from './filtered_search_boards';
+import eventHub from './eventhub';
+import './models/issue';
+import './models/label';
+import './models/list';
+import './models/milestone';
+import './models/assignee';
+import './stores/boards_store';
+import './stores/modal_store';
+import './services/board_service';
+import './mixins/modal_mixins';
+import './mixins/sortable_default_options';
+import './filters/due_date_filters';
+import './components/board';
+import './components/board_sidebar';
+import './components/new_list_dropdown';
+import './components/modal/index';
+import '../vue_shared/vue_resource_interceptor';
+
+Vue.use(VueResource);
 
 $(() => {
   const $boardApp = document.getElementById('board-app');
@@ -33,6 +37,10 @@ $(() => {
   }
 
   Store.create();
+
+  // hack to allow sidebar scripts like milestone_select manipulate the BoardsStore
+  gl.issueBoards.boardStoreIssueSet = (...args) => Vue.set(Store.detail.issue, ...args);
+  gl.issueBoards.boardStoreIssueDelete = (...args) => Vue.delete(Store.detail.issue, ...args);
 
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
@@ -50,7 +58,8 @@ $(() => {
       issueLinkBase: $boardApp.dataset.issueLinkBase,
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
-      detailIssue: Store.detail
+      detailIssue: Store.detail,
+      defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
       detailIssueVisible () {
@@ -59,16 +68,29 @@ $(() => {
     },
     created () {
       gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
+
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
+
+      // Listen for updateTokens event
+      eventHub.$on('updateTokens', this.updateTokens);
+    },
+    beforeDestroy() {
+      eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
+        .then(response => response.json())
         .then((resp) => {
-          resp.json().forEach((board) => {
-            const list = Store.addList(board);
+          resp.forEach((board) => {
+            const list = Store.addList(board, this.defaultAvatar);
 
-            if (list.type === 'done') {
+            if (list.type === 'closed') {
               list.position = Infinity;
+              list.label = { description: 'Shows all closed issues. Moving an issue to this list closes it' };
+            } else if (list.type === 'backlog') {
+              list.position = -1;
             }
           });
 
@@ -76,12 +98,18 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        });
-    }
+        })
+        .catch(() => new Flash('An error occurred. Please try again.'));
+    },
+    methods: {
+      updateTokens() {
+        this.filterManager.updateTokens();
+      }
+    },
   });
 
   gl.IssueBoardsSearch = new Vue({
-    el: document.getElementById('js-boards-search'),
+    el: document.getElementById('js-add-list'),
     data: {
       filters: Store.state.filters
     },
@@ -104,7 +132,7 @@ $(() => {
     },
     computed: {
       disabled() {
-        return !this.store.lists.filter(list => list.type !== 'blank' && list.type !== 'done').length;
+        return !this.store.lists.filter(list => !list.preset).length;
       },
       tooltipTitle() {
         if (this.disabled) {

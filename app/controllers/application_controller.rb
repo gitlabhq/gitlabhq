@@ -8,18 +8,22 @@ class ApplicationController < ActionController::Base
   include PageLayoutHelper
   include SentryHelper
   include WorkhorseHelper
+  include EnforcesTwoFactorAuthentication
+  include WithPerformanceBar
 
   before_action :authenticate_user_from_private_token!
+  before_action :authenticate_user_from_rss_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
-  before_action :check_2fa_requirement
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables
+  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
+
+  around_action :set_locale
 
   protect_from_forgery with: :exception
 
@@ -33,6 +37,10 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     log_exception(exception)
+    render_404
+  end
+
+  rescue_from(ActionController::UnknownFormat) do
     render_404
   end
 
@@ -56,7 +64,7 @@ class ApplicationController < ActionController::Base
     if current_user
       not_found
     else
-      redirect_to new_user_session_path
+      authenticate_user!
     end
   end
 
@@ -64,19 +72,31 @@ class ApplicationController < ActionController::Base
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
-    token_string = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-    user = User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
+    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
 
-    if user
-      # Notice we are passing store false, so the user is not
-      # actually stored in the session and a token is needed
-      # for every request. If you want the token to work as a
-      # sign in token, you can simply remove store: false.
-      sign_in user, store: false
-    end
+    return unless token.present?
+
+    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+
+    sessionless_sign_in(user)
+  end
+
+  # This filter handles authentication for atom request with an rss_token
+  def authenticate_user_from_rss_token!
+    return unless request.format.atom?
+
+    token = params[:rss_token].presence
+
+    return unless token.present?
+
+    user = User.find_by_rss_token(token)
+
+    sessionless_sign_in(user)
   end
 
   def log_exception(exception)
+    Raven.capture_exception(exception) if sentry_enabled?
+
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -90,12 +110,15 @@ class ApplicationController < ActionController::Base
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def can?(object, action, subject)
+  def can?(object, action, subject = :global)
     Ability.allowed?(object, action, subject)
   end
 
   def access_denied!
-    render "errors/access_denied", layout: "errors", status: 404
+    respond_to do |format|
+      format.json { head :not_found }
+      format.any { render "errors/access_denied", layout: "errors", status: 404 }
+    end
   end
 
   def git_not_found!
@@ -113,6 +136,10 @@ class ApplicationController < ActionController::Base
       end
       format.any { head :not_found }
     end
+  end
+
+  def respond_422
+    head :unprocessable_entity
   end
 
   def no_cache_headers
@@ -143,14 +170,8 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && current_user.allow_password_authentication?
       return redirect_to new_profile_password_path
-    end
-  end
-
-  def check_2fa_requirement
-    if two_factor_authentication_required? && current_user && !current_user.two_factor_enabled? && !skip_two_factor?
-      redirect_to profile_two_factor_auth_path
     end
   end
 
@@ -262,27 +283,24 @@ class ApplicationController < ActionController::Base
     current_application_settings.import_sources.include?('gitlab_project')
   end
 
-  def two_factor_authentication_required?
-    current_application_settings.require_two_factor_authentication
-  end
-
-  def two_factor_grace_period
-    current_application_settings.two_factor_grace_period
-  end
-
-  def two_factor_grace_period_expired?
-    date = current_user.otp_grace_period_started_at
-    date && (date + two_factor_grace_period.hours) < Time.current
-  end
-
-  def skip_two_factor?
-    session[:skip_tfa] && session[:skip_tfa] > Time.current
-  end
-
   # U2F (universal 2nd factor) devices need a unique identifier for the application
   # to perform authentication.
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
+  end
+
+  def set_locale(&block)
+    Gitlab::I18n.with_user_locale(current_user, &block)
+  end
+
+  def sessionless_sign_in(user)
+    if user && can?(user, :log_in)
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
   end
 end

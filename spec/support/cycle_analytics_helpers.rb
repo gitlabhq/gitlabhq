@@ -1,5 +1,5 @@
 module CycleAnalyticsHelpers
-  def create_commit_referencing_issue(issue, branch_name: random_git_name)
+  def create_commit_referencing_issue(issue, branch_name: generate(:branch))
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
@@ -7,9 +7,7 @@ module CycleAnalyticsHelpers
   def create_commit(message, project, user, branch_name, count: 1)
     oldrev = project.repository.commit(branch_name).sha
     commit_shas = Array.new(count) do |index|
-      filename = random_git_name
-
-      commit_sha = project.repository.create_file(user, filename, "content", message: message, branch_name: branch_name)
+      commit_sha = project.repository.create_file(user, generate(:branch), "content", message: message, branch_name: branch_name)
       project.repository.commit(commit_sha)
 
       commit_sha
@@ -22,17 +20,17 @@ module CycleAnalyticsHelpers
                        ref: 'refs/heads/master').execute
   end
 
-  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil)
+  def create_merge_request_closing_issue(issue, message: nil, source_branch: nil, commit_message: 'commit message')
     if !source_branch || project.repository.commit(source_branch).blank?
-      source_branch = random_git_name
+      source_branch = generate(:branch)
       project.repository.add_branch(user, source_branch, 'master')
     end
 
     sha = project.repository.create_file(
       user,
-      random_git_name,
+      generate(:branch),
       'content',
-      message: 'commit message',
+      message: commit_message,
       branch_name: source_branch)
     project.repository.commit(sha)
 
@@ -53,12 +51,45 @@ module CycleAnalyticsHelpers
   end
 
   def deploy_master(environment: 'production')
-    CreateDeploymentService.new(project, user, {
-                                  environment: environment,
-                                  ref: 'master',
-                                  tag: false,
-                                  sha: project.repository.commit('master').sha
-                                }).execute
+    dummy_job =
+      case environment
+      when 'production'
+        dummy_production_job
+      when 'staging'
+        dummy_staging_job
+      else
+        raise ArgumentError
+      end
+
+    CreateDeploymentService.new(dummy_job).execute
+  end
+
+  def dummy_production_job
+    @dummy_job ||= new_dummy_job('production')
+  end
+
+  def dummy_staging_job
+    @dummy_job ||= new_dummy_job('staging')
+  end
+
+  def dummy_pipeline
+    @dummy_pipeline ||=
+      Ci::Pipeline.new(
+        sha: project.repository.commit('master').sha,
+        project: project)
+  end
+
+  def new_dummy_job(environment)
+    project.environments.find_or_create_by(name: environment)
+
+    Ci::Build.new(
+      project: project,
+      user: user,
+      environment: environment,
+      ref: 'master',
+      tag: false,
+      name: 'dummy',
+      pipeline: dummy_pipeline)
   end
 end
 

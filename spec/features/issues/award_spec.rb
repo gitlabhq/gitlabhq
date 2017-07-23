@@ -7,8 +7,9 @@ feature 'Issue awards', js: true, feature: true do
 
   describe 'logged in' do
     before do
-      login_as(user)
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      sign_in(user)
+      visit project_issue_path(project, issue)
+      wait_for_requests
     end
 
     it 'adds award to issue' do
@@ -16,7 +17,7 @@ feature 'Issue awards', js: true, feature: true do
       expect(page).to have_selector('.js-emoji-btn.active')
       expect(first('.js-emoji-btn')).to have_content '1'
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
       expect(first('.js-emoji-btn')).to have_content '1'
     end
 
@@ -25,7 +26,7 @@ feature 'Issue awards', js: true, feature: true do
       find('.js-emoji-btn.active').click
       expect(first('.js-emoji-btn')).to have_content '0'
 
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
       expect(first('.js-emoji-btn')).to have_content '0'
     end
 
@@ -39,7 +40,8 @@ feature 'Issue awards', js: true, feature: true do
 
   describe 'logged out' do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
+      wait_for_requests
     end
 
     it 'does not see award menu button' do

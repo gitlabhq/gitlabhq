@@ -18,15 +18,19 @@ module Gitlab
       mapping = @map.find { |mapping| mapping[:source] === path }
       return unless mapping
 
-      path.sub(mapping[:source], mapping[:public])
+      if mapping[:source].is_a?(String)
+        path.sub(mapping[:source], mapping[:public])
+      else
+        mapping[:source].replace(path, mapping[:public])
+      end
     end
 
     private
 
     def parse_entry(entry)
       raise FormatError, 'Route map entry is not a hash' unless entry.is_a?(Hash)
-      raise FormatError, 'Route map entry does not have a source key' unless entry.has_key?('source')
-      raise FormatError, 'Route map entry does not have a public key' unless entry.has_key?('public')
+      raise FormatError, 'Route map entry does not have a source key' unless entry.key?('source')
+      raise FormatError, 'Route map entry does not have a public key' unless entry.key?('public')
 
       source_pattern = entry['source']
       public_path = entry['public']
@@ -35,7 +39,7 @@ module Gitlab
         source_pattern = source_pattern[1...-1].gsub('\/', '/')
 
         begin
-          source_pattern = /\A#{source_pattern}\z/
+          source_pattern = Gitlab::UntrustedRegexp.new('\A' + source_pattern + '\z')
         rescue RegexpError => e
           raise FormatError, "Route map entry source is not a valid regular expression: #{e}"
         end

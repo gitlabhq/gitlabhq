@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ExtractsPath, lib: true do
   include ExtractsPath
   include RepoHelpers
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   let(:project) { double('project') }
   let(:request) { double('request') }
@@ -14,8 +14,8 @@ describe ExtractsPath, lib: true do
     repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0',
                               'release/app', 'release/app/v1.0.0'])
     allow(project).to receive(:repository).and_return(repo)
-    allow(project).to receive(:path_with_namespace).
-      and_return('gitlab/gitlab-ci')
+    allow(project).to receive(:path_with_namespace)
+      .and_return('gitlab/gitlab-ci')
     allow(request).to receive(:format=)
   end
 
@@ -77,7 +77,10 @@ describe ExtractsPath, lib: true do
 
       context 'without a path' do
         let(:params) { { ref: 'v1.0.0.atom' } }
-        before { assign_ref_vars }
+
+        before do
+          assign_ref_vars
+        end
 
         it 'sets the un-suffixed version as @ref' do
           expect(@ref).to eq('v1.0.0')

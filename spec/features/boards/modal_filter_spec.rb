@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal filtering', :feature, :js do
-  include WaitForAjax
-  include WaitForVueResource
-
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
   let(:planning) { create(:label, project: project, name: 'Planning') }
@@ -15,7 +12,7 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
   end
 
   it 'shows empty state when no results found' do
@@ -23,8 +20,9 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
 
     page.within('.add-issues-modal') do
       find('.form-control').native.send_keys('testing empty state')
+      find('.form-control').native.send_keys(:enter)
 
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_content('There are no issues to show.')
     end
@@ -33,14 +31,12 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
   it 'restores filters when closing' do
     visit_board
 
+    set_filter('milestone')
+    click_filter_link('Upcoming')
+    submit_filter
+
     page.within('.add-issues-modal') do
-      click_button 'Milestone'
-
-      wait_for_ajax
-
-      click_link 'Upcoming'
-
-      wait_for_vue_resource
+      wait_for_requests
 
       expect(page).to have_selector('.card', count: 0)
 
@@ -50,7 +46,27 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
     click_button('Add issues')
 
     page.within('.add-issues-modal') do
-      wait_for_vue_resource
+      wait_for_requests
+
+      expect(page).to have_selector('.card', count: 1)
+    end
+  end
+
+  it 'resotres filters after clicking clear button' do
+    visit_board
+
+    set_filter('milestone')
+    click_filter_link('Upcoming')
+    submit_filter
+
+    page.within('.add-issues-modal') do
+      wait_for_requests
+
+      expect(page).to have_selector('.card', count: 0)
+
+      find('.clear-search').click
+
+      wait_for_requests
 
       expect(page).to have_selector('.card', count: 1)
     end
@@ -65,37 +81,22 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       visit_board
     end
 
-    it 'filters by any author' do
-      page.within('.add-issues-modal') do
-        click_button 'Author'
-
-        wait_for_ajax
-
-        click_link 'Any Author'
-
-        wait_for_vue_resource
-
-        expect(page).to have_selector('.card', count: 2)
-      end
-    end
-
     it 'filters by selected user' do
+      set_filter('author')
+      click_filter_link(user2.name)
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Author'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link user2.name
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: user2.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end
   end
 
   context 'assignee' do
-    let!(:issue) { create(:issue, project: project, assignee: user2) }
+    let!(:issue) { create(:issue, project: project, assignees: [user2]) }
 
     before do
       project.team << [user2, :developer]
@@ -103,46 +104,28 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       visit_board
     end
 
-    it 'filters by any assignee' do
-      page.within('.add-issues-modal') do
-        click_button 'Assignee'
-
-        wait_for_ajax
-
-        click_link 'Any Assignee'
-
-        wait_for_vue_resource
-
-        expect(page).to have_selector('.card', count: 2)
-      end
-    end
-
     it 'filters by unassigned' do
+      set_filter('assignee')
+      click_filter_link('No Assignee')
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Assignee'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link 'Unassigned'
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: 'none')
         expect(page).to have_selector('.card', count: 1)
       end
     end
 
     it 'filters by selected user' do
+      set_filter('assignee')
+      click_filter_link(user2.name)
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Assignee'
+        wait_for_requests
 
-        wait_for_ajax
-
-        page.within '.dropdown-menu-user' do
-          click_link user2.name
-        end
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: user2.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -156,44 +139,28 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       visit_board
     end
 
-    it 'filters by any milestone' do
-      page.within('.add-issues-modal') do
-        click_button 'Milestone'
-
-        wait_for_ajax
-
-        click_link 'Any Milestone'
-
-        wait_for_vue_resource
-
-        expect(page).to have_selector('.card', count: 2)
-      end
-    end
-
     it 'filters by upcoming milestone' do
+      set_filter('milestone')
+      click_filter_link('Upcoming')
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Milestone'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link 'Upcoming'
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: 'upcoming')
         expect(page).to have_selector('.card', count: 0)
       end
     end
 
     it 'filters by selected milestone' do
+      set_filter('milestone')
+      click_filter_link(milestone.name)
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Milestone'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link milestone.name
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: milestone.name)
         expect(page).to have_selector('.card', count: 1)
       end
     end
@@ -207,53 +174,53 @@ describe 'Issue Boards add issue modal filtering', :feature, :js do
       visit_board
     end
 
-    it 'filters by any label' do
-      page.within('.add-issues-modal') do
-        click_button 'Label'
-
-        wait_for_ajax
-
-        click_link 'Any Label'
-
-        wait_for_vue_resource
-
-        expect(page).to have_selector('.card', count: 2)
-      end
-    end
-
     it 'filters by no label' do
+      set_filter('label')
+      click_filter_link('No Label')
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Label'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link 'No Label'
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: 'none')
         expect(page).to have_selector('.card', count: 1)
       end
     end
 
     it 'filters by label' do
+      set_filter('label')
+      click_filter_link(label.title)
+      submit_filter
+
       page.within('.add-issues-modal') do
-        click_button 'Label'
+        wait_for_requests
 
-        wait_for_ajax
-
-        click_link label.title
-
-        wait_for_vue_resource
-
+        expect(page).to have_selector('.js-visual-token', text: label.title)
         expect(page).to have_selector('.card', count: 1)
       end
     end
   end
 
   def visit_board
-    visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+    visit project_board_path(project, board)
+    wait_for_requests
 
     click_button('Add issues')
+  end
+
+  def set_filter(type, text = '')
+    find('.add-issues-modal .filtered-search').native.send_keys("#{type}:#{text}")
+  end
+
+  def submit_filter
+    find('.add-issues-modal .filtered-search').native.send_keys(:enter)
+  end
+
+  def click_filter_link(link_text)
+    page.within('.add-issues-modal .filtered-search-box') do
+      expect(page).to have_button(link_text)
+
+      click_button(link_text)
+    end
   end
 end

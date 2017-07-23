@@ -5,8 +5,12 @@ module Gitlab
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
 
+    def self.config
+      ActiveRecord::Base.configurations[Rails.env]
+    end
+
     def self.adapter_name
-      ActiveRecord::Base.configurations[Rails.env]['adapter']
+      config['adapter']
     end
 
     def self.mysql?
@@ -53,16 +57,16 @@ module Gitlab
       postgresql? ? "RANDOM()" : "RAND()"
     end
 
-    def true_value
-      if Gitlab::Database.postgresql?
+    def self.true_value
+      if postgresql?
         "'t'"
       else
         1
       end
     end
 
-    def false_value
-      if Gitlab::Database.postgresql?
+    def self.false_value
+      if postgresql?
         "'f'"
       else
         0
@@ -77,6 +81,22 @@ module Gitlab
       ensure
         pool.disconnect!
       end
+    end
+
+    def self.bulk_insert(table, rows)
+      return if rows.empty?
+
+      keys = rows.first.keys
+      columns = keys.map { |key| connection.quote_column_name(key) }
+
+      tuples = rows.map do |row|
+        row.values_at(*keys).map { |value| connection.quote(value) }
+      end
+
+      connection.execute <<-EOF
+        INSERT INTO #{table} (#{columns.join(', ')})
+        VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
+      EOF
     end
 
     # pool_size - The size of the DB pool.

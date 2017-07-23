@@ -1,13 +1,15 @@
 require 'spec_helper'
 
 describe "Admin::Users", feature: true do
-  include WaitForAjax
-
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
 
-  let!(:current_user) { login_as :admin }
+  let!(:current_user) { create(:admin) }
+
+  before do
+    sign_in(current_user)
+  end
 
   describe "GET /admin/users" do
     before do
@@ -23,6 +25,9 @@ describe "Admin::Users", feature: true do
       expect(page).to have_content(current_user.name)
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Two-factor Authentication filters' do
@@ -77,10 +82,10 @@ describe "Admin::Users", feature: true do
     it "applies defaults to user" do
       click_button "Create user"
       user = User.find_by(username: 'bang')
-      expect(user.projects_limit).
-        to eq(Gitlab.config.gitlab.default_projects_limit)
-      expect(user.can_create_group).
-        to eq(Gitlab.config.gitlab.default_can_create_group)
+      expect(user.projects_limit)
+        .to eq(Gitlab.config.gitlab.default_projects_limit)
+      expect(user.can_create_group)
+        .to eq(Gitlab.config.gitlab.default_can_create_group)
     end
 
     it "creates user with valid data" do
@@ -116,11 +121,17 @@ describe "Admin::Users", feature: true do
 
       expect(page).to have_content(user.email)
       expect(page).to have_content(user.name)
+      expect(page).to have_link('Block user', href: block_admin_user_path(user))
+      expect(page).to have_link('Remove user', href: admin_user_path(user))
+      expect(page).to have_link('Remove user and contributions', href: admin_user_path(user, hard_delete: true))
     end
 
     describe 'Impersonation' do
       let(:another_user) { create(:user) }
-      before { visit admin_user_path(another_user) }
+
+      before do
+        visit admin_user_path(another_user)
+      end
 
       context 'before impersonating' do
         it 'shows impersonate button for other users' do
@@ -145,7 +156,9 @@ describe "Admin::Users", feature: true do
       end
 
       context 'when impersonating' do
-        before { click_link 'Impersonate' }
+        before do
+          click_link 'Impersonate'
+        end
 
         it 'logs in as the user when impersonate is clicked' do
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)
@@ -223,7 +236,7 @@ describe "Admin::Users", feature: true do
       it "changes user entry" do
         user.reload
         expect(user.name).to eq('Big Bang')
-        expect(user.is_admin?).to be_truthy
+        expect(user.admin?).to be_truthy
         expect(user.password_expires_at).to be <= Time.now
       end
     end
@@ -279,7 +292,7 @@ describe "Admin::Users", feature: true do
       page.within(first('.group_member')) do
         find('.btn-remove').click
       end
-      wait_for_ajax
+      wait_for_requests
 
       expect(page).not_to have_selector('.group_member')
     end

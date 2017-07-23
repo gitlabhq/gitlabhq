@@ -1,4 +1,6 @@
-require('~/lib/utils/common_utils');
+/* eslint-disable promise/catch-or-return */
+
+import '~/lib/utils/common_utils';
 
 (() => {
   describe('common_utils', () => {
@@ -39,11 +41,25 @@ require('~/lib/utils/common_utils');
         const paramsArray = gl.utils.getUrlParamsArray();
         expect(paramsArray[0][0] !== '?').toBe(true);
       });
+
+      it('should decode params', () => {
+        history.pushState('', '', '?label_name%5B%5D=test');
+
+        expect(
+          gl.utils.getUrlParamsArray()[0],
+        ).toBe('label_name[]=test');
+
+        history.pushState('', '', '?');
+      });
     });
 
     describe('gl.utils.handleLocationHash', () => {
       beforeEach(() => {
         spyOn(window.document, 'getElementById').and.callThrough();
+      });
+
+      afterEach(() => {
+        window.history.pushState({}, null, '');
       });
 
       function expectGetElementIdToHaveBeenCalledWith(elementId) {
@@ -75,19 +91,73 @@ require('~/lib/utils/common_utils');
       });
     });
 
+    describe('gl.utils.setParamInURL', () => {
+      afterEach(() => {
+        window.history.pushState({}, null, '');
+      });
+
+      it('should return the parameter', () => {
+        window.history.replaceState({}, null, '');
+
+        expect(gl.utils.setParamInURL('page', 156)).toBe('?page=156');
+        expect(gl.utils.setParamInURL('page', '156')).toBe('?page=156');
+      });
+
+      it('should update the existing parameter when its a number', () => {
+        window.history.pushState({}, null, '?page=15');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?page=true');
+      });
+
+      it('should update the existing parameter when its a string', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished');
+      });
+
+      it('should update the existing parameter when more than one parameter exists', () => {
+        window.history.pushState({}, null, '?scope=all&page=15');
+
+        expect(gl.utils.setParamInURL('scope', 'finished')).toBe('?scope=finished&page=15');
+      });
+
+      it('should add a new parameter to the end of the existing ones', () => {
+        window.history.pushState({}, null, '?scope=all');
+
+        expect(gl.utils.setParamInURL('page', 16)).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', '16')).toBe('?scope=all&page=16');
+        expect(gl.utils.setParamInURL('page', true)).toBe('?scope=all&page=true');
+      });
+    });
+
     describe('gl.utils.getParameterByName', () => {
       beforeEach(() => {
         window.history.pushState({}, null, '?scope=all&p=2');
       });
 
+      afterEach(() => {
+        window.history.replaceState({}, null, null);
+      });
+
       it('should return valid parameter', () => {
         const value = gl.utils.getParameterByName('scope');
+        expect(gl.utils.getParameterByName('p')).toEqual('2');
         expect(value).toBe('all');
       });
 
       it('should return invalid parameter', () => {
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
+      });
+
+      it('should return valid paramentes if URL is provided', () => {
+        let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+        expect(value).toBe('bar');
+
+        value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+        expect(value).toBe('canchu');
       });
     });
 
@@ -105,6 +175,37 @@ require('~/lib/utils/common_utils');
 
         expect(normalized[WORKHORSE].workhorse).toBe('ok');
         expect(normalized[NGINX].nginx).toBe('ok');
+      });
+    });
+
+    describe('gl.utils.normalizeCRLFHeaders', () => {
+      beforeEach(function () {
+        this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
+
+        spyOn(String.prototype, 'split').and.callThrough();
+        spyOn(gl.utils, 'normalizeHeaders').and.callThrough();
+
+        this.normalizeCRLFHeaders = gl.utils.normalizeCRLFHeaders(this.CLRFHeaders);
+      });
+
+      it('should split by newline', function () {
+        expect(String.prototype.split).toHaveBeenCalledWith('\n');
+      });
+
+      it('should split by colon+space for each header', function () {
+        expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
+      });
+
+      it('should call gl.utils.normalizeHeaders with a parsed headers object', function () {
+        expect(gl.utils.normalizeHeaders).toHaveBeenCalledWith(jasmine.any(Object));
+      });
+
+      it('should return a normalized headers object', function () {
+        expect(this.normalizeCRLFHeaders).toEqual({
+          'A-HEADER': 'a-value',
+          'ANOTHER-HEADER': 'ANOTHER-VALUE',
+          'LAST-HEADER': 'last-VALUE',
+        });
       });
     });
 
@@ -161,6 +262,134 @@ require('~/lib/utils/common_utils');
         };
 
         expect(gl.utils.isMetaClick(e)).toBe(true);
+      });
+    });
+
+    describe('gl.utils.backOff', () => {
+      it('solves the promise from the callback', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            stop(resp);
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        });
+      });
+
+      it('catches the rejected promise from the callback ', (done) => {
+        const errorMessage = 'Mistakes were made!';
+        gl.utils.backOff((next, stop) => {
+          new Promise((resolve, reject) => {
+            reject(new Error(errorMessage));
+          }).then((resp) => {
+            stop(resp);
+          }).catch(err => stop(err));
+        }).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe(errorMessage);
+          done();
+        });
+      });
+
+      it('solves the promise correctly after retrying a third time', (done) => {
+        let numberOfCalls = 1;
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff((next, stop) => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then((resp) => {
+            if (numberOfCalls < 3) {
+              numberOfCalls += 1;
+              next();
+            } else {
+              stop(resp);
+            }
+          })
+        )).then((respBackoff) => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          expect(numberOfCalls).toBe(3);
+          done();
+        });
+      }, 10000);
+
+      it('rejects the backOff promise after timing out', (done) => {
+        const expectedResponseValue = 'Success!';
+        gl.utils.backOff(next => (
+          new Promise((resolve) => {
+            resolve(expectedResponseValue);
+          }).then(() => {
+            setTimeout(next(), 5000); // it will time out
+          })
+        ), 3000).catch((errBackoffResp) => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
+          done();
+        });
+      }, 10000);
+    });
+
+    describe('gl.utils.setFavicon', () => {
+      it('should set page favicon to provided favicon', () => {
+        const faviconPath = '//custom_favicon';
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val.indexOf(faviconPath) > -1).toBe(true);
+        });
+        gl.utils.setFavicon(faviconPath);
+      });
+    });
+
+    describe('gl.utils.resetFavicon', () => {
+      it('should reset page favicon to tanuki', () => {
+        const fakeLink = {
+          setAttribute() {},
+        };
+
+        spyOn(window.document, 'getElementById').and.callFake(() => fakeLink);
+        spyOn(fakeLink, 'setAttribute').and.callFake((attr, val) => {
+          expect(attr).toEqual('href');
+          expect(val).toMatch(/favicon/);
+        });
+        gl.utils.resetFavicon();
+      });
+    });
+
+    describe('gl.utils.setCiStatusFavicon', () => {
+      it('should set page favicon to CI status favicon based on provided status', () => {
+        const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
+        const FAVICON_PATH = '//icon_status_success';
+        const spySetFavicon = spyOn(gl.utils, 'setFavicon').and.stub();
+        const spyResetFavicon = spyOn(gl.utils, 'resetFavicon').and.stub();
+        spyOn($, 'ajax').and.callFake(function (options) {
+          options.success({ favicon: FAVICON_PATH });
+          expect(spySetFavicon).toHaveBeenCalledWith(FAVICON_PATH);
+          options.success();
+          expect(spyResetFavicon).toHaveBeenCalled();
+          options.error();
+          expect(spyResetFavicon).toHaveBeenCalled();
+        });
+
+        gl.utils.setCiStatusFavicon(BUILD_URL);
+      });
+    });
+
+    describe('gl.utils.ajaxPost', () => {
+      it('should perform `$.ajax` call and do `POST` request', () => {
+        const requestURL = '/some/random/api';
+        const data = { keyname: 'value' };
+        const ajaxSpy = spyOn($, 'ajax').and.callFake(() => {});
+
+        gl.utils.ajaxPost(requestURL, data);
+        expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
       });
     });
   });

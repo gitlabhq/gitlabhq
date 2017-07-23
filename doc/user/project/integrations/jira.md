@@ -76,7 +76,7 @@ We have split this stage in steps so it is easier to follow.
 
      ![JIRA add user to group](img/jira_add_user_to_group.png)
 
----
+     ---
 
 The JIRA configuration is over. Write down the new JIRA username and its
 password as they will be needed when configuring GitLab in the next section.
@@ -97,14 +97,15 @@ in the table below.
 
 | Field | Description |
 | ----- | ----------- |
-| `URL` | The base URL to the JIRA project which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
-| `Project key` | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
+| `Web URL` | The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., `https://jira.example.com`. |
+| `JIRA API URL` | The base URL to the JIRA instance API. E.g., `https://jira-api.example.com`. This is optional. If not entered, the Web URL value be used. |
+| `Project key` | Put a JIRA project key (in uppercase), e.g. `MARS` in this field. This is only for testing the configuration settings. JIRA integration in GitLab works with _all_ JIRA projects in your JIRA instance. This field will be removed in a future release. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). |
+| `JIRA issue transition` | This is the ID of a transition that moves issues to a closed state. You can find this number under JIRA workflow administration ([see screenshot](img/jira_workflow_screenshot.png)). **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 After saving the configuration, your GitLab project will be able to interact
-with the linked JIRA project.
+with all JIRA projects in your JIRA instance.
 
 ![JIRA service page](img/jira_service_page.png)
 
@@ -156,6 +157,11 @@ the same goal:
 - `Fixes PROJECT-1`
 
 where `PROJECT-1` is the issue ID of the JIRA project.
+
+>**Note:**
+- Only commits and merges into the project's default branch (usually **master**) will
+  close an issue in Jira. You can change your projects default branch under
+  [project settings](img/jira_project_settings.png).
 
 ### JIRA issue closing example
 

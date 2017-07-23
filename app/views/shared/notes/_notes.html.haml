@@ -1,0 +1,8 @@
+- if defined?(@discussions)
+  - @discussions.each do |discussion|
+    - if discussion.individual_note?
+      = render partial: "shared/notes/note", collection: discussion.notes, as: :note
+    - else
+      = render 'discussions/discussion', discussion: discussion
+- else
+  = render partial: "shared/notes/note", collection: @notes, as: :note

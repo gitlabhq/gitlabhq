@@ -167,6 +167,15 @@ A **comment** is a written piece of text that users of GitLab can create. Commen
 #### Discussion
 A **discussion** is a group of 1 or more comments. A discussion can include subdiscussions. Some discussions have the special capability of being able to be **resolved**. Both the comments in the discussion and the discussion itself can be resolved.
 
+## Confirmation dialogs
+
+- Destruction buttons should be clear and always say what they are destroying.
+  E.g., `Delete page` instead of just `Delete`.
+- If the copy describes another action the user can take instead of the
+  destructive one, provide a way for them to do that as a secondary button.
+- Avoid the word `cancel` or `canceled` in the descriptive copy. It can be
+  confusing when you then see the `Cancel` button.
+
 ---
 
 Portions of this page are modifications based on work created and shared by the [Android Open Source Project][android project] and used according to terms described in the [Creative Commons 2.5 Attribution License][creative commons].

@@ -122,15 +122,15 @@ module Gitlab
           author_id = user_info(bug['ixPersonOpenedBy'])[:gitlab_id] || project.creator_id
 
           issue = Issue.create!(
-            iid:         bug['ixBug'],
-            project_id:  project.id,
-            title:       bug['sTitle'],
-            description: body,
-            author_id:   author_id,
-            assignee_id: assignee_id,
-            state:       bug['fOpen'] == 'true' ? 'opened' : 'closed',
-            created_at:  date,
-            updated_at:  DateTime.parse(bug['dtLastUpdated'])
+            iid:          bug['ixBug'],
+            project_id:   project.id,
+            title:        bug['sTitle'],
+            description:  body,
+            author_id:    author_id,
+            assignee_ids: [assignee_id],
+            state:        bug['fOpen'] == 'true' ? 'opened' : 'closed',
+            created_at:   date,
+            updated_at:   DateTime.parse(bug['dtLastUpdated'])
           )
 
           issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)

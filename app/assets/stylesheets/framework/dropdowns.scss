@@ -14,14 +14,32 @@
   }
 }
 
+@mixin set-visible {
+  transform: translateY(0);
+  visibility: visible;
+  opacity: 1;
+  transition-duration: 100ms, 150ms, 25ms;
+  transition-delay: 35ms, 50ms, 25ms;
+}
+
+@mixin set-invisible {
+  transform: translateY(-10px);
+  visibility: hidden;
+  opacity: 0;
+  transition-property: opacity, transform, visibility;
+  transition-duration: 70ms, 250ms, 250ms;
+  transition-timing-function: linear, $dropdown-animation-timing;
+  transition-delay: 25ms, 50ms, 0ms;
+}
+
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
+    @include set-visible;
     display: block;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
-      min-width: 240px;
     }
   }
 
@@ -29,6 +47,10 @@
   .dropdown-menu-toggle {
     @include chevron-active;
     border-color: $gray-darkest;
+  }
+
+  [data-toggle="dropdown"] {
+    outline: 0;
   }
 }
 
@@ -43,7 +65,7 @@
   white-space: nowrap;
 
   &[disabled] {
-    background-color: $input-bg-disabled;
+    opacity: .65;
     cursor: not-allowed;
   }
 
@@ -79,7 +101,7 @@
   .fa-chevron-down {
     font-size: $dropdown-chevron-size;
     position: relative;
-    top: -3px;
+    top: -2px;
     margin-left: 5px;
   }
 
@@ -91,6 +113,7 @@
   &:focus:active {
     @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
+    outline: 0;
   }
 }
 
@@ -119,14 +142,57 @@
   }
 }
 
+@mixin dropdown-link {
+  display: block;
+  position: relative;
+  padding: 5px 8px;
+  color: $gl-text-color;
+  line-height: initial;
+  text-overflow: ellipsis;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+
+  &:hover,
+  &:focus,
+  &.is-focused {
+    background-color: $dropdown-link-hover-bg;
+    text-decoration: none;
+
+    .badge {
+      background-color: darken($dropdown-link-hover-bg, 5%);
+    }
+  }
+
+  &.dropdown-menu-empty-link {
+    &.is-focused {
+      background-color: $dropdown-empty-row-bg;
+    }
+  }
+
+  &.dropdown-menu-user-link {
+    line-height: 16px;
+  }
+
+  .icon-play {
+    fill: $gl-text-color-secondary;
+    margin-right: 6px;
+    height: 12px;
+    width: 11px;
+  }
+}
+
 .dropdown-menu,
 .dropdown-menu-nav {
-  display: none;
+  @include set-invisible;
+  display: block;
   position: absolute;
+  width: auto;
   top: 100%;
   left: 0;
   z-index: 9;
   min-width: 240px;
+  max-width: 500px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -137,8 +203,14 @@
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
-  .filtered-search-input-container & {
-    max-width: 280px;
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+    min-width: 180px;
+  }
+
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
   }
 
   &.is-loading {
@@ -151,6 +223,15 @@
     }
   }
 
+  .shortcut-mappings {
+    display: none;
+  }
+
+  &.shortcuts .shortcut-mappings {
+    display: inline-block;
+    margin-right: 5px;
+  }
+
   ul {
     margin: 0;
     padding: 0;
@@ -159,12 +240,12 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 8px;
+    padding: 0 10px;
   }
 
   .divider {
     height: 1px;
-    margin: 8px;
+    margin: 6px 10px;
     padding: 0;
     background-color: $dropdown-divider-color;
   }
@@ -178,54 +259,28 @@
   }
 
   a {
-    display: block;
-    position: relative;
-    padding: 5px 8px;
-    color: $dropdown-link-color;
-    line-height: initial;
-    text-overflow: ellipsis;
-    border-radius: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-
-    &:hover,
-    &:focus,
-    &.is-focused {
-      background-color: $dropdown-link-hover-bg;
-      text-decoration: none;
-
-      .badge {
-        background-color: darken($row-hover, 5%);
-      }
-    }
-
-    &.dropdown-menu-empty-link {
-      &.is-focused {
-        background-color: $dropdown-empty-row-bg;
-      }
-    }
-
-    &.dropdown-menu-user-link {
-      line-height: 16px;
-    }
-
-    .icon-play {
-      fill: $gl-text-color-secondary;
-      margin-right: 6px;
-      height: 12px;
-      width: 11px;
-    }
+    @include dropdown-link;
   }
 
   .dropdown-header {
     color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
-    text-transform: capitalize;
-    padding: 0 10px;
+    padding: 0 16px;
   }
 
-  .separator + .dropdown-header {
+  &.capitalize-header .dropdown-header {
+    text-transform: capitalize;
+  }
+
+  .dropdown-bold-header {
+    font-weight: 600;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header,
+  .separator + .dropdown-bold-header {
     padding-top: 2px;
   }
 
@@ -234,11 +289,91 @@
     padding: 5px 8px;
     color: $gl-text-color-secondary;
   }
+}
 
-  .badge {
-    position: absolute;
-    right: 8px;
-    top: 5px;
+.droplab-dropdown {
+  .dropdown-toggle > i {
+    pointer-events: none;
+  }
+
+  .dropdown-menu li {
+    padding: $gl-btn-padding;
+    cursor: pointer;
+
+    > a,
+    > button {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      text-overflow: inherit;
+      background-color: inherit;
+      color: inherit;
+      border: inherit;
+      text-align: left;
+
+      &:hover,
+      &:focus {
+        background-color: inherit;
+        color: inherit;
+      }
+
+      &.btn .fa:not(:last-child) {
+        margin-left: 5px;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+
+    &.droplab-item-selected i {
+      visibility: visible;
+    }
+
+    &.divider {
+      margin: 0 8px;
+      padding: 0;
+      border-top: $gray-darkest;
+    }
+
+    .icon {
+      visibility: hidden;
+    }
+
+    .description {
+      display: inline-block;
+      white-space: normal;
+      margin-left: 5px;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+}
+
+.droplab-dropdown .dropdown-menu,
+.droplab-dropdown .dropdown-menu-nav {
+  display: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.filtered-search-box-input-container {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    max-width: 280px;
+    width: auto;
   }
 }
 
@@ -286,8 +421,8 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
@@ -316,23 +451,33 @@
 
 .dropdown-select {
   width: $dropdown-width;
+
+  @media (max-width: $screen-sm-min) {
+    width: 100%;
+  }
 }
 
 .dropdown-menu-align-right {
   left: auto;
   right: 0;
+  margin-top: -5px;
 }
 
 .dropdown-menu-selectable {
   a {
-    padding-left: 25px;
+    padding-left: 26px;
+    position: relative;
 
     &.is-indeterminate,
     &.is-active {
+      font-weight: 600;
+      color: $gl-text-color;
+
       &::before {
         position: absolute;
-        left: 5px;
-        top: 8px;
+        left: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -347,6 +492,9 @@
 
     &.is-active::before {
       content: "\f00c";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
@@ -354,7 +502,7 @@
 
 .dropdown-title {
   position: relative;
-  padding: 0 25px 10px;
+  padding: 2px 25px 10px;
   margin: 0 10px 10px;
   font-weight: 600;
   line-height: 1;
@@ -384,7 +532,7 @@
   right: 5px;
   width: 20px;
   height: 20px;
-  top: -3px;
+  top: -1px;
 }
 
 .dropdown-menu-back {
@@ -459,6 +607,11 @@
   overflow-y: auto;
 }
 
+.dropdown-info-note {
+  color: $gl-text-color-secondary;
+  text-align: center;
+}
+
 .dropdown-footer {
   padding-top: 10px;
   margin-top: 10px;
@@ -518,8 +671,8 @@
   }
 
   .pika-single {
-    position: relative!important;
-    top: 0!important;
+    position: relative !important;
+    top: 0 !important;
     border: 0;
     box-shadow: none;
   }
@@ -545,4 +698,29 @@
   &.is-default {
     color: $gl-text-color-secondary;
   }
+}
+
+.droplab-item-ignore {
+  pointer-events: none;
+}
+
+.pika-single.animate-picker.is-bound,
+.pika-single.animate-picker.is-bound.is-hidden {
+  /*
+   * Having `!important` is not recommended but
+   * since `pikaday` sets positioning inline
+   * there's no way it can be gracefully overridden
+   * using config options.
+   */
+  position: absolute !important;
+  display: block;
+}
+
+.pika-single.animate-picker.is-bound {
+  @include set-visible;
+}
+
+.pika-single.animate-picker.is-bound.is-hidden {
+  @include set-invisible;
+  overflow: hidden;
 }

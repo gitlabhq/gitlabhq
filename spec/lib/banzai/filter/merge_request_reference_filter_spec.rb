@@ -17,14 +17,27 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     end
   end
 
+  describe 'performance' do
+    let(:another_merge) { create(:merge_request, source_project: project, source_branch: 'fix') }
+
+    it 'does not have a N+1 query problem' do
+      single_reference = "Merge request #{merge.to_reference}"
+      multiple_references = "Merge requests #{merge.to_reference} and #{another_merge.to_reference}"
+
+      control_count = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }.count
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control_count)
+    end
+  end
+
   context 'internal reference' do
     let(:reference) { merge.to_reference }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).to eq urls.
-        namespace_project_merge_request_url(project.namespace, project, merge)
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .project_merge_request_url(project, merge)
     end
 
     it 'links with adjacent text' do
@@ -82,7 +95,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
       link = doc.css('a').first.attr('href')
 
       expect(link).not_to match %r(https?://)
-      expect(link).to eq urls.namespace_project_merge_request_url(project.namespace, project, merge, only_path: true)
+      expect(link).to eq urls.project_merge_request_url(project, merge, only_path: true)
     end
   end
 
@@ -94,9 +107,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                       project2, merge)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_merge_request_url(project2, merge)
     end
 
     it 'link has valid text' do
@@ -128,9 +140,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                      project2, merge)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_merge_request_url(project2, merge)
     end
 
     it 'link has valid text' do
@@ -162,9 +173,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq urls.namespace_project_merge_request_url(project2.namespace,
-                                                      project2, merge)
+      expect(doc.css('a').first.attr('href'))
+        .to eq urls.project_merge_request_url(project2, merge)
     end
 
     it 'link has valid text' do
@@ -190,13 +200,13 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
-    let(:reference) { urls.namespace_project_merge_request_url(project2.namespace, project2, merge) + '/diffs#note_123' }
+    let(:reference) { urls.project_merge_request_url(project2, merge) + '/diffs#note_123' }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq reference
+      expect(doc.css('a').first.attr('href'))
+        .to eq reference
     end
 
     it 'links with adjacent text' do

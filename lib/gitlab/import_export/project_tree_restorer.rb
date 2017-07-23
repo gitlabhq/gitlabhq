@@ -52,7 +52,11 @@ module Gitlab
           create_sub_relations(relation, @tree_hash) if relation.is_a?(Hash)
 
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
-          relation_hash = create_relation(relation_key, @tree_hash[relation_key.to_s])
+          relation_hash_list = @tree_hash[relation_key.to_s]
+
+          next unless relation_hash_list
+
+          relation_hash = create_relation(relation_key, relation_hash_list)
           saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
         end
         saved.all?
@@ -67,14 +71,14 @@ module Gitlab
       def restore_project
         return @project unless @tree_hash
 
-        @project.update(project_params)
+        @project.update_columns(project_params)
         @project
       end
 
       def project_params
         @tree_hash.reject do |key, value|
           # return params that are not 1 to many or 1 to 1 relations
-          value.is_a?(Array) || key == key.singularize
+          value.respond_to?(:each) && !Project.column_names.include?(key)
         end
       end
 
@@ -119,7 +123,7 @@ module Gitlab
                                                        relation_hash: parsed_relation_hash(relation_hash),
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project_id: restored_project.id)
+                                                       project: restored_project)
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first

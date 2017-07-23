@@ -1,10 +1,12 @@
 require 'spec_helper'
 
-describe Issue, "Awardable" do
+describe Awardable do
   let!(:issue)        { create(:issue) }
   let!(:award_emoji)  { create(:award_emoji, :downvote, awardable: issue) }
 
   describe "Associations" do
+    subject { build(:issue) }
+
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
   end
 

@@ -4,13 +4,18 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:client) { double }
   let(:project) { create(:project, :repository) }
   let(:source_sha) { create(:commit, project: project).id }
-  let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
+  let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
+  let(:target_sha) { target_commit.id }
+  let(:target_short_sha) { target_commit.id.to_s[0..7] }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: source_sha) }
+  let(:source_branch) { double(ref: 'branch-merged', repo: source_repo, sha: source_sha) }
+  let(:forked_source_repo) { double(id: 2, fork: true, name: 'otherproject', full_name: 'company/otherproject') }
   let(:target_repo) { repository }
-  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
-  let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
+  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha, user: octocat) }
+  let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
+  let(:forked_branch) { double(ref: 'master', repo: forked_source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
+  let(:branch_deleted_repo) { double(ref: 'master', repo: nil, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b', user: octocat) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -49,7 +54,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -59,7 +64,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -75,7 +81,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -85,7 +91,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -102,7 +109,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           title: 'New feature',
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
-          source_branch: 'feature',
+          source_branch: 'branch-merged',
           source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
@@ -112,7 +119,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported: true
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -194,21 +202,37 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
-        expect(pull_request.source_branch_name).to eq 'feature'
+        expect(pull_request.source_branch_name).to eq 'branch-merged'
       end
     end
 
     context 'when source branch does not exist' do
       let(:raw_data) { double(base_data.merge(head: removed_branch)) }
 
-      it 'prefixes branch name with pull request number' do
-        expect(pull_request.source_branch_name).to eq 'pull/1347/removed-branch'
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/removed-branch"
+      end
+    end
+
+    context 'when source branch is from a fork' do
+      let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
+      end
+    end
+
+    context 'when source branch is from a deleted fork' do
+      let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
+
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
+        expect(pull_request.source_branch_name).to eq "gh-#{target_short_sha}/1347/octocat/master"
       end
     end
   end
 
   shared_examples 'Gitlab::GithubImport::PullRequestFormatter#target_branch_name' do
-    context 'when source branch exists' do
+    context 'when target branch exists' do
       let(:raw_data) { double(base_data) }
 
       it 'returns branch ref' do
@@ -219,8 +243,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     context 'when target branch does not exist' do
       let(:raw_data) { double(base_data.merge(base: removed_branch)) }
 
-      it 'prefixes branch name with pull request number' do
-        expect(pull_request.target_branch_name).to eq 'pull/1347/removed-branch'
+      it 'prefixes branch name with gh-:short_sha/:number/:user pattern to avoid collision' do
+        expect(pull_request.target_branch_name).to eq 'gl-2e5d3239/1347/octocat/removed-branch'
       end
     end
   end
@@ -271,11 +295,53 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
   end
 
+  describe '#cross_project?' do
+    context 'when source and target repositories are different' do
+      let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
+    context 'when source repository does not exist anymore' do
+      let(:raw_data) { double(base_data.merge(head: branch_deleted_repo)) }
+
+      it 'returns true' do
+        expect(pull_request.cross_project?).to eq true
+      end
+    end
+
+    context 'when source and target repositories are the same' do
+      let(:raw_data) { double(base_data.merge(head: source_branch)) }
+
+      it 'returns false' do
+        expect(pull_request.cross_project?).to eq false
+      end
+    end
+  end
+
+  describe '#source_branch_exists?' do
+    let(:raw_data) { double(base_data.merge(head: forked_branch)) }
+
+    it 'returns false when is a cross_project' do
+      expect(pull_request.source_branch_exists?).to eq false
+    end
+  end
+
   describe '#url' do
     let(:raw_data) { double(base_data) }
 
     it 'return raw url' do
       expect(pull_request.url).to eq 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
+    end
+  end
+
+  describe '#opened?' do
+    let(:raw_data) { double(base_data.merge(state: 'open')) }
+
+    it 'returns true when state is "open"' do
+      expect(pull_request.opened?).to be_truthy
     end
   end
 end

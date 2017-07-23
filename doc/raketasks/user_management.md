@@ -71,6 +71,85 @@ sudo gitlab-rake gitlab:two_factor:disable_for_all_users
 bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
 ```
 
+## Rotate Two-factor Authentication (2FA) encryption key
+
+GitLab stores the secret data enabling 2FA to work in an encrypted database
+column. The encryption key for this data is known as `otp_key_base`, and is
+stored in `config/secrets.yml`.
+
+
+If that file is leaked, but the individual 2FA secrets have not, it's possible
+to re-encrypt those secrets with a new encryption key. This allows you to change
+the leaked key without forcing all users to change their 2FA details.
+
+First, look up the old key. This is in the `config/secrets.yml` file, but
+**make sure you're working with the production section**. The line you're
+interested in will look like this:
+
+```yaml
+production:
+  otp_key_base: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+```
+
+Next, generate a new secret:
+
+```
+# omnibus-gitlab
+sudo gitlab-rake secret
+
+# installation from source
+bundle exec rake secret RAILS_ENV=production
+```
+
+Now you need to stop the GitLab server, back up the existing secrets file and
+update the database:
+
+```
+# omnibus-gitlab
+sudo gitlab-ctl stop
+sudo cp config/secrets.yml config/secrets.yml.bak
+sudo gitlab-rake gitlab:two_factor:rotate_key:apply filename=backup.csv old_key=<old key> new_key=<new key>
+
+# installation from source
+sudo /etc/init.d/gitlab stop
+cp config/secrets.yml config/secrets.yml.bak
+bundle exec rake gitlab:two_factor:rotate_key:apply filename=backup.csv old_key=<old key> new_key=<new key> RAILS_ENV=production
+```
+
+The `<old key>` value can be read from `config/secrets.yml`; `<new key>` was
+generated earlier. The **encrypted** values for the user 2FA secrets will be
+written to the specified `filename` - you can use this to rollback in case of
+error.
+
+Finally, change `config/secrets.yml` to set `otp_key_base` to `<new key>` and
+restart. Again, make sure you're operating in the **production** section.
+
+```
+# omnibus-gitlab
+sudo gitlab-ctl start
+
+# installation from source
+sudo /etc/init.d/gitlab start
+```
+
+If there are any problems (perhaps using the wrong value for `old_key`), you can
+restore your backup of `config/secrets.yml` and rollback the changes:
+
+```
+# omnibus-gitlab
+sudo gitlab-ctl stop
+sudo gitlab-rake gitlab:two_factor:rotate_key:rollback filename=backup.csv
+sudo cp config/secrets.yml.bak config/secrets.yml
+sudo gitlab-ctl start
+
+# installation from source
+sudo /etc/init.d/gitlab start
+bundle exec rake gitlab:two_factor:rotate_key:rollback filename=backup.csv RAILS_ENV=production
+cp config/secrets.yml.bak config/secrets.yml
+sudo /etc/init.d/gitlab start
+
+```
+
 ## Clear authentication tokens for all users. Important! Data loss!
 
 Clear authentication tokens for all users in the GitLab database. This

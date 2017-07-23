@@ -110,6 +110,14 @@ module IssuesHelper
     end
   end
 
+  def award_user_authored_class(award)
+    if award == 'thumbsdown' || award == 'thumbsup'
+      'user-authored js-user-authored'
+    else
+      ''
+    end
+  end
+
   def awards_sort(awards)
     awards.sort_by do |award, notes|
       if award == "thumbsup"
@@ -132,6 +140,20 @@ module IssuesHelper
     ]
 
     options_from_collection_for_select(options, 'name', 'title', params[:due_date])
+  end
+
+  def link_to_discussions_to_resolve(merge_request, single_discussion = nil)
+    link_text = merge_request.to_reference
+    link_text += " (discussion #{single_discussion.first_note.id})" if single_discussion
+
+    path = if single_discussion
+             Gitlab::UrlBuilder.build(single_discussion.first_note)
+           else
+             project = merge_request.project
+             project_merge_request_path(project, merge_request)
+           end
+
+    link_to link_text, path
   end
 
   # Required for Banzai::Filter::IssueReferenceFilter
