@@ -94,14 +94,14 @@ const RepoHelper = {
     return oldList;
   },
 
-  getContent(treeOrFile) {
+  getContent(treeOrFile, cb) {
     let file = treeOrFile;
-    const loadingData = RepoHelper.setLoading(true);
-
+    // const loadingData = RepoHelper.setLoading(true);
     Service.getContent()
     .then((response) => {
       const data = response.data;
-      RepoHelper.setLoading(false, loadingData);
+      // RepoHelper.setLoading(false, loadingData);
+      if(cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
@@ -153,6 +153,7 @@ const RepoHelper = {
     const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
     simpleBlob.lastCommitMessage = blob.last_commit.message;
     simpleBlob.lastCommitUpdate = blob.last_commit.committed_date;
+    simpleBlob.loading = false;
 
     return simpleBlob;
   },
@@ -174,6 +175,7 @@ const RepoHelper = {
       url,
       icon: RepoHelper.toFA(icon),
       level: 0,
+      loading: false,
     };
   },
 

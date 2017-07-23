@@ -16,6 +16,10 @@ const RepoStore = {
   blobRaw: '',
   blobRendered: '',
   openedFiles: [],
+  tabSize: 100,
+  defaultTabSize: 100,
+  minTabSize: 30,
+  tabsOverflow: 41,
   activeFile: {
     active: true,
     binary: false,
@@ -29,6 +33,7 @@ const RepoStore = {
     raw: false,
     newContent: '',
     changed: false,
+    loading: false
   },
   activeFileIndex: 0,
   activeLine: 0,
@@ -136,6 +141,7 @@ const RepoStore = {
       mime_type: 'loading',
       name: 'loading',
       url: randomURL,
+      fake: true,
     };
 
     RepoStore.openedFiles.push(newFakeFile);

@@ -17,6 +17,23 @@ export default class RepoTabs {
         'repo-tab': RepoTab,
       },
       data: () => Store,
+
+      methods: {
+        isOverflow() {
+          let tabs = document.getElementById('tabs');
+          if(tabs) {
+            return tabs.scrollWidth > tabs.offsetWidth;
+          } 
+        }
+      },
+
+      watch: {
+        openedFiles() {
+          Vue.nextTick(() => {
+            this.tabsOverflow = this.isOverflow();  
+          });
+        }
+      }
     });
   }
 

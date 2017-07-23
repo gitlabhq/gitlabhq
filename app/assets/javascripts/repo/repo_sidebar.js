@@ -43,19 +43,27 @@ export default class RepoSidebar {
         linkClicked(clickedFile) {
           let url = '';
           let file = clickedFile;
+          file.loading = true;
           if (typeof file === 'object') {
             if (file.type === 'tree' && file.opened) {
               file = Store.removeChildFilesOfTree(file);
             } else {
               url = file.url;
               Service.url = url;
-              Helper.getContent(file);
+              // I need to refactor this to do the `then` here.
+              // Not a callback. For now this is good enough.
+              // it works.
+              Helper.getContent(file, () => {
+                file.loading = false;
+              });
             }
           } else if (typeof file === 'string') {
             // go back
             url = file;
             Service.url = url;
-            Helper.getContent();
+            Helper.getContent(null, () => {
+              file.loading = false;
+            });
           }
         },
       },

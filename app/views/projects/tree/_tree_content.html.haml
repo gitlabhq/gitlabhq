@@ -14,14 +14,14 @@
         %tr{ is: "repo-file-options", ":is-mini" => "isMini", "project-name" => @project.name }
         %tr{ is: "repo-previous-directory", ":prev-url" => "prevURL", "@linkclicked" => "linkClicked(prevURL)" }
         %tr{ is: "repo-loading-file", "v-for" => "n in 5", ":loading" => "loading", ":has-files" => "!!files.length", ":is-mini" => "isMini" }
-        %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree", ":loading" => "loading", ":has-files" => "!!files.length", ":active-file" => "activeFile" }
+        %tr{ is: "repo-file", "v-for" => "file in files", ":key" => "file.id", ":file" => "file",":is-mini" => "isMini", "@linkclicked" => "linkClicked(file)", ":is-tree" => "isTree", ":has-files" => "!!files.length", ":active-file" => "activeFile" }
   .panel-right>
-    %ul#tabs{ "v-if" => "isMini", "v-cloak" => "1" }
+    %ul#tabs{ "v-if" => "isMini", "v-cloak" => "1", ":class" => "{'overflown': tabsOverflow}" }
       %li{ is: "repo-tab", "v-for" => "tab in openedFiles", ":key" => "tab.id", ":tab" => "tab", ":class" => "{'active' : tab.active}" }
     #repo-file-buttons
     #ide{ data: { url: repo_url(@project) } }
     #binary-viewer{ "v-if" => "binary" }
-      %img{ "v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI", ":alt" => "activeFile.name", alt: '' }
+      %img{ "v-if" => "binaryTypes.png", ":src" => "pngBlobWithDataURI", ":alt" => "activeFile.name", alt: "" }
       %div{ "v-if" => "binaryTypes.markdown", "v-html" => "activeFile.html" }
   #commit-area{ "v-if" => "changedFiles.length" }
     %form.form-horizontal

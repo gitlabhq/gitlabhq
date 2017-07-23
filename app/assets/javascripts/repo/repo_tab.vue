@@ -38,7 +38,7 @@ export default RepoTab;
     <i class="fa" :class="changedClass"></i>
   </a>
 
-  <a href="#" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
+  <a href="#" class="repo-tab" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
 
   <i v-if="tab.loading" class="fa fa-spinner fa-spin"></i>
 </li>
