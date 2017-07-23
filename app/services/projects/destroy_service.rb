@@ -127,7 +127,7 @@ module Projects
     def flush_caches(project)
       project.repository.before_delete
 
-      Repository.new(wiki_path, repo_path, project).before_delete
+      Repository.new(wiki_path, project, disk_path: repo_path).before_delete
     end
   end
 end
