@@ -20,7 +20,7 @@ module Gitlab
           [
             metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),
             metric("#{metric_prefix}_success", is_successful?(result) ? 1 : 0),
-            metric("#{metric_prefix}_latency", elapsed)
+            metric("#{metric_prefix}_latency_seconds", elapsed)
           ]
         end
       end

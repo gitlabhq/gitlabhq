@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::ConnectionRackMiddleware do
+describe Gitlab::Metrics::RequestsRackMiddleware do
   let(:app) { double('app') }
   subject { described_class.new(app) }
 
@@ -22,14 +22,8 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
         allow(app).to receive(:call).and_return([200, nil, nil])
       end
 
-      it 'increments response count with status label' do
-        expect(described_class).to receive_message_chain(:rack_response_count, :increment).with(include(status: 200, method: 'get'))
-
-        subject.call(env)
-      end
-
       it 'increments requests count' do
-        expect(described_class).to receive_message_chain(:rack_request_count, :increment).with(method: 'get')
+        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
 
         subject.call(env)
       end
@@ -38,20 +32,21 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
         execution_time = 10
         allow(app).to receive(:call) do |*args|
           Timecop.freeze(execution_time.seconds)
+          [200, nil, nil]
         end
 
-        expect(described_class).to receive_message_chain(:rack_execution_time, :observe).with({}, execution_time)
+        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ status: 200, method: 'get' }, execution_time)
 
         subject.call(env)
       end
     end
 
     context '@app.call throws exception' do
-      let(:rack_response_count) { double('rack_response_count') }
+      let(:http_request_duration_seconds) { double('http_request_duration_seconds') }
 
       before do
         allow(app).to receive(:call).and_raise(StandardError)
-        allow(described_class).to receive(:rack_response_count).and_return(rack_response_count)
+        allow(described_class).to receive(:http_request_duration_seconds).and_return(http_request_duration_seconds)
       end
 
       it 'increments exceptions count' do
@@ -61,25 +56,13 @@ describe Gitlab::Metrics::ConnectionRackMiddleware do
       end
 
       it 'increments requests count' do
-        expect(described_class).to receive_message_chain(:rack_request_count, :increment).with(method: 'get')
+        expect(described_class).to receive_message_chain(:http_request_total, :increment).with(method: 'get')
 
         expect { subject.call(env) }.to raise_error(StandardError)
       end
 
-      it "does't increment response count" do
-        expect(described_class.rack_response_count).not_to receive(:increment)
-
-        expect { subject.call(env) }.to raise_error(StandardError)
-      end
-
-      it 'measures execution time' do
-        execution_time = 10
-        allow(app).to receive(:call) do |*args|
-          Timecop.freeze(execution_time.seconds)
-          raise StandardError
-        end
-
-        expect(described_class).to receive_message_chain(:rack_execution_time, :observe).with({}, execution_time)
+      it "does't measure request execution time" do
+        expect(described_class.http_request_duration_seconds).not_to receive(:increment)
 
         expect { subject.call(env) }.to raise_error(StandardError)
       end
