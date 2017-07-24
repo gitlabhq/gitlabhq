@@ -23,6 +23,10 @@ $new-sidebar-width: 220px;
     position: fixed;
     height: 100%;
   }
+
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+    padding: 10px 0 15px;
+  }
 }
 
 .context-header {
