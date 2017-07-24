@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:project_raw_show)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'GetBlobRequest' => {
