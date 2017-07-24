@@ -7,7 +7,7 @@ import RepoMiniMixin from './repo_mini_mixin';
 const RepoTabs = {
   mixins: [RepoMiniMixin],
 
-components: {
+  components: {
     'repo-tab': RepoTab,
   },
 

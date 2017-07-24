@@ -3,19 +3,33 @@
 import Vue from 'vue';
 import Store from './repo_store';
 import Helper from './repo_helper';
+import monacoLoader from './monaco_loader';
 
 const RepoEditor = {
   data: () => Store,
 
   mounted() {
-    this.addMonacoEvents();
-    this.showHide();
+    monacoLoader(['vs/editor/editor.main'], () => {
+      const monacoInstance = monaco.editor.create(this.$el, {
+        model: null,
+        readOnly: true,
+        contextmenu: false,
+      });
 
-    if (this.blobRaw === '') return;
+      Store.monacoInstance = monacoInstance;
 
-    const newModel = monaco.editor.createModel(this.blobRaw, 'plaintext');
+      this.addMonacoEvents();
 
-    this.monacoInstance.setModel(newModel);
+      Helper.getContent().then(() => {
+        this.showHide();
+
+        if (this.blobRaw === '') return;
+
+        const newModel = monaco.editor.createModel(this.blobRaw, 'plaintext');
+
+        this.monacoInstance.setModel(newModel);
+      });
+    });
   },
 
   methods: {
@@ -28,12 +42,12 @@ const RepoEditor = {
     },
 
     addMonacoEvents() {
-      this.monacoEditor.onMouseUp(this.onMonacoEditorMouseUp);
-      this.monacoEditor.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
+      this.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
+      this.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
     },
 
     onMonacoEditorKeysPressed() {
-      Store.setActiveFileContents(this.monacoEditor.getValue());
+      Store.setActiveFileContents(this.monacoInstance.getValue());
     },
 
     onMonacoEditorMouseUp(e) {

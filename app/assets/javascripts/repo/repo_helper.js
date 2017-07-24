@@ -96,7 +96,7 @@ const RepoHelper = {
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
     // const loadingData = RepoHelper.setLoading(true);
-    Service.getContent()
+    return Service.getContent()
     .then((response) => {
       const data = response.data;
       // RepoHelper.setLoading(false, loadingData);
@@ -178,10 +178,10 @@ const RepoHelper = {
     };
   },
 
-  
+
 
   scrollTabsRight() {
-    // wait for the transition. 0.1 seconds. 
+    // wait for the transition. 0.1 seconds.
     setTimeout(() => {
       document.getElementById('tabs').scrollLeft = 12000;
     }, 200)
