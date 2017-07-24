@@ -806,7 +806,7 @@ describe Projects::IssuesController do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
 
         expect(response).to have_http_status(302)
-        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
