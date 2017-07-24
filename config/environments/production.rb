@@ -66,7 +66,7 @@ Rails.application.configure do
   config.i18n.fallbacks = true
 
   # Send deprecation notices to registered listeners
-  config.active_support.deprecation = :notify
+  config.active_support.deprecation = :silence
 
   config.action_mailer.delivery_method = :sendmail
   # Defaults to:
