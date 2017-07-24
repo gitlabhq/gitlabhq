@@ -714,4 +714,56 @@ describe Project, models: true do
       end
     end
   end
+
+  shared_examples 'project with disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to match_array(disabled_services)
+    end
+  end
+
+  shared_examples 'project without disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to be_empty
+    end
+  end
+
+  describe '#disabled_services' do
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, namespace: namespace) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'project with disabled services'
+    end
+
+    context 'with a license key' do
+      context 'when checking of namespace plan is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'and namespace does not have a plan' do
+          it_behaves_like 'project with disabled services'
+        end
+
+        context 'and namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'project without disabled services'
+        end
+      end
+
+      context 'when checking of namespace plan is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'project without disabled services'
+      end
+    end
+  end
 end

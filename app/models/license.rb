@@ -17,6 +17,7 @@ class License < ActiveRecord::Base
   ISSUE_BOARD_FOCUS_MODE_FEATURE = 'GitLab_IssueBoardFocusMode'.freeze
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
+  JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
@@ -54,6 +55,7 @@ class License < ActiveRecord::Base
     issue_board_focus_mode: ISSUE_BOARD_FOCUS_MODE_FEATURE,
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
+    jenkins_integration: JENKINS_INTEGRATION_FEATURE,
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
@@ -80,6 +82,7 @@ class License < ActiveRecord::Base
     { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
+    { JENKINS_INTEGRATION_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
