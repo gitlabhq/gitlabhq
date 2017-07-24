@@ -15,8 +15,8 @@ entry.
 - Omit trailing / leading hyphens in CI_COMMIT_REF_SLUG variable to make it usable as a hostname. !11218 (Stefan Hanreich)
 - Moved "Members in a project" menu entry and path locations. !11560
 - Additional Prometheus metrics support. !11712
-- Move uploads from `uploads/system` to `uploads/-/system` to free up `system` as a group name. !11713
 - Rename all reserved paths that could have been created. !11713
+- Move uploads from `uploads/system` to `uploads/-/system` to free up `system` as a group name. !11713
 - Fix offline runner detection. !11751 (Alessio Caiazza)
 - Use authorize_update_pipeline_schedule in PipelineSchedulesController. !11846
 - Rollback project repo move if there is an error in Projects::TransferService. !11877
@@ -37,6 +37,7 @@ entry.
 - Supplement Bulgarian translation of Project Page & Repository Page. !12083 (Lyubomir Vasilev)
 - Removes deleted_at and pending_delete occurrences in Project related queries. !12091
 - Provide hint to create a personal access token for Git over HTTP. !12105 (Robin Bobbitt)
+- Display own user id in account settings page. !12141 (Riccardo Padovani)
 - Accept image for avatar in user API. !12143 (Ivan Chernov)
 - Disable fork button on project limit. !12145 (Ivan Chernov)
 - Added "created_after" and "created_before" params to issuables. !12151 (Kyle Bishop @kybishop)
@@ -123,8 +124,13 @@ entry.
 - Bump Faraday and dependent OAuth2 gem version to support no_proxy variable.
 - Renders 404 if given project is not readable by the user on Todos dashboard.
 - Render CI statuses with warnings in orange.
+<<<<<<< HEAD
 - Add wells to admin dashboard overview to fix spacing problems.
 - Document the Delete Merged Branches functionality.
+=======
+- Document the Delete Merged Branches functionality.
+- Add wells to admin dashboard overview to fix spacing problems.
+>>>>>>> ce-com/master
 - Removes hover style for nodes that are either links or buttons in the pipeline graph.
 - more visual contrast in pagination widget.
 - Deprecate Healthcheck Access Token in favor of IP whitelist.

@@ -32,7 +32,8 @@ msgstr "%{commit_author_link} 在 %{commit_timeago} 送交"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] "%d 條流水線"
+msgstr[0] "1 條流水線"
+msgstr[1] "%d 條流水線"
 
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr "持續整合 (CI) 相關的圖表"
@@ -1193,4 +1194,3 @@ msgstr "通知信"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "上層"
-

@@ -41,10 +41,22 @@ header.navbar-gitlab-new {
           }
         }
 
+        .logo-text {
+          line-height: initial;
+
+          svg {
+            width: 55px;
+            height: 15px;
+            margin: 0;
+            fill: $white-light;
+          }
+        }
+
         &:hover,
         &:focus {
-          color: $tanuki-yellow;
-          text-decoration: none;
+          .logo-text svg {
+            fill: $tanuki-yellow;
+          }
         }
       }
     }
