@@ -1,0 +1,5 @@
+---
+title: Fix cross site request protection when logging in as a regular user when LDAP
+  is enabled
+merge_request: 13049
+author:
