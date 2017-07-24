@@ -1,5 +1,5 @@
 # Configuring Databases for GitLab HA
-> Note: GitLab HA requires a Enterprise Edition Premium license
+> Note: GitLab HA requires an Enterprise Edition Premium license
 
 **Warning**
 This functionality should be considered beta, use with caution.
@@ -34,17 +34,18 @@ The recommended configuration for a PostgreSQL HA setup requires:
   * DNS names -- By default, `repmgr` and `pgbouncer` use DNS to locate nodes
   * IP address -- PostgreSQL does not listen on any network interface by default. It needs to know which IP address to listen on in order to use the network interface. It can be set to `0.0.0.0` to listen on all interfaces.
   * Network Address -- PostgreSQL access is controlled based on the network source. This can be in subnet (i.e. 192.168.0.0/255.255.255.0) or CIDR (i.e. 192.168.0.0/24) form.
-* Username for `pgbouncer` service
+* User information for `pgbouncer` service
   * Default username is `pgbouncer`. In the rest of the documentation we will refer to this username as `PGBOUNCER_USERNAME`
-* Password for `pgbouncer` service. In the rest of the documentation we will refer to this password as `PGBOUNCER_PASSWORD`
-* Password hash for `pgbouncer` service
-  * This should be generated from `pgbouncer` username and password pair
-  * Generate the hash with:
-  ``
-  $ echo -n 'PASSWORD+USERNAME' | md5sum
-  ``
-  * In the rest of the documentation we will refer to this has as `PGBOUNCER_PASSWORD_HASH`
-* The number of nodes in the cluster. When configuring PostgreSQL, we will set `max_wal_senders` to one more than this number. This is used to prevent replication from using up all of the available database connections.
+  * Password for `pgbouncer` service. In the rest of the documentation we will refer to this password as `PGBOUNCER_PASSWORD`
+  * Password hash for `pgbouncer` service
+    * This should be generated from `pgbouncer` username and password pair
+    * Generate the hash with:
+      ``
+      $ echo -n 'PASSWORD+USERNAME' | md5sum
+      ``
+    * In the rest of the documentation we will refer to this has as `PGBOUNCER_PASSWORD_HASH`
+* The number of nodes in the cluster.  
+  * When configuring PostgreSQL, we will set `max_wal_senders` to one more than this number. This is used to prevent replication from using up all of the available database connections.
 
 ### Installation
 
