@@ -24,7 +24,7 @@ module Geo
     #    remaining jobs, excluding ones in progress.
     # 5. Quit when we have scheduled all jobs or exceeded MAX_RUNTIME.
     def perform
-      return unless Gitlab::Geo.secondary_role_enabled?
+      return unless Gitlab::Geo.geo_database_configured?
       return unless Gitlab::Geo.secondary?
 
       logger.info "Started #{self.class.name}"
