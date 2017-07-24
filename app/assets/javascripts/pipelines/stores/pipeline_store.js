@@ -1,10 +1,10 @@
 export default class PipelineStore {
   constructor() {
-    this.state = {};
-
-    this.state.pipeline = {};
-    this.state.log = [];
-    this.state.job = {};
+    this.state = {
+      pipeline: {},
+      log: [],
+      job: {},
+    };
   }
 
   storePipeline(pipeline = {}) {
@@ -13,5 +13,9 @@ export default class PipelineStore {
 
   storeLog(log = []) {
     this.state.log = log;
+  }
+
+  storeJob(job = {}) {
+    this.state.job = job;
   }
 }

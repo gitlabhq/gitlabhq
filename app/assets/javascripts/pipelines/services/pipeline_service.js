@@ -17,8 +17,14 @@ export default class PipelineService {
     return Vue.http.post(`${endpoint}.json`);
   }
 
-  getJobTrace(endpoint) {
+  // eslint-disable-next-line
+  getJobLog(endpoint) {
     const traceEndpoint = `${endpoint}/raw`;
     return Vue.http.get(traceEndpoint);
+  }
+
+  // eslint-disable-next-line
+  getJobData(endpoint) {
+    return Vue.http.get(endpoint);
   }
 }
