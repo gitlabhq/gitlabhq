@@ -183,7 +183,9 @@ const RepoHelper = {
   scrollTabsRight() {
     // wait for the transition. 0.1 seconds.
     setTimeout(() => {
-      document.getElementById('tabs').scrollLeft = 12000;
+      const tabs = document.getElementById('tabs');
+      if(!tabs) return;
+      tabs.scrollLeft = 12000;
     }, 200)
   },
 
