@@ -75,10 +75,10 @@
             Registry
 
     - if project_nav_tab? :issues
-      = nav_link(controller: @project.default_issues_tracker? ? [:issues, :labels, :milestones, :boards] : :issues) do
+      = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
         = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
           %span
-            - if @project.default_issues_tracker?
+            - if @project.issues_enabled?
               %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
             Issues
 
@@ -113,7 +113,7 @@
                   Milestones
 
     - if project_nav_tab? :merge_requests
-      = nav_link(controller: @project.default_issues_tracker? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
+      = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
         = link_to project_merge_requests_path(@project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
             %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.count)
