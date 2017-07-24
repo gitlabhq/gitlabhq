@@ -188,7 +188,7 @@ class Service < ApplicationRecord
     args.each do |arg|
       class_eval %{
         def #{arg}?
-          ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(#{arg})
+          !ActiveModel::Type::Boolean::FALSE_VALUES.include?(#{arg})
         end
       }
     end
