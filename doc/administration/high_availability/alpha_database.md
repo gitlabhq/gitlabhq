@@ -1,11 +1,12 @@
 # Configuring Databases for GitLab HA
-> Note: GitLab HA requires Enterprise Edition Premium
+> Note: GitLab HA requires a Enterprise Edition Premium license
 
 **Warning**
 This functionality should be considered beta, use with caution.
 **Warning**
 
 ## Overview
+
 GitLab supports multiple options for its database backend
 * Using the Omnibus GitLab package to configure PG in HA setup (EEP only). This document contains directions for EEP users.
 * Using GitLab with an [externally managed PostgreSQL service](../external_database.md). This could be a cloud provider, or your own service.
@@ -18,6 +19,7 @@ or for a non-HA option
 
 
 ### Preparation
+
 The recommended configuration for a PostgreSQL HA setup requires:
 * A minimum of two database nodes
   * Each node will run the following services
@@ -26,14 +28,23 @@ The recommended configuration for a PostgreSQL HA setup requires:
 * At least one separate node for running the `pgbouncer` service.
   * This is recommended to be on the same node as your `gitlab-rails` service(s)
 
-#### Needed information
-* Network information for all nodes, IP addresses, subnet masks, and DNS names if appropriate.
-* Password and it's hash for pgbouncer to authenticate with the database.
-  * The hash can be generated with the following command:
-   ```
-   $ echo -n 'PASSWORD+USERNAME' | md5sum
-   ```
-   The default username is pgbouncer
+#### Required information
+
+* Network information for all nodes
+  * DNS names -- By default, `repmgr` and `pgbouncer` use DNS to locate nodes
+  * IP address -- PostgreSQL does not listen on any network interface by default. It needs to know which IP address to listen on in order to use the network interface. It can be set to `0.0.0.0` to listen on all interfaces.
+  * Network Address -- PostgreSQL access is controlled based on the network source. This can be in subnet (i.e. 192.168.0.0/255.255.255.0) or CIDR (i.e. 192.168.0.0/24) form.
+* Username for `pgbouncer` service
+  * Default username is `pgbouncer`. In the rest of the documentation we will refer to this username as `PGBOUNCER_USERNAME`
+* Password for `pgbouncer` service. In the rest of the documentation we will refer to this password as `PGBOUNCER_PASSWORD`
+* Password hash for `pgbouncer` service
+  * This should be generated from `pgbouncer` username and password pair
+  * Generate the hash with:
+  ``
+  $ echo -n 'PASSWORD+USERNAME' | md5sum
+  ``
+  * In the rest of the documentation we will refer to this has as `PGBOUNCER_PASSWORD_HASH`
+* The number of nodes in the cluster. When configuring PostgreSQL, we will set `max_wal_senders` to one more than this number. This is used to prevent replication from using up all of the available database connections.
 
 ### Installation
 
@@ -43,7 +54,7 @@ The recommended configuration for a PostgreSQL HA setup requires:
    steps on the download page.
 
 #### On each database node
-1. Create/edit `/etc/gitlab/gitlab.rb` and use the following configuration.
+1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    If there is a directive listed below that you do not see in the configuration, be sure to add it.
     ```ruby
     # Disable all components except PostgreSQL
@@ -67,8 +78,8 @@ The recommended configuration for a PostgreSQL HA setup requires:
     postgresql['shared_preload_libraries'] = 'repmgr_funcs' # If this attribute is already defined, append the new value as a comma separated list
 
     # pgbouncer user
-    postgresql['pgbouncer_user'] = 'pgbouncer'
-    postgresql['pgbouncer_user_password'] = 'HASH' # This is the hash generated in the preparation section
+    postgresql['pgbouncer_user'] = 'PGBOUNCER_USER'
+    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH' # This is the hash generated in the preparation section
 
     # repmgr configuration
     repmgr['enable'] = true
@@ -138,8 +149,8 @@ pgbouncer['enable'] = true
 pgbouncer['databases'] = {
   gitlabhq_production: {
     host: '172.21.0.2',
-    user: 'pgbouncer',
-    password: 'HASH' # This should be the hash from the preparation section
+    user: 'PGBOUNCER_USER',
+    password: 'PGBOUNCER_PASSWORD_HASH' # This should be the hash from the preparation section
   }
 }
 ```
