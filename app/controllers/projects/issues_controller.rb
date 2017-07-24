@@ -10,7 +10,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
-  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
 
@@ -246,19 +245,19 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def authorize_update_issue!
-    return render_404 unless can?(current_user, :update_issue, @issue)
+    render_404 unless can?(current_user, :update_issue, @issue)
   end
 
   def authorize_admin_issues!
-    return render_404 unless can?(current_user, :admin_issue, @project)
+    render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def authorize_create_merge_request!
-    return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
+    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
   def check_issues_available!
-    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
+    return render_404 unless @project.feature_available?(:issues, current_user)
   end
 
   def redirect_to_external_issue_tracker
