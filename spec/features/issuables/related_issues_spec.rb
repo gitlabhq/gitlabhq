@@ -125,6 +125,20 @@ describe 'Related issues', feature: true, js: true do
           expect(items[0].text).to eq(issue_project_b_a.title)
           expect(find('.js-related-issues-header-issue-count')).to have_content('1')
         end
+
+        it 'pressing enter should submit the form' do
+          find('.js-issue-count-badge-add-button').click
+          find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
+          find('.js-add-issuable-form-input').native.send_key(:enter)
+
+          wait_for_requests
+
+          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+
+          expect(items.count).to eq(1)
+          expect(items[0].text).to eq(issue_project_b_a.title)
+          expect(find('.js-related-issues-header-issue-count')).to have_content('1')
+        end
       end
 
       context 'with existing related issues' do
