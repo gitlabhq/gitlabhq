@@ -24,7 +24,7 @@ describe MetricsController do
 
         expect(response.body).to match(/^db_ping_timeout 0$/)
         expect(response.body).to match(/^db_ping_success 1$/)
-        expect(response.body).to match(/^db_ping_latency [0-9\.]+$/)
+        expect(response.body).to match(/^db_ping_latency_seconds [0-9\.]+$/)
       end
 
       it 'returns Redis ping metrics' do
@@ -32,17 +32,17 @@ describe MetricsController do
 
         expect(response.body).to match(/^redis_ping_timeout 0$/)
         expect(response.body).to match(/^redis_ping_success 1$/)
-        expect(response.body).to match(/^redis_ping_latency [0-9\.]+$/)
+        expect(response.body).to match(/^redis_ping_latency_seconds [0-9\.]+$/)
       end
 
       it 'returns file system check metrics' do
         get :index
 
-        expect(response.body).to match(/^filesystem_access_latency{shard="default"} [0-9\.]+$/)
+        expect(response.body).to match(/^filesystem_access_latency_seconds{shard="default"} [0-9\.]+$/)
         expect(response.body).to match(/^filesystem_accessible{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_write_latency{shard="default"} [0-9\.]+$/)
+        expect(response.body).to match(/^filesystem_write_latency_seconds{shard="default"} [0-9\.]+$/)
         expect(response.body).to match(/^filesystem_writable{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_read_latency{shard="default"} [0-9\.]+$/)
+        expect(response.body).to match(/^filesystem_read_latency_seconds{shard="default"} [0-9\.]+$/)
         expect(response.body).to match(/^filesystem_readable{shard="default"} 1$/)
       end
 

@@ -56,7 +56,7 @@ class SessionsController < Devise::SessionsController
   private
 
   def login_counter
-    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User sign in count')
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
