@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issuable counts caching', :use_clean_rails_memory_store_caching do
+describe 'Issuable counts caching', :caching do
   let!(:member) { create(:user) }
   let!(:member_2) { create(:user) }
   let!(:non_member) { create(:user) }
