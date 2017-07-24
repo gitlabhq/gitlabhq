@@ -72,18 +72,20 @@ export default RepoSidebar;
 <div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak>
   <table class="table">
     <thead v-if="!isMini">
-      <th v-if="!isMini">
-        Name
-      </th>
-      <th v-else>
-        Project
-      </th>
-      <th class="hidden-sm hidden-xs" v-if="!isMini">
-        Last Commit
-      </th>
-      <th class="hidden-xs" v-if="!isMini">
-        Last Update
-      </th>
+      <tr>
+        <th v-if="!isMini">
+          Name
+        </th>
+        <th v-else>
+          Project
+        </th>
+        <th class="hidden-sm hidden-xs" v-if="!isMini">
+          Last Commit
+        </th>
+        <th class="hidden-xs" v-if="!isMini">
+          Last Update
+        </th>
+      </tr>
     </thead>
     <tbody>
       <repo-file-options
