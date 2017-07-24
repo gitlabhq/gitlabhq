@@ -1,8 +1,8 @@
 module Gitlab
   module Badge
-    module Build
+    module Pipeline
       ##
-      # Build status badge
+      # Pipeline status badge
       #
       class Status < Badge::Base
         attr_reader :project, :ref
@@ -15,7 +15,7 @@ module Gitlab
         end
 
         def entity
-          'build'
+          'pipeline'
         end
 
         def status
@@ -25,11 +25,11 @@ module Gitlab
         end
 
         def metadata
-          @metadata ||= Build::Metadata.new(self)
+          @metadata ||= Pipeline::Metadata.new(self)
         end
 
         def template
-          @template ||= Build::Template.new(self)
+          @template ||= Pipeline::Template.new(self)
         end
       end
     end

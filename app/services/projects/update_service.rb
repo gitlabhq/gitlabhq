@@ -13,7 +13,7 @@ module Projects
         project.change_repository_storage(params.delete(:repository_storage))
       end
 
-      if project.has_container_registry_tags?
+      if renaming_project_with_container_registry_tags?
         return error('Cannot rename project because it contains container registry tags!')
       end
 
@@ -57,6 +57,13 @@ module Projects
 
       new_repository_storage && project.repository.exists? &&
         can?(current_user, :change_repository_storage, project)
+    end
+
+    def renaming_project_with_container_registry_tags?
+      new_path = params[:path]
+
+      new_path && new_path != project.path &&
+        project.has_container_registry_tags?
     end
 
     def changing_default_branch?

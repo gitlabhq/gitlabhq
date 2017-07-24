@@ -1,28 +1,28 @@
 require 'spec_helper'
 
-describe Gitlab::Badge::Build::Template do
-  let(:badge) { double(entity: 'build', status: 'success') }
+describe Gitlab::Badge::Pipeline::Template do
+  let(:badge) { double(entity: 'pipeline', status: 'success') }
   let(:template) { described_class.new(badge) }
 
   describe '#key_text' do
-    it 'is always says build' do
-      expect(template.key_text).to eq 'build'
+    it 'is always says pipeline' do
+      expect(template.key_text).to eq 'pipeline'
     end
   end
 
   describe '#value_text' do
     it 'is status value' do
-      expect(template.value_text).to eq 'success'
+      expect(template.value_text).to eq 'passed'
     end
   end
 
   describe 'widths and text anchors' do
     it 'has fixed width and text anchors' do
-      expect(template.width).to eq 92
-      expect(template.key_width).to eq 38
+      expect(template.width).to eq 116
+      expect(template.key_width).to eq 62
       expect(template.value_width).to eq 54
-      expect(template.key_text_anchor).to eq 19
-      expect(template.value_text_anchor).to eq 65
+      expect(template.key_text_anchor).to eq 31
+      expect(template.value_text_anchor).to eq 89
     end
   end
 

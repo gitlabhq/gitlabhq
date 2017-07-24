@@ -39,7 +39,12 @@ module Gitlab
             groups[1..-1]
           end
 
-        text.slice!(0, match.end(0) || 1)
+        matchsize = match.end(0)
+
+        # No further matches
+        break unless matchsize.present?
+
+        text.slice!(0, matchsize)
         break unless text.present?
       end
 

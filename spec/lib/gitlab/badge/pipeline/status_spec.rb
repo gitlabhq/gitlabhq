@@ -1,36 +1,35 @@
 require 'spec_helper'
 
-describe Gitlab::Badge::Build::Status do
+describe Gitlab::Badge::Pipeline::Status do
   let(:project) { create(:project, :repository) }
   let(:sha) { project.commit.sha }
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
 
   describe '#entity' do
-    it 'always says build' do
-      expect(badge.entity).to eq 'build'
+    it 'always says pipeline' do
+      expect(badge.entity).to eq 'pipeline'
     end
   end
 
   describe '#template' do
     it 'returns badge template' do
-      expect(badge.template.key_text).to eq 'build'
+      expect(badge.template.key_text).to eq 'pipeline'
     end
   end
 
   describe '#metadata' do
     it 'returns badge metadata' do
-      expect(badge.metadata.image_url)
-        .to include 'badges/master/build.svg'
+      expect(badge.metadata.image_url).to include 'badges/master/pipeline.svg'
     end
   end
 
-  context 'build exists' do
-    let!(:build) { create_build(project, sha, branch) }
+  context 'pipeline exists' do
+    let!(:pipeline) { create_pipeline(project, sha, branch) }
 
-    context 'build success' do
+    context 'pipeline success' do
       before do
-        build.success!
+        pipeline.success!
       end
 
       describe '#status' do
@@ -40,9 +39,9 @@ describe Gitlab::Badge::Build::Status do
       end
     end
 
-    context 'build failed' do
+    context 'pipeline failed' do
       before do
-        build.drop!
+        pipeline.drop!
       end
 
       describe '#status' do
@@ -54,10 +53,10 @@ describe Gitlab::Badge::Build::Status do
 
     context 'when outdated pipeline for given ref exists' do
       before do
-        build.success!
+        pipeline.success!
 
-        old_build = create_build(project, '11eeffdd', branch)
-        old_build.drop!
+        old_pipeline = create_pipeline(project, '11eeffdd', branch)
+        old_pipeline.drop!
       end
 
       it 'does not take outdated pipeline into account' do
@@ -67,10 +66,10 @@ describe Gitlab::Badge::Build::Status do
 
     context 'when multiple pipelines exist for given sha' do
       before do
-        build.drop!
+        pipeline.drop!
 
-        new_build = create_build(project, sha, branch)
-        new_build.success!
+        new_pipeline = create_pipeline(project, sha, branch)
+        new_pipeline.success!
       end
 
       it 'does not take outdated pipeline into account' do
@@ -87,7 +86,7 @@ describe Gitlab::Badge::Build::Status do
     end
   end
 
-  def create_build(project, sha, branch)
+  def create_pipeline(project, sha, branch)
     pipeline = create(:ci_empty_pipeline,
                       project: project,
                       sha: sha,
