@@ -1,10 +1,12 @@
 module Boards
   class ListsController < Boards::ApplicationController
+    include BoardsAuthorizations
+
     #before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
-    #before_action :authorize_read_list!, only: [:index]
+    before_action :authorize_read_list!, only: [:index]
 
     def index
-      lists = ::Boards::Lists::ListService.new(board.parent, current_user).execute(board)
+      lists = Boards::Lists::ListService.new(board.parent, current_user).execute(board)
 
       render json: serialize_as_json(lists)
     end
@@ -21,7 +23,7 @@ module Boards
 
     def update
       list = board.lists.movable.find(params[:id])
-      service = ::Boards::Lists::MoveService.new(project, current_user, move_params)
+      service = Boards::Lists::MoveService.new(project, current_user, move_params)
 
       if service.execute(list)
         head :ok
@@ -32,7 +34,7 @@ module Boards
 
     def destroy
       list = board.lists.destroyable.find(params[:id])
-      service = ::Boards::Lists::DestroyService.new(project, current_user)
+      service = Boards::Lists::DestroyService.new(project, current_user)
 
       if service.execute(list)
         head :ok
@@ -42,7 +44,7 @@ module Boards
     end
 
     def generate
-      service = ::Boards::Lists::GenerateService.new(project, current_user)
+      service = Boards::Lists::GenerateService.new(board_parent, current_user)
 
       if service.execute(board)
         render json: serialize_as_json(board.lists.movable)
@@ -55,14 +57,6 @@ module Boards
 
     def authorize_admin_list!
       return render_403 unless can?(current_user, :admin_list, project)
-    end
-
-    def authorize_read_list!
-      return render_403 unless can?(current_user, :read_list, project)
-    end
-
-    def board
-      @board ||= Board.find(params[:board_id])
     end
 
     def list_params

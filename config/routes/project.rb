@@ -379,11 +379,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       get 'noteable/:target_type/:target_id/notes' => 'notes#index', as: 'noteable_notes'
 
-      resources :boards, only: [:index, :show, :create, :update, :destroy] do
-        scope module: :boards do
-          resources :issues, only: [:index, :update]
-        end
-      end
+      resources :boards, only: [:index, :show, :create, :update, :destroy]
 
       resources :todos, only: [:create]
 

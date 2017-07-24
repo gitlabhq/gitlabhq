@@ -82,6 +82,19 @@ Rails.application.routes.draw do
   # Notification settings
   resources :notification_settings, only: [:create, :update]
 
+  # Boards resources shared between group and projects
+  resources :boards do
+    resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
+      collection do
+        post :generate
+      end
+
+      resources :issues, only: [:index, :create, :update]
+    end
+
+    resources :issues, module: :boards, only: [:index, :update]
+  end
+
   draw :import
   draw :uploads
   draw :explore
@@ -95,16 +108,6 @@ Rails.application.routes.draw do
   root to: "root#index"
 
   draw :test if Rails.env.test?
-
-  resources :boards do
-    resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
-      collection do
-        post :generate
-      end
-
-      resources :issues, only: [:index, :create, :update]
-    end
-  end
 
   get '*unmatched_route', to: 'application#route_not_found'
 end

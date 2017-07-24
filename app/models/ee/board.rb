@@ -25,6 +25,10 @@ module EE
       group || project
     end
 
+    def is_group_board?
+      group_id.present?
+    end
+
     def as_json(options = {})
       milestone_attrs = options.fetch(:include, {})
                           .extract!(:milestone)

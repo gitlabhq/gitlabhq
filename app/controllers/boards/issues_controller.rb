@@ -1,11 +1,13 @@
 module Boards
   class IssuesController < Boards::ApplicationController
+    include BoardsAuthorizations
+
     before_action :authorize_read_issue!, only: [:index]
     before_action :authorize_create_issue!, only: [:create]
     before_action :authorize_update_issue!, only: [:update]
 
     def index
-      issues = ::Boards::Issues::ListService.new(project, current_user, filter_params).execute
+      issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
       issues = issues.page(params[:page]).per(params[:per] || 20)
       make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
 
@@ -16,7 +18,7 @@ module Boards
     end
 
     def create
-      service = ::Boards::Issues::CreateService.new(project, current_user, issue_params)
+      service = Boards::Issues::CreateService.new(board_parent, current_user, issue_params)
       issue = service.execute
 
       if issue.valid?
@@ -27,7 +29,7 @@ module Boards
     end
 
     def update
-      service = ::Boards::Issues::MoveService.new(project, current_user, move_params)
+      service = Boards::Issues::MoveService.new(board_parent, current_user, move_params)
 
       if service.execute(issue)
         head :ok
@@ -46,22 +48,10 @@ module Boards
 
     def issue
       @issue ||=
-        IssuesFinder.new(current_user, project_id: project.id)
+        IssuesFinder.new(current_user, project_id: board_parent.id)
                     .execute
                     .where(iid: params[:id])
                     .first!
-    end
-
-    def authorize_read_issue!
-      return render_403 unless can?(current_user, :read_issue, project)
-    end
-
-    def authorize_create_issue!
-      return render_403 unless can?(current_user, :admin_issue, project)
-    end
-
-    def authorize_update_issue!
-      return render_403 unless can?(current_user, :update_issue, issue)
     end
 
     def filter_params
