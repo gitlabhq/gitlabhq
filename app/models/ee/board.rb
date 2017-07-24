@@ -21,6 +21,10 @@ module EE
       end
     end
 
+    def parent
+      group || project
+    end
+
     def as_json(options = {})
       milestone_attrs = options.fetch(:include, {})
                           .extract!(:milestone)

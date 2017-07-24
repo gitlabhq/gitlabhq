@@ -1,10 +1,10 @@
 module Boards
   class ListsController < Boards::ApplicationController
-    # before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
-    # before_action :authorize_read_list!, only: [:index]
+    #before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
+    #before_action :authorize_read_list!, only: [:index]
 
     def index
-      lists = ::Boards::Lists::ListService.new(project, current_user).execute(board)
+      lists = ::Boards::Lists::ListService.new(board.parent, current_user).execute(board)
 
       render json: serialize_as_json(lists)
     end
@@ -62,7 +62,7 @@ module Boards
     end
 
     def board
-      @board ||= project.boards.find(params[:board_id])
+      @board ||= Board.find(params[:board_id])
     end
 
     def list_params
