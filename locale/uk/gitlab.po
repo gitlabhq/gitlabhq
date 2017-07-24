@@ -379,7 +379,7 @@ msgid "Edit"
 msgstr "Редагувати"
 
 msgid "Edit Pipeline Schedule %{id}"
-msgstr "Редагувати Розклад Конвеєра % {id}"
+msgstr "Редагувати Розклад Конвеєра %{id}"
 
 msgid "Every day (at 4:00am)"
 msgstr "Кожен день (в 4:00 ранку)"
