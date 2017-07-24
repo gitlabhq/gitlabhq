@@ -108,7 +108,7 @@ describe Projects::PipelineSchedulesController do
             .to change { Ci::PipelineSchedule.count }.by(0)
             .and change { Ci::PipelineScheduleVariable.count }.by(0)
 
-          expect(assigns(:schedule).errors['variables']).not_to be_empty
+          expect(assigns(:schedule).errors).not_to be_empty
         end
       end
     end

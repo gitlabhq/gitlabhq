@@ -1,13 +1,27 @@
 module Ci
   class CreatePipelineScheduleService < BaseService
     def execute
-      project.pipeline_schedules.create(pipeline_schedule_params)
-    end
+      pipeline_schedule = Ci::PipelineSchedule.new(
+        description: params[:description],
+        ref: params[:ref],
+        cron: params[:cron],
+        cron_timezone: params[:cron_timezone],
+        project: project,
+        owner: current_user
+      )
 
-    private
+      Ci::PipelineSchedule.transaction do
+        pipeline_schedule.save!
 
-    def pipeline_schedule_params
-      params.merge(owner: current_user)
+        if params[:variables_attributes].is_a?(Array)
+          pipeline_schedule.variables.create!(params[:variables_attributes])
+        end
+      end
+
+      rescue Exception => e
+        pipeline_schedule.errors[:base] << "Failed to persist the pipeline schedule: #{e}"
+      ensure
+        return pipeline_schedule
     end
   end
 end

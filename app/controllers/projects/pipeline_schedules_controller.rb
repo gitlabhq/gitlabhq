@@ -33,7 +33,11 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def update
-    if schedule.update(schedule_params)
+    Ci::UpdatePipelineScheduleService
+      .new(@project, current_user, schedule_params)
+      .execute(schedule)
+
+    if schedule.changed?
       redirect_to project_pipeline_schedules_path(@project)
     else
       render :edit
