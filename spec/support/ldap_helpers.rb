@@ -1,5 +1,3 @@
-require_relative 'ee/ldap_helpers'
-
 module LdapHelpers
   include EE::LdapHelpers
 

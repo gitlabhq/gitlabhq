@@ -36,7 +36,7 @@ describe API::Issues do # rubocop:disable RSpec/FilePath
         get api('/issues', user)
 
         expect(response).to have_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/ee/issues')
+        expect(response).to match_response_schema('public_api/v4/issues', dir: 'ee')
       end
     end
   end
