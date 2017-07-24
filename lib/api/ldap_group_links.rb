@@ -38,6 +38,7 @@ module API
         ldap_group_link = group.ldap_group_links.find_by(cn: params[:cn])
         if ldap_group_link
           ldap_group_link.destroy
+          status 204
         else
           render_api_error!('Linked LDAP group not found', 404)
         end
@@ -55,6 +56,7 @@ module API
         ldap_group_link = group.ldap_group_links.find_by(cn: params[:cn], provider: params[:provider])
         if ldap_group_link
           ldap_group_link.destroy
+          status 204
         else
           render_api_error!('Linked LDAP group not found', 404)
         end
