@@ -124,13 +124,8 @@ entry.
 - Bump Faraday and dependent OAuth2 gem version to support no_proxy variable.
 - Renders 404 if given project is not readable by the user on Todos dashboard.
 - Render CI statuses with warnings in orange.
-<<<<<<< HEAD
-- Add wells to admin dashboard overview to fix spacing problems.
-- Document the Delete Merged Branches functionality.
-=======
 - Document the Delete Merged Branches functionality.
 - Add wells to admin dashboard overview to fix spacing problems.
->>>>>>> ce-com/master
 - Removes hover style for nodes that are either links or buttons in the pipeline graph.
 - more visual contrast in pagination widget.
 - Deprecate Healthcheck Access Token in favor of IP whitelist.
@@ -231,7 +226,6 @@ entry.
 
 ## 9.3.3 (2017-06-30)
 
-- Fix shared runners minutes query to update only projects with used allowance.
 - Fix head pipeline stored in merge request for external pipelines. !12478
 - Bring back branches badge to main project page. !12548
 - Fix diff of requirements.txt file by not matching newlines as part of package names.
@@ -537,7 +531,6 @@ entry.
 - Display slash commands outcome when previewing Markdown. !10054 (Rares Sfirlogea)
 - Resolve "Add more tests for spec/controllers/projects/builds_controller_spec.rb". !10244 (dosuken123)
 - Add keyboard edit shotcut for wiki. !10245 (George Andrinopoulos)
-- Update issue board cards design. !10353
 - Redirect old links after renaming a user/group/project. !10370
 - Add system note on description change of issue/merge request. !10392 (blackst0ne)
 - Improve validation of namespace & project paths. !10413
@@ -652,7 +645,6 @@ entry.
 - Remove `#` being added on commit sha in MR widget.
 - Remove spinner from loading comment.
 - Fixes an issue preventing screen readers from reading some icons.
-- Add metrics events for incoming emails.
 - Load milestone tabs asynchronously to increase initial load performance.
 - [BB Importer] Save the error trace and the whole raw document to debug problems easier.
 - Fixed branches dropdown rendering branch names as HTML.
@@ -936,7 +928,6 @@ entry.
 - Fix API group/issues default state filter. (Alexander Randa)
 - Prevent builds dropdown to close when the user clicks in a build.
 - Display all closed issues in “done” board list.
-- added focus mode button to issue boards.
 - Remove no-new annotation from file_template_mediator.js.
 - Changed dropdown style slightly.
 - Change gfm textarea to use monospace font.
@@ -1488,7 +1479,6 @@ entry.
 ## 8.17.0 (2017-02-22)
 
 - API: Fix file downloading. !0 (8267)
-- Read true-up info from license and validate it. !1159
 - Changed composer installer script in the CI PHP example doc. !4342 (Jeffrey Cafferata)
 - Display fullscreen button on small screens. !5302 (winniehell)
 - Add system hook for when a project is updated (other than rename/transfer). !5711 (Tommy Beadle)
@@ -1880,7 +1870,6 @@ entry.
 
 ## 8.15.8 (2017-03-19)
 
-- Read true-up info from license and validate it. !1159
 - Only show public emails in atom feeds.
 - To protect against Server-side Request Forgery project import URLs are now prohibited against localhost or the server IP except for the assigned instance URL and port. Imports are also prohibited from ports below 1024 with the exception of ports 22, 80, and 443.
 
