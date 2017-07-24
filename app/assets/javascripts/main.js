@@ -109,6 +109,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
@@ -165,6 +166,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');

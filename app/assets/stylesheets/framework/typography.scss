@@ -11,8 +11,17 @@
   }
 
   img {
-    max-width: 100%;
+    /*max-width: 100%;*/
     margin: 0 0 8px;
+    min-width: 200px;
+    min-height: 100px;
+    background-color: $gray-lightest;
+  }
+
+  img.js-lazy-loaded {
+    min-width: none;
+    min-height: none;
+    background-color: none;
   }
 
   p a:not(.no-attachment-icon) img {

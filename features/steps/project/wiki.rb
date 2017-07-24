@@ -114,7 +114,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'Image should be shown on the page' do
-    expect(page).to have_xpath("//img[@src=\"image.jpg\"]")
+    expect(page).to have_xpath("//img[@data-src=\"image.jpg\"]")
   end
 
   step 'I click on image link' do

@@ -63,11 +63,11 @@ feature 'Admin Appearance', feature: true do
   end
 
   def logo_selector
-    '//img[@src^="/uploads/-/system/appearance/logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/logo"]'
   end
 
   def header_logo_selector
-    '//img[@src^="/uploads/-/system/appearance/header_logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/header_logo"]'
   end
 
   def logo_fixture
