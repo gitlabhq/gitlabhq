@@ -408,18 +408,6 @@ describe CommitStatus, :models do
     end
   end
 
-  describe '#stage_entity' do
-    let(:stage) { create(:ci_stage_entity) }
-
-    let(:commit_status) do
-      create(:commit_status, stage_id: stage.id)
-    end
-
-    it 'has a correct association with persisted stage' do
-      expect(commit_status.stage_entity).to eq stage
-    end
-  end
-
   describe '#locking_enabled?' do
     before do
       commit_status.lock_version = 100
