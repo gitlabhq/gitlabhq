@@ -115,7 +115,7 @@ pipelines:
 stages:
 - project
 - pipeline
-- statuses
+- commit_statuses
 - builds
 statuses:
 - project
