@@ -32,15 +32,8 @@ describe Gitlab::SQL::Glob, lib: true do
   end
 
   def match(string, pattern)
-    value = query("SELECT #{quote(string)} LIKE #{pattern}")
+    query("SELECT #{quote(string)} LIKE #{pattern}")
               .rows.flatten.first
-
-    case value
-    when 't', 1
-      true
-    else
-      false
-    end
   end
 
   def query(sql)
