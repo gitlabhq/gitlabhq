@@ -32,24 +32,12 @@ describe Ci::PipelineTriggerService, services: true do
         end
 
         context 'when params have a variable' do
-          let(:variables) { [{ key: 'AAA', value: 'AAA123' }] }
+          let(:variables) { { 'AAA' => 'AAA123' } }
 
           it 'has a variable' do
             expect { result }.to change { Ci::PipelineVariable.count }.by(1)
-            expect(result[:pipeline].variables.first.key).to eq(variables.first[:key])
-            expect(result[:pipeline].variables.first.value).to eq(variables.first[:value])
-          end
-        end
-
-        context 'when params have two variables' do
-          let(:variables) { [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }] }
-
-          it 'has two variables' do
-            expect { result }.to change { Ci::PipelineVariable.count }.by(2)
-            expect(result[:pipeline].variables.first.key).to eq(variables.first[:key])
-            expect(result[:pipeline].variables.first.value).to eq(variables.first[:value])
-            expect(result[:pipeline].variables.last.key).to eq(variables.last[:key])
-            expect(result[:pipeline].variables.last.value).to eq(variables.last[:value])
+            expect(result[:pipeline].variables.first.key).to eq(variables.keys.first)
+            expect(result[:pipeline].variables.first.value).to eq(variables.values.first)
           end
         end
 
