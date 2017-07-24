@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoRepositorySyncWorker do
+describe Geo::RepositorySyncWorker do
   let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
   let!(:project_1) { create(:empty_project) }
