@@ -12,7 +12,19 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
+<<<<<<< HEAD
     @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
+=======
+    import_upload_path = Gitlab::ImportExport.import_upload_path(filename: tmp_filename)
+
+    FileUtils.mkdir_p(File.dirname(import_upload_path))
+    FileUtils.copy_entry(project_params[:file].path, import_upload_path)
+
+    @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
+                                                        current_user,
+                                                        import_upload_path,
+                                                        project_params[:path]).execute
+>>>>>>> 04a0f226c4... Merge branch 'race-condition-in-project-uploads-fix-9-4' into 'security-9-4'
 
     if @project.saved?
       redirect_to(
@@ -25,6 +37,10 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   private
+
+  def tmp_filename
+    "#{SecureRandom.hex}_#{project_params[:file].original_filename}"
+  end
 
   def file_is_valid?
     project_params[:file] && project_params[:file].respond_to?(:read)

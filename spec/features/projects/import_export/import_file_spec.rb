@@ -32,7 +32,15 @@ feature 'Import/Export - project import integration test', js: true do
         expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
         expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}_test-project-path\z/).and_call_original
 
+<<<<<<< HEAD
         attach_file('file', file)
+=======
+      expect(page).to have_content('GitLab project export')
+      expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
+      expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A[0-9a-f]{32}_test_project_export\.tar\.gz\z/).and_call_original
+
+      attach_file('file', file)
+>>>>>>> 04a0f226c4... Merge branch 'race-condition-in-project-uploads-fix-9-4' into 'security-9-4'
 
         expect { click_on 'Import project' }.to change { Project.count }.by(1)
 
