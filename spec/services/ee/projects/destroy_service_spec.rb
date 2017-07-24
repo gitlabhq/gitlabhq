@@ -18,6 +18,19 @@ describe Projects::DestroyService, services: true do
     stub_container_registry_tags(repository: :any, tags: [])
   end
 
+  context 'when project is a mirror' do
+    it 'decrements capacity if mirror was scheduled' do
+      max_capacity = current_application_settings.mirror_max_capacity
+      project_mirror = create(:project, :mirror, :repository, :import_scheduled)
+
+      Gitlab::Mirror.increment_capacity(project_mirror.id)
+
+      expect do
+        Projects::DestroyService.new(project_mirror, project_mirror.owner, {}).execute
+      end.to change { Gitlab::Mirror.available_capacity }.from(max_capacity - 1).to(max_capacity)
+    end
+  end
+
   context 'when running on a primary node' do
     let!(:geo_node) { create(:geo_node, :primary, :current) }
 

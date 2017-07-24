@@ -485,7 +485,9 @@ class Project < ActiveRecord::Base
   end
 
   def has_container_registry_tags?
-    container_repositories.to_a.any?(&:has_tags?) ||
+    return @images if defined?(@images)
+
+    @images = container_repositories.to_a.any?(&:has_tags?) ||
       has_root_container_repository_tags?
   end
 
@@ -731,9 +733,11 @@ class Project < ActiveRecord::Base
   end
 
   def get_issue(issue_id, current_user)
-    if default_issues_tracker?
-      IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id)
-    else
+    issue = IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id) if issues_enabled?
+
+    if issue
+      issue
+    elsif external_issue_tracker
       ExternalIssue.new(issue_id, self)
     end
   end
@@ -755,7 +759,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_reference_pattern
-    external_issue_tracker.class.reference_pattern
+    external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
   end
 
   def default_issues_tracker?
@@ -844,7 +848,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= ci_services.find_by(active: true)
+    @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
   def deployment_services
@@ -852,7 +856,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.find_by(active: true)
+    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -860,7 +864,7 @@ class Project < ActiveRecord::Base
   end
 
   def monitoring_service
-    @monitoring_service ||= monitoring_services.find_by(active: true)
+    @monitoring_service ||= monitoring_services.reorder(nil).find_by(active: true)
   end
 
   def jira_tracker?
@@ -976,14 +980,14 @@ class Project < ActiveRecord::Base
 
     Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
-    expire_caches_before_rename(old_path_with_namespace)
-
     if has_container_registry_tags?
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
       # we currently doesn't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
+
+    expire_caches_before_rename(old_path_with_namespace)
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.

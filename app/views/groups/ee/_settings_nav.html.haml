@@ -10,10 +10,11 @@
       %span
         Webhooks
 
-= nav_link(path: 'audit_events#index') do
-  = link_to group_audit_events_path(@group), title: 'Audit Events' do
-    %span
-      Audit Events
+- if @group.feature_available?(:audit_events)
+  = nav_link(path: 'audit_events#index') do
+    = link_to group_audit_events_path(@group), title: 'Audit Events' do
+      %span
+        Audit Events
 
 - if @group.shared_runners_enabled? && @group.shared_runners_minutes_limit_enabled?
   = nav_link(path: 'pipeline_quota#index') do

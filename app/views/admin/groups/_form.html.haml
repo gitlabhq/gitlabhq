@@ -2,7 +2,7 @@
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
-  = render 'groups/repository_size_limit_setting', f: f
+  = render 'shared/repository_size_limit_setting', form: f, type: :group
 
   - if current_application_settings.should_check_namespace_plan?
     = render 'admin/namespace_plan', f: f

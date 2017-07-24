@@ -23,10 +23,20 @@ deployments right inside the [Deploy Board], without the need to leave GitLab.
 
 ## Use cases
 
-Canary deployments can be used you want to ship features to only a portion of
+Canary deployments can be used when you want to ship features to only a portion of
 your pods fleet and watch their behavior as a percentage of your user base
 visits the temporarily deployed feature. If all works well, you can deploy the
 feature to production knowing that it won't cause any problems.
+
+Canary deployments are also especially useful for backend refactors, performance
+improvements, or other changes where the user interface doesn't change, but you
+want to make sure the performance stays the same, or improves. Developers need
+to be careful when using canaries with user-facing changes, because by default,
+requests from the same user will be randomly distributed between canary and
+non-canary pods, which could result in confusion or even errors. If needed, you
+may want to consider [setting `service.spec.sessionAffinity` to `ClientIP` in
+your Kubernetes service definitions][kube-net], but that is beyond the scope of
+this document.
 
 ## Enabling Canary Deployments
 
@@ -34,10 +44,12 @@ Canary deployments require that you properly configure Deploy Boards:
 
 1. Follow the steps to [enable Deploy Boards](deploy_boards.md#enabling-deploy-boards).
 1. To track canary deployments you need to label your Kubernetes deployments and
-   pods with `track: canary`. To get started quickly, you can use the [Autodeploy]
+   pods with `track: canary`. To get started quickly, you can use the [Auto Deploy]
    template for canary deployments that GitLab provides.
 
 Depending on the deploy, the label should be either `stable` or `canary`.
+Usually, `stable` and blank or missing label means the same thing, and `canary`
+or any other track means canary/temporary.
 This allows GitLab to discover whether deployment is stable or canary (temporary).
 
 Once all of the above are set up and the pipeline has run at least once,
@@ -56,3 +68,4 @@ can easily notice them.
 [kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
 [deploy board]: deploy_boards.md
 [cd-blog]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
+[kube-net]: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies

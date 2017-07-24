@@ -23,16 +23,16 @@
             Registry
 
     - if project_nav_tab? :issues
-      = nav_link(controller: @project.default_issues_tracker? ? [:issues, :labels, :milestones, :boards] : :issues) do
+      = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
         = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
           %span
             Issues
-            - if @project.default_issues_tracker?
+            - if @project.issues_enabled?
               %span.badge.count.issue_counter= number_with_delimiter(issuables_count_for_state(:issues, :opened, finder: IssuesFinder.new(current_user, project_id: @project.id)))
 
     - if project_nav_tab? :merge_requests
       - controllers = [:merge_requests, 'projects/merge_requests/conflicts']
-      - controllers.push(:merge_requests, :labels, :milestones) unless @project.default_issues_tracker?
+      - controllers.push(:merge_requests, :labels, :milestones) unless @project.issues_enabled?
       = nav_link(controller: controllers) do
         = link_to project_merge_requests_path(@project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span

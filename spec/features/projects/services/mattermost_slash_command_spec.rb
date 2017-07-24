@@ -159,7 +159,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
 
-        expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+        expect(value).to match("api/v4/projects/#{project.id}/services/mattermost_slash_commands/trigger")
       end
 
       it 'shows a token placeholder' do

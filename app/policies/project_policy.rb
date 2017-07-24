@@ -289,9 +289,6 @@ class ProjectPolicy < BasePolicy
     prevent :create_issue
     prevent :update_issue
     prevent :admin_issue
-  end
-
-  rule { issues_disabled & default_issues_tracker }.policy do
     prevent :read_issue
   end
 

@@ -79,9 +79,9 @@ class CsvBuilder
   def row(object)
     attributes.map do |attribute|
       if attribute.respond_to?(:call)
-        attribute.call(object)
+        excel_sanitize(attribute.call(object))
       else
-        object.public_send(attribute)
+        excel_sanitize(object.public_send(attribute))
       end
     end
   end
@@ -99,5 +99,12 @@ class CsvBuilder
         break
       end
     end
+  end
+
+  def excel_sanitize(line)
+    return if line.nil?
+
+    line.prepend("'") if line =~ /^[=\+\-@;]/
+    line
   end
 end

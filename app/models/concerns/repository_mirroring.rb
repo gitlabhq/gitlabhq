@@ -29,7 +29,8 @@ module RepositoryMirroring
 
   def remote_tags(remote)
     gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
-      Gitlab::Git::Tag.new(raw_repository, name, target)
+      target_commit = Gitlab::Git::Commit.find(raw_repository, target)
+      Gitlab::Git::Tag.new(raw_repository, name, target, target_commit)
     end
   end
 
@@ -40,7 +41,8 @@ module RepositoryMirroring
       name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
 
       begin
-        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target)
+        target_commit = Gitlab::Git::Commit.find(raw_repository, ref.target)
+        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target, target_commit)
       rescue Rugged::ReferenceError
         # Omit invalid branch
       end

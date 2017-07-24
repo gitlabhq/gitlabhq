@@ -3,13 +3,22 @@ class ProjectHook < WebHook
 
   self.singular_route_key = :hook
 
-  belongs_to :project
+  TRIGGERS = {
+    push_hooks:               :push_events,
+    tag_push_hooks:           :tag_push_events,
+    issue_hooks:              :issues_events,
+    confidential_issue_hooks: :confidential_issues_events,
+    note_hooks:               :note_events,
+    merge_request_hooks:      :merge_requests_events,
+    job_hooks:                :job_events,
+    pipeline_hooks:           :pipeline_events,
+    wiki_page_hooks:          :wiki_page_events
+  }.freeze
 
-  scope :issue_hooks, -> { where(issues_events: true) }
-  scope :confidential_issue_hooks, -> { where(confidential_issues_events: true) }
-  scope :note_hooks, -> { where(note_events: true) }
-  scope :merge_request_hooks, -> { where(merge_requests_events: true) }
-  scope :job_hooks, -> { where(job_events: true) }
-  scope :pipeline_hooks, -> { where(pipeline_events: true) }
-  scope :wiki_page_hooks, ->  { where(wiki_page_events: true) }
+  TRIGGERS.each do |trigger, event|
+    scope trigger, -> { where(event => true) }
+  end
+
+  belongs_to :project
+  validates :project, presence: true
 end

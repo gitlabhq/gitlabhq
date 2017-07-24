@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-07-12 12:35-0500\n"
+"PO-Revision-Date: 2017-07-13 12:10-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -1058,6 +1058,9 @@ msgstr "Privado"
 
 msgid "VisibilityLevel|Public"
 msgstr "Público"
+
+msgid "VisibilityLevel|Unknown"
+msgstr "Desconocido"
 
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pide acceso al administrador."

@@ -1,5 +1,6 @@
 class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
+  include SafeMirrorParams
   # Authorize
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
@@ -12,7 +13,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    if @project.update_attributes(mirror_params)
+    if @project.update_attributes(safe_mirror_params)
       if @project.mirror?
         @project.force_import_job!
 
@@ -50,5 +51,11 @@ class Projects::MirrorsController < Projects::ApplicationController
   def mirror_params
     params.require(:project).permit(:mirror, :import_url, :mirror_user_id,
                                     :mirror_trigger_builds, remote_mirrors_attributes: [:url, :id, :enabled])
+  end
+
+  def safe_mirror_params
+    return mirror_params if valid_mirror_user?(mirror_params)
+
+    mirror_params.merge(mirror_user_id: current_user.id)
   end
 end

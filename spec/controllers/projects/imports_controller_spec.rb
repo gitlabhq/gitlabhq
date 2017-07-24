@@ -2,16 +2,15 @@ require 'spec_helper'
 
 describe Projects::ImportsController do
   let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+
+  before do
+    sign_in(user)
+    project.team << [user, :master]
+  end
 
   describe 'GET #show' do
     context 'when repository does not exists' do
-      let(:project) { create(:empty_project) }
-
-      before do
-        sign_in(user)
-        project.team << [user, :master]
-      end
-
       it 'renders template' do
         get :show, namespace_id: project.namespace.to_param, project_id: project
 
@@ -27,11 +26,6 @@ describe Projects::ImportsController do
 
     context 'when repository exists' do
       let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git') }
-
-      before do
-        sign_in(user)
-        project.team << [user, :master]
-      end
 
       context 'when import is in progress' do
         before do
@@ -122,6 +116,25 @@ describe Projects::ImportsController do
 
           expect(response).to redirect_to project_path(project)
         end
+      end
+    end
+  end
+
+  context 'POST #create' do
+    context 'mirror user is not the current user' do
+      it 'should only assign the current user' do
+        allow_any_instance_of(EE::Project).to receive(:add_import_job)
+
+        new_user = create(:user)
+        project.add_master(new_user)
+
+        post :create, namespace_id: project.namespace.to_param,
+                      project_id: project,
+                      project: { mirror: true, mirror_user_id: new_user.id, import_url: 'http://local.dev' },
+                      format: :json
+
+        expect(project.reload.mirror).to eq(true)
+        expect(project.reload.mirror_user.id).to eq(user.id)
       end
     end
   end

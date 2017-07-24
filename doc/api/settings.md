@@ -25,7 +25,7 @@ Example response:
    "id" : 1,
    "default_branch_protection" : 2,
    "restricted_visibility_levels" : [],
-   "signin_enabled" : true,
+   "password_authentication_enabled" : true,
    "after_sign_out_path" : null,
    "max_attachment_size" : 10,
    "user_oauth_applications" : true,
@@ -62,7 +62,7 @@ PUT /application/settings
 | --------- | ---- | :------: | ----------- |
 | `default_projects_limit` | integer  | no | Project limit per user. Default is `100000` |
 | `signup_enabled`    | boolean | no  | Enable registration. Default is `true`. |
-| `signin_enabled`    | boolean | no  | Enable login via a GitLab account. Default is `true`. |
+| `password_authentication_enabled`    | boolean | no  | Enable authentication via a GitLab account password. Default is `true`. |
 | `gravatar_enabled`  | boolean | no  | Enable Gravatar |
 | `sign_in_text`      | string  | no  | Text on login page |
 | `home_page_url`     | string  | no  | Redirect to this URL when not logged in |
@@ -110,7 +110,7 @@ Example response:
   "id": 1,
   "default_projects_limit": 100000,
   "signup_enabled": true,
-  "signin_enabled": true,
+  "password_authentication_enabled": true,
   "gravatar_enabled": true,
   "sign_in_text": "",
   "created_at": "2015-06-12T15:51:55.432Z",

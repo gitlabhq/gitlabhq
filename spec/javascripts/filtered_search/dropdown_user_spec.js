@@ -12,7 +12,9 @@ describe('Dropdown User', () => {
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
-      dropdownUser = new gl.DropdownUser(null, null, null, gl.FilteredSearchTokenKeys);
+      dropdownUser = new gl.DropdownUser({
+        tokenKeys: gl.FilteredSearchTokenKeys,
+      });
     });
 
     it('should not return the double quote found in value', () => {
@@ -78,7 +80,10 @@ describe('Dropdown User', () => {
       loadFixtures(fixtureTemplate);
       authorFilterDropdownElement = document.querySelector('#js-dropdown-author');
       const dummyInput = document.createElement('div');
-      dropdown = new gl.DropdownUser(null, authorFilterDropdownElement, dummyInput);
+      dropdown = new gl.DropdownUser({
+        dropdown: authorFilterDropdownElement,
+        input: dummyInput,
+      });
     });
 
     const findCurrentUserElement = () => authorFilterDropdownElement.querySelector('.js-current-user');

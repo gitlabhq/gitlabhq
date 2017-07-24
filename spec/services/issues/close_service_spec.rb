@@ -98,13 +98,13 @@ describe Issues::CloseService, services: true do
       end
     end
 
-    context 'external issue tracker' do
+    context 'internal issues disabled' do
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
-        described_class.new(project, user).close_issue(issue)
+        project.issues_enabled = false
+        project.save!
       end
 
-      it 'closes the issue' do
+      it 'does not close the issue' do
         expect(issue).to be_valid
         expect(issue).to be_opened
         expect(todo.reload).to be_pending

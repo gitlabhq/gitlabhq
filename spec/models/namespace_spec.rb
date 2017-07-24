@@ -44,7 +44,7 @@ describe Namespace, models: true do
       end
 
       context "is case insensitive" do
-        let(:group) { build(:group, path: "System") }
+        let(:group) { build(:group, path: "Groups") }
 
         it { expect(group).not_to be_valid }
       end
@@ -61,6 +61,14 @@ describe Namespace, models: true do
     it { is_expected.to respond_to(:human_name) }
     it { is_expected.to respond_to(:to_param) }
     it { is_expected.to respond_to(:has_parent?) }
+  end
+
+  describe 'inclusions' do
+    it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+  end
+
+  describe '#visibility_level_field' do
+    it { expect(namespace.visibility_level_field).to eq(:visibility_level) }
   end
 
   describe '#to_param' do

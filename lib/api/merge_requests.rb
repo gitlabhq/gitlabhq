@@ -35,14 +35,6 @@ module API
           end
         end
 
-        def issue_entity(project)
-          if project.has_external_issue_tracker?
-            Entities::ExternalIssue
-          else
-            Entities::IssueBasic
-          end
-        end
-
         def find_merge_requests(args = {})
           args = params.merge(args)
 
@@ -149,6 +141,7 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
+        status 204
         merge_request.destroy
       end
 
@@ -359,7 +352,14 @@ module API
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-        present paginate(issues), with: issue_entity(user_project), current_user: current_user
+        issues = paginate(issues)
+
+        external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }
+
+        data = Entities::IssueBasic.represent(internal_issues, current_user: current_user)
+        data += Entities::ExternalIssue.represent(external_issues, current_user: current_user)
+
+        data.as_json
       end
     end
   end

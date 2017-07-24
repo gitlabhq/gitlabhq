@@ -234,6 +234,8 @@ module Gitlab
         @new_file = diff.from_id == BLANK_SHA
         @renamed_file = diff.from_path != diff.to_path
         @deleted_file = diff.to_id == BLANK_SHA
+
+        collapse! if diff.respond_to?(:collapsed) && diff.collapsed
       end
 
       def prune_diff_if_eligible

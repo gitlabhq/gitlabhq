@@ -123,7 +123,7 @@ Multiple Issue Boards enables you to create more than one Issue Board per projec
 It's great for large projects with more than one team or in situations where a
 repository is used to host the code of multiple products.
 
-_[Multiple Issue Boards](../issue_board.html#multiple-issue-boards)
+_[Multiple Issue Boards](../issue_board.md#multiple-issue-boards)
 are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
 
 ### Export Issues to CSV (EES/EEP)
@@ -131,6 +131,14 @@ are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitla
 Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+
+## Related Issues (EES/SSP)
+
+Related Issues are a bi-directional relationship between any two issues
+and appear in a block below the issue description. Issues can be across groups
+and projects.
+
+Read more about [Related Issues](related_issues.md).
 
 ### Issue's API
 

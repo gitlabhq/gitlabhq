@@ -50,9 +50,8 @@ Shortcuts to GitLab's most visited docs:
 - [Fork a project](gitlab-basics/fork-project.md)
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+- [Groups](user/group/index.md): Organize your projects in groups.
+  - [Subgroups](user/group/subgroups/index.md): nest groups in subgroups.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
@@ -86,6 +85,7 @@ Manage files and branches from the UI (user interface):
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Issue Board](user/project/issue_board.md)
+- **(EES/EEP)** [Related Issues](user/project/issues/related_issues.md): create a relationship between issues
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -129,6 +129,7 @@ Manage files and branches from the UI (user interface):
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
 ----
 

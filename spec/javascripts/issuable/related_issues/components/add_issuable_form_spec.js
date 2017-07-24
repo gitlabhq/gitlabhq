@@ -227,9 +227,11 @@ describe('AddIssuableForm', () => {
     it('when submitting pending issues', () => {
       expect(addIssuableFormSubmitSpy).not.toHaveBeenCalled();
 
+      const newInputValue = 'filling in things';
+      vm.$refs.input.value = newInputValue;
       vm.onFormSubmit();
 
-      expect(addIssuableFormSubmitSpy).toHaveBeenCalled();
+      expect(addIssuableFormSubmitSpy).toHaveBeenCalledWith(newInputValue);
     });
 
     it('when canceling form to collapse', () => {

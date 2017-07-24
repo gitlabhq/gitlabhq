@@ -347,10 +347,14 @@ describe Project, models: true do
   end
 
   describe 'delegation' do
-    it { is_expected.to delegate_method(:add_guest).to(:team) }
-    it { is_expected.to delegate_method(:add_reporter).to(:team) }
-    it { is_expected.to delegate_method(:add_developer).to(:team) }
-    it { is_expected.to delegate_method(:add_master).to(:team) }
+    [:add_guest, :add_reporter, :add_developer, :add_master, :add_user, :add_users].each do |method|
+      it { is_expected.to delegate_method(method).to(:team) }
+    end
+
+    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
+    it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
+    it { is_expected.to delegate_method(:count).to(:forks).with_prefix(true) }
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference' do
@@ -575,15 +579,48 @@ describe Project, models: true do
     end
 
     context 'with external issues tracker' do
+      let!(:internal_issue) { create(:issue, project: project) }
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow(project).to receive(:external_issue_tracker).and_return(true)
       end
 
-      it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234', user)
-        expect(issue).to be_kind_of(ExternalIssue)
-        expect(issue.iid).to eq 'FOO-1234'
-        expect(issue.project).to eq project
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+      context 'when internal issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        it 'returns always an External issues' do
+          issue = project.get_issue(internal_issue.iid, user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq(internal_issue.iid.to_s)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
       end
     end
   end
@@ -977,7 +1014,7 @@ describe Project, models: true do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
-      let(:avatar_path) { "/uploads/system/project/avatar/#{project.id}/dk.png" }
+      let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
@@ -1444,7 +1481,7 @@ describe Project, models: true do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(Exception) }
+      it { expect{subject}.to raise_error(StandardError) }
     end
   end
 

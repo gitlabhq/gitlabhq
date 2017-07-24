@@ -119,7 +119,7 @@ module API
         user.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
+      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
@@ -298,8 +298,8 @@ module API
 
     class Milestone < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity&.project_id }
-      expose(:group_id) { |entity| entity&.group_id }
+      expose :project_id, if: -> (entity, options) { entity&.project_id }
+      expose :group_id, if: -> (entity, options) { entity&.group_id }
       expose :title, :description
       expose :state, :created_at, :updated_at
       expose :due_date
@@ -695,7 +695,8 @@ module API
       expose :id
       expose :default_projects_limit
       expose :signup_enabled
-      expose :signin_enabled
+      expose :password_authentication_enabled
+      expose :password_authentication_enabled, as: :signin_enabled
       expose :gravatar_enabled
       expose :sign_in_text
       expose :after_sign_up_text

@@ -21,6 +21,16 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
       wait_for_requests
     end
 
+    describe 'time tracking' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        visit project_issue_path(project, issue)
+      end
+
+      it_behaves_like 'issuable time tracker'
+    end
+
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
 
@@ -96,32 +106,6 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
           expect(issue.due_date).to eq Date.new(2016, 8, 28)
         end
-      end
-    end
-
-    describe 'Issuable time tracking' do
-      let(:issue) { create(:issue, project: project) }
-
-      before do
-        project.team << [user, :developer]
-      end
-
-      context 'Issue' do
-        before do
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'issuable time tracker'
-      end
-
-      context 'Merge Request' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
-
-        before do
-          visit project_merge_request_path(project, merge_request)
-        end
-
-        it_behaves_like 'issuable time tracker'
       end
     end
 

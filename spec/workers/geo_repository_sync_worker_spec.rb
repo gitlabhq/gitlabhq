@@ -39,8 +39,8 @@ describe GeoRepositorySyncWorker do
       subject.perform
     end
 
-    it 'does not perform Geo::ProjectSyncWorker when secondary role is disabled' do
-      allow(Gitlab::Geo).to receive(:secondary_role_enabled?) { false }
+    it 'does not perform Geo::ProjectSyncWorker when no geo database is configured' do
+      allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
 
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 

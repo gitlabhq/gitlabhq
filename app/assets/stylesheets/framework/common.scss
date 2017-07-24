@@ -97,6 +97,10 @@ hr {
   color: $gl-link-color;
 }
 
+.author-link:hover {
+  text-decoration: none;
+}
+
 .back-link {
   font-size: 14px;
 }

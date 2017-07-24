@@ -1,0 +1,5 @@
+---
+title: Cleans up mirror capacity in project destroy service if project is a scheduled
+  mirror
+merge_request: 2445
+author:

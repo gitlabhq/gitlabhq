@@ -18,7 +18,7 @@ module Geo
         project.repository.fetch_geo_mirror(ssh_url_to_repo)
 
         update_registry(:repository, finished_at: DateTime.now)
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Shell::Error, Geo::EmptyCloneUrlPrefixError => e
         Rails.logger.error("#{self.class.name}: Error syncing repository for project #{project.path_with_namespace}: #{e}")
       rescue Gitlab::Git::Repository::NoRepository => e
         Rails.logger.error("#{self.class.name}: Error invalid repository for project #{project.path_with_namespace}: #{e}")

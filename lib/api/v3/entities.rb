@@ -46,39 +46,6 @@ module API
         expose :awardable_id, :awardable_type
       end
 
-      class ApplicationSetting < Grape::Entity
-        expose :id
-        expose :default_projects_limit
-        expose :signup_enabled
-        expose :signin_enabled
-        expose :gravatar_enabled
-        expose :sign_in_text
-        expose :after_sign_up_text
-        expose :created_at
-        expose :updated_at
-        expose :home_page_url
-        expose :default_branch_protection
-        expose :restricted_visibility_levels
-        expose :max_attachment_size
-        expose :session_expire_delay
-        expose :default_project_visibility
-        expose :default_snippet_visibility
-        expose :default_group_visibility
-        expose :domain_whitelist
-        expose :domain_blacklist_enabled
-        expose :domain_blacklist
-        expose :user_oauth_applications
-        expose :after_sign_out_path
-        expose :container_registry_token_expire_delay
-        expose :repository_storage
-        expose :repository_storages
-        expose :koding_enabled
-        expose :koding_url
-        expose :plantuml_enabled
-        expose :plantuml_url
-        expose :terminal_max_session_time
-      end
-
       class Project < Grape::Entity
         expose :id, :description, :default_branch, :tag_list
         expose :public?, as: :public
@@ -209,7 +176,8 @@ module API
         expose :id
         expose :default_projects_limit
         expose :signup_enabled
-        expose :signin_enabled
+        expose :password_authentication_enabled
+        expose :password_authentication_enabled, as: :signin_enabled
         expose :gravatar_enabled
         expose :sign_in_text
         expose :after_sign_up_text

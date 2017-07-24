@@ -115,6 +115,30 @@ describe ProjectPolicy, models: true do
     end
   end
 
+  context 'issues feature' do
+    subject { described_class.new(owner, project) }
+
+    context 'when the feature is disabled' do
+      it 'does not include the issues permissions' do
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+
+    context 'when the feature is disabled and external tracker configured' do
+      it 'does not include the issues permissions' do
+        create(:jira_service, project: project)
+
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+  end
+
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
@@ -242,11 +266,28 @@ describe ProjectPolicy, models: true do
     context 'auditor' do
       let(:current_user) { auditor }
 
-      it do
-        is_expected.to be_disallowed(*developer_permissions)
-        is_expected.to be_disallowed(*master_permissions)
-        is_expected.to be_disallowed(*owner_permissions)
-        is_expected.to be_allowed(*auditor_permissions)
+      context 'not a team member' do
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_disallowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
+      end
+
+      context 'team member' do
+        before do
+          project.team << [auditor, :guest]
+        end
+
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_allowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
       end
     end
   end

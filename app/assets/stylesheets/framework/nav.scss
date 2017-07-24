@@ -190,14 +190,6 @@
       display: none;
     }
 
-    .btn,
-    .dropdown,
-    .dropdown-toggle,
-    input,
-    form {
-      height: 35px;
-    }
-
     input {
       display: inline-block;
       position: relative;
@@ -352,7 +344,7 @@
       position: absolute;
       top: 7px;
       right: 15px;
-      z-index: 2;
+      z-index: 300;
 
       li.active {
         font-weight: bold;

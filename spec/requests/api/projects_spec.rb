@@ -159,6 +159,31 @@ describe API::Projects do
         expect(json_response.first).to include 'statistics'
       end
 
+      context 'when external issue tracker is enabled' do
+        let!(:jira_service) { create(:jira_service, project: project) }
+
+        it 'includes open_issues_count' do
+          get api('/projects', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first.keys).to include('open_issues_count')
+          expect(json_response.find { |hash| hash['id'] == project.id }.keys).to include('open_issues_count')
+        end
+
+        it 'does not include open_issues_count if issues are disabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
+        end
+      end
+
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
           expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
@@ -442,7 +467,7 @@ describe API::Projects do
       post api('/projects', user), project
 
       project_id = json_response['id']
-      expect(json_response['avatar_url']).to eq("http://localhost/uploads/system/project/avatar/#{project_id}/banana_sample.gif")
+      expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
     it 'sets a project as allowing merge even if build fails' do

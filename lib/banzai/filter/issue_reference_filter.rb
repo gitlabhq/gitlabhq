@@ -20,7 +20,7 @@ module Banzai
       end
 
       def url_for_object(issue, project)
-        IssuesHelper.url_for_issue(issue.iid, project, only_path: context[:only_path])
+        IssuesHelper.url_for_issue(issue.iid, project, only_path: context[:only_path], internal: true)
       end
 
       def project_from_ref(ref)

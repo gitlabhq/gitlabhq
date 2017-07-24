@@ -6,7 +6,7 @@
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
-- [Groups](groups.md)
+- [Groups](../user/group/index.md)
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
   - (EE) [Exporting Issues](../user/project/issues/csv_export.md) Export issues as a CSV, emailed as an attachment.

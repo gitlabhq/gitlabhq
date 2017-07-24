@@ -478,13 +478,13 @@ production: &base
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
       # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
       #     app_secret: 'YOUR_CLIENT_SECRET',
       #     args: {
       #             scope: 'aq:name email~rs address aq:push'
-      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # callback_url: 'YOUR_CALLBACK_URL'
       #           }
       #   }
       # - { name: 'github',
@@ -644,12 +644,6 @@ production: &base
     ip_whitelist:
       - 127.0.0.0/8
 
-  ## GitLab Geo settings (EE-only)
-  geo_primary_role:
-    enabled: false
-  geo_secondary_role:
-    enabled: false
-
   #
   # 5. Extra customization
   # ==========================
@@ -780,10 +774,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-  geo_primary_role:
-    enabled: true
-  geo_secondary_role:
-    enabled: false
 
 staging:
   <<: *base

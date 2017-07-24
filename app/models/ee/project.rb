@@ -414,6 +414,8 @@ module EE
     end
 
     def size_limit_enabled?
+      return false unless License.feature_available?(:repository_size_limit)
+
       actual_size_limit != 0
     end
 
@@ -450,6 +452,27 @@ module EE
         old_path: path_was,
         old_path_with_namespace: old_path_with_namespace
       ).create
+    end
+
+    # Override to reject disabled services
+    def find_or_initialize_services(exceptions: [])
+      available_services = super
+
+      available_services.reject do |service|
+        disabled_services.include?(service.to_param)
+      end
+    end
+
+    def disabled_services
+      return @disabled_services if defined?(@disabled_services)
+
+      @disabled_services = []
+
+      unless feature_available?(:jenkins_integration)
+        @disabled_services.push('jenkins', 'jenkins_deprecated')
+      end
+
+      @disabled_services
     end
 
     private

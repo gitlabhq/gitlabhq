@@ -162,7 +162,7 @@ describe('Merge Request Code Quality', () => {
       setTimeout(() => {
         expect(
           vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
-        ).toEqual('No changes to code quality so far.');
+        ).toEqual('No changes to code quality.');
         done();
       }, 0);
     });

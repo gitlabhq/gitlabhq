@@ -322,8 +322,50 @@ describe Project, models: true do
     end
   end
 
+  describe '#size_limit_enabled?' do
+    let(:project) { create(:empty_project) }
+
+    context 'when repository_size_limit is not configured' do
+      it 'is disabled' do
+        expect(project.size_limit_enabled?).to be_falsey
+      end
+    end
+
+    context 'when repository_size_limit is configured' do
+      before do
+        project.update_attributes(repository_size_limit: 1024)
+      end
+
+      context 'with an EES license' do
+        let!(:license) { create(:license, plan: License::STARTER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'with an EEP license' do
+        let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a License' do
+        before do
+          License.destroy_all
+        end
+
+        it 'is disabled' do
+          expect(project.size_limit_enabled?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#service_desk_enabled?' do
-    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:namespace) { create(:namespace) }
 
     subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
@@ -669,6 +711,58 @@ describe Project, models: true do
           .and_call_original
 
         expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
+      end
+    end
+  end
+
+  shared_examples 'project with disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to match_array(disabled_services)
+    end
+  end
+
+  shared_examples 'project without disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to be_empty
+    end
+  end
+
+  describe '#disabled_services' do
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, namespace: namespace) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'project with disabled services'
+    end
+
+    context 'with a license key' do
+      context 'when checking of namespace plan is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'and namespace does not have a plan' do
+          it_behaves_like 'project with disabled services'
+        end
+
+        context 'and namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'project without disabled services'
+        end
+      end
+
+      context 'when checking of namespace plan is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'project without disabled services'
       end
     end
   end

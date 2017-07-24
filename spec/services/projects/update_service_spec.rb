@@ -1,11 +1,14 @@
 require 'spec_helper'
 
-describe Projects::UpdateService, services: true do
+describe Projects::UpdateService, '#execute', :services do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
 
-  describe 'update_by_user' do
+  let(:project) do
+    create(:empty_project, creator: user, namespace: user.namespace)
+  end
+
+  context 'when changing visibility level' do
     context 'when visibility_level is INTERNAL' do
       it 'updates the project to internal' do
         result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
@@ -40,7 +43,7 @@ describe Projects::UpdateService, services: true do
         it 'does not update the project to public' do
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-          expect(result).to eq({ status: :error, message: 'Visibility level unallowed' })
+          expect(result).to eq({ status: :error, message: 'New visibility level not allowed!' })
           expect(project).to be_private
         end
 
@@ -55,12 +58,13 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  describe 'visibility_level' do
+  describe 'when updating project that has forks' do
     let(:project) { create(:empty_project, :internal) }
     let(:forked_project) { create(:forked_project_with_submodules, :internal) }
 
     before do
-      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id, forked_from_project_id: project.id)
+      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id,
+                                               forked_from_project_id: project.id)
       forked_project.save
     end
 
@@ -89,10 +93,45 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  it 'returns an error result when record cannot be updated' do
-    result = update_project(project, admin, { name: 'foo&bar' })
+  context 'when updating a default branch' do
+    let(:project) { create(:project, :repository) }
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    it 'changes a default branch' do
+      update_project(project, admin, default_branch: 'feature')
+
+      expect(Project.find(project.id).default_branch).to eq 'feature'
+    end
+  end
+
+  context 'when updating a project that contains container images' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+      create(:container_repository, project: project, name: :image)
+    end
+
+    it 'does not allow to rename the project' do
+      result = update_project(project, admin, path: 'renamed')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to match(/contains container registry tags/)
+    end
+
+    it 'allows to update other settings' do
+      result = update_project(project, admin, public_builds: true)
+
+      expect(result[:status]).to eq :success
+      expect(project.reload.public_builds).to be true
+    end
+  end
+
+  context 'when passing invalid parameters' do
+    it 'returns an error result when record cannot be updated' do
+      result = update_project(project, admin, { name: 'foo&bar' })
+
+      expect(result).to eq({ status: :error,
+                             message: 'Project could not be updated!' })
+    end
   end
 
   describe 'repository_storage' do
@@ -158,7 +197,7 @@ describe Projects::UpdateService, services: true do
   it 'returns an error result when record cannot be updated' do
     result = update_project(project, admin, { name: 'foo&bar' })
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    expect(result).to eq({ status: :error, message: 'Project could not be updated!' })
   end
 
   def update_project(project, user, opts)

@@ -10,8 +10,34 @@ feature 'Projects > Audit Events', js: true, feature: true do
     sign_in(user)
   end
 
+  context 'unlicensed' do
+    before do
+      stub_licensed_features(audit_events: false)
+    end
+
+    it 'returns 404' do
+      visit project_audit_events_path(project)
+
+      expect(page.status_code).to eq(404)
+    end
+
+    it 'does not have Audit Events button in head nav bar' do
+      visit edit_project_path(project)
+
+      expect(page).not_to have_link('Audit Events')
+    end
+  end
+
+  it 'has Audit Events button in head nav bar' do
+    visit edit_project_path(project)
+
+    expect(page).to have_link('Audit Events')
+  end
+
   describe 'adding an SSH key' do
     it "appears in the project's audit events" do
+      stub_licensed_features(audit_events: true)
+
       visit new_project_deploy_key_path(project)
 
       fill_in 'deploy_key_title', with: 'laptop'

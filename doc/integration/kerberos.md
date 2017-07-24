@@ -250,6 +250,43 @@ as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration][nginx].
 
+## Troubleshooting
+
+### Unsupported GSSAPI mechanism
+
+With Kerberos SPNEGO authentication, the browser is expected to send a list of
+mechanisms it supports to GitLab. If it doesn't support any of the mechanisms
+GitLab supports, authentication will fail with a message like this in the log:
+
+```
+OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested Unknown error
+```
+
+This is usually seen when the browser is unable to contact the Kerberos server
+directly. It will fall back to an  unsupported mechanism known as
+[`IAKERB`](https://k5wiki.kerberos.org/wiki/Projects/IAKERB), which tries to use
+the GitLab server as an intermediary to the Kerberos server.
+
+If you're experiencing this error, ensure there is connectivity between the
+client machine and the Kerberos server - this is a prerequisite! Traffic may be
+blocked by a firewall, or the DNS records may be incorrect.
+
+Another failure mode occurs when the forward and reverse DNS records for the
+GitLab server do not match. Often, Windows clients will work in this case, while
+Linux clients will fail. They use reverse DNS while detecting the Kerberos
+realm. If they get the wrong realm, then ordinary Kerberos mechanisms will fail,
+so the client will fall back to attempting to negotiate `IAKERB`, leading to the
+above error message.
+
+To fix this, ensure that the forward and reverse DNS for your GitLab server
+match. So for instance, if you acces GitLab as `gitlab.example.com`, resolving
+to IP address `1.2.3.4`, then `4.3.2.1.in-addr.arpa` must be a PTR record for
+`gitlab.example.com`.
+
+Finally, it's possible that the browser or client machine lack Kerberos support
+completely. Ensure that the Kerberos libraries are installed and that you can
+authenticate to other Kerberos services.
+
 ## Helpful links
 
 - <https://help.ubuntu.com/community/Kerberos>

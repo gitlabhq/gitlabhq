@@ -1,4 +1,8 @@
 module Geo
+  # The clone_url_prefix is used to build URLs for the Geo synchronization
+  # If this is missing from the primary node we raise this exception
+  EmptyCloneUrlPrefixError = Class.new(StandardError)
+
   class BaseSyncService
     class << self
       attr_accessor :type
@@ -25,7 +29,17 @@ module Geo
       @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
     end
 
+    def primary_ssh_path_prefix
+      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix.tap do |prefix|
+        raise EmptyCloneUrlPrefixError, 'Missing clone_url_prefix in the primary node' unless prefix.present?
+      end
+    end
+
     private
+
+    def sync_repository
+      raise NotImplementedError, 'This class should implement sync_repository method'
+    end
 
     def registry
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
@@ -68,10 +82,6 @@ module Geo
 
     def type
       self.class.type
-    end
-
-    def primary_ssh_path_prefix
-      @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix
     end
 
     def log(message)

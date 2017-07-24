@@ -187,11 +187,12 @@
   @include set-invisible;
   display: block;
   position: absolute;
-  width: 100%;
+  width: auto;
   top: 100%;
   left: 0;
   z-index: 9;
   min-width: 240px;
+  max-width: 500px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -204,6 +205,7 @@
 
   @media (max-width: $screen-sm-min) {
     width: 100%;
+    min-width: 180px;
   }
 
   &.dropdown-open-left {
@@ -287,27 +289,15 @@
     padding: 5px 8px;
     color: $gl-text-color-secondary;
   }
-
-  .badge {
-    position: absolute;
-    right: 8px;
-    top: 5px;
-  }
 }
 
 .droplab-dropdown {
-  .description {
-    display: inline-block;
-    white-space: normal;
-    margin-left: 5px;
-  }
-
   .dropdown-toggle > i {
     pointer-events: none;
   }
 
-  li {
-    padding: $gl-btn-padding $gl-btn-padding 2px;
+  .dropdown-menu li {
+    padding: $gl-btn-padding;
     cursor: pointer;
 
     > a,
@@ -343,8 +333,24 @@
       visibility: visible;
     }
 
+    &.divider {
+      margin: 0 8px;
+      padding: 0;
+      border-top: $gray-darkest;
+    }
+
     .icon {
       visibility: hidden;
+    }
+
+    .description {
+      display: inline-block;
+      white-space: normal;
+      margin-left: 5px;
+
+      p {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -352,12 +358,6 @@
     display: inline-block;
     vertical-align: top;
     padding-top: 2px;
-  }
-
-  .divider {
-    margin: 0 8px;
-    padding: 0;
-    border-top: $gray-darkest;
   }
 }
 
@@ -461,10 +461,6 @@
   left: auto;
   right: 0;
   margin-top: -5px;
-
-  @media (max-width: $screen-xs-max) {
-    left: 0;
-  }
 }
 
 .dropdown-menu-selectable {

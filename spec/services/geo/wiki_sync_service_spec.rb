@@ -6,19 +6,21 @@ RSpec.describe Geo::WikiSyncService, services: true do
 
   subject { described_class.new(project) }
 
-  before do
-    allow(Gitlab::ExclusiveLease).to receive(:new)
-      .with(subject.lease_key, anything)
-      .and_return(lease)
-
-    allow_any_instance_of(Repository).to receive(:fetch_geo_mirror)
-      .and_return(true)
-  end
+  it_behaves_like 'geo base sync execution'
 
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
     let(:repository) { project.wiki.repository }
     let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.wiki.git" }
+
+    before do
+      allow(Gitlab::ExclusiveLease).to receive(:new)
+        .with(subject.lease_key, anything)
+        .and_return(lease)
+
+      allow_any_instance_of(Repository).to receive(:fetch_geo_mirror)
+        .and_return(true)
+    end
 
     it 'fetches wiki repository' do
       expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once

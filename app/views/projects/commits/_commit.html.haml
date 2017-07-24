@@ -1,4 +1,5 @@
 - ref = local_assigns.fetch(:ref)
+- show_project_name = local_assigns.fetch(:show_project_name, false)
 - if @note_counts
   - note_count = @note_counts.fetch(commit.id, 0)
 - else
@@ -34,6 +35,9 @@
           - commit_timeago = time_ago_with_tooltip(commit.committed_date)
           - commit_text =  _('%{commit_author_link} committed %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
           #{ commit_text.html_safe }
+        - if show_project_name
+          %span.project_namespace
+            = project.name_with_namespace
 
 
       .commit-actions.flex-row.hidden-xs

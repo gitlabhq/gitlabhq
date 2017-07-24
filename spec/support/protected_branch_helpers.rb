@@ -1,5 +1,5 @@
 module ProtectedBranchHelpers
-  def set_allowed_to(operation, option = 'Masters', form: '#new_protected_branch')
+  def set_allowed_to(operation, option = 'Masters', form: '.js-new-protected-branch')
     within form do
       find(".js-allowed-to-#{operation}").trigger('click')
       wait_for_requests

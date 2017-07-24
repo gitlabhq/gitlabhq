@@ -186,9 +186,9 @@ by name. The order of severity is:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
-### Multi-Project Pipelines Graphs
+### Multi-project pipelines graphs
 
-With [Multi-Project Pipeline Graphs](multi_project_pipeline_graphs.md),
+With [multi-project pipeline graphs](multi_project_pipeline_graphs.md),
 you can visualize cross-project pipelines.
 
 It is available only in [GitLab Enterprise Edition Premium][eep].
