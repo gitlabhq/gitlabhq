@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoFileDownloadDispatchWorker do
+describe Geo::FileDownloadDispatchWorker do
   before do
     @primary = create(:geo_node, :primary, host: 'primary-geo-node')
     @secondary = create(:geo_node, :current)
