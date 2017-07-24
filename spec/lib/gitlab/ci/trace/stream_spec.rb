@@ -308,6 +308,20 @@ describe Gitlab::Ci::Trace::Stream do
       it { is_expected.to eq('65') }
     end
 
+    context 'long line' do
+      let(:data) { 'a' * 80000 + '100%' + 'a' * 80000 }
+      let(:regex) { '\d+\%' }
+
+      it { is_expected.to eq('100') }
+    end
+
+    context 'many lines' do
+      let(:data) { "foo\n" * 80000 + "100%\n" + "foo\n" * 80000 }
+      let(:regex) { '\d+\%' }
+
+      it { is_expected.to eq('100') }
+    end
+
     context 'empty regex' do
       let(:data) { 'foo' }
       let(:regex) { '' }
