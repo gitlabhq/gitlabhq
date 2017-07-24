@@ -20,10 +20,12 @@ Once you have configured and enabled Bugzilla:
 ## Referencing issues in Bugzilla
 
 Issues in Bugzilla can be referenced in two alternative ways:
-1. `#<ID>` where `<ID>` is a number (example `#143`)
+1. `#<ID>` where `<ID>` is a number (example `#143`).
 2. `<PROJECT>-<ID>` where `<PROJECT>` starts with a capital letter which is
   then followed by capital letters, numbers or underscores, and `<ID>` is
   a number (example `API_32-143`).
+
+We suggest using the longer format if you have both internal and external issue trackers enabled. If you use the shorter format and an issue with the same ID exists in the internal issue tracker the internal issue will be linked.
 
 Please note that `<PROJECT>` part is ignored and links always point to the
 address specified in `issues_url`.
