@@ -54,7 +54,26 @@ describe Ci::Stage, :models do
       end
     end
 
+    context 'when stage is skipped' do
+      it 'updates status to skipped' do
+        expect { stage.update! }
+          .to change { stage.reload.status }
+          .to 'skipped'
+      end
+    end
+
     context 'when stage object is locked' do
+      before do
+        create(:ci_build, :failed, stage_id: stage.id)
+      end
+
+      it 'retries a lock to update a stage status' do
+        stage.lock_version = 100
+
+        stage.update!
+
+        expect(stage.reload).to be_failed
+      end
     end
   end
 end
