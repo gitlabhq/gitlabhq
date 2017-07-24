@@ -31,11 +31,11 @@ describe Admin::ProjectsFinder do
     context 'without a user' do
       let(:current_user) { nil }
 
-      it { is_expected.to eq([shared_project, public_project, internal_project, private_project]) }
+      it { is_expected.to match_array([shared_project, public_project, internal_project, private_project]) }
     end
 
     context 'with a user' do
-      it { is_expected.to eq([shared_project, public_project, internal_project, private_project]) }
+      it { is_expected.to match_array([shared_project, public_project, internal_project, private_project]) }
     end
 
     context 'filter by namespace_id' do
@@ -54,7 +54,7 @@ describe Admin::ProjectsFinder do
       context 'private' do
         let(:params) { { visibility_level: Gitlab::VisibilityLevel::PRIVATE } }
 
-        it { is_expected.to eq([shared_project, private_project]) }
+        it { is_expected.to match_array([shared_project, private_project]) }
       end
 
       context 'internal' do
@@ -124,7 +124,7 @@ describe Admin::ProjectsFinder do
     context 'filter by name' do
       let(:params) { { name: 'C' } }
 
-      it { is_expected.to eq([shared_project, public_project, private_project]) }
+      it { is_expected.to match_array([shared_project, public_project, private_project]) }
     end
 
     context 'sorting' do
