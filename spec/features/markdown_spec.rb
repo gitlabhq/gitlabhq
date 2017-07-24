@@ -100,7 +100,7 @@ describe 'GitLab Markdown', feature: true do
       end
 
       it 'permits img elements' do
-        expect(doc).to have_selector('img[src*="smile.png"]')
+        expect(doc).to have_selector('img[data-src*="smile.png"]')
       end
 
       it 'permits br elements' do
