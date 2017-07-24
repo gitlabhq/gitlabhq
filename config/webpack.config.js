@@ -60,7 +60,7 @@ var config = {
     profile:              './profile/profile_bundle.js',
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
-    ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
+    ee_protected_branches: './protected_branches/ee',
     protected_tags:       './protected_tags',
     ee_protected_tags:    './protected_tags/ee',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
