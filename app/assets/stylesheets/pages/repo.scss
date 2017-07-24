@@ -40,8 +40,7 @@
       }
 
       .cursor {
-        background: $black;
-        border-color: $black;
+        display: none !important;
       }
     }
 
@@ -173,6 +172,7 @@
 
     tr {
       animation: fadein 0.5s;
+      cursor: pointer;
 
       &.repo-file-options td {
         padding: 0;

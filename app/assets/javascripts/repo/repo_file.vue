@@ -41,10 +41,10 @@ export default RepoFile;
 
 <template>
 <tr v-if="!loading.tree || hasFiles" :class="{'active': activeFile.url === file.url}">
-  <td>
+  <td @click.prevent="linkClicked(file)">
     <i class="fa" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
     <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <a :href="file.url" @click.prevent="linkClicked(file)" class="repo-file-name" :title="file.url">{{file.name}}</a>
+    <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
   </td>
 
   <td v-if="!isMini" class="hidden-sm hidden-xs">

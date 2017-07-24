@@ -87,7 +87,6 @@ const RepoHelper = {
       const fileIndex = indexOfFile + 1;
       const file = newFile;
       file.level = inDirectory.level + 1;
-
       oldList.splice(fileIndex, 0, file);
     });
 
@@ -140,7 +139,7 @@ const RepoHelper = {
       }
     })
     .catch(() => {
-      RepoHelper.setLoading(false, loadingData);
+      // RepoHelper.setLoading(false, loadingData);
       RepoHelper.loadingError();
     });
   },
@@ -178,6 +177,8 @@ const RepoHelper = {
       loading: false,
     };
   },
+
+  
 
   scrollTabsRight() {
     // wait for the transition. 0.1 seconds. 
