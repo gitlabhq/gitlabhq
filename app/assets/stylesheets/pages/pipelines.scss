@@ -924,7 +924,7 @@
 
 
 .job-log-container {
-  background: $black;
+  background: #212121;
 
   ul {
     margin: 0;
@@ -937,7 +937,7 @@
 
   .number,
   .code {
-    color: $white-light;
+    color: $blame-gray;
     font-family: $monospace_font;
     font-size: 85%;
     display: inline;
@@ -946,7 +946,7 @@
   .number {
     margin-right: 10px;
     a {
-      color: $white-light;
+      color: $blame-gray;
     }
   }
 }
