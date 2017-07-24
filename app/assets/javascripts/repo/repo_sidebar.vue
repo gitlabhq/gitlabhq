@@ -88,7 +88,7 @@ export default RepoSidebar;
     <tbody>
       <repo-file-options
         :is-mini="isMini"
-        project-name="TODO"/>
+        :project-name="projectName"/>
       <repo-previous-directory
         :prev-url="prevURL"
         @linkclicked="linkClicked(prevURL)"/>

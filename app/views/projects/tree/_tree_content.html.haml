@@ -1,4 +1,4 @@
-#repo{ data: { url: repo_url(@project) } }
+#repo{ data: { url: repo_url(@project), 'project-name' => @project.name } }
   #commit-area{ "v-if" => "changedFiles.length" }
     %form.form-horizontal
       %fieldset

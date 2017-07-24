@@ -17,6 +17,7 @@ function initRepo() {
 
   Store.service = Service;
   Store.service.url = repo.dataset.url;
+  Store.projectName = repo.dataset.projectName;
 
   new Vue({
     el: repo,
