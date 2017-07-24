@@ -2,26 +2,6 @@
 = render "admin/dashboard/head"
 
 %div{ class: container_class }
-
-  %p.prepend-top-default
-    %span
-      To register a new Runner you should enter the following registration
-      token.
-      With this token the Runner will request a unique Runner token and use
-      that for future communication.
-      %br
-      Registration token is
-      %code#runners-token= current_application_settings.runners_registration_token
-
-  .bs-callout.clearfix
-    .pull-left
-      %p
-        You can reset runners registration token by pressing a button below.
-      .prepend-top-10
-        = button_to "Reset runners registration token", reset_runners_token_admin_application_settings_path,
-          method: :put, class: 'btn btn-default',
-          data: { confirm: 'Are you sure you want to reset registration token?' }
-
   .bs-callout
     %p
       A 'Runner' is a process which runs a job.
@@ -45,6 +25,19 @@
         %li
           %span.label.label-danger paused
           \- Runner will not receive any new jobs
+
+  .bs-callout.clearfix
+    .pull-left
+      %p
+        You can reset runners registration token by pressing a button below.
+      .prepend-top-10
+        = button_to _("Reset runners registration token"), reset_runners_token_admin_application_settings_path,
+          method: :put, class: 'btn btn-default',
+          data: { confirm: _("Are you sure you want to reset registration token?") }
+
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: current_application_settings.runners_registration_token,
+                     type: 'shared' }
 
   .append-bottom-20.clearfix
     .pull-left

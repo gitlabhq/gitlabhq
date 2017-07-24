@@ -7,8 +7,7 @@ describe SystemHook, models: true do
     it 'sets defined default parameters' do
       attrs = {
         push_events: false,
-        repository_update_events: true,
-        enable_ssl_verification: true
+        repository_update_events: true
       }
       expect(system_hook).to have_attributes(attrs)
     end

@@ -6,8 +6,8 @@
         %h1.title
           = link_to root_path, title: 'Dashboard' do
             = brand_header_logo
-            %span.hidden-xs
-              GitLab
+            %span.logo-text.hidden-xs
+              = render 'shared/logo_type.svg'
 
         - if current_user
           = render "layouts/nav/new_dashboard"

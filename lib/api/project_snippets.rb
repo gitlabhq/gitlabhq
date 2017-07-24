@@ -116,6 +116,7 @@ module API
         not_found!('Snippet') unless snippet
 
         authorize! :admin_project_snippet, snippet
+        status 204
         snippet.destroy
       end
 

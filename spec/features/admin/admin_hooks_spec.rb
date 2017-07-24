@@ -74,11 +74,13 @@ describe 'Admin::Hooks', feature: true do
     end
   end
 
-  describe 'Test' do
+  describe 'Test', js: true do
     before do
       WebMock.stub_request(:post, @system_hook.url)
       visit admin_hooks_path
-      click_link 'Test hook'
+
+      find('.hook-test-button.dropdown').click
+      click_link 'Push events'
     end
 
     it { expect(current_path).to eq(admin_hooks_path) }

@@ -13,7 +13,7 @@ unless Sidekiq.server?
     # Add request parameters to log output
     config.lograge.custom_options = lambda do |event|
       {
-        time: event.time,
+        time: event.time.utc.iso8601(3),
         params: event.payload[:params].except(%w(controller action format))
       }
     end

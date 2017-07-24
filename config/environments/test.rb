@@ -45,7 +45,7 @@ Rails.application.configure do
   config.active_job.queue_adapter = :test
 
   if ENV['CI'] && !ENV['RAILS_ENABLE_TEST_LOG']
-    config.logger = Logger.new(nil)
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(nil))
     config.log_level = :fatal
   end
 end
