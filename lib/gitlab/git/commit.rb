@@ -98,8 +98,12 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.commits_between(base, head).map do |commit|
-            decorate(commit)
+          Gitlab::GitalyClient.migrate(:commits_between) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.between(base, head)
+            else
+              repo.commits_between(base, head).map { |c| decorate(c) }
+            end
           end
         rescue Rugged::ReferenceError
           []
@@ -127,6 +131,16 @@ module Gitlab
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/326
         def find_all(repo, options = {})
+          Gitlab::GitalyClient.migrate(:find_all_commits) do |is_enabled|
+            if is_enabled
+              find_all_by_gitaly(repo, options)
+            else
+              find_all_by_rugged(repo, options)
+            end
+          end
+        end
+
+        def find_all_by_rugged(repo, options = {})
           actual_options = options.dup
 
           allowed_options = [:ref, :max_count, :skip, :order]
@@ -163,6 +177,10 @@ module Gitlab
           commits
         rescue Rugged::OdbError
           []
+        end
+
+        def find_all_by_gitaly(repo, options = {})
+          Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
         def decorate(commit, ref = nil)
@@ -206,10 +224,13 @@ module Gitlab
       def initialize(raw_commit, head = nil)
         raise "Nil as raw commit passed" unless raw_commit
 
-        if raw_commit.is_a?(Hash)
+        case raw_commit
+        when Hash
           init_from_hash(raw_commit)
-        elsif raw_commit.is_a?(Rugged::Commit)
+        when Rugged::Commit
           init_from_rugged(raw_commit)
+        when Gitlab::GitalyClient::Commit
+          init_from_gitaly(raw_commit)
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
@@ -288,7 +309,14 @@ module Gitlab
       end
 
       def parents
-        raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
+        case raw_commit
+        when Rugged::Commit
+          raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
+        when Gitlab::GitalyClient::Commit
+          parent_ids.map { |oid| self.class.find(raw_commit.repository, oid) }.compact
+        else
+          raise NotImplementedError, "commit source doesn't support #parents"
+        end
       end
 
       def stats
@@ -369,6 +397,22 @@ module Gitlab
         @committer_name = committer[:name]
         @committer_email = committer[:email]
         @parent_ids = commit.parents.map(&:oid)
+      end
+
+      def init_from_gitaly(commit)
+        @raw_commit = commit
+        @id = commit.id
+        # TODO: Once gitaly "takes over" Rugged consider separating the
+        # subject from the message to make it clearer when there's one
+        # available but not the other.
+        @message = (commit.body.presence || commit.subject).dup
+        @authored_date = Time.at(commit.author.date.seconds)
+        @author_name = commit.author.name.dup
+        @author_email = commit.author.email.dup
+        @committed_date = Time.at(commit.committer.date.seconds)
+        @committer_name = commit.committer.name.dup
+        @committer_email = commit.committer.email.dup
+        @parent_ids = commit.parent_ids
       end
 
       def serialize_keys

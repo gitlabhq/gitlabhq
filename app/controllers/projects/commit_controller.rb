@@ -38,9 +38,14 @@ class Projects::CommitController < Projects::ApplicationController
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: PipelineSerializer
-          .new(project: @project, current_user: @current_user)
-          .represent(@pipelines)
+        render json: {
+          pipelines: PipelineSerializer
+            .new(project: @project, current_user: @current_user)
+            .represent(@pipelines),
+          count: {
+            all: @pipelines.count
+          }
+        }
       end
     end
   end

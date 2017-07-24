@@ -235,6 +235,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        status 204
         key.destroy
       end
 
@@ -306,6 +307,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
+        status 204
         user.delete_async(deleted_by: current_user, params: params)
       end
 
@@ -406,6 +408,7 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
+            status 204
             find_impersonation_token.revoke!
           end
         end
@@ -483,6 +486,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        status 204
         key.destroy
       end
 
@@ -534,6 +538,7 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
+        status 204
         Emails::DestroyService.new(current_user, email: email.email).execute
       end
 

@@ -109,9 +109,9 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
           expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
 
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
         end
       end
 
@@ -127,9 +127,9 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
           expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
 
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
         end
       end
     end
@@ -159,9 +159,9 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
         expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
 
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
       end
     end
   end

@@ -35,7 +35,7 @@ module Projects
       def define_badges_variables
         @ref = params[:ref] || @project.default_branch || 'master'
 
-        @badges = [Gitlab::Badge::Build::Status,
+        @badges = [Gitlab::Badge::Pipeline::Status,
                    Gitlab::Badge::Coverage::Report]
 
         @badges.map! do |badge|

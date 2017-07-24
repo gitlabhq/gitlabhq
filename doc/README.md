@@ -50,8 +50,7 @@ Shortcuts to GitLab's most visited docs:
 - [Fork a project](gitlab-basics/fork-project.md)
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
+- [Groups](user/group/index.md): Organize your projects in groups.
   - [GitLab Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
@@ -116,6 +115,7 @@ Manage files and branches from the UI (user interface):
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
 ----
 

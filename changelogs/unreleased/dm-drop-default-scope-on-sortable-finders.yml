@@ -1,4 +1,0 @@
----
-title: Improve performance of lookups of issues, merge requests etc by dropping unnecessary ORDER BY clause
-merge_request:
-author:

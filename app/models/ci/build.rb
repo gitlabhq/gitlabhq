@@ -96,6 +96,14 @@ module Ci
           BuildSuccessWorker.perform_async(id)
         end
       end
+
+      before_transition any => [:failed] do |build|
+        next if build.retries_max.zero?
+
+        if build.retries_count < build.retries_max
+          Ci::Build.retry(build, build.user)
+        end
+      end
     end
 
     def detailed_status(current_user)
@@ -128,6 +136,14 @@ module Ci
 
     def retryable?
       success? || failed? || canceled?
+    end
+
+    def retries_count
+      pipeline.builds.retried.where(name: self.name).count
+    end
+
+    def retries_max
+      self.options.fetch(:retry, 0).to_i
     end
 
     def latest?

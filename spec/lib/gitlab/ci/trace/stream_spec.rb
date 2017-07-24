@@ -293,5 +293,41 @@ describe Gitlab::Ci::Trace::Stream do
 
       it { is_expected.to eq("65") }
     end
+
+    context 'malicious regexp' do
+      let(:data) { malicious_text }  
+      let(:regex) { malicious_regexp }
+
+      include_examples 'malicious regexp'
+    end
+
+    context 'multi-line data with rooted regexp' do
+      let(:data) { "\n65%\n" }
+      let(:regex) { '^(\d+)\%$' }
+
+      it { is_expected.to eq('65') }
+    end
+
+    context 'empty regex' do
+      let(:data) { 'foo' }
+      let(:regex) { '' }
+
+      it 'skips processing' do
+        expect(stream).not_to receive(:read)
+
+        is_expected.to be_nil
+      end
+    end
+
+    context 'nil regex' do
+      let(:data) { 'foo' }
+      let(:regex) { nil }
+
+      it 'skips processing' do
+        expect(stream).not_to receive(:read)
+
+        is_expected.to be_nil
+      end
+    end
   end
 end

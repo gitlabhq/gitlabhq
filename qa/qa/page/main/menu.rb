@@ -14,13 +14,6 @@ module QA
           within_user_menu { click_link 'Admin area' }
         end
 
-        def go_to_new_project
-          within_user_menu do
-            find('.header-new-dropdown-toggle').click
-            click_link('New project')
-          end
-        end
-
         def sign_out
           within_user_menu do
             find('.header-user-dropdown-toggle').click

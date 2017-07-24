@@ -3,7 +3,8 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include DragTo
 
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }

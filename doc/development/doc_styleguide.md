@@ -388,8 +388,8 @@ the style below as a guide:
 1. Save the file and [restart] GitLab for the changes to take effect.
 
 
-[reconfigure]: path/to/administration/gitlab_restart.md#omnibus-gitlab-reconfigure
-[restart]: path/to/administration/gitlab_restart.md#installations-from-source
+[reconfigure]: path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: path/to/administration/restart_gitlab.md#installations-from-source
 ````
 
 In this case:

@@ -47,7 +47,7 @@
                 %li.pipelines-tab
                   = link_to pipelines_project_merge_request_path(@project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
                     Pipelines
-                    %span.badge= @pipelines.size
+                    %span.badge.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
                 = link_to diffs_project_merge_request_path(@project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
                   Changes

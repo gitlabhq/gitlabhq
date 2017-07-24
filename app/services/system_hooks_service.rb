@@ -4,7 +4,7 @@ class SystemHooksService
   end
 
   def execute_hooks(data, hooks_scope = :all)
-    SystemHook.send(hooks_scope).each do |hook|
+    SystemHook.public_send(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
   end

@@ -39,6 +39,7 @@ module Gitlab
             notes: Note.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
+            projects_imported_from_github: Project.where(import_type: 'github').count,
             projects_prometheus_active: PrometheusService.active.count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,

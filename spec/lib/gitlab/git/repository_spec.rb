@@ -45,11 +45,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'gets the branch name from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:default_branch_name)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:default_branch_name)
       repository.root_ref
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :default_branch_name do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :default_branch_name do
       subject { repository.root_ref }
     end
   end
@@ -132,11 +132,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("branch-from-space") }
 
     it 'gets the branch names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:branch_names)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:branch_names)
       subject
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :branch_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branch_names
   end
 
   describe '#tag_names' do
@@ -160,11 +160,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.not_to include("v5.0.0") }
 
     it 'gets the tag names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:tag_names)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:tag_names)
       subject
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :tag_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
   end
 
   shared_examples 'archive check' do |extenstion|
@@ -234,33 +234,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { expect(repository.bare?).to be_truthy }
   end
 
-  describe '#heads' do
-    let(:heads) { repository.heads }
-    subject { heads }
-
-    it { is_expected.to be_kind_of Array }
-
-    describe '#size' do
-      subject { super().size }
-      it { is_expected.to eq(SeedRepo::Repo::BRANCHES.size) }
-    end
-
-    context :head do
-      subject { heads.first }
-
-      describe '#name' do
-        subject { super().name }
-        it { is_expected.to eq("feature") }
-      end
-
-      context :commit do
-        subject { heads.first.dereferenced_target.sha }
-
-        it { is_expected.to eq("0b4bc9a49b562e85de7cc9e834518ea6828729b9") }
-      end
-    end
-  end
-
   describe '#ref_names' do
     let(:ref_names) { repository.ref_names }
     subject { ref_names }
@@ -275,42 +248,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     describe '#last' do
       subject { super().last }
       it { is_expected.to eq('v1.2.1') }
-    end
-  end
-
-  describe '#search_files' do
-    let(:results) { repository.search_files('rails', 'master') }
-    subject { results }
-
-    it { is_expected.to be_kind_of Array }
-
-    describe '#first' do
-      subject { super().first }
-      it { is_expected.to be_kind_of Gitlab::Git::BlobSnippet }
-    end
-
-    context 'blob result' do
-      subject { results.first }
-
-      describe '#ref' do
-        subject { super().ref }
-        it { is_expected.to eq('master') }
-      end
-
-      describe '#filename' do
-        subject { super().filename }
-        it { is_expected.to eq('CHANGELOG') }
-      end
-
-      describe '#startline' do
-        subject { super().startline }
-        it { is_expected.to eq(35) }
-      end
-
-      describe '#data' do
-        subject { super().data }
-        it { is_expected.to include "Ability to filter by multiple labels" }
-      end
     end
   end
 
@@ -431,7 +368,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly commit_count feature is enabled' do
       it_behaves_like 'counting commits'
-      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Commit, :commit_count do
+      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
         subject { repository.commit_count('master') }
       end
     end
@@ -521,7 +458,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       it "should refresh the repo's #heads collection" do
-        head_names = @normal_repo.heads.map { |h| h.name }
+        head_names = @normal_repo.branches.map { |h| h.name }
         expect(head_names).to include(new_branch)
       end
 
@@ -542,7 +479,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
             eq(normal_repo.rugged.branches["master"].target.oid)
           )
 
-          head_names = normal_repo.heads.map { |h| h.name }
+          head_names = normal_repo.branches.map { |h| h.name }
           expect(head_names).not_to include(new_branch)
         end
 
@@ -587,10 +524,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "should remove the branch from the repo" do
       expect(@repo.rugged.branches["feature"]).to be_nil
-    end
-
-    it "should update the repo's #heads collection" do
-      expect(@repo.heads).not_to include("feature")
     end
 
     after(:all) do
@@ -1292,12 +1225,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'gets the branches from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::Ref).to receive(:local_branches)
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:local_branches)
         .and_return([])
       @repo.local_branches
     end
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::Ref, :local_branches do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :local_branches do
       subject { @repo.local_branches }
     end
   end

@@ -1,5 +1,9 @@
 - page_title "Repository"
 - @content_class = "limit-container-width" unless fluid_layout
+
+- if show_new_nav?
+  - add_to_breadcrumbs("Settings", edit_project_path(@project))
+
 = render "projects/settings/head"
 
 - content_for :page_specific_javascripts do
