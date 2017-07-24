@@ -6,6 +6,10 @@ import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFileOptions from './repo_file_options.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
+import RepoTabs from './repo_tabs.vue';
+import RepoFileButtons from './repo_file_buttons.vue';
+import RepoBinaryViewer from './repo_binary_viewer.vue';
+import RepoEditor from './repo_editor.vue';
 import RepoMiniMixin from './repo_mini_mixin';
 
 export default class RepoSidebar {
@@ -22,6 +26,10 @@ export default class RepoSidebar {
         'repo-previous-directory': RepoPreviousDirectory,
         'repo-file': RepoFile,
         'repo-loading-file': RepoLoadingFile,
+        'repo-tabs': RepoTabs,
+        'repo-file-buttons': RepoFileButtons,
+        'repo-binary-viewer': RepoBinaryViewer,
+        'repo-editor': RepoEditor,
       },
 
       created() {
