@@ -317,14 +317,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       elsif @merge_request.head_pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        MergeWorker.perform_async(@merge_request.id, current_user.id, params.to_hash)
 
         :success
       else
         :failed
       end
     else
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+      MergeWorker.perform_async(@merge_request.id, current_user.id, params.to_hash)
 
       :success
     end

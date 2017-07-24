@@ -8,7 +8,7 @@ module Projects
 
     def async_execute
       project.update_attribute(:pending_delete, true)
-      job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
+      job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params.to_hash)
       Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
     end
 
