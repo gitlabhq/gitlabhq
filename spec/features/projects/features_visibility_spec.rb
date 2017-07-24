@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Edit Project Settings' do
   let(:member) { create(:user) }
-  let!(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
+  let!(:project) { create(:project, :public, :repository) }
   let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
@@ -249,7 +249,7 @@ describe 'Edit Project Settings' do
 
   # Regression spec for https://gitlab.com/gitlab-org/gitlab-ce/issues/24056
   describe 'project statistic visibility' do
-    let!(:project) { create(:project, :private) }
+    let!(:project) { create(:empty_project, :private) }
 
     before do
       project.team << [member, :guest]
