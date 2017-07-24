@@ -75,7 +75,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.0'
+gem 'grape', '~> 0.19.2'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -402,7 +402,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'net-ntp'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.17.0'
+gem 'gitaly', '~> 0.18.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

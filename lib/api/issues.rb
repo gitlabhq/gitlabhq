@@ -230,6 +230,7 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
+        status 204
         issue.destroy
       end
 

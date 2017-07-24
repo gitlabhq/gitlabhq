@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'OAuth Login', js: true do
+  include DeviseHelpers
+
   def enter_code(code)
     fill_in 'user_otp_attempt', with: code
     click_button 'Verify code'
@@ -8,7 +10,7 @@ feature 'OAuth Login', js: true do
 
   def stub_omniauth_config(provider)
     OmniAuth.config.add_mock(provider, OmniAuth::AuthHash.new(provider: provider.to_s, uid: "12345"))
-    Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+    set_devise_mapping(context: Rails.application)
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider]
   end
 

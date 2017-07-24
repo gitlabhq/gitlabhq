@@ -416,9 +416,6 @@ import AuditLogs from './audit_logs';
           new AuditLogs();
           break;
         case 'projects:settings:repository:show':
-          // Initialize Protected Branch Settings
-          new gl.ProtectedBranchCreate();
-          new gl.ProtectedBranchEditList();
           new UsersSelect();
           // Initialize expandable settings panels
           initSettingsPanels();
