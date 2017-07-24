@@ -18,7 +18,7 @@
 
   gl.ProtectedBranchCreate = class {
     constructor() {
-      this.$wrap = this.$form = $('#new_protected_branch');
+      this.$wrap = this.$form = $('.js-new-protected-branch');
       this.buildDropdowns();
       this.$branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
       this.bindEvents();
