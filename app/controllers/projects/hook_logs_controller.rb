@@ -14,9 +14,9 @@ class Projects::HookLogsController < Projects::ApplicationController
   end
 
   def retry
-    status, message = hook.execute(hook_log.request_data, hook_log.trigger)
+    result = hook.execute(hook_log.request_data, hook_log.trigger)
 
-    set_hook_execution_notice(status, message)
+    set_hook_execution_notice(result)
 
     redirect_to edit_project_hook_path(@project, @hook)
   end

@@ -10,10 +10,12 @@ context 'U2F' do
   end
 
   describe SessionsController, '(JavaScript fixtures)', type: :controller do
+    include DeviseHelpers
+
     render_views
 
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     it 'u2f/authenticate.html.raw' do |example|

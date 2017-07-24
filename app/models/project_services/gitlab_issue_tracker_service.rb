@@ -23,7 +23,7 @@ class GitlabIssueTrackerService < IssueTrackerService
     project_issue_url(project, id: iid)
   end
 
-  def project_path
+  def issue_tracker_path
     project_issues_path(project)
   end
 

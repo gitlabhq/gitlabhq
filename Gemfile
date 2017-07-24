@@ -37,7 +37,7 @@ gem 'omniauth-saml', '~> 1.7.0'
 gem 'omniauth-shibboleth', '~> 1.2.0'
 gem 'omniauth-twitter', '~> 1.2.0'
 gem 'omniauth_crowd', '~> 2.2.0'
-gem 'omniauth-authentiq', '~> 0.3.0'
+gem 'omniauth-authentiq', '~> 0.3.1'
 gem 'rack-oauth2', '~> 1.2.1'
 gem 'jwt', '~> 1.5.6'
 
@@ -71,7 +71,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.0'
+gem 'grape', '~> 0.19.2'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -162,6 +162,9 @@ gem 'rainbow', '~> 2.2'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
+
+# Linear-time regex library for untrusted regular expressions
+gem 're2', '~> 1.0.0'
 
 # Misc
 
@@ -281,7 +284,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta9'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -383,7 +386,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.14.0'
+gem 'gitaly', '~> 0.18.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

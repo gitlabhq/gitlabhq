@@ -83,7 +83,8 @@ module Ci
           before_script: job[:before_script],
           script: job[:script],
           after_script: job[:after_script],
-          environment: job[:environment]
+          environment: job[:environment],
+          retry: job[:retry]
         }.compact }
     end
 

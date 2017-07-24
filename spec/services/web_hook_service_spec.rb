@@ -58,7 +58,7 @@ describe WebHookService, services: true do
         exception = exception_class.new('Exception message')
 
         WebMock.stub_request(:post, project_hook.url).to_raise(exception)
-        expect(service_instance.execute).to eq([nil, exception.message])
+        expect(service_instance.execute).to eq({ status: :error, message: exception.message })
         expect { service_instance.execute }.not_to raise_error
       end
     end
@@ -66,13 +66,13 @@ describe WebHookService, services: true do
     it 'handles 200 status code' do
       WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: 'Success')
 
-      expect(service_instance.execute).to eq([200, 'Success'])
+      expect(service_instance.execute).to include({ status: :success, http_status: 200, message: 'Success' })
     end
 
     it 'handles 2xx status codes' do
       WebMock.stub_request(:post, project_hook.url).to_return(status: 201, body: 'Success')
 
-      expect(service_instance.execute).to eq([201, 'Success'])
+      expect(service_instance.execute).to include({ status: :success, http_status: 201, message: 'Success' })
     end
 
     context 'execution logging' do
