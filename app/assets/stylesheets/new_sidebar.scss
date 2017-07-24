@@ -215,9 +215,18 @@ $new-sidebar-width: 220px;
             position: absolute;
             top: 44px;
             left: -30px;
-            right: 0;
             bottom: 0;
+            height: 100%;
+            max-height: 150px;
+            width: 300px;
             z-index: -1;
+            transform: skew(33deg);
+          }
+
+          &.is-above::after {
+            top: auto;
+            bottom: 44px;
+            transform: skew(-30deg);
           }
 
           a {

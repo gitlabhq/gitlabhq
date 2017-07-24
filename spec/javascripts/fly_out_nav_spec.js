@@ -5,6 +5,7 @@ describe('Fly out sidebar navigation', () => {
     it('returns boundingRect top', () => {
       const boundingRect = {
         top: 100,
+        height: 100,
       };
 
       expect(
@@ -14,12 +15,13 @@ describe('Fly out sidebar navigation', () => {
 
     it('returns boundingRect - bottomOverflow', () => {
       const boundingRect = {
-        top: window.innerHeight,
+        top: window.innerHeight - 50,
+        height: 100,
       };
 
       expect(
         calculateTop(boundingRect, 100),
-      ).toBe(window.innerHeight - 100);
+      ).toBe(window.innerHeight - 50);
     });
   });
 });

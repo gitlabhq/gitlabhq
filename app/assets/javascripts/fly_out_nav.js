@@ -2,7 +2,8 @@ export const calculateTop = (boundingRect, outerHeight) => {
   const windowHeight = window.innerHeight;
   const bottomOverflow = windowHeight - (boundingRect.top + outerHeight);
 
-  return bottomOverflow < 0 ? boundingRect.top - Math.abs(bottomOverflow) : boundingRect.top;
+  return bottomOverflow < 0 ? (boundingRect.top - outerHeight) + boundingRect.height :
+    boundingRect.top;
 };
 
 export default () => {
@@ -13,10 +14,15 @@ export default () => {
     if ($subitems.length) {
       const boundingRect = $this.getBoundingClientRect();
       const top = calculateTop(boundingRect, $subitems.outerHeight());
+      const isAbove = top < boundingRect.top;
 
       $subitems.css({
         transform: `translate3d(0, ${top}px, 0)`,
       });
+
+      if (isAbove) {
+        $subitems.addClass('is-above');
+      }
     }
-  }).on('mouseout', e => $('.sidebar-sub-level-items', e.currentTarget).hide());
+  }).on('mouseout', e => $('.sidebar-sub-level-items', e.currentTarget).hide().removeClass('is-above'));
 };
