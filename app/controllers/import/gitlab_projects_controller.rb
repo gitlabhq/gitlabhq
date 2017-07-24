@@ -12,7 +12,7 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    import_upload_path = Gitlab::ImportExport.import_upload_path(filename: project_params[:file].original_filename)
+    import_upload_path = Gitlab::ImportExport.import_upload_path(filename: tmp_filename)
 
     FileUtils.mkdir_p(File.dirname(import_upload_path))
     FileUtils.copy_entry(project_params[:file].path, import_upload_path)
@@ -33,6 +33,10 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   private
+
+  def tmp_filename
+    "#{SecureRandom.hex}_#{project_params[:file].original_filename}"
+  end
 
   def file_is_valid?
     project_params[:file] && project_params[:file].respond_to?(:read)
