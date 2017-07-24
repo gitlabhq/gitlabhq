@@ -14,7 +14,7 @@ module Ci
 
       pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
         .execute(:trigger, ignore_skip_ci: true) do |pipeline|
-          pipeline.variables.create!(params[:variables]) if params[:variables]
+          create_pipeline_variables!(pipeline)
         end
 
       if pipeline.persisted?
@@ -28,6 +28,16 @@ module Ci
       return @trigger if defined?(@trigger)
 
       @trigger = Ci::Trigger.find_by_token(params[:token].to_s)
+    end
+
+    def create_pipeline_variables!(pipeline)
+      return if params[:variables] == nil || params[:variables].length == 0
+
+      variables = params[:variables].map do |key, value|
+        { key: key, value: value }
+      end
+
+      pipeline.variables.create!(variables)
     end
   end
 end

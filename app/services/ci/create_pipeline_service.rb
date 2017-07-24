@@ -15,19 +15,18 @@ module Ci
         pipeline_schedule: schedule
       )
 
-      result = validate(trigger_request,
-                        ignore_skip_ci: ignore_skip_ci,
-                        save_on_errors: save_on_errors)
+      validate(trigger_request,
+               ignore_skip_ci: ignore_skip_ci,
+               save_on_errors: save_on_errors).tap do |result|
+        return result if result
+      end
 
-      return result if result
-
-      err = create_pipeline(&block)
-      return err if err
+      create_pipeline(&block).tap do |error|
+        return error if error
+      end
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-
       pipeline_created_counter.increment(source: source)
-
       pipeline.tap(&:process!)
     end
 
@@ -45,8 +44,8 @@ module Ci
       end
 
       return nil
-    rescue ActiveRecord::RecordInvalid => invalid
-      return error('Failed to persist the pipeline')
+    rescue ActiveRecord::RecordInvalid => e
+      return error("Failed to persist the pipeline: #{e}")
     end
 
     def validate(trigger_request, ignore_skip_ci:, save_on_errors:)

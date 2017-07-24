@@ -42,7 +42,7 @@ describe Ci::PipelineTriggerService, services: true do
         end
 
         context 'when params have two variables' do
-          let(:variables) { [{ key: 'AAA', value:'AAA123' }, { key: 'BBB', value:'BBB123' }] }
+          let(:variables) { [{ key: 'AAA', value: 'AAA123' }, { key: 'BBB', value: 'BBB123' }] }
 
           it 'has two variables' do
             expect { result }.to change { Ci::PipelineVariable.count }.by(2)
@@ -54,7 +54,7 @@ describe Ci::PipelineTriggerService, services: true do
         end
 
         context 'when params have two variables and keys are duplicated' do
-          let(:variables) { [{ key: 'AAA', value:'AAA123' }, { key: 'AAA', value:'BBB123' }] }
+          let(:variables) { [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }] }
 
           it 'returns error' do
             expect { result }.not_to change { Ci::Pipeline.count }
