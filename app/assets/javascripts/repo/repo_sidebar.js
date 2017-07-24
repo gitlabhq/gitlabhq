@@ -51,10 +51,11 @@ export default class RepoSidebar {
         linkClicked(clickedFile) {
           let url = '';
           let file = clickedFile;
-          file.loading = true;
           if (typeof file === 'object') {
+            file.loading = true;
             if (file.type === 'tree' && file.opened) {
               file = Store.removeChildFilesOfTree(file);
+              file.loading = false;
             } else {
               url = file.url;
               Service.url = url;
@@ -71,7 +72,6 @@ export default class RepoSidebar {
             url = file;
             Service.url = url;
             Helper.getContent(null, () => {
-              file.loading = false;
               Helper.scrollTabsRight();
             });
           }
