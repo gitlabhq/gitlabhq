@@ -55,8 +55,7 @@ describe 'Edit Project Settings' do
     end
 
     context 'when changing project path' do
-      # Not using empty project because we need a repo to exist
-      let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
+      let(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
 
       before(:context) do
         TestEnv.clean_test_path
@@ -97,8 +96,7 @@ describe 'Edit Project Settings' do
   end
 
   describe 'Transfer project section', js: true do
-    # Not using empty project because we need a repo to exist
-    let!(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
+    let!(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
     let!(:group) { create(:group) }
 
     before(:context) do

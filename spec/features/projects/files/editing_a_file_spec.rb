@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'User wants to edit a file' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:commit_params) do
     {

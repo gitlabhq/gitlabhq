@@ -111,7 +111,7 @@ feature 'Environments page', :js do
     end
 
     context 'with deployments' do
-      given(:project) { create(:project) }
+      given(:project) { create(:project, :repository) }
 
       given(:deployment) do
         create(:deployment, environment: environment,
