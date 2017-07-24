@@ -59,9 +59,9 @@ module FilteredSearchHelpers
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
 
-        expect(el.find('.name')).to have_content(token_name)
+        expect(el.find('.name')).to have_content('bla-bla')
         if token_value
-          expect(el.find('.value')).to have_content(token_value)
+          expect(el.find('.value')).to have_content('bla-bla')
         end
       end
     end
