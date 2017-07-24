@@ -5,7 +5,8 @@ module Gitlab
     # Runs scheduler every minute
     SCHEDULER_CRON = '* * * * *'.freeze
     PULL_CAPACITY_KEY = 'MIRROR_PULL_CAPACITY'.freeze
-    UPPER_JITTER = 1.minute
+    JITTER = 1.minute
+    MIN_DELAY = 15.minutes
 
     class << self
       def configure_cron_job!
@@ -49,7 +50,15 @@ module Gitlab
       end
 
       def max_delay
-        current_application_settings.mirror_max_delay.hours + rand(UPPER_JITTER)
+        current_application_settings.mirror_max_delay.minutes + rand(JITTER)
+      end
+
+      def min_delay_upper_bound
+        MIN_DELAY + JITTER
+      end
+
+      def min_delay
+        MIN_DELAY + rand(JITTER)
       end
 
       def max_capacity
