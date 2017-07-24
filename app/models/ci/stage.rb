@@ -17,6 +17,8 @@ module Ci
     validates :pipeline, presence: true, unless: :importing?
     validates :name, presence: true, unless: :importing?
 
+    ## TODO, should we extract these events to `Ci::Eventable`?
+    #
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending

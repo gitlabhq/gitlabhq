@@ -91,6 +91,7 @@ class CommitStatus < ActiveRecord::Base
           end
         end
 
+        StageUpdateWorker.perform_async(commit_status.stage_id)
         ExpireJobCacheWorker.perform_async(commit_status.id)
       end
     end
