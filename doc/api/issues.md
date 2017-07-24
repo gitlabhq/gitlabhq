@@ -35,8 +35,9 @@ GET /issues?assignee_id=5
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `author_id` | integer        | no       | Returns issues created by the given user `id` (not limited to issues created by the authenticated user)                     |
-| `assignee_id` | integer      | no       | Returns issues assigned to the given user `id` (not limited to issues created by the authenticated user)                    |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
+| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
@@ -131,8 +132,9 @@ GET /groups/:id/issues?assignee_id=5
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `author_id` | integer        | no       | Returns issues created by the given user `id` (not limited to issues created by the authenticated user)                     |
-| `assignee_id` | integer      | no       | Returns issues assigned to the given user `id` (not limited to issues created by the authenticated user)                    |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
+| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
 | `search`    | string         | no       | Search group issues against their `title` and `description`                                                                  |
@@ -227,8 +229,9 @@ GET /projects/:id/issues?assignee_id=5
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `author_id` | integer        | no       | Returns issues created by the given user `id` (not limited to issues created by the authenticated user)                     |
-| `assignee_id` | integer      | no       | Returns issues assigned to the given user `id` (not limited to issues created by the authenticated user)                    |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
+| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
 | `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
 | `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
 | `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |

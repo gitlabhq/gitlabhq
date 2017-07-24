@@ -71,7 +71,6 @@ describe API::Issues do
         expect(response).to have_http_status(401)
       end
     end
-
     context "when authenticated" do
       let(:first_issue) { json_response.first }
 
@@ -105,10 +104,19 @@ describe API::Issues do
         expect(json_response.second['id']).to eq(closed_issue.id)
       end
 
+      it 'returns issues assigned to me' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user2), scope: 'assigned-to-me'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
       it 'returns issues authored by the given author id' do
         issue2 = create(:issue, author: user2, project: project)
 
-        get api('/issues', user), author_id: user2.id
+        get api('/issues', user), author_id: user2.id, scope: 'all'
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue2.id)
@@ -117,7 +125,7 @@ describe API::Issues do
       it 'returns issues assigned to the given assignee id' do
         issue2 = create(:issue, assignees: [user2], project: project)
 
-        get api('/issues', user), assignee_id: user2.id
+        get api('/issues', user), assignee_id: user2.id, scope: 'all'
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue2.id)
@@ -126,7 +134,7 @@ describe API::Issues do
       it 'returns issues authored by the given author id and assigned to the given assignee id' do
         issue2 = create(:issue, author: user2, assignees: [user2], project: project)
 
-        get api('/issues', user), author_id: user2.id, assignee_id: user2.id
+        get api('/issues', user), author_id: user2.id, assignee_id: user2.id, scope: 'all'
 
         expect_paginated_array_response(size: 1)
         expect(first_issue['id']).to eq(issue2.id)
