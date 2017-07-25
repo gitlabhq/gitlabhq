@@ -210,15 +210,25 @@ $new-sidebar-width: 220px;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
           border-radius: 0 3px 3px 0;
 
+          &::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            bottom: -20px;
+            left: 0;
+            right: -20px;
+            z-index: -1;
+          }
+
           &::after {
             content: "";
             position: absolute;
             top: 44px;
             left: -30px;
+            right: 35px;
             bottom: 0;
             height: 100%;
             max-height: 150px;
-            width: 300px;
             z-index: -1;
             transform: skew(33deg);
           }
