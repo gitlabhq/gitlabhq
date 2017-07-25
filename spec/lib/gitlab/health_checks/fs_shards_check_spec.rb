@@ -131,6 +131,12 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
           expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
         end
+
+        it 'cleans up files used for metrics' do
+          subject
+
+          expect(Dir.entries(tmp_dir).count).to eq(2)
+        end
       end
     end
   end
