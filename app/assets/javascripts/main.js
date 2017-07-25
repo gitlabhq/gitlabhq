@@ -346,4 +346,9 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
+  });
 });

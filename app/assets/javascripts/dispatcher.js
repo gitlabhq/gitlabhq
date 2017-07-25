@@ -30,7 +30,6 @@
 /* global IssuableContext */
 /* global IssueStatusSelect */
 /* global SubscriptionSelect */
-/* global Notes */
 
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -66,6 +65,9 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initNotes from './init_notes';
+import initLegacyFilters from './init_legacy_filters';
+import initIssuableSidebar from './init_issuable_sidebar';
 
 (function() {
   var Dispatcher;
@@ -128,42 +130,6 @@ import PerformanceBar from './performance_bar';
           actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
         })
           .init();
-      }
-
-      function initIssuableSidebar() {
-        new MilestoneSelect({
-          full_path: gl.sidebarOptions.fullPath,
-        });
-        new LabelsSelect();
-        new IssuableContext(gl.sidebarOptions.currentUser);
-        gl.Subscription.bindAll('.subscription');
-        new gl.DueDateSelectors();
-        window.sidebar = new Sidebar();
-      }
-
-      function initLegacyFilters() {
-        new UsersSelect();
-        new LabelsSelect();
-        new MilestoneSelect();
-        new IssueStatusSelect();
-        new SubscriptionSelect();
-        $('form.filter-form').on('submit', function (event) {
-          event.preventDefault();
-          gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
-        });
-      }
-
-      function initNotes() {
-        const dataEl = document.querySelector('.js-notes-data');
-        const {
-          notesUrl,
-          notesIds,
-          now,
-          diffView,
-          autocomplete,
-        } = JSON.parse(dataEl.innerHTML);
-
-        window.notes = new Notes(notesUrl, notesIds, now, diffView, autocomplete);
       }
 
       switch (page) {
