@@ -1,4 +1,6 @@
 class Profiles::GpgKeysController < Profiles::ApplicationController
+  before_action :set_gpg_key, only: [:destroy, :revoke]
+
   def index
     @gpg_keys = current_user.gpg_keys
     @gpg_key = GpgKey.new
@@ -16,8 +18,7 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
   end
 
   def destroy
-    @gpp_key = current_user.gpg_keys.find(params[:id])
-    @gpp_key.destroy
+    @gpg_key.destroy
 
     respond_to do |format|
       format.html { redirect_to profile_gpg_keys_url, status: 302 }
@@ -26,8 +27,7 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
   end
 
   def revoke
-    @gpp_key = current_user.gpg_keys.find(params[:id])
-    @gpp_key.revoke
+    @gpg_key.revoke
 
     respond_to do |format|
       format.html { redirect_to profile_gpg_keys_url, status: 302 }
@@ -39,5 +39,9 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
 
   def gpg_key_params
     params.require(:gpg_key).permit(:key)
+  end
+
+  def set_gpg_key
+    @gpg_key = current_user.gpg_keys.find(params[:id])
   end
 end
