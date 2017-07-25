@@ -89,13 +89,13 @@ module API
       end
 
       def find_user_by_ci_token
+        return nil unless route_authentication_setting[:job_token_allowed]
+
         job_token = params[CI_JOB_TOKEN_PARAM].to_s
 
         return nil unless job_token.present?
 
-        user = Ci::Build.find_by_token(job_token)&.user
-
-        user.becomes(Ci::JobUser) if user
+        Ci::Build.find_by_token(job_token)&.user
       end
 
       def current_user
@@ -103,6 +103,10 @@ module API
       end
 
       private
+
+      def route_authentication_setting
+        route_setting(:authentication) || {}
+      end
 
       def find_user_by_authentication_token(token_string)
         User.find_by_authentication_token(token_string)

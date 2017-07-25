@@ -33,9 +33,10 @@ class Ability
     end
 
     def allowed?(user, action, subject = :global, opts = {})
-      return user.abilities.include?(action) if user.is_a?(Ci::JobUser)
+      if subject.is_a?(Hash)
+        opts, subject = subject, :global
+      end
 
-      opts, subject = subject, :global if subject.is_a?(Hash)
       policy = policy_for(user, subject)
 
       case opts[:scope]
