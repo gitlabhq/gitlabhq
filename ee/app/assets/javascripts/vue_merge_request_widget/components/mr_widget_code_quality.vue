@@ -1,9 +1,9 @@
 <script>
 import successIcon from 'icons/_icon_status_success.svg';
 import errorIcon from 'icons/_icon_status_failed.svg';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import '~/lib/utils/text_utility';
 import issuesBlock from './mr_widget_code_quality_issues.vue';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-import '../../../lib/utils/text_utility';
 
 export default {
   name: 'MRWidgetCodeQuality',

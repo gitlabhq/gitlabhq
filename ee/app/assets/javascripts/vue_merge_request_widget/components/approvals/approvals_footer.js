@@ -1,6 +1,6 @@
 /* global Flash */
 import LinkToMemberAvatar from '~/vue_shared/components/link_to_member_avatar';
-import eventHub from '../../../event_hub';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
   name: 'approvals-footer',

@@ -1,4 +1,4 @@
-import MergeRequestStore from '~/vue_merge_request_widget/ee/stores/mr_widget_store';
+import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import mockData, { headIssues, baseIssues } from '../mock_data';
 
 describe('MergeRequestStore', () => {

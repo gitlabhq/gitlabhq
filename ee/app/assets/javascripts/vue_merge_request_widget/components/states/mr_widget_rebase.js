@@ -1,7 +1,7 @@
 /* global Flash */
 
 import simplePoll from '~/lib/utils/simple_poll';
-import eventHub from '../../../event_hub';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
   props: {

@@ -1,7 +1,7 @@
 <script>
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import linkedPipelinesColumn from './linked_pipelines_column.vue';
   import stageColumnComponent from './stage_column_component.vue';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
   export default {
     props: {

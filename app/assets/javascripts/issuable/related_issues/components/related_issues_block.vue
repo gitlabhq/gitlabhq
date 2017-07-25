@@ -1,7 +1,7 @@
 <script>
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-import tooltip from '../../../vue_shared/directives/tooltip';
 import issueToken from './issue_token.vue';
 import addIssuableForm from './add_issuable_form.vue';
 

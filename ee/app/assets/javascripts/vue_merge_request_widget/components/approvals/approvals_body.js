@@ -1,6 +1,6 @@
 /* global Flash */
-import MRWidgetAuthor from '../../../components/mr_widget_author';
-import eventHub from '../../../event_hub';
+import MRWidgetAuthor from '~/vue_merge_request_widget/components/mr_widget_author';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 
 export default {
   name: 'approvals-body',

@@ -1,4 +1,4 @@
-import CEMergeRequestStore from '../../stores/mr_widget_store';
+import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import CEWidgetService from '../../services/mr_widget_service';
+import CEWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
 export default class MRWidgetService extends CEWidgetService {
   constructor(mr) {

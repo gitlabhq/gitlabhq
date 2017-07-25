@@ -1,4 +1,4 @@
-import stateMaps from '../../stores/state_maps';
+import stateMaps from '~/vue_merge_request_widget/stores/state_maps';
 
 stateMaps.stateToComponentMap.geoSecondaryNode = 'mr-widget-geo-secondary-node';
 stateMaps.stateToComponentMap.rebase = 'mr-widget-rebase';

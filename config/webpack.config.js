@@ -61,9 +61,9 @@ var config = {
     profile:              './profile/profile_bundle.js',
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
-    ee_protected_branches: './protected_branches/ee',
+    ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
-    ee_protected_tags:    './protected_tags/ee',
+    ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -208,6 +208,7 @@ var config = {
   resolve: {
     extensions: ['.js'],
     alias: {
+      'ee':             path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
       'empty_states':   path.join(ROOT_PATH, 'app/views/shared/empty_states'),
