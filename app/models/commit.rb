@@ -55,7 +55,8 @@ class Commit
     end
 
     def from_hash(hash, project)
-      new(Gitlab::Git::Commit.new(hash), project)
+      raw_commit = Gitlab::Git::Commit.new(project.repository.raw, hash)
+      new(raw_commit, project)
     end
 
     def valid_hash?(key)
