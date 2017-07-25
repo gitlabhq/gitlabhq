@@ -1,3 +1,4 @@
+import Store from './repo_store';
 import axios from 'axios';
 
 const RepoService = {
@@ -8,6 +9,14 @@ const RepoService = {
     },
   },
   richExtensionRegExp: /md/,
+
+  checkCurrentBranchIsCommitable() {
+    const url = Store.service.refsUrl;
+    return axios.get(url, {params: {
+        ref: Store.currentBranch,
+        search: Store.currentBranch
+      }});
+  },
 
   buildParams(url = this.url) {
     // shallow clone object without reference

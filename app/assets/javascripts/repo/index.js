@@ -3,9 +3,9 @@ import $ from 'jquery';
 import Vue from 'vue';
 import RepoSidebar from './repo_sidebar.vue';
 import EditButton from './repo_edit_button';
-import CommitSection from './repo_commit_section';
 import Service from './repo_service';
 import Store from './repo_store';
+import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoBinaryViewer from './repo_binary_viewer.vue';
@@ -18,6 +18,9 @@ function initRepo() {
   Store.service = Service;
   Store.service.url = repo.dataset.url;
   Store.projectName = repo.dataset.projectName;
+  Store.service.refsUrl = repo.dataset.refsUrl;
+  Store.currentBranch = $("button.dropdown-menu-toggle").attr('data-ref');
+  Store.checkIsCommitable();
 
   new Vue({
     el: repo,
@@ -30,6 +33,7 @@ function initRepo() {
           <repo-editor/>
           <repo-binary-viewer/>
         </div>
+        <repo-commit-section/>
       </div>
     `,
     mixins: [RepoMiniMixin],
@@ -39,14 +43,12 @@ function initRepo() {
       'repo-file-buttons': RepoFileButtons,
       'repo-binary-viewer': RepoBinaryViewer,
       'repo-editor': RepoEditor,
+      'repo-commit-section': RepoCommitSection
     },
   });
 
   const editButton = document.getElementById('editable-mode');
-  const commitSection = document.getElementById('commit-area');
-
   Store.editButton = new EditButton(editButton);
-  Store.commitSection = new CommitSection(commitSection);
 }
 
 $(initRepo);

@@ -40,7 +40,10 @@ const RepoStore = {
   activeLine: 0,
   activeFileLabel: 'Raw',
   files: [],
+  isCommitable: false,
   binary: false,
+  currentBranch: '',
+  commitMessage: 'Update README.md',
   binaryMimeType: '',
   // scroll bar space for windows
   scrollWidth: 0,
@@ -54,6 +57,17 @@ const RepoStore = {
   },
 
   // mutations
+
+  checkIsCommitable() {
+    RepoStore.service.checkCurrentBranchIsCommitable()
+      .then((data) => {
+        // you shouldn't be able to make commits on commits or tags. 
+        let {Branches, Commits, Tags} = data.data;
+        if(Branches && Branches.length) RepoStore.isCommitable = true;
+        if(Commits && Commits.length) RepoStore.isCommitable = false;
+        if(Tags && Tags.length) RepoStore.isCommitable = false;
+      });
+  },
 
   addFilesToDirectory(inDirectory, currentList, newList) {
     RepoStore.files = RepoHelper.getNewMergedList(inDirectory, currentList, newList);
