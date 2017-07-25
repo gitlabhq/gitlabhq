@@ -5,6 +5,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   before_action :authorize_admin_project!, except: [:update_now]
   before_action :authorize_push_code!, only: [:update_now]
   before_action :remote_mirror, only: [:update]
+  before_action :check_repository_mirrors_available!
 
   layout "project_settings"
 

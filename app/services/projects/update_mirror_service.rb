@@ -5,7 +5,7 @@ module Projects
 
     def execute
       unless project.mirror?
-        return error("The project has no mirror to update")
+        return success
       end
 
       unless can?(current_user, :push_code_to_protected_branches, project)

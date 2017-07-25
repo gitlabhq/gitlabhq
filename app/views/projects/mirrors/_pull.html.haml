@@ -1,0 +1,46 @@
+- expanded = Rails.env.test?
+%section.settings.project-mirror-settings
+  .settings-header
+    %h4
+      Pull from a remote repository
+    %button.btn.js-settings-toggle
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      Set up your project to automatically have its branches, tags, and commits
+      updated from an upstream repository.
+      = link_to 'Read more', help_page_path('workflow/repository_mirroring', anchor: 'pulling-from-a-remote-repository'), target: '_blank'
+  .settings-content.no-animate{ class: ('expanded' if expanded) }
+    = form_for @project, url: project_mirror_path(@project) do |f|
+      %div
+        = form_errors(@project)
+      %h5
+        Set up mirror repository
+      = render "shared/mirror_update_button"
+      - if @project.mirror_last_update_failed?
+        .panel.panel-danger
+          .panel-heading
+            The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+            - if @project.mirror_ever_updated_successfully?
+              Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+          .panel-body
+            %pre
+              :preserve
+                #{h(@project.import_error.try(:strip))}
+      .form-group
+        = f.check_box :mirror, class: "pull-left"
+        .prepend-left-20
+          = f.label :mirror, "Mirror repository", class: "label-light append-bottom-0"
+      .form-group
+        = f.label :import_url, "Git repository URL", class: "label-light"
+        = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+        = render "projects/mirrors/instructions"
+      .form-group
+        = f.label :mirror_user_id, "Mirror user", class: "label-light"
+        = select_tag('project[mirror_user_id]', options_for_mirror_user, class: "select2 lg", required: true)
+        .help-block
+          This user will be the author of all events in the activity feed that are the result of an update,
+          like new branches being created or new commits being pushed to existing branches.
+          You can only assign yourself to be the mirror user.
+      - if @project.builds_enabled?
+        = render "shared/mirror_trigger_builds_setting", f: f
+      = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

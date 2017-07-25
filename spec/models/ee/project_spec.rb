@@ -217,6 +217,62 @@ describe Project, models: true do
     end
   end
 
+  describe '#has_remote_mirror?' do
+    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    subject { project.has_remote_mirror? }
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'returns true when a remote mirror is enabled' do
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns false when remote mirror is disabled' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      is_expected.to be_falsy
+    end
+  end
+
+  describe '#update_remote_mirrors' do
+    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    delegate :update_remote_mirrors, to: :project
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'syncs enabled remote mirror' do
+      expect_any_instance_of(RemoteMirror).to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does nothing when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does not sync disabled remote mirrors' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+  end
+
   describe '#any_runners_limit' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }

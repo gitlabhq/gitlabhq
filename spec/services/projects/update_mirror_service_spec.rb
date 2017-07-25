@@ -4,6 +4,21 @@ describe Projects::UpdateMirrorService do
   let(:project) { create(:project, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
 
   describe "#execute" do
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'does nothing' do
+        allow_any_instance_of(EE::Project).to receive(:destroy_mirror_data)
+
+        expect(project).not_to receive(:fetch_mirror)
+
+        result = described_class.new(project, project.owner).execute
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
     it "fetches the upstream repository" do
       expect(project).to receive(:fetch_mirror)
 
@@ -111,12 +126,12 @@ describe Projects::UpdateMirrorService do
     describe "when is no mirror" do
       let(:project) { build_stubbed(:project) }
 
-      it "fails" do
+      it "success" do
         expect(project.mirror?).to eq(false)
 
         result = described_class.new(project, build_stubbed(:user)).execute
 
-        expect(result[:status]).to eq(:error)
+        expect(result[:status]).to eq(:success)
       end
     end
   end
