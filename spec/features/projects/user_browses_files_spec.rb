@@ -87,8 +87,6 @@ describe 'User browses files' do
 
       visit(project_tree_path(project, "'test'"))
 
-      wait_for_requests
-
       expect(page).to have_css('.tree-commit-link', visible: true)
       expect(page).not_to have_content('Loading commit data...')
     end
@@ -101,8 +99,6 @@ describe 'User browses files' do
       end
 
       visit(project_tree_path(project, 'fix/.testdir'))
-
-      wait_for_requests
 
       expect(page).to have_css('.tree-commit-link', visible: true)
       expect(page).not_to have_content('Loading commit data...')
