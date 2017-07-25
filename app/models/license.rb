@@ -28,6 +28,7 @@ class License < ActiveRecord::Base
   PROTECTED_REFS_FOR_USERS_FEATURE = 'GitLab_RefPermissionsForUsers'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
   RELATED_ISSUES_FEATURE = 'GitLab_RelatedIssues'.freeze
+  REPOSITORY_MIRRORS_FEATURE = 'GitLab_RepositoryMirrors'.freeze
   REPOSITORY_SIZE_LIMIT_FEATURE = 'GitLab_RepositorySizeLimit'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
@@ -64,7 +65,8 @@ class License < ActiveRecord::Base
     multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
     multiple_issue_boards: MULTIPLE_ISSUE_BOARDS_FEATURE,
     protected_refs_for_users: PROTECTED_REFS_FOR_USERS_FEATURE,
-    push_rules: PUSH_RULES_FEATURE
+    push_rules: PUSH_RULES_FEATURE,
+    repository_mirrors: REPOSITORY_MIRRORS_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -93,6 +95,7 @@ class License < ActiveRecord::Base
     { PUSH_RULES_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
     { RELATED_ISSUES_FEATURE => 1 },
+    { REPOSITORY_MIRRORS_FEATURE => 1 },
     { REPOSITORY_SIZE_LIMIT_FEATURE => 1 }
   ].freeze
 
@@ -143,6 +146,7 @@ class License < ActiveRecord::Base
     { OBJECT_STORAGE_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
+    { REPOSITORY_MIRRORS_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 
