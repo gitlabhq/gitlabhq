@@ -22,6 +22,7 @@ function initRepo() {
   Store.currentBranch = $("button.dropdown-menu-toggle").attr('data-ref');
   Store.checkIsCommitable();
   Store.projectId = repo.dataset.projectId;
+  Store.tempPrivateToken = repo.dataset.tempToken;
 
   new Vue({
     el: repo,

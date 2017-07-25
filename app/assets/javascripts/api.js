@@ -106,7 +106,8 @@ const Api = {
         'PRIVATE_TOKEN': token,
       },
       type: 'POST',
-      data: data,
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify(data),
       dataType: 'json',
     })
       .done(commitData => callback(commitData))

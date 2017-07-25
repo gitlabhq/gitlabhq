@@ -22,6 +22,7 @@ const RepoStore = {
   defaultTabSize: 100,
   minTabSize: 30,
   tabsOverflow: 41,
+  tempPrivateToken: '',
   activeFile: {
     active: true,
     binary: false,

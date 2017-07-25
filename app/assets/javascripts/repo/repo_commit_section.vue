@@ -31,7 +31,7 @@ const RepoCommitSection = {
       }
       Api.commitMultiple(Store.projectId, payload, (data) => {
         console.log('got back', data);
-      })
+      }, Store.tempPrivateToken);
     }
   },
 
