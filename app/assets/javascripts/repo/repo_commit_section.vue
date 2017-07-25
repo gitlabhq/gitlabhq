@@ -13,12 +13,22 @@ const RepoCommitSection = {
       // actions[]
       // author_email
       // author_name
-      const branchName = $("button.dropdown-menu-toggle").attr('data-ref');
+      const branch = $("button.dropdown-menu-toggle").attr('data-ref');
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => {
-          return f.url.split(branchName)[1];
+          const filePath = f.url.split(branch)[1];
+          return {
+            action: 'update',
+            file_path: filePath,
+            content: f.newContent,
+          };
       });
-      console.log(branchName, commitMessage, actions);
+      const payload = {
+        branch: branch,
+        commit_message: commitMessage,
+        actions: actions,
+      }
+      console.log(branch, commitMessage, actions);
     }
   },
 
@@ -94,7 +104,7 @@ export default RepoCommitSection;
         </div>
       </div>
       <div class="col-md-offset-4 col-md-4">
-        <button type="submit" class="btn btn-success" @click.prevent="makeCommit">Commit {{changedFiles.length}} Files</button>
+        <button type="submit" :disabled="!commitMessage" class="btn btn-success" @click.prevent="makeCommit">Commit {{changedFiles.length}} Files</button>
       </div>
     </fieldset>
   </form>
