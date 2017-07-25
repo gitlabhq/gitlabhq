@@ -27,7 +27,7 @@ module Geo
       return unless Gitlab::Geo.geo_database_configured?
       return unless Gitlab::Geo.secondary?
 
-      logger.info "Started #{self.class.name}"
+      log_info('Started scheduler')
 
       @start_time = Time.now
 
@@ -54,7 +54,7 @@ module Geo
           sleep(1)
         end
 
-        logger.info "Finished #{self.class.name}"
+        log_info('Finished scheduler')
       end
     end
 
@@ -128,7 +128,7 @@ module Geo
       lease = exclusive_lease.try_obtain
 
       unless lease
-        logger.info " #{self.class.name}: Cannot obtain an exclusive lease. There must be another worker already in execution."
+        log_error('Cannot obtain an exclusive lease. There must be another worker already in execution.')
         return
       end
 
@@ -159,6 +159,14 @@ module Geo
       end
 
       @current_node_enabled ||= Gitlab::Geo.current_node_enabled?
+    end
+
+    def log_info(message)
+      Gitlab::Geo::Logger.info(class: self.class.name, message: message)
+    end
+
+    def log_error(message)
+      Gitlab::Geo::Logger.error(class: self.class.name, message: message)
     end
   end
 end
