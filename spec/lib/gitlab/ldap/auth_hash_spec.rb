@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::LDAP::AuthHash do
   let(:auth_hash) do
-    Gitlab::LDAP::AuthHash.new(
+    described_class.new(
       OmniAuth::AuthHash.new(
         uid: '123456', 
         provider: 'ldapmain', 

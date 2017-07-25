@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Conflict::Parser do
-  let(:parser) { Gitlab::Conflict::Parser.new }
+  let(:parser) { described_class.new }
 
   describe '#parse' do
     def parse_text(text)

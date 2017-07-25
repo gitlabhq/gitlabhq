@@ -19,7 +19,7 @@ describe SystemCheck do
   end
 
   describe '.run' do
-    subject { SystemCheck }
+    subject { described_class }
 
     it 'detects execution of SimpleCheck' do
       is_expected.to execute_check(SimpleCheck)

@@ -100,7 +100,7 @@ describe Groups::DestroyService do
 
           # Kick off the initial group destroy in a new thread, so that
           # it doesn't share this spec's database transaction.
-          Thread.new { Groups::DestroyService.new(group, user).async_execute }.join(5)
+          Thread.new { described_class.new(group, user).async_execute }.join(5)
 
           group_record = run_with_new_database_connection do |conn|
             conn.execute("SELECT * FROM namespaces WHERE id = #{group.id}").first

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe NotificationService do
   include EmailHelpers
 
-  let(:notification) { NotificationService.new }
+  let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
   around(:each) do |example|

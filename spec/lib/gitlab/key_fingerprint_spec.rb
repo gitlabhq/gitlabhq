@@ -6,7 +6,7 @@ describe Gitlab::KeyFingerprint do
 
   describe "#fingerprint" do
     it "generates the key's fingerprint" do
-      expect(Gitlab::KeyFingerprint.new(key).fingerprint).to eq(fingerprint)
+      expect(described_class.new(key).fingerprint).to eq(fingerprint)
     end
   end
 end

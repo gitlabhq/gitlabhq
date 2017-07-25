@@ -9,7 +9,7 @@ describe GroupMilestone do
 
   describe '.build' do
     it 'returns milestone with group assigned' do
-      milestone = GroupMilestone.build(
+      milestone = described_class.build(
         group,
         [project],
         project_milestone.title
@@ -25,7 +25,7 @@ describe GroupMilestone do
     end
 
     it 'returns array of milestones, each with group assigned' do
-      milestones = GroupMilestone.build_collection(group, [project], {})
+      milestones = described_class.build_collection(group, [project], {})
       expect(milestones).to all(have_attributes(group: group))
     end
   end

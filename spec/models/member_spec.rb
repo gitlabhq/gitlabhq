@@ -6,7 +6,7 @@ describe Member do
   end
 
   describe "Validation" do
-    subject { Member.new(access_level: Member::GUEST) }
+    subject { described_class.new(access_level: Member::GUEST) }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PagesService do
   let(:build) { create(:ci_build) }
   let(:data) { Gitlab::DataBuilder::Build.build(build) }
-  let(:service) { PagesService.new(data) }
+  let(:service) { described_class.new(data) }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::OAuth::AuthHash do
   let(:auth_hash) do
-    Gitlab::OAuth::AuthHash.new(
+    described_class.new(
       OmniAuth::AuthHash.new(
         provider: provider_ascii,
         uid: uid_ascii,

@@ -4,7 +4,7 @@ describe Gitlab::GitlabImport::Client do
   include ImportSpecHelper
 
   let(:token) { '123456' }
-  let(:client) { Gitlab::GitlabImport::Client.new(token) }
+  let(:client) { described_class.new(token) }
 
   before do
     stub_omniauth_provider('gitlab')

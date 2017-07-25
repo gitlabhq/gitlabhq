@@ -46,7 +46,7 @@ describe Ci::PipelineSchedule do
       end
 
       it 'updates next_run_at automatically' do
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
 
@@ -61,7 +61,7 @@ describe Ci::PipelineSchedule do
       it 'updates next_run_at automatically' do
         pipeline_schedule.update!(cron: new_cron)
 
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
   end

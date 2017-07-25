@@ -4,7 +4,7 @@ describe UserPolicy do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 
-  subject { UserPolicy.new(current_user, user) }
+  subject { described_class.new(current_user, user) }
 
   describe "reading a user's information" do
     it { is_expected.to be_allowed(:read_user) }

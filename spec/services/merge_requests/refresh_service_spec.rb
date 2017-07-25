@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::RefreshService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:service) { MergeRequests::RefreshService }
+  let(:service) { described_class }
 
   describe '#execute' do
     before do

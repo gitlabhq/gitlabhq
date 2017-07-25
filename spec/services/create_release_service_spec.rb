@@ -5,7 +5,7 @@ describe CreateReleaseService do
   let(:user) { create(:user) }
   let(:tag_name) { project.repository.tag_names.first }
   let(:description) { 'Awesome release!' }
-  let(:service) { CreateReleaseService.new(project, user) }
+  let(:service) { described_class.new(project, user) }
 
   it 'creates a new release' do
     result = service.execute(tag_name, description)

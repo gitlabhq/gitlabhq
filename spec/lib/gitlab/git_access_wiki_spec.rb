@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccessWiki do
-  let(:access) { Gitlab::GitAccessWiki.new(user, project, 'web', authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+  let(:access) { described_class.new(user, project, 'web', authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:redirected_path) { nil }

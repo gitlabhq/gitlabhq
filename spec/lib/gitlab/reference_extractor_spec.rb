@@ -7,7 +7,7 @@ describe Gitlab::ReferenceExtractor do
     project.team << [project.creator, :developer]
   end
 
-  subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
+  subject { described_class.new(project, project.creator) }
 
   it 'accesses valid user objects' do
     @u_foo = create(:user, username: 'foo')

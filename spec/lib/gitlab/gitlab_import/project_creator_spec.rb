@@ -23,7 +23,7 @@ describe Gitlab::GitlabImport::ProjectCreator do
   it 'creates project' do
     allow_any_instance_of(Project).to receive(:add_import_job)
 
-    project_creator = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, user, access_params)
+    project_creator = described_class.new(repo, namespace, user, access_params)
     project = project_creator.execute
 
     expect(project.import_url).to eq("https://oauth2:asdffg@gitlab.com/asd/vim.git")

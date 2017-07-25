@@ -133,7 +133,7 @@ describe Namespace do
     it "sums all project storage counters in the namespace" do
       project1
       project2
-      statistics = Namespace.with_statistics.find(namespace.id)
+      statistics = described_class.with_statistics.find(namespace.id)
 
       expect(statistics.storage_size).to eq 666
       expect(statistics.repository_size).to eq 111
@@ -142,7 +142,7 @@ describe Namespace do
     end
 
     it "correctly handles namespaces without projects" do
-      statistics = Namespace.with_statistics.find(namespace.id)
+      statistics = described_class.with_statistics.find(namespace.id)
 
       expect(statistics.storage_size).to eq 0
       expect(statistics.repository_size).to eq 0
@@ -286,9 +286,9 @@ describe Namespace do
       @namespace = create(:namespace, name: 'WoW', path: 'woW')
     end
 
-    it { expect(Namespace.find_by_path_or_name('wow')).to eq(@namespace) }
-    it { expect(Namespace.find_by_path_or_name('WOW')).to eq(@namespace) }
-    it { expect(Namespace.find_by_path_or_name('unknown')).to eq(nil) }
+    it { expect(described_class.find_by_path_or_name('wow')).to eq(@namespace) }
+    it { expect(described_class.find_by_path_or_name('WOW')).to eq(@namespace) }
+    it { expect(described_class.find_by_path_or_name('unknown')).to eq(nil) }
   end
 
   describe ".clean_path" do
@@ -296,8 +296,8 @@ describe Namespace do
     let!(:namespace)  { create(:namespace, path: "JohnGitLab-etc1") }
 
     it "cleans the path and makes sure it's available" do
-      expect(Namespace.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
-      expect(Namespace.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
+      expect(described_class.clean_path("-john+gitlab-ETC%.git@gmail.com")).to eq("johngitlab-ETC2")
+      expect(described_class.clean_path("--%+--valid_*&%name=.git.%.atom.atom.@email.com")).to eq("valid_name")
     end
   end
 

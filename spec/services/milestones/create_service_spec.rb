@@ -14,7 +14,7 @@ describe Milestones::CreateService do
           description: 'Patch release to fix security issue'
         }
 
-        @milestone = Milestones::CreateService.new(project, user, opts).execute
+        @milestone = described_class.new(project, user, opts).execute
       end
 
       it { expect(@milestone).to be_valid }

@@ -27,7 +27,7 @@ describe GitlabIssueTrackerService do
 
     context 'with absolute urls' do
       before do
-        allow(GitlabIssueTrackerService).to receive(:default_url_options).and_return(script_name: "/gitlab/root")
+        allow(described_class).to receive(:default_url_options).and_return(script_name: "/gitlab/root")
       end
 
       it 'gives the correct path' do
@@ -39,7 +39,7 @@ describe GitlabIssueTrackerService do
 
     context 'with relative urls' do
       before do
-        allow(GitlabIssueTrackerService).to receive(:default_url_options).and_return(script_name: "/gitlab/root")
+        allow(described_class).to receive(:default_url_options).and_return(script_name: "/gitlab/root")
       end
 
       it 'gives the correct path' do

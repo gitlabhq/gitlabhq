@@ -525,7 +525,7 @@ describe Note do
 
       it "has a discussion id" do
         # The discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = Note.find(note.id)
+        reloaded_note = described_class.find(note.id)
 
         expect(reloaded_note.discussion_id).not_to be_nil
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)

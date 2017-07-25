@@ -29,7 +29,7 @@ describe PushoverService do
   end
 
   describe 'Execute' do
-    let(:pushover) { PushoverService.new }
+    let(:pushover) { described_class.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:sample_data) do

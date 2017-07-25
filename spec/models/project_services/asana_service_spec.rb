@@ -35,7 +35,7 @@ describe AsanaService do
     end
 
     before do
-      @asana = AsanaService.new
+      @asana = described_class.new
       allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,
