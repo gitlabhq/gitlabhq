@@ -7,7 +7,7 @@ class BoardService {
     this.boards = Vue.resource(`${root}{/id}.json`, {}, {
       issues: {
         method: 'GET',
-        url: `${root}/${boardId}/issues.json`
+        url: `/boards/${boardId}/issues.json`
       }
     });
     this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {
