@@ -22,4 +22,9 @@ export default class PipelineStore {
   storeJob(job = {}) {
     this.state.job = job;
   }
+
+  resetJob() {
+    this.state.job = {};
+    this.state.log = [];
+  }
 }

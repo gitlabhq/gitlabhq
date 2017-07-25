@@ -162,6 +162,7 @@
 
           const endpoint = job.status.details_path;
           this.isLoadingJob = true;
+          this.store.resetJob();
 
           // 3. Load Job data
           this.service.getJobData(endpoint)
@@ -192,10 +193,12 @@
 
       closeJobTab() {
         this.jobTab = null;
+        this.selectedTab = 0;
+        this.store.resetJob();
+      },
 
-        this.$nextTick(() => {
-          this.selectedTab = 0;
-        });
+      tabSelected(event, index, tab) {
+        this.selectedTab = index;
       },
 
       getJobTabTitle() {
@@ -235,7 +238,8 @@
 
       <tabs
         class="tabs-holder"
-        @closeTab="closeJobTab()"
+        @closeTab="closeJobTab"
+        @tabSelected="tabSelected"
         :default-index="selectedTab"
         container-class="pipelines-tabs no-top no-bottom">
 
@@ -256,9 +260,13 @@
           :title="jobTab.name"
           :is-closable="true">
 
+          <loading-icon
+            size="3"
+            v-if="isLoadingJob" />
+
           <job-log
             class="job-log-container"
-            v-if="state.log"
+            v-if="state.log && !isLoadingJob"
             :log="state.log"
             />
         </tab>
