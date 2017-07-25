@@ -143,12 +143,6 @@
         endpoint: "#{issuable_json_path(issuable)}?basic=true",
         editable: #{can_edit_issuable ? true : false},
         currentUser: #{current_user.to_json(only: [:username, :id, :name], methods: :avatar_url)},
-        rootPath: "#{root_path}"
+        rootPath: "#{root_path}",
+        fullPath: "#{@project.full_path}",
       };
-
-      new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
-      new LabelsSelect();
-      new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
-      gl.Subscription.bindAll('.subscription');
-      new gl.DueDateSelectors();
-      window.sidebar = new Sidebar();

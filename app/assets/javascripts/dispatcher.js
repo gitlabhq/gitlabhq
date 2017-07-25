@@ -27,6 +27,10 @@
 /* global Shortcuts */
 /* global Sidebar */
 /* global ShortcutsWiki */
+/* global IssuableContext */
+/* global IssueStatusSelect */
+/* global SubscriptionSelect */
+/* global Notes */
 
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -126,6 +130,42 @@ import PerformanceBar from './performance_bar';
           .init();
       }
 
+      function initIssuableSidebar() {
+        new MilestoneSelect({
+          full_path: gl.sidebarOptions.fullPath,
+        });
+        new LabelsSelect();
+        new IssuableContext(gl.sidebarOptions.currentUser);
+        gl.Subscription.bindAll('.subscription');
+        new gl.DueDateSelectors();
+        window.sidebar = new Sidebar();
+      }
+
+      function initLegacyFilters() {
+        new UsersSelect();
+        new LabelsSelect();
+        new MilestoneSelect();
+        new IssueStatusSelect();
+        new SubscriptionSelect();
+        $('form.filter-form').on('submit', function (event) {
+          event.preventDefault();
+          gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
+        });
+      }
+
+      function initNotes() {
+        const dataEl = document.querySelector('.js-notes-data');
+        const {
+          notesUrl,
+          notesIds,
+          now,
+          diffView,
+          autocomplete,
+        } = JSON.parse(dataEl.innerHTML);
+
+        window.notes = new Notes(notesUrl, notesIds, now, diffView, autocomplete);
+      }
+
       switch (page) {
         case 'profiles:preferences:show':
           initExperimentalFlags();
@@ -156,6 +196,8 @@ import PerformanceBar from './performance_bar';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -166,10 +208,12 @@ import PerformanceBar from './performance_bar';
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
         case 'groups:issues':
         case 'groups:merge_requests':
-          new UsersSelect();
           new ProjectSelect();
+          initLegacyFilters();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -237,6 +281,9 @@ import PerformanceBar from './performance_bar';
           new gl.GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
+        case 'projects:snippets:show':
+          initNotes();
+          break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
@@ -253,18 +300,16 @@ import PerformanceBar from './performance_bar';
           new ZenMode();
           new gl.GLForm($('.release-form'), true);
           break;
+        case 'projects:merge_requests:conflicts:show':
         case 'projects:merge_requests:show':
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:activity':
           new gl.Activities();
-          break;
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
-          new ProjectSelect();
-          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -274,6 +319,7 @@ import PerformanceBar from './performance_bar';
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          initNotes();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
@@ -367,10 +413,12 @@ import PerformanceBar from './performance_bar';
         case 'projects:labels:edit':
           new Labels();
           break;
+        case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
+          new gl.ProjectLabelSubscription('.label-subscription');
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -415,9 +463,14 @@ import PerformanceBar from './performance_bar';
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          initNotes();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
+          break;
+        case 'profiles:personal_access_tokens:index':
+        case 'admin:impersonation_tokens:index':
+          new gl.DueDateSelectors();
           break;
       }
       switch (path.first()) {

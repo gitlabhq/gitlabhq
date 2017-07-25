@@ -145,7 +145,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
