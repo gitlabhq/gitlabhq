@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::BuildPolicy, :models do
+describe Ci::BuildPolicy do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }

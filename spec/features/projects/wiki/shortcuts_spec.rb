@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Wiki shortcuts', :feature, :js do
+feature 'Wiki shortcuts', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
   let(:wiki_page) do

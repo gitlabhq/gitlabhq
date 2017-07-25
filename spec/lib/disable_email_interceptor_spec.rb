@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DisableEmailInterceptor, lib: true do
+describe DisableEmailInterceptor do
   before do
     Mail.register_interceptor(DisableEmailInterceptor)
   end

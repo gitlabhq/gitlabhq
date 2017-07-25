@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Recent searches', js: true, feature: true do
+describe 'Recent searches', js: true do
   include FilteredSearchHelpers
 
   let(:project_1) { create(:empty_project, :public) }

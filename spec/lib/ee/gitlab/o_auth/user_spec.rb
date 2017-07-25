@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::User, lib: true do
+describe Gitlab::OAuth::User do
   include LdapHelpers
 
   describe 'login through kerberos with linkable LDAP user' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UserAccess, lib: true do
+describe Gitlab::UserAccess do
   let(:access) { Gitlab::UserAccess.new(user, project: project) }
   let(:project) { create(:project) }
   let(:user) { create(:user) }

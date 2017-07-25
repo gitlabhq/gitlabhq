@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::Sync::ExternalUsers, lib: true do
+describe EE::Gitlab::LDAP::Sync::ExternalUsers do
   include LdapHelpers
 
   describe '#update_permissions' do

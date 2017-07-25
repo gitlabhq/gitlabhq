@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request', :feature, :js do
+describe 'Merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }

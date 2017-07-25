@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > Labels bulk assignment', feature: true do
+feature 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }

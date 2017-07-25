@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MergeRequests::RemoveApprovalService, services: true do
+describe MergeRequests::RemoveApprovalService do
   describe '#execute' do
     let(:user) { create(:user) }
     let(:merge_request) { create(:merge_request) }

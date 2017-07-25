@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Download buttons in files tree', feature: true do
+feature 'Download buttons in files tree' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }

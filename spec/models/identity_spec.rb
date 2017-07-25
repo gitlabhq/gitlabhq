@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Identity, models: true do
+RSpec.describe Identity do
   describe 'relations' do
     it { is_expected.to belong_to(:user) }
   end

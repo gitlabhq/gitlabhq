@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EventFilter, lib: true do
+describe EventFilter do
   describe '#apply_filter' do
     let(:source_user) { create(:user) }
     let!(:public_project) { create(:empty_project, :public) }

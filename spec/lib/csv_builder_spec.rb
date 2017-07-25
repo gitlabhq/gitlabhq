@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CsvBuilder, lib: true do
+describe CsvBuilder do
   let(:object) { double(question: :answer) }
   let(:fake_relation) { FakeRelation.new([object]) }
   let(:subject) { CsvBuilder.new(fake_relation, 'Q & A' => :question, 'Reversed' => -> (o) { o.question.to_s.reverse }) }

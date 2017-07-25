@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeleteBranchService, services: true do
+describe DeleteBranchService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }

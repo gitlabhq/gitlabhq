@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectableDropdown, models: true do
+describe ProtectableDropdown do
   let(:project) { create(:project, :repository) }
   let(:subject) { described_class.new(project, :branches) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueShow, service: true do
+describe Gitlab::SlashCommands::IssueShow do
   describe '#execute' do
     let(:issue) { create(:issue, project: project) }
     let(:project) { create(:empty_project) }

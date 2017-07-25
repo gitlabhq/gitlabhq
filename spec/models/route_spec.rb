@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Route, models: true do
+describe Route do
   let(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let(:route) { group.route }
 

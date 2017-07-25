@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue filtering by Labels', feature: true, js: true do
+feature 'Issue filtering by Labels', js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 

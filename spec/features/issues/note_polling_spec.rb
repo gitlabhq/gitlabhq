@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Issue notes polling', :feature, :js do
+feature 'Issue notes polling', :js do
   include NoteInteractionHelpers
 
   let(:project) { create(:empty_project, :public) }

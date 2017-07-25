@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Merge Request', :feature, :js do
+describe 'Discussion Comments Merge Request', :js do
   include RepoHelpers
 
   let(:user) { create(:user) }

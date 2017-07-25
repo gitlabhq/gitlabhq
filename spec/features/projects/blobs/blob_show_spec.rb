@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'File blob', :js, feature: true do
+feature 'File blob', :js do
   let(:project) { create(:project, :public) }
 
   def visit_blob(path, anchor: nil, ref: 'master')

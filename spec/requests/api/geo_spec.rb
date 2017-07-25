@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Geo, api: true do
+describe API::Geo do
   include ApiHelpers
 
   let(:admin) { create(:admin) }

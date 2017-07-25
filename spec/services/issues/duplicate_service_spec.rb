@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::DuplicateService, services: true do
+describe Issues::DuplicateService do
   let(:user) { create(:user) }
   let(:canonical_project) { create(:empty_project) }
   let(:duplicate_project) { create(:empty_project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TeamcityService, :use_clean_rails_memory_store_caching, models: true do
+describe TeamcityService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }

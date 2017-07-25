@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EventCreateService, services: true do
+describe EventCreateService do
   include UserActivitiesHelpers
 
   let(:service) { EventCreateService.new }

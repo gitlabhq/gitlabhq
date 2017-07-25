@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FileSizeValidator, lib: true do
+describe FileSizeValidator do
   let(:validator) { FileSizeValidator.new(options) }
   let(:attachment) { AttachmentUploader.new }
   let(:note) { create(:note) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::PathLocksFinder, lib: true do
+describe Gitlab::PathLocksFinder do
   let(:project) { create :empty_project }
   let(:user) { create :user }
   let(:finder) { Gitlab::PathLocksFinder.new(project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService, services: true do
+describe MergeRequests::UpdateService do
   include EmailHelpers
 
   let(:project) { create(:project, :repository) }

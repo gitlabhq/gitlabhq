@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitAccess, lib: true do
+describe Gitlab::GitAccess do
   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
   let(:push_access_check) { access.check('git-receive-pack', '_any') }
   let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }

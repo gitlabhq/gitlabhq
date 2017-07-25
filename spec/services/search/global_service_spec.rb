@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Search::GlobalService, services: true do
+describe Search::GlobalService do
   let(:user) { create(:user) }
   let(:internal_user) { create(:user) }
 

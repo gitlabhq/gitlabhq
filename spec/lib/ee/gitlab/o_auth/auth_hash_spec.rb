@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::AuthHash, lib: true do
+describe Gitlab::OAuth::AuthHash do
   let(:auth_hash) do
     Gitlab::OAuth::AuthHash.new(
       OmniAuth::AuthHash.new(

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::TriggerPolicy, :models do
+describe Ci::TriggerPolicy do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:trigger) { create(:ci_trigger, project: project, owner: owner) }

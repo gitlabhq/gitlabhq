@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Edit group settings', feature: true do
+feature 'Edit group settings' do
   given(:user)  { create(:user) }
   given(:group) { create(:group, path: 'foo') }
 

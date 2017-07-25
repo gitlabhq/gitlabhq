@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExternalWikiService, models: true do
+describe ExternalWikiService do
   include ExternalWikiHelper
   describe "Associations" do
     it { is_expected.to belong_to :project }

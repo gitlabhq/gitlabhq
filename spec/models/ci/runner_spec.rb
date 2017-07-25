@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Runner, models: true do
+describe Ci::Runner do
   describe 'validation' do
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do

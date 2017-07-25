@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Download buttons in tags page', feature: true do
+feature 'Download buttons in tags page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::RouteMap, model: true do
+describe BlobViewer::RouteMap do
   include FakeBlobHelpers
 
   let(:project) { build(:project) }

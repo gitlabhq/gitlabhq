@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project settings > [EE] Merge Requests', feature: true, js: true do
+describe 'Project settings > [EE] Merge Requests', :js do
   include GitlabRoutingHelper
 
   let(:user) { create(:user) }

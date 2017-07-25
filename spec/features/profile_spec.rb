@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Profile account page', feature: true do
+describe 'Profile account page' do
   let(:user) { create(:user) }
 
   before do

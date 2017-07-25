@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-describe Gitlab::Git::Hook, lib: true do
+describe Gitlab::Git::Hook do
   before do
     # We need this because in the spec/spec_helper.rb we define it like this:
     # allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Multiple Issue Boards', feature: true, js: true do
+describe 'Multiple Issue Boards', :js do
   let(:user)      { create(:user) }
   let(:project)   { create(:empty_project, :public) }
   let!(:planning) { create(:label, project: project, name: 'Planning') }

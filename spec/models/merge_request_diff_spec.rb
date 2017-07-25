@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestDiff, models: true do
+describe MergeRequestDiff do
   describe 'create new record' do
     subject { create(:merge_request).merge_request_diff }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::File, lib: true do
+describe Gitlab::Conflict::File do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }

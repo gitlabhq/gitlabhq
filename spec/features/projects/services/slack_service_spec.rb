@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Slack service > Setup events', feature: true do
+feature 'Projects > Slack service > Setup events' do
   let(:user) { create(:user) }
   let(:service) { SlackService.new }
   let(:project) { create(:project, slack_service: service) }

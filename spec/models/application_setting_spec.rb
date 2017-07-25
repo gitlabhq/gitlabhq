@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApplicationSetting, models: true do
+describe ApplicationSetting do
   let(:setting) { ApplicationSetting.create_from_defaults }
 
   it { expect(setting).to be_valid }

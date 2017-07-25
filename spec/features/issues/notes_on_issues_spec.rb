@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Create notes on issues', :js, :feature do
+describe 'Create notes on issues', :js do
   let(:user) { create(:user) }
 
   shared_examples 'notes with reference' do

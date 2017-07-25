@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Milestone, models: true do
+describe Milestone do
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)

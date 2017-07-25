@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'net/ldap/dn'
 
-describe EE::Gitlab::LDAP::Sync::Proxy, lib: true do
+describe EE::Gitlab::LDAP::Sync::Proxy do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }

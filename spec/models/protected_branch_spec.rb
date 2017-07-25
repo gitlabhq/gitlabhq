@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedBranch, models: true do
+describe ProtectedBranch do
   subject { build_stubbed(:protected_branch) }
 
   describe 'Associations' do

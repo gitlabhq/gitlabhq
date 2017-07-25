@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Group, models: true do
+describe Group do
   let(:group) { create(:group) }
 
   it { is_expected.to include_module(EE::Group) }

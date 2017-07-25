@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UpdateBuildMinutesService, services: true do
+describe UpdateBuildMinutesService do
   context '#perform' do
     let(:namespace) { create(:namespace, shared_runners_minutes_limit: 100) }
     let(:project) { create(:empty_project, namespace: namespace) }

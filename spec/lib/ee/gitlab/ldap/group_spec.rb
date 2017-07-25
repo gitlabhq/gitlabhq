@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::Group, lib: true do
+describe EE::Gitlab::LDAP::Group do
   include LdapHelpers
 
   before do

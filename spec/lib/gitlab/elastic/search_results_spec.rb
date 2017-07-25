@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Elastic::SearchResults, lib: true do
+describe Gitlab::Elastic::SearchResults do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index

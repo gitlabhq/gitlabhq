@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Gitlab::Shell, lib: true do
+describe Gitlab::Shell do
   let(:project) { double('Project', id: 7, path: 'diaspora') }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
@@ -394,7 +394,7 @@ describe Gitlab::Shell, lib: true do
     end
   end
 
-  describe Gitlab::Shell::KeyAdder, lib: true do
+  describe Gitlab::Shell::KeyAdder do
     describe '#add_key' do
       it 'removes trailing garbage' do
         io = spy(:io)

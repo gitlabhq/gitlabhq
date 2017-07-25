@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::BuildService, services: true do
+describe MergeRequests::BuildService do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::Importer, lib: true do
+describe Gitlab::BitbucketImport::Importer do
   include ImportSpecHelper
 
   before do

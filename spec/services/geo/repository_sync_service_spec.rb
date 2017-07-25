@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Geo::RepositorySyncService, services: true do
+RSpec.describe Geo::RepositorySyncService do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let(:lease) { double(try_obtain: true) }
 

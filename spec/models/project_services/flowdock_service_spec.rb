@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FlowdockService, models: true do
+describe FlowdockService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Adapter, lib: true do
+describe Gitlab::LDAP::Adapter do
   include LdapHelpers
 
   it 'includes the EE module' do

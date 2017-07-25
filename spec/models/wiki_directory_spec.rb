@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe WikiDirectory, models: true do
+RSpec.describe WikiDirectory do
   describe 'validations' do
     subject { build(:wiki_directory) }
 

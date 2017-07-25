@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Guest, lib: true do
+describe Guest do
   let(:public_project) { build_stubbed(:empty_project, :public) }
   let(:private_project) { build_stubbed(:empty_project, :private) }
   let(:internal_project) { build_stubbed(:empty_project, :internal) }

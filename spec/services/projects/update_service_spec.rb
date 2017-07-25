@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateService, '#execute', :services do
+describe Projects::UpdateService, '#execute' do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::Parser, lib: true do
+describe Gitlab::Diff::Parser do
   include RepoHelpers
 
   let(:project) { create(:project) }

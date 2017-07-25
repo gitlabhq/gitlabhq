@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Events, lib: true do
+describe Gitlab::Geo::LogCursor::Events do
   describe '.fetch_in_batches' do
     let!(:event_log_1) { create(:geo_event_log) }
     let!(:event_log_2) { create(:geo_event_log) }

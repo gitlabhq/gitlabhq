@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge With Push Rules Validation', feature: true, js: true do
+feature 'Merge With Push Rules Validation', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, push_rule: push_rule) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }

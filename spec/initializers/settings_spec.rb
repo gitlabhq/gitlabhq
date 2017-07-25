@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/1_settings'
 
-describe Settings, lib: true do
+describe Settings do
   describe '#host_without_www' do
     context 'URL with protocol' do
       it 'returns the host' do
