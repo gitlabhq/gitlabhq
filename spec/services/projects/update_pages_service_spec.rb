@@ -165,7 +165,7 @@ describe Projects::UpdatePagesService do
   end
 
   def deploy_status
-    GenericCommitStatus.find_by(name: 'pages:deploy');
+    GenericCommitStatus.find_by(name: 'pages:deploy')
   end
 
   def execute
