@@ -135,6 +135,7 @@ export default class BlobViewer {
 
       $.ajax({
         url,
+        data: { blob_format: 'json' },
         dataType: 'JSON',
       })
       .fail(reject)

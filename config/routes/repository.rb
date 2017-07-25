@@ -66,7 +66,7 @@ scope format: false do
 
       scope path: '/blob/*id', as: :blob do
         get :diff
-        get '/', action: :show
+        get '/', action: :show, defaults: { format: 'html' }
         delete '/', action: :destroy
         post '/', action: :create
         put '/', action: :update

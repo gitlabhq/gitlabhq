@@ -33,6 +33,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def show
+    set_format
     conditionally_expand_blob(@blob)
 
     respond_to do |format|
@@ -189,5 +190,18 @@ class Projects::BlobController < Projects::ApplicationController
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
       .last_for_path(@repository, @ref, @path).sha
+  end
+
+  # We disabled request format for blob-related URLs to be able
+  # to use file extensions in a name. That means that we disable all the ways to set
+  # a request format. At the same time we want to preserve the way to set format using
+  # request parameter. This method uses `blob_format` parameter to set proper format.
+  # We don't use a regular `format` name for this parameter as we have to use defaults: {format: 'html'}
+  # in routes and it will take precendence over custom passed formats as rails does
+  # not expect any format parameter at all, since we disabled it.
+  def set_format
+    if params[:blob_format] == 'json'
+      request.format = 'json'
+    end
   end
 end
