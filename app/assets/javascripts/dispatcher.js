@@ -373,6 +373,9 @@ import PerformanceBar from './performance_bar';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
