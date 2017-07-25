@@ -16,7 +16,7 @@ module Gitlab
       def each
         @blames.each do |blame|
           yield(
-            Gitlab::Git::Commit.new(blame.commit),
+            Gitlab::Git::Commit.new(@repo, blame.commit),
             blame.line
           )
         end

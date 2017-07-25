@@ -51,7 +51,7 @@ module Gitlab
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/321
         def find(repo, commit_id = "HEAD")
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
-          return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
+          return decorate(repo, commit_id) if commit_id.is_a?(Rugged::Commit)
 
           obj = if commit_id.is_a?(String)
                   repo.rev_parse_target(commit_id)
@@ -61,7 +61,7 @@ module Gitlab
 
           return nil unless obj.is_a?(Rugged::Commit)
 
-          decorate(obj)
+          decorate(repo, obj)
         rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError, Gitlab::Git::Repository::NoRepository
           nil
         end
@@ -102,7 +102,7 @@ module Gitlab
             if is_enabled
               repo.gitaly_commit_client.between(base, head)
             else
-              repo.rugged_commits_between(base, head).map { |c| decorate(c) }
+              repo.rugged_commits_between(base, head).map { |c| decorate(repo, c) }
             end
           end
         rescue Rugged::ReferenceError
@@ -169,7 +169,7 @@ module Gitlab
           offset = actual_options[:skip]
           limit = actual_options[:max_count]
           walker.each(offset: offset, limit: limit) do |commit|
-            commits.push(decorate(commit))
+            commits.push(decorate(repo, commit))
           end
 
           walker.reset
@@ -183,8 +183,8 @@ module Gitlab
           Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
-        def decorate(commit, ref = nil)
-          Gitlab::Git::Commit.new(commit, ref)
+        def decorate(repository, commit, ref = nil)
+          Gitlab::Git::Commit.new(repository, commit, ref)
         end
 
         # Returns a diff object for the changes introduced by +rugged_commit+.
@@ -231,7 +231,7 @@ module Gitlab
         end
       end
 
-      def initialize(raw_commit, head = nil)
+      def initialize(repository, raw_commit, head = nil)
         raise "Nil as raw commit passed" unless raw_commit
 
         case raw_commit
@@ -239,12 +239,13 @@ module Gitlab
           init_from_hash(raw_commit)
         when Rugged::Commit
           init_from_rugged(raw_commit)
-        when Gitlab::GitalyClient::Commit
+        when Gitaly::GitCommit
           init_from_gitaly(raw_commit)
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
 
+        @repository = repository
         @head = head
       end
 
@@ -319,14 +320,7 @@ module Gitlab
       end
 
       def parents
-        case raw_commit
-        when Rugged::Commit
-          raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
-        when Gitlab::GitalyClient::Commit
-          parent_ids.map { |oid| self.class.find(raw_commit.repository, oid) }.compact
-        else
-          raise NotImplementedError, "commit source doesn't support #parents"
-        end
+        parent_ids.map { |oid| self.class.find(@repository, oid) }.compact
       end
 
       def stats

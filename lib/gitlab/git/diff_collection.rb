@@ -28,7 +28,6 @@ module Gitlab
         @limits = self.class.collection_limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
-        @from_gitaly = options.fetch(:from_gitaly, false)
 
         @line_count = 0
         @byte_count = 0
@@ -44,7 +43,7 @@ module Gitlab
         return if @iterator.nil?
 
         Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
-          if is_enabled && @from_gitaly
+          if is_enabled && @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
             each_gitaly_patch(&block)
           else
             each_rugged_patch(&block)
