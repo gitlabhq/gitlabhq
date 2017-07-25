@@ -32,7 +32,7 @@ module Ci
     end
 
     def create_pipeline_variables!(pipeline)
-      return if params[:variables].is_a?(Hash)
+      return unless params[:variables].is_a?(Hash)
 
       variables = params[:variables].map do |key, value|
         { key: key, value: value }
