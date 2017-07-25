@@ -3,6 +3,7 @@ module API
     include APIGuard
 
     allow_access_with_scope :api
+    prefix :api
 
     version %w(v3 v4), using: :path
 
