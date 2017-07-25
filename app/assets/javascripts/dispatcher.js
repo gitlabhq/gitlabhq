@@ -250,7 +250,7 @@ import PerformanceBar from './performance_bar';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
