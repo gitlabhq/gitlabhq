@@ -209,12 +209,13 @@ export default {
                     aria-hidden="true"
                     class="fa fa-caret-down toggle-icon"></i>
                 </button>
-                <ul
-                  class="note-type-dropdown dropdown-open-top dropdown-menu">
+                <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li
                     :class="{ 'droplab-item-selected': noteType === 'comment' }"
                     @click.prevent="setNoteType('comment')">
-                    <button class="btn btn-transparent">
+                    <button
+                      type="button"
+                      class="btn btn-transparent">
                       <i
                         aria-hidden="true"
                         class="fa fa-check icon"></i>
@@ -230,10 +231,13 @@ export default {
                   <li
                     :class="{ 'droplab-item-selected': noteType === 'discussion' }"
                     @click.prevent="setNoteType('discussion')">
-                    <button class="btn btn-transparent">
+                    <button
+                      type="button"
+                      class="btn btn-transparent">
                       <i
                         aria-hidden="true"
-                        class="fa fa-check icon"></i>
+                        class="fa fa-check icon">
+                        </i>
                       <div class="description">
                         <strong>Start discussion</strong>
                         <p>
@@ -244,21 +248,21 @@ export default {
                   </li>
                 </ul>
               </div>
-              <a
+              <button
+                type="button"
                 @click="handleSave(true)"
                 v-if="canUpdateIssue"
                 :class="actionButtonClassNames"
-                class="btn btn-nr btn-comment btn-comment-and-close"
-                role="button">
+                class="btn btn-nr btn-comment btn-comment-and-close">
                 {{issueActionButtonTitle}}
-              </a>
-              <a
+              </button>
+              <button
+                type="button"
                 v-if="note.length"
                 @click="discard"
-                class="btn btn-cancel js-note-discard"
-                role="button">
+                class="btn btn-cancel js-note-discard">
                 Discard draft
-              </a>
+              </button>
             </div>
           </div>
         </div>

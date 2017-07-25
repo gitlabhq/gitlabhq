@@ -12,10 +12,7 @@ import issueSystemNote from './issue_system_note.vue';
 import issueCommentForm from './issue_comment_form.vue';
 import placeholderNote from './issue_placeholder_note.vue';
 import placeholderSystemNote from './issue_placeholder_system_note.vue';
-
-Vue.use(Vuex);
-Vue.use(VueResource);
-const store = new Vuex.Store(storeOptions);
+import store from './store';
 
 export default {
   name: 'IssueNotes',

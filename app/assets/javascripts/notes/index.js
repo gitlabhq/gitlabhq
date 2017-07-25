@@ -8,9 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     components: {
       issueNotes,
     },
-    template: `
-      <issue-notes ref="notes" />
-    `,
+    render(createElement) {
+      return createElement('issue-notes', {
+        attrs: {
+          ref: 'notes',
+        },
+      });
+    },
   });
 
   window.issueNotes = {

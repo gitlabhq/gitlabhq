@@ -2,6 +2,7 @@
 import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
 import emojiSmile from 'icons/_emoji_smile.svg';
 import emojiSmiley from 'icons/_emoji_smiley.svg';
+import loadingIcon from '../../vue_shared/components/loadingIcon.vue';
 
 export default {
   props: {
@@ -78,9 +79,7 @@ export default {
       data-position="right"
       href="#"
       title="Add reaction">
-        <i
-          aria-hidden="true"
-          class="fa fa-spinner fa-spin"></i>
+        <loading-icon />
         <span
           v-html="emojiSmiling"
           class="link-highlight award-control-icon-neutral"></span>
@@ -122,15 +121,14 @@ export default {
           </a>
         </li>
         <li v-if="canEdit">
-          <a
+          <button
             @click.prevent="deleteHandler"
             class="btn btn-transparent js-note-delete js-note-delete"
-            href="#"
             type="button">
             <span class="text-danger">
               Delete comment
             </span>
-          </a>
+          </button>
         </li>
       </ul>
     </div>

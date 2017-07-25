@@ -71,7 +71,8 @@ export default {
     cancelReplyForm(shouldConfirm) {
       if (shouldConfirm && this.$refs.noteForm.isDirty) {
         const msg = 'Are you sure you want to cancel creating this comment?';
-        const isConfirmed = confirm(msg); // eslint-disable-line
+        // eslint-disable-next-line no-alert
+        const isConfirmed = confirm(msg);
         if (!isConfirmed) {
           return;
         }
@@ -112,7 +113,8 @@ export default {
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="author.name"
-          :img-size="40" />
+          :img-size="40"
+          />
       </div>
       <div class="timeline-content">
         <div class="discussion">
@@ -123,13 +125,15 @@ export default {
               :note-id="discussion.id"
               :include-toggle="true"
               :toggle-handler="toggleDiscussion"
-              actionText="started a discussion" />
+              actionText="started a discussion"
+              />
             <issue-note-edited-text
               v-if="note.last_updated_by"
               :edited-at="note.last_updated_at"
               :edited-by="note.last_updated_by"
               actionText="Last updated"
-              className="discussion-headline-light js-discussion-headline" />
+              className="discussion-headline-light js-discussion-headline"
+              />
             </div>
           </div>
           <div
@@ -142,7 +146,8 @@ export default {
                     v-for="note in note.notes"
                     :is="componentName(note)"
                     :note="componentData(note)"
-                    key="note.id" />
+                    key="note.id"
+                    />
                 </ul>
                 <div class="flash-container"></div>
                 <div class="discussion-reply-holder">
