@@ -33,7 +33,7 @@ $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
-  const issueBoardsContent = document.querySelector('.js-focus-mode-board');
+  const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   window.gl = window.gl || {};
 
