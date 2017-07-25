@@ -549,7 +549,8 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.text "key"
   end
 
-  add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", using: :btree
+  add_index "gpg_keys", ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
+  add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", unique: true, using: :btree
   add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
 
   create_table "gpg_signatures", force: :cascade do |t|

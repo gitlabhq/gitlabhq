@@ -12,7 +12,8 @@ class CreateGpgKeys < ActiveRecord::Migration
 
       t.text :key
 
-      t.index :primary_keyid, length: Gitlab::Database.mysql? ? 20 : nil
+      t.index :primary_keyid, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
+      t.index :fingerprint, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
     end
   end
 end
