@@ -11,6 +11,10 @@ class GpgSignature < ActiveRecord::Base
   validates :project, presence: true
   validates :gpg_key_primary_keyid, presence: true
 
+  def gpg_key_primary_keyid
+    super&.upcase
+  end
+
   def commit
     project.commit(commit_sha)
   end

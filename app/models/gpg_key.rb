@@ -37,6 +37,14 @@ class GpgKey < ActiveRecord::Base
   after_commit :update_invalid_gpg_signatures, on: :create
   after_commit :notify_user, on: :create
 
+  def primary_keyid
+    super&.upcase
+  end
+
+  def fingerprint
+    super&.upcase
+  end
+
   def key=(value)
     value.strip! unless value.blank?
     write_attribute(:key, value)
