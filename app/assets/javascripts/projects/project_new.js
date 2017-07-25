@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const importBtnTooltip = 'Please enter a valid project name.';
   const $importBtnWrapper = $('.import_gitlab_project');
 
-  $('.how_to_import_link').bind('click', function (e) {
+  $('.how_to_import_link').bind('click', (e) => {
     e.preventDefault();
-    $(this).next('.modal').show();
+    $('.how_to_import_link').next('.modal').show();
   });
 
   $('.modal-header .close').bind('click', () => {
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('#project_path').keyup(() => {
-    if ($(this).val().trim().length !== 0) {
+    if ($('#project_path').val().trim().length !== 0) {
       $('.btn_import_gitlab_project').attr('disabled', false);
       $importBtnWrapper.attr('title', '');
       $importBtnWrapper.removeClass('has-tooltip');

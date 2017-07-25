@@ -30,7 +30,7 @@
   %canvas#yearChart.padded{ height: 250 }
 
 %script#pipelinesChartsData{ type: "application/json" }
-  - chartData = [] 
+  - chartData = []
   - [:week, :month, :year].each do |scope|
     - chartData.push({ 'scope' => scope, 'labels' => @charts[scope].labels, 'totalValues' => @charts[scope].total, 'successValues' => @charts[scope].success })
   = chartData.to_json.html_safe
