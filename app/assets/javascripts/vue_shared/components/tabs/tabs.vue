@@ -29,7 +29,6 @@
 
         this.$emit('tabSelected', e, index, tab);
       },
-
       selectTab(index) {
         this.tabs.forEach((tab, i) => {
           tab.isActive = index === i;
@@ -40,17 +39,14 @@
         this.$emit('closeTab', tab);
       },
     },
-
     watch: {
       defaultIndex() {
         this.selectedTab = this.defaultIndex;
-
       },
       selectedTab(){
         this.selectTab(this.selectedTab);
       }
     },
-
     mounted() {
       this.tabs = this.$children;
 

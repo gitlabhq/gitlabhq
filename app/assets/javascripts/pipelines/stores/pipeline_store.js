@@ -15,6 +15,10 @@ export default class PipelineStore {
     this.state.log = log;
   }
 
+  addLogLine(line) {
+    this.state.log.push(line);
+  }
+
   storeJob(job = {}) {
     this.state.job = job;
   }

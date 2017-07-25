@@ -949,4 +949,48 @@
       color: $blame-gray;
     }
   }
+
+  $magenta: #cd00cd;
+  $cyan: #00cdcd;
+  $white: #e5e5e5;
+  $l-black: #373b41;
+  $l-red: #c66;
+  $l-green: #b5bd68;
+  $l-yellow: #f0c674;
+  $l-blue: #81a2be;
+  $l-magenta: #b294bb;
+  $l-cyan: #8abeb7;
+  $l-white: $gray-darkest;
+
+  .ansi-black-fg{
+    color: $l-black;
+  }
+
+  .ansi-red-fg {
+    color: $l-red;
+  }
+
+  .ansi-green-fg {
+    color: $l-green;
+  }
+
+  .ansi-yellow-fg{
+    color: $l-yellow;
+  }
+
+  .asni-blue-fg{
+    color: $l-blue;
+  }
+
+  .ansi-mangenta-fg{
+    color: $l-magenta;
+  }
+
+  .ansi-cyan-fg {
+    color: $l-cyan;
+  }
+
+  .ansi-white-fg{
+    color: $l-white;
+  }
 }

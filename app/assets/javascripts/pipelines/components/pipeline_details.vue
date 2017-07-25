@@ -34,7 +34,7 @@
       pipelineCommitBlock,
       pipelineInfoBlock,
       tabs,
-      tab
+      tab,
     },
     data() {
       const store = new PipelineStore();
@@ -48,9 +48,7 @@
         isLoading: false,
         jobTab: null,
         selectedTab: 0,
-        isLoadingJobTrace: false,
-        //move to store
-        logTrace: null,
+        isLoadingJob: false,
       };
     },
     created() {
@@ -162,22 +160,34 @@
             this.selectedTab = 3;
           });
 
+          const endpoint = job.status.details_path;
+          this.isLoadingJob = true;
+
           // 3. Load Job data
+          this.service.getJobData(endpoint)
+            .then(resp => resp.json())
+            .then(data => this.store.storeJob(data))
+            .then(() => {
+              return this.service.getJobLog(endpoint)
+                //.then(response => response.json())
+                .then((resp) => {
+                  const log = Anser.ansiToHtml(resp.bodyText, {use_classes: true});
+                  const linkedLog = Anser.linkify(log);
 
-          // 4. let's load the data!
-          this.service.getJobTrace(job.status.details_path)
-            //.then(response => response.json())
-            .then((resp) => {
-              const log = Anser.ansiToHtml(resp.bodyText);
-              const linkedLog = Anser.linkify(log);
-
-              this.logTrace = linkedLog.split('\n');
+                  this.store.storeLog(linkedLog.split('\n'));
+                })
             })
-            .catch(() => new Flash('An error occurred while fetching the job log.'));
+            .then(() => {
+              this.isLoadingJob = false;
+            })
+            .catch(() => {
+              this.isLoadingJob = false;
+              Flash('An error occurred while fetching the job log.')
+            });
+
         } else if (this.jobTab.jobs[0].id === jobId) {
           this.selectedTab = 3;
         }
-
       },
 
       closeJobTab() {
@@ -248,8 +258,8 @@
 
           <job-log
             class="job-log-container"
-            v-if="logTrace"
-            :log="logTrace"
+            v-if="state.log"
+            :log="state.log"
             />
         </tab>
       </tabs>
