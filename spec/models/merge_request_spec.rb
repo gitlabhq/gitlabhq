@@ -160,21 +160,13 @@ describe MergeRequest, models: true do
         subject.project.has_external_issue_tracker = true
         subject.project.save!
       end
-<<<<<<< HEAD
 
       it 'does not cache issues from external trackers' do
         issue  = ExternalIssue.new('JIRA-123', subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+
         allow(subject).to receive(:commits).and_return([commit])
 
-=======
-
-      it 'does not cache issues from external trackers' do
-        issue  = ExternalIssue.new('JIRA-123', subject.project)
-        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
-        allow(subject).to receive(:commits).and_return([commit])
-
->>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
         expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
       end
 

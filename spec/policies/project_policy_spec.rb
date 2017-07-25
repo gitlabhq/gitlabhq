@@ -139,8 +139,6 @@ describe ProjectPolicy, models: true do
     end
   end
 
-<<<<<<< HEAD
-=======
   context 'when a project has pending invites, and the current user is anonymous' do
     let(:group) { create(:group, :public) }
     let(:project) { create(:empty_project, :public, namespace: group) }
@@ -159,7 +157,6 @@ describe ProjectPolicy, models: true do
     end
   end
 
->>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
   context 'abilities for non-public projects' do
     let(:project) { create(:empty_project, namespace: owner.namespace) }
 
