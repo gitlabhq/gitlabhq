@@ -8,6 +8,7 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -315,6 +316,9 @@ import PerformanceBar from './performance_bar';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
