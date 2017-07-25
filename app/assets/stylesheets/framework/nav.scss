@@ -182,6 +182,12 @@
       }
     }
 
+    &.nav-controls-new-nav {
+      > .dropdown {
+        margin-right: 0;
+      }
+    }
+
     > .btn-grouped {
       float: none;
     }

@@ -27,11 +27,11 @@ describe AvatarsHelper do
 
     it 'displays user avatar' do
       is_expected.to eq image_tag(
-        avatar_icon(user, 16),
-        class: 'avatar has-tooltip s16 ',
+        LazyImageTagHelper.placeholder_image,
+        class: 'avatar has-tooltip s16  lazy',
         alt: "#{user.name}'s avatar",
         title: user.name,
-        data: { container: 'body' }
+        data: { container: 'body', src: avatar_icon(user, 16) }
       )
     end
 
@@ -40,22 +40,8 @@ describe AvatarsHelper do
 
       it 'uses provided css_class' do
         is_expected.to eq image_tag(
-          avatar_icon(user, 16),
-          class: "avatar has-tooltip s16 #{options[:css_class]}",
-          alt: "#{user.name}'s avatar",
-          title: user.name,
-          data: { container: 'body' }
-        )
-      end
-    end
-
-    context 'with lazy parameter' do
-      let(:options) { { user: user, lazy: true } }
-
-      it 'uses data-src instead of src' do
-        is_expected.to eq image_tag(
-          '',
-          class: 'avatar has-tooltip s16 ',
+          LazyImageTagHelper.placeholder_image,
+          class: "avatar has-tooltip s16 #{options[:css_class]}  lazy",
           alt: "#{user.name}'s avatar",
           title: user.name,
           data: { container: 'body', src: avatar_icon(user, 16) }
@@ -68,11 +54,11 @@ describe AvatarsHelper do
 
       it 'uses provided size' do
         is_expected.to eq image_tag(
-          avatar_icon(user, options[:size]),
-          class: "avatar has-tooltip s#{options[:size]} ",
+          LazyImageTagHelper.placeholder_image,
+          class: "avatar has-tooltip s#{options[:size]}  lazy",
           alt: "#{user.name}'s avatar",
           title: user.name,
-          data: { container: 'body' }
+          data: { container: 'body', src: avatar_icon(user, options[:size]) }
         )
       end
     end
@@ -82,11 +68,11 @@ describe AvatarsHelper do
 
       it 'uses provided url' do
         is_expected.to eq image_tag(
-          options[:url],
-          class: 'avatar has-tooltip s16 ',
+          LazyImageTagHelper.placeholder_image,
+          class: 'avatar has-tooltip s16  lazy',
           alt: "#{user.name}'s avatar",
           title: user.name,
-          data: { container: 'body' }
+          data: { container: 'body', src: options[:url] }
         )
       end
     end
@@ -99,22 +85,22 @@ describe AvatarsHelper do
 
         it 'prefers user parameter' do
           is_expected.to eq image_tag(
-            avatar_icon(user, 16),
-            class: 'avatar has-tooltip s16 ',
+            LazyImageTagHelper.placeholder_image,
+            class: 'avatar has-tooltip s16  lazy',
             alt: "#{user.name}'s avatar",
             title: user.name,
-            data: { container: 'body' }
+            data: { container: 'body', src: avatar_icon(user, 16) }
           )
         end
       end
 
       it 'uses user_name and user_email parameter if user is not present' do
         is_expected.to eq image_tag(
-          avatar_icon(options[:user_email], 16),
-          class: 'avatar has-tooltip s16 ',
+          LazyImageTagHelper.placeholder_image,
+          class: 'avatar has-tooltip s16  lazy',
           alt: "#{options[:user_name]}'s avatar",
           title: options[:user_name],
-          data: { container: 'body' }
+          data: { container: 'body', src: avatar_icon(options[:user_email], 16) }
         )
       end
     end

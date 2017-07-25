@@ -62,13 +62,13 @@ describe ApplicationHelper do
       avatar_url = "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
-        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
       avatar_url = "#{gitlab_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
-        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
 
     it 'gives uploaded icon when present' do
@@ -77,7 +77,8 @@ describe ApplicationHelper do
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
       avatar_url = "#{gitlab_host}#{project_avatar_path(project)}"
-      expect(helper.project_icon(project.full_path).to_s).to match(image_tag(avatar_url))
+      expect(helper.project_icon(project.full_path).to_s)
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
   end
 

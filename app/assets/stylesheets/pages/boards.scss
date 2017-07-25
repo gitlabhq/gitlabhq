@@ -479,7 +479,10 @@
   border-top: 1px solid $border-color;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
+.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
+  position: absolute;
+
   &.right-sidebar {
     top: 0;
     bottom: 0;

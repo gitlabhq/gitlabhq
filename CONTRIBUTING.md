@@ -31,7 +31,7 @@ _This notice should stay as the first item in the CONTRIBUTING.MD file._
   - [Issue tracker guidelines](#issue-tracker-guidelines)
   - [Issue weight](#issue-weight)
   - [Regression issues](#regression-issues)
-  - [Technical debt](#technical-debt)
+  - [Technical and UX debt](#technical-and-ux-debt)
   - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
   - [Merge request guidelines](#merge-request-guidelines)
@@ -345,27 +345,29 @@ addressed.
 [8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
-### Technical debt
+### Technical and UX debt
 
-In order to track things that can be improved in GitLab's codebase, we created
-the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+In order to track things that can be improved in GitLab's codebase,
+we use the ~"technical debt" label in [GitLab's issue tracker][ce-tracker].
+For user experience improvements, we use the ~"UX debt" label.
 
-This label should be added to issues that describe things that can be improved,
-shortcuts that have been taken, code that needs refactoring, features that need
-additional attention, and all other things that have been left behind due to
-high velocity of development.
+These labels should be added to issues that describe things that can be improved,
+shortcuts that have been taken, features that need additional attention, and all
+other things that have been left behind due to high velocity of development.
+For example, code that needs refactoring should use the ~"technical debt" label,
+user experience refinements should use the ~"UX debt" label.
 
 Everyone can create an issue, though you may need to ask for adding a specific
 label, if you do not have permissions to do it by yourself. Additional labels
-can be combined with the `technical debt` label, to make it easier to schedule
+can be combined with these labels, to make it easier to schedule
 the improvements for a release.
 
-Issues tagged with the `technical debt` label have the same priority like issues
+Issues tagged with these labels have the same priority like issues
 that describe a new feature to be introduced in GitLab, and should be scheduled
 for a release by the appropriate person.
 
-Make sure to mention the merge request that the `technical debt` issue is
-associated with in the description of the issue.
+Make sure to mention the merge request that the ~"technical debt" issue or
+~"UX debt" issue is associated with in the description of the issue.
 
 ### Stewardship
 
