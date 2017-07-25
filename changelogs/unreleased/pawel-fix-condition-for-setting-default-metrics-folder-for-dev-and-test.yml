@@ -1,0 +1,4 @@
+---
+title: Add ability to set prometheus metrics client data dir from gitlab.yml
+merge_request: 13008
+author:
