@@ -4,7 +4,7 @@ module Geo
     include CronjobQueue
 
     DB_RETRIEVE_BATCH_SIZE = 1000
-    LEASE_TIMEOUT = 10.minutes
+    LEASE_TIMEOUT = 60.minutes
     MAX_CAPACITY = 10
     RUN_TIME = 60.minutes.to_i
 
