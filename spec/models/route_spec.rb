@@ -15,7 +15,7 @@ describe Route, models: true do
 
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path) }
+    it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
   end
 
   describe 'callbacks' do

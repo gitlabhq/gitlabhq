@@ -39,14 +39,25 @@ describe 'Edit Project Settings', feature: true do
       end
     end
 
-    context "When external issue tracker is enabled" do
-      it "does not hide issues tab" do
-        project.project_feature.update(issues_access_level: ProjectFeature::DISABLED)
+    context 'When external issue tracker is enabled and issues enabled on project settings' do
+      it 'does not hide issues tab' do
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
 
         visit project_path(project)
 
-        expect(page).to have_selector(".shortcuts-issues")
+        expect(page).to have_selector('.shortcuts-issues')
+      end
+    end
+
+    context 'When external issue tracker is enabled and issues disabled on project settings' do
+      it 'hides issues tab' do
+        project.issues_enabled = false
+        project.save!
+        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
+
+        visit project_path(project)
+
+        expect(page).not_to have_selector('.shortcuts-issues')
       end
     end
 

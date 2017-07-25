@@ -103,7 +103,7 @@ describe Projects::UpdateService, '#execute', :services do
     end
   end
 
-  context 'when renaming project that contains container images' do
+  context 'when updating a project that contains container images' do
     before do
       stub_container_registry_config(enabled: true)
       stub_container_registry_tags(repository: /image/, tags: %w[rc1])
@@ -115,6 +115,13 @@ describe Projects::UpdateService, '#execute', :services do
 
       expect(result).to include(status: :error)
       expect(result[:message]).to match(/contains container registry tags/)
+    end
+
+    it 'allows to update other settings' do
+      result = update_project(project, admin, public_builds: true)
+
+      expect(result[:status]).to eq :success
+      expect(project.reload.public_builds).to be true
     end
   end
 

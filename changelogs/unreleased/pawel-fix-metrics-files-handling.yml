@@ -1,0 +1,4 @@
+---
+title: Fix bug causing metrics files to be truncated
+merge_request: 35420
+author:
