@@ -66,6 +66,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
   describe "Commit info from gitaly commit" do
     let(:id) { 'f00' }
+    let(:parent_ids) { %w(b45 b46) }
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
     let(:committer) do
@@ -88,7 +89,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
         subject: subject,
         body: body,
         author: author,
-        committer: committer
+        committer: committer,
+        parent_ids: parent_ids
       )
     end
     let(:commit) { described_class.new(repository, gitaly_commit) }
@@ -102,6 +104,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
+    it { expect(commit.parent_ids).to eq(parent_ids) }
 
     context 'no body' do
       let(:body) { "".force_encoding('ASCII-8BIT') }

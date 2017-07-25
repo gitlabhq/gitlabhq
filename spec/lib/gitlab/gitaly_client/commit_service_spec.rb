@@ -112,4 +112,18 @@ describe Gitlab::GitalyClient::CommitService do
       client.tree_entries(repository, revision, path)
     end
   end
+
+  describe '#find_commit' do
+    let(:revision) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
+    it 'sends an RPC request' do
+      request = Gitaly::FindCommitRequest.new(
+        repository: repository_message, revision: revision
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit)
+        .with(request, kind_of(Hash)).and_return(double(commit: nil))
+
+      described_class.new(repository).find_commit(revision)
+    end
+  end
 end

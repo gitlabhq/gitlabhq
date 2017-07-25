@@ -43,7 +43,7 @@ module Gitlab
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: ref,
-          path: path.dup.force_encoding(Encoding::ASCII_8BIT),
+          path: GitalyClient.encode(path),
           limit: limit.to_i
         )
 
@@ -99,8 +99,8 @@ module Gitlab
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
-          revision: revision.force_encoding(Encoding::ASCII_8BIT),
-          path: path.to_s.force_encoding(Encoding::ASCII_8BIT)
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path.to_s)
         )
 
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
@@ -149,6 +149,17 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
         response.reduce("") { |memo, msg| memo << msg.data }
+      end
+
+      def find_commit(revision)
+        request = Gitaly::FindCommitRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
+
+        response.commit
       end
 
       private
