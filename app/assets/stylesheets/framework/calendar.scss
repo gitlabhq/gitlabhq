@@ -93,7 +93,7 @@
 
   .is-selected .pika-day,
   .pika-day:hover,
-  .is-today .pika-day:hover {
+  .is-today .pika-day {
     background: $gl-primary;
     color: $white-light;
     box-shadow: none;

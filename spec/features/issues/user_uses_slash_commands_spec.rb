@@ -21,6 +21,16 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
       wait_for_requests
     end
 
+    describe 'time tracking' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        visit project_issue_path(project, issue)
+      end
+
+      it_behaves_like 'issuable time tracker'
+    end
+
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
 
@@ -99,32 +109,6 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
       end
     end
 
-    describe 'Issuable time tracking' do
-      let(:issue) { create(:issue, project: project) }
-
-      before do
-        project.team << [user, :developer]
-      end
-
-      context 'Issue' do
-        before do
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'issuable time tracker'
-      end
-
-      context 'Merge Request' do
-        let(:merge_request) { create(:merge_request, source_project: project) }
-
-        before do
-          visit project_merge_request_path(project, merge_request)
-        end
-
-        it_behaves_like 'issuable time tracker'
-      end
-    end
-
     describe 'toggling the WIP prefix from the title from note' do
       let(:issue) { create(:issue, project: project) }
 
@@ -132,6 +116,43 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
         write_note("/wip")
 
         expect(page).not_to have_content '/wip'
+      end
+    end
+
+    describe 'mark issue as duplicate' do
+      let(:issue) { create(:issue, project: project) }
+      let(:original_issue) { create(:issue, project: project) }
+
+      context 'when the current user can update issues' do
+        it 'does not create a note, and marks the issue as a duplicate' do
+          write_note("/duplicate ##{original_issue.to_reference}")
+
+          expect(page).not_to have_content "/duplicate #{original_issue.to_reference}"
+          expect(page).to have_content 'Commands applied'
+          expect(page).to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
+
+          expect(issue.reload).to be_closed
+        end
+      end
+
+      context 'when the current user cannot update the issue' do
+        let(:guest) { create(:user) }
+        before do
+          project.team << [guest, :guest]
+          gitlab_sign_out
+          sign_in(guest)
+          visit project_issue_path(project, issue)
+        end
+
+        it 'does not create a note, and does not mark the issue as a duplicate' do
+          write_note("/duplicate ##{original_issue.to_reference}")
+
+          expect(page).to have_content "/duplicate ##{original_issue.to_reference}"
+          expect(page).not_to have_content 'Commands applied'
+          expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
+
+          expect(issue.reload).to be_open
+        end
       end
     end
   end

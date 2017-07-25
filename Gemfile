@@ -16,6 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
+gem 'grape-route-helpers', '~> 2.0.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -164,7 +165,7 @@ gem 'rainbow', '~> 2.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.0.0'
+gem 're2', '~> 1.1.0'
 
 # Misc
 
@@ -352,7 +353,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 2.8.0', require: false
+  gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 2.3.2'
@@ -384,7 +385,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.17.0'
+gem 'gitaly', '~> 0.18.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

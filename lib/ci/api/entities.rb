@@ -52,7 +52,7 @@ module Ci
           # when old API will be removed (planned for August 2017).
           model.options.dup.tap do |options|
             options[:image] = options[:image][:name] if options[:image].is_a?(Hash)
-            options[:services].map! do |service|
+            options[:services]&.map! do |service|
               if service.is_a?(Hash)
                 service[:name]
               else
