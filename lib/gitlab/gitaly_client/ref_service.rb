@@ -52,6 +52,12 @@ module Gitlab
         consume_branches_response(response)
       end
 
+      def tags
+        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request)
+        consume_tags_response(response)
+      end
+
       private
 
       def consume_refs_response(response)
@@ -74,6 +80,25 @@ module Gitlab
               encode!(gitaly_branch.name.dup),
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
+            )
+          end
+        end
+      end
+
+      def consume_tags_response(response)
+        response.flat_map do |message|
+          message.tags.map do |gitaly_tag|
+            if gitaly_tag.target_commit.present?
+              commit = GitalyClient::Commit.new(@repository, gitaly_tag.target_commit)
+              gitaly_commit = Gitlab::Git::Commit.new(commit)
+            end
+
+            Gitlab::Git::Tag.new(
+              @repository,
+              encode!(gitaly_tag.name.dup),
+              gitaly_tag.id,
+              gitaly_commit,
+              encode!(gitaly_tag.message.chomp)
             )
           end
         end
