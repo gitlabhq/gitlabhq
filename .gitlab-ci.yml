@@ -18,7 +18,7 @@ image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-  ELASTIC_URL: "http://elasticsearch:9200"
+  ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
@@ -63,13 +63,14 @@ stages:
   services:
     - postgres:9.2
     - redis:alpine
-    - elasticsearch:5.3
+    - docker.elastic.co/elasticsearch/elasticsearch:5.3.2
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
-    - elasticsearch:5.3
+    - docker.elastic.co/elasticsearch/elasticsearch:5.3.2
+
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
