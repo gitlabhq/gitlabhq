@@ -321,21 +321,11 @@ class Commit
   end
 
   def raw_diffs(*args)
-    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-      Gitlab::GitalyClient::CommitService.new(project.repository).diff_from_parent(self, *args)
-    else
-      raw.diffs(*args)
-    end
+    raw.diffs(*args)
   end
 
   def raw_deltas
-    @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
-      if is_enabled
-        Gitlab::GitalyClient::CommitService.new(project.repository).commit_deltas(self)
-      else
-        raw.deltas
-      end
-    end
+    @deltas ||= raw.deltas
   end
 
   def diffs(diff_options = nil)

@@ -170,7 +170,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits do
     context 'when the merge request diffs are Rugged::Patch instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
-      let(:diffs) { first_commit.diff_from_parent.patches }
+      let(:diffs) { first_commit.rugged_diff_from_parent.patches }
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'
@@ -179,7 +179,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits do
     context 'when the merge request diffs are Rugged::Diff::Delta instances' do
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { merge_request.project.repository.commit(merge_request_diff.head_commit_sha) }
-      let(:diffs) { first_commit.diff_from_parent.deltas }
+      let(:diffs) { first_commit.rugged_diff_from_parent.deltas }
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'

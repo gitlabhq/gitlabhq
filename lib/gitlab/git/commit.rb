@@ -187,25 +187,6 @@ module Gitlab
           Gitlab::Git::Commit.new(repository, commit, ref)
         end
 
-        # Returns a diff object for the changes introduced by +rugged_commit+.
-        # If +rugged_commit+ doesn't have a parent, then the diff is between
-        # this commit and an empty repo.  See Repository#diff for the keys
-        # allowed in the +options+ hash.
-        def diff_from_parent(rugged_commit, options = {})
-          options ||= {}
-          break_rewrites = options[:break_rewrites]
-          actual_options = Gitlab::Git::Diff.filter_diff_options(options)
-
-          diff = if rugged_commit.parents.empty?
-                   rugged_commit.diff(actual_options.merge(reverse: true))
-                 else
-                   rugged_commit.parents[0].diff(rugged_commit, actual_options)
-                 end
-
-          diff.find_similar!(break_rewrites: break_rewrites)
-          diff
-        end
-
         # Returns the `Rugged` sorting type constant for one or more given
         # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
         # containing more than one of them. `:date` uses a combination of date and
@@ -270,19 +251,50 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        diff_from_parent.patch
+        rugged_diff_from_parent.patch
       end
 
       # Returns a diff object for the changes from this commit's first parent.
       # If there is no parent, then the diff is between this commit and an
-      # empty repo.  See Repository#diff for keys allowed in the +options+
+      # empty repo. See Repository#diff for keys allowed in the +options+
       # hash.
       def diff_from_parent(options = {})
-        Commit.diff_from_parent(raw_commit, options)
+        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
+          if is_enabled
+            @repository.gitaly_commit_client.diff_from_parent(self, options)
+          else
+            rugged_diff_from_parent(options)
+          end
+        end
+      end
+
+      def rugged_diff_from_parent(options = {})
+        options ||= {}
+        break_rewrites = options[:break_rewrites]
+        actual_options = Gitlab::Git::Diff.filter_diff_options(options)
+
+        diff = if raw_commit.parents.empty?
+                raw_commit.diff(actual_options.merge(reverse: true))
+              else
+                raw_commit.parents[0].diff(raw_commit, actual_options)
+              end
+
+        diff.find_similar!(break_rewrites: break_rewrites)
+        diff
       end
 
       def deltas
-        @deltas ||= diff_from_parent.each_delta.map { |d| Gitlab::Git::Diff.new(d) }
+        @deltas ||= begin
+          deltas = Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
+            if is_enabled
+              @repository.gitaly_commit_client.commit_deltas(self)
+            else
+              rugged_diff_from_parent.each_delta
+            end
+          end
+
+          deltas.map { |delta| Gitlab::Git::Diff.new(delta) }
+        end
       end
 
       def has_zero_stats?
