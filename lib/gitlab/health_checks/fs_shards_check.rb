@@ -67,7 +67,6 @@ module Gitlab
           [metric(ok_metric, 0, **labels)]
         end
 
-
         def repository_storages
           @repository_storage ||= Gitlab::CurrentSettings.current_application_settings.repository_storages
         end
