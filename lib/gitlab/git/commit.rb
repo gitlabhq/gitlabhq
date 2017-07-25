@@ -14,7 +14,7 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :raw_commit
+      delegate :tree, to: :rugged_commit
 
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
@@ -50,19 +50,29 @@ module Gitlab
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/321
         def find(repo, commit_id = "HEAD")
+          # Already a commit?
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
+
+          # A rugged reference?
+          commit_id = Gitlab::Git::Ref.dereference_object(commit_id)
           return decorate(repo, commit_id) if commit_id.is_a?(Rugged::Commit)
 
-          obj = if commit_id.is_a?(String)
-                  repo.rev_parse_target(commit_id)
-                else
-                  Gitlab::Git::Ref.dereference_object(commit_id)
-                end
+          # Some weird thing?
+          return nil unless commit_id.is_a?(String)
 
-          return nil unless obj.is_a?(Rugged::Commit)
+          commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.find_commit(commit_id)
+            else
+              obj = repo.rev_parse_target(commit_id)
 
-          decorate(repo, obj)
-        rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError, Gitlab::Git::Repository::NoRepository
+              obj.is_a?(Rugged::Commit) ? obj : nil
+            end
+          end
+
+          decorate(repo, commit) if commit
+        rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
+               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository
           nil
         end
 
@@ -273,11 +283,11 @@ module Gitlab
         break_rewrites = options[:break_rewrites]
         actual_options = Gitlab::Git::Diff.filter_diff_options(options)
 
-        diff = if raw_commit.parents.empty?
-                raw_commit.diff(actual_options.merge(reverse: true))
-              else
-                raw_commit.parents[0].diff(raw_commit, actual_options)
-              end
+        diff = if rugged_commit.parents.empty?
+                 rugged_commit.diff(actual_options.merge(reverse: true))
+               else
+                 rugged_commit.parents[0].diff(rugged_commit, actual_options)
+               end
 
         diff.find_similar!(break_rewrites: break_rewrites)
         diff
@@ -340,7 +350,7 @@ module Gitlab
 
       def to_patch(options = {})
         begin
-          raw_commit.to_mbox(options)
+          rugged_commit.to_mbox(options)
         rescue Rugged::InvalidError => ex
           if ex.message =~ /commit \w+ is a merge commit/i
             'Patch format is not currently supported for merge commits.'
@@ -388,6 +398,14 @@ module Gitlab
         encode! @committer_email
       end
 
+      def rugged_commit
+        @rugged_commit ||= if raw_commit.is_a?(Rugged::Commit)
+                             raw_commit
+                           else
+                             @repository.rev_parse_target(id)
+                           end
+      end
+
       private
 
       def init_from_hash(hash)
@@ -421,10 +439,10 @@ module Gitlab
         # subject from the message to make it clearer when there's one
         # available but not the other.
         @message = (commit.body.presence || commit.subject).dup
-        @authored_date = Time.at(commit.author.date.seconds)
+        @authored_date = Time.at(commit.author.date.seconds).utc
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
-        @committed_date = Time.at(commit.committer.date.seconds)
+        @committed_date = Time.at(commit.committer.date.seconds).utc
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = commit.parent_ids
