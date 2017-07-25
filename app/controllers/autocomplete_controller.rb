@@ -39,13 +39,17 @@ class AutocompleteController < ApplicationController
     project = Project.find_by_id(params[:project_id])
     projects = projects_finder.execute(project, search: params[:search], offset_id: params[:offset_id])
 
+    projects = projects.map do |project|
+      {id: project.id, name_with_namespace: project.name_with_namespace}
+    end
+
     no_project = {
       id: 0,
       name_with_namespace: 'No project'
     }
     projects.unshift(no_project) unless params[:offset_id].present?
 
-    render json: projects.to_json(only: [:id, :name_with_namespace], methods: :name_with_namespace)
+    render json: projects.to_json
   end
 
   private
