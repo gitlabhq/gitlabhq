@@ -1,4 +1,0 @@
----
-title: Fixes unscoping of imposed capacity limit by find_each method on Mirror scheduler
-merge_request: 2460
-author:
