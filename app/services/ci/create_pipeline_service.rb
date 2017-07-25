@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
+    def execute(source)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -10,31 +10,16 @@ module Ci
         sha: sha,
         before_sha: before_sha,
         tag: tag?,
-        trigger_requests: Array(trigger_request),
         user: current_user,
-        pipeline_schedule: schedule
+        pipeline_schedule: pipeline_schedule
       )
 
-      validate(trigger_request,
-               ignore_skip_ci: ignore_skip_ci,
-               save_on_errors: save_on_errors).tap do |result|
-        return result if result
-      end
+      return pipeline if skip_ci?
 
-      create_pipeline(&block).tap do |error|
-        return error if error
-      end
+      validate!
 
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-      pipeline_created_counter.increment(source: source)
-      pipeline.tap(&:process!)
-    end
-
-    private
-
-    def create_pipeline
       Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
+        pipeline.save!
 
         yield(pipeline) if block_given?
 
@@ -43,43 +28,37 @@ module Ci
           .execute(pipeline)
       end
 
-      return nil
-    rescue ActiveRecord::RecordInvalid => e
-      return error("Failed to persist the pipeline: #{e}")
+      update_relations!
+      pipeline.process!
+
+      rescue Exception => e
+        pipeline.errors.add(:base, "Failed to create a pipeline: #{e}")
+      ensure
+        return pipeline
     end
 
-    def validate(trigger_request, ignore_skip_ci:, save_on_errors:)
-      unless project.builds_enabled?
-        return error('Pipeline is disabled')
-      end
+    private
 
-      unless trigger_request || can?(current_user, :create_pipeline, project)
-        return error('Insufficient permissions to create a new pipeline')
-      end
-
-      unless branch? || tag?
-        return error('Reference not found')
-      end
-
-      unless commit
-        return error('Commit not found')
-      end
+    def validate!
+      raise 'Pipeline is disabled' unless project.builds_enabled?
+      raise 'Insufficient permissions to create a new pipeline' unless can?(current_user, :create_pipeline, project)
+      raise 'Reference not found' unless branch? || tag?
+      raise 'Commit not found' unless commit
 
       unless pipeline.config_processor
-        unless pipeline.ci_yaml_file
-          return error("Missing #{pipeline.ci_yaml_file_path} file")
-        end
-        return error(pipeline.yaml_errors, save: save_on_errors)
+        raise "Missing #{pipeline.ci_yaml_file_path} file" unless pipeline.ci_yaml_file
+
+        pipeline.drop if save_on_errors
+        raise pipeline.yaml_errors
       end
 
-      if !ignore_skip_ci && skip_ci?
-        pipeline.skip if save_on_errors
-        return pipeline
-      end
+      raise 'No stages / jobs for this pipeline.' unless pipeline.has_stage_seeds?
+    end
 
-      unless pipeline.has_stage_seeds?
-        return error('No stages / jobs for this pipeline.')
-      end
+    def update_relations!
+      update_merge_requests_head_pipeline
+      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+      pipeline_created_counter.increment(source: source)
     end
 
     def update_merge_requests_head_pipeline
@@ -91,7 +70,16 @@ module Ci
 
     def skip_ci?
       return false unless pipeline.git_commit_message
-      pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i
+
+      if pipeline.git_commit_message =~ /\[(ci[ _-]skip|skip[ _-]ci)\]/i && !ignore_skip_ci
+        pipeline.skip if save_on_errors
+
+        return true
+      end
+
+      return false
+    end
+
     end
 
     def cancel_pending_pipelines
@@ -130,6 +118,18 @@ module Ci
       params[:ref]
     end
 
+    def ignore_skip_ci
+      params[:ignore_skip_ci] || false
+    end
+
+    def save_on_errors
+      params[:save_on_errors] || true
+    end
+
+    def pipeline_schedule
+      params[:pipeline_schedule]
+    end
+
     def branch?
       project.repository.ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + ref)
     end
@@ -146,11 +146,10 @@ module Ci
       origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
     end
 
-    def error(message, save: false)
-      pipeline.errors.add(:base, message)
-      pipeline.drop if save
-      pipeline
-    end
+    # def error(message)
+    #   pipeline.errors.add(:base, message)
+    #   pipeline
+    # end
 
     def pipeline_created_counter
       @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_total, "Counter of pipelines created")

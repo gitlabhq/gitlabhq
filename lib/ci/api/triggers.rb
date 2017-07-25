@@ -24,7 +24,9 @@ module Ci
           end
 
           # create request and trigger builds
-          trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref], variables)
+          # trigger_request = Ci::CreateTriggerRequestService.new.execute(project, trigger, params[:ref], variables)
+          result = Ci::PipelineTriggerService.new(project, nil, params).execute
+          trigger_request = result[:pipeline].trigger_request
           if trigger_request
             present trigger_request, with: Entities::TriggerRequest
           else

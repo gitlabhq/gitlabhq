@@ -189,8 +189,10 @@ class Gitlab::Seeder::CycleAnalytics
 
       service = Ci::CreatePipelineService.new(merge_request.project,
                                               @user,
-                                              ref: "refs/heads/#{merge_request.source_branch}")
-      pipeline = service.execute(:push, ignore_skip_ci: true, save_on_errors: false)
+                                              ref: "refs/heads/#{merge_request.source_branch}",
+                                              ignore_skip_ci: true,
+                                              save_on_errors: false)
+      pipeline = service.execute(:push)
 
       pipeline.run!
       Timecop.travel rand(1..6).hours.from_now

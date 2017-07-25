@@ -12,8 +12,9 @@ module Ci
       # this check is to not leak the presence of the project if user cannot read it
       return unless trigger.project == project
 
-      pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref])
-        .execute(:trigger, ignore_skip_ci: true) do |pipeline|
+      pipeline = Ci::CreatePipelineService.new(project, trigger.owner, ref: params[:ref], ignore_skip_ci: true)
+        .execute(:trigger) do |pipeline|
+          trigger.trigger_requests.create(variables: params[:variables], pipeline: pipeline)
           create_pipeline_variables!(pipeline)
         end
 

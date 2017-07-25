@@ -46,8 +46,10 @@ module API
 
         new_pipeline = Ci::CreatePipelineService.new(user_project,
                                                      current_user,
-                                                     declared_params(include_missing: false))
-                           .execute(:api, ignore_skip_ci: true, save_on_errors: false)
+                                                     declared_params(include_missing: false),
+                                                     ignore_skip_ci: true,
+                                                     save_on_errors: false)
+                           .execute(:api)
         if new_pipeline.persisted?
           present new_pipeline, with: Entities::Pipeline
         else
