@@ -9,8 +9,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: Ukrainian (https://translate.zanata.org/project/view/GitLab)\n"
-"PO-Revision-Date: 2017-07-14 01:22-0400\n"
-"Last-Translator: Huang Tao <htve@outlook.com>\n"
+"PO-Revision-Date: 2017-07-24 06:16-0400\n"
+"Last-Translator: Андрей Витюк <andruwa13@gmail.com>\n"
 "Language: uk\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -57,7 +57,7 @@ msgid "Add Changelog"
 msgstr "Додати список змін (Changelog)"
 
 msgid "Add Contribution guide"
-msgstr "Додати керівництво для контрибуторів"
+msgstr "Додати керівництво для контриб’юторів"
 
 msgid "Add License"
 msgstr "Додати ліцензію"
@@ -209,7 +209,9 @@ msgstr[1] "Комміта"
 msgstr[2] "Коммітів"
 
 msgid "Commit duration in minutes for last 30 commits"
-msgstr "Комміт тривалість у хвилинах за останні 30 коммітів"
+msgstr ""
+"Тривалість коммітів протягом декількох хвилин на протязі 30 останніх  "
+"коммітів"
 
 msgid "Commit message"
 msgstr "Комміт повідомлення"
@@ -236,10 +238,10 @@ msgid "Compare"
 msgstr "Порівняти"
 
 msgid "Contribution guide"
-msgstr "Керівництво контрибуторів"
+msgstr "Керівництво контриб’юторів"
 
 msgid "Contributors"
-msgstr "Контрибутори"
+msgstr "Контриб’ютори"
 
 msgid "Copy URL to clipboard"
 msgstr "Скопіювати URL в буфер обміну"
@@ -352,16 +354,16 @@ msgid "Download"
 msgstr "Завантажити"
 
 msgid "Download tar"
-msgstr "Завантажити в форматі tar"
+msgstr "Завантажити tar"
 
 msgid "Download tar.bz2"
-msgstr "Завантажити в форматі tar.bz2"
+msgstr "Завантажити tar.bz2"
 
 msgid "Download tar.gz"
-msgstr "Завантажити в форматі tar.gz"
+msgstr "Завантажити tar.gz"
 
 msgid "Download zip"
-msgstr "Завантажити в форматі zip"
+msgstr "Завантажити zip"
 
 msgid "DownloadArtifacts|Download"
 msgstr "Завантажити"
@@ -397,7 +399,7 @@ msgid "Failed to remove the pipeline schedule"
 msgstr "Не вдалося видалити розклад Конвеєра"
 
 msgid "Files"
-msgstr "Файли"
+msgstr "Файлів"
 
 msgid "Filter by commit message"
 msgstr "Фільтрувати повідомлення коммітів"
@@ -436,7 +438,7 @@ msgid "GoToYourFork|Fork"
 msgstr "Форк"
 
 msgid "Home"
-msgstr "Початок"
+msgstr "Головна"
 
 msgid "Housekeeping successfully started"
 msgstr "Очищення успішно розпочато"
@@ -451,13 +453,13 @@ msgid "Introducing Cycle Analytics"
 msgstr "Представляємо аналітику циклу"
 
 msgid "Jobs for last month"
-msgstr "Завдання за останній місяць"
+msgstr "Кількість завдань за останній місяць"
 
 msgid "Jobs for last week"
-msgstr "Завдання за останній тиждень"
+msgstr "Кількість завдань за останній тиждень"
 
 msgid "Jobs for last year"
-msgstr "Завдання за останній рік"
+msgstr "Кількість завдань за останній рік"
 
 msgid "LFSStatus|Disabled"
 msgstr "Вимкнено"
@@ -508,7 +510,7 @@ msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] "Нова проблема"
 msgstr[1] "Нові проблеми"
-msgstr[2] "Новах проблем"
+msgstr[2] "Нових проблем"
 
 msgid "New Pipeline Schedule"
 msgstr "Новий розклад Конвеєра"
@@ -757,7 +759,7 @@ msgid "ProjectLifecycle|Stage"
 msgstr "Етап"
 
 msgid "ProjectNetworkGraph|Graph"
-msgstr "Графік"
+msgstr "Історія"
 
 msgid "Read more"
 msgstr "Докладніше"
@@ -852,7 +854,7 @@ msgid "Source code"
 msgstr "Код"
 
 msgid "StarProject|Star"
-msgstr "Старт"
+msgstr "Підписатися"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Почати %{new_merge_request} з цих змін"
@@ -988,19 +990,19 @@ msgid "Timeago|%s minutes remaining"
 msgstr "%s хвилини залишитися"
 
 msgid "Timeago|%s months ago"
-msgstr "%s місяців тому"
+msgstr "%s місяці(в) тому"
 
 msgid "Timeago|%s months remaining"
-msgstr "%s місяці, що залишилися"
+msgstr "%s місяці(в), що залишилися"
 
 msgid "Timeago|%s seconds remaining"
 msgstr "%s секунд, що залишаються"
 
 msgid "Timeago|%s weeks ago"
-msgstr "%s тижнів тому"
+msgstr "%s тижні(в) тому"
 
 msgid "Timeago|%s weeks remaining"
-msgstr "%s тижнів залишилися"
+msgstr "%s тижні(в) залишилися"
 
 msgid "Timeago|%s years ago"
 msgstr "%s років тому"
@@ -1030,7 +1032,7 @@ msgid "Timeago|Past due"
 msgstr "Прострочені"
 
 msgid "Timeago|a day ago"
-msgstr "годин тому"
+msgstr "День тому"
 
 msgid "Timeago|a month ago"
 msgstr "місяць тому"
@@ -1054,28 +1056,28 @@ msgid "Timeago|about an hour ago"
 msgstr "Близько години тому"
 
 msgid "Timeago|in %s days"
-msgstr "через %s днїв"
+msgstr "через %s дні(в)"
 
 msgid "Timeago|in %s hours"
-msgstr "через %s години"
+msgstr "через %s годин(и)"
 
 msgid "Timeago|in %s minutes"
-msgstr "через %s хвилини"
+msgstr "через %s хвилин(и)"
 
 msgid "Timeago|in %s months"
-msgstr "через %s місяців"
+msgstr "через %s місяці(в)"
 
 msgid "Timeago|in %s seconds"
-msgstr "через %s секунд"
+msgstr "через %s секунд(и)"
 
 msgid "Timeago|in %s weeks"
-msgstr "через %s тижні"
+msgstr "через %s тижні(в)"
 
 msgid "Timeago|in %s years"
-msgstr "через %s років"
+msgstr "через %s роки(ів)"
 
 msgid "Timeago|in 1 day"
-msgstr "через день"
+msgstr "через 1 день"
 
 msgid "Timeago|in 1 hour"
 msgstr "через годину"
@@ -1093,22 +1095,22 @@ msgid "Timeago|in 1 year"
 msgstr "через рік"
 
 msgid "Timeago|less than a minute ago"
-msgstr "менш хвилини тому"
+msgstr "менше хвилини тому"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
-msgstr[0] "Година"
-msgstr[1] "Годині"
-msgstr[2] "Годин"
+msgstr[0] "година"
+msgstr[1] "години"
+msgstr[2] "годин"
 
 msgid "Time|min"
 msgid_plural "Time|mins"
 msgstr[0] "хвилина"
-msgstr[1] "хвилині"
+msgstr[1] "хвилини"
 msgstr[2] "хвилин"
 
 msgid "Time|s"
-msgstr "секунда"
+msgstr "секунд(а)"
 
 msgid "Total Time"
 msgstr "Загальний час"
@@ -1117,7 +1119,7 @@ msgid "Total test time for all commits/merges"
 msgstr "Загальний час, щоб перевірити всі фіксації/злиття"
 
 msgid "Unstar"
-msgstr "Зняти позначку"
+msgstr "Відписатись"
 
 msgid "Upload New File"
 msgstr "Завантажити новий файл"
@@ -1129,7 +1131,7 @@ msgid "UploadLink|click to upload"
 msgstr "Натисніть, щоб завантажити"
 
 msgid "Use your global notification setting"
-msgstr "Використовуються глобальний налаштування повідомлень"
+msgstr "Використовуються глобальні налаштування повідомлень"
 
 msgid "View open merge request"
 msgstr "Перегляд відкритих запитів на злиття"
