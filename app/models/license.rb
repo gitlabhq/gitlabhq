@@ -6,6 +6,7 @@ class License < ActiveRecord::Base
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
   CONTRIBUTION_ANALYTICS_FEATURE = 'GitLab_ContributionAnalytics'.freeze
+  DB_LOAD_BALANCING_FEATURE = 'GitLab_DbLoadBalancing'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
@@ -34,6 +35,7 @@ class License < ActiveRecord::Base
   FEATURE_CODES = {
     admin_audit_log: ADMIN_AUDIT_LOG_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
+    db_load_balancing: DB_LOAD_BALANCING_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
     geo: GEO_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
@@ -98,6 +100,7 @@ class License < ActiveRecord::Base
     *EES_FEATURES,
     { ADMIN_AUDIT_LOG_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
+    { DB_LOAD_BALANCING_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
     { GEO_FEATURE => 1 },
