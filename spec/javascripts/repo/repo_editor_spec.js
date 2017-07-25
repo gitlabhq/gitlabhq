@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import repoEditor from '~/repo/repo_editor.vue';
 
-fdescribe('RepoEditor', () => {
+describe('RepoEditor', () => {
   const RepoEditor = Vue.extend(repoEditor);
 
   function createComponent() {
@@ -11,8 +11,6 @@ fdescribe('RepoEditor', () => {
   it('renders an ide container', () => {
     const vm = createComponent();
 
-    vm.$nextTick(() => {
-      expect(vm.$el.getElementById('ide')).toBeTruthy();
-    });
+    expect(vm.$el.id).toEqual('ide');
   });
 });
