@@ -29,15 +29,12 @@ module API
           render_api_error!(errors, 400)
         end
 
-<<<<<<< HEAD
         def check_sha_param!(params, merge_request)
           if params[:sha] && merge_request.diff_head_sha != params[:sha]
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
           end
         end
 
-=======
->>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
         def find_merge_requests(args = {})
           args = params.merge(args)
 

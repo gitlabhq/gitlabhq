@@ -52,8 +52,7 @@ module Gitlab
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-<<<<<<< HEAD
-          }.merge(service_desk_counts)
+          }.merge(service_desk_counts).merge(services_usage)
         }
       end
 
@@ -67,9 +66,6 @@ module Gitlab
           service_desk_issues: Issue.where(project: projects_with_service_desk,
                                            author: User.support_bot,
                                            confidential: true).count
-=======
-          }.merge(services_usage)
->>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
         }
       end
 
@@ -100,7 +96,6 @@ module Gitlab
         usage_data
       end
 
-<<<<<<< HEAD
       def license_edition(plan)
         case plan
         when 'premium'
@@ -110,7 +105,8 @@ module Gitlab
         else # Older licenses
           'EE'
         end
-=======
+      end
+
       def services_usage
         types = {
           JiraService: :projects_jira_active,
@@ -121,7 +117,6 @@ module Gitlab
 
         results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
         results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
->>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
       end
     end
   end
