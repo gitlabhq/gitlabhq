@@ -5,11 +5,13 @@
 /* global Sidebar */
 
 export default () => {
+  const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
+
   new MilestoneSelect({
-    full_path: gl.sidebarOptions.fullPath,
+    full_path: sidebarOptions.fullPath,
   });
   new LabelsSelect();
-  new IssuableContext(gl.sidebarOptions.currentUser);
+  new IssuableContext(sidebarOptions.currentUser);
   gl.Subscription.bindAll('.subscription');
   new gl.DueDateSelectors();
   window.sidebar = new Sidebar();

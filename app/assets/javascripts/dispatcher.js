@@ -27,9 +27,6 @@
 /* global Shortcuts */
 /* global Sidebar */
 /* global ShortcutsWiki */
-/* global IssuableContext */
-/* global IssueStatusSelect */
-/* global SubscriptionSelect */
 
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
