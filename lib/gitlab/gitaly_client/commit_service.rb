@@ -29,15 +29,14 @@ module Gitlab
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
-        Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options.merge(from_gitaly: true))
+        GitalyClient::DiffStitcher.new(response)
       end
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(commit_diff_request_params(commit))
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
-        response.flat_map do |msg|
-          msg.deltas.map { |d| Gitlab::Git::Diff.new(d) }
-        end
+
+        response.flat_map { |msg| msg.deltas }
       end
 
       def tree_entry(ref, path, limit = nil)

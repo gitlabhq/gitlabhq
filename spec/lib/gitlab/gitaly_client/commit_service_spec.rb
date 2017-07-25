@@ -46,18 +46,10 @@ describe Gitlab::GitalyClient::CommitService do
       end
     end
 
-    it 'returns a Gitlab::Git::DiffCollection' do
+    it 'returns a Gitlab::GitalyClient::DiffStitcher' do
       ret = client.diff_from_parent(commit)
 
-      expect(ret).to be_kind_of(Gitlab::Git::DiffCollection)
-    end
-
-    it 'passes options to Gitlab::Git::DiffCollection' do
-      options = { max_files: 31, max_lines: 13, from_gitaly: true }
-
-      expect(Gitlab::Git::DiffCollection).to receive(:new).with(kind_of(Enumerable), options)
-
-      client.diff_from_parent(commit, options)
+      expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
   end
 
