@@ -64,6 +64,7 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import GpgBadges from './gpg_badges';
 
 (function() {
   var Dispatcher;
@@ -300,6 +301,9 @@ import PerformanceBar from './performance_bar';
           }).bindEvents();
           break;
         case 'projects:commits:show':
+          shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
+          break;
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
           break;

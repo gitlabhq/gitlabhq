@@ -204,7 +204,7 @@ describe 'Commits' do
     end
   end
 
-  describe 'GPG signed commits' do
+  describe 'GPG signed commits', :js do
     it 'changes from unverified to verified when the user changes his email to match the gpg key' do
       user = create :user, email: 'unrelated.user@example.org'
       project.team << [user, :master]
@@ -262,7 +262,7 @@ describe 'Commits' do
       end
     end
 
-    it 'shows popover badges', :js do
+    it 'shows popover badges' do
       gpg_user = create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
       Sidekiq::Testing.inline! do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: gpg_user

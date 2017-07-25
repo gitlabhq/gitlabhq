@@ -237,8 +237,10 @@ class Commit
   def signature
     return @signature if defined?(@signature)
 
-    @signature = Gitlab::Gpg::Commit.new(self).signature
+    @signature = gpg_commit.signature
   end
+
+  delegate :has_signature?, to: :gpg_commit
 
   def revert_branch_name
     "revert-#{short_id}"
@@ -387,5 +389,9 @@ class Commit
 
   def merged_merge_request_no_cache(user)
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
+  end
+
+  def gpg_commit
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
   end
 end

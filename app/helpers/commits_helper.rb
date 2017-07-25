@@ -113,6 +113,10 @@ module CommitsHelper
     commit_action_link('cherry-pick', commit, continue_to_path, btn_class: btn_class, has_tooltip: has_tooltip)
   end
 
+  def commit_signature_badge_classes(additional_classes)
+    %w(btn status-box gpg-status-box) + Array(additional_classes)
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and
