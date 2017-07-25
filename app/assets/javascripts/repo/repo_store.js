@@ -109,7 +109,7 @@ const RepoStore = {
     RepoStore.files = RepoStore.files.filter((file) => {
       const isItTheTreeWeWant = file.url === treeToClose.url;
       // if it's the next tree
-      if(foundTree && file.type === 'tree' && !isItTheTreeWeWant) {
+      if(foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
         wereDone = true;
         return true;
       }

@@ -68,7 +68,7 @@ const RepoEditor = {
 
     editMode() {
       const panelClassList = document.querySelector('.panel-right').classList;
-      let readOnly = true;
+      let readOnly = false;
 
       if (this.editMode) {
         panelClassList.add('edit-mode');
