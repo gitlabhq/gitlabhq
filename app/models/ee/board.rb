@@ -22,7 +22,7 @@ module EE
     end
 
     def parent
-      group || project
+      @parent ||= group || project
     end
 
     def is_group_board?
