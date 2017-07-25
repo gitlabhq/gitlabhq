@@ -41,6 +41,7 @@
     = button_tag 'Create tag', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_tags_path(@project), class: 'btn btn-cancel'
 
+-# haml-lint:disable InlineJavaScript
 :javascript
   window.gl = window.gl || { };
   window.gl.availableRefs = #{@project.repository.ref_names.to_json};
