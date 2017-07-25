@@ -30,7 +30,7 @@ describe Gitlab::GitalyClient::CommitService do
 
     context 'when a commit does not have a parent' do
       it 'sends an RPC request with empty tree ref as left commit' do
-        initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+        initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863').raw
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',

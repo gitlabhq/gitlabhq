@@ -71,6 +71,8 @@ class Repository
     @raw_repository ||= initialize_raw_repository
   end
 
+  alias_method :raw, :raw_repository
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
