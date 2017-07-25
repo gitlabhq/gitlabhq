@@ -157,7 +157,7 @@
       %p
         Customize your merge request restrictions.
     .settings-content.no-animate{ class: ('expanded' if expanded) }
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings" }, authenticity_token: true do |f|
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
