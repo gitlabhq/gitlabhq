@@ -21,6 +21,7 @@ function initRepo() {
   Store.service.refsUrl = repo.dataset.refsUrl;
   Store.currentBranch = $("button.dropdown-menu-toggle").attr('data-ref');
   Store.checkIsCommitable();
+  Store.projectId = repo.dataset.projectId;
 
   new Vue({
     el: repo,

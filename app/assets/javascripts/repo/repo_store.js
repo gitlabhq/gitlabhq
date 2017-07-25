@@ -10,6 +10,7 @@ const RepoStore = {
   editMode: false,
   isTree: false,
   prevURL: '',
+  projectId: '',
   projectName: '',
   trees: [],
   blobs: [],

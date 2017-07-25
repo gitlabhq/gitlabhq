@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import Store from './repo_store';
+import Api from '../api'
 
 const RepoCommitSection = {
   data: () => Store,
@@ -28,7 +29,9 @@ const RepoCommitSection = {
         commit_message: commitMessage,
         actions: actions,
       }
-      console.log(branch, commitMessage, actions);
+      Api.commitMultiple(Store.projectId, payload, (data) => {
+        console.log('got back', data);
+      })
     }
   },
 
