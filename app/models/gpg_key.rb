@@ -77,12 +77,11 @@ class GpgKey < ActiveRecord::Base
   end
 
   def revoke
-    GpgSignature.where(gpg_key: self, valid_signature: true).find_each do |gpg_signature|
-      gpg_signature.update_attributes!(
-        gpg_key: nil,
-        valid_signature: false
-      )
-    end
+    GpgSignature.where(gpg_key: self, valid_signature: true).update_all(
+      gpg_key_id: nil,
+      valid_signature: false,
+      updated_at: Time.zone.now
+    )
 
     destroy
   end
