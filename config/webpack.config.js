@@ -54,6 +54,7 @@ var config = {
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
     pipelines:            './pipelines/pipelines_bundle.js',
+    pipelines_charts:     './pipelines/pipelines_charts.js',
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
     pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
