@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::UsageData do
+  let(:project) { create(:empty_project) }
   let(:projects) { create_list(:project, 3) }
   let!(:board) { create(:board, project: projects[0]) }
 
@@ -145,7 +146,7 @@ describe Gitlab::UsageData do
         allow(License).to receive(:feature_available?).with(:service_desk).and_return(true)
         allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(anything).and_return(true)
 
-        expect(subject).to eq(service_desk_enabled_projects: 2,
+        expect(subject).to eq(service_desk_enabled_projects: 4,
                               service_desk_issues: 3)
       end
     end
