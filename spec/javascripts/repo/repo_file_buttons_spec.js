@@ -55,6 +55,39 @@ describe('RepoFileButtons', () => {
     expect(deleteBtn.textContent).toEqual('Delete');
   });
 
+  it('renders a white border if not editMode', () => {
+    const activeFile = {
+      extension: 'md',
+      url: 'url',
+    };
+    RepoStore.openedFiles = new Array(1);
+    RepoStore.activeFile = activeFile;
+    RepoStore.editMode = false;
+
+    const vm = createComponent();
+
+    expect(vm.$el.style.borderBottom).toEqual('1px solid rgb(240, 240, 240)');
+  });
+
+  it('triggers rawPreviewToggle on preview click', () => {
+    const activeFile = {
+      extension: 'md',
+      url: 'url',
+    };
+    RepoStore.openedFiles = new Array(1);
+    RepoStore.activeFile = activeFile;
+    RepoStore.editMode = true;
+
+    const vm = createComponent();
+    const preview = vm.$el.querySelector('.preview');
+
+    spyOn(vm, 'rawPreviewToggle');
+
+    preview.click();
+
+    expect(vm.rawPreviewToggle).toHaveBeenCalled();
+  });
+
   it('does not render preview toggle if not canPreview', () => {
     const activeFile = {
       extension: 'abcd',
