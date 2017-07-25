@@ -46,8 +46,7 @@ class GpgKey < ActiveRecord::Base
   end
 
   def key=(value)
-    value.strip! unless value.blank?
-    write_attribute(:key, value)
+    super(value&.strip)
   end
 
   def user_infos

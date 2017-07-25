@@ -44,6 +44,10 @@ describe GpgKey do
 
       expect(described_class.new(key: " #{key} ").key).to eq(key)
     end
+
+    it 'does not strip when the key is nil' do
+      expect(described_class.new(key: nil).key).to be_nil
+    end
   end
 
   describe '#user_infos' do
