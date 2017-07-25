@@ -79,7 +79,7 @@ For this scope, let's create a folder called `.m2` in the root of our repo. Insi
     <server>
       <id>central</id>
       <username>${env.MAVEN_REPO_USER}</username>
-      <password>${env.MAVEN_REPO_KEY}</password>
+      <password>${env.MAVEN_REPO_PASS}</password>
     </server>
   </servers>
 </settings>
@@ -98,7 +98,7 @@ First of all, we should remember that we need to setup some secret variable for 
 and add the following secret variables (replace them with your current values, of course):
 - **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
 - **MAVEN_REPO_USER**: `gitlab` (your Artifactory username)
-- **MAVEN_REPO_KEY**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory API Key)
+- **MAVEN_REPO_PASS**: `AKCp2WXr3G61Xjz1PLmYa3arm3yfBozPxSta4taP3SeNu2HPXYa7FhNYosnndFNNgoEds8BCS` (your Artifactory Encrypted Password)
 
 Now it's time to define stages in our `.gitlab-ci.yml` file: once pushed to our repo it will instruct the GitLab Runner with all the needed commands.
 
