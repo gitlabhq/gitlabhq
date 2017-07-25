@@ -12,7 +12,8 @@ class ProjectPolicy < BasePolicy
 
   desc "User is a project owner"
   condition :owner do
-    @user && project.owner == @user || (project.group && project.group.has_owner?(@user))
+    (project.owner.present? && project.owner == @user) ||
+      project.group&.has_owner?(@user)
   end
 
   desc "Project has public builds enabled"

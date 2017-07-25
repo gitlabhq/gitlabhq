@@ -43,8 +43,12 @@ var config = {
     group:                './group.js',
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+<<<<<<< HEAD
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
+=======
+    how_to_merge:         './how_to_merge.js',
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',

@@ -536,6 +536,7 @@ describe GitPushService, services: true do
             let(:message) { "this is some work.\n\ncloses #1" }
 
             it "does not initiates one api call to jira server to close the issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
 
               expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
@@ -562,6 +563,34 @@ describe GitPushService, services: true do
 
             it "initiates one api call to jira server to comment on the jira issue" do
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+              expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+            end
+
+            it "does not initiates one api call to jira server to comment on the issue" do
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+              expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+                body: comment_body
+              ).once
+            end
+          end
+
+          context 'when internal issues are enabled' do
+            let(:issue) { create(:issue, project: project) }
+            let(:message) { "this is some work.\n\ncloses JIRA-1 \n\n closes #{issue.to_reference}" }
+
+            it "initiates one api call to jira server to close the jira issue" do
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+
+              expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
+            end
+
+            it "initiates one api call to jira server to comment on the jira issue" do
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
 
               expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
                 body: comment_body
@@ -569,14 +598,22 @@ describe GitPushService, services: true do
             end
 
             it "closes the internal issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
               expect(issue.reload).to be_closed
             end
 
             it "adds a note indicating that the issue is now closed" do
               expect(SystemNoteService).to receive(:change_status)
                 .with(issue, project, commit_author, "closed", closing_commit)
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, @oldrev, @newrev, @ref )
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
             end
           end
         end

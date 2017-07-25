@@ -1,11 +1,19 @@
 require 'spec_helper'
 
 describe Gitlab::UsageData do
-  let!(:project) { create(:empty_project) }
-  let!(:project2) { create(:empty_project) }
-  let!(:board) { create(:board, project: project) }
+  let(:projects) { create_list(:project, 3) }
+  let!(:board) { create(:board, project: projects[0]) }
 
   describe '#data' do
+    before do
+      create(:jira_service, project: projects[0])
+      create(:jira_service, project: projects[1])
+      create(:prometheus_service, project: projects[1])
+      create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
+      create(:service, project: projects[1], type: 'SlackService', active: true)
+      create(:service, project: projects[2], type: 'SlackService', active: true)
+    end
+
     subject { described_class.data }
 
     it "gathers usage data" do
@@ -32,7 +40,7 @@ describe Gitlab::UsageData do
       count_data = subject[:counts]
 
       expect(count_data[:boards]).to eq(1)
-      expect(count_data[:projects]).to eq(2)
+      expect(count_data[:projects]).to eq(3)
 
       expect(count_data.keys).to match_array(%i(
         boards
@@ -60,6 +68,9 @@ describe Gitlab::UsageData do
         notes
         projects
         projects_imported_from_github
+        projects_jira_active
+        projects_slack_notifications_active
+        projects_slack_slash_active
         projects_prometheus_active
         pages_domains
         protected_branches
@@ -71,6 +82,16 @@ describe Gitlab::UsageData do
         uploads
         web_hooks
       ))
+    end
+
+    it 'gathers projects data correctly' do
+      count_data = subject[:counts]
+
+      expect(count_data[:projects]).to eq(3)
+      expect(count_data[:projects_prometheus_active]).to eq(1)
+      expect(count_data[:projects_jira_active]).to eq(2)
+      expect(count_data[:projects_slack_notifications_active]).to eq(2)
+      expect(count_data[:projects_slack_slash_active]).to eq(1)
     end
   end
 

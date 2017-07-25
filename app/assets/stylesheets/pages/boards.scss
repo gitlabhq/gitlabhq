@@ -459,6 +459,7 @@
   margin: 5px;
 }
 
+<<<<<<< HEAD
 .boards-title-holder {
   padding: 25px 13px $gl-padding;
 
@@ -480,6 +481,12 @@
 }
 
 .page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
+=======
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
+.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
+  position: absolute;
+
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
   &.right-sidebar {
     top: 0;
     bottom: 0;

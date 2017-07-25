@@ -582,6 +582,7 @@ describe Project, models: true do
       let!(:internal_issue) { create(:issue, project: project) }
       before do
         allow(project).to receive(:external_issue_tracker).and_return(true)
+<<<<<<< HEAD
       end
 
       context 'when internal issues are enabled' do
@@ -602,6 +603,28 @@ describe Project, models: true do
         end
       end
 
+=======
+      end
+
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+>>>>>>> d964816b9fe56679ffc0b331e701f7b24db5c6a9
       context 'when internal issues are disabled' do
         before do
           project.issues_enabled = false
