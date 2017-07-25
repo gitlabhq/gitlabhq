@@ -8,7 +8,7 @@ class GpgSignature < ActiveRecord::Base
   belongs_to :gpg_key
 
   validates :commit_sha, presence: true
-  validates :project, presence: true
+  validates :project_id, presence: true
   validates :gpg_key_primary_keyid, presence: true
 
   def gpg_key_primary_keyid
