@@ -45,6 +45,7 @@ var config = {
     groups_list:          './groups_list.js',
     issuable:             './issuable/issuable_bundle.js',
     issues:               './issues/issues_bundle.js',
+    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',

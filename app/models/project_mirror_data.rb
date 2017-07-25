@@ -27,6 +27,7 @@ class ProjectMirrorData < ActiveRecord::Base
     timestamp = Time.now
     retry_factor = [1, self.retry_count].max
     delay = [base_delay(timestamp) * retry_factor, Gitlab::Mirror.max_delay].min
+    delay = [delay, Gitlab::Mirror.min_delay].max
 
     self.next_execution_timestamp = timestamp + delay
   end

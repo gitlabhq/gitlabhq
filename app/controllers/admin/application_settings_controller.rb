@@ -1,4 +1,6 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
+  prepend EE::Admin::ApplicationSettingsController
+
   before_action :set_application_setting
 
   def show
@@ -58,7 +60,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     import_sources = params[:application_setting][:import_sources]
-
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
     else
@@ -77,11 +78,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-      application_setting_params_ce << application_setting_params_ee
+      application_setting_params_attributes
     )
   end
 
-  def application_setting_params_ce
+  def application_setting_params_attributes
     [
       :admin_notification_email,
       :after_sign_out_path,
@@ -164,32 +165,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       repository_storages: [],
       restricted_visibility_levels: [],
       sidekiq_throttling_queues: []
-    ]
-  end
-
-  def application_setting_params_ee
-    [
-      :help_text,
-      :elasticsearch_url,
-      :elasticsearch_indexing,
-      :elasticsearch_aws,
-      :elasticsearch_aws_access_key,
-      :elasticsearch_aws_secret_access_key,
-      :elasticsearch_aws_region,
-      :elasticsearch_search,
-      :repository_size_limit,
-      :shared_runners_minutes,
-      :geo_status_timeout,
-      :elasticsearch_experimental_indexer,
-      :check_namespace_plan,
-      :mirror_max_delay,
-      :mirror_max_capacity,
-      :mirror_capacity_threshold,
-      :authorized_keys_enabled,
-      :slack_app_enabled,
-      :slack_app_id,
-      :slack_app_secret,
-      :slack_app_verification_token
     ]
   end
 end

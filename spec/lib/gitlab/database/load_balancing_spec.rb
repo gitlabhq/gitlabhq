@@ -26,6 +26,8 @@ describe Gitlab::Database::LoadBalancing do
   end
 
   describe '.enable?' do
+    let!(:license) { create(:license, plan: ::License::PREMIUM_PLAN) }
+
     it 'returns false when no hosts are specified' do
       allow(described_class).to receive(:hosts).and_return([])
 
@@ -59,6 +61,36 @@ describe Gitlab::Database::LoadBalancing do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
       expect(described_class.enable?).to eq(true)
+    end
+
+    context 'without a license' do
+      before do
+        License.destroy_all
+      end
+
+      it 'is disabled' do
+        expect(described_class.enable?).to eq(false)
+      end
+    end
+
+    context 'with an EES license' do
+      let!(:license) { create(:license, plan: ::License::STARTER_PLAN) }
+
+      it 'is disabled' do
+        expect(described_class.enable?).to eq(false)
+      end
+    end
+
+    context 'with an EEP license' do
+      let!(:license) { create(:license, plan: ::License::PREMIUM_PLAN) }
+
+      it 'is enabled' do
+        allow(described_class).to receive(:hosts).and_return(%w(foo))
+        allow(Sidekiq).to receive(:server?).and_return(false)
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+        expect(described_class.enable?).to eq(true)
+      end
     end
   end
 

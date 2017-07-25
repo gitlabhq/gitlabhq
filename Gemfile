@@ -175,7 +175,7 @@ gem 'rainbow', '~> 2.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.0.0'
+gem 're2', '~> 1.1.0'
 
 # Misc
 

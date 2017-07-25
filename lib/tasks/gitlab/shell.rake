@@ -102,9 +102,11 @@ namespace :gitlab do
   def setup
     warn_user_is_not_gitlab
 
+    ensure_write_to_authorized_keys_is_enabled
+
     unless ENV['force'] == 'yes'
-      puts "This will rebuild an authorized_keys file."
-      puts "You will lose any data stored in authorized_keys file."
+      puts "This task will now rebuild the authorized_keys file."
+      puts "You will lose any data stored in the authorized_keys file."
       ask_to_continue
       puts ""
     end
@@ -127,5 +129,48 @@ namespace :gitlab do
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".color(:red)
     exit 1
+  end
+
+  def ensure_write_to_authorized_keys_is_enabled
+    return if current_application_settings.authorized_keys_enabled
+
+    puts authorized_keys_is_disabled_warning
+
+    answer = prompt('Do you want to permanently enable the "Write to authorized_keys file" setting now (yes/no)? '.color(:blue), %w{yes no})
+    if answer == 'yes'
+      puts 'Enabling the "Write to authorized_keys file" setting...'
+      uncached_settings = ApplicationSetting.last
+      uncached_settings.authorized_keys_enabled = true
+      uncached_settings.save!
+      puts 'Successfully enabled "Write to authorized_keys file"!'
+      puts ''
+    else
+      puts 'Leaving the "Write to authorized_keys file" setting disabled.'
+      puts 'Failed to rebuild authorized_keys file...'.color(:red)
+      exit 1
+    end
+  end
+
+  def authorized_keys_is_disabled_warning
+    <<-MSG.strip_heredoc
+      WARNING
+
+      The "Write to authorized_keys file" setting is disabled, which prevents
+      the file from being rebuilt!
+
+      It should be enabled for most GitLab installations. Large installations
+      may wish to disable it as part of speeding up SSH operations.
+
+      See https://docs.gitlab.com/ee/administration/operations/speed_up_ssh.html
+
+      If you did not intentionally disable this option in Admin Area > Settings,
+      then you may have been affected by the 9.3.0 bug in which the new setting
+      was disabled by default.
+
+      https://gitlab.com/gitlab-org/gitlab-ee/issues/2738
+
+      It was reverted in 9.3.1 and fixed in 9.3.3, however, if Settings were
+      saved while the setting was unchecked, then it is still disabled.
+    MSG
   end
 end

@@ -77,12 +77,21 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def sync
-    return unless project && enabled
-    return if project.pending_delete?
+    return unless enabled?
     return if Gitlab::Geo.secondary?
 
-    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now) if project&.repository_exists?
+    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now)
   end
+
+  def enabled
+    return false unless project && super
+    return false unless project.repository_exists?
+    return false if project.pending_delete?
+
+    # Sync is only enabled when the license permits it
+    project.feature_available?(:repository_mirrors)
+  end
+  alias_method :enabled?, :enabled
 
   def updated_since?(timestamp)
     last_update_started_at && last_update_started_at > timestamp && !update_failed?

@@ -21,25 +21,6 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
-    it { is_expected.to allow_value(10).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(0).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_max_delay) }
-
-    it { is_expected.to allow_value(10).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(0).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_max_capacity) }
-
-    it { is_expected.to allow_value(10).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(0).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
-
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
         allow(Devise).to receive(:omniauth_providers).and_return([:github])

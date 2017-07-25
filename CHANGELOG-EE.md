@@ -1,5 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.4.1 (2017-07-25)
+
+- Cleans up mirror capacity in project destroy service if project is a scheduled mirror. !2445
+- Fixes unscoping of imposed capacity limit by find_each method on Mirror scheduler. !2460
+- Remove text underline from suggested approvers.
+
 ## 9.4.0 (2017-07-22)
 
 - GeoLogCursor is part of a new experimental Geo replication system. !1988

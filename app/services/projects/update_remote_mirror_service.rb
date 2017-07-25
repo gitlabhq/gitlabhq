@@ -6,6 +6,8 @@ module Projects
       @mirror = remote_mirror
       @errors = []
 
+      return success unless remote_mirror.enabled?
+
       begin
         repository.fetch_remote(mirror.ref_name, no_tags: true)
 

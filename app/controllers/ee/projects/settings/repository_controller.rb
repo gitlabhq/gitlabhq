@@ -19,6 +19,8 @@ module EE
         end
 
         def remote_mirror
+          return unless project.feature_available?(:repository_mirrors)
+
           @remote_mirror = @project.remote_mirrors.first_or_initialize
         end
 

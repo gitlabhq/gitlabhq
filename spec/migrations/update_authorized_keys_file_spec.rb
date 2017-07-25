@@ -97,7 +97,7 @@ describe UpdateAuthorizedKeysFile, :migration do
             ActiveRecord::Base.connection.change_column_null :application_settings, :authorized_keys_enabled, true
             ActiveRecord::Base.connection.change_column :application_settings, :authorized_keys_enabled, :boolean, default: nil
 
-            ApplicationSetting.first.update(authorized_keys_enabled: nil)
+            ApplicationSetting.first.update(authorized_keys_enabled: nil, mirror_max_delay: 300)
           end
 
           it { is_expected.to be_truthy }
@@ -105,7 +105,7 @@ describe UpdateAuthorizedKeysFile, :migration do
 
         context 'when authorized_keys_enabled is explicitly false' do
           before do
-            ApplicationSetting.first.update!(authorized_keys_enabled: false)
+            ApplicationSetting.first.update!(authorized_keys_enabled: false, mirror_max_delay: 300)
           end
 
           it { is_expected.to be_falsey }

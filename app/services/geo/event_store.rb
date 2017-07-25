@@ -33,7 +33,7 @@ module Geo
 
       Geo::EventLog.create!("#{self.class.event_type}" => build_event)
     rescue ActiveRecord::RecordInvalid, NoMethodError => e
-      log("#{self.event_type.to_s.humanize} could not be created", e)
+      log_error("#{self.event_type.to_s.humanize} could not be created", e)
     end
 
     private
@@ -43,8 +43,13 @@ module Geo
         "#{self.class} does not implement #{__method__}"
     end
 
-    def log(message, error)
-      Rails.logger.error("#{self.class.name}: #{message} for project #{project.path_with_namespace} (#{project.id}): #{error}")
+    def log_error(message, error)
+      Gitlab::Geo::Logger.error(
+        class: self.class.name,
+        message: message,
+        error: error,
+        project_id: project.id,
+        project_path: project.path_with_namespace)
     end
   end
 end

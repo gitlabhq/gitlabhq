@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.1 (2017-07-25)
+
+- Fix pipeline_schedules pages throwing error 500 (when ref is empty). !12983
+- Fix editing project with container images present. !13028
+- Fix some invalid entries in PO files. !13032
+- Fix cross site request protection when logging in as a regular user when LDAP is enabled. !13049
+- Fix bug causing metrics files to be truncated. !35420
+- Fix anonymous access to public projects in groups with pending invites.
+- Fixed issue boards sidebar close icon size.
+- Fixed duplicate new milestone buttons when new navigation is turned on.
+- Fix margins in the mini graph for pipeline in commits box.
+
 ## 9.4.0 (2017-07-22)
 
 - Add blame view age mapping. !7198 (Jeff Stubler)

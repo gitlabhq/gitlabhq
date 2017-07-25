@@ -96,6 +96,18 @@ describe RemoteMirror do
       Timecop.return
     end
 
+    context 'repository mirrors not licensed' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'does not schedule RepositoryUpdateRemoteMirrorWorker' do
+        expect(RepositoryUpdateRemoteMirrorWorker).not_to receive(:perform_in)
+
+        remote_mirror.sync
+      end
+    end
+
     context 'with remote mirroring enabled' do
       it 'schedules a RepositoryUpdateRemoteMirrorWorker to run within a certain backoff delay' do
         expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::BACKOFF_DELAY, remote_mirror.id, Time.now)

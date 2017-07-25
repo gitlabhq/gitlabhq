@@ -10,6 +10,18 @@ feature 'Project mirror', feature: true do
       sign_in user
     end
 
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'returns 404' do
+        visit project_mirror_path(project)
+
+        expect(page.status_code).to eq(404)
+      end
+    end
+
     context 'with Update now button' do
       let(:timestamp) { Time.now }
 

@@ -157,4 +157,10 @@ describe Gitlab::Mirror do
       expect(described_class.max_delay).to be_within(1.minute).of(5.hours)
     end
   end
+
+  describe '#min_delay' do
+    it 'returns min delay with some jitter' do
+      expect(described_class.min_delay).to be_within(1.minute).of(15.minutes)
+    end
+  end
 end

@@ -4,7 +4,7 @@ describe Projects::UpdateRemoteMirrorService do
   let(:project) { create(:project) }
   let(:remote_project) { create(:forked_project_with_submodules) }
   let(:repository) { project.repository }
-  let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo) }
+  let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true) }
 
   subject { described_class.new(project, project.creator) }
 
@@ -16,6 +16,14 @@ describe Projects::UpdateRemoteMirrorService do
       gitlab_shell = Gitlab::Shell.new
       allow(repository).to receive(:gitlab_shell).and_return(gitlab_shell)
       allow(gitlab_shell).to receive(:push_remote_branches).and_return(true)
+    end
+
+    it 'does nothing when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      expect(project.repository).not_to receive(:fetch_remote)
+
+      subject.execute(remote_mirror)
     end
 
     it "fetches the remote repository" do
