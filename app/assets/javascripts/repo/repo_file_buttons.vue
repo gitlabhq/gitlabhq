@@ -11,7 +11,7 @@ const RepoFileButtons = {
 
   computed: {
     editableBorder() {
-      return this.editMode ? '1px solid #1F78D1' : '1px solid #f0f0f0';
+      return this.editMode ? '1px solid rgb(31, 120, 209)' : '1px solid rgb(240,240,240)';
     },
 
     canPreview() {
@@ -22,11 +22,11 @@ const RepoFileButtons = {
       return Helper.getRawURLFromBlobURL(this.activeFile.url);
     },
 
-    blameFileUrl() {
+    blameFileURL() {
       return Helper.getBlameURLFromBlobURL(this.activeFile.url);
     },
 
-    historyFileUrl() {
+    historyFileURL() {
       return Helper.getHistoryURLFromBlobURL(this.activeFile.url);
     },
   },
@@ -41,21 +41,19 @@ export default RepoFileButtons;
 
 <template>
 <div id="repo-file-buttons" v-if="isMini" :style="{'border-bottom': editableBorder}">
-  <a :href="rawFileURL" target="_blank" class="btn btn-default">Raw</a>
+  <a :href="rawFileURL" target="_blank" class="btn btn-default raw">Raw</a>
 
   <div class="btn-group" role="group" aria-label="File actions">
-    <a :href="blameFileUrl" class="btn btn-default">Blame</a>
-    <a :href="historyFileUrl" class="btn btn-default">History</a>
-    <a href="#" class="btn btn-default">Permalink</a>
-    <a href="#" class="btn btn-default">Lock</a>
+    <a :href="blameFileURL" class="btn btn-default blame">Blame</a>
+    <a :href="historyFileURL" class="btn btn-default history">History</a>
+    <a href="#" class="btn btn-default permalink">Permalink</a>
+    <a href="#" class="btn btn-default lock">Lock</a>
   </div>
 
-  <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default">
-    {{activeFileLabel}}
-  </a>
+  <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>
 
-  <button type="button" class="btn btn-default" data-target="#modal-upload-blob" data-toggle="modal">Replace</button>
+  <button type="button" class="btn btn-default replace" data-target="#modal-upload-blob" data-toggle="modal">Replace</button>
 
-  <a href="#" class="btn btn-danger">Delete</a>
+  <a href="#" class="btn btn-danger delete">Delete</a>
 </div>
 </template>
