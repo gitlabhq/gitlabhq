@@ -32,26 +32,13 @@ module Gitlab
         end
 
         def metrics
-          res = []
-          repository_storages.each do |storage_name|
-            res << operation_metrics(:filesystem_accessible, :filesystem_access_latency_seconds, shard: storage_name) do
-              with_timing { storage_stat_test(storage_name) }
-            end
-
-            res << operation_metrics(:filesystem_writable, :filesystem_write_latency_seconds, shard: storage_name) do
-              with_temp_file(storage_name) do |tmp_file_path|
-                with_timing { storage_write_test(tmp_file_path) }
-              end
-            end
-
-            res << operation_metrics(:filesystem_readable, :filesystem_read_latency_seconds, shard: storage_name) do
-              with_temp_file(storage_name) do |tmp_file_path|
-                storage_write_test(tmp_file_path) # writes data used by read test
-                with_timing { storage_read_test(tmp_file_path) }
-              end
-            end
+          repository_storages.flat_map do |storage_name|
+            [
+              storage_stat_metrics(storage_name),
+              storage_write_metrics(storage_name),
+              storage_read_metrics(storage_name)
+            ].flatten
           end
-          res.flatten
         end
 
         private
@@ -81,19 +68,26 @@ module Gitlab
 
         def with_temp_file(storage_name)
           begin
-            temp_file_path = Dir::Tmpname.create(%w(fs_shards_check +deleted), path(storage_name)) { |path| path }
+            temp_file_path = Dir::Tmpname.create(%w(fs_shards_check +deleted), storage_path(storage_name)) { |path| path }
             yield temp_file_path
           ensure
             delete_test_file(temp_file_path)
           end
         end
 
-        def path(storage_name)
+        def storage_path(storage_name)
           storages_paths&.dig(storage_name, 'path')
         end
 
+        def delete_test_file(tmp_path)
+          _, status = exec_with_timeout(%W{ rm -f #{tmp_path} })
+          status == 0
+        rescue Errno::ENOENT
+          File.delete(tmp_path) rescue Errno::ENOENT
+        end
+
         def storage_stat_test(storage_name)
-          stat_path = File.join(path(storage_name), '.')
+          stat_path = File.join(storage_path(storage_name), '.')
           begin
             _, status = exec_with_timeout(%W{ stat #{stat_path} })
             status == 0
@@ -122,11 +116,27 @@ module Gitlab
           file_contents == RANDOM_STRING
         end
 
-        def delete_test_file(tmp_path)
-          _, status = exec_with_timeout(%W{ rm -f #{tmp_path} })
-          status == 0
-        rescue Errno::ENOENT
-          File.delete(tmp_path) rescue Errno::ENOENT
+        def storage_stat_metrics(storage_name)
+          operation_metrics(:filesystem_accessible, :filesystem_access_latency_seconds, shard: storage_name) do
+            with_timing { storage_stat_test(storage_name) }
+          end
+        end
+
+        def storage_write_metrics(storage_name)
+          operation_metrics(:filesystem_writable, :filesystem_write_latency_seconds, shard: storage_name) do
+            with_temp_file(storage_name) do |tmp_file_path|
+              with_timing { storage_write_test(tmp_file_path) }
+            end
+          end
+        end
+
+        def storage_read_metrics(storage_name)
+          operation_metrics(:filesystem_readable, :filesystem_read_latency_seconds, shard: storage_name) do
+            with_temp_file(storage_name) do |tmp_file_path|
+              storage_write_test(tmp_file_path) # writes data used by read test
+              with_timing { storage_read_test(tmp_file_path) }
+            end
+          end
         end
       end
     end
