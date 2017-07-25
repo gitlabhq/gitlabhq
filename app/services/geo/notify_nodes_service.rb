@@ -20,10 +20,15 @@ module Geo
         next unless node.enabled?
 
         notify_url = node.send(notify_url_method.to_sym)
-        success, message = notify(notify_url, content)
+        success, details = notify(notify_url, content)
 
         unless success
-          Rails.logger.error("GitLab failed to notify #{node.url} to #{notify_url} : #{message}")
+          Gitlab::Geo::Logger.error(
+            class: self.class.name,
+            message: "GitLab failed to notify",
+            error: details,
+            node_url: node.url,
+            notify_url: notify_url)
           queue.store_batched_data(projects)
         end
       end
