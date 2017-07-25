@@ -944,7 +944,7 @@ DEPENDENCIES
   creole (~> 0.5.0)
   database_cleaner (~> 1.5.0)
   deckar01-task_list (= 2.0.0)
-  default_value_for (~> 3.0.0)
+  default_value_for (~> 3.0.2)
   devise (~> 4.3)
   devise-two-factor (~> 3.0.0)
   diffy (~> 3.1.0)

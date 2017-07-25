@@ -9,7 +9,7 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.0.0'
+gem 'default_value_for', '~> 3.0.2'
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.5', group: :mysql
