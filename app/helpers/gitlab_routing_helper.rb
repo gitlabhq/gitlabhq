@@ -48,7 +48,11 @@ module GitlabRoutingHelper
   end
 
   def milestone_path(entity, *args)
-    project_milestone_path(entity.project, entity, *args)
+    if entity.group
+      group_milestone_path(entity.group, entity, *args)
+    else
+      project_milestone_path(entity.project, entity, *args)
+    end
   end
 
   def issue_url(entity, *args)

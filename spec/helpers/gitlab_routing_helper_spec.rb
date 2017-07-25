@@ -31,6 +31,22 @@ describe GitlabRoutingHelper do
 
       it { expect(resend_invite_project_member_path(project_member)).to eq resend_invite_project_project_member_path(project_member.source, project_member) }
     end
+
+    describe '#milestone_path' do
+      it 'returns path to a group milestone for group milestones' do
+        group = create(:group)
+        milestone = create(:milestone, group: group)
+
+        expect(milestone_path(milestone)).to eq("/groups/#{group.path}/milestones/#{milestone.iid}")
+      end
+
+      it 'returns path to a project milestone for non-group milestones' do
+        project = create(:empty_project)
+        milestone = create(:milestone, project: project)
+
+        expect(milestone_path(milestone)).to eq("/#{project.path_with_namespace}/milestones/#{milestone.iid}")
+      end
+    end
   end
 
   describe 'Group URL helpers' do
