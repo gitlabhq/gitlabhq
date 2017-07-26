@@ -52,7 +52,7 @@ class NotificationRecipientService
       @notification_level ||=
         case raw_notification_level
         when :custom
-          if !@custom_action || notification_setting.event_enabled?(@custom_action)
+          if @custom_action && notification_setting.event_enabled?(@custom_action)
             :watch
           else
             :custom
