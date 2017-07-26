@@ -16,7 +16,7 @@ module API
       params do
         use :pagination
       end
-      get ":id/repository/branches" do
+      get ':id/repository/branches' do
         branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
         present paginate(branches), with: Entities::RepoBranch, project: user_project
@@ -28,7 +28,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
+      get ':id/repository/branches/:branch', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
         branch = user_project.repository.find_branch(params[:branch])
         not_found!("Branch") unless branch
 
@@ -46,7 +46,7 @@ module API
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
-      put ':id/repository/branches/:branch/protect', requirements: { branch: /.+/ } do
+      put ':id/repository/branches/:branch/protect', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -81,7 +81,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      put ':id/repository/branches/:branch/unprotect', requirements: { branch: /.+/ } do
+      put ':id/repository/branches/:branch/unprotect', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -99,7 +99,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch'
         requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
       end
-      post ":id/repository/branches" do
+      post ':id/repository/branches' do
         authorize_push_project
 
         result = CreateBranchService.new(user_project, current_user)
@@ -118,7 +118,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      delete ":id/repository/branches/:branch", requirements: { branch: /.+/ } do
+      delete ':id/repository/branches/:branch', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
         authorize_push_project
 
         result = DeleteBranchService.new(user_project, current_user)
@@ -130,7 +130,7 @@ module API
       end
 
       desc 'Delete all merged branches'
-      delete ":id/repository/merged_branches" do
+      delete ':id/repository/merged_branches' do
         DeleteMergedBranchesService.new(user_project, current_user).async_execute
 
         accepted!
