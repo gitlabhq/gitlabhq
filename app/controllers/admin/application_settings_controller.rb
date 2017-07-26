@@ -76,11 +76,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-      application_setting_params_ce
+      application_setting_params_attributes
     )
   end
 
-  def application_setting_params_ce
+  def application_setting_params_attributes
     [
       :admin_notification_email,
       :after_sign_out_path,

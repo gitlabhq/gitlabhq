@@ -296,10 +296,10 @@ class ProjectsController < Projects::ApplicationController
 
   def project_params
     params.require(:project)
-      .permit(project_params_ce)
+      .permit(project_params_attributes)
   end
 
-  def project_params_ce
+  def project_params_attributes
     [
       :avatar,
       :build_allow_git_fetch,

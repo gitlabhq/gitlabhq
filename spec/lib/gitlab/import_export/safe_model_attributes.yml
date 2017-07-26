@@ -396,6 +396,7 @@ Project:
 - build_allow_git_fetch
 - last_repository_updated_at
 - ci_config_path
+- delete_error
 Author:
 - name
 ProjectFeature:

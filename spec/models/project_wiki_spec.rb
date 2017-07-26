@@ -21,7 +21,7 @@ describe ProjectWiki, models: true do
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/wikis/home")
+      expect(subject.web_url).to match("https?://[^\/]+/#{project.path_with_namespace}/wikis/home")
     end
   end
 

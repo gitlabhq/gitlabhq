@@ -223,12 +223,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
               metrics_project_environment_deployment_path(environment.project, environment, deployment)
             end
+          
+          metrics_monitoring_url = 
+            if can?(current_user, :read_environment, environment)
+              environment_metrics_path(environment)
+            end
 
           {
             id: environment.id,
             name: environment.name,
             url: project_environment_path(project, environment),
             metrics_url: metrics_url,
+            metrics_monitoring_url: metrics_monitoring_url,
             stop_url: stop_url,
             external_url: environment.external_url,
             external_url_formatted: environment.formatted_external_url,

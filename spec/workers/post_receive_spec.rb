@@ -74,6 +74,7 @@ describe PostReceive do
             OpenStruct.new(id: '123456')
           end
           allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
+          allow_any_instance_of(Repository).to receive(:ref_exists?).and_return(true)
           stub_ci_pipeline_to_return_yaml_file
         end
 

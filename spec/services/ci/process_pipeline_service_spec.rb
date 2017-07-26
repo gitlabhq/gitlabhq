@@ -9,6 +9,8 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   before do
+    stub_not_protect_default_branch
+
     project.add_developer(user)
   end
 
