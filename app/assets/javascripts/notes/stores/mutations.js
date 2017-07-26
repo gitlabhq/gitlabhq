@@ -1,5 +1,6 @@
 import * as utils from './utils';
 import * as types from './mutation_types';
+import * as constants from '../constants';
 
 export default {
   [types.ADD_NEW_NOTE](state, note) {
@@ -7,7 +8,7 @@ export default {
     const noteData = {
       expanded: true,
       id: discussion_id,
-      individual_note: !(type === 'DiscussionNote'),
+      individual_note: !(type === constants.DISCUSSION_NOTE),
       notes: [note],
       reply_id: discussion_id,
     };
@@ -78,7 +79,7 @@ export default {
     notesArr.push({
       individual_note: true,
       isPlaceholderNote: true,
-      placeholderType: data.isSystemNote ? 'systemNote' : 'note',
+      placeholderType: data.isSystemNote ? constants.SYSTEM_NOTE : constants.NOTE,
       notes: [
         {
           body: data.noteBody,

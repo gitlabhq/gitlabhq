@@ -1,7 +1,8 @@
 /* global Flash */
 
 import * as types from './mutation_types';
-import * as utils from './issue_notes_utils';
+import * as utils from './utils';
+import * as constants from '../constants';
 import service from '../services/issue_notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
@@ -147,7 +148,7 @@ export const poll = ({ commit, state, getters }) => {
         res.notes.forEach((note) => {
           if (notesById[note.id]) {
             commit(types.UPDATE_NOTE, note);
-          } else if (note.type === 'DiscussionNote') {
+          } else if (note.type === constants.DISCUSSION_NOTE) {
             const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
             if (discussion) {

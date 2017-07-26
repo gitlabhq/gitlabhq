@@ -1,155 +1,160 @@
 <script>
 /* global Flash */
 
-import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import markdownField from '../../vue_shared/components/markdown/field.vue';
-import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
-import eventHub from '../event_hub';
+  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import eventHub from '../event_hub';
+  import * as constants from '../constants';
 
-export default {
-  data() {
-    const { create_note_path, state } = window.gl.issueData;
-    const { currentUserData } = window.gl;
+  export default {
+    data() {
+      const { create_note_path, state } = window.gl.issueData;
+      const { currentUserData } = window.gl;
 
-    return {
-      note: '',
-      markdownDocsUrl: '',
-      markdownPreviewUrl: gl.issueData.preview_note_path,
-      noteType: 'comment',
-      issueState: state,
-      endpoint: create_note_path,
-      author: currentUserData,
-    };
-  },
-  components: {
-    userAvatarLink,
-    markdownField,
-    issueNoteSignedOutWidget,
-  },
-  computed: {
-    isLoggedIn() {
-      return window.gon.current_user_id;
-    },
-    commentButtonTitle() {
-      return this.noteType === 'comment' ? 'Comment' : 'Start discussion';
-    },
-    isIssueOpen() {
-      return this.issueState === 'opened' || this.issueState === 'reopened';
-    },
-    issueActionButtonTitle() {
-      if (this.note.length) {
-        const actionText = this.isIssueOpen ? 'close' : 'reopen';
-
-        return this.noteType === 'comment' ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
-      }
-
-      return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
-    },
-    actionButtonClassNames() {
       return {
-        'btn-reopen': !this.isIssueOpen,
-        'btn-close': this.isIssueOpen,
-        'js-note-target-close': this.isIssueOpen,
-        'js-note-target-reopen': !this.isIssueOpen,
+        note: '',
+        markdownDocsUrl: '',
+        markdownPreviewUrl: gl.issueData.preview_note_path,
+        noteType: constants.COMMENT,
+        issueState: state,
+        endpoint: create_note_path,
+        author: currentUserData,
       };
     },
-    canUpdateIssue() {
-      const { issueData } = window.gl;
-      return issueData && issueData.current_user.can_update;
+    components: {
+      userAvatarLink,
+      markdownField,
+      issueNoteSignedOutWidget,
     },
-  },
-  methods: {
-    handleSave(withIssueAction) {
-      if (this.note.length) {
-        const noteData = {
-          endpoint: this.endpoint,
-          flashContainer: this.$el,
-          data: {
-            full_data: true,
-            note: {
-              noteable_type: 'Issue',
-              noteable_id: window.gl.issueData.id,
-              note: this.note,
-            },
-          },
+    computed: {
+      isLoggedIn() {
+        return window.gon.current_user_id;
+      },
+      commentButtonTitle() {
+        return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
+      },
+      isIssueOpen() {
+        return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
+      },
+      issueActionButtonTitle() {
+        if (this.note.length) {
+          const actionText = this.isIssueOpen ? 'close' : 'reopen';
+
+          return this.noteType === constants.COMMENT ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
+        }
+
+        return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
+      },
+      actionButtonClassNames() {
+        return {
+          'btn-reopen': !this.isIssueOpen,
+          'btn-close': this.isIssueOpen,
+          'js-note-target-close': this.isIssueOpen,
+          'js-note-target-reopen': !this.isIssueOpen,
         };
+      },
+      canUpdateIssue() {
+        const { issueData } = window.gl;
+        return issueData && issueData.current_user.can_update;
+      },
+    },
+    methods: {
+      handleSave(withIssueAction) {
+        if (this.note.length) {
+          const noteData = {
+            endpoint: this.endpoint,
+            flashContainer: this.$el,
+            data: {
+              full_data: true,
+              note: {
+                noteable_type: 'Issue',
+                noteable_id: window.gl.issueData.id,
+                note: this.note,
+              },
+            },
+          };
 
-        if (this.noteType === 'discussion') {
-          noteData.data.note.type = 'DiscussionNote';
-        }
+          if (this.noteType === constants.DISCUSSION) {
+            noteData.data.note.type = constants.DISCUSSION_NOTE;
+          }
 
-        this.$store.dispatch('saveNote', noteData)
-          .then((res) => {
-            if (res.errors) {
-              if (res.errors.commands_only) {
-                this.discard();
+          this.$store.dispatch('saveNote', noteData)
+            .then((res) => {
+              if (res.errors) {
+                if (res.errors.commands_only) {
+                  this.discard();
+                } else {
+                  this.handleError();
+                }
               } else {
-                this.handleError();
+                this.discard();
               }
-            } else {
-              this.discard();
-            }
-          })
-          .catch(() => {
-            this.discard(false);
-          });
-      }
-
-      if (withIssueAction) {
-        if (this.isIssueOpen) {
-          gl.issueData.state = 'closed';
-          this.issueState = 'closed';
-        } else {
-          gl.issueData.state = 'reopened';
-          this.issueState = 'reopened';
+            })
+            .catch(() => {
+              this.discard(false);
+            });
         }
-        this.isIssueOpen = !this.isIssueOpen;
 
-        // This is out of scope for the Notes Vue component.
-        // It was the shortest path to update the issue state and relevant places.
-        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
-      }
-    },
-    discard(shouldClear = true) {
-      // `blur` is needed to clear slash commands autocomplete cache if event fired.
-      // `focus` is needed to remain cursor in the textarea.
-      this.$refs.textarea.blur();
-      this.$refs.textarea.focus();
+        if (withIssueAction) {
+          if (this.isIssueOpen) {
+            gl.issueData.state = constants.CLOSED;
+            this.issueState = constants.CLOSED;
+          } else {
+            gl.issueData.state = constants.REOPENED;
+            this.issueState =constants.REOPENED;
+          }
+          this.isIssueOpen = !this.isIssueOpen;
 
-      if (shouldClear) {
-        this.note = '';
-      }
-    },
-    setNoteType(type) {
-      this.noteType = type;
-    },
-    handleError() {
-      Flash('Something went wrong while adding your comment. Please try again.');
-    },
-    editMyLastNote() {
-      if (this.note === '') {
-        const myLastNoteId = $('.js-my-note').last().attr('id');
-
-        if (myLastNoteId) {
-          eventHub.$emit('enterEditMode', {
-            noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
-          });
+          // This is out of scope for the Notes Vue component.
+          // It was the shortest path to update the issue state and relevant places.
+          const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
+          $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
         }
-      }
+      },
+      discard(shouldClear = true) {
+        // `blur` is needed to clear slash commands autocomplete cache if event fired.
+        // `focus` is needed to remain cursor in the textarea.
+        this.$refs.textarea.blur();
+        this.$refs.textarea.focus();
+
+        if (shouldClear) {
+          this.note = '';
+        }
+      },
+      setNoteType(type) {
+        this.noteType = type;
+      },
+      handleError() {
+        Flash('Something went wrong while adding your comment. Please try again.');
+      },
+      editMyLastNote() {
+        if (this.note === '') {
+          const myLastNoteId = $('.js-my-note').last().attr('id');
+
+          if (myLastNoteId) {
+            eventHub.$emit('enterEditMode', {
+              noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+            });
+          }
+        }
+      },
     },
-  },
-  mounted() {
-    const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
-    const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
+    mounted() {
+      const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
+      const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
 
-    this.markdownDocsUrl = issueData.markdownDocs;
+      this.markdownDocsUrl = issueData.markdownDocs;
 
-    eventHub.$on('issueStateChanged', (isClosed) => {
-      this.issueState = isClosed ? 'closed' : 'reopened';
-    });
-  },
-};
+      eventHub.$on('issueStateChanged', (isClosed) => {
+        this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
+      });
+    },
+
+    destroyed() {
+      eventHub.$off('issueStateChanged');
+    }
+  };
 </script>
 
 <template>
@@ -167,7 +172,8 @@ export default {
               :link-href="author.path"
               :img-src="author.avatar_url"
               :img-alt="author.name"
-              :img-size="40" />
+              :img-size="40"
+              />
           </div>
           <div class="js-main-target-form timeline-content timeline-content-form common-note-form">
             <markdown-field
