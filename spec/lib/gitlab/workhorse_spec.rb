@@ -237,7 +237,8 @@ describe Gitlab::Workhorse, lib: true do
 
         context 'when action is not enabled by feature flag' do
           it 'does not include Gitaly params in the returned value' do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+            status_opt_out = Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag, status: status_opt_out).and_return(false)
 
             expect(subject).not_to include(gitaly_params)
           end
