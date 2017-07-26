@@ -61,6 +61,8 @@ module Gitlab
 
         def handle_events(batch)
           batch.each do |event|
+            next unless can_replay?(event)
+
             # Update repository
             if event.repository_updated_event
               handle_repository_update(event.repository_updated_event)
@@ -86,6 +88,12 @@ module Gitlab
           $stdout.puts 'Exiting...'
 
           @exit = true
+        end
+
+        def can_replay?(event)
+          return true if Gitlab::Geo.current_node.project_ids.nil?
+
+          Gitlab::Geo.current_node.project_ids.include?(event.project_id)
         end
 
         def handle_repository_update(updated_event)

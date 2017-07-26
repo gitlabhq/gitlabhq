@@ -21,12 +21,14 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
     end
 
-    context 'when processing a repository updated event' do
+    context 'when replaying a repository updated event' do
+      let!(:geo_node) { create(:geo_node) }
       let(:event_log) { create(:geo_event_log, :updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_updated_event) { event_log.repository_updated_event }
 
       before do
+        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
         allow(subject).to receive(:exit?).and_return(false, true)
       end
 
@@ -53,7 +55,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
     end
 
-    context 'when processing a repository deleted event' do
+    context 'when replaying a repository deleted event' do
       let(:event_log) { create(:geo_event_log, :deleted_event) }
       let(:project) { event_log.repository_deleted_event.project }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
@@ -77,6 +79,32 @@ describe Gitlab::Geo::LogCursor::Daemon do
           .with(project_id, project_name, full_path)
 
         subject.run!
+      end
+    end
+
+    context 'when node have group restrictions' do
+      let(:geo_node) { create(:geo_node) }
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, group: group) }
+      let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
+      let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
+        allow(subject).to receive(:exit?).and_return(false, true)
+      end
+
+      it 'replays events for projects that belong to selected groups to replicate' do
+        geo_node.update_attribute(:groups, [group])
+
+        expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+      end
+
+      it 'does not replay events for projects that do not belong to selected groups to replicate' do
+        geo_node.update_attribute(:groups, [create(:group)])
+
+        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
       end
     end
   end
