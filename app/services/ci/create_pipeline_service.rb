@@ -1,5 +1,7 @@
 module Ci
   class CreatePipelineService < BaseService
+    class ParameterValidationError < StandardError end
+
     attr_reader :pipeline
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
@@ -15,13 +17,11 @@ module Ci
         pipeline_schedule: schedule
       )
 
-      result = validate(current_user || trigger_request.trigger.owner,
-                        ignore_skip_ci: ignore_skip_ci,
-                        save_on_errors: save_on_errors)
-
-      return result if result
-
       begin
+        validate(current_user || trigger_request.trigger.owner,
+                 ignore_skip_ci: ignore_skip_ci,
+                 save_on_errors: save_on_errors)
+
         Ci::Pipeline.transaction do
           pipeline.save!
 
@@ -31,8 +31,13 @@ module Ci
             .new(project, current_user)
             .execute(pipeline)
         end
+
+      rescue ParameterValidationError => e
+        return e
+
       rescue ActiveRecord::RecordInvalid => e
         return error("Failed to persist the pipeline: #{e}")
+
       end
 
       update_merge_requests_head_pipeline
@@ -48,30 +53,30 @@ module Ci
 
     def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
       unless project.builds_enabled?
-        return error('Pipeline is disabled')
+        raise ParameterValidationError, error('Pipeline is disabled')
       end
 
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
-          return error("Insufficient permissions for protected ref '#{ref}'")
+          raise ParameterValidationError, error("Insufficient permissions for protected ref '#{ref}'")
         else
-          return error('Insufficient permissions to create a new pipeline')
+          raise ParameterValidationError, error('Insufficient permissions to create a new pipeline')
         end
       end
 
       unless branch? || tag?
-        return error('Reference not found')
+        raise ParameterValidationError, error('Reference not found')
       end
 
       unless commit
-        return error('Commit not found')
+        raise ParameterValidationError, error('Commit not found')
       end
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          return error("Missing #{pipeline.ci_yaml_file_path} file")
+          raise ParameterValidationError, error("Missing #{pipeline.ci_yaml_file_path} file")
         end
-        return error(pipeline.yaml_errors, save: save_on_errors)
+        raise ParameterValidationError, error(pipeline.yaml_errors, save: save_on_errors)
       end
 
       if !ignore_skip_ci && skip_ci?
@@ -80,7 +85,7 @@ module Ci
       end
 
       unless pipeline.has_stage_seeds?
-        return error('No stages / jobs for this pipeline.')
+        raise ParameterValidationError, error('No stages / jobs for this pipeline.')
       end
     end
 
