@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true do
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do

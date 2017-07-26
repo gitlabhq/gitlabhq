@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Create New Merge Request', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   before do
     project.team << [user, :master]
@@ -63,7 +63,7 @@ feature 'Create New Merge Request', js: true do
 
   context 'when target project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
-      private_project = create(:project, :private)
+      private_project = create(:project, :private, :repository)
 
       visit project_new_merge_request_path(project, merge_request: { target_project_id: private_project.id })
 
@@ -74,7 +74,7 @@ feature 'Create New Merge Request', js: true do
 
   context 'when source project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
-      private_project = create(:project, :private)
+      private_project = create(:project, :private, :repository)
 
       visit project_new_merge_request_path(project, merge_request: { source_project_id: private_project.id })
 

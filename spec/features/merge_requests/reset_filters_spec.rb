@@ -5,7 +5,7 @@ feature 'Merge requests filter clear button', js: true do
   include MergeRequestHelpers
   include IssueHelpers
 
-  let!(:project) { create(:project, :public) }
+  let!(:project) { create(:project, :public, :repository) }
   let!(:user) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:bug) { create(:label, project: project, name: 'bug')}
