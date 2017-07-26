@@ -67,12 +67,10 @@ module Gitlab
         end
 
         def with_temp_file(storage_name)
-          begin
-            temp_file_path = Dir::Tmpname.create(%w(fs_shards_check +deleted), storage_path(storage_name)) { |path| path }
-            yield temp_file_path
-          ensure
-            delete_test_file(temp_file_path)
-          end
+          temp_file_path = Dir::Tmpname.create(%w(fs_shards_check +deleted), storage_path(storage_name)) { |path| path }
+          yield temp_file_path
+        ensure
+          delete_test_file(temp_file_path)
         end
 
         def storage_path(storage_name)
