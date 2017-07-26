@@ -9,11 +9,6 @@ const RepoCommitSection = {
   methods: {
     makeCommit() {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      // branch  string
-      // commit_message  string
-      // actions[]
-      // author_email
-      // author_name
       const branch = $("button.dropdown-menu-toggle").attr('data-ref');
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map(f => {
@@ -29,8 +24,17 @@ const RepoCommitSection = {
         commit_message: commitMessage,
         actions: actions,
       }
+      Store.submitCommitsLoading = true;
       Api.commitMultiple(Store.projectId, payload, (data) => {
-        console.log('got back', data);
+        Store.submitCommitsLoading = false;
+        Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+        console.log('this.changedFiles', this.changedFiles);
+        console.log('this.files', this.files);
+        this.changedFiles = [];
+        this.openedFiles = [];
+        this.commitMessage = '';
+        this.editMode = false;
+        $('html, body').animate({ scrollTop: 0 }, 'fast');
       }, Store.tempPrivateToken);
     }
   },
@@ -107,7 +111,10 @@ export default RepoCommitSection;
         </div>
       </div>
       <div class="col-md-offset-4 col-md-4">
-        <button type="submit" :disabled="!commitMessage" class="btn btn-success" @click.prevent="makeCommit">Commit {{changedFiles.length}} Files</button>
+        <button type="submit" :disabled="!commitMessage || submitCommitsLoading" class="btn btn-success" @click.prevent="makeCommit">
+          <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
+          <span>Commit {{changedFiles.length}} Files</span>
+        </button>
       </div>
     </fieldset>
   </form>
