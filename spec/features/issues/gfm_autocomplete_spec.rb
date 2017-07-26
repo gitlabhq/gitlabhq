@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'GFM autocomplete', js: true do
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
 

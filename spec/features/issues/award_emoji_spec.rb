@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Awards Emoji' do
-  let!(:project)   { create(:project, :public) }
+  let!(:project)   { create(:empty_project, :public) }
   let!(:user)      { create(:user) }
   let(:issue) do
     create(:issue,

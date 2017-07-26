@@ -4,7 +4,7 @@ describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
-  let!(:project)   { create(:project) }
+  let!(:project)   { create(:empty_project) }
   let!(:user)      { create(:user)}
   let!(:user2)     { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }

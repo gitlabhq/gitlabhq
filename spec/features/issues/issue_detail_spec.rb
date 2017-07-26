@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Issue Detail', :js do
   let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:empty_project, :public) }
   let(:issue)     { create(:issue, project: project, author: user) }
 
   context 'when user displays the issue' do
