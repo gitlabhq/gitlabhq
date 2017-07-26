@@ -9,6 +9,31 @@ feature 'Edit group settings' do
     sign_in(user)
   end
 
+  describe 'navbar' do
+    context 'with LDAP enabled' do
+      before do
+        allow_any_instance_of(Group).to receive(:ldap_synced?).and_return(true)
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+      end
+
+      scenario 'is able to navigate to LDAP group section' do
+        visit edit_group_path(group)
+
+        expect(find('div.sub-nav')).to have_content('LDAP Group')
+      end
+
+      context 'with owners not being able to manage LDAP' do
+        scenario 'is not able to navigate to LDAP group section' do
+          stub_application_setting(allow_group_owners_to_manage_ldap: false)
+
+          visit edit_group_path(group)
+
+          expect(find('div.sub-nav')).not_to have_content('LDAP Group')
+        end
+      end
+    end
+  end
+
   describe 'when the group path is changed' do
     let(:new_group_path) { 'bar' }
     let(:old_group_full_path) { "/#{group.path}" }
