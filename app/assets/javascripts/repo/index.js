@@ -9,7 +9,7 @@ import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoBinaryViewer from './repo_binary_viewer.vue';
-import RepoEditor from './repo_editor.vue';
+import RepoEditor from './repo_editor';
 import RepoMiniMixin from './repo_mini_mixin';
 
 function initRepo() {

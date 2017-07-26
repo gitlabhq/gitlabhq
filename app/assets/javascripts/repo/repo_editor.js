@@ -1,4 +1,3 @@
-<script>
 /* global monaco */
 import Store from './repo_store';
 import Helper from './repo_helper';
@@ -7,28 +6,28 @@ import monacoLoader from './monaco_loader';
 const RepoEditor = {
   data: () => Store,
 
+  template: '<div id="ide"></div>',
+
   mounted() {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      const monacoInstance = monaco.editor.create(this.$el, {
-        model: null,
-        readOnly: true,
-        contextmenu: false,
-      });
-
-      Store.monacoInstance = monacoInstance;
-
-      this.addMonacoEvents();
-
-      Helper.getContent().then(() => {
-        this.showHide();
-
-        if (this.blobRaw === '') return;
-
-        const newModel = monaco.editor.createModel(this.blobRaw, 'plaintext');
-
-        this.monacoInstance.setModel(newModel);
-      }).catch(Helper.loadingError);
+    const monacoInstance = this.monaco.editor.create(this.$el, {
+      model: null,
+      readOnly: true,
+      contextmenu: false,
     });
+
+    Store.monacoInstance = monacoInstance;
+
+    this.addMonacoEvents();
+
+    Helper.getContent().then(() => {
+      this.showHide();
+
+      if (this.blobRaw === '') return;
+
+      const newModel = this.monaco.editor.createModel(this.blobRaw, 'plaintext');
+
+      this.monacoInstance.setModel(newModel);
+    }).catch(Helper.loadingError);
   },
 
   methods: {
@@ -98,18 +97,23 @@ const RepoEditor = {
 
       this.monacoInstance.setModel(null);
 
-      const languages = monaco.languages.getLanguages();
+      const languages = this.monaco.languages.getLanguages();
       const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      const newModel = monaco.editor.createModel(this.blobRaw, languageID);
+      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
       this.monacoInstance.setModel(newModel);
     },
   },
 };
 
-export default RepoEditor;
-</script>
+function asyncLoadRepoEditor() {
+  return new Promise((resolve) => {
+    monacoLoader(['vs/editor/editor.main'], () => {
+      Store.monaco = monaco;
 
-<template>
-<div id="ide"></div>
-</template>
+      resolve(RepoEditor);
+    });
+  });
+}
+
+export default asyncLoadRepoEditor;

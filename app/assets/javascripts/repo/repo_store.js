@@ -3,6 +3,7 @@ import RepoHelper from './repo_helper';
 
 const RepoStore = {
   ideEl: {},
+  monaco: {},
   monacoInstance: {},
   service: '',
   editor: '',

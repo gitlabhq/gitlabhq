@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoEditor from '~/repo/repo_editor.vue';
+import repoEditor from '~/repo/repo_editor';
 
 describe('RepoEditor', () => {
   function createComponent() {
