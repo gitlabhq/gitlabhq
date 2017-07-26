@@ -19,7 +19,6 @@ describe('RepoPrevDirectory', () => {
 
     spyOn(vm, 'linkClicked');
 
-    expect(link).toBeTruthy();
     expect(link.href).toMatch(`/${prevUrl}`);
     expect(link.textContent).toEqual('..');
 

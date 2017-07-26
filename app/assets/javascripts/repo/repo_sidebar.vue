@@ -73,18 +73,9 @@ export default RepoSidebar;
   <table class="table">
     <thead v-if="!isMini">
       <tr>
-        <th v-if="!isMini">
-          Name
-        </th>
-        <th v-else>
-          Project
-        </th>
-        <th class="hidden-sm hidden-xs" v-if="!isMini">
-          Last Commit
-        </th>
-        <th class="hidden-xs" v-if="!isMini">
-          Last Update
-        </th>
+        <th class="name">Name</th>
+        <th class="hidden-sm hidden-xs last-commit">Last Commit</th>
+        <th class="hidden-xs last-update">Last Update</th>
       </tr>
     </thead>
     <tbody>

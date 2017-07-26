@@ -24,7 +24,6 @@ describe('RepoBinaryViewer', () => {
     const vm = createComponent();
     const img = vm.$el.querySelector(':scope > img');
 
-    expect(img).toBeTruthy();
     expect(img.src).toMatch(`/${uri}`);
     expect(img.alt).toEqual(activeFile.name);
   });
@@ -40,10 +39,8 @@ describe('RepoBinaryViewer', () => {
     Store.binaryTypes = binaryTypes;
     Store.activeFile = activeFile;
     const vm = createComponent();
-    const markdown = vm.$el.querySelector(':scope > div');
 
-    expect(markdown).toBeTruthy();
-    expect(markdown.innerHTML).toEqual(activeFile.html);
+    expect(vm.$el.querySelector(':scope > div')).toEqual(activeFile.html);
   });
 
   it('does not render if no binary', () => {

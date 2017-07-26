@@ -25,9 +25,7 @@ describe('RepoTab', () => {
     spyOn(vm, 'xClicked');
     spyOn(vm, 'tabClicked');
 
-    expect(close).toBeTruthy();
     expect(close.querySelector('.fa-times')).toBeTruthy();
-    expect(name).toBeTruthy();
     expect(name.textContent).toEqual(tab.name);
 
     close.click();
@@ -63,8 +61,7 @@ describe('RepoTab', () => {
     const vm = createComponent({
       tab,
     });
-    const close = vm.$el.querySelector('.close');
 
-    expect(close.querySelector('.fa-circle')).toBeTruthy();
+    expect(vm.$el.querySelector('.close .fa-circle')).toBeTruthy();
   });
 });

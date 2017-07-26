@@ -17,11 +17,9 @@ describe('RepoFileOptions', () => {
       isMini: true,
       projectName,
     });
-    const title = vm.$el.querySelector('.title');
 
     expect(vm.$el.classList.contains('repo-file-options')).toBeTruthy();
-    expect(title).toBeTruthy();
-    expect(title.textContent).toEqual(projectName);
+    expect(vm.$el.querySelector('.title').textContent).toEqual(projectName);
     expect(vm.$el.querySelector('a[title="New File"]')).toBeTruthy();
     expect(vm.$el.querySelector('a[title="New Folder"]')).toBeTruthy();
   });
