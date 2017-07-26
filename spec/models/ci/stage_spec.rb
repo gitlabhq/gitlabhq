@@ -40,7 +40,7 @@ describe Ci::Stage, :models do
     end
   end
 
-  describe 'update!' do
+  describe 'update_status' do
     context 'when stage objects needs to be updated' do
       before do
         create(:ci_build, :success, stage_id: stage.id)
@@ -48,7 +48,7 @@ describe Ci::Stage, :models do
       end
 
       it 'updates stage status correctly' do
-        expect { stage.update! }
+        expect { stage.update_status }
           .to change { stage.reload.status }
           .to 'running'
       end
@@ -56,7 +56,7 @@ describe Ci::Stage, :models do
 
     context 'when stage is skipped' do
       it 'updates status to skipped' do
-        expect { stage.update! }
+        expect { stage.update_status }
           .to change { stage.reload.status }
           .to 'skipped'
       end
@@ -70,7 +70,7 @@ describe Ci::Stage, :models do
       it 'retries a lock to update a stage status' do
         stage.lock_version = 100
 
-        stage.update!
+        stage.update_status
 
         expect(stage.reload).to be_failed
       end

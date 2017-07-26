@@ -50,7 +50,7 @@ module Ci
       end
     end
 
-    def update!
+    def update_status
       retry_optimistic_lock(self) do
         case commit_statuses.latest.status
         when 'pending' then enqueue
