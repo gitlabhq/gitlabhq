@@ -100,6 +100,21 @@ const RepoHelper = {
     return 0;
   },
 
+  isRoot(url) {
+    // the url we are requesting -> split by the project URL. Grab the right side.
+    const isRoot = !!url.split(Store.projectUrl)[1]
+    // remove the first "/"
+    .slice(1)
+    // split this by "/"
+    .split('/')
+    // remove the first two items of the array... usually /tree/master.
+    .slice(2)
+    // we want to know the length of the array.
+    // If greater than 0 not root.
+    .length;
+    return isRoot;
+  },
+
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
     // const loadingData = RepoHelper.setLoading(true);
@@ -139,6 +154,7 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
+        if(!file) Store.isRoot = RepoHelper.isRoot(Service.url);
         file = RepoHelper.setDirectoryOpen(file);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);

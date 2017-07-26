@@ -23,6 +23,7 @@ function initRepo() {
   Store.checkIsCommitable();
   Store.projectId = repo.dataset.projectId;
   Store.tempPrivateToken = repo.dataset.tempToken;
+  Store.projectUrl = repo.dataset.projectUrl;
 
   this.vm = new Vue({
     el: repo,
