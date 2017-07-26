@@ -9,15 +9,12 @@ describe('RepoTabs', () => {
   }, {
     id: 1,
   }];
+
   function createComponent() {
     const RepoTabs = Vue.extend(repoTabs);
 
     return new RepoTabs().$mount();
   }
-
-  beforeEach(() => {
-    spyOn(repoTabs.methods, 'isOverflow');
-  });
 
   it('renders a list of tabs', () => {
     RepoStore.openedFiles = openedFiles;
