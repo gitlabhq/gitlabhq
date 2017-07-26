@@ -270,7 +270,7 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = NotificationRecipientService::Recipient.notifiable_users(project.team.members, project, :watch)
+    recipients = NotificationRecipientService.notifiable_users(project.team.members, project, :mention)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(
@@ -304,10 +304,9 @@ class NotificationService
 
     return unless mailer.respond_to?(email_template)
 
-    recipients ||= NotificationRecipientService.new(pipeline.project).build_pipeline_recipients(
-      pipeline,
-      pipeline.user,
-      action: pipeline.status
+    recipients ||= NotificationRecipientService.notifiable_users(
+      [pipeline.user], pipeline.project, :watch,
+      custom_action: :"#{pipeline.status}_pipeline"
     ).map(&:notification_email)
 
     if recipients.any?

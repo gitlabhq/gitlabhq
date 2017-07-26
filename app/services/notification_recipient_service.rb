@@ -378,38 +378,6 @@ class NotificationRecipientService
       end
     end
 
-    class Pipeline < Base
-      attr_reader :project
-      attr_reader :target
-      attr_reader :current_user
-      attr_reader :action
-      def initialize(project, target, current_user, action:)
-        @project = project
-        @target = target
-        @current_user = current_user
-        @action = action
-      end
-
-      def acting_user
-        nil
-      end
-
-      def custom_action
-        case action.to_s
-        when 'failed'
-          :failed_pipeline
-        when 'success'
-          :success_pipeline
-        end
-      end
-
-      def build!
-        return [] unless current_user
-
-        self << [current_user, :watch]
-      end
-    end
-
     class Relabeled < Base
       attr_reader :project
       attr_reader :target
@@ -475,12 +443,12 @@ class NotificationRecipientService
     end
   end
 
-  def build_recipients(*a)
-    Builder::Default.new(@project, *a).recipient_users
+  def self.notifiable_users(*a)
+    Recipient.notifiable_users(*a)
   end
 
-  def build_pipeline_recipients(*a)
-    Builder::Pipeline.new(@project, *a).recipient_users
+  def build_recipients(*a)
+    Builder::Default.new(@project, *a).recipient_users
   end
 
   def build_relabeled_recipients(*a)
