@@ -2,6 +2,8 @@ module Geo
   class EventLog < ActiveRecord::Base
     include Geo::Model
 
+    delegate :project_id, to: :event, allow_nil: true
+
     belongs_to :repository_updated_event,
       class_name: 'Geo::RepositoryUpdatedEvent',
       foreign_key: :repository_updated_event_id
@@ -16,12 +18,8 @@ module Geo
 
     def event
       repository_updated_event ||
-      repository_deleted_event ||
-      repository_renamed_event
-    end
-
-    def project_id
-      event&.project_id
+        repository_deleted_event ||
+        repository_renamed_event
     end
   end
 end
