@@ -3,29 +3,27 @@ require 'mime/types'
 
 describe API::Commits do
   let(:user) { create(:user) }
-  let(:user2) { create(:user) }
-  let!(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
-  let!(:guest) { create(:project_member, :guest, user: user2, project: project) }
-  let!(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'a comment on a commit') }
-  let!(:another_note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'another comment on a commit') }
+  let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
+  let(:project) { create(:project, :repository, creator: user, path: 'my.project') }
+  let(:branch_with_dot) { project.repository.find_branch('ends-with.json') }
+  let(:branch_with_slash) { project.repository.find_branch('improve/awesome') }
+
+  let(:project_id) { project.id }
+  let(:current_user) { nil }
 
   before do
-    project.team << [user, :reporter]
+    project.add_master(user)
   end
 
-  describe "List repository commits" do
-    context "authorized user" do
-      before do
-        project.team << [user2, :reporter]
-      end
-
+  describe 'GET /projects/:id/repository/commits' do
+    context 'authorized user' do
       it "returns project commits" do
         commit = project.repository.commit
 
-        get api("/projects/#{project.id}/repository/commits", user)
+        get api("/projects/#{project_id}/repository/commits", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response).to be_an Array
+        expect(response).to match_response_schema('public_api/v4/commits')
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['committer_name']).to eq(commit.committer_name)
         expect(json_response.first['committer_email']).to eq(commit.committer_email)
@@ -34,7 +32,7 @@ describe API::Commits do
       it 'include correct pagination headers' do
         commit_count = project.repository.count_commits(ref: 'master').to_s
 
-        get api("/projects/#{project.id}/repository/commits", user)
+        get api("/projects/#{project_id}/repository/commits", user)
 
         expect(response).to include_pagination_headers
         expect(response.headers['X-Total']).to eq(commit_count)
@@ -44,8 +42,9 @@ describe API::Commits do
 
     context "unauthorized user" do
       it "does not return project commits" do
-        get api("/projects/#{project.id}/repository/commits")
-        expect(response).to have_http_status(401)
+        get api("/projects/#{project_id}/repository/commits")
+
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -54,7 +53,7 @@ describe API::Commits do
         commits = project.repository.commits("master")
         after = commits.second.created_at
 
-        get api("/projects/#{project.id}/repository/commits?since=#{after.utc.iso8601}", user)
+        get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
 
         expect(json_response.size).to eq 2
         expect(json_response.first["id"]).to eq(commits.first.id)
@@ -66,7 +65,7 @@ describe API::Commits do
         after = commits.second.created_at
         commit_count = project.repository.count_commits(ref: 'master', after: after).to_s
 
-        get api("/projects/#{project.id}/repository/commits?since=#{after.utc.iso8601}", user)
+        get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
 
         expect(response).to include_pagination_headers
         expect(response.headers['X-Total']).to eq(commit_count)
@@ -79,7 +78,7 @@ describe API::Commits do
         commits = project.repository.commits("master")
         before = commits.second.created_at
 
-        get api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
+        get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
         if commits.size >= 20
           expect(json_response.size).to eq(20)
@@ -96,7 +95,7 @@ describe API::Commits do
         before = commits.second.created_at
         commit_count = project.repository.count_commits(ref: 'master', before: before).to_s
 
-        get api("/projects/#{project.id}/repository/commits?until=#{before.utc.iso8601}", user)
+        get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
         expect(response).to include_pagination_headers
         expect(response.headers['X-Total']).to eq(commit_count)
@@ -106,7 +105,7 @@ describe API::Commits do
 
     context "invalid xmlschema date parameters" do
       it "returns an invalid parameter error message" do
-        get api("/projects/#{project.id}/repository/commits?since=invalid-date", user)
+        get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
 
         expect(response).to have_http_status(400)
         expect(json_response['error']).to eq('since is invalid')
@@ -118,7 +117,7 @@ describe API::Commits do
         path = 'files/ruby/popen.rb'
         commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
 
-        get api("/projects/#{project.id}/repository/commits?path=#{path}", user)
+        get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
 
         expect(json_response.size).to eq(3)
         expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
@@ -130,7 +129,7 @@ describe API::Commits do
         path = 'files/ruby/popen.rb'
         commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
 
-        get api("/projects/#{project.id}/repository/commits?path=#{path}", user)
+        get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
 
         expect(response).to include_pagination_headers
         expect(response.headers['X-Total']).to eq(commit_count)
@@ -143,7 +142,7 @@ describe API::Commits do
       let(:per_page) { 5 }
       let(:ref_name) { 'master' }
       let!(:request) do
-        get api("/projects/#{project.id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
+        get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
       end
 
       it 'returns correct headers' do
@@ -181,10 +180,10 @@ describe API::Commits do
   end
 
   describe "POST /projects/:id/repository/commits" do
-    let!(:url) { "/projects/#{project.id}/repository/commits" }
+    let!(:url) { "/projects/#{project_id}/repository/commits" }
 
     it 'returns a 403 unauthorized for user without permissions' do
-      post api(url, user2)
+      post api(url, guest)
 
       expect(response).to have_http_status(403)
     end
@@ -227,7 +226,7 @@ describe API::Commits do
       it 'a new file in project repo' do
         post api(url, user), valid_c_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
         expect(json_response['committer_name']).to eq(user.name)
         expect(json_response['committer_email']).to eq(user.email)
@@ -453,13 +452,17 @@ describe API::Commits do
     end
   end
 
-  describe "Get a single commit" do
-    context "authorized user" do
-      it "returns a commit by sha" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+  describe 'GET /projects/:id/repository/commits/:sha' do
+    let(:commit) { project.repository.commit }
+    let(:commit_id) { commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
 
-        expect(response).to have_http_status(200)
-        commit = project.repository.commit
+    shared_examples_for 'ref commit' do
+      it 'returns the ref last commit' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/commit/detail')
         expect(json_response['id']).to eq(commit.id)
         expect(json_response['short_id']).to eq(commit.short_id)
         expect(json_response['title']).to eq(commit.title)
@@ -474,222 +477,539 @@ describe API::Commits do
         expect(json_response['stats']['additions']).to eq(commit.stats.additions)
         expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
         expect(json_response['stats']['total']).to eq(commit.stats.total)
-      end
-
-      it "returns a 404 error if not found" do
-        get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns nil for commit without CI" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-
-        expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
-      it "returns status for CI" do
-        pipeline = project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
-        pipeline.update(status: 'success')
+      context 'when ref does not exist' do
+        let(:commit_id) { 'unknown' }
 
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-
-        expect(response).to have_http_status(200)
-        expect(json_response['status']).to eq(pipeline.status)
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+          let(:message) { '404 Commit Not Found' }
+        end
       end
 
-      it "returns status for CI when pipeline is created" do
-        project.pipelines.create(source: :push, ref: 'master', sha: project.repository.commit.sha)
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
 
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
-
-        expect(response).to have_http_status(200)
-        expect(json_response['status']).to eq("created")
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
       end
     end
 
-    context "unauthorized user" do
-      it "does not return the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}")
-        expect(response).to have_http_status(401)
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'ref commit'
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a master' do
+      let(:current_user) { user }
+
+      it_behaves_like 'ref commit'
+
+      context 'when branch contains a dot' do
+        let(:commit) { project.repository.commit(branch_with_dot.name) }
+        let(:commit_id) { branch_with_dot.name }
+
+        it_behaves_like 'ref commit'
+      end
+
+      context 'when branch contains a slash' do
+        let(:commit_id) { branch_with_slash.name }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
+      context 'when branch contains an escaped slash' do
+        let(:commit) { project.repository.commit(branch_with_slash.name) }
+        let(:commit_id) { CGI.escape(branch_with_slash.name) }
+
+        it_behaves_like 'ref commit'
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'ref commit'
+
+        context 'when branch contains a dot' do
+          let(:commit) { project.repository.commit(branch_with_dot.name) }
+          let(:commit_id) { branch_with_dot.name }
+
+          it_behaves_like 'ref commit'
+        end
+      end
+
+      context 'when the ref has a pipeline' do
+        let!(:pipeline) { project.pipelines.create(source: :push, ref: 'master', sha: commit.sha) }
+
+        it 'includes a "created" status' do
+          get api(route, current_user)
+
+          expect(response).to have_http_status(200)
+          expect(response).to match_response_schema('public_api/v4/commit/detail')
+          expect(json_response['status']).to eq('created')
+        end
+
+        context 'when pipeline succeeds' do
+          before do
+            pipeline.update(status: 'success')
+          end
+
+          it 'includes a "success" status' do
+            get api(route, current_user)
+
+            expect(response).to have_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/commit/detail')
+            expect(json_response['status']).to eq('success')
+          end
+        end
       end
     end
   end
 
-  describe "Get the diff of a commit" do
-    context "authorized user" do
-      before do
-        project.team << [user2, :reporter]
+  describe 'GET /projects/:id/repository/commits/:sha/diff' do
+    let(:commit) { project.repository.commit }
+    let(:commit_id) { commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/diff" }
+
+    shared_examples_for 'ref diff' do
+      it 'returns the diff of the selected commit' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.size).to be >= 1
+        expect(json_response.first.keys).to include 'diff'
       end
 
-      it "returns the diff of the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff", user)
-        expect(response).to have_http_status(200)
+      context 'when ref does not exist' do
+        let(:commit_id) { 'unknown' }
 
-        expect(json_response).to be_an Array
-        expect(json_response.length).to be >= 1
-        expect(json_response.first.keys).to include "diff"
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+          let(:message) { '404 Commit Not Found' }
+        end
       end
 
-      it "returns a 404 error if invalid commit" do
-        get api("/projects/#{project.id}/repository/commits/invalid_sha/diff", user)
-        expect(response).to have_http_status(404)
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
       end
     end
 
-    context "unauthorized user" do
-      it "does not return the diff of the selected commit" do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/diff")
-        expect(response).to have_http_status(401)
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'ref diff'
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a master' do
+      let(:current_user) { user }
+
+      it_behaves_like 'ref diff'
+
+      context 'when branch contains a dot' do
+        let(:commit_id) { branch_with_dot.name }
+
+        it_behaves_like 'ref diff'
+      end
+
+      context 'when branch contains a slash' do
+        let(:commit_id) { branch_with_slash.name }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
+      context 'when branch contains an escaped slash' do
+        let(:commit_id) { CGI.escape(branch_with_slash.name) }
+
+        it_behaves_like 'ref diff'
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'ref diff'
+
+        context 'when branch contains a dot' do
+          let(:commit_id) { branch_with_dot.name }
+
+          it_behaves_like 'ref diff'
+        end
       end
     end
   end
 
-  describe 'Get the comments of a commit' do
-    context 'authorized user' do
-      it 'returns merge_request comments' do
-        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response).to have_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(2)
-        expect(json_response.first['note']).to eq('a comment on a commit')
-        expect(json_response.first['author']['id']).to eq(user.id)
+  describe 'GET /projects/:id/repository/commits/:sha/comments' do
+    let(:commit) { project.repository.commit }
+    let(:commit_id) { commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/comments" }
+
+    shared_examples_for 'ref comments' do
+      context 'when ref exists' do
+        before do
+          create(:note_on_commit, author: user, project: project, commit_id: commit.id, note: 'a comment on a commit')
+          create(:note_on_commit, author: user, project: project, commit_id: commit.id, note: 'another comment on a commit')
+        end
+
+        it 'returns the diff of the selected commit' do
+          get api(route, current_user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to match_response_schema('public_api/v4/commit_notes')
+          expect(json_response.size).to eq(2)
+          expect(json_response.first['note']).to eq('a comment on a commit')
+          expect(json_response.first['author']['id']).to eq(user.id)
+        end
       end
 
-      it 'returns a 404 error if merge_request_id not found' do
-        get api("/projects/#{project.id}/repository/commits/1234ab/comments", user)
-        expect(response).to have_http_status(404)
+      context 'when ref does not exist' do
+        let(:commit_id) { 'unknown' }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+          let(:message) { '404 Commit Not Found' }
+        end
+      end
+
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
+
+        it_behaves_like '403 response' do
+          let(:request) { get api(route, current_user) }
+        end
       end
     end
 
-    context 'unauthorized user' do
-      it 'does not return the diff of the selected commit' do
-        get api("/projects/#{project.id}/repository/commits/1234ab/comments")
-        expect(response).to have_http_status(401)
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like 'ref comments'
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as a master' do
+      let(:current_user) { user }
+
+      it_behaves_like 'ref comments'
+
+      context 'when branch contains a dot' do
+        let(:commit) { project.repository.commit(branch_with_dot.name) }
+        let(:commit_id) { branch_with_dot.name }
+
+        it_behaves_like 'ref comments'
+      end
+
+      context 'when branch contains a slash' do
+        let(:commit) { project.repository.commit(branch_with_slash.name) }
+        let(:commit_id) { branch_with_slash.name }
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
+      context 'when branch contains an escaped slash' do
+        let(:commit) { project.repository.commit(branch_with_slash.name) }
+        let(:commit_id) { CGI.escape(branch_with_slash.name) }
+
+        it_behaves_like 'ref comments'
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'ref comments'
+
+        context 'when branch contains a dot' do
+          let(:commit) { project.repository.commit(branch_with_dot.name) }
+          let(:commit_id) { branch_with_dot.name }
+
+          it_behaves_like 'ref comments'
+        end
       end
     end
 
     context 'when the commit is present on two projects' do
-      let(:forked_project) { create(:project, :repository, creator: user2, namespace: user2.namespace) }
-      let!(:forked_project_note) { create(:note_on_commit, author: user2, project: forked_project, commit_id: forked_project.repository.commit.id, note: 'a comment on a commit for fork') }
+      let(:forked_project) { create(:project, :repository, creator: guest, namespace: guest.namespace) }
+      let!(:forked_project_note) { create(:note_on_commit, author: guest, project: forked_project, commit_id: forked_project.repository.commit.id, note: 'a comment on a commit for fork') }
+      let(:project_id) { forked_project.id }
+      let(:commit_id) { forked_project.repository.commit.id }
 
       it 'returns the comments for the target project' do
-        get api("/projects/#{forked_project.id}/repository/commits/#{forked_project.repository.commit.id}/comments", user2)
+        get api(route, guest)
 
-        expect(response).to have_http_status(200)
-        expect(json_response.length).to eq(1)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/commit_notes')
+        expect(json_response.size).to eq(1)
         expect(json_response.first['note']).to eq('a comment on a commit for fork')
-        expect(json_response.first['author']['id']).to eq(user2.id)
+        expect(json_response.first['author']['id']).to eq(guest.id)
       end
     end
   end
 
   describe 'POST :id/repository/commits/:sha/cherry_pick' do
-    let(:master_pickable_commit)  { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:commit) { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:commit_id) { commit.id }
+    let(:branch) { 'master' }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/cherry_pick" }
 
-    context 'authorized user' do
-      it 'cherry picks a commit' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'master'
+    shared_examples_for 'ref cherry-pick' do
+      context 'when ref exists' do
+        it 'cherry-picks the ref commit' do
+          post api(route, current_user), branch: branch
 
-        expect(response).to have_http_status(201)
-        expect(json_response['title']).to eq(master_pickable_commit.title)
-        expect(json_response['message']).to eq(master_pickable_commit.message)
-        expect(json_response['author_name']).to eq(master_pickable_commit.author_name)
-        expect(json_response['committer_name']).to eq(user.name)
+          expect(response).to have_gitlab_http_status(201)
+          expect(response).to match_response_schema('public_api/v4/commit/basic')
+          expect(json_response['title']).to eq(commit.title)
+          expect(json_response['message']).to eq(commit.message)
+          expect(json_response['author_name']).to eq(commit.author_name)
+          expect(json_response['committer_name']).to eq(user.name)
+        end
       end
 
-      it 'returns 400 if commit is already included in the target branch' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'markdown'
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
 
-        expect(response).to have_http_status(400)
-        expect(json_response['message']).to include('Sorry, we cannot cherry-pick this commit automatically.')
-      end
-
-      it 'returns 400 if you are not allowed to push to the target branch' do
-        project.team << [user2, :developer]
-        protected_branch = create(:protected_branch, project: project, name: 'feature')
-
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user2), branch: protected_branch.name
-
-        expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('You are not allowed to push into this branch')
-      end
-
-      it 'returns 400 for missing parameters' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
-
-        expect(response).to have_http_status(400)
-        expect(json_response['error']).to eq('branch is missing')
-      end
-
-      it 'returns 404 if commit is not found' do
-        post api("/projects/#{project.id}/repository/commits/abcd0123/cherry_pick", user), branch: 'master'
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Commit Not Found')
-      end
-
-      it 'returns 404 if branch is not found' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user), branch: 'foo'
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Branch Not Found')
-      end
-
-      it 'returns 400 for missing parameters' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick", user)
-
-        expect(response).to have_http_status(400)
-        expect(json_response['error']).to eq('branch is missing')
+        it_behaves_like '403 response' do
+          let(:request) { post api(route, current_user), branch: 'master' }
+        end
       end
     end
 
-    context 'unauthorized user' do
-      it 'does not cherry pick the commit' do
-        post api("/projects/#{project.id}/repository/commits/#{master_pickable_commit.id}/cherry_pick"), branch: 'master'
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
 
-        expect(response).to have_http_status(401)
+      it_behaves_like '403 response' do
+        let(:request) { post api(route), branch: 'master' }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { post api(route), branch: 'master' }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as an owner' do
+      let(:current_user) { user }
+
+      it_behaves_like 'ref cherry-pick'
+
+      context 'when ref does not exist' do
+        let(:commit_id) { 'unknown' }
+
+        it_behaves_like '404 response' do
+          let(:request) { post api(route, current_user), branch: 'master' }
+          let(:message) { '404 Commit Not Found' }
+        end
+      end
+
+      context 'when branch is missing' do
+        it_behaves_like '400 response' do
+          let(:request) { post api(route, current_user) }
+        end
+      end
+
+      context 'when branch does not exist' do
+        it_behaves_like '404 response' do
+          let(:request) { post api(route, current_user), branch: 'foo' }
+          let(:message) { '404 Branch Not Found' }
+        end
+      end
+
+      context 'when commit is already included in the target branch' do
+        it_behaves_like '400 response' do
+          let(:request) { post api(route, current_user), branch: 'markdown' }
+        end
+      end
+
+      context 'when ref contains a dot' do
+        let(:commit) { project.repository.commit(branch_with_dot.name) }
+        let(:commit_id) { branch_with_dot.name }
+
+        it_behaves_like 'ref cherry-pick'
+      end
+
+      context 'when ref contains a slash' do
+        let(:commit_id) { branch_with_slash.name }
+
+        it_behaves_like '404 response' do
+          let(:request) { post api(route, current_user), branch: 'master' }
+        end
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'ref cherry-pick'
+
+        context 'when ref contains a dot' do
+          let(:commit) { project.repository.commit(branch_with_dot.name) }
+          let(:commit_id) { branch_with_dot.name }
+
+          it_behaves_like 'ref cherry-pick'
+        end
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      let(:current_user) { guest }
+
+      before do
+        project.add_developer(guest)
+      end
+
+      context 'when branch is protected' do
+        before do
+          create(:protected_branch, project: project, name: 'feature')
+        end
+
+        it 'returns 400 if you are not allowed to push to the target branch' do
+          post api(route, current_user), branch: 'feature'
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']).to eq('You are not allowed to push into this branch')
+        end
       end
     end
   end
 
-  describe 'Post comment to commit' do
-    context 'authorized user' do
-      it 'returns comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment'
-        expect(response).to have_http_status(201)
-        expect(json_response['note']).to eq('My comment')
-        expect(json_response['path']).to be_nil
-        expect(json_response['line']).to be_nil
-        expect(json_response['line_type']).to be_nil
+  describe 'POST /projects/:id/repository/commits/:sha/comments' do
+    let(:commit) { project.repository.commit }
+    let(:commit_id) { commit.id }
+    let(:note) { 'My comment' }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/comments" }
+
+    shared_examples_for 'ref new comment' do
+      context 'when ref exists' do
+        it 'creates the comment' do
+          post api(route, current_user), note: note
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(response).to match_response_schema('public_api/v4/commit_note')
+          expect(json_response['note']).to eq('My comment')
+          expect(json_response['path']).to be_nil
+          expect(json_response['line']).to be_nil
+          expect(json_response['line_type']).to be_nil
+        end
       end
 
-      it 'returns the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
+      context 'when repository is disabled' do
+        include_context 'disabled repository'
 
-        expect(response).to have_http_status(201)
+        it_behaves_like '403 response' do
+          let(:request) { post api(route, current_user), note: 'My comment' }
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
+
+      it_behaves_like '400 response' do
+        let(:request) { post api(route), note: 'My comment' }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { post api(route), note: 'My comment' }
+        let(:message) { '404 Project Not Found' }
+      end
+    end
+
+    context 'when authenticated', 'as an owner' do
+      let(:current_user) { user }
+
+      it_behaves_like 'ref new comment'
+
+      it 'returns the inline comment' do
+        post api(route, current_user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 1, line_type: 'new'
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(response).to match_response_schema('public_api/v4/commit_note')
         expect(json_response['note']).to eq('My comment')
         expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
         expect(json_response['line']).to eq(1)
         expect(json_response['line_type']).to eq('new')
       end
 
+      context 'when ref does not exist' do
+        let(:commit_id) { 'unknown' }
+
+        it_behaves_like '404 response' do
+          let(:request) { post api(route, current_user), note: 'My comment' }
+          let(:message) { '404 Commit Not Found' }
+        end
+      end
+
       it 'returns 400 if note is missing' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user)
-        expect(response).to have_http_status(400)
+        post api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(400)
       end
 
-      it 'returns 404 if note is attached to non existent commit' do
-        post api("/projects/#{project.id}/repository/commits/1234ab/comments", user), note: 'My comment'
-        expect(response).to have_http_status(404)
-      end
-    end
+      context 'when ref contains a dot' do
+        let(:commit_id) { branch_with_dot.name }
 
-    context 'unauthorized user' do
-      it 'does not return the diff of the selected commit' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments")
-        expect(response).to have_http_status(401)
+        it_behaves_like 'ref new comment'
+      end
+
+      context 'when ref contains a slash' do
+        let(:commit_id) { branch_with_slash.name }
+
+        it_behaves_like '404 response' do
+          let(:request) { post api(route, current_user), note: 'My comment' }
+        end
+      end
+
+      context 'when ref contains an escaped slash' do
+        let(:commit_id) { CGI.escape(branch_with_slash.name) }
+
+        it_behaves_like 'ref new comment'
+      end
+
+      context 'requesting with the escaped project full path' do
+        let(:project_id) { CGI.escape(project.full_path) }
+
+        it_behaves_like 'ref new comment'
+
+        context 'when ref contains a dot' do
+          let(:commit_id) { branch_with_dot.name }
+
+          it_behaves_like 'ref new comment'
+        end
       end
     end
   end

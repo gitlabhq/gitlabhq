@@ -4,13 +4,14 @@ module API
   class Commits < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    COMMIT_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: API::NO_SLASH_URL_PART_REGEX)
+
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository commits' do
         success Entities::RepoCommit
       end
@@ -21,7 +22,7 @@ module API
         optional :path,     type: String, desc: 'The file path'
         use :pagination
       end
-      get ":id/repository/commits" do
+      get ':id/repository/commits' do
         path   = params[:path]
         before = params[:until]
         after  = params[:since]
@@ -60,7 +61,7 @@ module API
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
       end
-      post ":id/repository/commits" do
+      post ':id/repository/commits' do
         authorize! :push_code, user_project
 
         attrs = declared_params
@@ -79,42 +80,42 @@ module API
 
       desc 'Get a specific commit of a project' do
         success Entities::RepoCommitDetail
-        failure [[404, 'Not Found']]
+        failure [[404, 'Commit Not Found']]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ":id/repository/commits/:sha" do
+      get ':id/repository/commits/:sha', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
         present commit, with: Entities::RepoCommitDetail
       end
 
       desc 'Get the diff for a specific commit of a project' do
-        failure [[404, 'Not Found']]
+        failure [[404, 'Commit Not Found']]
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ":id/repository/commits/:sha/diff" do
+      get ':id/repository/commits/:sha/diff', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
         commit.raw_diffs.to_a
       end
 
       desc "Get a commit's comments" do
         success Entities::CommitNote
-        failure [[404, 'Not Found']]
+        failure [[404, 'Commit Not Found']]
       end
       params do
         use :pagination
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
       end
-      get ':id/repository/commits/:sha/comments' do
+      get ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
@@ -128,10 +129,10 @@ module API
         success Entities::RepoCommit
       end
       params do
-        requires :sha, type: String, desc: 'A commit sha to be cherry picked'
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag to be cherry picked'
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      post ':id/repository/commits/:sha/cherry_pick' do
+      post ':id/repository/commits/:sha/cherry_pick', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         commit = user_project.commit(params[:sha])
@@ -160,7 +161,7 @@ module API
         success Entities::CommitNote
       end
       params do
-        requires :sha, type: String, regexp: /\A\h{6,40}\z/, desc: "The commit's SHA"
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to post a comment'
         requires :note, type: String, desc: 'The text of the comment'
         optional :path, type: String, desc: 'The file path'
         given :path do
@@ -168,7 +169,7 @@ module API
           requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
         end
       end
-      post ':id/repository/commits/:sha/comments' do
+      post ':id/repository/commits/:sha/comments', requirements: COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
