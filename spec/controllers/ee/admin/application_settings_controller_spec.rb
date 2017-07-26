@@ -65,8 +65,10 @@ describe Admin::ApplicationSettingsController do # rubocop:disable RSpec/FilePat
     it 'updates mirror settings when repository mirrors is licensed' do
       stub_licensed_features(repository_mirrors: true)
 
+      mirror_delay = (Gitlab::Mirror.min_delay_upper_bound / 60) + 1
+
       settings = {
-        mirror_max_delay: 12,
+        mirror_max_delay: mirror_delay,
         mirror_max_capacity: 2,
         mirror_capacity_threshold: 2
       }

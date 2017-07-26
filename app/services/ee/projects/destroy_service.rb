@@ -4,10 +4,14 @@ module EE
       def execute
         raise NotImplementedError unless defined?(super)
 
-        super
+        succeeded = super
 
-        mirror_cleanup(project)
-        log_geo_event(project)
+        if succeeded
+          mirror_cleanup(project)
+          log_geo_event(project)
+        end
+
+        succeeded
       end
 
       def mirror_cleanup(project)
@@ -29,7 +33,7 @@ module EE
         # Flush the cache for both repositories. This has to be done _before_
         # removing the physical repositories as some expiration code depends on
         # Git data (e.g. a list of branch names).
-        flush_caches(project, wiki_path)
+        flush_caches(project)
 
         trash_repositories!
         remove_tracking_entries!

@@ -697,6 +697,19 @@ describe API::Issues do
       expect(json_response['confidential']).to be_falsy
     end
 
+    context 'links exposure' do
+      it 'exposes related resources full URIs' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+        links = json_response['_links']
+
+        expect(links['self']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}")
+        expect(links['notes']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/notes")
+        expect(links['award_emoji']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/award_emoji")
+        expect(links['project']).to end_with("/api/v4/projects/#{project.id}")
+      end
+    end
+
     it "returns a project issue by internal id" do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
