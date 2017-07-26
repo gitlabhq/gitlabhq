@@ -471,8 +471,17 @@ class Repository
   end
   cache_method :root_ref
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    refs_directory_exists?
+    return false unless path_with_namespace
+
+    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+      if enabled
+        raw_repository.exists?
+      else
+        refs_directory_exists?
+      end
+    end
   end
   cache_method :exists?
 
@@ -1095,8 +1104,6 @@ class Repository
   end
 
   def refs_directory_exists?
-    return false unless path_with_namespace
-
     File.exist?(File.join(path_to_repo, 'refs'))
   end
 
