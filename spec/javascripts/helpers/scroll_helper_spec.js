@@ -6,7 +6,7 @@ describe('ScrollHelper', () => {
 
   describe('getScrollWidth', () => {
     const parent = jasmine.createSpyObj('parent', ['css', 'appendTo', 'remove']);
-    const child = jasmine.createSpyObj('child', ['css', 'appendTo', 'outerWidth']);
+    const child = jasmine.createSpyObj('child', ['css', 'appendTo', 'get']);
     let scrollWidth;
 
     beforeEach(() => {
@@ -15,7 +15,9 @@ describe('ScrollHelper', () => {
 
       parent.css.and.returnValue(parent);
       child.css.and.returnValue(child);
-      child.outerWidth.and.returnValue(width);
+      child.get.and.returnValue({
+        offsetWidth: width,
+      });
 
       scrollWidth = ScrollHelper.getScrollWidth();
     });
@@ -35,7 +37,7 @@ describe('ScrollHelper', () => {
       });
       expect(child.appendTo).toHaveBeenCalledWith(parent);
       expect(parent.appendTo).toHaveBeenCalledWith('body');
-      expect(child.outerWidth).toHaveBeenCalled();
+      expect(child.get).toHaveBeenCalledWith(0);
       expect(parent.remove).toHaveBeenCalled();
       expect(scrollWidth).toEqual(100 - width);
     });

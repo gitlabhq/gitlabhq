@@ -40,7 +40,7 @@ describe('RepoBinaryViewer', () => {
     Store.activeFile = activeFile;
     const vm = createComponent();
 
-    expect(vm.$el.querySelector(':scope > div')).toEqual(activeFile.html);
+    expect(vm.$el.querySelector(':scope > div').innerHTML).toEqual(activeFile.html);
   });
 
   it('does not render if no binary', () => {
