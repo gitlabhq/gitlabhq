@@ -15,6 +15,10 @@ You can use [project services][project-services] to store credentials to
 your infrastructure provider and they will be available during the
 deployment.
 
+## Quick start
+
+We made a [simple guide](quick_start_guide.md) to using Auto Deploy with GitLab.com.
+
 ## Supported templates
 
 The list of supported auto deploy templates is available in the
@@ -34,10 +38,6 @@ enable [Kubernetes service][kubernetes-service].
 1. Commit your changes and create a merge request.
 1. Test your deployment configuration using a [Review App][review-app] that was
 created automatically for you.
-
-## Quick start
-
-We made a [simple guide](quick_start_guide.md) about how to use auto deploy feature with GitLab.com project.
 
 ## Using the Kubernetes deploy example project with Nginx
 
