@@ -5,7 +5,7 @@ import Api from '../api'
 
 const RepoCommitSection = {
   data: () => Store,
-  
+
   methods: {
     makeCommit() {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
@@ -59,7 +59,7 @@ export default RepoCommitSection;
         <label class="col-md-4 control-label">Staged files ({{changedFiles.length}})</label>
         <div class="col-md-4">
           <ul class="list-unstyled">
-            <li v-for="file in changedFiles">
+            <li v-for="file in changedFiles" :key="file.id">
               <span class="help-block">
                 {{file.url}}
               </span>
