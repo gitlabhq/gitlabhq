@@ -12,10 +12,6 @@ module HasStatus
                     failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
 
   class_methods do
-    def enumerate_status!
-      enum status: HasStatus::STATUSES_ENUM
-    end
-
     def status_sql
       scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all
       scope_warnings = respond_to?(:failed_but_allowed) ? failed_but_allowed : none

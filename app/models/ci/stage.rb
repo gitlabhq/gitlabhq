@@ -5,7 +5,7 @@ module Ci
     include HasStatus
     include Gitlab::OptimisticLocking
 
-    enumerate_status!
+    enum status: HasStatus::STATUSES_ENUM
 
     belongs_to :project
     belongs_to :pipeline
