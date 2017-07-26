@@ -85,6 +85,10 @@ module NotificationRecipientService
           end
       end
 
+      def custom_action
+        nil
+      end
+
       protected
 
       def add_participants(user)
