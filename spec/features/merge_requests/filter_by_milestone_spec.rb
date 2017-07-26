@@ -4,7 +4,7 @@ feature 'Merge Request filtering by Milestone' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let!(:user)     { create(:user)}
   let(:milestone) { create(:milestone, project: project) }
 

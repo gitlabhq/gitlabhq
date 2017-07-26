@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Issue filtering by Labels', js: true do
+feature 'Merge Request filtering by Labels', js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let!(:user)   { create(:user) }
   let!(:label)  { create(:label, project: project) }
 

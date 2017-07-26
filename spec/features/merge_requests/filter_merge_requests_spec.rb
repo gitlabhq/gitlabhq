@@ -4,7 +4,7 @@ describe 'Filter merge requests' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let!(:project)   { create(:project) }
+  let!(:project)   { create(:project, :repository) }
   let!(:group)     { create(:group) }
   let!(:user)      { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
