@@ -20,13 +20,6 @@ describe CreateGpgSignatureWorker do
     let(:nonexisting_commit_sha) { 'bogus' }
     let(:project) { create :project }
 
-    it 'logs CreateGpgSignatureWorker process skipping' do
-      expect(Rails.logger).to receive(:error)
-        .with("CreateGpgSignatureWorker: couldn't find commit with commit_sha=bogus, skipping job")
-
-      described_class.new.perform(nonexisting_commit_sha, project.id)
-    end
-
     it 'does not raise errors' do
       expect { described_class.new.perform(nonexisting_commit_sha, project.id) }.not_to raise_error
     end
@@ -40,13 +33,6 @@ describe CreateGpgSignatureWorker do
 
   context 'when Project is not found' do
     let(:nonexisting_project_id) { -1 }
-
-    it 'logs CreateGpgSignatureWorker process skipping' do
-      expect(Rails.logger).to receive(:error)
-        .with("CreateGpgSignatureWorker: couldn't find project with ID=-1, skipping job")
-
-      described_class.new.perform(anything, nonexisting_project_id)
-    end
 
     it 'does not raise errors' do
       expect { described_class.new.perform(anything, nonexisting_project_id) }.not_to raise_error

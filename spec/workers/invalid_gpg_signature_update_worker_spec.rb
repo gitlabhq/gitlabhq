@@ -16,13 +16,6 @@ describe InvalidGpgSignatureUpdateWorker do
   context 'when GpgKey is not found' do
     let(:nonexisting_gpg_key_id) { -1 }
 
-    it 'logs InvalidGpgSignatureUpdateWorker process skipping' do
-      expect(Rails.logger).to receive(:error)
-        .with("InvalidGpgSignatureUpdateWorker: couldn't find gpg_key with ID=-1, skipping job")
-
-      described_class.new.perform(nonexisting_gpg_key_id)
-    end
-
     it 'does not raise errors' do
       expect { described_class.new.perform(nonexisting_gpg_key_id) }.not_to raise_error
     end
