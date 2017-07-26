@@ -29,16 +29,16 @@
 
 <template>
   <div :class="className">
-    <span>{{actionText}} </span>
-    <span> by </span>
-    <a
-      :href="editedBy.path"
-      class="author_link">
-      <span>{{editedBy.name}}</span>
-    </a>
+    {{actionText}}
     <time-ago-tooltip
       :time="editedAt"
       tooltip-placement="bottom"
       />
+    by
+    <a
+      :href="editedBy.path"
+      class="author_link">
+      {{editedBy.name}}
+    </a>
   </div>
 </template>

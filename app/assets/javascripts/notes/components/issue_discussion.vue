@@ -1,6 +1,6 @@
 <script>
   /* global Flash */
-  import { mapActions } from 'vuex';
+  import { mapActions, mapMutations } from 'vuex';
   import { TOGGLE_DISCUSSION } from '../stores/mutation_types';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
@@ -129,13 +129,13 @@
               :note-id="discussion.id"
               :include-toggle="true"
               :toggle-handler="toggleDiscussion"
-              actionText="started a discussion"
+              action-text="started a discussion"
               />
             <issue-note-edited-text
               v-if="note.last_updated_by"
               :edited-at="note.last_updated_at"
               :edited-by="note.last_updated_by"
-              actionText="Last updated"
+              action-text="Last updated"
               className="discussion-headline-light js-discussion-headline" />
             </div>
           </div>

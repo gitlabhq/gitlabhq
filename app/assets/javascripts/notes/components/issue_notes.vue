@@ -103,7 +103,7 @@
           const endpoint = this.notesById[noteId].toggle_award_path;
 
           this.toggleAward({ endpoint, awardName, noteId })
-            .catch(() => {new Flash('Something went wrong on our end.')});
+            .catch(() => Flash('Something went wrong on our end.'));
         });
 
         $(document).on('issuable:change', (e, isClosed) => {
