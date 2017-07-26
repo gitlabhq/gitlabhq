@@ -9,7 +9,6 @@ module StubConfiguration
       .to receive_messages(messages)
   end
 
-<<<<<<< HEAD
   def stub_application_setting_on_object(object, messages)
     add_predicates(messages)
 
@@ -18,11 +17,11 @@ module StubConfiguration
     messages.each do |setting, value|
       allow(object).to receive_message_chain(:current_application_settings, setting) { value }
     end
-=======
+  end
+
   def stub_not_protect_default_branch
     stub_application_setting(
       default_branch_protection: Gitlab::Access::PROTECTION_NONE)
->>>>>>> upstream/master
   end
 
   def stub_config_setting(messages)

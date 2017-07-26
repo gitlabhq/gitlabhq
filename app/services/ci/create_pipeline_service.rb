@@ -17,47 +17,31 @@ module Ci
 
       result = validate(current_user || trigger_request.trigger.owner,
                         ignore_skip_ci: ignore_skip_ci,
-                        save_on_errors: save_on_errors)
+                        save_on_errors: save_on_errors,
+                        mirror_update: mirror_update)
 
       return result if result
 
-      Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
-
-        Ci::CreatePipelineStagesService
-          .new(project, current_user)
-          .execute(pipeline)
-      end
-
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-
-      pipeline_created_counter.increment(source: source)
-
-      pipeline.tap(&:process!)
+      _create_pipeline(source, &block)
     end
 
     private
 
-    def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
+    def validate(triggering_user, ignore_skip_ci:, save_on_errors:, mirror_update:)
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
 
-<<<<<<< HEAD
       unless project.mirror_trigger_builds?
         return error('Pipeline is disabled for mirror updates') if mirror_update
       end
 
-      unless trigger_request || can?(current_user, :create_pipeline, project)
-        return error('Insufficient permissions to create a new pipeline')
-=======
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
           return error("Insufficient permissions for protected ref '#{ref}'")
         else
           return error('Insufficient permissions to create a new pipeline')
         end
->>>>>>> upstream/master
       end
 
       unless branch? || tag?
@@ -85,12 +69,6 @@ module Ci
       end
     end
 
-<<<<<<< HEAD
-      _create_pipeline(source, &block)
-    end
-
-    private
-
     def _create_pipeline(source)
       Ci::Pipeline.transaction do
         update_merge_requests_head_pipeline if pipeline.save
@@ -100,13 +78,20 @@ module Ci
         Ci::CreatePipelineStagesService
           .new(project, current_user)
           .execute(pipeline)
-=======
+      end
+
+      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+
+      pipeline_created_counter.increment(source: source)
+
+      pipeline.tap(&:process!)
+    end
+
     def allowed_to_trigger_pipeline?(triggering_user)
       if triggering_user
         allowed_to_create?(triggering_user)
       else # legacy triggers don't have a corresponding user
         !project.protected_for?(ref)
->>>>>>> upstream/master
       end
     end
 

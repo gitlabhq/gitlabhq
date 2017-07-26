@@ -108,16 +108,10 @@ describe PipelineSerializer do
         end
       end
 
-<<<<<<< HEAD
-      it 'verifies number of queries', :request_store do
-        recorded = ActiveRecord::QueryRecorder.new { subject }
-        expect(recorded.count).to be_within(1).of(61)
-        expect(recorded.cached_count).to eq(0)
-=======
       shared_examples 'no N+1 queries' do
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expect(recorded.count).to be_within(1).of(59)
+          expect(recorded.count).to be_within(1).of(61)
           expect(recorded.cached_count).to eq(0)
         end
       end
@@ -136,7 +130,6 @@ describe PipelineSerializer do
         end
 
         it_behaves_like 'no N+1 queries'
->>>>>>> upstream/master
       end
 
       def create_pipeline(status)
