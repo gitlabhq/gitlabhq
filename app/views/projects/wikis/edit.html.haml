@@ -4,7 +4,7 @@
 - if @conflict
   .alert.alert-danger
     Someone edited the page the same time you did. Please check out
-    = link_to "the page", namespace_project_wiki_path(@project.namespace, @project, @page), target: "_blank"
+    = link_to "the page", project_wiki_path(@project, @page), target: "_blank"
     and make sure your changes will not unintentionally remove theirs.
 
 .wiki-page-header.has-sidebar-toggle
