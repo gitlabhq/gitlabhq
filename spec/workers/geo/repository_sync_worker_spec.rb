@@ -66,7 +66,6 @@ describe Geo::RepositorySyncWorker do
 
     context 'when node have group restrictions' do
       before do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
         secondary.update_attribute(:groups, [group])
       end
 

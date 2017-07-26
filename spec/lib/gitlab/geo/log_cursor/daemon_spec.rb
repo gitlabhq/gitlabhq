@@ -22,13 +22,12 @@ describe Gitlab::Geo::LogCursor::Daemon do
     end
 
     context 'when replaying a repository updated event' do
-      let!(:geo_node) { create(:geo_node) }
+      let!(:geo_node) { create(:geo_node, :current) }
       let(:event_log) { create(:geo_event_log, :updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_updated_event) { event_log.repository_updated_event }
 
       before do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
         allow(subject).to receive(:exit?).and_return(false, true)
       end
 
@@ -83,7 +82,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
     end
 
     context 'when node have group restrictions' do
-      let(:geo_node) { create(:geo_node) }
+      let(:geo_node) { create(:geo_node, :current) }
       let(:group) { create(:group) }
       let(:project) { create(:empty_project, group: group) }
       let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
@@ -91,7 +90,6 @@ describe Gitlab::Geo::LogCursor::Daemon do
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
       before do
-        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
         allow(subject).to receive(:exit?).and_return(false, true)
       end
 
