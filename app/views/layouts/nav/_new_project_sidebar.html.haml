@@ -83,34 +83,25 @@
             Issues
 
         %ul.sidebar-sub-level-items
-          - if project_nav_tab?(:issues) && !current_controller?(:merge_requests)
-            = nav_link(controller: :issues) do
-              = link_to project_issues_path(@project), title: 'Issues' do
-                %span
-                  List
+          = nav_link(controller: :issues) do
+            = link_to project_issues_path(@project), title: 'Issues' do
+              %span
+                List
 
-            = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Board' do
-                %span
-                  Board
+          = nav_link(controller: :boards) do
+            = link_to project_boards_path(@project), title: 'Board' do
+              %span
+                Board
 
-          - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
-            = nav_link(controller: :merge_requests) do
-              = link_to project_merge_requests_path(@project), title: 'Merge Requests' do
-                %span
-                  Merge Requests
+          = nav_link(controller: :labels) do
+            = link_to project_labels_path(@project), title: 'Labels' do
+              %span
+                Labels
 
-          - if project_nav_tab? :labels
-            = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: 'Labels' do
-                %span
-                  Labels
-
-          - if project_nav_tab? :milestones
-            = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones' do
-                %span
-                  Milestones
+          = nav_link(controller: :milestones) do
+            = link_to project_milestones_path(@project), title: 'Milestones' do
+              %span
+                Milestones
 
     - if project_nav_tab? :merge_requests
       = nav_link(controller: @project.default_issues_tracker? ? :merge_requests : [:merge_requests, :labels, :milestones]) do

@@ -195,6 +195,7 @@ $new-sidebar-width: 220px;
   > li {
     > a {
       @media (min-width: $screen-sm-min) {
+        margin-left: 4px;
         margin-right: 2px;
       }
     }
@@ -204,10 +205,13 @@ $new-sidebar-width: 220px;
         @media (min-width: $screen-sm-min) {
           position: fixed;
           top: 0;
-          left: 220px;
+          left: 219px;
           width: 150px;
-          background-color: $hover-background;
+          margin-top: -1px;
+          padding: 1px;
+          background-color: $white-light;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
+          border: 1px solid $gray-darker;
           border-radius: 0 3px 3px 0;
 
           &::before {
@@ -233,19 +237,20 @@ $new-sidebar-width: 220px;
             transform: skew(33deg);
           }
 
-          &.is-above::after {
-            top: auto;
-            bottom: 44px;
-            transform: skew(-30deg);
+          &.is-above {
+            margin-top: 1px;
+
+            &::after {
+              top: auto;
+              bottom: 44px;
+              transform: skew(-30deg);
+            }
           }
 
           a {
-            color: rgba($white-light, .9);
-
             &:hover,
             &:focus {
-              color: $white-light;
-              background-color: rgba($black, .12);
+              background-color: $gray-darker;
             }
           }
         }
@@ -273,8 +278,7 @@ $new-sidebar-width: 220px;
 
     &:not(.active):hover > a,
     > a:hover {
-      background-color: $hover-background;
-      color: $hover-color;
+      background-color: $white-light;
 
       .badge {
         background-color: $indigo-500;
