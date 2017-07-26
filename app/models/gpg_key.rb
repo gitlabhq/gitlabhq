@@ -1,5 +1,6 @@
 class GpgKey < ActiveRecord::Base
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
+  KEY_SUFFIX = '-----END PGP PUBLIC KEY BLOCK-----'.freeze
 
   include ShaAttribute
 
@@ -15,8 +16,8 @@ class GpgKey < ActiveRecord::Base
     presence: true,
     uniqueness: true,
     format: {
-      with: /\A#{KEY_PREFIX}((?!#{KEY_PREFIX}).)+\Z/m,
-      message: "is invalid. A valid public GPG key begins with '#{KEY_PREFIX}'"
+      with: /\A#{KEY_PREFIX}((?!#{KEY_PREFIX})(?!#{KEY_SUFFIX}).)+#{KEY_SUFFIX}\Z/m,
+      message: "is invalid. A valid public GPG key begins with '#{KEY_PREFIX}' and ends with '#{KEY_SUFFIX}'"
     }
 
   validates :fingerprint,

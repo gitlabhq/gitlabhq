@@ -7,10 +7,18 @@ describe GpgKey do
 
   describe "validation" do
     it { is_expected.to validate_presence_of(:user) }
+
     it { is_expected.to validate_presence_of(:key) }
     it { is_expected.to validate_uniqueness_of(:key) }
-    it { is_expected.to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----\nkey").for(:key) }
+
+    it { is_expected.to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----\nkey\n-----END PGP PUBLIC KEY BLOCK-----").for(:key) }
+
+    it { is_expected.not_to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----\nkey").for(:key) }
     it { is_expected.not_to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----\nkey\n-----BEGIN PGP PUBLIC KEY BLOCK-----").for(:key) }
+    it { is_expected.not_to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK----------END PGP PUBLIC KEY BLOCK-----").for(:key) }
+    it { is_expected.not_to allow_value("-----BEGIN PGP PUBLIC KEY BLOCK-----").for(:key) }
+    it { is_expected.not_to allow_value("-----END PGP PUBLIC KEY BLOCK-----").for(:key) }
+    it { is_expected.not_to allow_value("key\n-----END PGP PUBLIC KEY BLOCK-----").for(:key) }
     it { is_expected.not_to allow_value('BEGIN PGP').for(:key) }
   end
 
