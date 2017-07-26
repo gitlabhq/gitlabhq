@@ -106,7 +106,7 @@ const RepoEditor = {
   },
 };
 
-function asyncLoadRepoEditor() {
+function repoEditorLoader() {
   return new Promise((resolve) => {
     monacoLoader(['vs/editor/editor.main'], () => {
       Store.monaco = monaco;
@@ -116,4 +116,7 @@ function asyncLoadRepoEditor() {
   });
 }
 
-export default asyncLoadRepoEditor;
+export {
+  RepoEditor as default,
+  repoEditorLoader,
+};
