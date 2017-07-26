@@ -113,7 +113,7 @@ const RepoStore = {
   },
 
   setActiveFile(activeFile, i) {
-    RepoStore.activeFile = activeFile;
+    RepoStore.activeFile = Object.assign({}, RepoStore.activeFile, activeFile);
     RepoStore.activeFileIndex = i;
   },
 
