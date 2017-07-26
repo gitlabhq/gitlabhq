@@ -136,7 +136,8 @@
               :edited-at="note.last_updated_at"
               :edited-by="note.last_updated_by"
               action-text="Last updated"
-              className="discussion-headline-light js-discussion-headline" />
+              class-name="discussion-headline-light js-discussion-headline"
+              />
             </div>
           </div>
           <div
@@ -149,7 +150,7 @@
                     v-for="note in note.notes"
                     :is="componentName(note)"
                     :note="componentData(note)"
-                    key="note.id"
+                    :key="note.id"
                     />
                 </ul>
                 <div class="flash-container"></div>

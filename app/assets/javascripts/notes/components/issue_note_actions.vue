@@ -3,6 +3,7 @@
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     props: {
@@ -44,6 +45,9 @@
         required: true,
       },
     },
+    directives: {
+      tooltip,
+    },
     data() {
       return {
         emojiSmiling,
@@ -76,9 +80,10 @@
       {{accessLevel}}
     </span>
     <a
+      v-tooltip
       v-if="canAddAwardEmoji"
       :class="{ 'js-user-authored': isAuthoredByMe }"
-      class="note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip"
+      class="note-action-button note-emoji-button js-add-award js-note-emoji"
       data-position="right"
       href="#"
       title="Add reaction">
@@ -100,9 +105,10 @@
       v-if="shouldShowActionsDropdown"
       class="dropdown more-actions">
       <button
+        v-tooltip
         type="button"
         title="More actions"
-        class="note-action-button more-actions-toggle has-tooltip btn btn-transparent"
+        class="note-action-button more-actions-toggle btn btn-transparent"
         data-toggle="dropdown"
         data-container="body">
           <i

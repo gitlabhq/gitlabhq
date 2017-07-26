@@ -6,6 +6,7 @@
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import * as Emoji from '../../emoji';
+  import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
     props: {
@@ -25,6 +26,9 @@
         type: Number,
         required: true,
       },
+    },
+    directives: {
+      tooltip,
     },
     data() {
       const userId = window.gon.current_user_id;
@@ -154,9 +158,6 @@
         };
 
         this.toggleAward(data)
-          .then(() => {
-            $(this.$el).find('.award-control').tooltip('fixTitle');
-          })
           .catch(() => Flash('Something went wrong on our end.'));
       },
     },
@@ -167,11 +168,12 @@
   <div class="note-awards">
     <div class="awards js-awards-block">
       <button
+        v-tooltip
         v-for="(awardList, awardName) in groupedAwards"
         :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
         @click="handleAward(awardName)"
-        class="btn award-control has-tooltip"
+        class="btn award-control"
         data-placement="bottom"
         type="button">
         <span v-html="getAwardHTML(awardName)"></span>
@@ -183,8 +185,9 @@
         v-if="canAward"
         class="award-menu-holder">
         <button
+          v-tooltip
           :class="{ 'js-user-authored': isAuthoredByMe }"
-          class="award-control btn has-tooltip js-add-award"
+          class="award-control btn js-add-award"
           title="Add reaction"
           aria-label="Add reaction"
           data-placement="bottom"
