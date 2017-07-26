@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import Store from './repo_store';
 import Helper from './repo_helper';
 import RepoMiniMixin from './repo_mini_mixin';

@@ -29,7 +29,7 @@ export default RepoLoadingFile;
 </script>
 
 <template>
-<tr v-if="loading.tree && !hasFiles">
+<tr v-if="loading.tree && !hasFiles" class="loading-file">
   <td>
     <div class="animation-container animation-container-small">
       <div v-for="n in 6" :class="lineOfCode(n)"></div>

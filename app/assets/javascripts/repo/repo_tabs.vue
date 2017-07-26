@@ -16,7 +16,7 @@ const RepoTabs = {
   methods: {
     isOverflow() {
       return this.$el.scrollWidth > this.$el.offsetWidth;
-    }
+    },
   },
 
   watch: {
@@ -24,9 +24,9 @@ const RepoTabs = {
       Vue.nextTick(() => {
         this.tabsOverflow = this.isOverflow();
       });
-    }
-  }
-}
+    },
+  },
+};
 
 export default RepoTabs;
 </script>

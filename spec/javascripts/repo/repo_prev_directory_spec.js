@@ -2,9 +2,9 @@ import Vue from 'vue';
 import repoPrevDirectory from '~/repo/repo_prev_directory.vue';
 
 describe('RepoPrevDirectory', () => {
-  const RepoPrevDirectory = Vue.extend(repoPrevDirectory);
-
   function createComponent(propsData) {
+    const RepoPrevDirectory = Vue.extend(repoPrevDirectory);
+
     return new RepoPrevDirectory({
       propsData,
     }).$mount();
@@ -19,7 +19,6 @@ describe('RepoPrevDirectory', () => {
 
     spyOn(vm, 'linkClicked');
 
-    expect(link).toBeTruthy();
     expect(link.href).toMatch(`/${prevUrl}`);
     expect(link.textContent).toEqual('..');
 

@@ -2,7 +2,6 @@ import Vue from 'vue';
 import repoFile from '~/repo/repo_file.vue';
 
 describe('RepoFile', () => {
-  const RepoFile = Vue.extend(repoFile);
   const file = {
     icon: 'icon',
     url: 'url',
@@ -16,6 +15,8 @@ describe('RepoFile', () => {
   };
 
   function createComponent(propsData) {
+    const RepoFile = Vue.extend(repoFile);
+
     return new RepoFile({
       propsData,
     }).$mount();
@@ -26,23 +27,15 @@ describe('RepoFile', () => {
       file,
       activeFile,
     });
-    const icon = vm.$el.querySelector(`.${file.icon}`);
     const name = vm.$el.querySelector('.repo-file-name');
-    const commitMessage = vm.$el.querySelector('.commit-message');
-    const commitUpdate = vm.$el.querySelector('.commit-update');
 
-    expect(vm.$el.innerHTML).toBeTruthy();
     expect(vm.$el.classList.contains('active')).toBeTruthy();
-    expect(icon).toBeTruthy();
-    expect(icon.style.marginLeft).toEqual('100px');
-    expect(name).toBeTruthy();
+    expect(vm.$el.querySelector(`.${file.icon}`).style.marginLeft).toEqual('100px');
     expect(name.title).toEqual(file.url);
     expect(name.href).toMatch(`/${file.url}`);
     expect(name.textContent).toEqual(file.name);
-    expect(commitMessage).toBeTruthy();
-    expect(commitMessage.textContent).toBe(file.lastCommitMessage);
-    expect(commitUpdate).toBeTruthy();
-    expect(commitUpdate.textContent).toBe(file.lastCommitUpdate);
+    expect(vm.$el.querySelector('.commit-message').textContent).toBe(file.lastCommitMessage);
+    expect(vm.$el.querySelector('.commit-update').textContent).toBe(file.lastCommitUpdate);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
@@ -76,11 +69,9 @@ describe('RepoFile', () => {
       activeFile,
       isMini: true,
     });
-    const commitMessage = vm.$el.querySelector('.commit-message');
-    const commitUpdate = vm.$el.querySelector('.commit-update');
 
-    expect(commitMessage).toBeFalsy();
-    expect(commitUpdate).toBeFalsy();
+    expect(vm.$el.querySelector('.commit-message')).toBeFalsy();
+    expect(vm.$el.querySelector('.commit-update')).toBeFalsy();
   });
 
   it('does not set active class if file is active file', () => {

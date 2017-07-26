@@ -1,29 +1,29 @@
 <script>
-import Vue from 'vue';
+/* global Flash */
 import Store from './repo_store';
-import Api from '../api'
+import Api from '../api';
 
 const RepoCommitSection = {
   data: () => Store,
-  
+
   methods: {
     makeCommit() {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const branch = $("button.dropdown-menu-toggle").attr('data-ref');
+      const branch = $('button.dropdown-menu-toggle').attr('data-ref');
       const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => {
-          const filePath = f.url.split(branch)[1];
-          return {
-            action: 'update',
-            file_path: filePath,
-            content: f.newContent,
-          };
+      const actions = this.changedFiles.map((f) => {
+        const filePath = f.url.split(branch)[1];
+        return {
+          action: 'update',
+          file_path: filePath,
+          content: f.newContent,
+        };
       });
       const payload = {
-        branch: branch,
+        branch,
         commit_message: commitMessage,
-        actions: actions,
-      }
+        actions,
+      };
       Store.submitCommitsLoading = true;
       Api.commitMultiple(Store.projectId, payload, (data) => {
         Store.submitCommitsLoading = false;
@@ -36,7 +36,7 @@ const RepoCommitSection = {
         this.editMode = false;
         $('html, body').animate({ scrollTop: 0 }, 'fast');
       }, Store.tempPrivateToken);
-    }
+    },
   },
 
   computed: {
@@ -46,7 +46,7 @@ const RepoCommitSection = {
       return changedFileList;
     },
   },
-}
+};
 
 export default RepoCommitSection;
 </script>
@@ -59,7 +59,7 @@ export default RepoCommitSection;
         <label class="col-md-4 control-label">Staged files ({{changedFiles.length}})</label>
         <div class="col-md-4">
           <ul class="list-unstyled">
-            <li v-for="file in changedFiles">
+            <li v-for="file in changedFiles" :key="file.id">
               <span class="help-block">
                 {{file.url}}
               </span>

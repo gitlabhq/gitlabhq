@@ -120,7 +120,6 @@
     #repo-file-buttons {
       background: $gray-light;
       border-bottom: 1px solid $white-normal;
-      padding: 5px;
       padding: 10px 5px;
       position: relative;
       border-top: 1px solid $white-normal;
@@ -333,12 +332,14 @@
 
 @keyframes swipeRightAppear {
   0% {
-    transform:  scaleX(0.00) ;
+    transform: scaleX(0.00);
   }
+
   45% {
-    transform:  scaleX(0.26) ;
+    transform: scaleX(0.26);
   }
+
   100% {
-    transform:  scaleX(1.00) ;
+    transform: scaleX(1.00);
   }
 }

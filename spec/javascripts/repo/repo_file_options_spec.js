@@ -2,10 +2,11 @@ import Vue from 'vue';
 import repoFileOptions from '~/repo/repo_file_options.vue';
 
 describe('RepoFileOptions', () => {
-  const RepoFileOptions = Vue.extend(repoFileOptions);
   const projectName = 'projectName';
 
   function createComponent(propsData) {
+    const RepoFileOptions = Vue.extend(repoFileOptions);
+
     return new RepoFileOptions({
       propsData,
     }).$mount();
@@ -16,11 +17,9 @@ describe('RepoFileOptions', () => {
       isMini: true,
       projectName,
     });
-    const title = vm.$el.querySelector('.title');
 
     expect(vm.$el.classList.contains('repo-file-options')).toBeTruthy();
-    expect(title).toBeTruthy();
-    expect(title.textContent).toEqual(projectName);
+    expect(vm.$el.querySelector('.title').textContent).toEqual(projectName);
     expect(vm.$el.querySelector('a[title="New File"]')).toBeTruthy();
     expect(vm.$el.querySelector('a[title="New Folder"]')).toBeTruthy();
   });

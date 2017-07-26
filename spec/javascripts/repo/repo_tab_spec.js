@@ -2,9 +2,9 @@ import Vue from 'vue';
 import repoTab from '~/repo/repo_tab.vue';
 
 describe('RepoTab', () => {
-  const RepoTab = Vue.extend(repoTab);
-
   function createComponent(propsData) {
+    const RepoTab = Vue.extend(repoTab);
+
     return new RepoTab({
       propsData,
     }).$mount();
@@ -20,14 +20,12 @@ describe('RepoTab', () => {
       tab,
     });
     const close = vm.$el.querySelector('.close');
-    const name = vm.$el.querySelector(`a[title="${tab.url}"]`)
+    const name = vm.$el.querySelector(`a[title="${tab.url}"]`);
 
     spyOn(vm, 'xClicked');
     spyOn(vm, 'tabClicked');
 
-    expect(close).toBeTruthy();
     expect(close.querySelector('.fa-times')).toBeTruthy();
-    expect(name).toBeTruthy();
     expect(name.textContent).toEqual(tab.name);
 
     close.click();
@@ -63,8 +61,7 @@ describe('RepoTab', () => {
     const vm = createComponent({
       tab,
     });
-    const close = vm.$el.querySelector('.close');
 
-    expect(close.querySelector('.fa-circle')).toBeTruthy();
+    expect(vm.$el.querySelector('.close .fa-circle')).toBeTruthy();
   });
 });

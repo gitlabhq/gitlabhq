@@ -2,9 +2,9 @@ import Vue from 'vue';
 import repoLoadingFile from '~/repo/repo_loading_file.vue';
 
 describe('RepoLoadingFile', () => {
-  const RepoLoadingFile = Vue.extend(repoLoadingFile);
-
   function createComponent(propsData) {
+    const RepoLoadingFile = Vue.extend(repoLoadingFile);
+
     return new RepoLoadingFile({
       propsData,
     }).$mount();

@@ -19,12 +19,12 @@ function initRepo() {
   Store.service.url = repo.dataset.url;
   Store.projectName = repo.dataset.projectName;
   Store.service.refsUrl = repo.dataset.refsUrl;
-  Store.currentBranch = $("button.dropdown-menu-toggle").attr('data-ref');
+  Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
   Store.projectId = repo.dataset.projectId;
   Store.tempPrivateToken = repo.dataset.tempToken;
 
-  new Vue({
+  this.vm = new Vue({
     el: repo,
     data: () => Store,
     template: `
@@ -45,7 +45,7 @@ function initRepo() {
       'repo-file-buttons': RepoFileButtons,
       'repo-binary-viewer': RepoBinaryViewer,
       'repo-editor': RepoEditor,
-      'repo-commit-section': RepoCommitSection
+      'repo-commit-section': RepoCommitSection,
     },
   });
 
