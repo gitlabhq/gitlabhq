@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe Geo::FileDownloadDispatchWorker do
+  let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
+  let!(:secondary) { create(:geo_node, :current) }
+
   before do
-    @primary = create(:geo_node, :primary, host: 'primary-geo-node')
-    @secondary = create(:geo_node, :current)
     allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
     allow_any_instance_of(Gitlab::ExclusiveLease)
       .to receive(:try_obtain).and_return(true)
@@ -28,8 +29,8 @@ describe Geo::FileDownloadDispatchWorker do
     it 'does not schedule anything when node is disabled' do
       create(:lfs_object, :with_file)
 
-      @secondary.enabled = false
-      @secondary.save
+      secondary.enabled = false
+      secondary.save
 
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
@@ -70,6 +71,41 @@ describe Geo::FileDownloadDispatchWorker do
       expect(subject).to receive(:load_pending_resources).exactly(3).times.and_call_original
 
       Sidekiq::Testing.inline! do
+        subject.perform
+      end
+    end
+
+    context 'when node have group restrictions' do
+      let(:group_1)    { create(:group) }
+      let!(:project_1) { create(:empty_project, group: group_1) }
+      let!(:project_2) { create(:empty_project) }
+
+      before do
+        allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
+        allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
+
+        secondary.update_attribute(:groups, [group_1])
+      end
+
+      it 'does not perform GeoFileDownloadWorker for LFS object that do not belong to selected groups to replicate' do
+        create(:lfs_objects_project, project: project_1)
+        create(:lfs_objects_project, project: project_2)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async).once.and_return(spy)
+
+        subject.perform
+      end
+
+      it 'does not perform GeoFileDownloadWorker for upload objects that do not belong to selected groups to replicate' do
+        avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+        create(:upload, model: group_1, path: avatar)
+        create(:upload, model: create(:group), path: avatar)
+        create(:upload, model: project_1, path: avatar)
+        create(:upload, model: project_2, path: avatar)
+        create(:note, :with_attachment)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(3).times.and_return(spy)
+
         subject.perform
       end
     end

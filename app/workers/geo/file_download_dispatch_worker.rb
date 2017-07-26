@@ -9,30 +9,51 @@ module Geo
     end
 
     def load_pending_resources
-      lfs_object_ids = find_lfs_object_ids(db_retrieve_batch_size)
-      objects_ids    = find_object_ids(db_retrieve_batch_size)
+      restricted_project_ids = Gitlab::Geo.current_node.project_ids
+      lfs_object_ids         = find_lfs_object_ids(restricted_project_ids)
+      objects_ids            = find_object_ids(restricted_project_ids)
 
       interleave(lfs_object_ids, objects_ids)
     end
 
-    def find_object_ids(limit)
+    def find_object_ids(restricted_project_ids)
       downloaded_ids = find_downloaded_ids([:attachment, :avatar, :file])
 
-      Upload.where.not(id: downloaded_ids)
-            .order(created_at: :desc)
-            .limit(limit)
-            .pluck(:id, :uploader)
-            .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
+      relation =
+        if restricted_project_ids
+          uploads_table   = Upload.arel_table
+          group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.group_ids))
+          project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
+          other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
+
+          Upload.where(group_uploads.or(project_uploads).or(other_uploads))
+
+        else
+          Upload.all
+        end
+
+      relation.where.not(id: downloaded_ids)
+              .order(created_at: :desc)
+              .limit(db_retrieve_batch_size)
+              .pluck(:id, :uploader)
+              .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
     end
 
-    def find_lfs_object_ids(limit)
+    def find_lfs_object_ids(restricted_project_ids)
       downloaded_ids = find_downloaded_ids([:lfs])
 
-      LfsObject.where.not(id: downloaded_ids)
-               .order(created_at: :desc)
-               .limit(limit)
-               .pluck(:id)
-               .map { |id| [id, :lfs] }
+      relation =
+        if restricted_project_ids
+          LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+        else
+          LfsObject.all
+        end
+
+      relation.where.not(id: downloaded_ids)
+              .order(created_at: :desc)
+              .limit(db_retrieve_batch_size)
+              .pluck(:id)
+              .map { |id| [id, :lfs] }
     end
 
     def find_downloaded_ids(file_types)
