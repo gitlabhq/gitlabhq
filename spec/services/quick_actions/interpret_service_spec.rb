@@ -695,7 +695,6 @@ describe QuickActions::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
-<<<<<<< HEAD
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -730,8 +729,6 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
-=======
->>>>>>> upstream/master
     context '/duplicate command' do
       it_behaves_like 'duplicate command' do
         let(:issue_duplicate) { create(:issue, project: project) }
