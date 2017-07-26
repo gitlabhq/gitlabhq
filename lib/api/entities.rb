@@ -745,7 +745,10 @@ module API
 
     class ApplicationSetting < Grape::Entity
       expose :id
-      expose(*::ApplicationSettingsHelper.visible_attributes)
+      expose(*ApplicationSettingsHelper.visible_attributes)
+      expose(*EE::ApplicationSettingsHelper.repository_mirror_attributes, if: lambda do |_instance, _options|
+        ::License.feature_available?(:repository_mirrors)
+      end)
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end

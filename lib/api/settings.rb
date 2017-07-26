@@ -137,10 +137,16 @@ module API
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
 
-      at_least_one_of(*::ApplicationSettingsHelper.visible_attributes)
+      all_attributes = ::EE::ApplicationSettingsHelper.repository_mirror_attributes + ApplicationSettingsHelper.visible_attributes
+      optional(*all_attributes)
+      at_least_one_of(*all_attributes)
     end
     put "application/settings" do
       attrs = declared_params(include_missing: false)
+
+      unless ::License.feature_available?(:repository_mirrors)
+        attrs = attrs.except(*::EE::ApplicationSettingsHelper.repository_mirror_attributes)
+      end
 
       if attrs.has_key?(:signin_enabled)
         attrs[:password_authentication_enabled] = attrs.delete(:signin_enabled)
