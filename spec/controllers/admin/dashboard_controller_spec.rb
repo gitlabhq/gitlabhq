@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Admin::DashboardController do
   describe '#index' do
-<<<<<<< HEAD
     it "allows an admin user to access the page" do
       sign_in(create(:user, :admin))
       get :index
@@ -22,7 +21,8 @@ describe Admin::DashboardController do
       get :index
 
       expect(response).to have_http_status(404)
-=======
+    end
+
     context 'with pending_delete projects' do
       render_views
 
@@ -37,7 +37,6 @@ describe Admin::DashboardController do
         expect(response.body).to match(project.name)
         expect(response.body).not_to match(pending_delete_project.name)
       end
->>>>>>> upstream/master
     end
   end
 end
