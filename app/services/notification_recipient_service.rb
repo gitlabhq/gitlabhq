@@ -157,35 +157,15 @@ module NotificationRecipientService
         user_ids = user_ids_notifiable_on(project, :watch)
 
         # If project setting is global, add to watch list if global setting is watch
-        global_setting.each do |user_id|
-          if user_ids_global_level_watch.include?(user_id)
-            user_ids << user_id
-          end
-        end
-
-        user_ids
+        user_ids + (global_setting & user_ids_global_level_watch)
       end
 
       # Build a list of user_ids based on group notification settings
       def select_group_members_ids(group, project_members, global_setting, user_ids_global_level_watch)
         uids = user_ids_notifiable_on(group, :watch)
 
-        # Group setting is watch, add to user_ids list if user is not project member
-        user_ids = []
-        uids.each do |user_id|
-          if project_members.exclude?(user_id)
-            user_ids << user_id
-          end
-        end
-
         # Group setting is global, add to user_ids list if global setting is watch
-        global_setting.each do |user_id|
-          if project_members.exclude?(user_id) && user_ids_global_level_watch.include?(user_id)
-            user_ids << user_id
-          end
-        end
-
-        user_ids
+        uids + (global_setting & user_ids_global_level_watch) - project_members
       end
 
       def user_ids_with_global_level_watch(ids)
