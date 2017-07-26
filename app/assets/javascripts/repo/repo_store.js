@@ -24,6 +24,7 @@ const RepoStore = {
   tabsOverflow: 41,
   tempPrivateToken: '',
   submitCommitsLoading: false,
+  binaryLoaded:false,
   activeFile: {
     active: true,
     binary: false,

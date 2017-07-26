@@ -13,6 +13,16 @@ const RepoBinaryViewer = {
   },
 
   methods: {
+    errored() {
+      console.log('errored');
+      Store.binaryLoaded = false;
+    },
+
+    loaded() {
+      console.log('loaded');
+      Store.binaryLoaded = true;
+    },
+
     isMarkdown() {
       return this.activeFile.extension === 'md';
     },
@@ -30,6 +40,7 @@ const RepoBinaryViewer = {
       if (!this.binary) return;
       switch (this.binaryMimeType) {
         case 'image/png':
+          console.log('png bitch')
           this.binaryTypes.png = true;
           break;
         default:
@@ -45,7 +56,7 @@ export default RepoBinaryViewer;
 
 <template>
 <div id="binary-viewer" v-if="binary">
-  <img v-if="binaryTypes.png" :src="pngBlobWithDataURI" :alt="activeFile.name"/>
+  <img v-show="binaryTypes.png && binaryLoaded" @error="errored" @load="loaded" :src="pngBlobWithDataURI" :alt="activeFile.name"/>
   <div v-if="binaryTypes.markdown" v-html="activeFile.html"></div>
 </div>
 </template>
