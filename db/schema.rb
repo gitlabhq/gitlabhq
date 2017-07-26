@@ -565,7 +565,7 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.text "gpg_key_user_email"
   end
 
-  add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", using: :btree
+  add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree
   add_index "gpg_signatures", ["gpg_key_id"], name: "index_gpg_signatures_on_gpg_key_id", using: :btree
   add_index "gpg_signatures", ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree

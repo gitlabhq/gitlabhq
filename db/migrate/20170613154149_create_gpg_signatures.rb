@@ -16,7 +16,7 @@ class CreateGpgSignatures < ActiveRecord::Migration
       t.text :gpg_key_user_name
       t.text :gpg_key_user_email
 
-      t.index :commit_sha, length: Gitlab::Database.mysql? ? 20 : nil
+      t.index :commit_sha, unique: true, length: Gitlab::Database.mysql? ? 20 : nil
       t.index :gpg_key_primary_keyid, length: Gitlab::Database.mysql? ? 20 : nil
     end
   end
