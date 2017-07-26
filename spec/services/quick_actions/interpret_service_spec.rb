@@ -263,7 +263,6 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
-<<<<<<< HEAD
     shared_examples 'weight command' do
       it 'populates weight: 5 if content contains /weight 5' do
         _, updates = service.execute(content, issuable)
@@ -281,8 +280,6 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
-=======
->>>>>>> upstream/master
     shared_examples 'duplicate command' do
       it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
         issue_duplicate # populate the issue
