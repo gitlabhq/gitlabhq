@@ -346,7 +346,7 @@ describe 'Visual tokens', js: true, feature: true do
 
     it 'tokenizes the search term to complete visual token' do
       expect_tokens([
-        { name: 'author', value: '@root' },
+        { name: 'author', value: 'administrator' },
         { name: 'assignee', value: 'none' }
       ])
     end
