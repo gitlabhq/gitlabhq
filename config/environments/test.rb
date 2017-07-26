@@ -1,6 +1,6 @@
 Rails.application.configure do
   # Make sure the middleware is inserted first in middleware chain
-  config.middleware.insert_before('ActionDispatch::Static', 'Gitlab::Testing::RequestBlockerMiddleware')
+  config.middleware.insert_before(ActionDispatch::Static, Gitlab::Testing::RequestBlockerMiddleware)
 
   # Settings specified here will take precedence over those in config/application.rb
 
