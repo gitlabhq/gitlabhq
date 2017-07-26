@@ -1,66 +1,71 @@
 <script>
-import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+  import { mapMutations } from 'vuex';
+  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+  import * as types from '../stores/mutation_types';
 
-export default {
-  props: {
-    author: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      author: {
+        type: Object,
+        required: true,
+      },
+      createdAt: {
+        type: String,
+        required: true,
+      },
+      actionText: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      actionTextHtml: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      noteId: {
+        type: Number,
+        required: true,
+      },
+      includeToggle: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      toggleHandler: {
+        type: Function,
+        required: false,
+      },
     },
-    createdAt: {
-      type: String,
-      required: true,
+    data() {
+      return {
+        isExpanded: true,
+      };
     },
-    actionText: {
-      type: String,
-      required: false,
-      default: '',
+    components: {
+      timeAgoTooltip,
     },
-    actionTextHtml: {
-      type: String,
-      required: false,
-      default: '',
+    computed: {
+      toggleChevronClass() {
+        return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
+      },
+      noteTimestampLink() {
+        return `#note_${this.noteId}`;
+      },
     },
-    noteId: {
-      type: Number,
-      required: true,
+    methods: {
+      ...mapMutations({
+        setTargetNoteHash: types.SET_TARGET_NOTE_HASH,
+      }),
+      handleToggle() {
+        this.isExpanded = !this.isExpanded;
+        this.toggleHandler();
+      },
+      updateTargetNoteHash() {
+        this.setTargetNoteHash(this.noteTimestampLink);
+      },
     },
-    includeToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    toggleHandler: {
-      type: Function,
-      required: false,
-    },
-  },
-  data() {
-    return {
-      isExpanded: true,
-    };
-  },
-  components: {
-    timeAgoTooltip,
-  },
-  computed: {
-    toggleChevronClass() {
-      return this.isExpanded ? 'fa-chevron-up' : 'fa-chevron-down';
-    },
-    noteTimestampLink() {
-      return `#note_${this.noteId}`;
-    },
-  },
-  methods: {
-    handleToggle() {
-      this.isExpanded = !this.isExpanded;
-      this.toggleHandler();
-    },
-    updateTargetNoteHash() {
-      this.$store.commit('setTargetNoteHash', this.noteTimestampLink);
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -81,13 +86,15 @@ export default {
         <span
           v-if="actionTextHtml"
           v-html="actionTextHtml"
-          class="system-note-message"></span>
+          class="system-note-message">
+        </span>
         <a
           :href="noteTimestampLink"
           @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
-            tooltipPlacement="bottom" />
+            tooltipPlacement="bottom"
+            />
         </a>
       </span>
     </span>
@@ -101,7 +108,8 @@ export default {
           <i
             :class="toggleChevronClass"
             class="fa"
-            aria-hidden="true"></i>
+            aria-hidden="true">
+          </i>
           Toggle discussion
       </button>
     </div>

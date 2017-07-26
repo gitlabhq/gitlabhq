@@ -1,6 +1,7 @@
 <script>
 /* global Flash */
 
+  import { mapActions } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
@@ -60,6 +61,9 @@
       },
     },
     methods: {
+      ...mapActions([
+        'saveNote'
+      ]),
       handleSave(withIssueAction) {
         if (this.note.length) {
           const noteData = {
@@ -79,7 +83,7 @@
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
 
-          this.$store.dispatch('saveNote', noteData)
+          this.saveNote(noteData)
             .then((res) => {
               if (res.errors) {
                 if (res.errors.commands_only) {

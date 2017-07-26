@@ -1,18 +1,18 @@
 <script>
-export default {
-  data() {
-    return {
-      signInLink: '#',
-    };
-  },
-  mounted() {
-    const wrapper = document.querySelector('.js-notes-wrapper');
+  export default {
+    data() {
+      return {
+        signInLink: '#',
+      };
+    },
+    mounted() {
+      const wrapper = document.querySelector('.js-notes-wrapper');
 
-    if (wrapper) {
-      this.signInLink = wrapper.dataset.newSessionPath;
-    }
-  },
-};
+      if (wrapper) {
+        this.signInLink = wrapper.dataset.newSessionPath;
+      }
+    },
+  };
 </script>
 
 <template>

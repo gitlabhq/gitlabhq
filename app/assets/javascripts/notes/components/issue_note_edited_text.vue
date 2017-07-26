@@ -1,30 +1,30 @@
 <script>
-import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
-export default {
-  props: {
-    actionText: {
-      type: String,
-      required: true,
+  export default {
+    props: {
+      actionText: {
+        type: String,
+        required: true,
+      },
+      editedAt: {
+        type: String,
+        required: true,
+      },
+      editedBy: {
+        type: Object,
+        required: true,
+      },
+      className: {
+        type: String,
+        required: false,
+        default: 'edited-text',
+      },
     },
-    editedAt: {
-      type: String,
-      required: true,
+    components: {
+      timeAgoTooltip,
     },
-    editedBy: {
-      type: Object,
-      required: true,
-    },
-    className: {
-      type: String,
-      required: false,
-      default: 'edited-text',
-    },
-  },
-  components: {
-    timeAgoTooltip,
-  },
-};
+  };
 </script>
 
 <template>
@@ -38,6 +38,7 @@ export default {
     </a>
     <time-ago-tooltip
       :time="editedAt"
-      tooltip-placement="bottom" />
+      tooltip-placement="bottom"
+      />
   </div>
 </template>

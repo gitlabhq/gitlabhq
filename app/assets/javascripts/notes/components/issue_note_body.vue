@@ -1,70 +1,70 @@
 <script>
-import issueNoteEditedText from './issue_note_edited_text.vue';
-import issueNoteAwardsList from './issue_note_awards_list.vue';
-import issueNoteForm from './issue_note_form.vue';
-import TaskList from '../../task_list';
+  import issueNoteEditedText from './issue_note_edited_text.vue';
+  import issueNoteAwardsList from './issue_note_awards_list.vue';
+  import issueNoteForm from './issue_note_form.vue';
+  import TaskList from '../../task_list';
 
-export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
+      canEdit: {
+        type: Boolean,
+        required: true,
+      },
+      isEditing: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      formUpdateHandler: {
+        type: Function,
+        required: true,
+      },
+      formCancelHandler: {
+        type: Function,
+        required: true,
+      },
     },
-    canEdit: {
-      type: Boolean,
-      required: true,
+    components: {
+      issueNoteEditedText,
+      issueNoteAwardsList,
+      issueNoteForm,
     },
-    isEditing: {
-      type: Boolean,
-      required: false,
-      default: false,
+    computed: {
+      noteBody() {
+        return this.note.note;
+      },
     },
-    formUpdateHandler: {
-      type: Function,
-      required: true,
-    },
-    formCancelHandler: {
-      type: Function,
-      required: true,
-    },
-  },
-  components: {
-    issueNoteEditedText,
-    issueNoteAwardsList,
-    issueNoteForm,
-  },
-  computed: {
-    noteBody() {
-      return this.note.note;
-    },
-  },
-  methods: {
-    renderGFM() {
-      $(this.$refs['note-body']).renderGFM();
-    },
-    initTaskList() {
-      if (this.canEdit) {
-        this.taskList = new TaskList({
-          dataType: 'note',
-          fieldName: 'note',
-          selector: '.notes',
+    methods: {
+      renderGFM() {
+        $(this.$refs['note-body']).renderGFM();
+      },
+      initTaskList() {
+        if (this.canEdit) {
+          this.taskList = new TaskList({
+            dataType: 'note',
+            fieldName: 'note',
+            selector: '.notes',
+          });
+        }
+      },
+      handleFormUpdate() {
+        this.formUpdateHandler({
+          note: this.$refs.noteForm.note,
         });
-      }
+      },
     },
-    handleFormUpdate() {
-      this.formUpdateHandler({
-        note: this.$refs.noteForm.note,
-      });
+    mounted() {
+      this.renderGFM();
+      this.initTaskList();
     },
-  },
-  mounted() {
-    this.renderGFM();
-    this.initTaskList();
-  },
-  updated() {
-    this.initTaskList();
-  },
-};
+    updated() {
+      this.initTaskList();
+    },
+  };
 </script>
 
 <template>

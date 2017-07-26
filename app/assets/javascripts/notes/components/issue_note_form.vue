@@ -1,88 +1,88 @@
 <script>
-import markdownField from '../../vue_shared/components/markdown/field.vue';
-import eventHub from '../event_hub';
+  import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import eventHub from '../event_hub';
 
-export default {
-  props: {
-    noteBody: {
-      type: String,
-      required: false,
-      default: '',
+  export default {
+    props: {
+      noteBody: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      noteId: {
+        type: Number,
+        required: false,
+      },
+      updateHandler: {
+        type: Function,
+        required: true,
+      },
+      cancelHandler: {
+        type: Function,
+        required: true,
+      },
+      saveButtonTitle: {
+        type: String,
+        required: false,
+        default: 'Save comment',
+      },
     },
-    noteId: {
-      type: Number,
-      required: false,
+    data() {
+      return {
+        initialNote: this.noteBody,
+        note: this.noteBody,
+        markdownPreviewUrl: gl.issueData.preview_note_path,
+        markdownDocsUrl: '',
+        conflictWhileEditing: false,
+      };
     },
-    updateHandler: {
-      type: Function,
-      required: true,
+    components: {
+      markdownField,
     },
-    cancelHandler: {
-      type: Function,
-      required: true,
+    computed: {
+      isDirty() {
+        return this.initialNote !== this.note;
+      },
+      noteHash() {
+        return `#note_${this.noteId}`;
+      },
     },
-    saveButtonTitle: {
-      type: String,
-      required: false,
-      default: 'Save comment',
-    },
-  },
-  data() {
-    return {
-      initialNote: this.noteBody,
-      note: this.noteBody,
-      markdownPreviewUrl: gl.issueData.preview_note_path,
-      markdownDocsUrl: '',
-      conflictWhileEditing: false,
-    };
-  },
-  components: {
-    markdownField,
-  },
-  computed: {
-    isDirty() {
-      return this.initialNote !== this.note;
-    },
-    noteHash() {
-      return `#note_${this.noteId}`;
-    },
-  },
-  methods: {
-    handleUpdate() {
-      this.updateHandler({
-        note: this.note,
-      });
-    },
-    editMyLastNote() {
-      if (this.note === '') {
-        const discussion = $(this.$el).closest('.discussion-notes');
-        const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
+    methods: {
+      handleUpdate() {
+        this.updateHandler({
+          note: this.note,
+        });
+      },
+      editMyLastNote() {
+        if (this.note === '') {
+          const discussion = $(this.$el).closest('.discussion-notes');
+          const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
 
-        if (myLastNoteId) {
-          eventHub.$emit('enterEditMode', {
-            noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
-          });
+          if (myLastNoteId) {
+            eventHub.$emit('enterEditMode', {
+              noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+            });
+          }
         }
-      }
+      },
     },
-  },
-  mounted() {
-    const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
-    const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
+    mounted() {
+      const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
+      const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
 
-    this.markdownDocsUrl = issueData.markdownDocs;
-    this.$refs.textarea.focus();
-  },
-  watch: {
-    noteBody() {
-      if (this.note === this.initialNote) {
-        this.note = this.noteBody;
-      } else {
-        this.conflictWhileEditing = true;
-      }
+      this.markdownDocsUrl = issueData.markdownDocs;
+      this.$refs.textarea.focus();
     },
-  },
-};
+    watch: {
+      noteBody() {
+        if (this.note === this.initialNote) {
+          this.note = this.noteBody;
+        } else {
+          this.conflictWhileEditing = true;
+        }
+      },
+    },
+  };
 </script>
 
 <template>

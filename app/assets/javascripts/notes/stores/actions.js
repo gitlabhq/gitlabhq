@@ -138,8 +138,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 export const poll = ({ commit, state, getters }) => {
   const { notesPath } = $('.js-notes-wrapper')[0].dataset;
 
-  return service
-    .poll(`${notesPath}?full_data=1`, state.lastFetchedAt)
+  return service.poll(`${notesPath}?full_data=1`, state.lastFetchedAt)
     .then(res => res.json())
     .then((res) => {
       if (res.notes.length) {
@@ -188,8 +187,8 @@ export const toggleAward = ({ commit, getters, dispatch }, data) => {
         });
 
         if (amIAwarded) {
-          Object.assign(data, { awardName: counterAward });
-          Object.assign(data, { skipMutalityCheck: true });
+          data.awardName = counterAward;
+          data.skipMutalityCheck = true;
 
           dispatch(types.TOGGLE_AWARD, data);
         }

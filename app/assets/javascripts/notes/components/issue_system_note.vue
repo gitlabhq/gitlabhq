@@ -1,35 +1,35 @@
 <script>
-import { mapGetters } from 'vuex';
-import iconsMap from './issue_note_icons';
-import issueNoteHeader from './issue_note_header.vue';
+  import { mapGetters } from 'vuex';
+  import iconsMap from './issue_note_icons';
+  import issueNoteHeader from './issue_note_header.vue';
 
-export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-  data() {
-    return {
-      svg: iconsMap[this.note.system_note_icon_name],
-    };
-  },
-  components: {
-    issueNoteHeader,
-  },
-  computed: {
-    ...mapGetters([
-      'targetNoteHash',
-    ]),
-    noteAnchorId() {
-      return `note_${this.note.id}`;
+    data() {
+      return {
+        svg: iconsMap[this.note.system_note_icon_name],
+      };
     },
-    isTargetNote() {
-      return this.targetNoteHash === this.noteAnchorId;
+    components: {
+      issueNoteHeader,
     },
-  },
-};
+    computed: {
+      ...mapGetters([
+        'targetNoteHash',
+      ]),
+      noteAnchorId() {
+        return `note_${this.note.id}`;
+      },
+      isTargetNote() {
+        return this.targetNoteHash === this.noteAnchorId;
+      },
+    },
+  };
 </script>
 
 <template>

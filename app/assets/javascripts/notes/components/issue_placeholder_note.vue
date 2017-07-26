@@ -1,17 +1,17 @@
 <script>
-export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-  data() {
-    return {
-      currentUser: window.gl.currentUserData,
-    };
-  },
-};
+    data() {
+      return {
+        currentUser: window.gl.currentUserData,
+      };
+    },
+  };
 </script>
 
 <template>
@@ -21,7 +21,8 @@ export default {
         <a :href="currentUser.path">
           <img
             :src="currentUser.avatar_url"
-            class="avatar s40" />
+            class="avatar s40"
+            />
         </a>
       </div>
       <div

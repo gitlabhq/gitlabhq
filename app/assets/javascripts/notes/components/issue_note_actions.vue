@@ -1,68 +1,71 @@
 <script>
-import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
-import emojiSmile from 'icons/_emoji_smile.svg';
-import emojiSmiley from 'icons/_emoji_smiley.svg';
-import loadingIcon from '../../vue_shared/components/loadingIcon.vue';
+  import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
+  import emojiSmile from 'icons/_emoji_smile.svg';
+  import emojiSmiley from 'icons/_emoji_smiley.svg';
+  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
-export default {
-  props: {
-    authorId: {
-      type: Number,
-      required: true,
+  export default {
+    props: {
+      authorId: {
+        type: Number,
+        required: true,
+      },
+      noteId: {
+        type: Number,
+        required: true,
+      },
+      accessLevel: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      reportAbusePath: {
+        type: String,
+        required: true,
+      },
+      canEdit: {
+        type: Boolean,
+        required: true,
+      },
+      canDelete: {
+        type: Boolean,
+        required: true,
+      },
+      canReportAsAbuse: {
+        type: Boolean,
+        required: true,
+      },
+      editHandler: {
+        type: Function,
+        required: true,
+      },
+      deleteHandler: {
+        type: Function,
+        required: true,
+      },
     },
-    noteId: {
-      type: Number,
-      required: true,
+    data() {
+      return {
+        emojiSmiling,
+        emojiSmile,
+        emojiSmiley,
+      };
     },
-    accessLevel: {
-      type: String,
-      required: false,
-      default: '',
+    components: {
+      loadingIcon,
     },
-    reportAbusePath: {
-      type: String,
-      required: true,
+    computed: {
+      shouldShowActionsDropdown() {
+        return window.gon.current_user_id && (this.canEdit || this.canReportAsAbuse);
+      },
+      canAddAwardEmoji() {
+        return window.gon.current_user_id;
+      },
+      isAuthoredByMe() {
+        return this.authorId === window.gon.current_user_id;
+      },
     },
-    canEdit: {
-      type: Boolean,
-      required: true,
-    },
-    canDelete: {
-      type: Boolean,
-      required: true,
-    },
-    canReportAsAbuse: {
-      type: Boolean,
-      required: true,
-    },
-    editHandler: {
-      type: Function,
-      required: true,
-    },
-    deleteHandler: {
-      type: Function,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      emojiSmiling,
-      emojiSmile,
-      emojiSmiley,
-    };
-  },
-  computed: {
-    shouldShowActionsDropdown() {
-      return window.gon.current_user_id && (this.canEdit || this.canReportAsAbuse);
-    },
-    canAddAwardEmoji() {
-      return window.gon.current_user_id;
-    },
-    isAuthoredByMe() {
-      return this.authorId === window.gon.current_user_id;
-    },
-  },
-};
+  };
 </script>
 
 <template>
@@ -82,13 +85,16 @@ export default {
         <loading-icon />
         <span
           v-html="emojiSmiling"
-          class="link-highlight award-control-icon-neutral"></span>
+          class="link-highlight award-control-icon-neutral">
+        </span>
         <span
           v-html="emojiSmiley"
-          class="link-highlight award-control-icon-positive"></span>
+          class="link-highlight award-control-icon-positive">
+        </span>
         <span
           v-html="emojiSmile"
-          class="link-highlight award-control-icon-super-positive"></span>
+          class="link-highlight award-control-icon-super-positive">
+        </span>
     </a>
     <div
       v-if="shouldShowActionsDropdown"
@@ -101,7 +107,8 @@ export default {
         data-container="body">
           <i
             aria-hidden="true"
-            class="fa fa-ellipsis-v icon"></i>
+            class="fa fa-ellipsis-v icon">
+          </i>
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <template v-if="canEdit">

@@ -1,12 +1,12 @@
 <script>
-export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
+  export default {
+    props: {
+      note: {
+        type: Object,
+        required: true,
+      },
     },
-  },
-};
+  };
 </script>
 
 <template>
