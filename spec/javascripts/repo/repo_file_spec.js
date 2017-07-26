@@ -2,7 +2,6 @@ import Vue from 'vue';
 import repoFile from '~/repo/repo_file.vue';
 
 describe('RepoFile', () => {
-  const RepoFile = Vue.extend(repoFile);
   const file = {
     icon: 'icon',
     url: 'url',
@@ -16,6 +15,8 @@ describe('RepoFile', () => {
   };
 
   function createComponent(propsData) {
+    const RepoFile = Vue.extend(repoFile);
+
     return new RepoFile({
       propsData,
     }).$mount();

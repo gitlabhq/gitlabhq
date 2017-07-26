@@ -3,9 +3,9 @@ import Store from '~/repo/repo_store';
 import repoBinaryViewer from '~/repo/repo_binary_viewer.vue';
 
 describe('RepoBinaryViewer', () => {
-  const RepoBinaryViewer = Vue.extend(repoBinaryViewer);
-
   function createComponent() {
+    const RepoBinaryViewer = Vue.extend(repoBinaryViewer);
+
     return new RepoBinaryViewer().$mount();
   }
 

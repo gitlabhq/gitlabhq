@@ -2,9 +2,9 @@ import Vue from 'vue';
 import repoTab from '~/repo/repo_tab.vue';
 
 describe('RepoTab', () => {
-  const RepoTab = Vue.extend(repoTab);
-
   function createComponent(propsData) {
+    const RepoTab = Vue.extend(repoTab);
+
     return new RepoTab({
       propsData,
     }).$mount();

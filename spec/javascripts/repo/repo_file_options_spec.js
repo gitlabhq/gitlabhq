@@ -2,10 +2,11 @@ import Vue from 'vue';
 import repoFileOptions from '~/repo/repo_file_options.vue';
 
 describe('RepoFileOptions', () => {
-  const RepoFileOptions = Vue.extend(repoFileOptions);
   const projectName = 'projectName';
 
   function createComponent(propsData) {
+    const RepoFileOptions = Vue.extend(repoFileOptions);
+
     return new RepoFileOptions({
       propsData,
     }).$mount();

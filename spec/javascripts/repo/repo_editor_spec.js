@@ -2,9 +2,9 @@ import Vue from 'vue';
 import repoEditor from '~/repo/repo_editor.vue';
 
 describe('RepoEditor', () => {
-  const RepoEditor = Vue.extend(repoEditor);
-
   function createComponent() {
+    const RepoEditor = Vue.extend(repoEditor);
+
     return new RepoEditor().$mount();
   }
 
