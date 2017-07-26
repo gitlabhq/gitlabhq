@@ -60,7 +60,8 @@ directory will be automatically configured.
 
 If GitLab is installed from source its location can be configured in `gitlab.yml`.
 
-Using environment variable `prometheus_multiproc_dir` to configure the location has been deprecated in GitLab 9.5.
+Using environment variable `prometheus_multiproc_dir` to configure the location has been deprecated in GitLab 9.5
+and will be removed in GitLab 10
 
 [← Back to the main Prometheus page](index.md)
 
