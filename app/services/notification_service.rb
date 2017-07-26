@@ -331,7 +331,8 @@ class NotificationService
 
     recipients ||= NotificationRecipientService.notifiable_users(
       [pipeline.user], pipeline.project, :watch,
-      custom_action: :"#{pipeline.status}_pipeline"
+      custom_action: :"#{pipeline.status}_pipeline",
+      read_ability: :read_pipeline,
     ).map(&:notification_email)
 
     if recipients.any?
