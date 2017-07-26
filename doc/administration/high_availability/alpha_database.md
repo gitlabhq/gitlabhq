@@ -1,9 +1,7 @@
 # Configuring a Database for GitLab HA
 
 **Warning**
-This functionality should be considered alpha. Use with caution.
-The steps listed in this document may not leave you with a configuration that matches
-what the released version of the software will do.
+This functionality should be considered beta, use with caution.
 **Warning**
 
 You can choose to install and manage a database server (PostgreSQL/MySQL)
