@@ -109,7 +109,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def project_ids
-    return [] unless groups.any?
+    return unless groups.any?
 
     groups.flat_map { |group| group.all_projects.pluck(:id) }.uniq
   end
