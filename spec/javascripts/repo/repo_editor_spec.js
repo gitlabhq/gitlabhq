@@ -10,7 +10,7 @@ describe('RepoEditor', () => {
   }
 
   it('renders an ide container', () => {
-    const monacoInstance = jasmine.createSpyObj('monacoInstance', ['onMouseUp', 'onKeyUp', 'setModel']);
+    const monacoInstance = jasmine.createSpyObj('monacoInstance', ['onMouseUp', 'onKeyUp', 'setModel', 'updateOptions']);
     const monaco = {
       editor: jasmine.createSpyObj('editor', ['create']),
     };
