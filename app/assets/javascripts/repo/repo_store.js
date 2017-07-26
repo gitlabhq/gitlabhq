@@ -10,6 +10,7 @@ const RepoStore = {
   editMode: false,
   isTree: false,
   prevURL: '',
+  projectId: '',
   projectName: '',
   trees: [],
   blobs: [],
@@ -21,6 +22,8 @@ const RepoStore = {
   defaultTabSize: 100,
   minTabSize: 30,
   tabsOverflow: 41,
+  tempPrivateToken: '',
+  submitCommitsLoading: false,
   activeFile: {
     active: true,
     binary: false,
