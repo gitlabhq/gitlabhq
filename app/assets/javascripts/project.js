@@ -77,7 +77,7 @@ import Cookies from 'js-cookie';
               },
               dataType: "json"
             }).done(function(refs) {
-              console.log(refs)
+              console.log(refs);
               return callback(refs);
             });
           },

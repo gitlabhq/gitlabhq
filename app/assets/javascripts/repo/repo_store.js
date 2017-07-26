@@ -1,3 +1,4 @@
+/* global Flash */
 import RepoHelper from './repo_helper';
 
 const RepoStore = {
@@ -37,7 +38,7 @@ const RepoStore = {
     raw: false,
     newContent: '',
     changed: false,
-    loading: false
+    loading: false,
   },
   activeFileIndex: 0,
   activeLine: 0,
@@ -64,12 +65,12 @@ const RepoStore = {
   checkIsCommitable() {
     RepoStore.service.checkCurrentBranchIsCommitable()
       .then((data) => {
-        // you shouldn't be able to make commits on commits or tags. 
-        let {Branches, Commits, Tags} = data.data;
-        if(Branches && Branches.length) RepoStore.isCommitable = true;
-        if(Commits && Commits.length) RepoStore.isCommitable = false;
-        if(Tags && Tags.length) RepoStore.isCommitable = false;
-      });
+        // you shouldn't be able to make commits on commits or tags.
+        const { Branches, Commits, Tags } = data.data;
+        if (Branches && Branches.length) RepoStore.isCommitable = true;
+        if (Commits && Commits.length) RepoStore.isCommitable = false;
+        if (Tags && Tags.length) RepoStore.isCommitable = false;
+      }).catch(() => Flash('Failed to check if branch can be committed to.'));
   },
 
   addFilesToDirectory(inDirectory, currentList, newList) {
@@ -126,11 +127,11 @@ const RepoStore = {
     RepoStore.files = RepoStore.files.filter((file) => {
       const isItTheTreeWeWant = file.url === treeToClose.url;
       // if it's the next tree
-      if(foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
+      if (foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
         wereDone = true;
         return true;
       }
-      if(wereDone) return true;
+      if (wereDone) return true;
 
       if (isItTheTreeWeWant) foundTree = true;
 

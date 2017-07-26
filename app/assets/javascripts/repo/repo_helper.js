@@ -27,8 +27,8 @@ const RepoHelper = {
   },
 
   setDirectoryOpen(tree) {
-    let file = tree;
-    if (!file) return;
+    const file = tree;
+    if (!file) return undefined;
 
     file.opened = true;
     file.icon = 'fa-folder-open';
@@ -91,14 +91,12 @@ const RepoHelper = {
     return oldList;
   },
 
-  compareFilesCaseInsensitive(a,b) {
+  compareFilesCaseInsensitive(a, b) {
     const aName = a.name.toLowerCase();
     const bName = b.name.toLowerCase();
-    if(a.level > 0) return 0;
-    if (aName < bName)
-      return -1;
-    if (aName > bName)
-      return 1;
+    if (a.level > 0) return 0;
+    if (aName < bName) { return -1; }
+    if (aName > bName) { return 1; }
     return 0;
   },
 
@@ -109,7 +107,7 @@ const RepoHelper = {
     .then((response) => {
       const data = response.data;
       // RepoHelper.setLoading(false, loadingData);
-      if(cb) cb();
+      if (cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
@@ -187,15 +185,13 @@ const RepoHelper = {
     };
   },
 
-
-
   scrollTabsRight() {
     // wait for the transition. 0.1 seconds.
     setTimeout(() => {
       const tabs = document.getElementById('tabs');
-      if(!tabs) return;
+      if (!tabs) return;
       tabs.scrollLeft = 12000;
-    }, 200)
+    }, 200);
   },
 
   dataToListOfFiles(data) {

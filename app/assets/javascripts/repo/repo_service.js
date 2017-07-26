@@ -1,5 +1,5 @@
-import Store from './repo_store';
 import axios from 'axios';
+import Store from './repo_store';
 
 const RepoService = {
   url: '',
@@ -12,10 +12,10 @@ const RepoService = {
 
   checkCurrentBranchIsCommitable() {
     const url = Store.service.refsUrl;
-    return axios.get(url, {params: {
-        ref: Store.currentBranch,
-        search: Store.currentBranch
-      }});
+    return axios.get(url, { params: {
+      ref: Store.currentBranch,
+      search: Store.currentBranch,
+    } });
   },
 
   buildParams(url = this.url) {

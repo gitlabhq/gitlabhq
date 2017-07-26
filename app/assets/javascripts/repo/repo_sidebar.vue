@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import Service from './repo_service';
 import Helper from './repo_helper';
 import Store from './repo_store';

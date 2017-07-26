@@ -20,7 +20,7 @@ describe('RepoTab', () => {
       tab,
     });
     const close = vm.$el.querySelector('.close');
-    const name = vm.$el.querySelector(`a[title="${tab.url}"]`)
+    const name = vm.$el.querySelector(`a[title="${tab.url}"]`);
 
     spyOn(vm, 'xClicked');
     spyOn(vm, 'tabClicked');

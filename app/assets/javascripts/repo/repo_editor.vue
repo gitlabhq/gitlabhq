@@ -1,6 +1,5 @@
 <script>
 /* global monaco */
-import Vue from 'vue';
 import Store from './repo_store';
 import Helper from './repo_helper';
 import monacoLoader from './monaco_loader';
@@ -28,7 +27,7 @@ const RepoEditor = {
         const newModel = monaco.editor.createModel(this.blobRaw, 'plaintext');
 
         this.monacoInstance.setModel(newModel);
-      });
+      }).catch(Helper.loadingError);
     });
   },
 
@@ -55,7 +54,7 @@ const RepoEditor = {
         location.hash = `L${e.target.position.lineNumber}`;
         Store.activeLine = e.target.position.lineNumber;
       }
-    }
+    },
   },
 
   watch: {
