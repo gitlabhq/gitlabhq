@@ -263,7 +263,6 @@ import initIssuableSidebar from './init_issuable_sidebar';
           new ZenMode();
           new gl.GLForm($('.release-form'), true);
           break;
-        case 'projects:merge_requests:conflicts:show':
         case 'projects:merge_requests:show':
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
@@ -381,7 +380,15 @@ import initIssuableSidebar from './init_issuable_sidebar';
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
-          new gl.ProjectLabelSubscription('.label-subscription');
+          $('.label-subscription').each((i, el) => {
+            const $el = $(el);
+
+            if ($el.find('.dropdown-group-label').length) {
+              new gl.GroupLabelSubscription($el);
+            } else {
+              new gl.ProjectLabelSubscription($el);
+            }
+          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
