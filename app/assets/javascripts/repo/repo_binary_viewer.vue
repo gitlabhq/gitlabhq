@@ -54,8 +54,8 @@ export default RepoBinaryViewer;
 </script>
 
 <template>
-<div id="binary-viewer" v-show="binary && !activeFile.raw">
+<div id="binary-viewer" v-if="binary && !activeFile.raw">
   <img v-show="binaryTypes.png && binaryLoaded" @error="errored" @load="loaded" :src="pngBlobWithDataURI" :alt="activeFile.name"/>
-  <div v-show="binaryTypes.markdown" v-html="activeFile.html"></div>
+  <div v-if="binaryTypes.markdown" v-html="activeFile.html"></div>
 </div>
 </template>
