@@ -16,6 +16,7 @@
       return {
         note: '',
         markdownDocsUrl: '',
+        quickActionsDocsUrl: null,
         markdownPreviewUrl: gl.issueData.preview_note_path,
         noteType: constants.COMMENT,
         issueState: state,
@@ -149,6 +150,7 @@
       const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
 
       this.markdownDocsUrl = issueData.markdownDocs;
+      this.quickActionsDocsUrl = issueData.quickActionsDocs;
 
       eventHub.$on('issueStateChanged', (isClosed) => {
         this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
@@ -183,7 +185,8 @@
             <markdown-field
               :markdown-preview-url="markdownPreviewUrl"
               :markdown-docs="markdownDocsUrl"
-              :addSpacingClasses="false">
+              :quick-actions-docs="quickActionsDocsUrl"
+              :add-spacing-classes="false">
               <textarea
                 id="note-body"
                 name="note[note]"
@@ -217,7 +220,8 @@
                   aria-label="Open comment type dropdown">
                   <i
                     aria-hidden="true"
-                    class="fa fa-caret-down toggle-icon"></i>
+                    class="fa fa-caret-down toggle-icon">
+                  </i>
                 </button>
                 <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
                   <li

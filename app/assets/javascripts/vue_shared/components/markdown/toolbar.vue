@@ -5,6 +5,10 @@
         type: String,
         required: true,
       },
+      quickActionsDocs: {
+        type: String,
+        required: false,
+      },
     },
   };
 </script>
@@ -12,12 +16,30 @@
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
-      <a
-        :href="markdownDocs"
-        target="_blank"
-        tabindex="-1">
-        Markdown is supported
-      </a>
+      <template v-if="!quickActionsDocs && markdownDocs">
+        <a
+          :href="markdownDocs"
+          target="_blank"
+          tabindex="-1">
+          Markdown is supported
+        </a>
+      </template>
+      <template v-if="quickActionsDocs && markdownDocs">
+         <a
+          :href="markdownDocs"
+          target="_blank"
+          tabindex="-1">
+          Markdown
+        </a>
+        and
+         <a
+          :href="quickActionsDocs"
+          target="_blank"
+          tabindex="-1">
+          quick actions
+        </a>
+        are supported
+      </template>
     </div>
     <span class="uploading-container">
       <span class="uploading-progress-container hide">

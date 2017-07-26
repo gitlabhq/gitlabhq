@@ -21,6 +21,10 @@
         required: false,
         default: true,
       },
+      quickActionsDocs: {
+        type: String,
+        required: false,
+      },
     },
     data() {
       return {
@@ -115,7 +119,9 @@
           </i>
         </a>
         <markdown-toolbar
-          :markdown-docs="markdownDocs" />
+          :markdown-docs="markdownDocs"
+          :quick-actions-docs="quickActionsDocs"
+          />
       </div>
     </div>
     <div
