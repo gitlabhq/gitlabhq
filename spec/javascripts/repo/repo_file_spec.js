@@ -2,12 +2,13 @@ import Vue from 'vue';
 import repoFile from '~/repo/repo_file.vue';
 
 describe('RepoFile', () => {
+  const updated = 'updated';
   const file = {
     icon: 'icon',
     url: 'url',
     name: 'name',
     lastCommitMessage: 'message',
-    lastCommitUpdate: 'update',
+    lastCommitUpdate: Date.now(),
     level: 10,
   };
   const activeFile = {
@@ -22,6 +23,10 @@ describe('RepoFile', () => {
     }).$mount();
   }
 
+  beforeEach(() => {
+    spyOn(repoFile.mixins[0].methods, 'timeFormated').and.returnValue(updated);
+  });
+
   it('renders link, icon, name and last commit details', () => {
     const vm = createComponent({
       file,
@@ -35,7 +40,7 @@ describe('RepoFile', () => {
     expect(name.href).toMatch(`/${file.url}`);
     expect(name.textContent).toEqual(file.name);
     expect(vm.$el.querySelector('.commit-message').textContent).toBe(file.lastCommitMessage);
-    expect(vm.$el.querySelector('.commit-update').textContent).toBe(file.lastCommitUpdate);
+    expect(vm.$el.querySelector('.commit-update').textContent).toBe(updated);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
