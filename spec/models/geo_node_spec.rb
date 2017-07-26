@@ -316,4 +316,27 @@ describe GeoNode, type: :model do
       expect(node).to be_missing_oauth_application
     end
   end
+
+  describe '#project_ids' do
+    context 'without group restriction' do
+      it 'returns an empty array' do
+        expect(node.project_ids).to eq([])
+      end
+    end
+
+    context 'with group restrictions' do
+      it 'returns an array with unique project ids' do
+        group_1 = create(:group)
+        group_2 = create(:group)
+        nested_group_1 = create(:group, parent: group_1)
+        project_1 = create(:empty_project, group: group_1)
+        project_2 = create(:empty_project, group: nested_group_1)
+        project_3 = create(:empty_project, group: group_2)
+
+        node.update_attribute(:groups, [group_1, group_2, nested_group_1])
+
+        expect(node.project_ids).to match_array([project_1.id, project_2.id, project_3.id])
+      end
+    end
+  end
 end
