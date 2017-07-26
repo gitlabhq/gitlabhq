@@ -1013,6 +1013,7 @@ DEPENDENCIES
   minitest (~> 5.7.0)
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.4.5)
+  net-ldap
   nokogiri (~> 1.6.7, >= 1.6.7.2)
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
