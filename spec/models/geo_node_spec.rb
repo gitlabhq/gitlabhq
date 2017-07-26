@@ -14,6 +14,9 @@ describe GeoNode, type: :model do
   context 'associations' do
     it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
     it { is_expected.to belong_to(:oauth_application).dependent(:destroy) }
+
+    it { is_expected.to have_many(:geo_node_group_links) }
+    it { is_expected.to have_many(:groups).through(:geo_node_group_links) }
   end
 
   context 'default values' do
