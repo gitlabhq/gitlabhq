@@ -293,8 +293,7 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = project.team.members
-    recipients = NotificationRecipientService.new(project).reject_muted_users(recipients)
+    recipients = NotificationRecipientService::Recipient.notifiable_users(project.team.members, project, :watch)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(

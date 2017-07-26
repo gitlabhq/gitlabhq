@@ -21,16 +21,25 @@ class NotificationRecipientService
   end
 
   class Recipient
+    def self.notifiable_users(users, *args)
+      users.map { |u| new(u, *args) }.select(&:notifiable?).map(&:user)
+    end
+
     attr_reader :user, :type
-    def initialize(builder, user, type)
-      @builder = builder
+    def initialize(user, project, type,
+                   custom_action: nil, target: nil, acting_user: nil, read_ability: nil)
+      @project = project
+      @custom_action = custom_action
+      @acting_user = acting_user
+      @read_ability = read_ability
+      @target = target
       @user = user
       @type = type
     end
 
     def notification_setting
       @notification_setting ||=
-        NotificationRecipientService.notification_setting_for_user_project(user, @builder.project)
+        NotificationRecipientService.notification_setting_for_user_project(user, @project)
     end
 
     def raw_notification_level
@@ -43,7 +52,11 @@ class NotificationRecipientService
       @notification_level ||=
         case raw_notification_level
         when :custom
-          notification_setting.event_enabled?(@builder.custom_action) ? :watch : :custom
+          if !@custom_action || notification_setting.event_enabled?(@custom_action)
+            :watch
+          else
+            :custom
+          end
         else
           raw_notification_level
         end
@@ -69,32 +82,34 @@ class NotificationRecipientService
     end
 
     def unsubscribed?
-      return false unless @builder.target.respond_to?(:subscriptions)
+      return false unless @target
+      return false unless @target.respond_to?(:subscriptions)
 
-      subscription = @builder.target.subscriptions.find_by_user_id(@user.id)
+      subscription = @target.subscriptions.find_by_user_id(@user.id)
       subscription && !subscription.subscribed
     end
 
     def own_activity?
-      return false unless @builder.acting_user
-      return false if @builder.acting_user.notified_of_own_activity?
+      return false unless @acting_user
+      return false if @acting_user.notified_of_own_activity?
 
-      user == @builder.acting_user
+      user == @acting_user
     end
 
     def has_access?
       return false unless user.can?(:receive_notifications)
-      return true unless @builder.read_ability
+      return true unless @read_ability
 
       DeclarativePolicy.subject_scope do
-        user.can?(@builder.read_ability, @builder.target)
+        user.can?(@read_ability, @target)
       end
     end
 
     def excluded_watcher_action?
+      return false unless @custom_action
       return false if raw_notification_level == :custom
 
-      NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@builder.custom_action)
+      NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
     end
   end
 
@@ -128,7 +143,16 @@ class NotificationRecipientService
         users, type = arg
         users = Array(users)
         users.compact!
-        recipients.concat(users.map { |u| Recipient.new(self, u, type) })
+        recipients.concat(users.map { |u| make_recipient(u, type) })
+      end
+
+      def make_recipient(user, type)
+        Recipient.new(user, project, type,
+          custom_action: custom_action,
+          target: target,
+          acting_user: acting_user,
+          read_ability: read_ability
+        )
       end
 
       def recipient_users
