@@ -19,5 +19,13 @@ module Gitlab
     def self.call(env)
       app.call(env)
     end
+
+    def self.verified?(env)
+      call(env)
+
+      true
+    rescue ActionController::InvalidAuthenticityToken
+      false
+    end
   end
 end

@@ -336,9 +336,9 @@ module API
       env['warden']
     end
 
-    # Check if CSRF tokens are valid.
+    # Check if the request is GET/HEAD, or if CSRF token is valid.
     def verified_request?
-      Gitlab::RequestForgeryProtection.call(env) rescue false
+      Gitlab::RequestForgeryProtection.verified?(env)
     end
 
     # Check the Rails session for valid authentication details
