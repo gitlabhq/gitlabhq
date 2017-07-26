@@ -119,7 +119,6 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
       end
     end
 
-<<<<<<< HEAD
     describe 'adding a weight from a note' do
       let(:issue) { create(:issue, project: project) }
 
@@ -196,8 +195,6 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
       end
     end
 
-=======
->>>>>>> upstream/master
     describe 'mark issue as duplicate' do
       let(:issue) { create(:issue, project: project) }
       let(:original_issue) { create(:issue, project: project) }
