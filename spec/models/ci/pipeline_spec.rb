@@ -17,6 +17,7 @@ describe Ci::Pipeline do
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
@@ -734,8 +735,6 @@ describe Ci::Pipeline do
 
     context 'on failure and build retry' do
       before do
-        stub_not_protect_default_branch
-
         build.drop
         project.add_developer(user)
 
@@ -1001,8 +1000,6 @@ describe Ci::Pipeline do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
-      stub_not_protect_default_branch
-
       project.add_developer(user)
     end
 

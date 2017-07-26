@@ -15,25 +15,22 @@ module API
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
       post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
-        project = find_project(params[:id])
-        trigger = Ci::Trigger.find_by_token(params[:token].to_s)
-        not_found! unless project && trigger
-        unauthorized! unless trigger.project == project
-
         # validate variables
-        variables = params[:variables].to_h
-        unless variables.all? { |key, value| key.is_a?(String) && value.is_a?(String) }
+        params[:variables] = params[:variables].to_h
+        unless params[:variables].all? { |key, value| key.is_a?(String) && value.is_a?(String) }
           render_api_error!('variables needs to be a map of key-valued strings', 400)
         end
 
-        # create request and trigger builds
-        result = Ci::CreateTriggerRequestService.execute(project, trigger, params[:ref].to_s, variables)
-        pipeline = result.pipeline
+        project = find_project(params[:id])
+        not_found! unless project
 
-        if pipeline.persisted?
-          present pipeline, with: Entities::Pipeline
+        result = Ci::PipelineTriggerService.new(project, nil, params).execute
+        not_found! unless result
+
+        if result[:http_status]
+          render_api_error!(result[:message], result[:http_status])
         else
-          render_validation_error!(pipeline)
+          present result[:pipeline], with: Entities::Pipeline
         end
       end
 
