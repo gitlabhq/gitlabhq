@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::HealthChecks::FsShardsCheck do
   def command_exists?(command)
     _, status = Gitlab::Popen.popen(%W{ #{command} 1 echo })
-    status == 0
+    status.zero?
   rescue Errno::ENOENT
     false
   end

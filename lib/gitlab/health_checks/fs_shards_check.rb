@@ -81,7 +81,7 @@ module Gitlab
 
         def delete_test_file(tmp_path)
           _, status = exec_with_timeout(%W{ rm -f #{tmp_path} })
-          status == 0
+          status.zero?
         rescue Errno::ENOENT
           File.delete(tmp_path) rescue Errno::ENOENT
         end
@@ -90,7 +90,7 @@ module Gitlab
           stat_path = File.join(storage_path(storage_name), '.')
           begin
             _, status = exec_with_timeout(%W{ stat #{stat_path} })
-            status == 0
+            status.zero?
           rescue Errno::ENOENT
             File.exist?(stat_path) && File::Stat.new(stat_path).readable?
           end
@@ -100,7 +100,7 @@ module Gitlab
           _, status = exec_with_timeout(%W{ tee #{tmp_path} }) do |stdin|
             stdin.write(RANDOM_STRING)
           end
-          status == 0
+          status.zero?
         rescue Errno::ENOENT
           written_bytes = File.write(tmp_path, RANDOM_STRING) rescue Errno::ENOENT
           written_bytes == RANDOM_STRING.length
@@ -110,7 +110,7 @@ module Gitlab
           _, status = exec_with_timeout(%W{ diff #{tmp_path} - }) do |stdin|
             stdin.write(RANDOM_STRING)
           end
-          status == 0
+          status.zero?
         rescue Errno::ENOENT
           file_contents = File.read(tmp_path) rescue Errno::ENOENT
           file_contents == RANDOM_STRING
