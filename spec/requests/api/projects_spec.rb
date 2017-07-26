@@ -866,6 +866,38 @@ describe API::Projects do
         expect(json_response).not_to include("import_error")
       end
 
+      context 'links exposure' do
+        it 'exposes related resources full URIs' do
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+          expect(links['issues']).to end_with("/api/v4/projects/#{project.id}/issues")
+          expect(links['merge_requests']).to end_with("/api/v4/projects/#{project.id}/merge_requests")
+          expect(links['repo_branches']).to end_with("/api/v4/projects/#{project.id}/repository/branches")
+          expect(links['labels']).to end_with("/api/v4/projects/#{project.id}/labels")
+          expect(links['events']).to end_with("/api/v4/projects/#{project.id}/events")
+          expect(links['members']).to end_with("/api/v4/projects/#{project.id}/members")
+        end
+
+        it 'filters related URIs when their feature is not enabled' do
+          project = create(:empty_project, :public,
+                           :merge_requests_disabled,
+                           :issues_disabled,
+                           creator_id: user.id,
+                           namespace: user.namespace)
+
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links.has_key?('merge_requests')).to be_falsy
+          expect(links.has_key?('issues')).to be_falsy
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+        end
+      end
+
       describe 'permissions' do
         context 'all projects' do
           before do
