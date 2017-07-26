@@ -1388,6 +1388,7 @@ ActiveRecord::Schema.define(version: 20170719182937) do
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
     t.boolean "disable_overriding_approvers_per_merge_request"
+    t.text "delete_error"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
