@@ -358,7 +358,7 @@ describe Gitlab::Elastic::SearchResults do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::SearchResults.new(user, 'term', [project.id])
+      result = described_class.new(user, 'term', [project.id])
 
       expect(result.issues_count).to eq(2)
       expect(result.merge_requests_count).to eq(2)

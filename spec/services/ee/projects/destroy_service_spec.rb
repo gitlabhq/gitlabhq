@@ -26,7 +26,7 @@ describe Projects::DestroyService do
       Gitlab::Mirror.increment_capacity(project_mirror.id)
 
       expect do
-        Projects::DestroyService.new(project_mirror, project_mirror.owner, {}).execute
+        described_class.new(project_mirror, project_mirror.owner, {}).execute
       end.to change { Gitlab::Mirror.available_capacity }.from(max_capacity - 1).to(max_capacity)
     end
   end

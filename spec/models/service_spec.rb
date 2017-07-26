@@ -58,7 +58,7 @@ describe Service do
   end
 
   describe "Available services" do
-    it { expect(Service.available_services_names).to  include("jenkins", "jira")}
+    it { expect(described_class.available_services_names).to  include("jenkins", "jira")}
   end
 
   describe "Template" do

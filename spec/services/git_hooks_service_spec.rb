@@ -5,7 +5,7 @@ describe GitHooksService do
 
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
-  let(:service) { GitHooksService.new }
+  let(:service) { described_class.new }
 
   before do
     @blankrev = Gitlab::Git::BLANK_SHA

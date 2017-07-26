@@ -63,13 +63,13 @@ describe Gitlab::Workhorse do
     end
 
     context 'without ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+      subject { described_class.terminal_websocket(terminal) }
 
       it { is_expected.to eq(workhorse) }
     end
 
     context 'with ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+      subject { described_class.terminal_websocket(terminal(ca_pem: "foo")) }
 
       it { is_expected.to eq(workhorse(ca_pem: "foo")) }
     end

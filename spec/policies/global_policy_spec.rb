@@ -4,7 +4,7 @@ describe GlobalPolicy do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
 
-  subject { GlobalPolicy.new(current_user, [user]) }
+  subject { described_class.new(current_user, [user]) }
 
   describe "reading the list of users" do
     context "for a logged in user" do

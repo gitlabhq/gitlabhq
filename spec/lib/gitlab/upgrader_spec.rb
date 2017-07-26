@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Upgrader do
-  let(:upgrader) { Gitlab::Upgrader.new }
+  let(:upgrader) { described_class.new }
   let(:current_version) { Gitlab::VERSION }
 
   describe 'current_version_raw' do

@@ -488,7 +488,7 @@ describe Issues::UpdateService do
 
     context 'updating mentions' do
       let(:mentionable) { issue }
-      include_examples 'updating mentions', Issues::UpdateService
+      include_examples 'updating mentions', described_class
     end
 
     context 'duplicate issue' do

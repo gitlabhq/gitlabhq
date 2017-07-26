@@ -21,7 +21,7 @@ describe EE::Gitlab::LDAP::Group do
         range_start: '3',
         range_end: '*'
       )
-      group = EE::Gitlab::LDAP::Group.new(group_entry_page1, adapter)
+      group = described_class.new(group_entry_page1, adapter)
       stub_ldap_adapter_group_members_in_range(group_entry_page2, adapter, range_start: '3')
       stub_ldap_adapter_nested_groups(group.dn, [], adapter)
 
@@ -54,7 +54,7 @@ describe EE::Gitlab::LDAP::Group do
           member_of: group1_entry.dn
         )
       end
-      let(:group) { EE::Gitlab::LDAP::Group.new(group1_entry, adapter) }
+      let(:group) { described_class.new(group1_entry, adapter) }
 
       it 'resolves the correct member_dns when there are nested groups' do
         group3_entry = ldap_group_entry(

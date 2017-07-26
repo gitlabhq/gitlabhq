@@ -19,7 +19,7 @@ describe Gitlab::AuthorityAnalyzer do
       ]
     end
 
-    let(:approvers) { Gitlab::AuthorityAnalyzer.new(merge_request, author).calculate(number_of_approvers) }
+    let(:approvers) { described_class.new(merge_request, author).calculate(number_of_approvers) }
 
     before do
       merge_request.compare = double(:compare, raw_diffs: files)

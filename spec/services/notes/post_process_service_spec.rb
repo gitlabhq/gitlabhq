@@ -21,7 +21,7 @@ describe Notes::PostProcessService do
       expect(project).to receive(:execute_hooks)
       expect(project).to receive(:execute_services)
 
-      Notes::PostProcessService.new(@note).execute
+      described_class.new(@note).execute
     end
   end
 end

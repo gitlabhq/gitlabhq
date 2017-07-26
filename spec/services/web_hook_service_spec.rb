@@ -12,7 +12,7 @@ describe WebHookService do
   let(:data) do
     { before: 'oldrev', after: 'newrev', ref: 'ref' }
   end
-  let(:service_instance) { WebHookService.new(project_hook, data, 'push_hooks') }
+  let(:service_instance) { described_class.new(project_hook, data, 'push_hooks') }
 
   describe '#execute' do
     before(:each) do
@@ -114,7 +114,7 @@ describe WebHookService do
 
       context 'should not log ServiceHooks' do
         let(:service_hook) { create(:service_hook) }
-        let(:service_instance) { WebHookService.new(service_hook, data, 'service_hook') }
+        let(:service_instance) { described_class.new(service_hook, data, 'service_hook') }
 
         before do
           WebMock.stub_request(:post, service_hook.url).to_return(status: 200, body: 'Success')
@@ -131,7 +131,7 @@ describe WebHookService do
     it 'enqueue WebHookWorker' do
       expect(Sidekiq::Client).to receive(:enqueue).with(WebHookWorker, project_hook.id, data, 'push_hooks')
 
-      WebHookService.new(project_hook, data, 'push_hooks').async_execute
+      described_class.new(project_hook, data, 'push_hooks').async_execute
     end
   end
 end

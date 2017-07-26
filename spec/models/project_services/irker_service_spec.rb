@@ -27,7 +27,7 @@ describe IrkerService do
   end
 
   describe 'Execute' do
-    let(:irker) { IrkerService.new }
+    let(:irker) { described_class.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:sample_data) do

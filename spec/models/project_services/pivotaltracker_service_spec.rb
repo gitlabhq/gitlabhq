@@ -26,7 +26,7 @@ describe PivotaltrackerService do
 
   describe 'Execute' do
     let(:service) do
-      PivotaltrackerService.new.tap do |service|
+      described_class.new.tap do |service|
         service.token = 'secret_api_token'
       end
     end

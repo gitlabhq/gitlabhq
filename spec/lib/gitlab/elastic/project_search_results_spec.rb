@@ -53,12 +53,12 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'term', project.id)
+      result = described_class.new(user, 'term', project.id)
       expect(result.notes_count).to eq(1)
       expect(result.wiki_blobs_count).to eq(1)
       expect(result.blobs_count).to eq(1)
 
-      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id)
+      result1 = described_class.new(user, 'initial', project.id)
       expect(result1.commits_count).to eq(1)
     end
 
@@ -74,7 +74,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
         Gitlab::Elastic::Helper.refresh_index
 
-        result = Gitlab::Elastic::ProjectSearchResults.new(guest, 'term', project.id)
+        result = described_class.new(guest, 'term', project.id)
         expect(result.wiki_blobs_count).to eq(1)
       end
     end
@@ -126,7 +126,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
   describe 'search for blobs in non-default branch' do
     let(:project) { create(:project, :public, :repository_private) }
-    let(:result) { Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test') }
+    let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
     subject(:blobs) { result.objects('blobs') }
 

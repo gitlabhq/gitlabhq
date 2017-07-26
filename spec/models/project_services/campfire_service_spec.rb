@@ -29,7 +29,7 @@ describe CampfireService do
     let(:project) { create(:project, :repository) }
 
     before do
-      @campfire_service = CampfireService.new
+      @campfire_service = described_class.new
       allow(@campfire_service).to receive_messages(
         project_id: project.id,
         project: project,

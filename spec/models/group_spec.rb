@@ -376,7 +376,7 @@ describe Group do
     subject { build(:group, :nested) }
 
     it { is_expected.to be_valid }
-    it { expect(subject.parent).to be_kind_of(Group) }
+    it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
   describe '#members_with_parents', :nested_groups do

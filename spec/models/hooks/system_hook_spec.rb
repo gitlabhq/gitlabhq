@@ -122,7 +122,7 @@ describe SystemHook do
     it 'returns hooks for repository update events only' do
       hook = create(:system_hook, repository_update_events: true)
       create(:system_hook, repository_update_events: false)
-      expect(SystemHook.repository_update_hooks).to eq([hook])
+      expect(described_class.repository_update_hooks).to eq([hook])
     end
   end
 

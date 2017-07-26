@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::ProjectTransfer do
   before do
     @root_dir = File.join(Rails.root, "public", "uploads")
-    @project_transfer = Gitlab::ProjectTransfer.new
+    @project_transfer = described_class.new
     allow(@project_transfer).to receive(:root_dir).and_return(@root_dir)
 
     @project_path_was = "test_project_was"

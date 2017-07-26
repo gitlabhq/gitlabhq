@@ -763,7 +763,7 @@ describe Project do
           .and_return(true)
 
         expect(Geo::RepositoryRenamedEventStore).to receive(:new)
-          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .with(instance_of(described_class), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
           .and_call_original
 
         expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)

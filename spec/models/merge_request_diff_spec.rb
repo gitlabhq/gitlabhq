@@ -98,7 +98,7 @@ describe MergeRequestDiff do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive_message_chain(:compare, :commits)
+      allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
         .and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff

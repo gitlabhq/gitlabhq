@@ -19,7 +19,7 @@ describe MergeRequests::BuildService do
   let(:commits) { nil }
 
   let(:service) do
-    MergeRequests::BuildService.new(project, user,
+    described_class.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
                                     target_branch: target_branch,

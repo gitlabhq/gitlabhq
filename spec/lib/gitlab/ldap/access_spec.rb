@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
   include LdapHelpers
-  let(:access) { Gitlab::LDAP::Access.new user }
+  let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
 
   describe '.allowed?' do

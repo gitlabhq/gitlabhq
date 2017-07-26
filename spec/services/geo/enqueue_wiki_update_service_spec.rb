@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::EnqueueWikiUpdateService do
-  subject { Geo::EnqueueWikiUpdateService.new(project) }
+  subject { described_class.new(project) }
   let(:project) { double(:project) }
   let(:fake_url) { 'git@localhost:repo/path.git' }
   let(:fake_id) { 999 }

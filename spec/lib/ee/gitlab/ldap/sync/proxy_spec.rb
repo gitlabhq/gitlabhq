@@ -5,7 +5,7 @@ describe EE::Gitlab::LDAP::Sync::Proxy do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }
-  let(:sync_proxy) { EE::Gitlab::LDAP::Sync::Proxy.new('ldapmain', adapter) }
+  let(:sync_proxy) { described_class.new('ldapmain', adapter) }
 
   before do
     stub_ldap_config(active_directory: false)

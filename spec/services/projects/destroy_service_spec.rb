@@ -73,7 +73,7 @@ describe Projects::DestroyService do
     before do
       new_user = create(:user)
       project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
-      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
+      allow_any_instance_of(described_class).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
     it 'keeps project team intact upon an error' do
