@@ -169,7 +169,8 @@
     <div class="awards js-awards-block">
       <button
         v-tooltip
-        v-for="(awardList, awardName) in groupedAwards"
+        v-for="(awardList, awardName, index) in groupedAwards"
+        :key="index"
         :class="getAwardClassBindings(awardList, awardName)"
         :title="awardTitle(awardList)"
         @click="handleAward(awardName)"
