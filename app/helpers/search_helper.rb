@@ -137,13 +137,18 @@ module SearchHelper
   end
 
   def search_filter_input_options(type)
+    if @group
+      base_endpoint = group_path(@group)
+    elsif @project
+      base_endpoint = project_path(@project)
+    end
     {
       id: "filtered-search-#{type}",
       placeholder: 'Search or filter results...',
       data: {
-        'project-id' => @project.id,
+        'project-id' => (@group || @project).id,
         'username-params' => @users.to_json(only: [:id, :username]),
-        'base-endpoint' => project_path(@project)
+        'base-endpoint' => base_endpoint
       }
     }
   end

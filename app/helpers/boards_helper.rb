@@ -27,4 +27,20 @@ module BoardsHelper
       }
     )
   end
+
+  def board_base_url
+    if @project
+      project_boards_path(@project)
+    elsif @group
+      group_boards_path(@group)
+    end
+  end
+
+  def multiple_boards_available
+    if @project
+      @project.feature_available?(:multiple_issue_boards)
+    elsif @group
+      @group.feature_available?(:multiple_issue_boards)
+    end
+  end
 end

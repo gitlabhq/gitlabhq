@@ -6,7 +6,7 @@
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
     - if type == :boards && board
       #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
-        = render "projects/boards/switcher", board: board
+        = render "shared/boards/switcher", board: board
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
