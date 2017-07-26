@@ -55,17 +55,22 @@ describe API::Users do
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-          allow_any_instance_of(API::Helpers).to receive(:authenticate!).and_return(true)
         end
 
-        it "renders 403" do
-          get api("/users")
-          expect(response).to have_http_status(403)
+        context 'when authenticate as a regular user' do
+          it "renders 403" do
+            get api("/users", user)
+
+            expect(response).to have_gitlab_http_status(403)
+          end
         end
 
-        it "renders 404" do
-          get api("/users/#{user.id}")
-          expect(response).to have_http_status(404)
+        context 'when authenticate as an admin' do
+          it "renders 200" do
+            get api("/users", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+          end
         end
       end
 

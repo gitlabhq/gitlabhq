@@ -21,6 +21,11 @@ header.navbar-gitlab-new {
       padding-right: 0;
       color: currentColor;
 
+      img {
+        height: 28px;
+        margin-right: 10px;
+      }
+
       > a {
         display: flex;
         align-items: center;

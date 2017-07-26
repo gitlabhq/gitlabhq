@@ -313,12 +313,6 @@ module API
           desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
-          required: true,
-          name: :project_key,
-          type: String,
-          desc: 'The short identifier for your JIRA project, all uppercase, e.g., PROJ'
-        },
-        {
           required: false,
           name: :username,
           type: String,

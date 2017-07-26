@@ -100,9 +100,12 @@ You can use the [alpha version of the document](alpha_database.md) to try it out
     Enter new password:
     Enter it again:
     ```
-
-1. Enable the `pg_trgm` extension:
+1. Exit from editing `template1` prompt by typing `\q` and Enter.
+1. Enable the `pg_trgm` extension within the `gitlabhq_production` database:
+    
     ```
+    gitlab-psql -d gitlabhq_production
+    
     CREATE EXTENSION pg_trgm;
 
     # Output:

@@ -55,7 +55,12 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
+<<<<<<< HEAD
         expect(json_response['message']).to eq('base' => ["Reference not found"])
+=======
+        expect(json_response['message']['base'])
+          .to contain_exactly('Reference not found')
+>>>>>>> upstream/master
       end
 
       context 'Validates variables' do

@@ -13,7 +13,11 @@ module API
 
       def expose_url(path)
         url_options = Rails.application.routes.default_url_options
+<<<<<<< HEAD
         host, protocol, port = url_options.slice(:host, :protocol, :port).values
+=======
+        protocol, host, port = url_options.slice(:protocol, :host, :port).values
+>>>>>>> upstream/master
 
         URI::HTTP.build(scheme: protocol, host: host, port: port, path: path).to_s
       end

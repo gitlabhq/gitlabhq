@@ -19,11 +19,15 @@ module SystemNoteHelper
     'discussion' => 'icon_comment_o',
     'moved' => 'icon_arrow_circle_o_right',
     'outdated' => 'icon_edit',
+<<<<<<< HEAD
     'duplicate' => 'icon_clone',
     'approved' => 'icon_check',
     'unapproved' => 'icon_fa_close',
     'relate' => 'icon_anchor',
     'unrelate' => 'icon_anchor_broken'
+=======
+    'duplicate' => 'icon_clone'
+>>>>>>> upstream/master
   }.freeze
 
   def icon_for_system_note(note)

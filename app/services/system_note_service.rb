@@ -552,6 +552,7 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
   end
 
+<<<<<<< HEAD
   #
   # noteable     - Noteable object
   # noteable_ref - Referenced noteable object
@@ -606,6 +607,8 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unapproved'))
   end
 
+=======
+>>>>>>> upstream/master
   # Called when a Noteable has been marked as a duplicate of another Issue
   #
   # noteable        - Noteable object

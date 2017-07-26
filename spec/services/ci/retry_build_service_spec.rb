@@ -86,6 +86,8 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user has ability to execute build' do
       before do
+        stub_not_protect_default_branch
+
         project.add_developer(user)
       end
 
@@ -132,6 +134,8 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user has ability to execute build' do
       before do
+        stub_not_protect_default_branch
+
         project.add_developer(user)
       end
 

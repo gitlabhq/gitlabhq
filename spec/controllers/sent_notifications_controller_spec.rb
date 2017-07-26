@@ -23,7 +23,7 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the login page' do
@@ -83,7 +83,7 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the issue page' do
@@ -109,7 +109,7 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the merge request page' do

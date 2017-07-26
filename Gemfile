@@ -65,7 +65,10 @@ gem 'browser', '~> 2.2'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
+<<<<<<< HEAD
 gem 'net-ldap'
+=======
+>>>>>>> upstream/master
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
@@ -176,7 +179,7 @@ gem 'rainbow', '~> 2.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.1.0'
+gem 're2', '~> 1.1.1'
 
 # Misc
 
@@ -367,7 +370,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 2.8.0', require: false
+  gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 2.3.2'

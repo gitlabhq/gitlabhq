@@ -41,6 +41,9 @@ do.
 | `/clear_weight` | Clears the issue weight |
 | `/board_move ~column`      | Move issue to column on the board |
 | `/duplicate #issue`        | Closes this issue and marks it as a duplicate of another issue |
+<<<<<<< HEAD
 
 Note: In GitLab EES every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
 support multiple assignees.
+=======
+>>>>>>> upstream/master

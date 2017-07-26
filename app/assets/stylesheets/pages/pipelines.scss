@@ -626,8 +626,12 @@
 }
 
 // Dropdown button in mini pipeline graph
+<<<<<<< HEAD
 button.mini-pipeline-graph-dropdown-toggle,
 a.linked-pipeline-mini-item {
+=======
+button.mini-pipeline-graph-dropdown-toggle {
+>>>>>>> upstream/master
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;

@@ -21,6 +21,7 @@ module API
           render_api_error!('variables needs to be a map of key-valued strings', 400)
         end
 
+<<<<<<< HEAD
         project = find_project(params[:id])
         not_found! unless project
 
@@ -31,6 +32,16 @@ module API
           render_api_error!(result[:message], result[:http_status])
         else
           present result[:pipeline], with: Entities::Pipeline
+=======
+        # create request and trigger builds
+        result = Ci::CreateTriggerRequestService.execute(project, trigger, params[:ref].to_s, variables)
+        pipeline = result.pipeline
+
+        if pipeline.persisted?
+          present pipeline, with: Entities::Pipeline
+        else
+          render_validation_error!(pipeline)
+>>>>>>> upstream/master
         end
       end
 

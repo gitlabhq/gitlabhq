@@ -6,9 +6,21 @@ shared_examples_for 'group and project milestones' do |route_definition|
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:another_merge_request) { create(:merge_request, :simple, source_project: project) }
 
+<<<<<<< HEAD:spec/requests/api/milestones_spec.rb
+  before do
+    project.team << [user, :developer]
+
+    stub_licensed_features(issue_weights: false)
+  end
+
+  describe 'GET /projects/:id/milestones' do
+    it 'returns project milestones' do
+      get api("/projects/#{project.id}/milestones", user)
+=======
   describe "GET #{route_definition}" do
     it 'returns milestones list' do
       get api(route, user)
+>>>>>>> upstream/master:spec/support/api/milestones_shared_examples.rb
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
@@ -229,7 +241,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
       get api(issues_route, user)
 
       expect(response).to have_http_status(200)
-      expect(response).to match_response_schema('public_api/v4/ee/issues')
+      expect(response).to match_response_schema('public_api/v4/issues')
     end
 
     it 'returns a 401 error if user not authenticated' do
