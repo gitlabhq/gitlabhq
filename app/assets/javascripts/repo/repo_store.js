@@ -59,6 +59,7 @@ const RepoStore = {
     tree: false,
     blob: false,
   },
+  readOnly: true,
 
   // mutations
 

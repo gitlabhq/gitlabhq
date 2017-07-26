@@ -66,15 +66,9 @@ const RepoEditor = {
     },
 
     editMode() {
-      const panelClassList = document.querySelector('.panel-right').classList;
-      let readOnly = false;
+      const readOnly = !this.editMode;
 
-      if (this.editMode) {
-        panelClassList.add('edit-mode');
-      } else {
-        panelClassList.remove('edit-mode');
-        readOnly = true;
-      }
+      Store.readOnly = readOnly;
 
       this.monacoInstance.updateOptions({
         readOnly,

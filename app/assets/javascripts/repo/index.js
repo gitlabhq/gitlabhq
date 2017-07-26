@@ -29,7 +29,7 @@ function initRepo() {
     data: () => Store,
     template: `
       <div class="tree-content-holder">
-        <repo-sidebar/><div class="panel-right">
+        <repo-sidebar/><div class="panel-right" :class="{'edit-mode': readOnly}">
           <repo-tabs/>
           <repo-file-buttons/>
           <repo-editor/>
