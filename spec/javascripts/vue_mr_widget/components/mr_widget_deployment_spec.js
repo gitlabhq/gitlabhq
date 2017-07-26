@@ -10,6 +10,7 @@ const deploymentMockData = [
     url: '/root/acets-review-apps/environments/15',
     stop_url: '/root/acets-review-apps/environments/15/stop',
     metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+    metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
     external_url: 'http://diplo.',
     external_url_formatted: 'diplo.',
     deployed_at: '2017-03-22T22:44:42.258Z',
