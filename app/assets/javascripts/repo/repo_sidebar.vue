@@ -96,6 +96,7 @@ export default RepoSidebar;
         @linkclicked="linkClicked(prevURL)"/>
       <repo-loading-file
         v-for="n in 5"
+        :key="n"
         :loading="loading"
         :has-files="!!files.length"
         :is-mini="isMini"/>
