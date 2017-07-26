@@ -310,6 +310,7 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  align-items: center;
 
   .dropdown-menu-projects {
     margin-top: -$gl-padding;
