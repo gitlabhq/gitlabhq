@@ -1,23 +1,21 @@
 #
 # Used by NotificationService to determine who should receive notification
 #
-class NotificationRecipientService
-  attr_reader :project
-
-  def self.notification_setting_for_user_project(user, project)
-    project_setting = project && user.notification_settings_for(project)
-
-    return project_setting unless project_setting.nil? || project_setting.global?
-
-    group_setting = project&.group && user.notification_settings_for(project.group)
-
-    return group_setting unless group_setting.nil? || group_setting.global?
-
-    user.global_notification_setting
+module NotificationRecipientService
+  def self.notifiable_users(*a)
+    Recipient.notifiable_users(*a)
   end
 
-  def initialize(project)
-    @project = project
+  def self.build_recipients(*a)
+    Builder::Default.new(*a).recipient_users
+  end
+
+  def self.build_relabeled_recipients(*a)
+    Builder::Relabeled.new(*a).recipient_users
+  end
+
+  def self.build_new_note_recipients(*a)
+    Builder::NewNote.new(*a).recipient_users
   end
 
   class Recipient
@@ -38,8 +36,7 @@ class NotificationRecipientService
     end
 
     def notification_setting
-      @notification_setting ||=
-        NotificationRecipientService.notification_setting_for_user_project(user, @project)
+      @notification_setting ||= find_notification_setting
     end
 
     def raw_notification_level
@@ -110,6 +107,20 @@ class NotificationRecipientService
       return false if raw_notification_level == :custom
 
       NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
+    end
+
+    private
+
+    def find_notification_setting
+      project_setting = project && user.notification_settings_for(project)
+
+      return project_setting unless project_setting.nil? || project_setting.global?
+
+      group_setting = project&.group && user.notification_settings_for(project.group)
+
+      return group_setting unless group_setting.nil? || group_setting.global?
+
+      user.global_notification_setting
     end
   end
 
@@ -441,21 +452,5 @@ class NotificationRecipientService
         note.author
       end
     end
-  end
-
-  def self.notifiable_users(*a)
-    Recipient.notifiable_users(*a)
-  end
-
-  def build_recipients(*a)
-    Builder::Default.new(@project, *a).recipient_users
-  end
-
-  def build_relabeled_recipients(*a)
-    Builder::Relabeled.new(@project, *a).recipient_users
-  end
-
-  def build_new_note_recipients(*a)
-    Builder::NewNote.new(@project, *a).recipient_users
   end
 end

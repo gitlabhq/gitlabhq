@@ -79,7 +79,8 @@ class NotificationService
   #  * users with custom level checked with "reassign issue"
   #
   def reassigned_issue(issue, current_user, previous_assignees = [])
-    recipients = NotificationRecipientService.new(issue.project).build_recipients(
+    recipients = NotificationRecipientService.build_recipients(
+      issue.project,
       issue,
       current_user,
       action: "reassign",
@@ -196,7 +197,8 @@ class NotificationService
   end
 
   def resolve_all_discussions(merge_request, current_user)
-    recipients = NotificationRecipientService.new(merge_request.target_project).build_recipients(
+    recipients = NotificationRecipientService.build_recipients(
+      merge_request.target_project,
       merge_request,
       current_user,
       action: "resolve_all_discussions")
@@ -225,7 +227,7 @@ class NotificationService
   def send_new_note_notifications(note)
     notify_method = "note_#{note.to_ability_name}_email".to_sym
 
-    recipients = NotificationRecipientService.new(note.project).build_new_note_recipients(note)
+    recipients = NotificationRecipientService.build_new_note_recipients(note.project, note)
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
     end
@@ -305,7 +307,7 @@ class NotificationService
   end
 
   def issue_moved(issue, new_issue, current_user)
-    recipients = NotificationRecipientService.new(issue.project).build_recipients(issue, current_user, action: 'moved')
+    recipients = NotificationRecipientService.build_recipients(issue.project, issue, current_user, action: 'moved')
 
     recipients.map do |recipient|
       email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)
@@ -340,7 +342,7 @@ class NotificationService
   protected
 
   def new_resource_email(target, project, method)
-    recipients = NotificationRecipientService.new(project).build_recipients(target, target.author, action: "new")
+    recipients = NotificationRecipientService.build_recipients(project, target, target.author, action: "new")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
@@ -348,7 +350,7 @@ class NotificationService
   end
 
   def new_mentions_in_resource_email(target, project, new_mentioned_users, current_user, method)
-    recipients = NotificationRecipientService.new(project).build_recipients(target, current_user, action: "new")
+    recipients = NotificationRecipientService.build_recipients(project, target, current_user, action: "new")
     recipients = recipients & new_mentioned_users
 
     recipients.each do |recipient|
@@ -359,7 +361,8 @@ class NotificationService
   def close_resource_email(target, project, current_user, method, skip_current_user: true)
     action = method == :merged_merge_request_email ? "merge" : "close"
 
-    recipients = NotificationRecipientService.new(project).build_recipients(
+    recipients = NotificationRecipientService.build_recipients(
+      project,
       target,
       current_user,
       action: action,
@@ -375,7 +378,8 @@ class NotificationService
     previous_assignee_id = previous_record(target, 'assignee_id')
     previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
 
-    recipients = NotificationRecipientService.new(project).build_recipients(
+    recipients = NotificationRecipientService.build_recipients(
+      project,
       target,
       current_user,
       action: "reassign",
@@ -394,7 +398,7 @@ class NotificationService
   end
 
   def relabeled_resource_email(target, project, labels, current_user, method)
-    recipients = NotificationRecipientService.new(project).build_relabeled_recipients(target, current_user, labels: labels)
+    recipients = NotificationRecipientService.build_relabeled_recipients(project, target, current_user, labels: labels)
     label_names = labels.map(&:name)
 
     recipients.each do |recipient|
@@ -403,7 +407,7 @@ class NotificationService
   end
 
   def reopen_resource_email(target, project, current_user, method, status)
-    recipients = NotificationRecipientService.new(project).build_recipients(target, current_user, action: "reopen")
+    recipients = NotificationRecipientService.build_recipients(project, target, current_user, action: "reopen")
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, status, current_user.id).deliver_later
