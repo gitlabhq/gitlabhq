@@ -64,7 +64,7 @@ gem 'browser', '~> 2.2'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
