@@ -50,6 +50,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params[:doorkeeper_application].permit(:name, :redirect_uri, :trusted, :scopes)
+    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes)
   end
 end
