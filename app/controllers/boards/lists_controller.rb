@@ -2,7 +2,7 @@ module Boards
   class ListsController < Boards::ApplicationController
     include BoardsAuthorizations
 
-    #before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
+    before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
     before_action :authorize_read_list!, only: [:index]
 
     def index
@@ -12,7 +12,7 @@ module Boards
     end
 
     def create
-      list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute(board)
+      list = ::Boards::Lists::CreateService.new(board.parent, current_user, list_params).execute(board)
 
       if list.valid?
         render json: serialize_as_json(list)
@@ -23,7 +23,7 @@ module Boards
 
     def update
       list = board.lists.movable.find(params[:id])
-      service = Boards::Lists::MoveService.new(project, current_user, move_params)
+      service = Boards::Lists::MoveService.new(board_parent, current_user, move_params)
 
       if service.execute(list)
         head :ok
@@ -54,10 +54,6 @@ module Boards
     end
 
     private
-
-    def authorize_admin_list!
-      return render_403 unless can?(current_user, :admin_list, project)
-    end
 
     def list_params
       params.require(:list).permit(:label_id)
