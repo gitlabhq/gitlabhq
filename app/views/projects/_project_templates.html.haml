@@ -1,0 +1,8 @@
+.col-sm-12.template-buttons
+  - Gitlab::ProjectTemplate.all.each do |template|
+    -# The title should be the value posted to the controller, a pretty name to print would be
+    -# template.name
+    = template.title
+    = image_tag(template.logo_path)
+
+  = f.text_field :template_title, placeholder: "rails", class: "form-control", tabindex: 2, autofocus: true, required: true

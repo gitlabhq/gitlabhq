@@ -1,0 +1,48 @@
+require 'spec_helper'
+
+describe Gitlab::ProjectTemplate do
+  describe '.all' do
+    it 'returns a all templates' do
+      expected = [
+        described_class.new('rails', 'Ruby on Rails')
+      ]
+
+      expect(described_class.all).to be_an(Array)
+      expect(described_class.all).to eq(expected)
+    end
+  end
+
+  describe '.find' do
+    subject { described_class.find(query) }
+
+    context 'when there is a match' do
+      let(:query) { :rails }
+
+      it { is_expected.to be_a(described_class) }
+    end
+
+    context 'when there is no match' do
+      let(:query) { 'no-match' }
+
+      it { is_expected.to be(nil) }
+    end
+  end
+
+  describe 'instance methods' do
+    subject { described_class.new('phoenix', 'Phoenix Framework') }
+
+    it { is_expected.to respond_to(:logo_path, :file, :template_archive) }
+  end
+
+  describe 'validate all templates' do
+    described_class.all.each do |template|
+      it "#{template.name} has a valid archive" do
+        archive = template.template_archive
+        logo = Rails.root.join("app/assets/images/#{template.logo_path}")
+
+        expect(File.exist?(archive)).to be(true)
+        expect(File.exist?(logo)).to be(true)
+      end
+    end
+  end
+end

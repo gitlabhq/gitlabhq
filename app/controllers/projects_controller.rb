@@ -27,7 +27,12 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, project_params).execute
+    @project =
+      if project_from_template?
+        ::Projects::CreateFromTemplateService.new(current_user, project_params).execute
+      else
+        ::Projects::CreateService.new(current_user, project_params).execute
+      end
 
     if @project.saved?
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
@@ -324,6 +329,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
+      :template_title,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -343,6 +349,10 @@ class ProjectsController < Projects::ApplicationController
     project.repository.expire_exists_cache
 
     false
+  end
+
+  def project_from_template?
+    project_params[:template_title]&.present?
   end
 
   def project_view_files?

@@ -71,6 +71,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_accessor :template_title
   attr_writer :pipeline_status
 
   alias_attribute :title, :name
