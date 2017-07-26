@@ -40,6 +40,21 @@ describe MergeRequests::RebaseService do
         expect(head_commit.committer_email).to eq(user.email)
         expect(head_commit.committer_name).to eq(user.name)
       end
+
+      context 'git commands' do
+        let(:service) { described_class.new(project, user, {}) }
+
+        it 'sets GL_REPOSITORY env variable when calling git commands' do
+          expect_any_instance_of(described_class)
+            .to receive(:run_git_command).exactly(4).with(
+              anything,
+              anything,
+              hash_including('GL_REPOSITORY'),
+              anything)
+
+          service.execute(merge_request)
+        end
+      end
     end
   end
 end
