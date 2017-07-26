@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Geo::RepositorySyncWorker do
   let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
-  let!(:project_1) { create(:project) }
+  let(:group)      { create(:group) }
+  let!(:project_1) { create(:project, group: group) }
   let!(:project_2) { create(:project) }
 
   subject { described_class.new }
@@ -61,6 +62,28 @@ describe Geo::RepositorySyncWorker do
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 
       subject.perform
+    end
+
+    context 'when node have group restrictions' do
+      before do
+        allow(Gitlab::Geo).to receive(:current_node).and_return(secondary)
+        secondary.update_attribute(:groups, [group])
+      end
+
+      it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected groups to replicate' do
+        expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
+
+        subject.perform
+      end
+
+      it 'does not perform Geo::ProjectSyncWorker for synced projects updated recently that do not belong to selected groups to replicate' do
+        create(:geo_project_registry, :synced, :repository_dirty, project: project_1)
+        create(:geo_project_registry, :synced, :repository_dirty, project: project_2)
+
+        expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
+
+        subject.perform
+      end
     end
   end
 end
