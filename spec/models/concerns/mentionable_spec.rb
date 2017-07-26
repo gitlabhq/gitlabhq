@@ -174,25 +174,25 @@ describe Commit, 'Mentionable' do
     it "is false when message doesn't reference anything" do
       allow(commit.raw).to receive(:message).and_return "WIP: Do something"
 
-      expect(commit.matches_cross_reference_regex?).to be false
+      expect(commit.matches_cross_reference_regex?).to be_falsey
     end
 
     it 'is true if issue #number mentioned in title' do
       allow(commit.raw).to receive(:message).and_return "#1"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if references an MR' do
       allow(commit.raw).to receive(:message).and_return "See merge request !12"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if references a commit' do
       allow(commit.raw).to receive(:message).and_return "a1b2c3d4"
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     it 'is true if issue referenced by url' do
@@ -200,7 +200,7 @@ describe Commit, 'Mentionable' do
 
       allow(commit.raw).to receive(:message).and_return Gitlab::UrlBuilder.build(issue)
 
-      expect(commit.matches_cross_reference_regex?).to be true
+      expect(commit.matches_cross_reference_regex?).to be_truthy
     end
 
     context 'with external issue tracker' do
@@ -209,7 +209,13 @@ describe Commit, 'Mentionable' do
       it 'is true if external issues referenced' do
         allow(commit.raw).to receive(:message).and_return 'JIRA-123'
 
-        expect(commit.matches_cross_reference_regex?).to be true
+        expect(commit.matches_cross_reference_regex?).to be_truthy
+      end
+
+      it 'is true if internal issues referenced' do
+        allow(commit.raw).to receive(:message).and_return '#123'
+
+        expect(commit.matches_cross_reference_regex?).to be_truthy
       end
     end
   end

@@ -244,6 +244,8 @@ describe CreateDeploymentService, services: true do
       context 'when job is retried' do
         it_behaves_like 'creates deployment' do
           before do
+            stub_not_protect_default_branch
+
             project.add_developer(user)
           end
 

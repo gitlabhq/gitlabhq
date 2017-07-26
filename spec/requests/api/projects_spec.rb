@@ -159,6 +159,31 @@ describe API::Projects do
         expect(json_response.first).to include 'statistics'
       end
 
+      context 'when external issue tracker is enabled' do
+        let!(:jira_service) { create(:jira_service, project: project) }
+
+        it 'includes open_issues_count' do
+          get api('/projects', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.first.keys).to include('open_issues_count')
+          expect(json_response.find { |hash| hash['id'] == project.id }.keys).to include('open_issues_count')
+        end
+
+        it 'does not include open_issues_count if issues are disabled' do
+          project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+
+          get api('/projects', user)
+
+          expect(response.status).to eq 200
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.find { |hash| hash['id'] == project.id }.keys).not_to include('open_issues_count')
+        end
+      end
+
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
           expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
@@ -788,6 +813,38 @@ describe API::Projects do
 
         expect(response).to have_http_status(200)
         expect(json_response).not_to include("import_error")
+      end
+
+      context 'links exposure' do
+        it 'exposes related resources full URIs' do
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+          expect(links['issues']).to end_with("/api/v4/projects/#{project.id}/issues")
+          expect(links['merge_requests']).to end_with("/api/v4/projects/#{project.id}/merge_requests")
+          expect(links['repo_branches']).to end_with("/api/v4/projects/#{project.id}/repository/branches")
+          expect(links['labels']).to end_with("/api/v4/projects/#{project.id}/labels")
+          expect(links['events']).to end_with("/api/v4/projects/#{project.id}/events")
+          expect(links['members']).to end_with("/api/v4/projects/#{project.id}/members")
+        end
+
+        it 'filters related URIs when their feature is not enabled' do
+          project = create(:empty_project, :public,
+                           :merge_requests_disabled,
+                           :issues_disabled,
+                           creator_id: user.id,
+                           namespace: user.namespace)
+
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links.has_key?('merge_requests')).to be_falsy
+          expect(links.has_key?('issues')).to be_falsy
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+        end
       end
 
       describe 'permissions' do

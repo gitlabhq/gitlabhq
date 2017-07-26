@@ -237,7 +237,8 @@ describe Gitlab::Workhorse, lib: true do
 
         context 'when action is not enabled by feature flag' do
           it 'does not include Gitaly params in the returned value' do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+            status_opt_out = Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag, status: status_opt_out).and_return(false)
 
             expect(subject).not_to include(gitaly_params)
           end
@@ -325,7 +326,7 @@ describe Gitlab::Workhorse, lib: true do
 
     subject { described_class.send_git_blob(repository, blob) }
 
-    context 'when Gitaly project_raw_show feature is enabled' do
+    context 'when Gitaly workhorse_raw_show feature is enabled' do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 
@@ -345,7 +346,7 @@ describe Gitlab::Workhorse, lib: true do
       end
     end
 
-    context 'when Gitaly project_raw_show feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly workhorse_raw_show feature is disabled', skip_gitaly_mock: true do
       it 'sets the header correctly' do
         key, command, params = decode_workhorse_header(subject)
 

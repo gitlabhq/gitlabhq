@@ -58,6 +58,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
+      params.delete(:canonical_issue_id)
     end
 
     filter_assignee(issuable)

@@ -447,6 +447,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `name`
   1. `props`
   1. `mixins`
+  1. `directives`
   1. `data`
   1. `components`
   1. `computedProps`

@@ -356,7 +356,13 @@ Example response:
    "user_notes_count": 1,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/1",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -418,7 +424,13 @@ Example response:
    "user_notes_count": 0,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/14",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -481,7 +493,13 @@ Example response:
    "user_notes_count": 0,
    "due_date": "2016-07-22",
    "web_url": "http://example.com/example/example/issues/15",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
 
@@ -567,7 +585,13 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
 
@@ -632,7 +656,13 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
 

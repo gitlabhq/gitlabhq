@@ -108,6 +108,11 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
     let(:issue) { ExternalIssue.new("#123", project) }
     let(:reference) { issue.to_reference }
 
+    before do
+      project.issues_enabled = false
+      project.save!
+    end
+
     it_behaves_like "external issue tracker"
   end
 

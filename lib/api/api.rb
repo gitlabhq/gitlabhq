@@ -3,6 +3,7 @@ module API
     include APIGuard
 
     allow_access_with_scope :api
+    prefix :api
 
     version %w(v3 v4), using: :path
 
@@ -109,7 +110,8 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::Milestones
+    mount ::API::ProjectMilestones
+    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings

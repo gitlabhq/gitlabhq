@@ -61,7 +61,8 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No pipeline created')
+        expect(json_response['message']['base'])
+          .to contain_exactly('Reference not found')
       end
 
       context 'Validates variables' do
