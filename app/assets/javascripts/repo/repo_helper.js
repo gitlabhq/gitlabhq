@@ -73,17 +73,15 @@ const RepoHelper = {
   },
 
   getNewMergedList(inDirectory, currentList, newList) {
-    if (!inDirectory) return newList;
-
+    const newListSorted = newList.sort(this.compareFilesCaseInsensitive);
+    if (!inDirectory) return newListSorted;
     const indexOfFile = currentList.findIndex(file => file.url === inDirectory.url);
-
-    if (!indexOfFile) return newList;
-
-    return RepoHelper.mergeNewListToOldList(newList, currentList, inDirectory, indexOfFile);
+    if (!indexOfFile) return newListSorted;
+    return RepoHelper.mergeNewListToOldList(newListSorted, currentList, inDirectory, indexOfFile);
   },
 
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
-    newList.forEach((newFile) => {
+    newList.reverse().forEach((newFile) => {
       const fileIndex = indexOfFile + 1;
       const file = newFile;
       file.level = inDirectory.level + 1;
@@ -91,6 +89,17 @@ const RepoHelper = {
     });
 
     return oldList;
+  },
+
+  compareFilesCaseInsensitive(a,b) {
+    const aName = a.name.toLowerCase();
+    const bName = b.name.toLowerCase();
+    if(a.level > 0) return 0;
+    if (aName < bName)
+      return -1;
+    if (aName > bName)
+      return 1;
+    return 0;
   },
 
   getContent(treeOrFile, cb) {
