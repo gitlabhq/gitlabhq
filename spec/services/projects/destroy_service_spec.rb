@@ -127,7 +127,7 @@ describe Projects::DestroyService do
     context 'errors' do
       context 'when `remove_legacy_registry_tags` fails' do
         before do
-          expect_any_instance_of(Projects::DestroyService)
+          expect_any_instance_of(described_class)
             .to receive(:remove_legacy_registry_tags).and_return(false)
         end
 
@@ -136,7 +136,7 @@ describe Projects::DestroyService do
 
       context 'when `remove_repository` fails' do
         before do
-          expect_any_instance_of(Projects::DestroyService)
+          expect_any_instance_of(described_class)
             .to receive(:remove_repository).and_return(false)
         end
 
