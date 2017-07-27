@@ -56,7 +56,7 @@ Shortcuts to GitLab's most visited docs:
 
 ### Repository
 
-Manage files and branches from the UI (user interface):
+Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
 - Files
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
