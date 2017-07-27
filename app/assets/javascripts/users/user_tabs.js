@@ -158,7 +158,7 @@ export default class UserTabs {
         $calendarWrap.html(CALENDAR_TEMPLATE);
 
         // eslint-disable-next-line no-new
-        new ActivityCalendar(activityData, calendarActivitiesPath);
+        new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath);
       },
     });
 
