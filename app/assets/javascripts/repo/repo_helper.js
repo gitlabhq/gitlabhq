@@ -19,7 +19,7 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
-    }
+    };
   },
 
   key: '',
@@ -135,7 +135,7 @@ const RepoHelper = {
 
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
-    console.log('file',file)
+    console.log('file', file);
     // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
@@ -174,14 +174,14 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
-        if(!file) Store.isRoot = RepoHelper.isRoot(Service.url);
+        if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
         file = RepoHelper.setDirectoryOpen(file);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
-    .catch((e) => {
+    .catch(() => {
       // RepoHelper.setLoading(false, loadingData);
       RepoHelper.loadingError();
     });

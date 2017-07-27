@@ -3,7 +3,7 @@ import repoCommitSection from '~/repo/repo_commit_section.vue';
 import RepoStore from '~/repo/repo_store';
 import Api from '~/api';
 
-fdescribe('RepoCommitSection', () => {
+describe('RepoCommitSection', () => {
   const openedFiles = [{
     id: 0,
     changed: true,
