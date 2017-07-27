@@ -114,7 +114,7 @@ GitLabDropdownFilter = (function() {
     } else {
       elements = this.options.elements();
       if (search_text) {
-        return elements.each(function() {
+        elements.each(function() {
           var $el, matches;
           $el = $(this);
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
@@ -127,8 +127,10 @@ GitLabDropdownFilter = (function() {
           }
         });
       } else {
-        return elements.show().removeClass('option-hidden');
+        elements.show().removeClass('option-hidden');
       }
+
+      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -745,10 +747,16 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
     if (this.options.filterable) {
-      $(':focus').blur();
-
       this.dropdown.one('transitionend', () => {
-        this.filterInput.focus();
+        const initialScrollTop = $(window).scrollTop();
+
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
+
+        if ($(window).scrollTop() < initialScrollTop) {
+          $(window).scrollTop(initialScrollTop);
+        }
       });
 
       if (triggerFocus) {
