@@ -301,10 +301,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def load_events
-    @events = @project.events.recent
-    @events = event_filter.apply_filter(@events).with_associations
-    limit = (params[:limit] || 20).to_i
-    @events = @events.limit(limit).offset(params[:offset] || 0)
+    projects = Project.where(id: @project.id)
+
+    @events = EventCollection
+      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 
   def project_params

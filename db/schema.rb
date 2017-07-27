@@ -530,7 +530,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
   add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
   add_index "events", ["created_at"], name: "index_events_on_created_at", using: :btree
-  add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
+  add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
   add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
 
@@ -546,7 +546,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
 
   add_index "events_for_migration", ["action"], name: "index_events_for_migration_on_action", using: :btree
   add_index "events_for_migration", ["author_id"], name: "index_events_for_migration_on_author_id", using: :btree
-  add_index "events_for_migration", ["project_id"], name: "index_events_for_migration_on_project_id", using: :btree
+  add_index "events_for_migration", ["project_id", "id"], name: "index_events_for_migration_on_project_id_and_id", using: :btree
   add_index "events_for_migration", ["target_type", "target_id"], name: "index_events_for_migration_on_target_type_and_target_id", using: :btree
 
   create_table "feature_gates", force: :cascade do |t|

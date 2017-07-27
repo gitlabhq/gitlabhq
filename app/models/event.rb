@@ -62,8 +62,13 @@ class Event < ActiveRecord::Base
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
 
-  scope :in_projects, ->(projects) do
-    where(project_id: projects.pluck(:id)).recent
+  scope :in_projects, -> (projects) do
+    sub_query = projects
+      .except(:order)
+      .select(1)
+      .where('projects.id = events.project_id')
+
+    where('EXISTS (?)', sub_query).recent
   end
 
   scope :with_associations, -> do
