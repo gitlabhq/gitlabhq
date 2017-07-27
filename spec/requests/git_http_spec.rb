@@ -786,7 +786,7 @@ describe 'Git HTTP requests', lib: true do
             project.team << [user, :master]
           end
 
-          it_behaves_like 'pushes are allowed'
+          it_behaves_like 'pulls are allowed'
           it_behaves_like 'pushes are allowed'
         end
       end
