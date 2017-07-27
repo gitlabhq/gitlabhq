@@ -77,6 +77,13 @@ module Gitlab
           storages_paths&.dig(storage_name, 'path')
         end
 
+        # All below test methods use shell commands to perform actions on storage volumes.
+        # In case a storage volume have connectivity problems causing pure Ruby IO operation to wait indefinitely,
+        # we can rely on shell commands to be terminated once `timeout` kills them.
+        #
+        # However we also fallback to pure Ruby file operations in case a specific shell command is missing
+        # so we are still able to perform healthchecks and gather metrics from such system.
+
         def delete_test_file(tmp_path)
           _, status = exec_with_timeout(%W{ rm -f #{tmp_path} })
           status.zero?
