@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -94,10 +94,8 @@ export default class ActivityCalendar {
             if (lastMonth != null) {
               lastMonthX = lastMonth.x;
             }
-            if (lastMonth == null) {
-              return this.months.push({ month, x });
-            } else if (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonthX) {
-              return this.months.push({ month, x });
+            if (lastMonth == null || (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonthX)) {
+              this.months.push({ month, x });
             }
           }
         });
