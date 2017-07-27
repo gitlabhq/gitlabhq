@@ -4,7 +4,12 @@ Every API call to merge requests must be authenticated.
 
 ## List merge requests
 
-Get all merge requests the authenticated user has access to.
+> [Introduced][ce-13060] in GitLab 9.5.
+
+Get all merge requests the authenticated user has access to. By
+default it returns only merge requests created by the current user. To
+get all merge requests, use parameter `scope=all`.
+
 The `state` parameter can be used to get only merge requests with a
 given state (`opened`, `closed`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to
@@ -32,9 +37,9 @@ Parameters:
 | `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
 | `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
 | `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
-| `author_id` | integer | no | Returns merge requests created by the given user `id` |
+| `scope` | string | no | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` |
+| `author_id` | integer | no | Returns merge requests created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me` |
 | `assignee_id` | integer | no | Returns merge requests assigned to the given user `id` |
-| `scope` | string | no | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` |
 
 ```json
 [
@@ -121,6 +126,9 @@ Parameters:
 | `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
 | `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
 | `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
+| `scope` | string | no | Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `author_id` | integer | no | Returns merge requests created by the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_ |
+| `assignee_id` | integer | no | Returns merge requests assigned to the given user `id` _([Introduced][ce-13060] in GitLab 9.5)_ |
 
 ```json
 [
@@ -1257,3 +1265,5 @@ Example response:
   "total_time_spent": 3600
 }
 ```
+
+[ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060

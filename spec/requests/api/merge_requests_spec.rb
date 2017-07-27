@@ -41,7 +41,7 @@ describe API::MergeRequests do
       let(:user2) { create(:user) }
 
       it 'returns an array of all merge requests' do
-        get api('/merge_requests', user)
+        get api('/merge_requests', user), scope: :all
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -54,7 +54,7 @@ describe API::MergeRequests do
         private_project = create(:empty_project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
-        get api('/merge_requests', user)
+        get api('/merge_requests', user), scope: :all
 
         expect(response).to have_http_status(200)
         expect(response).to include_pagination_headers
@@ -63,10 +63,21 @@ describe API::MergeRequests do
           .not_to include(merge_request3.id)
       end
 
+      it 'returns an array of merge requests created by current user if no scope is given' do
+        merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user2)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+
       it 'returns an array of merge requests authored by the given user' do
         merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
 
-        get api('/merge_requests', user), author_id: user2.id
+        get api('/merge_requests', user), author_id: user2.id, scope: :all
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -77,7 +88,7 @@ describe API::MergeRequests do
       it 'returns an array of merge requests assigned to the given user' do
         merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
 
-        get api('/merge_requests', user), assignee_id: user2.id
+        get api('/merge_requests', user), assignee_id: user2.id, scope: :all
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array

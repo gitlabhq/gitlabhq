@@ -38,7 +38,7 @@ module API
         optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'all',
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         use :pagination
       end
@@ -50,6 +50,8 @@ module API
       end
       params do
         use :merge_requests_params
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
+                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
         merge_requests = find_merge_requests
