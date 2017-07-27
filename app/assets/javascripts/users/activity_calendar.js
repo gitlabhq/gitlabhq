@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -54,6 +54,7 @@ export default class ActivityCalendar {
     // Init color functions
     this.colorKey = this.initColorKey();
     this.color = this.initColor();
+
     // Init the svg element
     this.renderSvg(group);
     this.renderDays();
@@ -100,7 +101,7 @@ export default class ActivityCalendar {
             }
           }
         });
-        return "translate(" + ((this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace) + ", 18)";
+        return `translate(${(this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace}, 18)`;
       })
       .selectAll('rect')
       .data(stamp => stamp)
@@ -115,10 +116,10 @@ export default class ActivityCalendar {
         date = new Date(stamp.date);
         contribText = 'No contributions';
         if (stamp.count > 0) {
-          contribText = stamp.count + " contribution" + (stamp.count > 1 ? 's' : '');
+          contribText = `${stamp.count} contribution${stamp.count > 1 ? 's' : ''}`;
         }
         dateText = date.format('mmm d, yyyy');
-        return contribText + "<br />" + (gl.utils.getDayName(date)) + " " + dateText;
+        return `${contribText}<br />${gl.utils.getDayName(date)} ${dateText}`;
       })
       .attr('class', 'user-contrib-cell js-tooltip').attr('fill', (stamp) => {
         if (stamp.count !== 0) {
@@ -202,8 +203,14 @@ export default class ActivityCalendar {
   clickDay(stamp) {
     if (this.currentSelectedDate !== stamp.date) {
       this.currentSelectedDate = stamp.date;
-      const date = this.currentSelectedDate.getFullYear() + "-" + (this.currentSelectedDate.getMonth() + 1) + "-" + this.currentSelectedDate.getDate();
-      return $.ajax({
+
+      const date = [
+        this.currentSelectedDate.getFullYear(),
+        this.currentSelectedDate.getMonth() + 1,
+        this.currentSelectedDate.getDate(),
+      ].join('-');
+
+      $.ajax({
         url: this.calendarActivitiesPath,
         data: { date },
         cache: false,
@@ -213,7 +220,7 @@ export default class ActivityCalendar {
       });
     } else {
       this.currentSelectedDate = '';
-      return $('.user-calendar-activities').html('');
+      $('.user-calendar-activities').html('');
     }
   }
 
