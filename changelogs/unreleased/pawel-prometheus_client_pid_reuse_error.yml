@@ -1,0 +1,4 @@
+---
+title: Fix Prometheus client PID reuse bug
+merge_request: 13130
+author:
