@@ -609,4 +609,26 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/pages/domains/my.domain.com')).to route_to('projects/pages_domains#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'my.domain.com')
     end
   end
+
+  describe Projects::Registry::TagsController, :routing do
+    describe '#destroy' do
+      it 'correctly routes to a destroy action' do
+        expect(delete('/gitlab/gitlabhq/registry/repository/1/tags/rc1'))
+          .to route_to('projects/registry/tags#destroy',
+                       namespace_id: 'gitlab',
+                       project_id: 'gitlabhq',
+                       repository_id: '1',
+                       id: 'rc1')
+      end
+
+      it 'takes registry tag name constrains into account' do
+        expect(delete('/gitlab/gitlabhq/registry/repository/1/tags/-rc1'))
+          .not_to route_to('projects/registry/tags#destroy',
+                           namespace_id: 'gitlab',
+                           project_id: 'gitlabhq',
+                           repository_id: '1',
+                           id: '-rc1')
+      end
+    end
+  end
 end

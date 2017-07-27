@@ -11,7 +11,7 @@
 
 .is-dragging {
   // Important because plugin sets inline CSS
-  opacity: 1!important;
+  opacity: 1 !important;
 
   * {
     -webkit-user-select: none;
@@ -19,8 +19,8 @@
     -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing!important;
-    cursor: grabbing!important;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
   }
 }
 
@@ -73,6 +73,7 @@
     width: 100%;
     height: 100%;
     top: 0;
+    left: 0;
     background: $white-light;
     z-index: 500;
 
@@ -479,7 +480,10 @@
   border-top: 1px solid $border-color;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
+.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
+  position: absolute;
+
   &.right-sidebar {
     top: 0;
     bottom: 0;

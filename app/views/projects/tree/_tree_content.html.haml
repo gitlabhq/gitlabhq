@@ -10,7 +10,7 @@
       - if @path.present?
         %tr.tree-item
           %td.tree-item-file-name
-            = link_to "..", namespace_project_tree_path(@project.namespace, @project, up_dir_path), class: 'prepend-left-10'
+            = link_to "..", project_tree_path(@project, up_dir_path), class: 'prepend-left-10'
           %td
           %td.hidden-xs
 
@@ -20,13 +20,13 @@
     = render "projects/tree/readme", readme: tree.readme
 
 - if can_edit_tree?
-  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: namespace_project_create_blob_path(@project.namespace, @project, @id), method: :post
+  = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, @id), method: :post
   = render 'projects/blob/new_dir'
 
-- if @project.feature_available?(:file_lock)
+- if @project.feature_available?(:file_locks)
   :javascript
     PathLocks.init(
-      '#{toggle_namespace_project_path_locks_path(@project.namespace, @project)}',
+      '#{toggle_project_path_locks_path(@project)}',
       '#{@path}'
     );
 

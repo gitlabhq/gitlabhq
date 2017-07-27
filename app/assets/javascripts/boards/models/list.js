@@ -40,9 +40,8 @@ class List {
 
   save () {
     return gl.boardService.createList(this.label.id)
-      .then((resp) => {
-        const data = resp.json();
-
+      .then(resp => resp.json())
+      .then((data) => {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
@@ -91,8 +90,8 @@ class List {
     }
 
     return gl.boardService.getIssuesForList(this.id, data)
-      .then((resp) => {
-        const data = resp.json();
+      .then(resp => resp.json())
+      .then((data) => {
         this.loading = false;
         this.issuesSize = data.size;
 
@@ -109,8 +108,8 @@ class List {
     this.issuesSize += 1;
 
     return gl.boardService.newIssue(this.id, issue)
-      .then((resp) => {
-        const data = resp.json();
+      .then(resp => resp.json())
+      .then((data) => {
         issue.id = data.iid;
         issue.milestone = data.milestone;
 

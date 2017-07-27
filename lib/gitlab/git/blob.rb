@@ -1,3 +1,5 @@
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
@@ -27,7 +29,7 @@ module Gitlab
           path = path.sub(/\A\/*/, '')
           path = '/' if path.empty?
           name = File.basename(path)
-          entry = Gitlab::GitalyClient::Commit.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
           return unless entry
 
           case entry.type
@@ -41,10 +43,6 @@ module Gitlab
               commit_id: sha
             )
           when :BLOB
-            # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
-            # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
-            # which is what we use below to keep a consistent behavior.
-            detect = CharlockHolmes::EncodingDetector.new(8000).detect(entry.data)
             new(
               id: entry.oid,
               name: name,
@@ -53,7 +51,7 @@ module Gitlab
               mode: entry.mode.to_s(8),
               path: path,
               commit_id: sha,
-              binary: detect && detect[:type] == :binary
+              binary: binary?(entry.data)
             )
           end
         end
@@ -87,15 +85,31 @@ module Gitlab
         end
 
         def raw(repository, sha)
-          blob = repository.lookup(sha)
+          Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+            else
+              blob = repository.lookup(sha)
 
-          new(
-            id: blob.oid,
-            size: blob.size,
-            data: blob.content(MAX_DATA_DISPLAY_SIZE),
-            binary: blob.binary?
-          )
+              new(
+                id: blob.oid,
+                size: blob.size,
+                data: blob.content(MAX_DATA_DISPLAY_SIZE),
+                binary: blob.binary?
+              )
+            end
+          end
         end
+
+        def binary?(data)
+          # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
+          # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
+          # which is what we use below to keep a consistent behavior.
+          detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
+          detect && detect[:type] == :binary
+        end
+
+        private
 
         # Recursive search of blob id by path
         #
@@ -165,14 +179,27 @@ module Gitlab
         return if @data == '' # don't mess with submodule blobs
         return @data if @loaded_all_data
 
+        Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
+          @data = begin
+            if is_enabled
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+            else
+              repository.lookup(id).content
+            end
+          end
+        end
+
         @loaded_all_data = true
-        @data = repository.lookup(id).content
         @loaded_size = @data.bytesize
         @binary = nil
       end
 
       def name
         encode! @name
+      end
+
+      def path
+        encode! @path
       end
 
       def truncated?

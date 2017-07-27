@@ -1,9 +1,7 @@
 # Configuring a Database for GitLab HA
 
 **Warning**
-This functionality should be considered alpha. Use with caution.
-The steps listed in this document may not leave you with a configuration that matches
-what the released version of the software will do.
+This functionality should be considered beta, use with caution.
 **Warning**
 
 You can choose to install and manage a database server (PostgreSQL/MySQL)
@@ -67,7 +65,7 @@ using [repmgr](http://www.repmgr.org/) to handle standby synchronization, and fa
     postgresql['wal_level'] = 'replica'
     postgresql['max_wal_senders'] = X # Should be set to at least 1 more than the number of nodes in the cluster
     postgresql['shared_preload_libraries'] = 'repmgr_funcs' # If this attribute is already defined, append the new value as a comma separated list
-    postgresql['custom_pg_hba_entries'] = [
+    postgresql['custom_pg_hba_entries']['repmgr'] = [
       {
         type: 'local',
         database: 'replication',
@@ -249,7 +247,7 @@ If you still want to enable this feature, do the following on each database node
     ```
     # su - gitlab-psql -c '/opt/gitlab/embedded/bin/repmgrd -f /var/opt/gitlab/postgresql/repmgr.conf --verbose -d >> /var/log/gitlab/repmgr/repmgr.log 2>&1'
     ```
- 
+
 ### Operations
 If your master node is experiencing an issue, you can manually failover.
 1. If the master database is still running, shut it down first

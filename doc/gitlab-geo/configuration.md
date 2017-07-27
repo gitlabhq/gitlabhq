@@ -282,6 +282,19 @@ Host example.com                    # The FQDN of the primary Geo node
   IdentityFile ~/.ssh/mycustom.key  # The location of your private key
 ```
 
+### Upgrading Geo
+
+To avoid having to maintain consistency of the `authorized_keys` file for SSH access,
+we encourage all **Geo** users to
+[switch to SSH key lookups via the database](ssh.md).
+This will be necessary once Geo system hooks are removed.
+
+We highly recommend using replication slots. The easiest way to do this in Omnibus is the following:
+  1. Install GitLab on the primary server
+  1. Run `gitlab-ctl reconfigure` and `gitlab-ctl restart postgresql`. This will enable replication slots on the primary database.
+  1. Install GitLab on the secondary server.
+  1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
+
 ## Troubleshooting
 
 See the [troubleshooting document](troubleshooting.md).

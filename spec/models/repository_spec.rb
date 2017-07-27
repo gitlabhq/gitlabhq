@@ -347,6 +347,17 @@ describe Repository, models: true do
       expect(blob.data).to eq('Changelog!')
     end
 
+    it 'creates new file and dir when file_path has a forward slash' do
+      expect do
+        repository.create_file(user, 'new_dir/new_file.txt', 'File!',
+                               message: 'Create new_file with new_dir',
+                               branch_name: 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
+      expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
+    end
+
     it 'respects the autocrlf setting' do
       repository.create_file(user, 'hello.txt', "Hello,\r\nWorld",
                              message: 'Add hello world',
@@ -550,7 +561,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#changelog", caching: true do
+  describe "#changelog", :use_clean_rails_memory_store_caching do
     it 'accepts changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
 
@@ -582,7 +593,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#license_blob", caching: true do
+  describe "#license_blob", :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(
         user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
@@ -627,7 +638,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#license_key', caching: true do
+  describe '#license_key', :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
@@ -692,7 +703,7 @@ describe Repository, models: true do
     end
   end
 
-  describe "#gitlab_ci_yml", caching: true do
+  describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
@@ -1670,7 +1681,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#contribution_guide', caching: true do
+  describe '#contribution_guide', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:contributing)
@@ -1684,7 +1695,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#gitignore', caching: true do
+  describe '#gitignore', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:gitignore)
@@ -1697,7 +1708,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#koding_yml', caching: true do
+  describe '#koding_yml', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)
         .with(:koding)
@@ -1710,7 +1721,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#readme', caching: true do
+  describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       it 'returns nil' do
         allow(repository).to receive(:tree).with(:head).and_return(nil)
@@ -1956,7 +1967,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#cache_method_output', caching: true do
+  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       let(:value) do
         repository.cache_method_output(:cats, fallback: 10) do

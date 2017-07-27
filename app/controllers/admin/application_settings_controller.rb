@@ -1,4 +1,6 @@
 class Admin::ApplicationSettingsController < Admin::ApplicationController
+  prepend EE::Admin::ApplicationSettingsController
+
   before_action :set_application_setting
 
   def show
@@ -58,7 +60,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     import_sources = params[:application_setting][:import_sources]
-
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
     else
@@ -72,14 +73,16 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+
+    params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-      application_setting_params_ce << application_setting_params_ee
+      application_setting_params_attributes
     )
   end
 
-  def application_setting_params_ce
+  def application_setting_params_attributes
     [
       :admin_notification_email,
       :after_sign_out_path,
@@ -112,6 +115,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :html_emails_enabled,
       :koding_enabled,
       :koding_url,
+      :password_authentication_enabled,
       :plantuml_enabled,
       :plantuml_url,
       :max_artifacts_size,
@@ -125,6 +129,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :performance_bar_allowed_group_id,
+      :performance_bar_enabled,
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,
@@ -132,7 +138,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :require_two_factor_authentication,
       :session_expire_delay,
       :sign_in_text,
-      :signin_enabled,
       :signup_enabled,
       :sentry_dsn,
       :sentry_enabled,
@@ -160,28 +165,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       repository_storages: [],
       restricted_visibility_levels: [],
       sidekiq_throttling_queues: []
-    ]
-  end
-
-  def application_setting_params_ee
-    [
-      :help_text,
-      :elasticsearch_url,
-      :elasticsearch_indexing,
-      :elasticsearch_aws,
-      :elasticsearch_aws_access_key,
-      :elasticsearch_aws_secret_access_key,
-      :elasticsearch_aws_region,
-      :elasticsearch_search,
-      :repository_size_limit,
-      :shared_runners_minutes,
-      :geo_status_timeout,
-      :elasticsearch_experimental_indexer,
-      :check_namespace_plan,
-      :mirror_max_delay,
-      :mirror_max_capacity,
-      :mirror_capacity_threshold,
-      :authorized_keys_enabled
     ]
   end
 end

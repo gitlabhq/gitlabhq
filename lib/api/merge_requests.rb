@@ -10,6 +10,8 @@ module API
     resource :projects, requirements: { id: %r{[^/]+} } do
       include TimeTrackingEndpoints
 
+      helpers ::Gitlab::IssuableMetadata
+
       helpers do
         def handle_merge_request_errors!(errors)
           if errors[:project_access].any?
@@ -27,11 +29,9 @@ module API
           render_api_error!(errors, 400)
         end
 
-        def issue_entity(project)
-          if project.has_external_issue_tracker?
-            Entities::ExternalIssue
-          else
-            Entities::IssueBasic
+        def check_sha_param!(params, merge_request)
+          if params[:sha] && merge_request.diff_head_sha != params[:sha]
+            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
           end
         end
 
@@ -41,9 +41,15 @@ module API
           args[:milestone_title] = args.delete(:milestone)
           args[:label_name] = args.delete(:labels)
 
-          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
+          merge_requests = MergeRequestsFinder.new(current_user, args).execute
+                             .reorder(args[:order_by] => args[:sort])
+          merge_requests = paginate(merge_requests)
+                             .preload(:target_project)
 
-          merge_requests.reorder(args[:order_by] => args[:sort])
+          return merge_requests if args[:view] == 'simple'
+
+          merge_requests
+            .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
         params :optional_params_ce do
@@ -80,6 +86,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         use :pagination
       end
       get ":id/merge_requests" do
@@ -87,7 +94,17 @@ module API
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+        options = { with: Entities::MergeRequestBasic,
+                    current_user: current_user,
+                    project: user_project }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        present merge_requests, options
       end
 
       desc 'Create a merge request' do
@@ -124,6 +141,7 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
+        status 204
         merge_request.destroy
       end
 
@@ -228,9 +246,7 @@ module API
 
         render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds)
 
-        if params[:sha] && merge_request.diff_head_sha != params[:sha]
-          render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
-        end
+        check_sha_param!(params, merge_request)
 
         if params[:squash] && merge_request.project.feature_available?(:merge_request_squash)
           merge_request.update(squash: params[:squash])
@@ -275,6 +291,9 @@ module API
       # Examples:
       #   GET /projects/:id/merge_requests/:merge_request_iid/approvals
       #
+      desc "List a merge request's approvals" do
+        success Entities::MergeRequestApprovals
+      end
       get ':id/merge_requests/:merge_request_iid/approvals' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
@@ -289,10 +308,18 @@ module API
       # Examples:
       #   POST /projects/:id/merge_requests/:merge_request_iid/approve
       #
+      desc 'Approve a merge request' do
+        success Entities::MergeRequestApprovals
+      end
+      params do
+        optional :sha, type: String, desc: 'When present, must have the HEAD SHA of the source branch'
+      end
       post ':id/merge_requests/:merge_request_iid/approve' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         unauthorized! unless merge_request.can_approve?(current_user)
+
+        check_sha_param!(params, merge_request)
 
         ::MergeRequests::ApprovalService
           .new(user_project, current_user)
@@ -301,6 +328,9 @@ module API
         present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
       end
 
+      desc 'Remove an approval from a merge request' do
+        success Entities::MergeRequestApprovals
+      end
       post ':id/merge_requests/:merge_request_iid/unapprove' do
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
@@ -322,7 +352,14 @@ module API
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-        present paginate(issues), with: issue_entity(user_project), current_user: current_user
+        issues = paginate(issues)
+
+        external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }
+
+        data = Entities::IssueBasic.represent(internal_issues, current_user: current_user)
+        data += Entities::ExternalIssue.represent(external_issues, current_user: current_user)
+
+        data.as_json
       end
     end
   end

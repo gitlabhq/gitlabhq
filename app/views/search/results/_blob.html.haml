@@ -6,7 +6,7 @@
   - blob = parse_search_result(blob)
   - file_name = blob.filename
 
-- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(blob.ref, file_name))
+- blob_link = project_blob_path(project, tree_join(blob.ref, file_name))
 .blob-result
   .file-holder
     .js-file-title.file-title

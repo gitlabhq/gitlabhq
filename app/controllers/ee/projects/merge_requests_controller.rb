@@ -5,11 +5,10 @@ module EE
 
       prepended do
         before_action :check_merge_request_rebase_available!, only: [:rebase]
+        before_action :check_user_can_push_to_source_branch!, only: [:rebase]
       end
 
       def rebase
-        return access_denied! unless @merge_request.can_be_merged_by?(current_user)
-
         RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
         render nothing: true, status: 200
@@ -63,6 +62,16 @@ module EE
         attrs << :squash if project.feature_available?(:merge_request_squash)
 
         attrs
+      end
+
+      def check_user_can_push_to_source_branch!
+        return access_denied! unless @merge_request.source_branch_exists?
+
+        access_check = ::Gitlab::UserAccess
+          .new(current_user, project: @merge_request.source_project)
+          .can_push_to_branch?(@merge_request.source_branch)
+
+        access_denied! unless access_check
       end
     end
   end

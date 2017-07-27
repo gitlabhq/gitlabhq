@@ -8,7 +8,7 @@ feature 'Member autocomplete', :js do
 
   before do
     note # actually create the note
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   shared_examples "open suggestions when typing @" do
@@ -29,7 +29,7 @@ feature 'Member autocomplete', :js do
   context 'adding a new note on a Issue' do
     let(:noteable) { create(:issue, author: author, project: project) }
     before do
-      visit namespace_project_issue_path(project.namespace, project, noteable)
+      visit project_issue_path(project, noteable)
     end
 
     include_examples "open suggestions when typing @"
@@ -42,7 +42,7 @@ feature 'Member autocomplete', :js do
                              target_project: project, author: author)
     end
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, noteable)
+      visit project_merge_request_path(project, noteable)
     end
 
     include_examples "open suggestions when typing @"
@@ -54,9 +54,10 @@ feature 'Member autocomplete', :js do
     let(:note) { create(:note_on_commit, project: project, commit_id: project.commit.id) }
 
     before do
-      allow_any_instance_of(Commit).to receive(:author).and_return(author)
+      allow(User).to receive(:find_by_any_email)
+        .with(noteable.author_email.downcase).and_return(author)
 
-      visit namespace_project_commit_path(project.namespace, project, noteable)
+      visit project_commit_path(project, noteable)
     end
 
     include_examples "open suggestions when typing @"

@@ -282,7 +282,7 @@ module SystemNoteService
     body = "changed this line in"
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
-      url = url_helpers.diffs_namespace_project_merge_request_url(project.namespace, project, merge_request, version_params.merge(anchor: line_code))
+      url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
 
       body << " [version #{version_index} of the diff](#{url})"
     else
@@ -413,7 +413,7 @@ module SystemNoteService
   #
   #   "created branch `201-issue-branch-button`"
   def new_issue_branch(issue, project, author, branch)
-    link = url_helpers.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
+    link = url_helpers.project_compare_url(project, from: project.default_branch, to: branch)
 
     body = "created branch [`#{branch}`](#{link})"
 
@@ -606,6 +606,44 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unapproved'))
   end
 
+  # Called when a Noteable has been marked as a duplicate of another Issue
+  #
+  # noteable        - Noteable object
+  # project         - Project owning noteable
+  # author          - User performing the change
+  # canonical_issue - Issue that this is a duplicate of
+  #
+  # Example Note text:
+  #
+  #   "marked this issue as a duplicate of #1234"
+  #
+  #   "marked this issue as a duplicate of other_project#5678"
+  #
+  # Returns the created Note object
+  def mark_duplicate_issue(noteable, project, author, canonical_issue)
+    body = "marked this issue as a duplicate of #{canonical_issue.to_reference(project)}"
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+  end
+
+  # Called when a Noteable has been marked as the canonical Issue of a duplicate
+  #
+  # noteable        - Noteable object
+  # project         - Project owning noteable
+  # author          - User performing the change
+  # duplicate_issue - Issue that was a duplicate of this
+  #
+  # Example Note text:
+  #
+  #   "marked #1234 as a duplicate of this issue"
+  #
+  #   "marked other_project#5678 as a duplicate of this issue"
+  #
+  # Returns the created Note object
+  def mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue)
+    body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+  end
+
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)
@@ -684,10 +722,9 @@ module SystemNoteService
   def diff_comparison_url(merge_request, project, oldrev)
     diff_id = merge_request.merge_request_diff.id
 
-    url_helpers.diffs_namespace_project_merge_request_url(
-      project.namespace,
+    url_helpers.diffs_project_merge_request_url(
       project,
-      merge_request.iid,
+      merge_request,
       diff_id: diff_id,
       start_sha: oldrev
     )

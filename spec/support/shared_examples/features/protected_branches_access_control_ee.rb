@@ -17,7 +17,7 @@ shared_examples "protected branches > access control > EE" do
     end
 
     it "allows creating protected branches that roles, users, and groups can #{git_operation} to" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
       set_allowed_to(git_operation, users.map(&:name))
@@ -37,7 +37,7 @@ shared_examples "protected branches > access control > EE" do
     end
 
     it "allows updating protected branches so that roles and users can #{git_operation} to it" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('master')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -59,7 +59,7 @@ shared_examples "protected branches > access control > EE" do
     end
 
     it "allows updating protected branches so that roles and users cannot #{git_operation} to it" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('master')
 
       users.each { |user| set_allowed_to(git_operation, user.name) }
@@ -85,7 +85,7 @@ shared_examples "protected branches > access control > EE" do
       users = create_list(:user, 21)
       users.each { |user| project.team << [user, :developer] }
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
 
       # Create Protected Branch
       set_protected_branch_name('master')
@@ -96,7 +96,7 @@ shared_examples "protected branches > access control > EE" do
 
       # Update Protected Branch
       within(".protected-branches-list") do
-        find(".js-allowed-to-#{git_operation}").click
+        find(".js-allowed-to-#{git_operation}").trigger(:click)
         find(".dropdown-input-field").set(users.last.name) # Find a user that is not loaded
 
         expect(page).to have_selector('.dropdown-header', count: 3)
@@ -107,12 +107,12 @@ shared_examples "protected branches > access control > EE" do
 
         wait_for_requests
         click_on users.last.name
-        find(".js-allowed-to-#{git_operation}").click # close
+        find(".js-allowed-to-#{git_operation}").trigger(:click) # close
       end
       wait_for_requests
 
       # Verify the user is appended in the dropdown
-      find(".protected-branches-list .js-allowed-to-#{git_operation}").click
+      find(".protected-branches-list .js-allowed-to-#{git_operation}").trigger(:click)
       expect(page).to have_selector '.dropdown-content .is-active', text: users.last.name
 
       expect(ProtectedBranch.count).to eq(1)
@@ -126,7 +126,7 @@ shared_examples "protected branches > access control > EE" do
   context 'When updating a protected branch' do
     it 'discards other roles when choosing "No one"' do
       roles = ProtectedBranch::PushAccessLevel.human_access_levels.except(0)
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('fix')
       set_allowed_to('merge')
       set_allowed_to('push', roles.values)
@@ -153,7 +153,7 @@ shared_examples "protected branches > access control > EE" do
   context 'When creating a protected branch' do
     it 'discards other roles when choosing "No one"' do
       roles = ProtectedBranch::PushAccessLevel.human_access_levels.except(0)
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('master')
       set_allowed_to('merge')
       set_allowed_to('push', ProtectedBranch::PushAccessLevel.human_access_levels.values) # Last item (No one) should deselect the other ones

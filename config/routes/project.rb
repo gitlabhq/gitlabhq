@@ -1,5 +1,4 @@
 require 'constraints/project_url_constrainer'
-require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
@@ -288,7 +287,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      Gitlab::Routes::LegacyBuilds.new(self).draw
+      draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
@@ -308,7 +307,7 @@ constraints(ProjectUrlConstrainer.new) do
       namespace :registry do
         resources :repository, only: [] do
           resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end
 
@@ -423,7 +422,9 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
-              get :build
+              # Keep around until 10.0, see gitlab-org/gitlab-ce#35307
+              get :build, to: "badges#pipeline"
+              get :pipeline
               get :coverage
             end
           end
@@ -435,9 +436,14 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
 
       namespace :settings do
-        resource :members, only: [:show]
+        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
+
+        resource :slack, only: [:destroy, :edit, :update] do
+          get :slack_auth
+        end
+
         resource :repository, only: [:show], controller: :repository
       end
 

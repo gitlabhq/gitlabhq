@@ -14,13 +14,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
-  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
-  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -197,6 +197,9 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
+  rescue
+    # Fall back to an uncached value if there are any problems (e.g. redis down)
+    ApplicationSetting.last
   end
 
   def self.expire
@@ -247,6 +250,8 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
+      password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
+      performance_bar_allowed_group_id: nil,
       plantuml_enabled: false,
       plantuml_url: nil,
       recaptcha_enabled: false,
@@ -260,13 +265,16 @@ class ApplicationSetting < ActiveRecord::Base
       shared_runners_text: nil,
       sidekiq_throttling_enabled: false,
       sign_in_text: nil,
-      signin_enabled: Settings.gitlab['signin_enabled'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
       user_default_external: false,
       polling_interval_multiplier: 1,
-      usage_ping_enabled: Settings.gitlab['usage_ping_enabled']
+      usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      slack_app_enabled: false,
+      slack_app_id: nil,
+      slack_app_secret: nil,
+      slack_app_verification_token: nil
     }
   end
 
@@ -377,6 +385,48 @@ class ApplicationSetting < ActiveRecord::Base
 
   def restricted_visibility_levels=(levels)
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+  end
+
+  def performance_bar_allowed_group_id=(group_full_path)
+    group_full_path = nil if group_full_path.blank?
+
+    if group_full_path.nil?
+      if group_full_path != performance_bar_allowed_group_id
+        super(group_full_path)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+      return
+    end
+
+    group = Group.find_by_full_path(group_full_path)
+
+    if group
+      if group.id != performance_bar_allowed_group_id
+        super(group.id)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+    else
+      super(nil)
+      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+    end
+  end
+
+  def performance_bar_allowed_group
+    Group.find_by_id(performance_bar_allowed_group_id)
+  end
+
+  # Return true if the Performance Bar is enabled for a given group
+  def performance_bar_enabled
+    performance_bar_allowed_group_id.present?
+  end
+
+  # - If `enable` is true, we early return since the actual attribute that holds
+  #   the enabling/disabling is `performance_bar_allowed_group_id`
+  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
+  def performance_bar_enabled=(enable)
+    return if enable
+
+    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have

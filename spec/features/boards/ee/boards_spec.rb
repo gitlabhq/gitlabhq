@@ -29,7 +29,7 @@ describe 'issue boards', feature: true, js: true do
   end
 
   def visit_board_page
-    visit namespace_project_boards_path(project.namespace, project)
+    visit project_boards_path(project)
     wait_for_requests
   end
 end

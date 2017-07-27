@@ -938,7 +938,7 @@ describe TodoService, services: true do
       end
     end
 
-    it 'caches the number of todos of a user', :caching do
+    it 'caches the number of todos of a user', :use_clean_rails_memory_store_caching do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
       TodoService.new.mark_todos_as_done([todo], john_doe)

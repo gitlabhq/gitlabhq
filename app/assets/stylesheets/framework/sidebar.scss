@@ -92,7 +92,6 @@
 @mixin maintain-sidebar-dimensions {
   display: block;
   width: $gutter-width;
-  padding: 10px 20px;
 }
 
 .issues-bulk-update.right-sidebar {
@@ -104,6 +103,15 @@
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
     width: $gutter-width;
+
+    .issuable-sidebar-header {
+      // matches `.top-area .nav-controls` for issuable index pages
+      padding: 11px 0;
+    }
+
+    .block:last-of-type {
+      border: none;
+    }
   }
 
   &.right-sidebar-collapsed {

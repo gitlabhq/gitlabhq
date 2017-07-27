@@ -1,12 +1,12 @@
-# Custom Redis configuration
-redis_config_hash = Gitlab::Redis.params
-redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
+# Custom Queues configuration
+queues_config_hash = Gitlab::Redis::Queues.params
+queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 
 # Default is to retry 25 times with exponential backoff. That's too much.
 Sidekiq.default_worker_options = { retry: 3 }
 
 Sidekiq.configure_server do |config|
-  config.redis = redis_config_hash
+  config.redis = queues_config_hash
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
@@ -58,7 +58,7 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = redis_config_hash
+  config.redis = queues_config_hash
 
   config.client_middleware do |chain|
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
@@ -78,5 +78,5 @@ begin
       end
     end
   end
-rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
+rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
 end

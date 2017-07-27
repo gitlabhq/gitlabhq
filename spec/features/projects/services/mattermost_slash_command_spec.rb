@@ -9,8 +9,8 @@ feature 'Setup Mattermost slash commands', :feature, :js do
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+    sign_in(user)
+    visit edit_project_service_path(project, service)
   end
 
   describe 'user visits the mattermost slash command config page' do
@@ -30,7 +30,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       fill_in 'service_token', with: token
       click_on 'Save changes'
 
-      expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+      expect(current_path).to eq(project_settings_integrations_path(project))
       expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
     end
 
@@ -41,7 +41,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       check 'service_active'
       click_on 'Save changes'
 
-      expect(current_path).to eq(namespace_project_settings_integrations_path(project.namespace, project))
+      expect(current_path).to eq(project_settings_integrations_path(project))
       expect(page).to have_content('Mattermost slash commands activated.')
     end
 
@@ -159,7 +159,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
 
-        expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+        expect(value).to match("api/v4/projects/#{project.id}/services/mattermost_slash_commands/trigger")
       end
 
       it 'shows a token placeholder' do

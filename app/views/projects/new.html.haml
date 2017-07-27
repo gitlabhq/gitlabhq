@@ -1,3 +1,6 @@
+- @breadcrumb_link = dashboard_projects_path
+- breadcrumb_title "Projects"
+- @hide_top_links = true
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
@@ -9,8 +12,9 @@
     .col-lg-3.profile-settings-sidebar
       %h4.prepend-top-0
         New project
-      %p
-        Create or Import your project from popular Git services
+      - if import_sources_enabled?
+        %p
+          Create or Import your project from popular Git services
     .col-lg-9
       = form_for @project, html: { class: 'new_project' } do |f|
         .row

@@ -1,5 +1,9 @@
 - page_title "Repository"
 - @content_class = "limit-container-width" unless fluid_layout
+
+- if show_new_nav?
+  - add_to_breadcrumbs("Settings", edit_project_path(@project))
+
 = render "projects/settings/head"
 
 - content_for :page_specific_javascripts do
@@ -9,6 +13,15 @@
 = render "projects/push_rules/index"
 = render "projects/mirrors/show"
 
-= render "projects/protected_branches/index"
-= render "projects/protected_tags/index"
+-# Protected branches & tags use a lot of nested partials.
+-# The shared parts of the views can be found in the `shared` directory.
+-# Those are used throughout the actual views. These `shared` views are then
+-# reused in EE.
+- if @project.feature_available?(:protected_refs_for_users, current_user)
+  = render "projects/protected_branches/ee/index"
+  = render "projects/protected_tags/ee/index"
+- else
+  = render "projects/protected_branches/index"
+  = render "projects/protected_tags/index"
+
 = render @deploy_keys

@@ -3,7 +3,7 @@ class Board < ActiveRecord::Base
 
   belongs_to :project
 
-  has_many :lists, -> { order(:list_type, :position) }, dependent: :delete_all
+  has_many :lists, -> { order(:list_type, :position) }, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   validates :name, :project, presence: true
 

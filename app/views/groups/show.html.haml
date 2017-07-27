@@ -1,4 +1,5 @@
 - @no_container = true
+- breadcrumb_title "Group"
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")

@@ -1,7 +1,7 @@
 module ApplicationSettingsHelper
   delegate  :gravatar_enabled?,
             :signup_enabled?,
-            :signin_enabled?,
+            :password_authentication_enabled?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings
@@ -34,17 +34,17 @@ module ApplicationSettingsHelper
 
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
-  def restricted_level_checkboxes(help_block_id)
-    Gitlab::VisibilityLevel.options.map do |name, level|
+  def restricted_level_checkboxes(help_block_id, checkbox_name)
+    Gitlab::VisibilityLevel.values.map do |level|
       checked = restricted_visibility_levels(true).include?(level)
       css_class = checked ? 'active' : ''
-      checkbox_name = "application_setting[restricted_visibility_levels][]"
+      tag_name = "application_setting_visibility_level_#{level}"
 
-      label_tag(name, class: css_class) do
+      label_tag(tag_name, class: css_class) do
         check_box_tag(checkbox_name, level, checked,
                       autocomplete: 'off',
                       'aria-describedby' => help_block_id,
-                      id: name) + visibility_level_icon(level) + name
+                      id: tag_name) + visibility_level_icon(level) + visibility_level_label(level)
       end
     end
   end

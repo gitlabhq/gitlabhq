@@ -1,14 +1,24 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
 
-cache:
+.default-cache: &default-cache
   key: "ruby-233-with-yarn"
   paths:
-  - vendor/ruby
-  - .yarn-cache/
+    - vendor/ruby
+    - .yarn-cache/
+
+.push-cache: &push-cache
+  cache:
+    <<: *default-cache
+    policy: push
+
+.pull-cache: &pull-cache
+  cache:
+    <<: *default-cache
+    policy: pull
 
 variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
-  ELASTIC_URL: "http://elasticsearch:9200"
+  ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
@@ -27,11 +37,11 @@ before_script:
   - source scripts/prepare_build.sh
 
 stages:
-- build
-- prepare
-- test
-- post-test
-- pages
+  - build
+  - prepare
+  - test
+  - post-test
+  - pages
 
 # Predefined scopes
 .dedicated-runner: &dedicated-runner
@@ -44,10 +54,6 @@ stages:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false"
     KNAPSACK_S3_BUCKET: "gitlab-ce-cache"
-  cache:
-    key: "knapsack"
-    paths:
-      - knapsack/
   artifacts:
     expire_in: 31d
     paths:
@@ -57,13 +63,14 @@ stages:
   services:
     - postgres:9.2
     - redis:alpine
-    - elasticsearch:5.3
+    - docker.elastic.co/elasticsearch/elasticsearch:5.3.2
 
 .use-mysql: &use-mysql
   services:
     - mysql:latest
     - redis:alpine
-    - elasticsearch:5.3
+    - docker.elastic.co/elasticsearch/elasticsearch:5.3.2
+
 
 .only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
   only:
@@ -84,8 +91,9 @@ stages:
     - /(^docs[\/-].*|.*-docs$)/
 
 .rspec-knapsack: &rspec-knapsack
-  stage: test
   <<: *dedicated-runner
+  <<: *pull-cache
+  stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
@@ -115,8 +123,9 @@ stages:
   <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
-  stage: test
   <<: *dedicated-runner
+  <<: *pull-cache
+  stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
     - export CI_NODE_INDEX=${JOB_NAME[-2]}
@@ -163,9 +172,13 @@ build-package:
     USE_BUNDLE_INSTALL: "false"
     EE_PACKAGE: "true"
   stage: build
+  cache: {}
   when: manual
   script:
     - scripts/trigger-build
+  only:
+    - //@gitlab-org/gitlab-ce
+    - //@gitlab-org/gitlab-ee
 
 # Prepare and merge knapsack tests
 knapsack:
@@ -173,6 +186,11 @@ knapsack:
   <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
+  cache:
+    key: knapsack
+    paths:
+      - knapsack/
+    policy: pull
   script:
     - mkdir -p knapsack/${CI_PROJECT_NAME}/
     - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${KNAPSACK_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
@@ -185,7 +203,13 @@ update-knapsack:
   <<: *dedicated-runner
   <<: *only-canonical-masters
   stage: post-test
+  cache:
+    key: knapsack
+    paths:
+      - knapsack/
+    policy: push
   script:
+    - retry gem install fog-aws mime-types
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
     - scripts/merge-reports ${KNAPSACK_SPINACH_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/spinach-pg_node_*.json
     - '[[ -z ${KNAPSACK_S3_BUCKET} ]] || scripts/sync-reports put $KNAPSACK_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH $KNAPSACK_SPINACH_SUITE_REPORT_PATH'
@@ -196,6 +220,8 @@ setup-test-env:
   <<: *dedicated-runner
   <<: *except-docs
   stage: prepare
+  cache:
+    <<: *default-cache
   script:
     - node --version
     - yarn install --pure-lockfile --cache-folder .yarn-cache
@@ -209,72 +235,73 @@ setup-test-env:
       - public/assets
       - tmp/tests
 
-rspec-pg 0 20: *rspec-knapsack-pg
-rspec-pg 1 20: *rspec-knapsack-pg
-rspec-pg 2 20: *rspec-knapsack-pg
-rspec-pg 3 20: *rspec-knapsack-pg
-rspec-pg 4 20: *rspec-knapsack-pg
-rspec-pg 5 20: *rspec-knapsack-pg
-rspec-pg 6 20: *rspec-knapsack-pg
-rspec-pg 7 20: *rspec-knapsack-pg
-rspec-pg 8 20: *rspec-knapsack-pg
-rspec-pg 9 20: *rspec-knapsack-pg
-rspec-pg 10 20: *rspec-knapsack-pg
-rspec-pg 11 20: *rspec-knapsack-pg
-rspec-pg 12 20: *rspec-knapsack-pg
-rspec-pg 13 20: *rspec-knapsack-pg
-rspec-pg 14 20: *rspec-knapsack-pg
-rspec-pg 15 20: *rspec-knapsack-pg
-rspec-pg 16 20: *rspec-knapsack-pg
-rspec-pg 17 20: *rspec-knapsack-pg
-rspec-pg 18 20: *rspec-knapsack-pg
-rspec-pg 19 20: *rspec-knapsack-pg
+rspec-pg 0 25: *rspec-knapsack-pg
+rspec-pg 1 25: *rspec-knapsack-pg
+rspec-pg 2 25: *rspec-knapsack-pg
+rspec-pg 3 25: *rspec-knapsack-pg
+rspec-pg 4 25: *rspec-knapsack-pg
+rspec-pg 5 25: *rspec-knapsack-pg
+rspec-pg 6 25: *rspec-knapsack-pg
+rspec-pg 7 25: *rspec-knapsack-pg
+rspec-pg 8 25: *rspec-knapsack-pg
+rspec-pg 9 25: *rspec-knapsack-pg
+rspec-pg 10 25: *rspec-knapsack-pg
+rspec-pg 11 25: *rspec-knapsack-pg
+rspec-pg 12 25: *rspec-knapsack-pg
+rspec-pg 13 25: *rspec-knapsack-pg
+rspec-pg 14 25: *rspec-knapsack-pg
+rspec-pg 15 25: *rspec-knapsack-pg
+rspec-pg 16 25: *rspec-knapsack-pg
+rspec-pg 17 25: *rspec-knapsack-pg
+rspec-pg 18 25: *rspec-knapsack-pg
+rspec-pg 19 25: *rspec-knapsack-pg
+rspec-pg 20 25: *rspec-knapsack-pg
+rspec-pg 21 25: *rspec-knapsack-pg
+rspec-pg 22 25: *rspec-knapsack-pg
+rspec-pg 23 25: *rspec-knapsack-pg
+rspec-pg 24 25: *rspec-knapsack-pg
 
-rspec-mysql 0 20: *rspec-knapsack-mysql
-rspec-mysql 1 20: *rspec-knapsack-mysql
-rspec-mysql 2 20: *rspec-knapsack-mysql
-rspec-mysql 3 20: *rspec-knapsack-mysql
-rspec-mysql 4 20: *rspec-knapsack-mysql
-rspec-mysql 5 20: *rspec-knapsack-mysql
-rspec-mysql 6 20: *rspec-knapsack-mysql
-rspec-mysql 7 20: *rspec-knapsack-mysql
-rspec-mysql 8 20: *rspec-knapsack-mysql
-rspec-mysql 9 20: *rspec-knapsack-mysql
-rspec-mysql 10 20: *rspec-knapsack-mysql
-rspec-mysql 11 20: *rspec-knapsack-mysql
-rspec-mysql 12 20: *rspec-knapsack-mysql
-rspec-mysql 13 20: *rspec-knapsack-mysql
-rspec-mysql 14 20: *rspec-knapsack-mysql
-rspec-mysql 15 20: *rspec-knapsack-mysql
-rspec-mysql 16 20: *rspec-knapsack-mysql
-rspec-mysql 17 20: *rspec-knapsack-mysql
-rspec-mysql 18 20: *rspec-knapsack-mysql
-rspec-mysql 19 20: *rspec-knapsack-mysql
+rspec-mysql 0 25: *rspec-knapsack-mysql
+rspec-mysql 1 25: *rspec-knapsack-mysql
+rspec-mysql 2 25: *rspec-knapsack-mysql
+rspec-mysql 3 25: *rspec-knapsack-mysql
+rspec-mysql 4 25: *rspec-knapsack-mysql
+rspec-mysql 5 25: *rspec-knapsack-mysql
+rspec-mysql 6 25: *rspec-knapsack-mysql
+rspec-mysql 7 25: *rspec-knapsack-mysql
+rspec-mysql 8 25: *rspec-knapsack-mysql
+rspec-mysql 9 25: *rspec-knapsack-mysql
+rspec-mysql 10 25: *rspec-knapsack-mysql
+rspec-mysql 11 25: *rspec-knapsack-mysql
+rspec-mysql 12 25: *rspec-knapsack-mysql
+rspec-mysql 13 25: *rspec-knapsack-mysql
+rspec-mysql 14 25: *rspec-knapsack-mysql
+rspec-mysql 15 25: *rspec-knapsack-mysql
+rspec-mysql 16 25: *rspec-knapsack-mysql
+rspec-mysql 17 25: *rspec-knapsack-mysql
+rspec-mysql 18 25: *rspec-knapsack-mysql
+rspec-mysql 19 25: *rspec-knapsack-mysql
+rspec-mysql 20 25: *rspec-knapsack-mysql
+rspec-mysql 21 25: *rspec-knapsack-mysql
+rspec-mysql 22 25: *rspec-knapsack-mysql
+rspec-mysql 23 25: *rspec-knapsack-mysql
+rspec-mysql 24 25: *rspec-knapsack-mysql
 
-spinach-pg 0 10: *spinach-knapsack-pg
-spinach-pg 1 10: *spinach-knapsack-pg
-spinach-pg 2 10: *spinach-knapsack-pg
-spinach-pg 3 10: *spinach-knapsack-pg
-spinach-pg 4 10: *spinach-knapsack-pg
-spinach-pg 5 10: *spinach-knapsack-pg
-spinach-pg 6 10: *spinach-knapsack-pg
-spinach-pg 7 10: *spinach-knapsack-pg
-spinach-pg 8 10: *spinach-knapsack-pg
-spinach-pg 9 10: *spinach-knapsack-pg
+spinach-pg 0 5: *spinach-knapsack-pg
+spinach-pg 1 5: *spinach-knapsack-pg
+spinach-pg 2 5: *spinach-knapsack-pg
+spinach-pg 3 5: *spinach-knapsack-pg
+spinach-pg 4 5: *spinach-knapsack-pg
 
-spinach-mysql 0 10: *spinach-knapsack-mysql
-spinach-mysql 1 10: *spinach-knapsack-mysql
-spinach-mysql 2 10: *spinach-knapsack-mysql
-spinach-mysql 3 10: *spinach-knapsack-mysql
-spinach-mysql 4 10: *spinach-knapsack-mysql
-spinach-mysql 5 10: *spinach-knapsack-mysql
-spinach-mysql 6 10: *spinach-knapsack-mysql
-spinach-mysql 7 10: *spinach-knapsack-mysql
-spinach-mysql 8 10: *spinach-knapsack-mysql
-spinach-mysql 9 10: *spinach-knapsack-mysql
+spinach-mysql 0 5: *spinach-knapsack-mysql
+spinach-mysql 1 5: *spinach-knapsack-mysql
+spinach-mysql 2 5: *spinach-knapsack-mysql
+spinach-mysql 3 5: *spinach-knapsack-mysql
+spinach-mysql 4 5: *spinach-knapsack-mysql
 
 # Static analysis jobs
 .ruby-static-analysis: &ruby-static-analysis
+  <<: *pull-cache
   variables:
     SIMPLECOV: "false"
     SETUP_DB: "false"
@@ -283,6 +310,7 @@ spinach-mysql 9 10: *spinach-knapsack-mysql
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
   stage: test
   script:
     - bundle exec rake $CI_JOB_NAME
@@ -299,9 +327,9 @@ static-analysis:
 # - Check validity of relative links
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
+  <<: *dedicated-runner
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
-  <<: *dedicated-runner
   cache: {}
   dependencies: []
   before_script: []
@@ -324,9 +352,10 @@ downtime_check:
 
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   script:
     - bundle exec rake db:migrate:reset
 
@@ -339,15 +368,17 @@ db:migrate:reset-mysql:
   <<: *use-mysql
 
 .migration-paths: &migration-paths
-  stage: test
   <<: *dedicated-runner
+  <<: *only-canonical-masters
+  <<: *pull-cache
+  stage: test
   variables:
     SETUP_DB: "false"
-  <<: *only-canonical-masters
   script:
     - git fetch origin v8.14.10-ee
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
+    - cp config/gitlab.yml.example config/gitlab.yml
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
     - git checkout $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS
@@ -363,9 +394,10 @@ migration:path-mysql:
   <<: *use-mysql
 
 .db-rollback: &db-rollback
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   script:
     - bundle exec rake db:rollback STEP=120
     - bundle exec rake db:migrate
@@ -379,9 +411,10 @@ db:rollback-mysql:
   <<: *use-mysql
 
 .db-seed_fu: &db-seed_fu
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   variables:
     SIZE: "1"
     SETUP_DB: "false"
@@ -406,9 +439,10 @@ db:seed_fu-mysql:
 
 # Frontend-related jobs
 gitlab:assets:compile:
-  stage: test
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: test
   dependencies: []
   variables:
     NODE_ENV: "production"
@@ -426,14 +460,15 @@ gitlab:assets:compile:
     name: webpack-report
     expire_in: 31d
     paths:
-    - webpack-report/
+      - webpack-report/
 
 karma:
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
-  stage: test
   <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
+  stage: test
   variables:
     BABEL_ENV: "coverage"
     CHROME_LOG_FILE: "chrome_debug.log"
@@ -451,6 +486,7 @@ karma:
 
 codeclimate:
   <<: *except-docs
+  <<: *pull-cache
   before_script: []
   image: docker:latest
   stage: test
@@ -466,10 +502,11 @@ codeclimate:
     paths: [codeclimate.json]
 
 coverage:
-  stage: post-test
-  services: []
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
+  stage: post-test
+  services: []
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "true"
@@ -486,7 +523,10 @@ coverage:
 lint:javascript:report:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *pull-cache
   stage: post-test
+  dependencies:
+    - setup-test-env
   before_script: []
   script:
     - find app/ spec/ -name '*.js' -exec sed --in-place 's|/\* eslint-disable .*\*/||' {} \; # run report over all files
@@ -498,9 +538,10 @@ lint:javascript:report:
     - eslint-report.html
 
 pages:
+  <<: *dedicated-runner
+  <<: *pull-cache
   before_script: []
   stage: pages
-  <<: *dedicated-runner
   dependencies:
     - coverage
     - karma
@@ -524,6 +565,7 @@ pages:
 # rubygems.org in the future.
 cache gems:
   <<: *dedicated-runner
+  <<: *pull-cache
   only:
     - tags
   variables:
@@ -538,6 +580,8 @@ cache gems:
     - master@gitlab-org/gitlab-ee
 
 gitlab_git_test:
+  <<: *pull-cache
+  <<: *except-docs
   variables:
     SETUP_DB: "false"
   script:

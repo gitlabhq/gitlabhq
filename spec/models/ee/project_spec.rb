@@ -9,6 +9,11 @@ describe Project, models: true do
     it { is_expected.to delegate_method(:actual_shared_runners_minutes_limit).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_limit_enabled?).to(:namespace) }
     it { is_expected.to delegate_method(:shared_runners_minutes_used?).to(:namespace) }
+
+    it { is_expected.to have_one(:mirror_data).class_name('ProjectMirrorData') }
+    it { is_expected.to have_many(:path_locks) }
+    it { is_expected.to have_many(:sourced_pipelines) }
+    it { is_expected.to have_many(:source_pipelines) }
   end
 
   describe '#push_rule' do
@@ -24,6 +29,64 @@ describe Project, models: true do
       end
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe "#execute_hooks" do
+    context "group hooks" do
+      let(:group) { create(:group) }
+      let(:project) { create(:empty_project, namespace: group) }
+      let(:group_hook) { create(:group_hook, group: group, push_events: true) }
+
+      it 'executes the hook when the feature is enabled' do
+        stub_licensed_features(group_webhooks: true)
+
+        fake_service = double
+        expect(WebHookService).to receive(:new)
+                                    .with(group_hook, { some: 'info' }, 'push_hooks') { fake_service }
+        expect(fake_service).to receive(:async_execute)
+
+        project.execute_hooks(some: 'info')
+      end
+
+      it 'does not execute the hook when the feature is disabled' do
+        stub_licensed_features(group_webhooks: false)
+
+        expect(WebHookService).not_to receive(:new)
+                                        .with(group_hook, { some: 'info' }, 'push_hooks')
+
+        project.execute_hooks(some: 'info')
+      end
+    end
+  end
+
+  describe '#execute_hooks' do
+    it "triggers project and group hooks" do
+      group = create :group, name: 'gitlab'
+      project = create(:project, name: 'gitlabhq', namespace: group)
+      project_hook = create(:project_hook, push_events: true, project: project)
+      group_hook = create(:group_hook, push_events: true, group: group)
+
+      stub_request(:post, project_hook.url)
+      stub_request(:post, group_hook.url)
+
+      expect_any_instance_of(GroupHook).to receive(:async_execute).and_return(true)
+      expect_any_instance_of(ProjectHook).to receive(:async_execute).and_return(true)
+
+      project.execute_hooks({}, :push_hooks)
+    end
+  end
+
+  describe '#allowed_to_share_with_group?' do
+    let(:project) { create(:project) }
+
+    it "returns true" do
+      expect(project.allowed_to_share_with_group?).to be_truthy
+    end
+
+    it "returns false" do
+      project.namespace.update(share_with_group_lock: true)
+      expect(project.allowed_to_share_with_group?).to be_falsey
     end
   end
 
@@ -154,6 +217,62 @@ describe Project, models: true do
     end
   end
 
+  describe '#has_remote_mirror?' do
+    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    subject { project.has_remote_mirror? }
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'returns true when a remote mirror is enabled' do
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns false when remote mirror is disabled' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      is_expected.to be_falsy
+    end
+  end
+
+  describe '#update_remote_mirrors' do
+    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    delegate :update_remote_mirrors, to: :project
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'syncs enabled remote mirror' do
+      expect_any_instance_of(RemoteMirror).to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does nothing when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does not sync disabled remote mirrors' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+  end
+
   describe '#any_runners_limit' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
@@ -259,8 +378,50 @@ describe Project, models: true do
     end
   end
 
+  describe '#size_limit_enabled?' do
+    let(:project) { create(:empty_project) }
+
+    context 'when repository_size_limit is not configured' do
+      it 'is disabled' do
+        expect(project.size_limit_enabled?).to be_falsey
+      end
+    end
+
+    context 'when repository_size_limit is configured' do
+      before do
+        project.update_attributes(repository_size_limit: 1024)
+      end
+
+      context 'with an EES license' do
+        let!(:license) { create(:license, plan: License::STARTER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'with an EEP license' do
+        let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a License' do
+        before do
+          License.destroy_all
+        end
+
+        it 'is disabled' do
+          expect(project.size_limit_enabled?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#service_desk_enabled?' do
-    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:namespace) { create(:namespace) }
 
     subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
@@ -308,6 +469,172 @@ describe Project, models: true do
 
     it 'uses project full path as service desk address key' do
       expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
+    end
+  end
+
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project) }
+
+    let!(:secret_variable) do
+      create(:ci_variable, value: 'secret', project: project)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_variable, :protected, value: 'protected', project: project)
+    end
+
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
+
+    context 'when environment is specified' do
+      let(:environment) { create(:environment, name: 'review/name') }
+
+      subject do
+        project.secret_variables_for(ref: 'ref', environment: environment)
+      end
+
+      shared_examples 'matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_licensed_features(variable_environment_scope: true)
+          end
+
+          it 'contains the secret variable' do
+            is_expected.to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_licensed_features(variable_environment_scope: false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+      end
+
+      shared_examples 'not matching environment scope' do
+        context 'when variable environment scope is available' do
+          before do
+            stub_licensed_features(variable_environment_scope: true)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+
+        context 'when variable environment scope is unavailable' do
+          before do
+            stub_licensed_features(variable_environment_scope: false)
+          end
+
+          it 'does not contain the secret variable' do
+            is_expected.not_to contain_exactly(secret_variable)
+          end
+        end
+      end
+
+      context 'when environment scope is exactly matched' do
+        before do
+          secret_variable.update(environment_scope: 'review/name')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope is matched by wildcard' do
+        before do
+          secret_variable.update(environment_scope: 'review/*')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope does not match' do
+        before do
+          secret_variable.update(environment_scope: 'review/*/special')
+        end
+
+        it_behaves_like 'not matching environment scope'
+      end
+
+      context 'when environment scope has _' do
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          secret_variable.update(environment_scope: '*_*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(environment_scope: 'foo_bar/*')
+          environment.update(name: 'foo_bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      # The environment name and scope cannot have % at the moment,
+      # but we're considering relaxing it and we should also make sure
+      # it doesn't break in case some data sneaked in somehow as we're
+      # not checking this integrity in database level.
+      context 'when environment scope has %' do
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          secret_variable.update_attribute(:environment_scope, '*%*')
+
+          is_expected.not_to contain_exactly(secret_variable)
+        end
+
+        it 'matches literally for _' do
+          secret_variable.update(environment_scope: 'foo%bar/*')
+          environment.update_attribute(:name, 'foo%bar/test')
+
+          is_expected.to contain_exactly(secret_variable)
+        end
+      end
+
+      context 'when variables with the same name have different environment scopes' do
+        let!(:partially_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'partial',
+                 environment_scope: 'review/*',
+                 project: project)
+        end
+
+        let!(:perfectly_matched_variable) do
+          create(:ci_variable,
+                 key: secret_variable.key,
+                 value: 'prefect',
+                 environment_scope: 'review/name',
+                 project: project)
+        end
+
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it 'puts variables matching environment scope more in the end' do
+          is_expected.to eq(
+            [secret_variable,
+             partially_matched_variable,
+             perfectly_matched_variable])
+        end
+      end
     end
   end
 
@@ -407,6 +734,91 @@ describe Project, models: true do
         end
 
         it { is_expected.to eq(spec[:method]) }
+      end
+    end
+  end
+
+  describe '#rename_repo' do
+    context 'when running on a primary node' do
+      let!(:geo_node) { create(:geo_node, :primary, :current) }
+      let(:project) { create(:project, :repository) }
+      let(:gitlab_shell) { Gitlab::Shell.new }
+
+      before do
+        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+        allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+      end
+
+      it 'logs the Geo::RepositoryRenamedEvent' do
+        stub_container_registry_config(enabled: false)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+          .and_return(true)
+
+        allow(gitlab_shell).to receive(:mv_repository)
+          .ordered
+          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+          .and_return(true)
+
+        expect(Geo::RepositoryRenamedEventStore).to receive(:new)
+          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .and_call_original
+
+        expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
+      end
+    end
+  end
+
+  shared_examples 'project with disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to match_array(disabled_services)
+    end
+  end
+
+  shared_examples 'project without disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to be_empty
+    end
+  end
+
+  describe '#disabled_services' do
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, namespace: namespace) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'project with disabled services'
+    end
+
+    context 'with a license key' do
+      context 'when checking of namespace plan is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'and namespace does not have a plan' do
+          it_behaves_like 'project with disabled services'
+        end
+
+        context 'and namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'project without disabled services'
+        end
+      end
+
+      context 'when checking of namespace plan is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'project without disabled services'
       end
     end
   end

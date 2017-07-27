@@ -3,6 +3,9 @@
 - page_title "Tags"
 = render "projects/commits/head"
 
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
+
 .flex-list{ class: container_class }
   .top-area.adjust
     .nav-text.row-main-content
@@ -24,7 +27,7 @@
             %li
               = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
       - if can?(current_user, :push_code, @project)
-        = link_to new_namespace_project_tag_path(@project.namespace, @project), class: 'btn btn-create new-tag-btn' do
+        = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
           New tag
 
   = render 'projects/commits/mirror_status'

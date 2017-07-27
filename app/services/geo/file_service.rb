@@ -27,8 +27,24 @@ module Geo
       klass_name.camelize
     end
 
-    def log(message)
-      Rails.logger.info "#{self.class.name}: #{message}"
+    def log_info(message)
+      data = log_base_data(message)
+      Gitlab::Geo::Logger.info(data)
+    end
+
+    def log_error(message, error)
+      data = log_base_data(message)
+      data[:error] = error
+      Gitlab::Geo::Logger.error(data)
+    end
+
+    def log_base_data(message)
+      {
+        class: self.class.name,
+        object_type: object_type,
+        object_db_id: object_db_id,
+        message: message
+      }
     end
   end
 end

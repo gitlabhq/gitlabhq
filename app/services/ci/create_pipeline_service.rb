@@ -37,7 +37,7 @@ module Ci
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          return error('Missing .gitlab-ci.yml file')
+          return error("Missing #{pipeline.ci_yaml_file_path} file")
         end
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
@@ -145,7 +145,7 @@ module Ci
     end
 
     def pipeline_created_counter
-      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_count, "Pipelines created count")
+      @pipeline_created_counter ||= Gitlab::Metrics.counter(:pipelines_created_total, "Counter of pipelines created")
     end
   end
 end

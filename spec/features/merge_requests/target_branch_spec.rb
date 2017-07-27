@@ -6,14 +6,11 @@ describe 'Target branch', feature: true, js: true do
   let(:project) { merge_request.project }
 
   def path_to_merge_request
-    namespace_project_merge_request_path(
-      project.namespace,
-      project, merge_request
-    )
+    project_merge_request_path(project, merge_request)
   end
 
   before do
-    gitlab_sign_in user
+    sign_in user
     project.team << [user, :master]
   end
 

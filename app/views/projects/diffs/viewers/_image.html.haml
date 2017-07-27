@@ -8,15 +8,15 @@
   .image
     %span.wrap
       .frame{ class: (diff_file.deleted_file? ? 'deleted' : 'added') }
-        %img{ src: blob_raw_path, alt: diff_file.file_path }
+        %img{ 'data-src': blob_raw_path, alt: diff_file.file_path }
       %p.image-info= number_to_human_size(blob.size)
 - else
   .image
     .two-up.view
       %span.wrap
         .frame.deleted
-          %a{ href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.old_content_sha, diff_file.old_path)) }
-            %img{ src: old_blob_raw_path, alt: diff_file.old_path }
+          %a{ href: project_blob_path(@project, tree_join(diff_file.old_content_sha, diff_file.old_path)) }
+            %img{ 'data-src': old_blob_raw_path, alt: diff_file.old_path }
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(old_blob.size)
           |
@@ -27,8 +27,8 @@
           %span.meta-height
       %span.wrap
         .frame.added
-          %a{ href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.new_path)) }
-            %img{ src: blob_raw_path, alt: diff_file.new_path }
+          %a{ href: project_blob_path(@project, tree_join(diff_file.content_sha, diff_file.new_path)) }
+            %img{ 'data-src': blob_raw_path, alt: diff_file.new_path }
         %p.image-info.hide
           %span.meta-filesize= number_to_human_size(blob.size)
           |
@@ -41,10 +41,10 @@
     .swipe.view.hide
       .swipe-frame
         .frame.deleted
-          %img{ src: old_blob_raw_path, alt: diff_file.old_path }
+          %img{ 'data-src': old_blob_raw_path, alt: diff_file.old_path }
         .swipe-wrap
           .frame.added
-            %img{ src: blob_raw_path, alt: diff_file.new_path }
+            %img{ 'data-src': blob_raw_path, alt: diff_file.new_path }
         %span.swipe-bar
           %span.top-handle
           %span.bottom-handle
@@ -52,9 +52,9 @@
     .onion-skin.view.hide
       .onion-skin-frame
         .frame.deleted
-          %img{ src: old_blob_raw_path, alt: diff_file.old_path }
+          %img{ 'data-src': old_blob_raw_path, alt: diff_file.old_path }
         .frame.added
-          %img{ src: blob_raw_path, alt: diff_file.new_path }
+          %img{ 'data-src': blob_raw_path, alt: diff_file.new_path }
         .controls
           .transparent
           .drag-track

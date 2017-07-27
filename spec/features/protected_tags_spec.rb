@@ -5,7 +5,7 @@ feature 'Projected Tags', feature: true, js: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def set_allowed_to(operation, option = 'Masters', form: '.new-protected-tag')
@@ -28,7 +28,7 @@ feature 'Projected Tags', feature: true, js: true do
 
   describe "explicit protected tags" do
     it "allows creating explicit protected tags" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -42,7 +42,7 @@ feature 'Projected Tags', feature: true, js: true do
       commit = create(:commit, project: project)
       project.repository.add_tag(user, 'some-tag', commit.id)
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -51,7 +51,7 @@ feature 'Projected Tags', feature: true, js: true do
     end
 
     it "displays an error message if the named tag does not exist" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
       set_allowed_to('create')
       click_on "Protect"
@@ -62,7 +62,7 @@ feature 'Projected Tags', feature: true, js: true do
 
   describe "wildcard protected tags" do
     it "allows creating protected tags with a wildcard" do
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
@@ -76,7 +76,7 @@ feature 'Projected Tags', feature: true, js: true do
       project.repository.add_tag(user, 'production-stable', 'master')
       project.repository.add_tag(user, 'staging-stable', 'master')
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
@@ -89,12 +89,12 @@ feature 'Projected Tags', feature: true, js: true do
       project.repository.add_tag(user, 'staging-stable', 'master')
       project.repository.add_tag(user, 'development', 'master')
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
       set_allowed_to('create')
       click_on "Protect"
 
-      visit namespace_project_protected_tags_path(project.namespace, project)
+      visit project_protected_tags_path(project)
       click_on "2 matching tags"
 
       within(".protected-tags-list") do
@@ -106,6 +106,44 @@ feature 'Projected Tags', feature: true, js: true do
   end
 
   describe "access control" do
-    include_examples "protected tags > access control > EE"
+    describe 'with ref permissions for users enabled' do
+      before do
+        stub_licensed_features(protected_refs_for_users: true)
+      end
+
+      include_examples "protected tags > access control > EE"
+    end
+
+    describe 'with ref permissions for users disabled' do
+      before do
+        stub_licensed_features(protected_refs_for_users: false)
+      end
+
+      include_examples "protected tags > access control > CE"
+
+      describe 'with existing access levels' do
+        let(:protected_tag) { create(:protected_tag, project: project) }
+
+        it 'shows users that can push to the branch' do
+          protected_tag.create_access_levels.new(user: create(:user, name: 'Jane'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("The following user can also create tags: "\
+                                       "Jane")
+        end
+
+        it 'shows groups that can create to the branch' do
+          protected_tag.create_access_levels.new(group: create(:group, name: 'Team Awesome'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("Members of this group can also create tags: "\
+                                       "Team Awesome")
+        end
+      end
+    end
   end
 end

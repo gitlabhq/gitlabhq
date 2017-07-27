@@ -1,0 +1,5 @@
+- if License.feature_available?(:admin_audit_log)
+  = nav_link path: 'audit_logs#index' do
+    = link_to admin_audit_logs_path, title: 'Audit Log' do
+      %span
+        Audit Log

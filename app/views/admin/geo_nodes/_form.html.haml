@@ -1,26 +1,23 @@
-= form_for geo_node, as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal' } do |f|
-  - if geo_node.errors.any?
-    .alert.alert-danger
-      - geo_node.errors.full_messages.each do |msg|
-        %p= msg
+- disable_key_edit = local_assigns.fetch(:disable_key_edit, false)
+
+= form_errors(geo_node)
+.form-group
+  .col-sm-offset-2.col-sm-10
+    .checkbox
+      = form.label :primary do
+        = form.check_box :primary
+        %strong This is a primary node
+.form-group
+  = form.label :url, 'URL', class: 'control-label'
+  .col-sm-10
+    = form.text_field :url, class: 'form-control'
+
+= form.fields_for :geo_node_key, geo_node.geo_node_key, include_id: !disable_key_edit do |fg|
   .form-group
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = f.label :primary do
-          = f.check_box :primary
-          %strong This is a primary node
-  .form-group
-    = f.label :url, 'URL', class: 'control-label'
+    = fg.label :key, 'Public Key', class: 'control-label'
     .col-sm-10
-      = f.text_field :url, class: 'form-control'
-  = f.fields_for :geo_node_key, geo_node.geo_node_key do |fg|
-    .form-group
-      = fg.label :key, 'Public Key', class: 'control-label'
-      .col-sm-10
-        = fg.text_area :key, class: 'form-control thin_area', rows: 5
+      = fg.text_area :key, class: 'form-control thin_area', rows: 5, disabled: disable_key_edit
+      - unless disable_key_edit
         %p.help-block
           Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
           = link_to "here", help_page_path("ssh/README")
-  .form-actions
-    = f.submit 'Add Node', class: 'btn btn-create'
-%hr

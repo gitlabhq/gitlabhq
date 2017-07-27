@@ -1,5 +1,0 @@
----
-title: Fix 500 error when approvals are enabled and editing an MR conflicts with another
-  edit
-merge_request:
-author:

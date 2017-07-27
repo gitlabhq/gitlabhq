@@ -10,7 +10,7 @@ describe 'Board with milestone', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
   end
 
   context 'with the feature enabled' do
@@ -20,7 +20,7 @@ describe 'Board with milestone', :feature, :js do
 
     context 'new board' do
       before do
-        visit namespace_project_boards_path(project.namespace, project)
+        visit project_boards_path(project)
       end
 
       it 'creates board with milestone' do
@@ -40,7 +40,7 @@ describe 'Board with milestone', :feature, :js do
       let!(:board) { create(:board, project: project, milestone: milestone) }
 
       before do
-        visit namespace_project_boards_path(project.namespace, project)
+        visit project_boards_path(project)
       end
 
       it 'defaults milestone filter' do
@@ -105,7 +105,7 @@ describe 'Board with milestone', :feature, :js do
       let!(:list) { create(:list, board: board, label: label, position: 0) }
 
       before do
-        visit namespace_project_boards_path(project.namespace, project)
+        visit project_boards_path(project)
       end
 
       it 'removes issues milestone when removing from the board' do
@@ -127,7 +127,7 @@ describe 'Board with milestone', :feature, :js do
       let!(:issue) { create(:issue, project: project) }
 
       before do
-        visit namespace_project_boards_path(project.namespace, project)
+        visit project_boards_path(project)
       end
 
       it 'creates new issue with boards milestone' do
@@ -172,7 +172,7 @@ describe 'Board with milestone', :feature, :js do
   context 'with the feature disabled' do
     before do
       stub_licensed_features(issue_board_milestone: false)
-      visit namespace_project_boards_path(project.namespace, project)
+      visit project_boards_path(project)
     end
 
     it "doesn't show the input when creating a board" do

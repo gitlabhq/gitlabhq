@@ -6,13 +6,13 @@ feature 'Projects > Members > User requests access', feature: true do
   let(:master) { project.owner }
 
   background do
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 
   scenario 'request access feature is disabled' do
     project.update_attributes(request_access_enabled: false)
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'
   end
@@ -35,7 +35,7 @@ feature 'Projects > Members > User requests access', feature: true do
       project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
                                       builds_access_level: ProjectFeature::PRIVATE,
                                       merge_requests_access_level: ProjectFeature::PRIVATE)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_content 'Request Access'
     end
@@ -46,10 +46,11 @@ feature 'Projects > Members > User requests access', feature: true do
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
 
-    open_project_settings_menu
-    click_link 'Members'
+    page.within('.layout-nav .nav-links') do
+      click_link('Members')
+    end
 
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_project_members_path(project)
     page.within('.content') do
       expect(page).not_to have_content(user.name)
     end

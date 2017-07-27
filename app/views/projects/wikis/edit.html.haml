@@ -8,7 +8,7 @@
   .nav-text
     %h2.wiki-page-title
       - if @page.persisted?
-        = link_to @page.title.capitalize, namespace_project_wiki_path(@project.namespace, @project, @page)
+        = link_to @page.title.capitalize, project_wiki_path(@project, @page)
       - else
         = @page.title.capitalize
       %span.light
@@ -23,10 +23,10 @@
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
         New page
     - if @page.persisted?
-      = link_to namespace_project_wiki_history_path(@project.namespace, @project, @page), class: "btn" do
+      = link_to project_wiki_history_path(@project, @page), class: "btn" do
         Page history
       - if can?(current_user, :admin_wiki, @project)
-        = link_to namespace_project_wiki_path(@project.namespace, @project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-danger" do
+        = link_to project_wiki_path(@project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-danger" do
           Delete
 
 = render 'form'

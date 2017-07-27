@@ -36,7 +36,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I should see new avatar' do
     expect(@user.avatar).to be_instance_of AvatarUploader
-    expect(@user.avatar.url).to eq "/uploads/system/user/avatar/#{@user.id}/banana_sample.gif"
+    expect(@user.avatar.url).to eq "/uploads/-/system/user/avatar/#{@user.id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do

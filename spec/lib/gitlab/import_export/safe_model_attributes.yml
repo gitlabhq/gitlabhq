@@ -83,6 +83,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date
@@ -176,6 +177,17 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
 MergeRequestDiffFile:
 - merge_request_diff_id
 - relative_order
@@ -392,12 +404,15 @@ Project:
 - merge_requests_rebase_enabled
 - approvals_before_merge
 - reset_approvals_on_push
+- disable_overriding_approvers_per_merge_request
 - merge_requests_ff_only_enabled
 - issues_template
 - repository_size_limit
 - sync_time
 - service_desk_enabled
 - last_repository_updated_at
+- ci_config_path
+- delete_error
 Author:
 - name
 ProjectFeature:

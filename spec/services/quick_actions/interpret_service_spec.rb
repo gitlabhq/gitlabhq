@@ -11,6 +11,8 @@ describe QuickActions::InterpretService, services: true do
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
 
   before do
+    stub_licensed_features(multiple_issue_assignees: false)
+
     project.team << [developer, :developer]
   end
 
@@ -278,6 +280,15 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
+    shared_examples 'duplicate command' do
+      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
+        issue_duplicate # populate the issue
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -399,24 +410,18 @@ describe QuickActions::InterpretService, services: true do
       let(:content) { "/assign @#{developer.username}" }
 
       context 'Issue' do
-        it 'fetches assignees and populates them if content contains /assign' do
-          user = create(:user)
-          issue.assignees << user
-
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, issue)
 
-          expect(updates[:assignee_ids]).to match_array([developer.id, user.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id])
         end
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
-          user = create(:user)
-          merge_request.update(assignee: user)
-
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -429,18 +434,18 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, issue)
 
-          expect(updates[:assignee_ids]).to match_array([developer.id, developer2.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id])
         end
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -459,55 +464,20 @@ describe QuickActions::InterpretService, services: true do
       let(:content) { '/unassign' }
 
       context 'Issue' do
-        it 'unassigns user if content contains /unassign @user' do
-          issue.update(assignee_ids: [developer.id, developer2.id])
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          issue.update(assignee_ids: [developer.id])
+          _, updates = service.execute(content, issue)
 
-          _, updates = service.execute("/unassign @#{developer2.username}", issue)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
-
-        it 'unassigns both users if content contains /unassign @user @user1' do
-          user = create(:user)
-
-          issue.update(assignee_ids: [developer.id, developer2.id, user.id])
-
-          _, updates = service.execute("/unassign @#{developer2.username} @#{developer.username}", issue)
-
-          expect(updates).to eq(assignee_ids: [user.id])
-        end
-
-        it 'unassigns all the users if content contains /unassign' do
-          issue.update(assignee_ids: [developer.id, developer2.id])
-
-          _, updates = service.execute('/unassign', issue)
-
-          expect(updates[:assignee_ids]).to be_empty
-        end
-      end
-
-      context 'reassign command' do
-        let(:content) { '/reassign' }
-
-        context 'Issue' do
-          it 'reassigns user if content contains /reassign @user' do
-            user = create(:user)
-
-            issue.update(assignee_ids: [developer.id, developer2.id])
-
-            _, updates = service.execute("/reassign @#{user.username}", issue)
-
-            expect(updates).to eq(assignee_ids: [user.id])
-          end
+          expect(updates).to eq(assignee_ids: [])
         end
       end
 
       context 'Merge Request' do
-        it 'populates assignee_id: nil if content contains /unassign' do
-          merge_request.update(assignee_id: developer.id)
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          merge_request.update(assignee_ids: [developer.id])
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: nil)
+          expect(updates).to eq(assignee_ids: [])
         end
       end
     end
@@ -759,6 +729,41 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
+    context '/duplicate command' do
+      it_behaves_like 'duplicate command' do
+        let(:issue_duplicate) { create(:issue, project: project) }
+        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate' }
+        let(:issuable) { issue }
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'duplicate command' do
+          let(:other_project) { create(:empty_project, :public) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/duplicate imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:empty_project, :private) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+    end
+
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
@@ -806,6 +811,11 @@ describe QuickActions::InterpretService, services: true do
 
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
     end
@@ -1000,7 +1010,7 @@ describe QuickActions::InterpretService, services: true do
       it 'includes current assignee reference' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(["Removes assignee #{developer.to_reference}"])
+        expect(explanations).to eq(["Removes assignee @#{developer.username}."])
       end
     end
 

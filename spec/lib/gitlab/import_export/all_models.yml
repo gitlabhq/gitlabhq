@@ -45,6 +45,7 @@ label:
 - merge_requests
 - priorities
 milestone:
+- group
 - project
 - issues
 - labels
@@ -92,7 +93,10 @@ merge_requests:
 - head_pipeline
 merge_request_diff:
 - merge_request
+- merge_request_diff_commits
 - merge_request_diff_files
+merge_request_diff_commits:
+- merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
 pipelines:
@@ -138,8 +142,11 @@ pipeline_schedules:
 - owner
 - pipelines
 - last_pipeline
+- variables
 pipeline_schedule:
 - pipelines
+pipeline_schedule_variables:
+- pipeline_schedule
 deploy_keys:
 - user
 - deploy_keys_projects
@@ -190,6 +197,7 @@ project:
 - pipelines_email_service
 - mattermost_slash_commands_service
 - slack_slash_commands_service
+- gitlab_slack_application_service
 - irker_service
 - pivotaltracker_service
 - prometheus_service

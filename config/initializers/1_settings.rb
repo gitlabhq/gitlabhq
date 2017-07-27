@@ -257,7 +257,7 @@ rescue ArgumentError # no user configured
 end
 Settings.gitlab['time_zone'] ||= nil
 Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
-Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
+Settings.gitlab['password_authentication_enabled'] ||= true if Settings.gitlab['password_authentication_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
@@ -265,7 +265,7 @@ Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
-Settings.gitlab['mirror_max_delay'] ||= 5
+Settings.gitlab['mirror_max_delay'] ||= 300
 Settings.gitlab['mirror_max_capacity'] ||= 30
 Settings.gitlab['mirror_capacity_threshold'] ||= 15
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
@@ -349,10 +349,6 @@ Settings.pages['external_https']  ||= false unless Settings.pages['external_http
 # Geo
 #
 Settings.gitlab['geo_status_timeout'] ||= 10
-Settings['geo_primary_role'] ||= Settingslogic.new({})
-Settings.geo_primary_role['enabled'] = false if Settings.geo_primary_role['enabled'].nil?
-Settings['geo_secondary_role'] ||= Settingslogic.new({})
-Settings.geo_secondary_role['enabled'] = false if Settings.geo_secondary_role['enabled'].nil?
 
 #
 # Git LFS
@@ -413,10 +409,10 @@ Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
 Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
 Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/5 * * * *'
-Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'GeoRepositorySyncWorker'
+Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'
 Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '5 * * * *'
-Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
+Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
 Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
@@ -579,7 +575,6 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] = true if Settings.gitaly['enabled'].nil?
 
 #
 # Webpack settings
@@ -589,6 +584,13 @@ Settings.webpack['dev_server'] ||= Settingslogic.new({})
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
+
+#
+# Monitoring settings
+#
+Settings['monitoring'] ||= Settingslogic.new({})
+Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
+Settings.monitoring['unicorn_sampler_interval'] ||= 10
 
 #
 # Testing settings

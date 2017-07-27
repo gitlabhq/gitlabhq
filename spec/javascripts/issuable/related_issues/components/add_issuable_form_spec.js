@@ -198,12 +198,40 @@ describe('AddIssuableForm', () => {
       });
     });
 
+    it('when using the autocomplete', (done) => {
+      const $input = $(vm.$refs.input);
+
+      vm.gfmAutoComplete.loadData($input, '#', [{
+        id: 1,
+        iid: 111,
+        title: 'foo',
+      }]);
+
+      $input
+        .val('#')
+        .trigger('input')
+        .trigger('click');
+
+      $('.atwho-container li').trigger('click');
+
+      setTimeout(() => {
+        Vue.nextTick(() => {
+          expect(vm.$refs.input.value).toEqual('');
+          expect(addIssuableFormInputSpy.calls.count()).toEqual(1);
+
+          done();
+        });
+      });
+    });
+
     it('when submitting pending issues', () => {
       expect(addIssuableFormSubmitSpy).not.toHaveBeenCalled();
 
+      const newInputValue = 'filling in things';
+      vm.$refs.input.value = newInputValue;
       vm.onFormSubmit();
 
-      expect(addIssuableFormSubmitSpy).toHaveBeenCalled();
+      expect(addIssuableFormSubmitSpy).toHaveBeenCalledWith(newInputValue);
     });
 
     it('when canceling form to collapse', () => {

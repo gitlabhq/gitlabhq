@@ -47,7 +47,10 @@ module EE
             end
 
             if current_application_settings.elasticsearch_indexing?
-              project.run_after_commit { ElasticCommitIndexerWorker.perform_async(project.id) }
+              project.run_after_commit do
+                last_indexed_commit = project.index_status&.last_commit
+                ElasticCommitIndexerWorker.perform_async(project.id, last_indexed_commit)
+              end
             end
           end
 

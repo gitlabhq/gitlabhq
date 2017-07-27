@@ -61,21 +61,21 @@ class KubernetesService < DeploymentService
   def fields
     [
         { type: 'text',
-          name: 'namespace',
-          title: 'Kubernetes namespace',
-          placeholder: namespace_placeholder },
-        { type: 'text',
           name: 'api_url',
           title: 'API URL',
           placeholder: 'Kubernetes API URL, like https://kube.example.com/' },
-        { type: 'text',
-          name: 'token',
-          title: 'Service token',
-          placeholder: 'Service token' },
         { type: 'textarea',
           name: 'ca_pem',
-          title: 'Custom CA bundle',
-          placeholder: 'Certificate Authority bundle (PEM format)' }
+          title: 'CA Certificate',
+          placeholder: 'Certificate Authority bundle (PEM format)' },
+        { type: 'text',
+          name: 'namespace',
+          title: 'Project namespace (optional/unique)',
+          placeholder: namespace_placeholder },
+        { type: 'text',
+          name: 'token',
+          title: 'Token',
+          placeholder: 'Service token' }
     ]
   end
 
@@ -98,10 +98,13 @@ class KubernetesService < DeploymentService
   end
 
   def predefined_variables
+    config = YAML.dump(kubeconfig)
+
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
-      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true }
+      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
+      { key: 'KUBECONFIG', value: config, public: false, file: true }
     ]
 
     if ca_pem.present?
@@ -136,6 +139,14 @@ class KubernetesService < DeploymentService
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
+
+  def kubeconfig
+    to_kubeconfig(
+      url: api_url,
+      namespace: actual_namespace,
+      token: token,
+      ca_pem: ca_pem)
+  end
 
   def namespace_placeholder
     default_namespace || TEMPLATE_PLACEHOLDER

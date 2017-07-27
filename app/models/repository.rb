@@ -130,6 +130,7 @@ class Repository
     commits
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     unless exists? && has_visible_content? && query.present?
       return []
@@ -617,6 +618,7 @@ class Repository
     commit(sha)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/383
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
@@ -1005,7 +1007,7 @@ class Repository
 
   def is_ancestor?(ancestor_id, descendant_id)
     return false if ancestor_id.nil? || descendant_id.nil?
-    
+
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
@@ -1158,8 +1160,8 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha)
-    blob_data_at(sha, '.gitlab-ci.yml')
+  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
+    blob_data_at(sha, path)
   end
 
   private

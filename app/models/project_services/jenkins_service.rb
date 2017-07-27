@@ -28,6 +28,7 @@ class JenkinsService < CiService
   end
 
   def execute(data)
+    return if project.disabled_services.include?(to_param)
     return unless supported_events.include?(data[:object_kind])
 
     service_hook.execute(data, "#{data[:object_kind]}_hook")
@@ -35,13 +36,13 @@ class JenkinsService < CiService
 
   def test(data)
     begin
-      code, message = execute(data)
-      return { success: false, result: message } if code != 200
+      result = execute(data)
+      return { success: false, result: result[:message] } if result[:http_status] != 200
     rescue StandardError => error
       return { success: false, result: error }
     end
 
-    { success: true, result: message }
+    { success: true, result: result[:message] }
   end
 
   def hook_url

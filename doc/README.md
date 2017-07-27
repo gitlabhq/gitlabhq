@@ -50,10 +50,11 @@ Shortcuts to GitLab's most visited docs:
 - [Fork a project](gitlab-basics/fork-project.md)
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
 - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+- [Groups](user/group/index.md): Organize your projects in groups.
+  - [Subgroups](user/group/subgroups/index.md): nest groups in subgroups.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
+  - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
+  - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
@@ -84,6 +85,7 @@ Manage files and branches from the UI (user interface):
 - [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Issue Board](user/project/issue_board.md)
+- **(EES/EEP)** [Related Issues](user/project/issues/related_issues.md): create a relationship between issues
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
 - [Labels](user/project/labels.md): Categorize your issues or merge requests based on descriptive titles.
 - [Merge Requests](user/project/merge_requests/index.md)
@@ -93,7 +95,7 @@ Manage files and branches from the UI (user interface):
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
-  - **(EES/EEP)** [Burndown Charts](user/project/milestones/index.md#burndown-charts): Watch your project's progress throughout a specific milestone.
+  - **(EES/EEP)** [Burndown Charts](user/project/milestones/burndown_charts.md): Watch your project's progress throughout a specific milestone.
 - [Related issues](user/project/issues/related_issues.md)
 - [Todos](workflow/todos.md): A chronological list of to-dos that are waiting for your input, all in a simple dashboard.
 
@@ -114,7 +116,7 @@ Manage files and branches from the UI (user interface):
   - [Auto Deploy](ci/autodeploy/index.md): Configure GitLab CI for the deployment of your application.
   - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
   - **(EEP)** [Deploy Boards](user/project/deploy_boards.md): View of the current health and status of each CI environment running on Kubernetes, displaying the status of the pods in the deployment.
-  - **(EEP)** [Canary Deployments](user/project/deploy_boards.md#canary-deployments): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
+  - **(EEP)** [Canary Deployments](user/project/canary_deployments.md): A popular CI strategy, where a small portion of the fleet is updated to the new version first.
 - [GitLab Cycle Analytics](user/project/cycle_analytics.md): Cycle Analytics measures the time it takes to go from an [idea to production](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab) for each project you have.
 - [GitLab Container Registry](user/project/container_registry.md): Learn how to use GitLab's built-in Container Registry.
 
@@ -127,6 +129,7 @@ Manage files and branches from the UI (user interface):
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
 ----
 
@@ -161,12 +164,12 @@ have access to GitLab administration tools and settings.
 - [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
 - [Web terminals](administration/integration/terminal.md): Provide terminal access to environments from within GitLab.
 - **(EES/EEP)** [Audit logs and events](administration/audit_events.md): View the changes made within the GitLab server.
-- **(EES/EEP)** [Elasticsearch](integration/elasticsearch.md): A flexible, scalable and powerful search service to keep GitLab's search fast when dealing with huge amount of data.
+- **(EES/EEP)** [Elasticsearch](integration/elasticsearch.md): Enable Elasticsearch which powers GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
 - **(EES/EEP)** [Email users](tools/email.md): Email GitLab users from within GitLab.
 - **(EES/EEP)** [Limit project size](user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 - **(EEP)** [Auditor users](administration/auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - **(EEP)** [GitLab GEO](gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
-- **(EEP)** [Pivotal Tile](https://about.gitlab.com/2015/11/03/pivotal-cloud-foundry-tile-for-gitlab-ee/): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry. See also: [Pivotal documentation](https://docs.pivotal.io/partners/gitlab/index.html).
+- **(EEP)** [Pivotal Tile](install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 - **(EES/EEP)** [Database load balancing](administration/database_load_balancing.md): Distribute database queries among multiple database servers.
 - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
 - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
@@ -193,6 +196,7 @@ have access to GitLab administration tools and settings.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
 - [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ### Customization
 
@@ -205,6 +209,7 @@ have access to GitLab administration tools and settings.
 
 ### Admin tools
 
+- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
 - [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
     - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.

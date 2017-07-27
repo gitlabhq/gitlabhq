@@ -13,6 +13,7 @@ describe Group, models: true do
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
     it { is_expected.to have_many(:labels).class_name('GroupLabel') }
+    it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
 
@@ -188,7 +189,7 @@ describe Group, models: true do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
     let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
+    let(:avatar_path) { "/uploads/-/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before do
@@ -254,6 +255,7 @@ describe Group, models: true do
   describe '#has_owner?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :owner, group: group)
     end
 
     it { expect(group.has_owner?(@members[:owner])).to be_truthy }
@@ -262,11 +264,13 @@ describe Group, models: true do
     it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
     it { expect(group.has_owner?(@members[:guest])).to be_falsey }
     it { expect(group.has_owner?(@members[:requester])).to be_falsey }
+    it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
   describe '#has_master?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :master, group: group)
     end
 
     it { expect(group.has_master?(@members[:owner])).to be_falsey }
@@ -275,6 +279,7 @@ describe Group, models: true do
     it { expect(group.has_master?(@members[:reporter])).to be_falsey }
     it { expect(group.has_master?(@members[:guest])).to be_falsey }
     it { expect(group.has_master?(@members[:requester])).to be_falsey }
+    it { expect(group.has_master?(nil)).to be_falsey }
   end
 
   describe '#lfs_enabled?' do
@@ -454,6 +459,71 @@ describe Group, models: true do
       group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
 
       expect(calls).to eq 2
+    end
+  end
+
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project, group: group) }
+
+    let!(:secret_variable) do
+      create(:ci_group_variable, value: 'secret', group: group)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_group_variable, :protected, value: 'protected', group: group)
+    end
+
+    subject { group.secret_variables_for('ref', project) }
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when group has children', :postgresql do
+      let(:group_child)      { create(:group, parent: group) }
+      let(:group_child_2)    { create(:group, parent: group_child) }
+      let(:group_child_3)    { create(:group, parent: group_child_2) }
+      let(:variable_child)   { create(:ci_group_variable, group: group_child) }
+      let(:variable_child_2) { create(:ci_group_variable, group: group_child_2) }
+      let(:variable_child_3) { create(:ci_group_variable, group: group_child_3) }
+
+      it 'returns all variables belong to the group and parent groups' do
+        expected_array1 = [protected_variable, secret_variable]
+        expected_array2 = [variable_child, variable_child_2, variable_child_3]
+        got_array = group_child_3.secret_variables_for('ref', project).to_a
+
+        expect(got_array.shift(2)).to contain_exactly(*expected_array1)
+        expect(got_array).to eq(expected_array2)
+      end
     end
   end
 end

@@ -4,8 +4,8 @@ feature 'Projects > Members > Owner cannot request access to his project', featu
   let(:project) { create(:project) }
 
   background do
-    gitlab_sign_in(project.owner)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(project.owner)
+    visit project_path(project)
   end
 
   scenario 'owner does not see the request access button' do

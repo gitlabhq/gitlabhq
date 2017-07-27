@@ -22,7 +22,7 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
       tag = '[[images/image.jpg]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 
-      expect(doc.at_css('img')['src']).to eq "#{project_wiki.wiki_base_path}/images/image.jpg"
+      expect(doc.at_css('img')['data-src']).to eq "#{project_wiki.wiki_base_path}/images/image.jpg"
     end
 
     it 'does not creates img tag if image does not exist' do
@@ -40,7 +40,7 @@ describe Banzai::Filter::GollumTagsFilter, lib: true do
       tag = '[[http://example.com/image.jpg]]'
       doc = filter("See #{tag}", project_wiki: project_wiki)
 
-      expect(doc.at_css('img')['src']).to eq "http://example.com/image.jpg"
+      expect(doc.at_css('img')['data-src']).to eq "http://example.com/image.jpg"
     end
 
     it 'does not creates img tag for invalid URL' do

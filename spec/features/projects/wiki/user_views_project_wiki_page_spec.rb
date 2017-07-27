@@ -15,7 +15,7 @@ feature 'Projects > Wiki > User views the wiki page', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
     WikiPages::UpdateService.new(
       project,
       user,
@@ -26,18 +26,13 @@ feature 'Projects > Wiki > User views the wiki page', feature: true do
   end
 
   scenario 'Visit Wiki Page Current Commit' do
-    visit namespace_project_wiki_path(project.namespace, project, wiki_page)
+    visit project_wiki_path(project, wiki_page)
 
     expect(page).to have_selector('a.btn', text: 'Edit')
   end
 
   scenario 'Visit Wiki Page Historical Commit' do
-    visit namespace_project_wiki_path(
-      project.namespace,
-      project,
-      wiki_page,
-      version_id: old_page_version_id
-    )
+    visit project_wiki_path(project, wiki_page, version_id: old_page_version_id)
 
     expect(page).not_to have_selector('a.btn', text: 'Edit')
   end

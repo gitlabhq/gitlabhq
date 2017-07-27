@@ -20,9 +20,9 @@
 
 = render 'projects/fork_suggestion'
 
-- if @project.feature_available?(:file_lock)
+- if @project.feature_available?(:file_locks)
   :javascript
     PathLocks.init(
-      '#{toggle_namespace_project_path_locks_path(@project.namespace, @project)}',
+      '#{toggle_project_path_locks_path(@project)}',
       '#{@path}'
     );

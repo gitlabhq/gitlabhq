@@ -242,6 +242,8 @@ ul.content-list {
 ul.controls {
   float: right;
   list-style: none;
+  display: flex;
+  align-items: center;
 
   .btn {
     padding: 10px 14px;
@@ -264,6 +266,12 @@ ul.controls {
         margin-bottom: 0;
       }
     }
+  }
+
+  .issuable-pipeline-broken a,
+  .issuable-pipeline-status a,
+  .author_link {
+    display: flex;
   }
 }
 
@@ -349,6 +357,12 @@ ul.indent-list {
   .group-row {
     padding: 0;
     border: none;
+
+    &:last-of-type {
+      .group-row-contents:not(:hover) {
+        border-bottom: 1px solid transparent;
+      }
+    }
   }
 
   .group-row-contents {

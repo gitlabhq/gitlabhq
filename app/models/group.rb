@@ -5,14 +5,13 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include EE::Group
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
   include AccessRequestable
   include Avatarable
   include Referable
   include SelectForProjectAuthorization
   prepend EE::GeoAwareAvatar
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,
@@ -20,17 +19,21 @@ class Group < Namespace
     through: :group_members,
     source: :user
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :project_group_links, dependent: :destroy
+  has_many :milestones
+  has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
-  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
-  has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
+  has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+  has_many :labels, class_name: 'GroupLabel'
+  has_many :variables, class_name: 'Ci::GroupVariable'
+
+  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :hooks, dependent: :destroy, class_name: 'GroupHook' # rubocop:disable Cop/ActiveRecordDependent
+
   # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
   # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
-  has_many :audit_events, -> { where(entity_type: Group) }, dependent: :destroy, foreign_key: 'entity_id'
-  has_many :notification_settings, dependent: :destroy, as: :source
-  has_many :labels, class_name: 'GroupLabel'
+  has_many :audit_events, -> { where(entity_type: Group) }, dependent: :delete_all, foreign_key: 'entity_id' # rubocop:disable Cop/ActiveRecordDependent
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
@@ -43,7 +46,7 @@ class Group < Namespace
             numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
 
   mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
@@ -117,10 +120,6 @@ class Group < Namespace
     full_name
   end
 
-  def visibility_level_field
-    :visibility_level
-  end
-
   def visibility_level_allowed_by_projects
     allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
 
@@ -187,10 +186,14 @@ class Group < Namespace
   end
 
   def has_owner?(user)
+    return false unless user
+
     members_with_parents.owners.where(user_id: user).any?
   end
 
   def has_master?(user)
+    return false unless user
+
     members_with_parents.masters.where(user_id: user).any?
   end
 
@@ -259,7 +262,7 @@ class Group < Namespace
   end
 
   def members_with_parents
-    GroupMember.non_request.where(source_id: ancestors.pluck(:id).push(id))
+    GroupMember.active.where(source_id: ancestors.pluck(:id).push(id)).where.not(user_id: nil)
   end
 
   def users_with_parents
@@ -290,6 +293,14 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  def secret_variables_for(ref, project)
+    list_of_ids = [self] + ancestors
+    variables = Ci::GroupVariable.where(group: list_of_ids)
+    variables = variables.unprotected unless project.protected_for?(ref)
+    variables = variables.group_by(&:group_id)
+    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
   protected

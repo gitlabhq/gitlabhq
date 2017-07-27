@@ -1,5 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
 
+import VisibilitySelect from './visibility_select';
+
 function highlightChanges($elm) {
   $elm.addClass('highlight-changes');
   setTimeout(() => $elm.removeClass('highlight-changes'), 10);
@@ -36,7 +38,7 @@ function highlightChanges($elm) {
     ProjectNew.prototype.initVisibilitySelect = function() {
       const visibilityContainer = document.querySelector('.js-visibility-select');
       if (!visibilityContainer) return;
-      const visibilitySelect = new gl.VisibilitySelect(visibilityContainer);
+      const visibilitySelect = new VisibilitySelect(visibilityContainer);
       visibilitySelect.init();
 
       const $visibilitySelect = $(visibilityContainer).find('select');

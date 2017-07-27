@@ -4,19 +4,36 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-19 09:57-0400\n"
+"PO-Revision-Date: 2017-07-12 06:23-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (China) (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: zh-CN\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "为提高页面加载速度及性能，已省略了 %s 次提交。"
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d 次提交"
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交于 %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 条流水线"
+msgstr[1] "%d 条流水线"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "持续集成数据图"
 
 msgid "About auto deploy"
 msgstr "关于自动部署"
@@ -63,8 +80,23 @@ msgstr ""
 "已创建分支 <strong>%{branch_name}</strong> 。如需设置自动部署， 请选择合适的 GitLab CI Yaml "
 "模板并提交更改。%{link_to_autodeploy_doc}"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "搜索分支"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "切换分支"
+
 msgid "Branches"
 msgstr "分支"
+
+msgid "Browse Directory"
+msgstr "浏览目录"
+
+msgid "Browse File"
+msgstr "浏览文件"
+
+msgid "Browse Files"
+msgstr "浏览文件"
 
 msgid "Browse files"
 msgstr "浏览文件"
@@ -160,6 +192,9 @@ msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "提交"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "最近30次提交相应持续集成花费的时间（分钟）"
+
 msgid "Commit message"
 msgstr "提交信息"
 
@@ -171,6 +206,9 @@ msgstr "添加 %{file_name}"
 
 msgid "Commits"
 msgstr "提交"
+
+msgid "Commits feed"
+msgstr "提交动态"
 
 msgid "Commits|History"
 msgstr "历史"
@@ -196,6 +234,11 @@ msgstr "复制提交 SHA 的值到剪贴板"
 msgid "Create New Directory"
 msgstr "创建新目录"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr "在帐户上创建个人访问令牌，以通过 %{protocol} 来拉取或推送。"
+
 msgid "Create directory"
 msgstr "创建目录"
 
@@ -213,6 +256,9 @@ msgstr "派生"
 
 msgid "CreateTag|Tag"
 msgstr "标签"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "创建个人访问令牌"
 
 msgid "Cron Timezone"
 msgstr "Cron 时区"
@@ -329,6 +375,9 @@ msgstr "无法删除流水线计划"
 msgid "Files"
 msgstr "文件"
 
+msgid "Filter by commit message"
+msgstr "按提交消息过滤"
+
 msgid "Find by path"
 msgstr "按路径查找"
 
@@ -374,6 +423,15 @@ msgstr "循环周期"
 
 msgid "Introducing Cycle Analytics"
 msgstr "周期分析简介"
+
+msgid "Jobs for last month"
+msgstr "上个月的作业"
+
+msgid "Jobs for last week"
+msgstr "上个星期的作业"
+
+msgid "Jobs for last year"
+msgstr "去年的作业"
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -537,6 +595,21 @@ msgstr "流水线计划"
 msgid "Pipeline Schedules"
 msgstr "流水线计划"
 
+msgid "PipelineCharts|Failed:"
+msgstr "失败："
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "总体统计数据"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "成功率："
+
+msgid "PipelineCharts|Successful:"
+msgstr "成功："
+
+msgid "PipelineCharts|Total:"
+msgstr "总计："
+
 msgid "PipelineSchedules|Activated"
 msgstr "是否启用"
 
@@ -549,6 +622,12 @@ msgstr "所有"
 msgid "PipelineSchedules|Inactive"
 msgstr "未启用"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "输入变量名"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "输入变量值"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "下次运行时间"
 
@@ -558,14 +637,32 @@ msgstr "无"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "为此流水线提供简短描述"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "删除变量"
+
 msgid "PipelineSchedules|Take ownership"
-msgstr "取得所有者"
+msgstr "取得所有权"
 
 msgid "PipelineSchedules|Target"
 msgstr "目标"
 
+msgid "PipelineSchedules|Variables"
+msgstr "变量"
+
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自定义"
+
+msgid "Pipelines"
+msgstr "流水线"
+
+msgid "Pipelines charts"
+msgstr "流水线统计图"
+
+msgid "Pipeline|all"
+msgstr "所有"
+
+msgid "Pipeline|success"
+msgstr "成功"
 
 msgid "Pipeline|with stage"
 msgstr "于阶段"
@@ -692,7 +789,7 @@ msgstr "选择时区"
 msgid "Select target branch"
 msgstr "选择目标分支"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "为账号创建一个用于推送或拉取的 %{protocol} 密码。"
 
 msgid "Set up CI"
@@ -974,8 +1071,14 @@ msgstr "上传新文件"
 msgid "Upload file"
 msgstr "上传文件"
 
+msgid "UploadLink|click to upload"
+msgstr "点击上传"
+
 msgid "Use your global notification setting"
 msgstr "使用全局通知设置"
+
+msgid "View open merge request"
+msgstr "查看待处理的合并请求"
 
 msgid "VisibilityLevel|Internal"
 msgstr "内部"
@@ -996,12 +1099,18 @@ msgid "Withdraw Access Request"
 msgstr "取消权限申请"
 
 msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "即将删除 %{group_name}。\n"
+"已删除的群组无法恢复！\n"
+"确定继续吗？"
+
+msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
 "Removed project CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
-msgstr "即将要删除 %{project_name_with_namespace}。\n"
-"已删除的项目无法恢复！\n"
-"确定继续吗？"
+msgstr "即将要删除 %{project_name_with_namespace}。已删除的项目无法恢复！确定继续吗？"
 
 msgid ""
 "You are going to remove the fork relationship to source project "
@@ -1069,4 +1178,3 @@ msgstr "通知邮件"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "父级"
-

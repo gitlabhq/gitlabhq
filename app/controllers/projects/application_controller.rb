@@ -22,6 +22,7 @@ class Projects::ApplicationController < ApplicationController
 
   def project
     return @project if @project
+    return nil unless params[:project_id] || params[:id]
 
     path = File.join(params[:namespace_id], params[:project_id] || params[:id])
     auth_proc = ->(project) { !project.pending_delete? }
@@ -76,13 +77,13 @@ class Projects::ApplicationController < ApplicationController
   def require_non_empty_project
     # Be sure to return status code 303 to avoid a double DELETE:
     # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
-    redirect_to namespace_project_path(@project.namespace, @project), status: 303 if @project.empty_repo?
+    redirect_to project_path(@project), status: 303 if @project.empty_repo?
   end
 
   def require_branch_head
     unless @repository.branch_exists?(@ref)
       redirect_to(
-        namespace_project_tree_path(@project.namespace, @project, @ref),
+        project_tree_path(@project, @ref),
         notice: "This action is not allowed unless you are on a branch"
       )
     end

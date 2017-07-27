@@ -36,7 +36,7 @@ class Projects::PathLocksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to namespace_project_locks_path(@project.namespace, @project), status: 302
+        redirect_to project_locks_path(@project), status: 302
       end
       format.js
     end
@@ -45,7 +45,7 @@ class Projects::PathLocksController < Projects::ApplicationController
   private
 
   def check_license
-    unless @project.feature_available?(:file_lock)
+    unless @project.feature_available?(:file_locks)
       flash[:alert] = 'You need a different license to enable FileLocks feature'
       redirect_to admin_license_path
     end

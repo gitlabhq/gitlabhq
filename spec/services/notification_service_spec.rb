@@ -383,7 +383,7 @@ describe NotificationService, services: true do
       before do
         build_team(note.project)
         reset_delivered_emails!
-        allow_any_instance_of(Commit).to receive(:author).and_return(@u_committer)
+        allow(note.noteable).to receive(:author).and_return(@u_committer)
         update_custom_notification(:new_note, @u_guest_custom, resource: project)
         update_custom_notification(:new_note, @u_custom_global)
       end

@@ -1,5 +1,6 @@
 <script>
   import animateMixin from '../mixins/animate';
+  import TaskList from '../../task_list';
 
   export default {
     mixins: [animateMixin],
@@ -46,7 +47,7 @@
 
         if (this.canUpdate) {
           // eslint-disable-next-line no-new
-          new gl.TaskList({
+          new TaskList({
             dataType: 'issue',
             fieldName: 'description',
             selector: '.detail-page-description',

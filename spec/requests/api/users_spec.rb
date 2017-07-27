@@ -163,6 +163,35 @@ describe API::Users do
 
         expect(response).to have_http_status(400)
       end
+
+      it "returns a user created before a specific date" do
+        user = create(:user, created_at: Date.new(2000, 1, 1))
+
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(user.username)
+      end
+
+      it "returns no users created before a specific date" do
+        create(:user, created_at: Date.new(2001, 1, 1))
+
+        get api("/users?created_before=2000-01-02T00:00:00.060Z", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(0)
+      end
+
+      it "returns users created before and after a specific date" do
+        user = create(:user, created_at: Date.new(2001, 1, 1))
+
+        get api("/users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(user.username)
+      end
     end
 
     context "when authenticated and ldap is enabled" do
@@ -401,6 +430,14 @@ describe API::Users do
         expect(json_response['identities'].first['extern_uid']).to eq('67890')
         expect(json_response['identities'].first['provider']).to eq('github')
       end
+    end
+
+    context "scopes" do
+      let(:user) { admin }
+      let(:path) { '/users' }
+      let(:api_call) { method(:api) }
+
+      include_examples 'does not allow the "read_user" scope'
     end
   end
 
@@ -918,6 +955,13 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/public')
         expect(json_response['id']).to eq(user.id)
       end
+
+      context "scopes" do
+        let(:path) { "/user" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
 
     context 'with admin' do
@@ -930,11 +974,11 @@ describe API::Users do
           expect(response).to have_http_status(403)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin_personal_access_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -948,11 +992,11 @@ describe API::Users do
           expect(json_response['id']).to eq(user.id)
         end
 
-        it 'returns initial current user without private token when sudo not defined' do
+        it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(response).to match_response_schema('public_api/v4/user/admin')
           expect(json_response['id']).to eq(admin.id)
         end
       end
@@ -987,6 +1031,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["title"]).to eq(key.title)
       end
+
+      context "scopes" do
+        let(:path) { "/user/keys" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -1019,6 +1070,13 @@ describe API::Users do
       get api("/users/keys/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/keys/#{key.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -1109,6 +1167,13 @@ describe API::Users do
         expect(json_response).to be_an Array
         expect(json_response.first["email"]).to eq(email.email)
       end
+
+      context "scopes" do
+        let(:path) { "/user/emails" }
+        let(:api_call) { method(:api) }
+
+        include_examples 'allows the "read_user" scope'
+      end
     end
   end
 
@@ -1140,6 +1205,13 @@ describe API::Users do
       get api("/users/emails/ASDF", admin)
 
       expect(response).to have_http_status(404)
+    end
+
+    context "scopes" do
+      let(:path) { "/user/emails/#{email.id}" }
+      let(:api_call) { method(:api) }
+
+      include_examples 'allows the "read_user" scope'
     end
   end
 
@@ -1272,7 +1344,7 @@ describe API::Users do
     end
   end
 
-  context "user activities", :redis do
+  context "user activities", :clean_gitlab_redis_shared_state do
     let!(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let!(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
 

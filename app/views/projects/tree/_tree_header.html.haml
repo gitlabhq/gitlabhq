@@ -4,11 +4,11 @@
 
   %ul.breadcrumb.repo-breadcrumb
     %li
-      = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
+      = link_to project_tree_path(@project, @ref) do
         = @project.path
     - path_breadcrumbs do |title, path|
       %li
-        = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, tree_join(@ref, path))
+        = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
 
     - if current_user
       %li
@@ -23,7 +23,7 @@
             %ul.dropdown-menu
               - if can_edit_tree?
                 %li
-                  = link_to namespace_project_new_blob_path(@project.namespace, @project, @id) do
+                  = link_to project_new_blob_path(@project, @id) do
                     = icon('pencil fw')
                     #{ _('New file') }
                 %li
@@ -36,10 +36,10 @@
                     #{ _('New directory') }
               - elsif can?(current_user, :fork_project, @project)
                 %li
-                  - continue_params = { to:         namespace_project_new_blob_path(@project.namespace, @project, @id),
+                  - continue_params = { to:         project_new_blob_path(@project, @id),
                                         notice:     edit_in_new_fork_notice,
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                           continue:       continue_params)
                   = link_to fork_path, method: :post do
                     = icon('pencil fw')
@@ -48,7 +48,7 @@
                   - continue_params = { to:         request.fullpath,
                                         notice:     edit_in_new_fork_notice + " Try to upload a file again.",
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                           continue:       continue_params)
                   = link_to fork_path, method: :post do
                     = icon('file fw')
@@ -57,7 +57,7 @@
                   - continue_params = { to:         request.fullpath,
                                         notice:     edit_in_new_fork_notice + " Try to create a new directory again.",
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = namespace_project_forks_path(@project.namespace, @project, namespace_key:  current_user.namespace.id,
+                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
                                                                                           continue:       continue_params)
                   = link_to fork_path, method: :post do
                     = icon('folder fw')
@@ -65,17 +65,17 @@
 
               %li.divider
               %li
-                = link_to new_namespace_project_branch_path(@project.namespace, @project) do
+                = link_to new_project_branch_path(@project) do
                   = icon('code-fork fw')
                   #{ _('New branch') }
               %li
-                = link_to new_namespace_project_tag_path(@project.namespace, @project) do
+                = link_to new_project_tag_path(@project) do
                   = icon('tags fw')
                   #{ _('New tag') }
 
 .tree-controls
   = render 'projects/find_file_link'
-  = lock_file_link(html_options: { class: 'btn btn-grouped path-lock' })
-  = link_to s_('Commits|History'), namespace_project_commits_path(@project.namespace, @project, @id), class: 'btn btn-grouped'
+  = lock_file_link(html_options: { class: 'btn path-lock' })
+  = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/buttons/download', project: @project, ref: @ref

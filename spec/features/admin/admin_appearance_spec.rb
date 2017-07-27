@@ -4,7 +4,7 @@ feature 'Admin Appearance', feature: true do
   let!(:appearance) { create(:appearance) }
 
   scenario 'Create new appearance' do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     visit admin_appearances_path
 
     fill_in 'appearance_title', with: 'MyCompany'
@@ -20,7 +20,7 @@ feature 'Admin Appearance', feature: true do
   end
 
   scenario 'Preview appearance' do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
 
     visit admin_appearances_path
     click_link "Preview"
@@ -34,7 +34,7 @@ feature 'Admin Appearance', feature: true do
   end
 
   scenario 'Appearance logo' do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     visit admin_appearances_path
 
     attach_file(:appearance_logo, logo_fixture)
@@ -46,7 +46,7 @@ feature 'Admin Appearance', feature: true do
   end
 
   scenario 'Header logos' do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     visit admin_appearances_path
 
     attach_file(:appearance_header_logo, logo_fixture)
@@ -63,11 +63,11 @@ feature 'Admin Appearance', feature: true do
   end
 
   def logo_selector
-    '//img[@src^="/uploads/system/appearance/logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/logo"]'
   end
 
   def header_logo_selector
-    '//img[@src^="/uploads/system/appearance/header_logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/header_logo"]'
   end
 
   def logo_fixture

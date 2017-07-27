@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 15:50-0500\n"
-"PO-Revision-Date: 2017-06-19 15:50-0500\n"
+"POT-Creation-Date: 2017-07-13 12:07-0500\n"
+"PO-Revision-Date: 2017-07-13 12:07-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -18,17 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid "%d additional commit have been omitted to prevent performance issues."
-msgid_plural "%d additional commits have been omitted to prevent performance issues."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr ""
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
 msgid "About auto deploy"
@@ -185,6 +193,9 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr ""
+
 msgid "Commit message"
 msgstr ""
 
@@ -224,6 +235,9 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr ""
+
 msgid "Create directory"
 msgstr ""
 
@@ -240,6 +254,9 @@ msgid "CreateNewFork|Fork"
 msgstr ""
 
 msgid "CreateTag|Tag"
+msgstr ""
+
+msgid "CreateTokenToCloneLink|create a personal access token"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -400,6 +417,15 @@ msgid "Interval Pattern"
 msgstr ""
 
 msgid "Introducing Cycle Analytics"
+msgstr ""
+
+msgid "Jobs for last month"
+msgstr ""
+
+msgid "Jobs for last week"
+msgstr ""
+
+msgid "Jobs for last year"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
@@ -567,6 +593,21 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
+msgid "PipelineCharts|Failed:"
+msgstr ""
+
+msgid "PipelineCharts|Overall statistics"
+msgstr ""
+
+msgid "PipelineCharts|Success ratio:"
+msgstr ""
+
+msgid "PipelineCharts|Successful:"
+msgstr ""
+
+msgid "PipelineCharts|Total:"
+msgstr ""
+
 msgid "PipelineSchedules|Activated"
 msgstr ""
 
@@ -579,6 +620,12 @@ msgstr ""
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
+msgid "PipelineSchedules|Input variable key"
+msgstr ""
+
+msgid "PipelineSchedules|Input variable value"
+msgstr ""
+
 msgid "PipelineSchedules|Next Run"
 msgstr ""
 
@@ -588,13 +635,31 @@ msgstr ""
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr ""
+
 msgid "PipelineSchedules|Take ownership"
 msgstr ""
 
 msgid "PipelineSchedules|Target"
 msgstr ""
 
+msgid "PipelineSchedules|Variables"
+msgstr ""
+
 msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr ""
+
+msgid "Pipelines"
+msgstr ""
+
+msgid "Pipelines charts"
+msgstr ""
+
+msgid "Pipeline|all"
+msgstr ""
+
+msgid "Pipeline|success"
 msgstr ""
 
 msgid "Pipeline|with stage"
@@ -720,7 +785,7 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
 msgid "Set up CI"
@@ -995,6 +1060,9 @@ msgstr ""
 msgid "VisibilityLevel|Public"
 msgstr ""
 
+msgid "VisibilityLevel|Unknown"
+msgstr ""
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
@@ -1002,6 +1070,12 @@ msgid "We don't have enough data to show this stage."
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid ""

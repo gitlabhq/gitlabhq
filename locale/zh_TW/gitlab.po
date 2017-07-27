@@ -1,25 +1,42 @@
 # Huang Tao <htve@outlook.com>, 2017. #zanata
-# Lin Jen-Shin <anonymous@domain.com>, 2017.
 # Hazel Yang <anonymous@domain.com>, 2017.
 # TzeKei Lee <anonymous@domain.com>, 2017.
 # Jerry Ho <a29988122@gmail.com>, 2017.
+# Lin Jen-Shin <godfat@godfat.org>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-28 11:13-0400\n"
-"Last-Translator: Huang Tao <htve@outlook.com>\n"
 "Language-Team: Chinese (Taiwan) (https://translate.zanata.org/project/view/GitLab)\n"
+"PO-Revision-Date: 2017-07-20 09:50-0400\n"
+"Last-Translator: Lin Jen-Shin <godfat@godfat.org>\n"
 "Language: zh-TW\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "因效能考量，不顯示 %s 個更動 (commit)。"
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d 個更動 (commit)"
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} 在 %{commit_timeago} 送交"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 條流水線"
+msgstr[1] "%d 條流水線"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "持續整合 (CI) 相關的圖表"
 
 msgid "About auto deploy"
 msgstr "關於自動部署"
@@ -66,8 +83,23 @@ msgstr ""
 "已建立分支 (branch)  <strong>%{branch_name}</strong> 。如要設定自動部署， 請選擇合適的 GitLab CI "
 "Yaml 模板，然後記得要送交 (commit) 您的編輯內容。%{link_to_autodeploy_doc}\n"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "搜尋分支 (branches)"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "切換分支 (branch)"
+
 msgid "Branches"
 msgstr "分支 (branch) "
+
+msgid "Browse Directory"
+msgstr "瀏覽目錄"
+
+msgid "Browse File"
+msgstr "瀏覽檔案"
+
+msgid "Browse Files"
+msgstr "瀏覽檔案"
 
 msgid "Browse files"
 msgstr "瀏覽檔案"
@@ -163,6 +195,9 @@ msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "更動記錄 (commit) "
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "最近 30 次更動花費的時間（分鐘）"
+
 msgid "Commit message"
 msgstr "更動說明 (commit) "
 
@@ -174,6 +209,9 @@ msgstr "建立 %{file_name}"
 
 msgid "Commits"
 msgstr "更動記錄 (commit) "
+
+msgid "Commits feed"
+msgstr "更動摘要 (commit feed)"
 
 msgid "Commits|History"
 msgstr "過去更動 (commit) "
@@ -199,6 +237,11 @@ msgstr "複製更動記錄 (commit) 的 SHA 值到剪貼簿"
 msgid "Create New Directory"
 msgstr "建立新目錄"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr "建立個人存取憑證 (access token) 以使用 %{protocol} 來上傳 (push) 或下載 (pull) 。"
+
 msgid "Create directory"
 msgstr "建立目錄"
 
@@ -216,6 +259,9 @@ msgstr "分支 (fork) "
 
 msgid "CreateTag|Tag"
 msgstr "建立標籤"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "建立個人存取憑證 (access token)"
 
 msgid "Cron Timezone"
 msgstr "Cron 時區"
@@ -332,6 +378,9 @@ msgstr "無法刪除流水線 (pipeline) 排程"
 msgid "Files"
 msgstr "檔案"
 
+msgid "Filter by commit message"
+msgstr "以更動說明篩選"
+
 msgid "Find by path"
 msgstr "以路徑搜尋"
 
@@ -377,6 +426,15 @@ msgstr "循環週期"
 
 msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
+
+msgid "Jobs for last month"
+msgstr "上個月的任務 (job) "
+
+msgid "Jobs for last week"
+msgstr "上個星期的任務 (job) "
+
+msgid "Jobs for last year"
+msgstr "去年的任務 (job) "
 
 msgid "LFSStatus|Disabled"
 msgstr "停用"
@@ -540,6 +598,21 @@ msgstr "流水線 (pipeline) 排程"
 msgid "Pipeline Schedules"
 msgstr "流水線 (pipeline) 排程"
 
+msgid "PipelineCharts|Failed:"
+msgstr "失敗："
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "總體統計"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "成功比率："
+
+msgid "PipelineCharts|Successful:"
+msgstr "成功："
+
+msgid "PipelineCharts|Total:"
+msgstr "總計："
+
 msgid "PipelineSchedules|Activated"
 msgstr "是否啟用"
 
@@ -552,6 +625,12 @@ msgstr "所有"
 msgid "PipelineSchedules|Inactive"
 msgstr "未啟用"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "變數名稱"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "變數值"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "下次執行時間"
 
@@ -561,14 +640,32 @@ msgstr "無"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "請簡單說明此流水線 (pipeline) "
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "刪除變數"
+
 msgid "PipelineSchedules|Take ownership"
 msgstr "取得所有權"
 
 msgid "PipelineSchedules|Target"
 msgstr "目標"
 
+msgid "PipelineSchedules|Variables"
+msgstr "變數"
+
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自訂"
+
+msgid "Pipelines"
+msgstr "流水線 (pipeline) "
+
+msgid "Pipelines charts"
+msgstr "流水線 (pipeline) 圖表"
+
+msgid "Pipeline|all"
+msgstr "所有"
+
+msgid "Pipeline|success"
+msgstr "成功"
 
 msgid "Pipeline|with stage"
 msgstr "於階段"
@@ -675,13 +772,13 @@ msgid "Revert this merge request"
 msgstr "還原此合併請求 (merge request) "
 
 msgid "Save pipeline schedule"
-msgstr "保存流水線 (pipeline) 排程"
+msgstr "儲存流水線 (pipeline) 排程"
 
 msgid "Schedule a new pipeline"
 msgstr "建立流水線 (pipeline) 排程"
 
 msgid "Scheduling Pipelines"
-msgstr "流水線 (pipeline) 計劃"
+msgstr "流水線 (pipeline) 排程"
 
 msgid "Search branches and tags"
 msgstr "搜尋分支 (branch) 和標籤"
@@ -695,7 +792,7 @@ msgstr "選擇時區"
 msgid "Select target branch"
 msgstr "選擇目標分支 (branch) "
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr "請先設定密碼，才能使用 %{protocol} 來上傳 (push) 或下載 (pull) 。"
 
 msgid "Set up CI"
@@ -765,8 +862,7 @@ msgid ""
 "specific branches or tags. Those scheduled pipelines will inherit limited "
 "project access based on their associated user."
 msgstr ""
-"在指定了特定分支 (branch) 或標籤後，此處的流水線 (pipeline) 排程會不斷地重複執行。\n"
-"流水線排程的存取權限與專案本身相同。"
+"在指定了特定分支 (branch) 或標籤後，此處的流水線 (pipeline) 排程會不斷地重複執行。流水線排程的存取權限與專案本身相同。"
 
 msgid ""
 "The planning stage shows the time from the previous step to pushing your "
@@ -985,8 +1081,14 @@ msgstr "上傳新檔案"
 msgid "Upload file"
 msgstr "上傳檔案"
 
+msgid "UploadLink|click to upload"
+msgstr "點擊上傳"
+
 msgid "Use your global notification setting"
 msgstr "使用全域通知設定"
+
+msgid "View open merge request"
+msgstr "查看此分支的合併請求 (merge request)"
 
 msgid "VisibilityLevel|Internal"
 msgstr "內部"
@@ -1005,6 +1107,14 @@ msgstr "因該階段的資料不足而無法顯示相關資訊"
 
 msgid "Withdraw Access Request"
 msgstr "取消權限申請"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "即將要刪除 %{group_name}。\n"
+"被刪除的群組完全無法救回來喔！\n"
+"真的「100%確定」要這麼做嗎？"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
@@ -1084,4 +1194,3 @@ msgstr "通知信"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "上層"
-

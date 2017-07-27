@@ -10,11 +10,11 @@ feature 'Labels subscription', feature: true do
   context 'when signed in' do
     before do
       project.team << [user, :developer]
-      gitlab_sign_in user
+      sign_in user
     end
 
     scenario 'users can subscribe/unsubscribe to labels', js: true do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content('bug')
       expect(page).to have_content('feature')
@@ -55,7 +55,7 @@ feature 'Labels subscription', feature: true do
 
   context 'when not signed in' do
     it 'users can not subscribe/unsubscribe to labels' do
-      visit namespace_project_labels_path(project.namespace, project)
+      visit project_labels_path(project)
 
       expect(page).to have_content 'bug'
       expect(page).to have_content 'feature'

@@ -31,6 +31,18 @@ It's also possible for different migrations to be executed at the same time.
 This means that different background migrations should not migrate data in a
 way that would cause conflicts.
 
+## Idempotence
+
+Background migrations are executed in a context of a Sidekiq process.
+Usual Sidekiq rules apply, especially the rule that jobs should be small
+and idempotent.
+
+See [Sidekiq best practices guidelines](https://github.com/mperham/sidekiq/wiki/Best-Practices)
+for more details.
+
+Make sure that in case that your migration job is going to be retried data
+integrity is guarateed.
+
 ## How It Works
 
 Background migrations are simple classes that define a `perform` method. A
@@ -50,14 +62,13 @@ your migration:
 BackgroundMigrationWorker.perform_async('BackgroundMigrationClassName', [arg1, arg2, ...])
 ```
 
-Usually it's better to schedule jobs in bulk, for this you can use
+Usually it's better to enqueue jobs in bulk, for this you can use
 `BackgroundMigrationWorker.perform_bulk`:
 
 ```ruby
 BackgroundMigrationWorker.perform_bulk(
-  ['BackgroundMigrationClassName', [1]],
-  ['BackgroundMigrationClassName', [2]],
-  ...
+  [['BackgroundMigrationClassName', [1]],
+   ['BackgroundMigrationClassName', [2]]]
 )
 ```
 
@@ -67,6 +78,16 @@ consuming migrations it's best to schedule a background job using an
 `after_create` hook so this doesn't affect response timings. The same applies to
 updates. Removals in turn can be handled by simply defining foreign keys with
 cascading deletes.
+
+If you would like to schedule jobs in bulk with a delay, you can use
+`BackgroundMigrationWorker.perform_bulk_in`:
+
+```ruby
+jobs = [['BackgroundMigrationClassName', [1]],
+        ['BackgroundMigrationClassName', [2]]]
+
+BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
+```
 
 ## Cleaning Up
 
@@ -203,3 +224,27 @@ end
 This migration will then process any jobs for the ExtractServicesUrl migration
 and continue once all jobs have been processed. Once done you can safely remove
 the `services.properties` column.
+
+## Testing
+
+It is required to write tests for background migrations' scheduling migration
+(either a regular migration or a post deployment migration), background
+migration itself and a cleanup migration. You can use the `:migration` RSpec
+tag when testing a regular / post deployment migration.
+See [README][migrations-readme].
+
+When you do that, keep in mind that `before` and `after` RSpec hooks are going
+to migrate you database down and up, which can result in other background
+migrations being called. That means that using `spy` test doubles with
+`have_received` is encouraged, instead of using regular test doubles, because
+your expectations defined in a `it` block can conflict with what is being
+called in RSpec hooks. See [gitlab-org/gitlab-ce#35351][issue-rspec-hooks]
+for more details.
+
+## Best practices
+
+1. Make sure that background migration jobs are idempotent.
+1. Make sure that tests you write are not false positives.
+
+[migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351

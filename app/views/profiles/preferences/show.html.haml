@@ -16,25 +16,28 @@
         .preview= image_tag "#{scheme.css_class}-scheme-preview.png"
         = f.radio_button :color_scheme_id, scheme.id
         = scheme.name
-  - if can_toggle_new_nav?
-    .col-sm-12
-      %hr
-    .col-lg-3.profile-settings-sidebar#new-navigation
-      %h4.prepend-top-0
-        New Navigation
+  .col-sm-12
+    %hr
+  .col-lg-4.profile-settings-sidebar#new-navigation
+    %h4.prepend-top-0
+      New Navigation
+    %p
+      This setting allows you to turn on or off the new upcoming navigation concept.
+  .col-lg-8.syntax-theme
+    .nav-wip
       %p
-        This setting allows you to turn on or off the new upcoming navigation concept.
-        = succeed '.' do
-          = link_to 'Learn more', '', target: '_blank'
-    .col-lg-9.syntax-theme
-      = label_tag do
-        .preview= image_tag "old_nav.png"
-        %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }
-        Old
-      = label_tag do
-        .preview= image_tag "new_nav.png"
-        %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav", checked: show_new_nav? }
-        New
+        The new navigation is currently a work-in-progress concept and is currently only usable on wide-screens. There are a number of improvements that we are working on in order to further refine our navigation.
+      %p
+        %a{ href: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/32794', target: 'blank' } Learn more
+        about the improvements that are coming soon!
+    = label_tag do
+      .preview= image_tag "old_nav.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_nav", checked: !show_new_nav? }
+      Old
+    = label_tag do
+      .preview= image_tag "new_nav.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_nav", checked: show_new_nav? }
+      New
   .col-sm-12
     %hr
   .col-lg-4.profile-settings-sidebar

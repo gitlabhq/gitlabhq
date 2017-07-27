@@ -8,8 +8,12 @@ class IssueTrackerService < Service
   # This pattern does not support cross-project references
   # The other code assumes that this pattern is a superset of all
   # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
-  def self.reference_pattern
-    @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+  def self.reference_pattern(only_long: false)
+    if only_long
+      %r{(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)}
+    else
+      %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+    end
   end
 
   def default?
@@ -24,7 +28,7 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
+  def issue_tracker_path
     project_url
   end
 

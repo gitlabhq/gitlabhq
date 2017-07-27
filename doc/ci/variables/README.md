@@ -9,8 +9,9 @@ and a list of **user-defined variables**.
 The variables can be overwritten and they take precedence over each other in
 this order:
 
-1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
+1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -37,9 +38,10 @@ future GitLab releases.**
 |-------------------------------- |--------|--------|-------------|
 | **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
-| **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
+| **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
+| **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
@@ -142,25 +144,30 @@ script:
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
+- Group-level secret variables added in GitLab 9.4.
 - Be aware that secret variables are not masked, and their values can be shown
   in the job logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
 
-GitLab CI allows you to define per-project **secret variables** that are set in
-the build environment. The secret variables are stored out of the repository
-(`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
-available in the build environment. It's the recommended method to use for
-storing things like passwords, secret keys and credentials.
+GitLab CI allows you to define per-project or per-group **secret variables**
+that are set in the build environment. The secret variables are stored out of
+the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available in the build environment. It's the recommended method to
+use for storing things like passwords, secret keys and credentials.
 
-Secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
-**Secret variables**.
+Project-level secret variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
 
-Once you set them, they will be available for all subsequent pipelines.
+Likewise, group-level secret variables can be added by going to your group's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+Any variables of [subgroups] will be inherited recursively.
 
-## Protected secret variables
+Once you set them, they will be available for all subsequent pipelines. You can also
+[protect your variables](#protected-secret-variables).
+
+### Protected secret variables
 
 >**Notes:**
 This feature requires GitLab 9.3 or higher.
@@ -175,6 +182,24 @@ Protected variables can be added by going to your project's
 **Secret variables**, and check *Protected*.
 
 Once you set them, they will be available for all subsequent pipelines.
+
+### Limiting environment scopes of secret variables
+
+>**Notes:**
+[Introduced][ee-2112] in [GitLab Enterprise Edition Premium][eep] 9.4.
+
+You can limit the environment scope of a secret variable by
+[defining which environments][envs] it can be available for.
+
+Wildcards can be used, and the default environment scope is `*` which means
+any jobs will have this variable, not matter if an environment is defined or
+not.
+
+For example, if the environment scope is `production`, then only the jobs
+having the environment `production` defined would have this specific variable.
+Wildcards (`*`) can be used along with the environment name, therefore if the
+environment scope is `review/*` then any jobs with environment names starting
+with `review/` would have that particular variable.
 
 ## Deployment variables
 
@@ -426,10 +451,13 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
-[runner]: https://docs.gitlab.com/runner/
-[triggered]: ../triggers/README.md
-[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[ee-2112]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
+[runner]: https://docs.gitlab.com/runner/
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
-[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[triggered]: ../triggers/README.md
+[triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[subgroups]: ../../user/group/subgroups/index.md

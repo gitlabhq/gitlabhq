@@ -234,24 +234,43 @@ describe ProjectsController do
 
     let(:admin) { create(:admin) }
     let(:project) { create(:project, :repository) }
-    let(:new_path) { 'renamed_path' }
-    let(:project_params) { { path: new_path } }
 
     before do
       sign_in(admin)
     end
 
-    it "sets the repository to the right path after a rename" do
-      controller.instance_variable_set(:@project, project)
+    context 'when only renaming a project path' do
+      it "sets the repository to the right path after a rename" do
+        expect { update_project path: 'renamed_path' }
+          .to change { project.reload.path }
 
+        expect(project.path).to include 'renamed_path'
+        expect(assigns(:repository).path).to include project.path
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project has container repositories with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+      end
+
+      it 'does not allow to rename the project' do
+        expect { update_project path: 'renamed_path' }
+          .not_to change { project.reload.path }
+
+        expect(controller).to set_flash[:alert].to(/container registry tags/)
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    def update_project(**parameters)
       put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: project_params
-
-      expect(project.repository.path).to include(new_path)
-      expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response).to have_http_status(302)
+          namespace_id: project.namespace.path,
+          id: project.path,
+          project: parameters
     end
   end
 
@@ -527,7 +546,7 @@ describe ProjectsController do
         it 'redirects to the canonical path (testing non-show action)' do
           get :refs, namespace_id: 'foo', id: 'bar'
 
-          expect(response).to redirect_to(refs_namespace_project_path(namespace_id: public_project.namespace, id: public_project))
+          expect(response).to redirect_to(refs_project_path(public_project))
           expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, public_project))
         end
       end

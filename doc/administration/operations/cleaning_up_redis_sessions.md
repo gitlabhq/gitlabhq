@@ -15,6 +15,12 @@ prefixed with 'session:gitlab:', so they would look like
 'session:gitlab:976aa289e2189b17d7ef525a6702ace9'. Below we describe how to
 remove the keys in the old format.
 
+**Note:** the instructions below must be modified in accordance with your
+configuration settings if you have used the advanced Redis
+settings outlined in
+[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/README.md).
+
+
 First we define a shell function with the proper Redis connection details.
 
 ```
@@ -22,7 +28,7 @@ rcli() {
   # This example works for Omnibus installations of GitLab 7.3 or newer. For an
   # installation from source you will have to change the socket path and the
   # path to redis-cli.
-  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket "$@"
+  sudo /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.shared_state.socket "$@"
 }
 
 # test the new shell function; the response should be PONG

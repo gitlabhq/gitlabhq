@@ -1,25 +1,6 @@
 module Geo
-  class RepositoryUpdatedEventStore
-    attr_reader :project, :source, :refs, :changes
-
-    def initialize(project, refs: [], changes: [], source: Geo::RepositoryUpdatedEvent::REPOSITORY)
-      @project = project
-      @refs    = refs
-      @changes = changes
-      @source  = source
-    end
-
-    def create
-      return unless Gitlab::Geo.primary?
-
-      Geo::EventLog.transaction do
-        event_log = Geo::EventLog.new
-        event_log.repository_updated_event = build_event
-        event_log.save!
-      end
-    rescue ActiveRecord::RecordInvalid
-      log("#{Geo::PushEvent.sources.key(source).humanize} updated event could not be created")
-    end
+  class RepositoryUpdatedEventStore < EventStore
+    self.event_type = :repository_updated_event
 
     private
 
@@ -33,6 +14,18 @@ module Geo
         new_branch: push_to_new_branch?,
         remove_branch: push_remove_branch?
       )
+    end
+
+    def refs
+      params.fetch(:refs, [])
+    end
+
+    def changes
+      params.fetch(:changes, [])
+    end
+
+    def source
+      params.fetch(:source, Geo::RepositoryUpdatedEvent::REPOSITORY)
     end
 
     def ref
@@ -53,10 +46,6 @@ module Geo
 
     def push_remove_branch?
       changes.any? { |change| Gitlab::Git.branch_ref?(change[:ref]) && Gitlab::Git.blank_ref?(change[:after]) }
-    end
-
-    def log(message)
-      Rails.logger.info("#{self.class.name}: #{message} for project #{project.path_with_namespace} (#{project.id})")
     end
   end
 end

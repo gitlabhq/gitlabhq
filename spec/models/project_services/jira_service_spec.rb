@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe JiraService, models: true do
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   describe "Associations" do
     it { is_expected.to belong_to :project }

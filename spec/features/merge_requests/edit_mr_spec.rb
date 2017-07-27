@@ -9,6 +9,8 @@ feature 'Edit Merge Request', feature: true do
     before do
       project.team << [user, :master]
 
+      sign_in user
+
       visit_edit_mr_page
     end
 
@@ -31,7 +33,7 @@ feature 'Edit Merge Request', feature: true do
       merge_request.update(merge_params: { 'force_remove_source_branch' => '1' })
       expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
 
-      visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit edit_project_merge_request_path(project, merge_request)
       uncheck 'Remove source branch when merge request is accepted'
 
       click_button 'Save changes'
@@ -84,8 +86,8 @@ feature 'Edit Merge Request', feature: true do
   end
 
   def visit_edit_mr_page
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit edit_project_merge_request_path(project, merge_request)
   end
 end

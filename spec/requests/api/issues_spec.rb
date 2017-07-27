@@ -63,6 +63,10 @@ describe API::Issues do
     project.team << [guest, :guest]
   end
 
+  before do
+    stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
+  end
+
   describe "GET /issues" do
     context "when unauthenticated" do
       it "returns authentication error" do
@@ -691,7 +695,19 @@ describe API::Issues do
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
-      expect(json_response['weight']).to be_nil
+    end
+
+    context 'links exposure' do
+      it 'exposes related resources full URIs' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+        links = json_response['_links']
+
+        expect(links['self']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}")
+        expect(links['notes']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/notes")
+        expect(links['award_emoji']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/award_emoji")
+        expect(links['project']).to end_with("/api/v4/projects/#{project.id}")
+      end
     end
 
     it "returns a project issue by internal id" do
@@ -773,6 +789,17 @@ describe API::Issues do
       end
     end
 
+    context 'single assignee restrictions' do
+      it 'creates a new project issue with no more than one assignee' do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', assignee_ids: [user2.id, guest.id]
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['assignees'].count).to eq(1)
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
@@ -783,7 +810,6 @@ describe API::Issues do
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
-      expect(json_response['weight']).to eq(3)
       expect(json_response['assignee']['name']).to eq(user2.name)
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
@@ -1113,6 +1139,17 @@ describe API::Issues do
 
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
+
+    context 'single assignee restrictions' do
+      it 'updates an issue with several assignees but only one has been applied' do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+          assignee_ids: [user2.id, guest.id]
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['assignees'].size).to eq(1)
+      end
+    end
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid to update labels' do
@@ -1215,52 +1252,6 @@ describe API::Issues do
 
       expect(response).to have_http_status(200)
       expect(json_response['due_date']).to eq(due_date)
-    end
-  end
-
-  describe 'PUT /projects/:id/issues/:issue_id to update weight' do
-    it 'updates an issue with no weight' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
-
-      expect(response).to have_http_status(200)
-      expect(json_response['weight']).to eq(5)
-    end
-
-    it 'removes a weight from an issue' do
-      weighted_issue = create(:issue, project: project, weight: 2)
-
-      put api("/projects/#{project.id}/issues/#{weighted_issue.iid}", user), weight: nil
-
-      expect(response).to have_http_status(200)
-      expect(json_response['weight']).to be_nil
-    end
-
-    it 'returns 400 if weight is less than minimum weight' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: -1
-
-      expect(response).to have_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
-    end
-
-    it 'returns 400 if weight is more than maximum weight' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 10
-
-      expect(response).to have_http_status(400)
-      expect(json_response['error']).to eq('weight does not have a valid value')
-    end
-
-    context 'issuable weights unlicensed' do
-      before do
-        stub_licensed_features(issue_weights: false)
-      end
-
-      it 'ignores the update' do
-        put api("/projects/#{project.id}/issues/#{issue.iid}", user), weight: 5
-
-        expect(response).to have_http_status(200)
-        expect(json_response['weight']).to be_nil
-        expect(issue.reload.read_attribute(:weight)).to be_nil
-      end
     end
   end
 
@@ -1485,6 +1476,25 @@ describe API::Issues do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
     end
   end
 

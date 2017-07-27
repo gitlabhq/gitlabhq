@@ -178,7 +178,7 @@ describe Projects::LabelsController do
             it 'redirects to the correct casing' do
               get :index, namespace_id: project.namespace, project_id: project.to_param.upcase
 
-              expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+              expect(response).to redirect_to(project_labels_path(project))
               expect(controller).not_to set_flash[:notice]
             end
           end
@@ -191,7 +191,7 @@ describe Projects::LabelsController do
         it 'redirects to the canonical path' do
           get :index, namespace_id: project.namespace, project_id: project.to_param + 'old'
 
-          expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+          expect(response).to redirect_to(project_labels_path(project))
           expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, project))
         end
       end

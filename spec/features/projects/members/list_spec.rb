@@ -9,7 +9,7 @@ feature 'Project members list', feature: true do
   let(:project) { create(:project, namespace: group) }
 
   background do
-    gitlab_sign_in(user1)
+    sign_in(user1)
     group.add_owner(user1)
   end
 
@@ -85,6 +85,6 @@ feature 'Project members list', feature: true do
   end
 
   def visit_members_page
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_settings_members_path(project)
   end
 end

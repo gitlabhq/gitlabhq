@@ -22,8 +22,8 @@ module Ci
       )
     end
 
-    serialize :options # rubocop:disable Cop/ActiverecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiverecordSerialize
+    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -100,6 +100,14 @@ module Ci
           BuildSuccessWorker.perform_async(id)
         end
       end
+
+      before_transition any => [:failed] do |build|
+        next if build.retries_max.zero?
+
+        if build.retries_count < build.retries_max
+          Ci::Build.retry(build, build.user)
+        end
+      end
     end
 
     def detailed_status(current_user)
@@ -132,6 +140,14 @@ module Ci
 
     def retryable?
       success? || failed? || canceled?
+    end
+
+    def retries_count
+      pipeline.builds.retried.where(name: self.name).count
+    end
+
+    def retries_max
+      self.options.fetch(:retry, 0).to_i
     end
 
     def latest?
@@ -180,13 +196,22 @@ module Ci
     #   * Lowercased
     #   * Anything not matching [a-z0-9-] is replaced with a -
     #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
     def ref_slug
-      slugified = ref.to_s.downcase
-      slugified.gsub(/[^a-z0-9]/, '-')[0..62]
+      ref.to_s
+          .downcase
+          .gsub(/[^a-z0-9]/, '-')[0..62]
+          .gsub(/(\A-+|-+\z)/, '')
     end
 
     # Variables whose value does not depend on environment
     def simple_variables
+      variables(environment: nil)
+    end
+
+    # All variables, including those dependent on environment, which could
+    # contain unexpanded variables.
+    def variables(environment: persisted_environment)
       variables = predefined_variables
       variables += project.predefined_variables
       variables += pipeline.predefined_variables
@@ -195,15 +220,13 @@ module Ci
       variables += project.deployment_variables if has_environment?
       variables += yaml_variables
       variables += user_variables
-      variables += project.secret_variables_for(ref).map(&:to_runner_variable)
+      variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
+      variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
-      variables
-    end
+      variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
+      variables += persisted_environment_variables if environment
 
-    # All variables, including those dependent on environment, which could
-    # contain unexpanded variables.
-    def variables
-      simple_variables.concat(persisted_environment_variables)
+      variables
     end
 
     def merge_request
@@ -217,7 +240,7 @@ module Ci
             .reorder(iid: :desc)
 
           merge_requests.find do |merge_request|
-            merge_request.commits_sha.include?(pipeline.sha)
+            merge_request.commit_shas.include?(pipeline.sha)
           end
         end
     end
@@ -294,10 +317,6 @@ module Ci
 
     def browsable_artifacts?
       artifacts_metadata?
-    end
-
-    def downloadable_single_artifacts_file?
-      artifacts_metadata? && artifacts_file.file_storage?
     end
 
     def artifacts_metadata?
@@ -379,6 +398,11 @@ module Ci
         { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
         { key: 'GITLAB_USER_EMAIL', value: user.email, public: true }
       ]
+    end
+
+    def secret_variables(environment: persisted_environment)
+      project.secret_variables_for(ref: ref, environment: environment)
+        .map(&:to_runner_variable)
     end
 
     def steps

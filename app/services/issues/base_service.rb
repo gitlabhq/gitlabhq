@@ -7,6 +7,14 @@ module Issues
       issue_data
     end
 
+    def reopen_service
+      Issues::ReopenService
+    end
+
+    def close_service
+      Issues::CloseService
+    end
+
     private
 
     def create_assignee_note(issue, old_assignees)
@@ -23,6 +31,10 @@ module Issues
 
     def filter_assignee(issuable)
       return if params[:assignee_ids].blank?
+
+      unless issuable.allows_multiple_assignees?
+        params[:assignee_ids] = params[:assignee_ids].take(1)
+      end
 
       assignee_ids = params[:assignee_ids].select { |assignee_id| assignee_can_read?(issuable, assignee_id) }
 

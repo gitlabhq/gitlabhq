@@ -5,7 +5,7 @@ describe 'Projects > Wiki > User views wiki in project page', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when repository is disabled for project' do
@@ -27,14 +27,10 @@ describe 'Projects > Wiki > User views wiki in project page', feature: true do
       end
 
       it 'displays the correct URL for the link' do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
         expect(page).to have_link(
           'some link',
-          href: namespace_project_wiki_path(
-            project.namespace,
-            project,
-            'other-page'
-          )
+          href: project_wiki_path(project, 'other-page')
         )
       end
     end

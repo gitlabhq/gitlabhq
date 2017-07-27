@@ -43,21 +43,21 @@
           .nav-links.scrolling-tabs
             %ul.merge-request-tabs
               %li.notes-tab
-                = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'show', toggle: 'tab' } do
+                = link_to project_merge_request_path(@project, @merge_request), data: { target: 'div#notes', action: 'show', toggle: 'tab' } do
                   Discussion
                   %span.badge= @merge_request.related_notes.user.count
               - if @merge_request.source_project
                 %li.commits-tab
-                  = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
+                  = link_to commits_project_merge_request_path(@project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
                     Commits
                     %span.badge= @commits_count
               - if @pipelines.any?
                 %li.pipelines-tab
-                  = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
+                  = link_to pipelines_project_merge_request_path(@project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
                     Pipelines
-                    %span.badge= @pipelines.size
+                    %span.badge.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
-                = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
+                = link_to diffs_project_merge_request_path(@project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
                   Changes
                   %span.badge= @merge_request.diff_size
         #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
@@ -84,7 +84,7 @@
         -# This tab is always loaded via AJAX
       #pipelines.pipelines.tab-pane
         - if @pipelines.any?
-          = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+          = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #diffs.diffs.tab-pane
         -# This tab is always loaded via AJAX
 

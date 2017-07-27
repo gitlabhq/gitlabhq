@@ -9,16 +9,20 @@ module Ci
     belongs_to :owner, class_name: 'User'
     has_one :last_pipeline, -> { order(id: :desc) }, class_name: 'Ci::Pipeline'
     has_many :pipelines
+    has_many :variables, class_name: 'Ci::PipelineScheduleVariable'
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
     validates :description, presence: true
+    validates :variables, variable_duplicates: true
 
     before_save :set_next_run_at
 
     scope :active, -> { where(active: true) }
     scope :inactive, -> { where(active: false) }
+
+    accepts_nested_attributes_for :variables, allow_destroy: true
 
     def owned_by?(current_user)
       owner == current_user
@@ -55,6 +59,10 @@ module Ci
         worker_time_zone: Time.zone.name)
       Gitlab::Ci::CronParser.new(worker_cron, worker_time_zone)
                             .next_time_from(next_run_at)
+    end
+
+    def job_variables
+      variables&.map(&:to_runner_variable) || []
     end
   end
 end

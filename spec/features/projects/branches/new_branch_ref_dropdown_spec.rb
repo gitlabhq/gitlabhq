@@ -8,8 +8,8 @@ describe 'New Branch Ref Dropdown', :js, :feature do
   before do
     project.add_master(user)
 
-    gitlab_sign_in(user)
-    visit new_namespace_project_branch_path(project.namespace, project)
+    sign_in(user)
+    visit new_project_branch_path(project)
   end
 
   it 'filters a list of branches and tags' do

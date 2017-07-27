@@ -1,5 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
+  include Devise::Controllers::Rememberable
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
@@ -34,8 +35,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         prompt_for_two_factor(@user)
       else
         log_audit_event(@user, with: :ldap)
-        flash[:notice] = 'LDAP sync in progress. This could take a few minutes. '\
-                         'Refresh the page to see the changes.'
+        # The counter only gets incremented in `sign_in_and_redirect`
+        show_ldap_sync_flash if @user.sign_in_count == 0
         sign_in_and_redirect(@user)
       end
     else
@@ -128,8 +129,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted? && @user.valid?
       log_audit_event(@user, with: oauth['provider'])
       if @user.two_factor_enabled?
+        params[:remember_me] = '1' if remember_me?
         prompt_for_two_factor(@user)
       else
+        remember_me(@user) if remember_me?
         sign_in_and_redirect(@user)
       end
     else
@@ -159,5 +162,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options)
       .for_authentication.security_event
+  end
+
+  def remember_me?
+    request_params = request.env['omniauth.params']
+    (request_params['remember_me'] == '1') if request_params.present?
+  end
+
+  def show_ldap_sync_flash
+    flash[:notice] = 'LDAP sync in progress. This could take a few minutes. '\
+                     'Refresh the page to see the changes.'
   end
 end

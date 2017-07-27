@@ -7,14 +7,14 @@ feature 'Triggers', feature: true, js: true do
   let(:guest_user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
     @project = create(:empty_project)
     @project.team << [user, :master]
     @project.team << [user2, :master]
     @project.team << [guest_user, :guest]
 
-    visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    visit project_settings_ci_cd_path(@project)
   end
 
   describe 'create trigger workflow' do
@@ -42,7 +42,7 @@ feature 'Triggers', feature: true, js: true do
 
     scenario 'click on edit trigger opens edit trigger page' do
       create(:ci_trigger, owner: user, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if edit page has correct descrption
       find('a[title="Edit"]').click
@@ -51,7 +51,7 @@ feature 'Triggers', feature: true, js: true do
 
     scenario 'edit trigger and save' do
       create(:ci_trigger, owner: user, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if edit page opens, then fill in new description and save
       find('a[title="Edit"]').click
@@ -67,7 +67,7 @@ feature 'Triggers', feature: true, js: true do
     scenario 'edit "legacy" trigger and save' do
       # Create new trigger without owner association, i.e. Legacy trigger
       create(:ci_trigger, owner: nil, project: @project)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if the trigger can be edited and description is blank
       find('a[title="Edit"]').click
@@ -84,7 +84,7 @@ feature 'Triggers', feature: true, js: true do
   describe 'trigger "Take ownership" workflow' do
     before(:each) do
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
     end
 
     scenario 'button "Take ownership" has correct alert' do
@@ -106,7 +106,7 @@ feature 'Triggers', feature: true, js: true do
   describe 'trigger "Revoke" workflow' do
     before(:each) do
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
     end
 
     scenario 'button "Revoke" has correct alert' do
@@ -131,7 +131,7 @@ feature 'Triggers', feature: true, js: true do
 
     scenario 'show "legacy" badge for legacy trigger' do
       create(:ci_trigger, owner: nil, project: @project)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if trigger without owner (i.e. legacy) shows "legacy" badge and is editable
       expect(page.find('.triggers-list')).to have_content 'legacy'
@@ -140,7 +140,7 @@ feature 'Triggers', feature: true, js: true do
 
     scenario 'show "invalid" badge for trigger with owner having insufficient permissions' do
       create(:ci_trigger, owner: guest_user, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if trigger without owner (i.e. legacy) shows "legacy" badge and is non-editable
       expect(page.find('.triggers-list')).to have_content 'invalid'
@@ -150,7 +150,7 @@ feature 'Triggers', feature: true, js: true do
     scenario 'do not show "Edit" or full token for not owned trigger' do
       # Create trigger with user different from current_user
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if trigger not owned by current_user shows only first few token chars and doesn't have copy-to-clipboard button
       expect(page.find('.triggers-list')).to have_content(@project.triggers.first.token[0..3])
@@ -163,7 +163,7 @@ feature 'Triggers', feature: true, js: true do
 
     scenario 'show "Edit" and full token for owned trigger' do
       create(:ci_trigger, owner: user, project: @project, description: trigger_title)
-      visit namespace_project_settings_ci_cd_path(@project.namespace, @project)
+      visit project_settings_ci_cd_path(@project)
 
       # See if trigger shows full token and has copy-to-clipboard button
       expect(page.find('.triggers-list')).to have_content @project.triggers.first.token

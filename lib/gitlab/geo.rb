@@ -8,7 +8,6 @@ module Gitlab
       geo_node_enabled
       geo_node_primary
       geo_node_secondary
-      geo_primary_ssh_path_prefix
       geo_oauth_application
     ).freeze
 
@@ -32,22 +31,19 @@ module Gitlab
     end
 
     def self.enabled?
-      self.cache_value(:geo_node_enabled) { GeoNode.exists? }
+      GeoNode.connected? && self.cache_value(:geo_node_enabled) { GeoNode.exists? }
+    rescue => e
+      # We can't use the actual classes in rescue because we load only one of them based on database supported
+      raise e unless %w(PG::UndefinedTable Mysql2::Error).include? e.class.name
+
+      false
     end
 
     def self.current_node_enabled?
       # No caching of the enabled! If we cache it and an admin disables
-      # this node, an active GeoRepositorySyncWorker would keep going for up
+      # this node, an active Geo::RepositorySyncWorker would keep going for up
       # to max run time after the node was disabled.
       Gitlab::Geo.current_node.reload.enabled?
-    end
-
-    def self.primary_role_enabled?
-      Gitlab.config.geo_primary_role['enabled']
-    end
-
-    def self.secondary_role_enabled?
-      Gitlab.config.geo_secondary_role['enabled']
     end
 
     def self.geo_database_configured?
@@ -114,9 +110,9 @@ module Gitlab
     end
 
     def self.configure_cron_jobs!
-      if self.primary_role_enabled?
+      if self.primary?
         self.configure_primary_jobs!
-      elsif self.secondary_role_enabled?
+      elsif self.secondary?
         self.configure_secondary_jobs!
       else
         self.enable_all_cron_jobs!

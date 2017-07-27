@@ -10,17 +10,18 @@ class ExpirePipelineCacheWorker
     store = Gitlab::EtagCaching::Store.new
 
     store.touch(project_pipelines_path(project))
-    store.touch(project_pipeline_path(pipeline))
+    store.touch(project_pipeline_path(project, pipeline))
     store.touch(commit_pipelines_path(project, pipeline.commit)) if pipeline.commit
     store.touch(new_merge_request_pipelines_path(project))
     each_pipelines_merge_request_path(project, pipeline) do |path|
       store.touch(path)
     end
 
-    store.touch(project_pipeline_path(pipeline.triggered_by_pipeline)) if pipeline.triggered_by_pipeline
+    triggered_by = pipeline.triggered_by_pipeline
+    store.touch(project_pipeline_path(triggered_by.project, triggered_by)) if triggered_by
 
     pipeline.triggered_pipelines.each do |triggered|
-      store.touch(project_pipeline_path(triggered))
+      store.touch(project_pipeline_path(triggered.project, triggered))
     end
 
     Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(pipeline)
@@ -29,42 +30,24 @@ class ExpirePipelineCacheWorker
   private
 
   def project_pipelines_path(project)
-    Gitlab::Routing.url_helpers.namespace_project_pipelines_path(
-      project.namespace,
-      project,
-      format: :json)
+    Gitlab::Routing.url_helpers.project_pipelines_path(project, format: :json)
   end
 
-  def project_pipeline_path(pipeline)
-    Gitlab::Routing.url_helpers.namespace_project_pipeline_path(
-      pipeline.project.namespace,
-      pipeline.project,
-      pipeline,
-      format: :json)
+  def project_pipeline_path(project, pipeline)
+    Gitlab::Routing.url_helpers.project_pipeline_path(project, pipeline, format: :json)
   end
 
   def commit_pipelines_path(project, commit)
-    Gitlab::Routing.url_helpers.pipelines_namespace_project_commit_path(
-      project.namespace,
-      project,
-      commit.id,
-      format: :json)
+    Gitlab::Routing.url_helpers.pipelines_project_commit_path(project, commit.id, format: :json)
   end
 
   def new_merge_request_pipelines_path(project)
-    Gitlab::Routing.url_helpers.namespace_project_new_merge_request_path(
-      project.namespace,
-      project,
-      format: :json)
+    Gitlab::Routing.url_helpers.project_new_merge_request_path(project, format: :json)
   end
 
   def each_pipelines_merge_request_path(project, pipeline)
     pipeline.all_merge_requests.each do |merge_request|
-      path = Gitlab::Routing.url_helpers.pipelines_namespace_project_merge_request_path(
-        project.namespace,
-        project,
-        merge_request,
-        format: :json)
+      path = Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(project, merge_request, format: :json)
 
       yield(path)
     end

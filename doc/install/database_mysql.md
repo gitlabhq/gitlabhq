@@ -39,11 +39,14 @@ mysql> SET storage_engine=INNODB;
 # If you have MySQL < 5.7.7 and want to enable utf8mb4 character set support with your GitLab install, you must set the following NOW:
 mysql> SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda, innodb_large_prefix=1;
 
+# If you use MySQL with replication, or just have MySQL configured with binary logging, you need to run the following to allow the use of `TRIGGER`:
+mysql> SET GLOBAL log_bin_trust_function_creators = 1;
+
 # Create the GitLab production database
 mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_general_ci`;
 
 # Grant the GitLab user necessary permissions on the database
-mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES ON `gitlabhq_production`.* TO 'git'@'localhost';
+mysql> GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE TEMPORARY TABLES, DROP, INDEX, ALTER, LOCK TABLES, REFERENCES, TRIGGER ON `gitlabhq_production`.* TO 'git'@'localhost';
 
 # Quit the database session
 mysql> \q
@@ -60,7 +63,15 @@ mysql> \q
 ```
 
 You are done installing the database for now and can go back to the rest of the installation.
-Please proceed to the rest of the installation before running through the utf8mb4 support section.
+Please proceed to the rest of the installation **before** running through the steps below.
+
+### `log_bin_trust_function_creators`
+
+If you use MySQL with replication, or just have MySQL configured with binary logging, all of your MySQL servers will need to have `log_bin_trust_function_creators` enabled to allow the use of `TRIGGER` in migrations. You have already set this global variable in the steps above, but to make it persistent, add the following to your `my.cnf` file:
+
+```
+log_bin_trust_function_creators=1
+```
 
 ### MySQL utf8mb4 support
 

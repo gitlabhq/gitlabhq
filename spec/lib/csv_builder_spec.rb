@@ -82,4 +82,22 @@ describe CsvBuilder, lib: true do
   it 'allows lamdas to look up more complicated data' do
     expect(csv_data).to include 'rewsna'
   end
+
+  describe 'excel sanitization' do
+    let(:dangerous_title) { double(title: "=cmd|' /C calc'!A0 title", description: "*safe_desc") }
+    let(:dangerous_desc) { double(title: "*safe_title", description: "=cmd|' /C calc'!A0 desc") }
+    let(:fake_relation) { FakeRelation.new([dangerous_title, dangerous_desc]) }
+    let(:subject) { CsvBuilder.new(fake_relation, 'Title' => 'title', 'Description' => 'description') }
+    let(:csv_data) { subject.render }
+
+    it 'sanitizes dangerous characters at the beginning of a column' do
+      expect(csv_data).to include "'=cmd|' /C calc'!A0 title"
+      expect(csv_data).to include "'=cmd|' /C calc'!A0 desc"
+    end
+
+    it 'does not sanitize safe symbols at the beginning of a column' do
+      expect(csv_data).not_to include "'*safe_desc"
+      expect(csv_data).not_to include "'*safe_title"
+    end
+  end
 end

@@ -35,6 +35,17 @@ describe API::Internal do
         expect(json_response).to be_empty
       end
     end
+
+    context 'nil broadcast message' do
+      it 'returns nothing' do
+        allow(BroadcastMessage).to receive(:current).and_return(nil)
+
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
   end
 
   describe 'GET /internal/broadcast_messages' do
@@ -216,7 +227,7 @@ describe API::Internal do
     end
   end
 
-  describe "POST /internal/allowed", :redis do
+  describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -268,26 +279,72 @@ describe API::Internal do
       end
 
       context "git pull" do
-        it do
-          pull(key, project)
+        context "gitaly disabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(false)
+            pull(key, project)
 
-          expect(response).to have_http_status(200)
-          expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          expect(user).to have_an_activity_record
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).to be_nil
+            expect(user).to have_an_activity_record
+          end
+        end
+
+        context "gitaly enabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(true)
+            pull(key, project)
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(user).to have_an_activity_record
+          end
         end
       end
 
       context "git push" do
-        it do
-          push(key, project)
+        context "gitaly disabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(false)
+            push(key, project)
 
-          expect(response).to have_http_status(200)
-          expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          expect(user).not_to have_an_activity_record
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).to be_nil
+            expect(user).not_to have_an_activity_record
+          end
+        end
+
+        context "gitaly enabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(true)
+            push(key, project)
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(user).not_to have_an_activity_record
+          end
         end
 
         context 'project as /namespace/project' do
@@ -585,10 +642,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the project's repository" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -597,10 +654,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_wiki_params
@@ -609,7 +666,7 @@ describe API::Internal do
   #   end
   #
   #   it "returns 500 if the gitaly call fails" do
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive).and_raise(GRPC::Unavailable)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -627,10 +684,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the project's repository" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_params
@@ -639,10 +696,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_wiki_params

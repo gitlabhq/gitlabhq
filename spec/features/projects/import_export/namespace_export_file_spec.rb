@@ -16,7 +16,7 @@ feature 'Import/Export - Namespace export file cleanup', feature: true, js: true
 
   context 'admin user' do
     before do
-      gitlab_sign_in(:admin)
+      sign_in(create(:admin))
     end
 
     context 'moving the namespace' do
@@ -48,13 +48,13 @@ feature 'Import/Export - Namespace export file cleanup', feature: true, js: true
     end
 
     def setup_export_project
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Export project')
 
       click_link 'Export project'
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Download export')
     end

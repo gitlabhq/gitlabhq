@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.8'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
-gem 'bootsnap', '~> 1.1'
 
 # Responders respond_to and respond_with
 gem 'responders', '~> 2.0'
@@ -17,6 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.25.1.1'
+gem 'grape-route-helpers', '~> 2.0.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -34,14 +34,16 @@ gem 'omniauth-gitlab', '~> 1.0.2'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
-gem 'omniauth-saml',          '~> 1.7.0'
-gem 'omniauth-shibboleth',    '~> 1.2.0'
-gem 'omniauth-twitter',       '~> 1.2.0'
-gem 'omniauth_crowd',         '~> 2.2.0'
+gem 'omniauth-saml', '~> 1.7.0'
+gem 'omniauth-shibboleth', '~> 1.2.0'
+gem 'omniauth-twitter', '~> 1.2.0'
+gem 'omniauth_crowd', '~> 2.2.0'
+gem 'omniauth-authentiq', '~> 0.3.1'
+gem 'rack-oauth2', '~> 1.2.1'
+gem 'jwt', '~> 1.5.6'
+
+# Kerberos authentication. EE-only
 gem 'gssapi', group: :kerberos
-gem 'omniauth-authentiq',     '~> 0.3.0'
-gem 'rack-oauth2',            '~> 1.2.1'
-gem 'jwt',                    '~> 1.5.6'
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -62,7 +64,7 @@ gem 'browser', '~> 2.2'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
@@ -74,7 +76,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.0'
+gem 'grape', '~> 0.19.2'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -94,7 +96,7 @@ gem 'carrierwave', '~> 1.1'
 gem 'dropzonejs-rails', '~> 0.7.1'
 
 # for backups
-gem 'fog-aws', '~> 0.9'
+gem 'fog-aws', '~> 1.4'
 gem 'fog-core', '~> 1.44'
 gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
@@ -173,6 +175,9 @@ gem 'rainbow', '~> 2.2'
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
 
+# Linear-time regex library for untrusted regular expressions
+gem 're2', '~> 1.1.0'
+
 # Misc
 
 gem 'version_sorter', '~> 2.1.0'
@@ -247,7 +252,6 @@ gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
 
 gem 'sass-rails', '~> 5.0.6'
-gem 'coffee-rails', '~> 4.1.0'
 gem 'uglifier', '~> 2.7.2'
 
 gem 'addressable', '~> 2.3.8'
@@ -256,16 +260,16 @@ gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.0'
 gem 'gon', '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
-gem 'jquery-rails',       '~> 4.1.0'
-gem 'request_store',      '~> 1.3'
-gem 'select2-rails',      '~> 3.5.9'
-gem 'virtus',             '~> 1.0.1'
-gem 'net-ssh',            '~> 3.0.1'
-gem 'base32',             '~> 0.3.0'
+gem 'jquery-rails', '~> 4.1.0'
+gem 'request_store', '~> 1.3'
+gem 'select2-rails', '~> 3.5.9'
+gem 'virtus', '~> 1.0.1'
+gem 'base32', '~> 0.3.0'
+
 gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
-gem 'sentry-raven', '~> 2.4.0'
+gem 'sentry-raven', '~> 2.5.3'
 
 gem 'premailer-rails', '~> 1.9.7'
 
@@ -281,7 +285,7 @@ gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
 gem 'peek-host', '~> 1.0.0'
 gem 'peek-mysql2', '~> 1.1.0', group: :mysql
-gem 'peek-performance_bar', '~> 1.2.1'
+gem 'peek-performance_bar', '~> 1.3.0'
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 gem 'peek-redis', '~> 1.2.0'
@@ -294,7 +298,8 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta5'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta9'
+  gem 'raindrops', '~> 0.18'
 end
 
 group :development do
@@ -345,7 +350,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.47.1', require: false
   gem 'rubocop-rspec', '~> 1.15.0', require: false
-  gem 'scss_lint', '~> 0.47.0', require: false
+  gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.21.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
@@ -394,11 +399,17 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+# NTP client
+gem 'net-ntp'
+
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.9.0'
+gem 'gitaly', '~> 0.18.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
 # Feature toggles
 gem 'flipper', '~> 0.10.2'
 gem 'flipper-active_record', '~> 0.10.2'
+
+# Structured logging
+gem 'lograge', '~> 0.5'

@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe SessionsController do
+  include DeviseHelpers
+
   describe '#new' do
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     context 'when auto sign-in is enabled' do
@@ -34,7 +36,7 @@ describe SessionsController do
 
   describe '#create' do
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     context 'when using standard authentications' do
@@ -47,7 +49,7 @@ describe SessionsController do
         end
       end
 
-      context 'when using valid password', :redis do
+      context 'when using valid password', :clean_gitlab_redis_shared_state do
         include UserActivitiesHelpers
 
         let(:user) { create(:user) }
@@ -257,7 +259,7 @@ describe SessionsController do
 
   describe '#new' do
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     it 'redirects correctly for referer on same host with params' do

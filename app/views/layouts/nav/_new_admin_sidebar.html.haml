@@ -1,10 +1,14 @@
 .nav-sidebar
-  = link_to admin_root_path, title: 'Admin Overview', class: 'context-header' do
-    .avatar-container.s40.settings-avatar
-      = icon('wrench')
-    .project-title Admin Area
+  .context-header
+    = link_to admin_root_path, title: 'Admin Overview' do
+      .avatar-container.s40.settings-avatar
+        = icon('wrench')
+      .project-title Admin Area
+    = button_tag class: 'close-nav-button', type: 'button' do
+      %span.sr-only Close sidebar
+      = icon ('times')
   %ul.sidebar-top-level-items
-    = nav_link(controller: %w(dashboard admin projects users groups builds runners cohorts), html_options: {class: 'home'}) do
+    = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
         %span
           Overview
@@ -13,7 +17,7 @@
         = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
           = link_to admin_root_path, title: 'Overview' do
             %span
-              Overview
+              Dashboard
         = nav_link(controller: [:admin, :projects]) do
           = link_to admin_projects_path, title: 'Projects' do
             %span
@@ -26,7 +30,7 @@
           = link_to admin_groups_path, title: 'Groups' do
             %span
               Groups
-        = nav_link path: 'builds#index' do
+        = nav_link path: 'jobs#index' do
           = link_to admin_jobs_path, title: 'Jobs' do
             %span
               Jobs
@@ -39,7 +43,7 @@
             %span
               Cohorts
 
-    = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles)) do
+    = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles audit_logs)) do
       = link_to admin_conversational_development_index_path, title: 'Monitoring' do
         %span
           Monitoring
@@ -69,6 +73,10 @@
           = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
             %span
               Requests Profiles
+        = nav_link path: 'audit_logs#index' do
+          = link_to admin_audit_logs_path, title: 'Audit Log' do
+            %span
+              Audit Log
 
     = nav_link(controller: :broadcast_messages) do
       = link_to admin_broadcast_messages_path, title: 'Messages' do
@@ -90,11 +98,26 @@
           Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
+    = nav_link(controller: :licenses) do
+      = link_to admin_license_path, title: 'License' do
+        %span
+          License
+
     - if akismet_enabled?
       = nav_link(controller: :spam_logs) do
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span
             Spam Logs
+
+    = nav_link(controller: :push_rules) do
+      = link_to admin_push_rule_path, title: 'Push Rules' do
+        %span
+          Push Rules
+
+    = nav_link(controller: :geo_nodes) do
+      = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+        %span
+          Geo Nodes
 
     = nav_link(controller: :deploy_keys) do
       = link_to admin_deploy_keys_path, title: 'Deploy Keys' do

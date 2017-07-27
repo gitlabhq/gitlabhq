@@ -1,0 +1,24 @@
+- page_title 'Edit Slack integration'
+= render "projects/settings/head"
+
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Edit project alias
+
+    %p You can use this alias in your Slack commands
+  .col-lg-9
+    = form_errors(@slack_integration)
+    = form_for(@slack_integration, url: project_settings_slack_path(@project), method: :put, html: { class: 'gl-show-field-errors form-horizontal js-integration-settings-form'}) do |form|
+      .form-group
+        = form.label :alias, 'Enter your alias', class: 'control-label'
+        .col-sm-10
+          = form.text_field :alias, class: 'form-control', placeholder: @slack_integration.alias, required: true
+
+      .footer-block.row-content-block
+        %button.btn.btn-save{ type: 'submit' }
+          = icon('spinner spin', class: 'hidden js-btn-spinner')
+          %span.js-btn-label
+            Save changes
+        &nbsp;
+        = link_to 'Cancel', edit_project_service_path(@project, @service), class: 'btn btn-cancel'

@@ -3,10 +3,9 @@
 = render 'projects/issues/export_issues/button'
 - if @can_bulk_update
   = button_tag "Edit Issues", class: "btn btn-default append-right-10 js-bulk-update-toggle"
-= link_to "New issue", new_namespace_project_issue_path(@project.namespace,
-                                         @project,
-                                         issue: { assignee_id: issues_finder.assignee.try(:id),
-                                                  milestone_id: issues_finder.milestones.first.try(:id) }),
-                                         class: "btn btn-new",
-                                         title: "New issue",
-                                         id: "new_issue_link"
+= link_to "New issue", new_project_issue_path(@project,
+                                              issue: { assignee_id: issues_finder.assignee.try(:id),
+                                                       milestone_id: issues_finder.milestones.first.try(:id) }),
+                                              class: "btn btn-new",
+                                              title: "New issue",
+                                              id: "new_issue_link"

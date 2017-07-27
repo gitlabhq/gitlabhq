@@ -61,12 +61,12 @@ module SharedProject
 
   step 'I visit my empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I visit project "Shop" activity page' do
     project = Project.find_by(name: 'Shop')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'project "Shop" has push event' do
@@ -101,7 +101,7 @@ module SharedProject
   end
 
   step 'I should see project settings' do
-    expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
+    expect(current_path).to eq edit_project_path(@project)
     expect(page).to have_content("Project name")
     expect(page).to have_content("Sharing & Permissions")
   end
@@ -237,11 +237,6 @@ module SharedProject
     create(:label, project: project, title: 'bug')
     create(:label, project: project, title: 'feature')
     create(:label, project: project, title: 'enhancement')
-  end
-
-  step 'project "Shop" has issue: "bug report"' do
-    project = Project.find_by(name: "Shop")
-    create(:issue, project: project, title: "bug report")
   end
 
   step 'project "Shop" has CI enabled' do

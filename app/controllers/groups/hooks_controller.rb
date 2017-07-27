@@ -1,7 +1,10 @@
 class Groups::HooksController < Groups::ApplicationController
+  include HooksExecution
+
   # Authorize
   before_action :group
   before_action :authorize_admin_group!
+  before_action :check_group_webhooks_available!
 
   respond_to :html
 
@@ -26,13 +29,11 @@ class Groups::HooksController < Groups::ApplicationController
 
   def test
     if @group.first_non_empty_project
-      status, message = TestHookService.new.execute(hook, current_user)
+      service = TestHooks::ProjectService.new(hook, current_user, 'push_events')
+      service.project = @group.first_non_empty_project
+      result = service.execute
 
-      if status
-        flash[:notice] = 'Hook successfully executed.'
-      else
-        flash[:alert] = "Hook execution failed: #{message}"
-      end
+      set_hook_execution_notice(result)
     else
       flash[:alert] = 'Hook execution failed. Ensure the group has a project with commits.'
     end

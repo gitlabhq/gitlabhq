@@ -6,6 +6,7 @@ class Namespace < ActiveRecord::Base
   include Sortable
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
 
@@ -16,13 +17,13 @@ class Namespace < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  has_many :projects, dependent: :destroy
+  has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
-  has_one :chat_team, dependent: :destroy
+  has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -106,6 +107,10 @@ class Namespace < ActiveRecord::Base
     end
   end
 
+  def visibility_level_field
+    :visibility_level
+  end
+
   def to_param
     full_path
   end
@@ -144,6 +149,7 @@ class Namespace < ActiveRecord::Base
     # So we basically we mute exceptions in next actions
     begin
       send_update_instructions
+      true
     rescue
       # Returning false does not rollback after_* transaction but gives
       # us information about failing some of tasks

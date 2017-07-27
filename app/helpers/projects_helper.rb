@@ -195,7 +195,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       current_application_settings.cache_key,
-      'v2.4'
+      'v2.5'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -214,11 +214,11 @@ module ProjectsHelper
 
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
-      ( current_user.require_password? || current_user.require_personal_access_token? )
+      ( current_user.require_password_creation? || current_user.require_personal_access_token_creation_for_git_auth? )
   end
 
   def link_to_set_password
-    if current_user.require_password?
+    if current_user.require_password_creation?
       link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
     else
       link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
@@ -267,15 +267,15 @@ module ProjectsHelper
 
   def tab_ability_map
     {
-      environments: :read_environment,
-      milestones:   :read_milestone,
-      snippets:     :read_project_snippet,
-      settings:     :admin_project,
-      builds:       :read_build,
-      labels:       :read_label,
-      issues:       :read_issue,
-      team:         :read_project_member,
-      wiki:         :read_wiki
+      environments:     :read_environment,
+      milestones:       :read_milestone,
+      snippets:         :read_project_snippet,
+      settings:         :admin_project,
+      builds:           :read_build,
+      labels:           :read_label,
+      issues:           :read_issue,
+      project_members:  :read_project_member,
+      wiki:             :read_wiki
     }
   end
 
@@ -366,8 +366,7 @@ module ProjectsHelper
 
   def add_special_file_path(project, file_name:, commit_message: nil, branch_name: nil, context: nil)
     commit_message ||= s_("CommitMessage|Add %{file_name}") % { file_name: file_name.downcase }
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      file_name,
@@ -378,8 +377,7 @@ module ProjectsHelper
   end
 
   def add_koding_stack_path(project)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       project.default_branch || 'master',
       file_name:      '.koding.yml',
@@ -433,8 +431,7 @@ module ProjectsHelper
 
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch,
                   contribution_guide.name)
@@ -464,7 +461,7 @@ module ProjectsHelper
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
-    namespace_project_wiki_path(proj.namespace, proj, page, url_params)
+    project_wiki_path(proj, page, url_params)
   end
 
   def project_status_css_class(status)
@@ -503,8 +500,7 @@ module ProjectsHelper
 
   def filename_path(project, filename)
     if project && blob = project.repository.send(filename)
-      namespace_project_blob_path(
-        project.namespace,
+      project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)
       )
@@ -554,5 +550,13 @@ module ProjectsHelper
     return [] if current_user.admin?
 
     current_application_settings.restricted_visibility_levels || []
+  end
+
+  def find_file_path
+    return unless @project && !@project.empty_repo?
+
+    ref = @ref || @project.repository.root_ref
+
+    project_find_file_path(@project, ref)
   end
 end

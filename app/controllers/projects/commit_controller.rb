@@ -38,9 +38,14 @@ class Projects::CommitController < Projects::ApplicationController
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: PipelineSerializer
-          .new(project: @project, current_user: @current_user)
-          .represent(@pipelines)
+        render json: {
+          pipelines: PipelineSerializer
+            .new(project: @project, current_user: @current_user)
+            .represent(@pipelines),
+          count: {
+            all: @pipelines.count
+          }
+        }
       end
     end
   end
@@ -80,16 +85,16 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def successful_change_path
-    referenced_merge_request_url || namespace_project_commits_url(@project.namespace, @project, @branch_name)
+    referenced_merge_request_url || project_commits_url(@project, @branch_name)
   end
 
   def failed_change_path
-    referenced_merge_request_url || namespace_project_commit_url(@project.namespace, @project, params[:id])
+    referenced_merge_request_url || project_commit_url(@project, params[:id])
   end
 
   def referenced_merge_request_url
     if merge_request = @commit.merged_merge_request(current_user)
-      namespace_project_merge_request_url(merge_request.target_project.namespace, merge_request.target_project, merge_request)
+      project_merge_request_url(merge_request.target_project, merge_request)
     end
   end
 

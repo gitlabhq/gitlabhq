@@ -71,7 +71,7 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
-    setup_gitaly if Gitlab::GitalyClient.enabled?
+    setup_gitaly
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
@@ -208,6 +208,7 @@ module TestEnv
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
   def eager_load_driver_server
+    return unless ENV['CI']
     return unless defined?(Capybara)
 
     puts "Starting the Capybara driver server..."

@@ -1,5 +1,7 @@
 module Boards
   class ListService < BaseService
+    prepend EE::Boards::ListService
+
     def execute
       create_board! if project.boards.empty?
       project.boards

@@ -114,9 +114,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    render json: PipelineSerializer
-      .new(project: @project, current_user: @current_user)
-      .represent(@pipelines)
+    render json: {
+      pipelines: PipelineSerializer
+        .new(project: @project, current_user: @current_user)
+        .represent(@pipelines),
+      count: {
+        all: @pipelines.count
+      }
+    }
   end
 
   def edit
@@ -214,21 +219,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
           stop_url =
             if environment.stop_action? && can?(current_user, :create_deployment, environment)
-              stop_namespace_project_environment_path(project.namespace, project, environment)
+              stop_project_environment_path(project, environment)
             end
 
           metrics_url =
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
-              metrics_namespace_project_environment_deployment_path(environment.project.namespace,
-                                                                    environment.project,
-                                                                    environment,
-                                                                    deployment)
+              metrics_project_environment_deployment_path(environment.project, environment, deployment)
             end
 
           {
             id: environment.id,
             name: environment.name,
-            url: namespace_project_environment_path(project.namespace, project, environment),
+            url: project_environment_path(project, environment),
             metrics_url: metrics_url,
             stop_url: stop_url,
             external_url: environment.external_url,

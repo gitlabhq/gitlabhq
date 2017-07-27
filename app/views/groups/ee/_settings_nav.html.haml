@@ -1,0 +1,23 @@
+- if ldap_enabled?
+  = nav_link(path: 'ldap_group_links#index') do
+    = link_to group_ldap_group_links_path(@group), title: 'LDAP Group' do
+      %span
+        LDAP Group
+
+- if @group.feature_available?(:group_webhooks)
+  = nav_link(path: 'hooks#index') do
+    = link_to group_hooks_path(@group), title: 'Webhooks' do
+      %span
+        Webhooks
+
+- if @group.feature_available?(:audit_events)
+  = nav_link(path: 'audit_events#index') do
+    = link_to group_audit_events_path(@group), title: 'Audit Events' do
+      %span
+        Audit Events
+
+- if @group.shared_runners_enabled? && @group.shared_runners_minutes_limit_enabled?
+  = nav_link(path: 'pipeline_quota#index') do
+    = link_to group_pipeline_quota_path(@group), title: 'Pipelines quota' do
+      %span
+        Pipelines quota

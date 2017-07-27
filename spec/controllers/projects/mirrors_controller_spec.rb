@@ -71,6 +71,20 @@ describe Projects::MirrorsController do
           expect(project.reload.mirror).to eq(true)
           expect(project.reload.import_url).to eq('http://local.dev')
         end
+
+        context 'mirror user is not the current user' do
+          it 'should only assign the current user' do
+            expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+
+            new_user = create(:user)
+            project.add_master(new_user)
+
+            do_put(project, mirror: true, mirror_user_id: new_user.id, import_url: 'http://local.dev')
+
+            expect(project.reload.mirror).to eq(true)
+            expect(project.reload.mirror_user.id).to eq(project.owner.id)
+          end
+        end
       end
     end
   end

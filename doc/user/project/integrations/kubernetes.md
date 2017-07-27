@@ -19,10 +19,10 @@ of your project and select the **Kubernetes** service to configure it.
 
 The Kubernetes service takes the following arguments:
 
-1. Kubernetes namespace
 1. API URL
-1. Service token
 1. Custom CA bundle
+1. Kubernetes namespace
+1. Service token
 
 The API URL is the URL that GitLab uses to access the Kubernetes API. Kubernetes
 exposes several APIs - we want the "base" URL that is common to all of them,
@@ -63,6 +63,7 @@ GitLab CI build environment:
 - `KUBE_CA_PEM_FILE` - only present if a custom CA bundle was specified. Path
   to a file containing PEM data.
 - `KUBE_CA_PEM` (deprecated)- only if a custom CA bundle was specified. Raw PEM data.
+- `KUBECONFIG` - Path to a file containing kubeconfig for this deployment. CA bundle would be embedded if specified.
 
 ## Web terminals
 

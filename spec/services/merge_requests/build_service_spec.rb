@@ -207,7 +207,7 @@ describe MergeRequests::BuildService, services: true do
         let(:source_branch) { '12345-fix-issue' }
 
         before do
-          allow(project).to receive(:default_issues_tracker?).and_return(false)
+          allow(project).to receive(:external_issue_tracker).and_return(true)
         end
 
         it 'sets the title to: Resolves External Issue $issue-iid' do

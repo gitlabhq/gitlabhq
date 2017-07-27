@@ -1,0 +1,4 @@
+---
+title: Add warning and option toggle when rebuilding authorized_keys.
+merge_request: 2508
+author:

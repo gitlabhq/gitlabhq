@@ -94,4 +94,16 @@ describe('MonitoringColumn', () => {
       done();
     });
   });
+
+  it('has a title for the y-axis and the chart legend that comes from the backend', () => {
+    const component = createComponent({
+      columnData: singleRowMetrics[0],
+      classType: 'col-md-6',
+      updateAspectRatio: false,
+      deploymentData,
+    });
+
+    expect(component.yAxisLabel).toEqual(component.columnData.y_label);
+    expect(component.legendTitle).toEqual(component.columnData.queries[0].label);
+  });
 });

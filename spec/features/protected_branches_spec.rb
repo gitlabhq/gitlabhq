@@ -7,7 +7,7 @@ feature 'Protected Branches', feature: true, js: true do
   let(:project) { create(:project, :repository) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   def set_protected_branch_name(branch_name)
@@ -18,7 +18,7 @@ feature 'Protected Branches', feature: true, js: true do
 
   describe "explicit protected branches" do
     it "allows creating explicit protected branches" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -33,7 +33,7 @@ feature 'Protected Branches', feature: true, js: true do
       commit = create(:commit, project: project)
       project.repository.add_branch(user, 'some-branch', commit.id)
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -43,7 +43,7 @@ feature 'Protected Branches', feature: true, js: true do
     end
 
     it "displays an error message if the named branch does not exist" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('some-branch')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -55,7 +55,7 @@ feature 'Protected Branches', feature: true, js: true do
 
   describe "wildcard protected branches" do
     it "allows creating protected branches with a wildcard" do
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -70,7 +70,7 @@ feature 'Protected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'production-stable', 'master')
       project.repository.add_branch(user, 'staging-stable', 'master')
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       set_allowed_to('merge')
       set_allowed_to('push')
@@ -84,13 +84,13 @@ feature 'Protected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'staging-stable', 'master')
       project.repository.add_branch(user, 'development', 'master')
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       set_protected_branch_name('*-stable')
       set_allowed_to('merge')
       set_allowed_to('push')
       click_on "Protect"
 
-      visit namespace_project_protected_branches_path(project.namespace, project)
+      visit project_protected_branches_path(project)
       click_on "2 matching branches"
 
       within(".protected-branches-list") do
@@ -102,6 +102,67 @@ feature 'Protected Branches', feature: true, js: true do
   end
 
   describe "access control" do
-    include_examples "protected branches > access control > EE"
+    describe 'with ref permissions for users enabled' do
+      before do
+        stub_licensed_features(protected_refs_for_users: true)
+      end
+
+      include_examples "protected branches > access control > EE"
+    end
+
+    describe 'with ref permissions for users disabled' do
+      before do
+        stub_licensed_features(protected_refs_for_users: false)
+      end
+
+      include_examples "protected branches > access control > CE"
+
+      context 'with existing access levels' do
+        let(:protected_branch) { create(:protected_branch, project: project) }
+
+        it 'shows users that can push to the branch' do
+          protected_branch.push_access_levels.new(user: create(:user, name: 'Jane'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("The following user can also push to this branch: "\
+                                       "Jane")
+        end
+
+        it 'shows groups that can push to the branch' do
+          protected_branch.push_access_levels.new(group: create(:group, name: 'Team Awesome'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("Members of this group can also push to "\
+                                       "this branch: Team Awesome")
+        end
+
+        it 'shows users that can merge into the branch' do
+          protected_branch.merge_access_levels.new(user: create(:user, name: 'Jane'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("The following user can also merge into "\
+                                       "this branch: Jane")
+        end
+
+        it 'shows groups that have can push to the branch' do
+          protected_branch.merge_access_levels.new(group: create(:group, name: 'Team Awesome'))
+            .save!(validate: false)
+          protected_branch.merge_access_levels.new(group: create(:group, name: 'Team B'))
+            .save!(validate: false)
+
+          visit project_settings_repository_path(project)
+
+          expect(page).to have_content("Members of these groups can also merge into "\
+                                       "this branch:")
+          expect(page).to have_content(/(Team Awesome|Team B) and (Team Awesome|Team B)/)
+        end
+      end
+    end
   end
 end

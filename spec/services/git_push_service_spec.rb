@@ -122,7 +122,7 @@ describe GitPushService, services: true do
 
         it { is_expected.to include(id: commit.id) }
         it { is_expected.to include(message: commit.safe_message) }
-        it { is_expected.to include(timestamp: commit.date.xmlschema) }
+        it { expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone) }
         it do
           is_expected.to include(
             url: [
@@ -527,21 +527,57 @@ describe GitPushService, services: true do
           end
         end
 
-        context "using wrong markdown" do
-          let(:message) { "this is some work.\n\ncloses #1" }
+        context "using internal issue reference" do
+          context 'when internal issues are disabled' do
+            before do
+              project.issues_enabled = false
+              project.save!
+            end
+            let(:message) { "this is some work.\n\ncloses #1" }
 
-          it "does not initiates one api call to jira server to close the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+            it "does not initiates one api call to jira server to close the issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref )
 
-            expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+              expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+            end
+
+            it "does not initiates one api call to jira server to comment on the issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref )
+
+              expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+                body: comment_body
+              ).once
+            end
           end
 
-          it "does not initiates one api call to jira server to comment on the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+          context 'when internal issues are enabled' do
+            let(:issue) { create(:issue, project: project) }
+            let(:message) { "this is some work.\n\ncloses JIRA-1 \n\n closes #{issue.to_reference}" }
 
-            expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
-              body: comment_body
-            ).once
+            it "initiates one api call to jira server to close the jira issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref )
+
+              expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
+            end
+
+            it "initiates one api call to jira server to comment on the jira issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref )
+
+              expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+                body: comment_body
+              ).once
+            end
+
+            it "closes the internal issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref )
+              expect(issue.reload).to be_closed
+            end
+
+            it "adds a note indicating that the issue is now closed" do
+              expect(SystemNoteService).to receive(:change_status)
+                .with(issue, project, commit_author, "closed", closing_commit)
+              execute_service(project, commit_author, oldrev, newrev, ref )
+            end
           end
         end
       end
@@ -566,14 +602,18 @@ describe GitPushService, services: true do
     let(:housekeeping) { Projects::HousekeepingService.new(project) }
 
     before do
-      # Flush any raw Redis data stored by the housekeeping code.
-      Gitlab::Redis.with { |conn| conn.flushall }
+      # Flush any raw key-value data stored by the housekeeping code.
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
 
       allow(Projects::HousekeepingService).to receive(:new).and_return(housekeeping)
     end
 
     after do
-      Gitlab::Redis.with { |conn| conn.flushall }
+      Gitlab::Redis::Cache.with { |conn| conn.flushall }
+      Gitlab::Redis::Queues.with { |conn| conn.flushall }
+      Gitlab::Redis::SharedState.with { |conn| conn.flushall }
     end
 
     it 'does not perform housekeeping when not needed' do

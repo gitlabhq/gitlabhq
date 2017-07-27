@@ -21,18 +21,33 @@ class Milestone < ActiveRecord::Base
   cache_markdown_field :description
 
   belongs_to :project
+  belongs_to :group
+
   has_many :boards
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
-  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  validates :title, presence: true, uniqueness: { scope: :project_id }
-  validates :project, presence: true
+  scope :for_projects_and_groups, -> (project_ids, group_ids) do
+    conditions = []
+    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+
+    where(conditions.reduce(:or))
+  end
+
+  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group
+
+  validate :uniqueness_of_title, if: :title_changed?
+  validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
@@ -66,6 +81,14 @@ class Milestone < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+    end
+
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
     end
   end
 
@@ -142,6 +165,8 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid, full: false)
+    return if is_group_milestone?
+
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
@@ -156,6 +181,10 @@ class Milestone < ActiveRecord::Base
     id
   end
 
+  def for_display
+    self
+  end
+
   def can_be_closed?
     active? && issues.opened.count.zero?
   end
@@ -168,7 +197,44 @@ class Milestone < ActiveRecord::Base
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
+  def safe_title
+    title.to_slug.normalize.to_s
+  end
+
+  def parent
+    group || project
+  end
+
+  def is_group_milestone?
+    group_id.present?
+  end
+
+  def is_project_milestone?
+    project_id.present?
+  end
+
   private
+
+  # Milestone titles must be unique across project milestones and group milestones
+  def uniqueness_of_title
+    if project
+      relation = Milestone.for_projects_and_groups([project_id], [project.group&.id])
+    elsif group
+      project_ids = group.projects.map(&:id)
+      relation = Milestone.for_projects_and_groups(project_ids, [group.id])
+    end
+
+    title_exists = relation.find_by_title(title)
+    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+  end
+
+  # Milestone should be either a project milestone or a group milestone
+  def milestone_type_check
+    if group_id && project_id
+      field = project_id_changed? ? :project_id : :group_id
+      errors.add(field, "milestone should belong either to a project or a group.")
+    end
+  end
 
   def milestone_format_reference(format = :iid)
     raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)

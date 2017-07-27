@@ -88,9 +88,9 @@ gl.issueBoards.IssuesModal = Vue.extend({
       return gl.boardService.getBacklog(queryData(this.filter.path, {
         page: this.page,
         per: this.perPage,
-      })).then((res) => {
-        const data = res.json();
-
+      }))
+      .then(resp => resp.json())
+      .then((data) => {
         if (clearIssues) {
           this.issues = [];
         }

@@ -1,10 +1,10 @@
 - @no_container = true
 - @can_bulk_update = can?(current_user, :admin_merge_request, @project)
 - merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
-- new_merge_request_path = namespace_project_new_merge_request_path(merge_project.namespace, merge_project) if merge_project
+- new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-- unless @project.default_issues_tracker?
+- unless @project.issues_enabled?
   = content_for :sub_nav do
     = render "projects/merge_requests/head"
 

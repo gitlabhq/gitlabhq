@@ -148,6 +148,12 @@ GET /users?extern_uid=1234567&provider=github
 
 You can search for users who are external with: `/users?external=true`
 
+You can search users by creation date time range with:
+
+```
+GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
+```
+
 ## Single user
 
 Get a single user.
@@ -363,7 +369,7 @@ GET /user
 
 Parameters:
 
-- `sudo` (required) - the ID of a user
+- `sudo` (optional) - the ID of a user to make the call in their place
 
 ```
 GET /user

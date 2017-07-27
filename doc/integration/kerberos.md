@@ -105,6 +105,24 @@ user associated with the email, which is built from the Kerberos username and
 realm. User accounts will be created automatically when authentication was
 successful.
 
+## Linking Kerberos and LDAP accounts together
+
+If your users log in with Kerberos, but you also have [LDAP integration](../administration/auth/ldap.md)
+enabled, then your users will be automatically linked to their LDAP accounts on
+first login. For this to work, some prerequisites must be met:
+
+The Kerberos username must match the LDAP user's UID. You can choose which LDAP
+attribute is used as the UID in GitLab's [LDAP configuration](../administration/auth/ldap.md#configuration)
+but for Active Directory, this should be `sAMAccountName`.
+
+The Kerberos realm must match the domain part of the LDAP user's Distinguished
+Name. For instance, if the Kerberos realm is `AD.EXAMPLE.COM`, then the LDAP
+user's Distinguished Name should end in `dc=ad,dc=example,dc=com`.
+
+Taken together, these rules mean that linking will only work if your users'
+Kerberos usernames are of the form `foo@AD.EXAMPLE.COM` and their
+LDAP Distinguished Names look like `sAMAccountName=foo,dc=ad,dc=example,dc=com`.
+
 ## HTTP Git access
 
 A linked Kerberos account enables you to `git pull` and `git push` using your
@@ -231,6 +249,43 @@ it may be necessary to increase the maximum header size allowed by NGINX,
 as extensions to the Kerberos protocol may result in HTTP authentication headers
 larger than the default size of 8kB. Configure `large_client_header_buffers`
 to a larger value in [the NGINX configuration][nginx].
+
+## Troubleshooting
+
+### Unsupported GSSAPI mechanism
+
+With Kerberos SPNEGO authentication, the browser is expected to send a list of
+mechanisms it supports to GitLab. If it doesn't support any of the mechanisms
+GitLab supports, authentication will fail with a message like this in the log:
+
+```
+OmniauthKerberosSpnegoController: failed to process Negotiate/Kerberos authentication: gss_accept_sec_context did not return GSS_S_COMPLETE: An unsupported mechanism was requested Unknown error
+```
+
+This is usually seen when the browser is unable to contact the Kerberos server
+directly. It will fall back to an  unsupported mechanism known as
+[`IAKERB`](https://k5wiki.kerberos.org/wiki/Projects/IAKERB), which tries to use
+the GitLab server as an intermediary to the Kerberos server.
+
+If you're experiencing this error, ensure there is connectivity between the
+client machine and the Kerberos server - this is a prerequisite! Traffic may be
+blocked by a firewall, or the DNS records may be incorrect.
+
+Another failure mode occurs when the forward and reverse DNS records for the
+GitLab server do not match. Often, Windows clients will work in this case, while
+Linux clients will fail. They use reverse DNS while detecting the Kerberos
+realm. If they get the wrong realm, then ordinary Kerberos mechanisms will fail,
+so the client will fall back to attempting to negotiate `IAKERB`, leading to the
+above error message.
+
+To fix this, ensure that the forward and reverse DNS for your GitLab server
+match. So for instance, if you acces GitLab as `gitlab.example.com`, resolving
+to IP address `1.2.3.4`, then `4.3.2.1.in-addr.arpa` must be a PTR record for
+`gitlab.example.com`.
+
+Finally, it's possible that the browser or client machine lack Kerberos support
+completely. Ensure that the Kerberos libraries are installed and that you can
+authenticate to other Kerberos services.
 
 ## Helpful links
 

@@ -3,7 +3,7 @@
     %h4.prepend-top-0
       Pipelines
   .col-lg-8
-    = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project) do |f|
+    = form_for @project, url: project_pipelines_settings_path(@project) do |f|
       %fieldset.builds-feature
         - unless @repository.gitlab_ci_yml
           .form-group
@@ -44,6 +44,14 @@
           %p.help-block
             Per job in minutes. If a job passes this threshold, it will be marked as failed
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
+
+        %hr
+        .form-group
+          = f.label :ci_config_path, 'Custom CI config path', class: 'label-light'
+          = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          %p.help-block
+            The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>
+            = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr
         .form-group

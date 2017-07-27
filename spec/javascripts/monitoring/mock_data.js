@@ -13,7 +13,7 @@ const metricsGroupsAPIResponse = {
             'queries': [
                 {
                   'query_range': 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20',
-                  'label': 'Container memory',
+                  'y_label': 'Memory',
                   'unit': 'MiB',
                   'result': [
                     {
@@ -2477,10 +2477,11 @@ export const singleRowMetrics = [
   {
     'title': 'CPU usage',
     'weight': 1,
-    'y_label': 'Values',
+    'y_label': 'Memory',
     'queries': [
       {
         'query_range': 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100',
+        'label': 'Container CPU',
         'result': [
           {
             'metric': {

@@ -50,12 +50,12 @@ module ButtonHelper
 
   def http_clone_button(project, placement = 'right', append_link: true)
     klass = 'http-selector'
-    klass << ' has-tooltip' if current_user.try(:require_password?) || current_user.try(:require_personal_access_token?)
+    klass << ' has-tooltip' if current_user.try(:require_password_creation?) || current_user.try(:require_personal_access_token_creation_for_git_auth?)
 
     protocol = gitlab_config.protocol.upcase
 
     tooltip_title =
-      if current_user.try(:require_password?)
+      if current_user.try(:require_password_creation?)
         _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
       else
         _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
@@ -84,7 +84,8 @@ module ButtonHelper
         html: true,
         placement: placement,
         container: 'body',
-        title: _('Add an SSH key to your profile to pull or push via SSH.')
+        title: _('Add an SSH key to your profile to pull or push via SSH.'),
+        primary_url: (geo_primary_ssh_url_to_repo(project) if Gitlab::Geo.secondary?)
       }
   end
 

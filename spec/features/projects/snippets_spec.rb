@@ -10,7 +10,7 @@ describe 'Project snippets', :js, feature: true do
       before do
         allow(Snippet).to receive(:default_per_page).and_return(1)
 
-        visit namespace_project_snippets_path(project.namespace, project)
+        visit project_snippets_path(project)
       end
 
       it_behaves_like 'paginated snippets'
@@ -18,7 +18,7 @@ describe 'Project snippets', :js, feature: true do
 
     context 'list content' do
       it 'contains all project snippets' do
-        visit namespace_project_snippets_path(project.namespace, project)
+        visit project_snippets_path(project)
 
         expect(page).to have_selector('.snippet-row', count: 2)
 
@@ -29,8 +29,8 @@ describe 'Project snippets', :js, feature: true do
 
     context 'when submitting a note' do
       before do
-        gitlab_sign_in :admin
-        visit namespace_project_snippet_path(project.namespace, project, snippets[0])
+        sign_in(create(:admin))
+        visit project_snippet_path(project, snippets[0])
       end
 
       it 'should have autocomplete' do

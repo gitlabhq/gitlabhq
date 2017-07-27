@@ -565,7 +565,7 @@ Style/Proc:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 57.08
+  Max: 56.96
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:
@@ -967,6 +967,10 @@ RSpec/AnyInstance:
 RSpec/BeEql:
   Enabled: true
 
+# We don't enforce this as we use this technique in a few places.
+RSpec/BeforeAfterAll:
+  Enabled: false
+
 # Check that the first argument to the top level describe is the tested class or
 # module.
 RSpec/DescribeClass:
@@ -1028,6 +1032,12 @@ RSpec/FilePath:
 # Checks if there are focused specs.
 RSpec/Focus:
   Enabled: true
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: is_expected, should
+RSpec/ImplicitExpect:
+  Enabled: true
+  EnforcedStyle: is_expected
 
 # Checks for the usage of instance variables.
 RSpec/InstanceVariable:

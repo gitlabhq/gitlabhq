@@ -5,6 +5,12 @@ describe MergeRequest, models: true do
 
   subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
+  describe 'associations' do
+    it { is_expected.to have_many(:approvals).dependent(:delete_all) }
+    it { is_expected.to have_many(:approvers).dependent(:delete_all) }
+    it { is_expected.to have_many(:approver_groups).dependent(:delete_all) }
+  end
+
   describe '#should_be_rebased?' do
     subject { merge_request.should_be_rebased? }
 
@@ -130,10 +136,10 @@ describe MergeRequest, models: true do
 
   describe '#approvals_before_merge' do
     [
-      { license: true,  database: 5,  expected: 5 },
-      { license: true,  database: 0,  expected: 0 },
-      { license: false, database: 5,  expected: 0 },
-      { license: false, database: 0,  expected: 0 }
+      { license: true,  database: 5,   expected: 5 },
+      { license: true,  database: nil, expected: nil },
+      { license: false, database: 5,   expected: nil },
+      { license: false, database: nil, expected: nil }
     ].each do |spec|
       context spec.inspect do
         let(:spec) { spec }

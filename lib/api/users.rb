@@ -1,10 +1,9 @@
 module API
   class Users < Grape::API
     include PaginationParams
+    include APIGuard
 
-    before do
-      allow_access_with_scope :read_user if request.get?
-    end
+    allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       before do
@@ -52,6 +51,8 @@ module API
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
         optional :external, type: Boolean, default: false, desc: 'Filters only external users'
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
+        optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
         all_or_none_of :extern_uid, :provider
 
         # EE
@@ -61,6 +62,10 @@ module API
       end
       get do
         authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
+
+        unless current_user&.admin?
+          params.except!(:created_after, :created_before)
+        end
 
         users = UsersFinder.new(current_user, params).execute
 
@@ -236,6 +241,7 @@ module API
         key = user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        status 204
         key.destroy
       end
 
@@ -307,6 +313,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
+        status 204
         user.delete_async(deleted_by: current_user, params: params)
       end
 
@@ -407,6 +414,7 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
+            status 204
             find_impersonation_token.revoke!
           end
         end
@@ -422,7 +430,16 @@ module API
         success Entities::UserPublic
       end
       get do
-        present current_user, with: sudo? ? Entities::UserWithPrivateDetails : Entities::UserPublic
+        entity =
+          if sudo?
+            Entities::UserWithPrivateDetails
+          elsif current_user.admin?
+            Entities::UserWithAdmin
+          else
+            Entities::UserPublic
+          end
+
+        present current_user, with: entity
       end
 
       desc "Get the currently authenticated user's SSH keys" do
@@ -475,6 +492,7 @@ module API
         key = current_user.keys.find_by(id: params[:key_id])
         not_found!('Key') unless key
 
+        status 204
         key.destroy
       end
 
@@ -526,6 +544,7 @@ module API
         email = current_user.emails.find_by(id: params[:email_id])
         not_found!('Email') unless email
 
+        status 204
         Emails::DestroyService.new(current_user, email: email.email).execute
       end
 

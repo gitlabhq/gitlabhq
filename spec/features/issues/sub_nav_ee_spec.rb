@@ -6,9 +6,9 @@ describe 'Issues sub nav EE', :feature do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   it 'should have a `Boards` item' do

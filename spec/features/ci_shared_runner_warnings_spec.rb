@@ -6,7 +6,7 @@ feature 'CI shared runner limits', feature: true do
   let(:group) { create(:group) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when project member' do
@@ -88,11 +88,11 @@ feature 'CI shared runner limits', feature: true do
   end
 
   def visit_project_home
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def visit_project_pipelines
-    visit namespace_project_pipelines_path(project.namespace, project)
+    visit project_pipelines_path(project)
   end
 
   def expect_quota_exceeded_alert(message = nil)

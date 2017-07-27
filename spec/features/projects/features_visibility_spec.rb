@@ -9,7 +9,7 @@ describe 'Edit Project Settings', feature: true do
   describe 'project features visibility selectors', js: true do
     before do
       project.team << [member, :master]
-      gitlab_sign_in(member)
+      sign_in(member)
     end
 
     tools = { builds: "pipelines", issues: "issues", wiki: "wiki", snippets: "snippets", merge_requests: "merge_requests" }
@@ -17,7 +17,7 @@ describe 'Edit Project Settings', feature: true do
     tools.each do |tool_name, shortcut_name|
       describe "feature #{tool_name}" do
         it 'toggles visibility' do
-          visit edit_namespace_project_path(project.namespace, project)
+          visit edit_project_path(project)
 
           select 'Disabled', from: "project_project_feature_attributes_#{tool_name}_access_level"
           click_button 'Save changes'
@@ -39,20 +39,31 @@ describe 'Edit Project Settings', feature: true do
       end
     end
 
-    context "When external issue tracker is enabled" do
-      it "does not hide issues tab" do
-        project.project_feature.update(issues_access_level: ProjectFeature::DISABLED)
+    context 'When external issue tracker is enabled and issues enabled on project settings' do
+      it 'does not hide issues tab' do
         allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
 
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
 
-        expect(page).to have_selector(".shortcuts-issues")
+        expect(page).to have_selector('.shortcuts-issues')
+      end
+    end
+
+    context 'When external issue tracker is enabled and issues disabled on project settings' do
+      it 'hides issues tab' do
+        project.issues_enabled = false
+        project.save!
+        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(JiraService.new)
+
+        visit project_path(project)
+
+        expect(page).not_to have_selector('.shortcuts-issues')
       end
     end
 
     context "pipelines subtabs" do
       it "shows builds when enabled" do
-        visit namespace_project_pipelines_path(project.namespace, project)
+        visit project_pipelines_path(project)
 
         expect(page).to have_selector(".shortcuts-builds")
       end
@@ -60,7 +71,7 @@ describe 'Edit Project Settings', feature: true do
       it "hides builds when disabled" do
         allow(Ability).to receive(:allowed?).with(member, :read_builds, project).and_return(false)
 
-        visit namespace_project_pipelines_path(project.namespace, project)
+        visit project_pipelines_path(project)
 
         expect(page).not_to have_selector(".shortcuts-builds")
       end
@@ -73,17 +84,17 @@ describe 'Edit Project Settings', feature: true do
 
     let(:tools) do
       {
-        builds: namespace_project_job_path(project.namespace, project, job),
-        issues: namespace_project_issues_path(project.namespace, project),
-        wiki: namespace_project_wiki_path(project.namespace, project, :home),
-        snippets: namespace_project_snippets_path(project.namespace, project),
-        merge_requests: namespace_project_merge_requests_path(project.namespace, project)
+        builds: project_job_path(project, job),
+        issues: project_issues_path(project),
+        wiki: project_wiki_path(project, :home),
+        snippets: project_snippets_path(project),
+        merge_requests: project_merge_requests_path(project)
       }
     end
 
     context 'normal user' do
       before do
-        gitlab_sign_in(member)
+        sign_in(member)
       end
 
       it 'renders 200 if tool is enabled' do
@@ -130,7 +141,7 @@ describe 'Edit Project Settings', feature: true do
     context 'admin user' do
       before do
         non_member.update_attribute(:admin, true)
-        gitlab_sign_in(non_member)
+        sign_in(non_member)
       end
 
       it 'renders 404 if feature is disabled' do
@@ -156,8 +167,8 @@ describe 'Edit Project Settings', feature: true do
   describe 'repository visibility', js: true do
     before do
       project.team << [member, :master]
-      gitlab_sign_in(member)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(member)
+      visit edit_project_path(project)
     end
 
     it "disables repository related features" do
@@ -174,7 +185,7 @@ describe 'Edit Project Settings', feature: true do
       click_button "Save changes"
       wait_for_requests
 
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_content "Customize your workflow!"
     end
@@ -187,7 +198,7 @@ describe 'Edit Project Settings', feature: true do
       click_button "Save changes"
       wait_for_requests
 
-      visit activity_namespace_project_path(project.namespace, project)
+      visit activity_project_path(project)
 
       page.within(".event-filter") do
         expect(page).to have_selector("a", count: 2)
@@ -205,7 +216,7 @@ describe 'Edit Project Settings', feature: true do
         expect(page).to have_content("Comments")
       end
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       select "Disabled", from: "project_project_feature_attributes_merge_requests_access_level"
 
@@ -213,7 +224,7 @@ describe 'Edit Project Settings', feature: true do
         expect(page).to have_content("Comments")
       end
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       select "Disabled", from: "project_project_feature_attributes_repository_access_level"
 
@@ -221,14 +232,14 @@ describe 'Edit Project Settings', feature: true do
         expect(page).not_to have_content("Comments")
       end
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
     end
 
     def save_changes_and_check_activity_tab
       click_button "Save changes"
       wait_for_requests
 
-      visit activity_namespace_project_path(project.namespace, project)
+      visit activity_project_path(project)
 
       page.within(".event-filter") do
         yield
@@ -242,8 +253,8 @@ describe 'Edit Project Settings', feature: true do
 
     before do
       project.team << [member, :guest]
-      gitlab_sign_in(member)
-      visit namespace_project_path(project.namespace, project)
+      sign_in(member)
+      visit project_path(project)
     end
 
     it "does not show project statistic for guest" do

@@ -33,7 +33,7 @@ $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
-  const issueBoardsContent = document.querySelector('.js-focus-mode-board');
+  const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   window.gl = window.gl || {};
 
@@ -98,8 +98,9 @@ $(() => {
     mounted () {
       Store.disabled = this.disabled;
       gl.boardService.all()
+        .then(response => response.json())
         .then((resp) => {
-          resp.json().forEach((board) => {
+          resp.forEach((board) => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
@@ -114,7 +115,8 @@ $(() => {
 
           Store.addBlankState();
           this.loading = false;
-        }).catch(() => new Flash('An error occurred. Please try again.'));
+        })
+        .catch(() => new Flash('An error occurred. Please try again.'));
     },
     methods: {
       updateTokens() {

@@ -250,8 +250,16 @@ Tip: If you want to limit access to the nested members of an Active Directory
 group you can use the following syntax:
 
 ```
-(memberOf=CN=My Group,DC=Example,DC=com)
+(memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
+
+Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
+https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
+nested members in the user filter should not be confused with 
+[group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
+
+Please note that GitLab does not support the custom filter syntax used by
+omniauth-ldap.
 
 ### Escaping special characters
 
@@ -270,9 +278,6 @@ As an example the above DN would look like
 ```
 OU=GitLab\\5C\\2C Inc,DC=gitlab,DC=com
 ```
-
-Please note that GitLab does not support the custom filter syntax used by
-omniauth-ldap.
 
 ## Enabling LDAP sign-in for existing GitLab users
 

@@ -22,7 +22,7 @@
             = label_tag 'start_branch', branch_label, class: 'control-label'
             .col-sm-10
               = hidden_field_tag :start_branch, @project.default_branch, id: 'start_branch'
-              = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false } })
+              = dropdown_tag(@project.default_branch, options: { title: s_("BranchSwitcherTitle|Switch branch"), filter: true, placeholder: s_("BranchSwitcherPlaceholder|Search branches"), toggle_class: 'js-project-refs-dropdown dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "start_branch", selected: @project.default_branch, start_branch: @project.default_branch, refs_url: project_branches_path(@project), submit_form_on_click: false } })
 
               - if can?(current_user, :push_code, @project)
                 = render 'shared/new_merge_request_checkbox'

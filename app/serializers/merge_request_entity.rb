@@ -116,11 +116,13 @@ class MergeRequestEntity < IssuableEntity
     presenter(merge_request).target_branch_commits_path
   end
 
+  expose :target_branch_tree_path do |merge_request|
+    presenter(merge_request).target_branch_tree_path
+  end
+
   expose :new_blob_path do |merge_request|
     if can?(current_user, :push_code, merge_request.project)
-      namespace_project_new_blob_path(merge_request.project.namespace,
-                                      merge_request.project,
-                                      merge_request.source_branch)
+      project_new_blob_path(merge_request.project, merge_request.source_branch)
     end
   end
 
@@ -153,30 +155,19 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :email_patches_path do |merge_request|
-    namespace_project_merge_request_path(merge_request.project.namespace,
-                                         merge_request.project,
-                                         merge_request,
-                                         format: :patch)
+    project_merge_request_path(merge_request.project, merge_request, format: :patch)
   end
 
   expose :plain_diff_path do |merge_request|
-    namespace_project_merge_request_path(merge_request.project.namespace,
-                                         merge_request.project,
-                                         merge_request,
-                                         format: :diff)
+    project_merge_request_path(merge_request.project, merge_request, format: :diff)
   end
 
   expose :status_path do |merge_request|
-    namespace_project_merge_request_path(merge_request.target_project.namespace,
-                                         merge_request.target_project,
-                                         merge_request,
-                                         format: :json)
+    project_merge_request_path(merge_request.target_project, merge_request, format: :json)
   end
 
   expose :ci_environments_status_path do |merge_request|
-    ci_environments_status_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                                merge_request.project,
-                                                                merge_request)
+    ci_environments_status_project_merge_request_path(merge_request.project, merge_request)
   end
 
   expose :merge_commit_message_with_description do |merge_request|
@@ -192,25 +183,21 @@ class MergeRequestEntity < IssuableEntity
   end
 
   expose :commit_change_content_path do |merge_request|
-    commit_change_content_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                               merge_request.project,
-                                                               merge_request)
+    commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
 
   # EE-specific
   expose :codeclimate, if: -> (mr, _) { mr.has_codeclimate_data? } do
     expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_codeclimate_artifact) } do |merge_request|
-      raw_namespace_project_build_artifacts_url(merge_request.source_project.namespace,
-                                                merge_request.source_project,
-                                                merge_request.head_codeclimate_artifact,
-                                                path: 'codeclimate.json')
+      raw_project_build_artifacts_url(merge_request.source_project,
+                                      merge_request.head_codeclimate_artifact,
+                                      path: 'codeclimate.json')
     end
 
     expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_codeclimate_artifact) } do |merge_request|
-      raw_namespace_project_build_artifacts_url(merge_request.target_project.namespace,
-                                                merge_request.target_project,
-                                                merge_request.base_codeclimate_artifact,
-                                                path: 'codeclimate.json')
+      raw_project_build_artifacts_url(merge_request.target_project,
+                                      merge_request.base_codeclimate_artifact,
+                                      path: 'codeclimate.json')
     end
   end
 

@@ -5,7 +5,7 @@ to a project with a single action.
 
 ## Groups as collections of users
 
-Groups are used primarily to [create collections of projects](groups.md), but you can also
+Groups are used primarily to [create collections of projects](../user/group/index.md), but you can also
 take advantage of the fact that groups define collections of _users_, namely the group
 members.
 

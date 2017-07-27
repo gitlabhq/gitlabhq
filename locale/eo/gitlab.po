@@ -4,19 +4,38 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-06-20 06:24-0400\n"
+"PO-Revision-Date: 2017-07-13 08:46-0400\n"
 "Last-Translator: Lyubomir Vasilev <lyubomirv@abv.bg>\n"
 "Language-Team: Esperanto (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: eo\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s enmetado estis transsaltita, por ne troŝarĝi la sistemon."
+msgstr[1] "%s enmetadoj estis transsaltitaj, por ne troŝarĝi la sistemon."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d enmetado"
+msgstr[1] "%d enmetadoj"
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} enmetis %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 ĉenstablo"
+msgstr[1] "%d ĉenstabloj"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Aro da diagramoj pri la seninterrompa integrado"
 
 msgid "About auto deploy"
 msgstr "Pri la aŭtomata disponigado"
@@ -67,8 +86,23 @@ msgstr ""
 "disponigadon, bonvolu elekti Yaml-ŝablonon por GitLab CI kaj enmeti viajn "
 "ŝanĝojn. %{link_to_autodeploy_doc}"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "Serĉu branĉon"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "Iri al branĉo"
+
 msgid "Branches"
 msgstr "Branĉoj"
+
+msgid "Browse Directory"
+msgstr "Foliumi dosierujon"
+
+msgid "Browse File"
+msgstr "Foliumi dosieron"
+
+msgid "Browse Files"
+msgstr "Foliumi dosierojn"
 
 msgid "Browse files"
 msgstr "Elekti dosierojn"
@@ -165,6 +199,9 @@ msgid_plural "Commits"
 msgstr[0] "Enmetado"
 msgstr[1] "Enmetadoj"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Daŭro de la enmetadoj por la lastaj 30 enmetadoj"
+
 msgid "Commit message"
 msgstr "Mesaĝo pri la enmetado"
 
@@ -176,6 +213,9 @@ msgstr "Aldoni „%{file_name}“"
 
 msgid "Commits"
 msgstr "Enmetadoj"
+
+msgid "Commits feed"
+msgstr "Fluo de enmetadoj"
 
 msgid "Commits|History"
 msgstr "Historio"
@@ -201,6 +241,13 @@ msgstr "Kopii la identigilon de la enmetado"
 msgid "Create New Directory"
 msgstr "Krei novan dosierujon"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr ""
+"Kreu propran atingoĵetonon en via konto por ebligi al vi eltiri kaj alpuŝi "
+"per %{protocol}."
+
 msgid "Create directory"
 msgstr "Krei dosierujon"
 
@@ -218,6 +265,9 @@ msgstr "Disbranĉigi"
 
 msgid "CreateTag|Tag"
 msgstr "Etikedo"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "kreos propran atingoĵetonon"
 
 msgid "Cron Timezone"
 msgstr "Horzono por Cron"
@@ -339,6 +389,9 @@ msgstr "Ne eblas forigi la ĉenstablan planon"
 msgid "Files"
 msgstr "Dosieroj"
 
+msgid "Filter by commit message"
+msgstr "Filtri per mesaĝo"
+
 msgid "Find by path"
 msgstr "Trovi per dosierindiko"
 
@@ -387,6 +440,15 @@ msgstr "Intervala ŝablono"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Ni prezentas al vi la ciklan analizon"
+
+msgid "Jobs for last month"
+msgstr "Taskoj po la lasta monato"
+
+msgid "Jobs for last week"
+msgstr "Taskoj po la lasta semajno"
+
+msgid "Jobs for last year"
+msgstr "Taskoj po la lasta jaro"
 
 msgid "LFSStatus|Disabled"
 msgstr "Malŝaltita"
@@ -553,6 +615,21 @@ msgstr "Ĉenstabla plano"
 msgid "Pipeline Schedules"
 msgstr "Ĉenstablaj planoj"
 
+msgid "PipelineCharts|Failed:"
+msgstr "Malsukcesaj:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "Ĝenerala statistiko"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "Proporcio de sukceso:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "Sukcesaj:"
+
+msgid "PipelineCharts|Total:"
+msgstr "Totalo:"
+
 msgid "PipelineSchedules|Activated"
 msgstr "Ŝaltita"
 
@@ -565,6 +642,12 @@ msgstr "Ĉiuj"
 msgid "PipelineSchedules|Inactive"
 msgstr "Malŝaltitaj"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "Entajpu ŝlosilon por la variablo"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "Entajpu la valoron de la variablo"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "Sekvanta plenumo"
 
@@ -574,14 +657,32 @@ msgstr "Nenio"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "Entajpu mallongan priskribon pri ĉi tiu ĉenstablo"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "Forigi la variablan linion"
+
 msgid "PipelineSchedules|Take ownership"
 msgstr "Akiri posedon"
 
 msgid "PipelineSchedules|Target"
 msgstr "Celo"
 
+msgid "PipelineSchedules|Variables"
+msgstr "Variabloj"
+
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Propra"
+
+msgid "Pipelines"
+msgstr "Ĉenstabloj"
+
+msgid "Pipelines charts"
+msgstr "Ĉenstablaj diagramoj"
+
+msgid "Pipeline|all"
+msgstr "ĉiuj"
+
+msgid "Pipeline|success"
+msgstr "sukcesaj"
 
 msgid "Pipeline|with stage"
 msgstr "kun etapo"
@@ -712,10 +813,10 @@ msgstr "Elektu horzonon"
 msgid "Select target branch"
 msgstr "Elektu celan branĉon"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Kreu pasvorton por via konto por ebligi al vi eltiri kaj alpuŝi per "
-"%{protocol}"
+"%{protocol}."
 
 msgid "Set up CI"
 msgstr "Agordi SI"
@@ -1033,8 +1134,14 @@ msgstr "Alŝuti novan dosieron"
 msgid "Upload file"
 msgstr "Alŝuti dosieron"
 
+msgid "UploadLink|click to upload"
+msgstr "alklaku por alŝuti"
+
 msgid "Use your global notification setting"
 msgstr "Uzi vian ĝeneralan agordon pri la sciigoj"
+
+msgid "View open merge request"
+msgstr "Vidi la malfermitan peton pri kunfando"
 
 msgid "VisibilityLevel|Internal"
 msgstr "Interna"
@@ -1054,6 +1161,15 @@ msgstr "Ne estas sufiĉe da datenoj por montri ĉi tiun etapon."
 
 msgid "Withdraw Access Request"
 msgstr "Nuligi la peton pri atingeblo"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Vi forigos „%{group_name}“.\n"
+"Oni NE POVAS malfari la forigon de grupo!\n"
+"Ĉu vi estas ABSOLUTE certa?"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"

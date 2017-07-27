@@ -7,7 +7,7 @@
       = form_errors(@group)
       = render 'shared/group_form', f: f
 
-      = render 'repository_size_limit_setting', f: f
+      = render 'shared/repository_size_limit_setting', form: f, type: :group
 
       .form-group
         .col-sm-offset-2.col-sm-10
@@ -56,10 +56,13 @@
 .panel.panel-danger
   .panel-heading Remove group
   .panel-body
-    %p
-      Removing group will cause all child projects and resources to be removed.
-      %br
-      %strong Removed group can not be restored!
+    = form_tag(@group, method: :delete) do
+      %p
+        Removing group will cause all child projects and resources to be removed.
+        %br
+        %strong Removed group can not be restored!
 
-    .form-actions
-      = link_to 'Remove group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
+      .form-actions
+        = button_to 'Remove group', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_group_message(@group) }
+
+= render 'shared/confirm_modal', phrase: @group.path

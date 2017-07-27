@@ -8,7 +8,13 @@
 
 %hr
 
-= render partial: 'form', locals: {geo_node: @node} if Gitlab::Geo.license_allows?
+- if Gitlab::Geo.license_allows?
+  = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal' } do |f|
+    = render partial: 'form', locals: { form: f, geo_node: @node }
+    .form-actions
+      = f.submit 'Add Node', class: 'btn btn-create'
+
+%hr
 
 - if @nodes.any?
   .panel.panel-default
@@ -26,6 +32,7 @@
               .node-badge.primary-node Primary
               %span.help-block Primary node
             - else
+              = status_loading_icon
               .js-geo-node-status{ style: 'display: none' }
                 - if node.enabled?
                   %p
@@ -51,11 +58,12 @@
                 %p
                   .js-health
 
-          - if Gitlab::Geo.primary?
+          - unless Gitlab::Geo.secondary?
             .node-actions
               - if Gitlab::Geo.license_allows?
                 - if node.missing_oauth_application?
                   = link_to "Repair authentication", repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm'
                 - if node.secondary?
                   = toggle_node_button(node)
+                = link_to "Edit", edit_admin_geo_node_path(node), class: 'btn btn-sm'
               = link_to "Remove", admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'

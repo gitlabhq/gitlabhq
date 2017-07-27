@@ -62,6 +62,7 @@ class Project < ActiveRecord::Base
     update_column(:last_repository_updated_at, self.created_at)
   end
 
+  before_destroy :remove_private_deploy_keys
   after_destroy :remove_pages
 
   # update visibility_level of forks
@@ -83,100 +84,110 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
-  has_many :boards, dependent: :destroy
+  has_many :boards, before_add: :validate_board_limit
 
   # Project services
-  has_one :campfire_service, dependent: :destroy
-  has_one :drone_ci_service, dependent: :destroy
-  has_one :emails_on_push_service, dependent: :destroy
-  has_one :pipelines_email_service, dependent: :destroy
-  has_one :irker_service, dependent: :destroy
-  has_one :pivotaltracker_service, dependent: :destroy
-  has_one :hipchat_service, dependent: :destroy
-  has_one :flowdock_service, dependent: :destroy
-  has_one :assembla_service, dependent: :destroy
-  has_one :asana_service, dependent: :destroy
-  has_one :gemnasium_service, dependent: :destroy
-  has_one :mattermost_slash_commands_service, dependent: :destroy
-  has_one :mattermost_service, dependent: :destroy
-  has_one :slack_slash_commands_service, dependent: :destroy
-  has_one :slack_service, dependent: :destroy
-  has_one :buildkite_service, dependent: :destroy
-  has_one :bamboo_service, dependent: :destroy
-  has_one :teamcity_service, dependent: :destroy
-  has_one :pushover_service, dependent: :destroy
-  has_one :jira_service, dependent: :destroy
-  has_one :redmine_service, dependent: :destroy
-  has_one :custom_issue_tracker_service, dependent: :destroy
-  has_one :bugzilla_service, dependent: :destroy
-  has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
-  has_one :external_wiki_service, dependent: :destroy
-  has_one :kubernetes_service, dependent: :destroy, inverse_of: :project
-  has_one :prometheus_service, dependent: :destroy, inverse_of: :project
-  has_one :mock_ci_service, dependent: :destroy
-  has_one :mock_deployment_service, dependent: :destroy
-  has_one :mock_monitoring_service, dependent: :destroy
-  has_one :microsoft_teams_service, dependent: :destroy
+  has_one :campfire_service
+  has_one :drone_ci_service
+  has_one :gitlab_slack_application_service
+  has_one :emails_on_push_service
+  has_one :pipelines_email_service
+  has_one :irker_service
+  has_one :pivotaltracker_service
+  has_one :hipchat_service
+  has_one :flowdock_service
+  has_one :assembla_service
+  has_one :asana_service
+  has_one :gemnasium_service
+  has_one :mattermost_slash_commands_service
+  has_one :mattermost_service
+  has_one :slack_slash_commands_service
+  has_one :slack_service
+  has_one :buildkite_service
+  has_one :bamboo_service
+  has_one :teamcity_service
+  has_one :pushover_service
+  has_one :jira_service
+  has_one :redmine_service
+  has_one :custom_issue_tracker_service
+  has_one :bugzilla_service
+  has_one :gitlab_issue_tracker_service, inverse_of: :project
+  has_one :external_wiki_service
+  has_one :kubernetes_service, inverse_of: :project
+  has_one :prometheus_service, inverse_of: :project
+  has_one :mock_ci_service
+  has_one :mock_deployment_service
+  has_one :mock_monitoring_service
+  has_one :microsoft_teams_service
 
-  has_one  :forked_project_link,  dependent: :destroy, foreign_key: "forked_to_project_id"
+  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
   has_one  :forked_from_project,  through:   :forked_project_link
 
   has_many :forked_project_links, foreign_key: "forked_from_project_id"
   has_many :forks,                through:     :forked_project_links, source: :forked_to_project
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests,     dependent: :destroy, foreign_key: 'target_project_id'
-  has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy, class_name: 'ProjectLabel'
-  has_many :services,           dependent: :destroy
-  has_many :events,             dependent: :destroy
-  has_many :milestones,         dependent: :destroy
-  has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
-  has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
-  has_many :protected_branches, dependent: :destroy
-  has_many :protected_tags,     dependent: :destroy
+  has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :issues
+  has_many :labels, class_name: 'ProjectLabel'
+  has_many :services
+  has_many :events
+  has_many :milestones
+  has_many :notes
+  has_many :snippets, class_name: 'ProjectSnippet'
+  has_many :hooks, class_name: 'ProjectHook'
+  has_many :protected_branches
+  has_many :protected_tags
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
-  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :project_members, -> { where(requested_at: nil) },
+    as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
   alias_method :members, :project_members
   has_many :users, through: :project_members
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :requesters, -> { where.not(requested_at: nil) },
+    as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :deploy_keys_projects, dependent: :destroy
+  has_many :deploy_keys_projects
   has_many :deploy_keys, through: :deploy_keys_projects
-  has_many :users_star_projects, dependent: :destroy
+  has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
-  has_many :releases, dependent: :destroy
-  has_many :lfs_objects_projects, dependent: :destroy
+  has_many :releases
+  has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :lfs_objects, through: :lfs_objects_projects
-  has_many :project_group_links, dependent: :destroy
+  has_many :project_group_links
   has_many :invited_groups, through: :project_group_links, source: :group
-  has_many :pages_domains, dependent: :destroy
-  has_many :todos, dependent: :destroy
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :pages_domains
+  has_many :todos
+  has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :import_data, dependent: :delete, class_name: 'ProjectImportData'
-  has_one :project_feature, dependent: :destroy
-  has_one :statistics, class_name: 'ProjectStatistics', dependent: :delete
-  has_many :container_repositories, dependent: :destroy
+  has_one :import_data, class_name: 'ProjectImportData'
+  has_one :project_feature
+  has_one :statistics, class_name: 'ProjectStatistics'
 
-  has_many :commit_statuses, dependent: :destroy
-  has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline'
-  has_many :builds, class_name: 'Ci::Build' # the builds are created from the commit_statuses
-  has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
+  # Container repositories need to remove data from the container registry,
+  # which is not managed by the DB. Hence we're still using dependent: :destroy
+  # here.
+  has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :commit_statuses
+  has_many :pipelines, class_name: 'Ci::Pipeline'
+
+  # Ci::Build objects store data on the file system such as artifact files and
+  # build traces. Currently there's no efficient way of removing this data in
+  # bulk that doesn't involve loading the rows into memory. As a result we're
+  # still using `dependent: :destroy` here.
+  has_many :builds, class_name: 'Ci::Build', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :runner_projects, class_name: 'Ci::RunnerProject'
   has_many :runners, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
   has_many :variables, class_name: 'Ci::Variable'
-  has_many :triggers, dependent: :destroy, class_name: 'Ci::Trigger'
-  has_many :environments, dependent: :destroy
-  has_many :deployments, dependent: :destroy
-  has_many :pipeline_schedules, dependent: :destroy, class_name: 'Ci::PipelineSchedule'
+  has_many :triggers, class_name: 'Ci::Trigger'
+  has_many :environments
+  has_many :deployments
+  has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
 
-  has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_project_id
-
-  has_many :source_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :project_id
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
@@ -192,6 +203,11 @@ class Project < ActiveRecord::Base
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :ci_config_path,
+    format: { without: /\.{2}/,
+              message: 'cannot include directory traversal.' },
+    length: { maximum: 255 },
+    allow_blank: true
   validates :name,
     presence: true,
     length: { maximum: 255 },
@@ -225,7 +241,7 @@ class Project < ActiveRecord::Base
   before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -469,7 +485,9 @@ class Project < ActiveRecord::Base
   end
 
   def has_container_registry_tags?
-    container_repositories.to_a.any?(&:has_tags?) ||
+    return @images if defined?(@images)
+
+    @images = container_repositories.to_a.any?(&:has_tags?) ||
       has_root_container_repository_tags?
   end
 
@@ -519,7 +537,17 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    remove_import_data
+  end
+
+  # This method is overriden in EE::Project model
+  def remove_import_data
     import_data&.destroy
+  end
+
+  def ci_config_path=(value)
+    # Strip all leading slashes so that //foo -> foo
+    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
   end
 
   def import_url=(value)
@@ -676,7 +704,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    Gitlab::Routing.url_helpers.namespace_project_url(self.namespace, self)
+    Gitlab::Routing.url_helpers.project_url(self)
   end
 
   def new_issue_address(author)
@@ -705,9 +733,11 @@ class Project < ActiveRecord::Base
   end
 
   def get_issue(issue_id, current_user)
-    if default_issues_tracker?
-      IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id)
-    else
+    issue = IssuesFinder.new(current_user, project_id: id).find_by(iid: issue_id) if issues_enabled?
+
+    if issue
+      issue
+    elsif external_issue_tracker
       ExternalIssue.new(issue_id, self)
     end
   end
@@ -729,7 +759,7 @@ class Project < ActiveRecord::Base
   end
 
   def external_issue_reference_pattern
-    external_issue_tracker.class.reference_pattern
+    external_issue_tracker.class.reference_pattern(only_long: issues_enabled?)
   end
 
   def default_issues_tracker?
@@ -774,10 +804,12 @@ class Project < ActiveRecord::Base
     update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
-  def find_or_initialize_services
+  def find_or_initialize_services(exceptions: [])
     services_templates = Service.where(template: true)
 
-    Service.available_services_names.map do |service_name|
+    available_services_names = Service.available_services_names - exceptions
+
+    available_services_names.map do |service_name|
       service = find_service(services, service_name)
 
       if service
@@ -852,7 +884,7 @@ class Project < ActiveRecord::Base
   def avatar_url(**args)
     # We use avatar_path instead of overriding avatar_url because of carrierwave.
     # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
-    avatar_path(args) || (Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self) if avatar_in_git)
+    avatar_path(args) || (Gitlab::Routing.url_helpers.project_avatar_url(self) if avatar_in_git)
   end
 
   # For compatibility with old code
@@ -948,14 +980,14 @@ class Project < ActiveRecord::Base
 
     Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
-    expire_caches_before_rename(old_path_with_namespace)
-
     if has_container_registry_tags?
       Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
       # we currently doesn't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
+
+    expire_caches_before_rename(old_path_with_namespace)
 
     if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
@@ -964,6 +996,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
+        expires_full_path_cache
 
         @old_path_with_namespace = old_path_with_namespace
 
@@ -1015,7 +1048,8 @@ class Project < ActiveRecord::Base
       namespace: namespace.name,
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
-      default_branch: default_branch
+      default_branch: default_branch,
+      ci_config_path: ci_config_path
     }
 
     # Backward compatibility
@@ -1074,21 +1108,21 @@ class Project < ActiveRecord::Base
     merge_requests.where(source_project_id: self.id)
   end
 
-  def create_repository
+  def create_repository(force: false)
     # Forked import is handled asynchronously
-    unless forked?
-      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-        repository.after_create
-        true
-      else
-        errors.add(:base, 'Failed to create repository via gitlab-shell')
-        false
-      end
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
     end
   end
 
   def ensure_repository
-    create_repository unless repository_exists?
+    create_repository(force: true) unless repository_exists?
   end
 
   def repository_exists?
@@ -1229,7 +1263,13 @@ class Project < ActiveRecord::Base
     File.join(pages_path, 'public')
   end
 
+  def remove_private_deploy_keys
+    deploy_keys.where(public: false).delete_all
+  end
+
   def remove_pages
+    ::Projects::UpdatePagesConfigurationService.new(self).execute
+
     # 1. We rename pages to temporary directory
     # 2. We wait 5 minutes, due to NFS caching
     # 3. We asynchronously remove pages with force
@@ -1315,7 +1355,8 @@ class Project < ActiveRecord::Base
     variables
   end
 
-  def secret_variables_for(ref)
+  def secret_variables_for(ref:, environment: nil)
+    # EE would use the environment
     if protected_for?(ref)
       variables
     else
@@ -1348,15 +1389,15 @@ class Project < ActiveRecord::Base
   end
 
   def pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.get(pushes_since_gc_redis_key).to_i }
+    Gitlab::Redis::SharedState.with { |redis| redis.get(pushes_since_gc_redis_shared_state_key).to_i }
   end
 
   def increment_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.incr(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.incr(pushes_since_gc_redis_shared_state_key) }
   end
 
   def reset_pushes_since_gc
-    Gitlab::Redis.with { |redis| redis.del(pushes_since_gc_redis_key) }
+    Gitlab::Redis::SharedState.with { |redis| redis.del(pushes_since_gc_redis_shared_state_key) }
   end
 
   def route_map_for(commit_sha)
@@ -1419,7 +1460,7 @@ class Project < ActiveRecord::Base
     from && self != from
   end
 
-  def pushes_since_gc_redis_key
+  def pushes_since_gc_redis_shared_state_key
     "projects/#{id}/pushes_since_gc"
   end
 

@@ -10,12 +10,17 @@
     - if content_for?(:sub_nav)
       = yield :sub_nav
   .content-wrapper{ class: "#{(layout_nav_class unless show_new_nav?)}" }
+    - if show_new_nav?
+      .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
+      - if show_new_nav?
+        - if content_for?(:new_global_flash)
+          = yield :new_global_flash
+        - unless @hide_breadcrumbs
+          = render "layouts/nav/breadcrumbs"
       = render "layouts/flash"
       = yield :flash_message
-    - if show_new_nav?
-      = render "layouts/nav/breadcrumbs"
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
         = yield

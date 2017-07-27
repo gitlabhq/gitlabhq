@@ -2,6 +2,15 @@
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
 
+$active-background: rgba(0, 0, 0, .04);
+$active-border: $indigo-500;
+$active-color: $indigo-700;
+$active-hover-background: $active-background;
+$active-hover-color: $gl-text-color;
+$inactive-badge-background: rgba(0, 0, 0, .08);
+$hover-background: $indigo-700;
+$hover-color: $white-light;
+$inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
 
 .page-with-new-sidebar {
@@ -14,22 +23,81 @@ $new-sidebar-width: 220px;
     position: fixed;
     height: 100%;
   }
+
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+    padding: 10px 0 15px;
+  }
 }
 
 .context-header {
-  background-color: $gray-normal;
-  border-bottom: 1px solid $border-color;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
+  position: relative;
+
+  a {
+    border-bottom: 1px solid $border-color;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 10px;
+    color: $gl-text-color;
+
+    @media (max-width: $screen-xs-max) {
+      padding-right: 30px;
+    }
+
+    &:hover {
+      background-color: $hover-background;
+      color: $hover-color;
+      border-color: $hover-background;
+
+      .avatar-container {
+        border-color: transparent;
+      }
+
+      .settings-avatar {
+        background-color: $indigo-500;
+
+        i {
+          color: $hover-color;
+        }
+      }
+    }
+  }
 
   .avatar-container {
     flex: 0 0 40px;
+    background-color: $white-light;
   }
 
+  .project-title,
+  .group-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
   &:hover {
-    background-color: $border-color;
+    .close-nav-button {
+      color: $white-light;
+    }
+  }
+
+  .close-nav-button {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background-color: transparent;
+    border: 0;
+    padding: 0 10px;
+
+    @media (max-width: $screen-xs-max) {
+      display: block;
+    }
+
+    &:hover {
+      color: $gl-text-color;
+    }
   }
 }
 
@@ -49,16 +117,25 @@ $new-sidebar-width: 220px;
   position: fixed;
   z-index: 400;
   width: $new-sidebar-width;
-  transition: width $sidebar-transition-duration;
+  transition: left $sidebar-transition-duration;
   top: 50px;
   bottom: 0;
   left: 0;
   overflow: auto;
-  background-color: $gray-light;
-  border-right: 1px solid $border-color;
+  background-color: $gray-normal;
+  box-shadow: inset -2px 0 0 $border-color;
+
+  &.nav-sidebar-expanded {
+    left: 0;
+  }
+
+  a {
+    transition: none;
+    text-decoration: none;
+  }
 
   ul {
-    padding: 0;
+    padding-left: 0;
     list-style: none;
   }
 
@@ -67,38 +144,48 @@ $new-sidebar-width: 220px;
 
     a {
       display: block;
-      padding: 12px 14px;
+      padding: 12px 16px;
+      color: $inactive-color;
     }
   }
 
-  a {
-    color: $gl-text-color;
-    text-decoration: none;
+  li.active {
+    box-shadow: inset 4px 0 0 $active-border;
+
+    > a {
+      color: $active-color;
+      font-weight: 700;
+    }
   }
 
   @media (max-width: $screen-xs-max) {
-    width: 0;
+    left: (-$new-sidebar-width);
   }
 }
 
 .sidebar-sub-level-items {
   display: none;
+  padding-bottom: 8px;
 
   > li {
     a {
-      padding: 12px 24px;
-      color: $gl-text-color-light;
+      padding: 8px 16px 8px 24px;
 
-      &:hover {
-        color: $gl-text-color;
-        background-color: $border-color;
+      &:hover,
+      &:focus {
+        background: $active-hover-background;
+        color: $active-hover-color;
       }
     }
 
     &.active {
-      > a {
-        color: $purple-650;
-        font-weight: 600;
+      a {
+        &,
+        &:hover,
+        &:focus {
+          background: $active-background;
+          color: $active-color;
+        }
       }
     }
   }
@@ -108,37 +195,64 @@ $new-sidebar-width: 220px;
   > li {
     .badge {
       float: right;
-      background-color: $border-color;
-      color: $gl-text-color;
+      background-color: $inactive-badge-background;
+      color: $inactive-color;
     }
 
     &.active {
-      > a {
-        background-color: $purple-600;
-        color: $white-light;
+      background: $active-background;
+
+      .badge {
+        color: $active-color;
         font-weight: 600;
       }
 
-      .badge {
-        background-color: $purple-700;
-        color: $white-light;
-      }
-
       .sidebar-sub-level-items {
-        background-color: $gray-normal;
-        border-left: 6px solid $purple-600;
         display: block;
       }
     }
 
-    &:not(.active) > a:hover {
-      background-color: $border-color;
+    > a:hover {
+      background-color: $hover-background;
+      color: $hover-color;
 
       .badge {
-        transition: background-color 100ms linear;
-        background-color: $gray-normal;
+        background-color: $indigo-500;
+        color: $hover-color;
       }
     }
+  }
+}
+
+.toggle-mobile-nav {
+  display: none;
+  background-color: transparent;
+  border: 0;
+  padding: 6px 16px;
+  margin: 0 16px 0 -15px;
+  height: 46px;
+  border-right: 1px solid $gl-text-color-quaternary;
+
+  i {
+    font-size: 20px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: inline-block;
+  }
+}
+
+.mobile-overlay {
+  display: none;
+
+  &.mobile-nav-open {
+    display: block;
+    position: fixed;
+    background-color: $black-transparent;
+    height: 100%;
+    width: 100%;
+    z-index: 300;
   }
 }
 
@@ -151,7 +265,17 @@ $new-sidebar-width: 220px;
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
     // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 120px);
+    height: calc(100vh - 180px);
     // scss-lint:enable DuplicateProperty
+  }
+}
+
+
+// Change color of all horizontal tabs to match the new indigo color
+.nav-links li.active a {
+  border-bottom-color: $active-border;
+
+  .badge {
+    font-weight: 600;
   }
 }

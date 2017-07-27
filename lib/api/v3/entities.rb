@@ -46,39 +46,6 @@ module API
         expose :awardable_id, :awardable_type
       end
 
-      class ApplicationSetting < Grape::Entity
-        expose :id
-        expose :default_projects_limit
-        expose :signup_enabled
-        expose :signin_enabled
-        expose :gravatar_enabled
-        expose :sign_in_text
-        expose :after_sign_up_text
-        expose :created_at
-        expose :updated_at
-        expose :home_page_url
-        expose :default_branch_protection
-        expose :restricted_visibility_levels
-        expose :max_attachment_size
-        expose :session_expire_delay
-        expose :default_project_visibility
-        expose :default_snippet_visibility
-        expose :default_group_visibility
-        expose :domain_whitelist
-        expose :domain_blacklist_enabled
-        expose :domain_blacklist
-        expose :user_oauth_applications
-        expose :after_sign_out_path
-        expose :container_registry_token_expire_delay
-        expose :repository_storage
-        expose :repository_storages
-        expose :koding_enabled
-        expose :koding_url
-        expose :plantuml_enabled
-        expose :plantuml_url
-        expose :terminal_max_session_time
-      end
-
       class Project < Grape::Entity
         expose :id, :description, :default_branch, :tag_list
         expose :public?, as: :public
@@ -209,7 +176,8 @@ module API
         expose :id
         expose :default_projects_limit
         expose :signup_enabled
-        expose :signin_enabled
+        expose :password_authentication_enabled
+        expose :password_authentication_enabled, as: :signin_enabled
         expose :gravatar_enabled
         expose :sign_in_text
         expose :after_sign_up_text
@@ -306,10 +274,40 @@ module API
         expose :job_events, as: :build_events
       end
 
-      class Issue < ::API::Entities::Issue
+      class ProjectEntity < Grape::Entity
+        expose :id, :iid
+        expose(:project_id) { |entity| entity&.project.try(:id) }
+        expose :title, :description
+        expose :state, :created_at, :updated_at
+      end
+
+      class IssueBasic < ProjectEntity
+        expose :label_names, as: :labels
+        expose :milestone, using: ::API::Entities::Milestone
+        expose :assignees, :author, using: ::API::Entities::UserBasic
+
+        expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+          issue.assignees.first
+        end
+
+        expose :user_notes_count
+        expose :upvotes, :downvotes
+        expose :due_date
+        expose :confidential
+        expose :weight, if: ->(issue, _) { issue.supports_weight? }
+
+        expose :web_url do |issue, options|
+          Gitlab::UrlBuilder.build(issue)
+        end
+      end
+
+      class Issue < IssueBasic
         unexpose :assignees
         expose :assignee do |issue, options|
           ::API::Entities::UserBasic.represent(issue.assignees.first, options)
+        end
+        expose :subscribed do |issue, options|
+          issue.subscribed?(options[:current_user], options[:project] || issue.project)
         end
       end
     end

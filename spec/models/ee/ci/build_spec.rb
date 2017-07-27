@@ -10,18 +10,18 @@ describe Ci::Build, models: true do
                          status: 'success')
   end
 
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:job) { create(:ci_build, pipeline: pipeline) }
 
   describe '#shared_runners_minutes_limit_enabled?' do
-    subject { build.shared_runners_minutes_limit_enabled? }
+    subject { job.shared_runners_minutes_limit_enabled? }
 
     context 'for shared runner' do
       before do
-        build.runner = create(:ci_runner, :shared)
+        job.runner = create(:ci_runner, :shared)
       end
 
       it do
-        expect(build.project).to receive(:shared_runners_minutes_limit_enabled?)
+        expect(job.project).to receive(:shared_runners_minutes_limit_enabled?)
           .and_return(true)
 
         is_expected.to be_truthy
@@ -30,7 +30,7 @@ describe Ci::Build, models: true do
 
     context 'with specific runner' do
       before do
-        build.runner = create(:ci_runner, :specific)
+        job.runner = create(:ci_runner, :specific)
       end
 
       it { is_expected.to be_falsey }
@@ -42,29 +42,101 @@ describe Ci::Build, models: true do
   end
 
   context 'updates pipeline minutes' do
-    let(:build) { create(:ci_build, :running, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
     %w(success drop cancel).each do |event|
       it "for event #{event}" do
         expect(UpdateBuildMinutesService)
           .to receive(:new).and_call_original
 
-        build.public_send(event)
+        job.public_send(event)
       end
     end
   end
 
   describe '#stick_build_if_status_changed' do
     it 'sticks the build if the status changed' do
-      build = create(:ci_build, :pending)
+      job = create(:ci_build, :pending)
 
       allow(Gitlab::Database::LoadBalancing).to receive(:enable?)
         .and_return(true)
 
       expect(Gitlab::Database::LoadBalancing::Sticking).to receive(:stick)
-        .with(:build, build.id)
+        .with(:build, job.id)
 
-      build.update(status: :running)
+      job.update(status: :running)
+    end
+  end
+
+  describe '#variables' do
+    subject { job.variables }
+
+    context 'when environment specific variable is defined' do
+      let(:environment_varialbe) do
+        { key: 'ENV_KEY', value: 'environment', public: false }
+      end
+
+      before do
+        job.update(environment: 'staging')
+        create(:environment, name: 'staging', project: job.project)
+
+        variable =
+          build(:ci_variable,
+                environment_varialbe.slice(:key, :value)
+                  .merge(project: project, environment_scope: 'stag*'))
+
+        variable.save!
+      end
+
+      context 'when variable environment scope is available' do
+        before do
+          stub_licensed_features(variable_environment_scope: true)
+        end
+
+        it { is_expected.to include(environment_varialbe) }
+      end
+
+      context 'when variable environment scope is not available' do
+        before do
+          stub_licensed_features(variable_environment_scope: false)
+        end
+
+        it { is_expected.not_to include(environment_varialbe) }
+      end
+    end
+  end
+
+  describe '#has_codeclimate_json?' do
+    context 'valid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'codeclimate',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['codeclimate.json']
+            }
+          }
+        )
+      end
+
+      it { expect(build.has_codeclimate_json?).to be_truthy }
+    end
+
+    context 'invalid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'codeclimate',
+          pipeline: pipeline,
+          options: {}
+        )
+      end
+
+      it { expect(build.has_codeclimate_json?).to be_falsey }
     end
   end
 end

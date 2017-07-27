@@ -14,21 +14,21 @@ class Projects::RefsController < Projects::ApplicationController
         new_path =
           case params[:destination]
           when "tree"
-            namespace_project_tree_path(@project.namespace, @project, @id)
+            project_tree_path(@project, @id)
           when "blob"
-            namespace_project_blob_path(@project.namespace, @project, @id)
+            project_blob_path(@project, @id)
           when "graph"
-            namespace_project_network_path(@project.namespace, @project, @id, @options)
+            project_network_path(@project, @id, @options)
           when "graphs"
-            namespace_project_graph_path(@project.namespace, @project, @id)
+            project_graph_path(@project, @id)
           when "find_file"
-            namespace_project_find_file_path(@project.namespace, @project, @id)
+            project_find_file_path(@project, @id)
           when "graphs_commits"
-            commits_namespace_project_graph_path(@project.namespace, @project, @id)
+            commits_project_graph_path(@project, @id)
           when "badges"
-            namespace_project_pipelines_settings_path(@project.namespace, @project, ref: @id)
+            project_pipelines_settings_path(@project, ref: @id)
           else
-            namespace_project_commits_path(@project.namespace, @project, @id)
+            project_commits_path(@project, @id)
           end
 
         redirect_to new_path
@@ -52,7 +52,7 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
-    show_path_locks = @project.feature_available?(:file_lock) && @project.path_locks.any?
+    show_path_locks = @project.feature_available?(:file_locks) && @project.path_locks.any?
 
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name
@@ -69,7 +69,7 @@ class Projects::RefsController < Projects::ApplicationController
     offset = @offset + @limit
 
     if contents.size > offset
-      @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: offset)
+      @more_log_url = logs_file_project_ref_path(@project, @ref, @path || '', offset: offset)
     end
 
     respond_to do |format|

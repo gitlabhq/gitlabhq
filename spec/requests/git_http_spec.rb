@@ -406,7 +406,7 @@ describe 'Git HTTP requests', lib: true do
                   end
                 end
 
-                it 'updates the user last activity', :redis do
+                it 'updates the user last activity', :clean_gitlab_redis_shared_state do
                   expect(user_activity(user)).to be_nil
 
                   download(path, env) do |response|
@@ -463,7 +463,7 @@ describe 'Git HTTP requests', lib: true do
 
               context 'when internal auth is disabled' do
                 before do
-                  allow_any_instance_of(ApplicationSetting).to receive(:signin_enabled?) { false }
+                  allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
                 end
 
                 it 'rejects pulls with personal access token error message' do

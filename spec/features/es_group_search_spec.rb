@@ -21,7 +21,7 @@ feature 'Group elastic search', js: true, feature: true do
     project.team << [user, :master]
     group.add_owner(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   after do

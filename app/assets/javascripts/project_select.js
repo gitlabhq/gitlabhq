@@ -110,6 +110,14 @@ import Api from './api';
           dropdownCssClass: "ajax-project-dropdown"
         });
       });
+
+      $('.new-project-item-select-button').on('click', function() {
+        $('.project-item-select', this.parentNode).select2('open');
+      });
+
+      $('.project-item-select').on('click', function() {
+        window.location = `${$(this).val()}/${this.dataset.relativePath}`;
+      });
     }
 
     return ProjectSelect;

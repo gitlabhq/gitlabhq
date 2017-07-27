@@ -13,24 +13,45 @@ describe Gitlab::CurrentSettings do
         allow_any_instance_of(described_class).to receive(:connect_to_db?).and_return(true)
       end
 
+      # This method returns the ::ApplicationSetting.defaults hash
+      # but with respect of custom attribute accessors of ApplicationSetting model
+      def settings_from_defaults
+        defaults = ::ApplicationSetting.defaults
+        ar_wrapped_defaults = ::ApplicationSetting.new(defaults).attributes
+        ar_wrapped_defaults.slice(*defaults.keys)
+      end
+
       it 'attempts to use cached values first' do
         expect(ApplicationSetting).to receive(:cached)
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
-      it 'falls back to DB if Redis returns an empty value' do
+      it 'falls back to DB if Caching returns an empty value' do
         expect(ApplicationSetting).to receive(:cached).and_return(nil)
         expect(ApplicationSetting).to receive(:last).and_call_original
 
         expect(current_application_settings).to be_a(ApplicationSetting)
       end
 
-      it 'falls back to DB if Redis fails' do
-        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
-        expect(ApplicationSetting).to receive(:last).and_call_original
+      it 'falls back to DB if Caching fails' do
+        db_settings = ApplicationSetting.create!(ApplicationSetting.defaults)
 
-        expect(current_application_settings).to be_a(ApplicationSetting)
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        expect(current_application_settings).to eq(db_settings)
+      end
+
+      it 'creates default ApplicationSettings if none are present' do
+        expect(ApplicationSetting).to receive(:cached).and_raise(::Redis::BaseError)
+        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(Redis::BaseError)
+
+        settings = current_application_settings
+
+        expect(settings).to be_a(ApplicationSetting)
+        expect(settings).to be_persisted
+        expect(settings).to have_attributes(settings_from_defaults)
       end
 
       context 'with migrations pending' do

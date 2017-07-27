@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature "License Admin", feature: true do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe '#show' do

@@ -4,6 +4,11 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
+  before do
+    # In order to have the diffs collapsed, we need to disable the increase feature
+    stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
+  end
+
   def create_merge_request(source_branch)
     create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start', source_project: project) do |mr|
       mr.mark_as_unmergeable
@@ -79,14 +84,14 @@ feature 'Merge request conflict resolution', js: true, feature: true do
   context 'can be resolved in the UI' do
     before do
       project.team << [user, :developer]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'the conflicts are resolvable' do
       let(:merge_request) { create_merge_request('conflict-resolvable') }
 
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'shows a link to the conflict resolution page' do
@@ -117,7 +122,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       let(:merge_request) { create_merge_request('conflict-contains-conflict-markers') }
 
       before do
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
         click_link('conflicts', href: /\/conflicts\Z/)
       end
 
@@ -164,9 +169,9 @@ feature 'Merge request conflict resolution', js: true, feature: true do
 
       before do
         project.team << [user, :developer]
-        gitlab_sign_in(user)
+        sign_in(user)
 
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'does not show a link to the conflict resolution page' do

@@ -264,9 +264,9 @@
   }
 
   .btn {
-    font-size: 12px;
-
     @include btn-outline($white-light, $blue-500, $blue-500, $blue-500, $white-light, $blue-600, $blue-600, $blue-700);
+
+    font-size: 12px;
 
     &.active {
       background-color: $blue-500;
@@ -315,7 +315,7 @@
 
     text {
       font-size: 13px;
-      fill: $gl-text-color-disabled;
+      fill: $gl-text-color-tertiary;
     }
 
     rect {

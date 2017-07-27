@@ -39,7 +39,7 @@ module Gitlab
         rate_limit!(ip, success: result.success?, login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
-        return result if result.success? || current_application_settings.signin_enabled? || Gitlab::LDAP::Config.enabled?
+        return result if result.success? || current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
@@ -49,6 +49,10 @@ module Gitlab
       def find_with_user_password(login, password)
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
+
+        # Nothing to do here if internal auth is disabled and LDAP is
+        # not configured
+        return unless current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
 
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
@@ -132,13 +136,13 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_scoped_token?(token, AVAILABLE_SCOPES.map(&:to_s))
+        if token && valid_scoped_token?(token, AVAILABLE_SCOPES)
           Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
         end
       end
 
       def valid_oauth_token?(token)
-        token && token.accessible? && valid_scoped_token?(token, ["api"])
+        token && token.accessible? && valid_scoped_token?(token, [:api])
       end
 
       def valid_scoped_token?(token, scopes)

@@ -127,7 +127,7 @@ describe Ci::Build, :models do
 
   describe '#browsable_artifacts?' do
     subject { build.browsable_artifacts? }
-  
+
     context 'artifacts metadata does not exist' do
       before do
         build.update_attributes(artifacts_metadata: nil)
@@ -140,32 +140,6 @@ describe Ci::Build, :models do
       let(:build) { create(:ci_build, :artifacts) }
 
       it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#downloadable_single_artifacts_file?' do
-    let(:build) { create(:ci_build, :artifacts, artifacts_file_store: store) }
-
-    subject { build.downloadable_single_artifacts_file? }
-
-    before do
-      expect_any_instance_of(Ci::Build).to receive(:artifacts_metadata?).and_call_original
-    end
-
-    context 'artifacts are stored locally' do
-      let(:store) { ObjectStoreUploader::LOCAL_STORE }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'artifacts are stored remotely' do
-      let(:store) { ObjectStoreUploader::REMOTE_STORE }
-
-      before do
-        stub_artifacts_object_storage
-      end
-
-      it { is_expected.to be_falsey }
     end
   end
 
@@ -847,6 +821,47 @@ describe Ci::Build, :models do
     end
   end
 
+  describe 'build auto retry feature' do
+    describe '#retries_count' do
+      subject { create(:ci_build, name: 'test', pipeline: pipeline) }
+
+      context 'when build has been retried several times' do
+        before do
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+          create(:ci_build, :retried, name: 'test', pipeline: pipeline)
+        end
+
+        it 'reports a correct retry count value' do
+          expect(subject.retries_count).to eq 2
+        end
+      end
+
+      context 'when build has not been retried' do
+        it 'returns zero' do
+          expect(subject.retries_count).to eq 0
+        end
+      end
+    end
+
+    describe '#retries_max' do
+      context 'when max retries value is defined' do
+        subject { create(:ci_build, options: { retry: 1 }) }
+
+        it 'returns a number of configured max retries' do
+          expect(subject.retries_max).to eq 1
+        end
+      end
+
+      context 'when max retries value is not defined' do
+        subject { create(:ci_build) }
+
+        it 'returns zero' do
+          expect(subject.retries_max).to eq 0
+        end
+      end
+    end
+  end
+
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
 
@@ -908,7 +923,7 @@ describe Ci::Build, :models do
         pipeline2 = create(:ci_pipeline, project: project)
         @build2 = create(:ci_build, pipeline: pipeline2)
 
-        allow(@merge_request).to receive(:commits_sha)
+        allow(@merge_request).to receive(:commit_shas)
           .and_return([pipeline.sha, pipeline2.sha])
         allow(MergeRequest).to receive_message_chain(:includes, :where, :reorder).and_return([@merge_request])
       end
@@ -1043,13 +1058,17 @@ describe Ci::Build, :models do
 
   describe '#ref_slug' do
     {
-      'master'    => 'master',
-      '1-foo'     => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63    => 'a' * 63,
-      'a' * 64    => 'a' * 63,
-      'FOO'       => 'foo'
+      'master'                => 'master',
+      '1-foo'                 => '1-foo',
+      'fix/1-foo'             => 'fix-1-foo',
+      'fix-1-foo'             => 'fix-1-foo',
+      'a' * 63                => 'a' * 63,
+      'a' * 64                => 'a' * 63,
+      'FOO'                   => 'foo',
+      '-' + 'a' * 61 + '-'    => 'a' * 61,
+      '-' + 'a' * 62 + '-'    => 'a' * 62,
+      '-' + 'a' * 63 + '-'    => 'a' * 62,
+      'a' * 62 + ' '          => 'a' * 62
     }.each do |ref, slug|
       it "transforms #{ref} to #{slug}" do
         build.ref = ref
@@ -1224,6 +1243,7 @@ describe Ci::Build, :models do
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
         { key: 'CI_REGISTRY_PASSWORD', value: build.token, public: false },
         { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false }
@@ -1396,6 +1416,59 @@ describe Ci::Build, :models do
       end
     end
 
+    context 'when group secret variable is defined' do
+      let(:secret_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               secret_variable.slice(:key, :value).merge(group: group))
+      end
+
+      it { is_expected.to include(secret_variable) }
+    end
+
+    context 'when group protected variable is defined' do
+      let(:protected_variable) do
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+      end
+
+      let(:group) { create(:group, :access_requestable) }
+
+      before do
+        build.project.update(group: group)
+
+        create(:ci_group_variable,
+               :protected,
+               protected_variable.slice(:key, :value).merge(group: group))
+      end
+
+      context 'when the branch is protected' do
+        before do
+          create(:protected_branch, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the tag is protected' do
+        before do
+          create(:protected_tag, project: build.project, name: build.ref)
+        end
+
+        it { is_expected.to include(protected_variable) }
+      end
+
+      context 'when the ref is not protected' do
+        it { is_expected.not_to include(protected_variable) }
+      end
+    end
+
     context 'when build is for triggers' do
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
@@ -1412,6 +1485,23 @@ describe Ci::Build, :models do
 
       it { is_expected.to include(user_trigger_variable) }
       it { is_expected.to include(predefined_trigger_variable) }
+    end
+
+    context 'when a job was triggered by a pipeline schedule' do
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+
+      let!(:pipeline_schedule_variable) do
+        create(:ci_pipeline_schedule_variable,
+          key: 'SCHEDULE_VARIABLE_KEY',
+          pipeline_schedule: pipeline_schedule)
+      end
+
+      before do
+        pipeline_schedule.pipelines << pipeline
+        pipeline_schedule.reload
+      end
+
+      it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
     end
 
     context 'when yaml_variables are undefined' do
@@ -1514,6 +1604,16 @@ describe Ci::Build, :models do
       it { is_expected.to include(deployment_variable) }
     end
 
+    context 'when project has custom CI config path' do
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+
+      before do
+        project.update(ci_config_path: 'custom')
+      end
+
+      it { is_expected.to include(ci_config_path) }
+    end
+
     context 'returns variables in valid order' do
       let(:build_pre_var) { { key: 'build', value: 'value' } }
       let(:project_pre_var) { { key: 'project', value: 'value' } }
@@ -1526,9 +1626,10 @@ describe Ci::Build, :models do
         allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for).with(build.ref) do
-          [create(:ci_variable, key: 'secret', value: 'value')]
-        end
+        allow(project).to receive(:secret_variables_for)
+          .with(ref: 'master', environment: nil) do
+            [create(:ci_variable, key: 'secret', value: 'value')]
+          end
       end
 
       it do
@@ -1542,7 +1643,7 @@ describe Ci::Build, :models do
     end
   end
 
-  describe 'State transition: any => [:pending]' do
+  describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 
     it 'queues BuildQueueWorker' do
@@ -1552,37 +1653,34 @@ describe Ci::Build, :models do
     end
   end
 
-  describe '#has_codeclimate_json?' do
-    context 'valid build' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codeclimate',
-          pipeline: pipeline,
-          options: {
-            artifacts: {
-              paths: ['codeclimate.json']
-            }
-          }
-        )
-      end
+  describe 'state transition when build fails' do
+    context 'when build is configured to be retried' do
+      subject { create(:ci_build, :running, options: { retry: 3 }) }
 
-      it { expect(build.has_codeclimate_json?).to be_truthy }
+      it 'retries builds and assigns a same user to it' do
+        expect(described_class).to receive(:retry)
+          .with(subject, subject.user)
+
+        subject.drop!
+      end
     end
 
-    context 'invalid build' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codeclimate',
-          pipeline: pipeline,
-          options: {}
-        )
+    context 'when build is not configured to be retried' do
+      subject { create(:ci_build, :running) }
+
+      it 'does not retry build' do
+        expect(described_class).not_to receive(:retry)
+
+        subject.drop!
       end
 
-      it { expect(build.has_codeclimate_json?).to be_falsey }
+      it 'does not count retries when not necessary' do
+        expect(described_class).not_to receive(:retry)
+        expect_any_instance_of(described_class)
+          .not_to receive(:retries_count)
+
+        subject.drop!
+      end
     end
   end
 end

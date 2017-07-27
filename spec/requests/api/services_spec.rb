@@ -174,4 +174,21 @@ describe API::Services do
       end
     end
   end
+
+  describe 'Slack application Service' do
+    before do
+      project.create_gitlab_slack_application_service
+
+      stub_application_setting(
+        slack_app_verification_token: 'token'
+      )
+    end
+
+    it 'returns status 200' do
+      post api('/slack/trigger'), token: 'token', text: 'help'
+
+      expect(response).to have_http_status(200)
+      expect(json_response['response_type']).to eq("ephemeral")
+    end
+  end
 end

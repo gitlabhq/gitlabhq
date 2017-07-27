@@ -53,6 +53,25 @@ describe MergeRequestsFinder do
       expect(merge_requests).to contain_exactly(merge_request1)
     end
 
+    context 'filtering by group milestone' do
+      let!(:group) { create(:group, :public) }
+      let(:group_milestone) { create(:milestone, group: group) }
+      let!(:group_member) { create(:group_member, group: group, user: user) }
+      let(:params) { { milestone_title: group_milestone.title } }
+
+      before do
+        project2.update(namespace: group)
+        merge_request2.update(milestone: group_milestone)
+        merge_request3.update(milestone: group_milestone)
+      end
+
+      it 'returns issues assigned to that group milestone' do
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(merge_request2, merge_request3)
+      end
+    end
+
     context 'with created_after and created_before params' do
       let(:project4) { create(:empty_project, forked_from_project: project1) }
 

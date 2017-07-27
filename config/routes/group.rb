@@ -28,7 +28,7 @@ scope(path: 'groups/*group_id',
   end
 
   resource :avatar, only: [:destroy]
-  resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create] do
+  resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
     member do
       get :merge_requests
       get :participants
@@ -52,6 +52,14 @@ scope(path: 'groups/*group_id',
 
   resources :labels, except: [:show] do
     post :toggle_subscription, on: :member
+  end
+
+  scope path: '-' do
+    namespace :settings do
+      resource :ci_cd, only: [:show], controller: 'ci_cd'
+    end
+
+    resources :variables, only: [:index, :show, :update, :create, :destroy]
   end
 end
 

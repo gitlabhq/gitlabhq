@@ -7,7 +7,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   before do
     project.add_developer(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   let(:comment_button_class) { '.add-diff-note' }
@@ -17,7 +17,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   context 'when hovering over a parallel view diff file' do
     before do
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'parallel')
+      visit diffs_project_merge_request_path(project, merge_request, view: 'parallel')
     end
 
     context 'with an old line on the left and no line on the right' do
@@ -92,7 +92,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   context 'when hovering over an inline view diff file' do
     before do
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'inline')
+      visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
     context 'with a new line' do
@@ -136,9 +136,9 @@ feature 'Merge requests > User posts diff notes', :js do
 
     context 'when hovering over a diff discussion' do
       before do
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'inline')
+        visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
-        visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit project_merge_request_path(project, merge_request)
       end
 
       it 'does not allow commenting' do
@@ -149,7 +149,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   context 'when cancelling the comment addition' do
     before do
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'inline')
+      visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
     context 'with a new line' do
@@ -161,7 +161,7 @@ feature 'Merge requests > User posts diff notes', :js do
 
   describe 'with muliple note forms' do
     before do
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'inline')
+      visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
       click_diff_line(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       click_diff_line(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
     end
@@ -181,7 +181,7 @@ feature 'Merge requests > User posts diff notes', :js do
   context 'when the MR only supports legacy diff notes' do
     before do
       merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: 'inline')
+      visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 
     context 'with a new line' do

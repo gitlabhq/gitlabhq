@@ -793,7 +793,7 @@ To make sure your configuration is correct:
 1. Run in the console:
 
     ```ruby
-    redis = Redis.new(Gitlab::Redis.params)
+    redis = Redis.new(Gitlab::Redis::SharedState.params)
     redis.info
     ```
 

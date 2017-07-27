@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JenkinsDeprecatedService, caching: true do
+describe JenkinsDeprecatedService, use_clean_rails_memory_store_caching: true do
   include ReactiveCachingHelpers
 
   describe "Associations" do
@@ -100,6 +100,67 @@ eos
 
       describe '#build_page with branch' do
         it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c") }
+      end
+    end
+  end
+
+  shared_examples 'a disabled jenkins deprecated service' do
+    it 'does not invoke the service hook' do
+      expect_any_instance_of(ServiceHook).not_to receive(:execute)
+
+      jenkins_service.execute(push_sample_data)
+    end
+  end
+
+  shared_examples 'an enabled jenkins deprecated service' do
+    it 'invokes the service hook' do
+      expect_any_instance_of(ServiceHook).to receive(:execute)
+
+      jenkins_service.execute(push_sample_data)
+    end
+  end
+
+  describe '#execute' do
+    let(:user) { create(:user, username: 'username') }
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, name: 'project', namespace: namespace) }
+    let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
+    let(:jenkins_service) { described_class.create(active: true, project: project) }
+    let!(:service_hook) { create(:service_hook, service: jenkins_service) }
+
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'a disabled jenkins deprecated service'
+    end
+
+    context 'with a license key' do
+      context 'when namespace plan check is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'an enabled jenkins deprecated service'
+      end
+
+      context 'when namespace plan check is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'when namespace does not have a plan' do
+          let(:namespace) { create(:group, :private) }
+
+          it_behaves_like 'a disabled jenkins deprecated service'
+        end
+
+        context 'when namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'an enabled jenkins deprecated service'
+        end
       end
     end
   end

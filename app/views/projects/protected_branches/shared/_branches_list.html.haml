@@ -1,0 +1,30 @@
+.panel.panel-default.protected-branches-list.js-protected-branches-list
+  - if @protected_branches.empty?
+    .panel-heading
+      %h3.panel-title
+        Protected branch (#{@protected_branches.size})
+    %p.settings-message.text-center
+      There are currently no protected branches, protect a branch with the form above.
+  - else
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        - if can_admin_project
+          %col
+      %thead
+        %tr
+          %th Protected branch (#{@protected_branches.size})
+          %th Last commit
+          %th Allowed to merge
+          %th Allowed to push
+          - if can_admin_project
+            %th
+      %tbody
+        %tr
+          %td.flash-container{ colspan: 5 }
+        = yield
+
+    = paginate @protected_branches, theme: 'gitlab'

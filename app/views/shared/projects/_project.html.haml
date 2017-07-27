@@ -31,7 +31,7 @@
 
       - if show_last_commit_as_description
         .description.prepend-top-5
-          = link_to_gfm project.commit.title, namespace_project_commit_path(project.namespace, project, project.commit),
+          = link_to_gfm project.commit.title, project_commit_path(project, project.commit),
             class: "commit-row-message"
       - elsif project.description.present?
         .description.prepend-top-5

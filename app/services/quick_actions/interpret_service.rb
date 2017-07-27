@@ -1,6 +1,7 @@
 module QuickActions
   class InterpretService < BaseService
     include Gitlab::QuickActions::Dsl
+    prepend EE::QuickActions::InterpretService
 
     attr_reader :issuable
 
@@ -92,13 +93,11 @@ module QuickActions
 
     desc 'Assign'
     explanation do |users|
-      ## EE-specific
-      users = issuable.is_a?(Issue) ? users : users.take(1)
+      users = issuable.allows_multiple_assignees? ? users : users.take(1)
       "Assigns #{users.map(&:to_reference).to_sentence}."
     end
     params do
-      ## EE-specific
-      issuable.is_a?(Issue) ? '@user1 @user2' : '@user'
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
     end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
@@ -109,60 +108,43 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      if issuable.is_a?(Issue)
-        # EE specific. In CE we should replace one assignee with another
-        @updates[:assignee_ids] = issuable.assignees.pluck(:id) + users.map(&:id)
-      else
-        @updates[:assignee_id] = users.last.id
-      end
+      @updates[:assignee_ids] =
+        if issuable.allows_multiple_assignees?
+          issuable.assignees.pluck(:id) + users.map(&:id)
+        else
+          [users.last.id]
+        end
     end
 
     desc do
-      if issuable.is_a?(Issue)
+      if issuable.allows_multiple_assignees?
         'Remove all or specific assignee(s)'
       else
         'Remove assignee'
       end
     end
     explanation do
-      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}"
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
     end
     params do
-      issuable.is_a?(Issue) ? '@user1 @user2' : ''
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do |unassign_param = nil|
-      users = extract_users(unassign_param)
-
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] =
-          if users.any?
-            issuable.assignees.pluck(:id) - users.map(&:id)
-          else
-            []
-          end
-      else
-        @updates[:assignee_id] = nil
-      end
+    parse_params do |unassign_param|
+      # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
+      extract_users(unassign_param) if issuable.allows_multiple_assignees?
     end
-
-    desc 'Change assignee(s)'
-    explanation do
-      'Change assignee(s)'
-    end
-    params '@user1 @user2'
-    condition do
-      issuable.is_a?(Issue) &&
-        issuable.persisted? &&
-        issuable.assignees.any? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
-    end
-    command :reassign do |unassign_param|
-      @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+    command :unassign do |users = nil|
+      @updates[:assignee_ids] =
+        if users&.any?
+          issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          []
+        end
     end
 
     desc 'Set milestone'
@@ -464,34 +446,6 @@ module QuickActions
       @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
     end
 
-    desc 'Set weight'
-    explanation do |weight|
-      "Sets weight to #{weight}." if weight
-    end
-    params Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
-    condition do
-      issuable.supports_weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    parse_params do |weight|
-      weight.to_i if Issue.weight_filter_options.include?(weight.to_i)
-    end
-    command :weight do |weight|
-      @updates[:weight] = weight if weight
-    end
-
-    desc 'Clear weight'
-    explanation 'Clears weight.'
-    condition do
-      issuable.persisted? &&
-        issuable.supports_weight? &&
-        issuable.weight? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
-    end
-    command :clear_weight do
-      @updates[:weight] = nil
-    end
-
     desc 'Move issue from one column of the board to another'
     explanation do |target_list_name|
       label = find_label_references(target_list_name).first
@@ -515,6 +469,24 @@ module QuickActions
         @updates[:remove_label_ids] =
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
+      end
+    end
+
+    desc 'Mark this issue as a duplicate of another issue'
+    explanation do |duplicate_reference|
+      "Marks this issue as a duplicate of #{duplicate_reference}."
+    end
+    params '#issue'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :duplicate do |duplicate_param|
+      canonical_issue = extract_references(duplicate_param, :issue).first
+
+      if canonical_issue.present?
+        @updates[:canonical_issue_id] = canonical_issue.id
       end
     end
 

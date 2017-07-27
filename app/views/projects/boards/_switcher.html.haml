@@ -1,6 +1,6 @@
 %boards-selector{ "inline-template" => true,
   ":current-board" => current_board_json,
-  "milestone-path" => namespace_project_milestones_path(board.project.namespace, board.project, :json) }
+  "milestone-path" => project_milestones_path(board.project, :json) }
   .dropdown
     %button.dropdown-menu-toggle{ "@click" => "loadBoards",
       data: { toggle: "dropdown" } }
@@ -20,8 +20,11 @@
       .dropdown-content{ "v-if" => "currentPage === ''" }
         %ul{ "v-if" => "!loading" }
           %li{ "v-for" => "board in boards" }
-            %a{ ":href" => "'#{namespace_project_boards_path(@project.namespace, @project)}/' + board.id" }
+            %a{ ":href" => "'#{project_boards_path(@project)}/' + board.id" }
               {{ board.name }}
+          - if !@project.feature_available?(:multiple_issue_boards) && @project.boards.size > 1
+            %li.small
+              Some of your boards are hidden, activate a license to see them again.
       .dropdown-loading{ "v-if" => "loading" }
         = icon("spin spinner")
       - if can?(current_user, :admin_board, @project)
@@ -33,7 +36,7 @@
           %p
             Are you sure you want to delete this board?
           .board-delete-btns.clearfix
-            = link_to namespace_project_board_path(@project.namespace, @project, board),
+            = link_to project_board_path(@project, board),
               class: "btn btn-danger pull-left",
               method: :delete do
               Delete
@@ -43,9 +46,10 @@
       - if can?(current_user, :admin_board, @project)
         .dropdown-footer{ "v-if" => "currentPage === ''" }
           %ul.dropdown-footer-list
-            %li
-              %a{ "href" => "#", "@click.stop.prevent" => "showPage('new')" }
-                Create new board
+            - if @project.feature_available?(:multiple_issue_boards)
+              %li
+                %a{ "href" => "#", "@click.stop.prevent" => "showPage('new')" }
+                  Create new board
             %li
               %a{ "href" => "#", "@click.stop.prevent" => "showPage('edit')" }
                 Edit board name

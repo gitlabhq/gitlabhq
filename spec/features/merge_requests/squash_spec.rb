@@ -48,14 +48,14 @@ feature 'Squashing merge requests', js: true, feature: true do
     allow_any_instance_of(MergeRequest).to receive(:force_remove_source_branch?).and_return(false)
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
   end
 
   context 'when the MR has only one commit' do
     before do
       merge_request = create(:merge_request, source_project: project, target_project: project, source_branch: 'master', target_branch: 'branch-merged')
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'does not show the squash checkbox' do
@@ -65,7 +65,7 @@ feature 'Squashing merge requests', js: true, feature: true do
 
   context 'when squash is enabled on merge request creation' do
     before do
-      visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
       check 'merge_request[squash]'
       click_on 'Submit merge request'
       wait_for_requests
@@ -95,7 +95,7 @@ feature 'Squashing merge requests', js: true, feature: true do
 
   context 'when squash is not enabled on merge request creation' do
     before do
-      visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
       click_on 'Submit merge request'
       wait_for_requests
     end
@@ -130,13 +130,13 @@ feature 'Squashing merge requests', js: true, feature: true do
     end
 
     it 'does not show squash option when creating MR' do
-      visit namespace_project_new_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: source_branch })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: source_branch })
 
       expect(page).to have_no_field('merge_request[squash]')
     end
 
     it 'does not show squash option when viewing MR' do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
 
       expect(page).to have_no_field('squash')
     end

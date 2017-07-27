@@ -74,11 +74,17 @@ $red-700: #a62d19;
 $red-800: #8b2615;
 $red-900: #711e11;
 
-$purple-600: #6e49cb;
-$purple-650: #5c35ae;
-$purple-700: #4a2192;
-$purple-800: #2c0a5c;
-$purple-900: #380d75;
+$indigo-50: #f7f7ff;
+$indigo-100: #ebebfa;
+$indigo-200: #d1d1f0;
+$indigo-300: #a6a6de;
+$indigo-400: #7c7ccc;
+$indigo-500: #6666c4;
+$indigo-600: #5b5bbd;
+$indigo-700: #4b4ba3;
+$indigo-800: #393982;
+$indigo-900: #292961;
+$indigo-950: #1a1a40;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
@@ -104,10 +110,10 @@ $well-light-text-color: #5b6169;
  * Text
  */
 $gl-font-size: 14px;
-$gl-text-color: rgba(0, 0, 0, .85);
-$gl-text-color-light: rgba(0, 0, 0, .7);
-$gl-text-color-secondary: rgba(0, 0, 0, .55);
-$gl-text-color-disabled: rgba(0, 0, 0, .35);
+$gl-text-color: #2e2e2e;
+$gl-text-color-secondary: #707070;
+$gl-text-color-tertiary: #949494;
+$gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1.0);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
@@ -121,7 +127,7 @@ $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
 $gl-header-nav-hover-color: #434343;
-$placeholder-text-color: rgba(0, 0, 0, .42);
+$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -129,7 +135,7 @@ $placeholder-text-color: rgba(0, 0, 0, .42);
 $list-font-size: $gl-font-size;
 $list-title-color: $gl-text-color;
 $list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-disabled;
+$list-text-disabled-color: $gl-text-color-tertiary;
 $list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
@@ -153,6 +159,7 @@ $code_line_height: 1.6;
  * Padding
  */
 $gl-padding: 16px;
+$gl-col-padding: 15px;
 $gl-btn-padding: 10px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
@@ -270,7 +277,7 @@ $diff-view-modes-border: #c1c1c1;
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'Liberation Mono', 'Consolas', 'DejaVu Sans Mono', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
+$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console', monospace;
 $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
 /*
@@ -315,7 +322,7 @@ $badge-color: $gl-text-color-secondary;
 /*
  *  Award emoji
  */
-$award-emoji-menu-shadow: rgba(0,0,0,.175);
+$award-emoji-menu-shadow: rgba(0, 0, 0, .175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 
@@ -377,7 +384,9 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 * Avatar
 */
 $avatar_radius: 50%;
-$avatar-border: rgba(0, 0, 0, .1);
+$avatar-border: $gray-normal;
+$avatar-border-hover: $gray-darker;
+$avatar-background: $gray-lightest;
 $gl-avatar-size: 40px;
 
 /*
@@ -449,6 +458,7 @@ $logs-p-color: #333;
 /*
 * Forms
 */
+$input-height: 34px;
 $input-danger-bg: #f2dede;
 $input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
@@ -565,7 +575,7 @@ $kdb-color: #555;
 $kdb-border: #ccc;
 $kdb-border-bottom: #bbb;
 $kdb-shadow: #bbb;
-$body-text-shadow: rgba(255,255,255,0.01);
+$body-text-shadow: rgba(255, 255, 255, 0.01);
 
 /*
 * UI Dev Kit
@@ -579,6 +589,12 @@ Pipeline Graph
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
 $action-icon-color: #d6d6d6;
+
+/*
+Pipeline Schedules
+*/
+$pipeline-variable-remove-button-width: calc(1em + #{2 * $gl-padding});
+
 
 /*
 Filtered Search
@@ -615,3 +631,15 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
+
+/*
+Performance Bar
+*/
+$perf-bar-text: #999;
+$perf-bar-production: #222;
+$perf-bar-staging: #291430;
+$perf-bar-development: #4c1210;
+$perf-bar-bucket-bg: #111;
+$perf-bar-bucket-color: #ccc;
+$perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
+$perf-bar-bucket-box-shadow-to: rgba($black, .25);

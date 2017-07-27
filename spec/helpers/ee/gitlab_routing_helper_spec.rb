@@ -36,4 +36,31 @@ describe EE::GitlabRoutingHelper do
       expect(result).to eq(helper.geo_primary_ssh_url_to_repo(project))
     end
   end
+
+  describe '#geo_primary_http_url_to_repo' do
+    context 'when using http protocol' do
+      it 'returns a url in format http://hostname/namespace/repo.git' do
+        result = helper.geo_primary_http_url_to_repo(project)
+
+        expect(result).to eq("http://localhost/#{project.full_path}.git")
+      end
+    end
+
+    context 'when using https protocol' do
+      it 'returns a url in format https://hostname/namespace/repo.git' do
+        primary_node.update_attributes(schema: 'https', port: 443)
+        result = helper.geo_primary_http_url_to_repo(project)
+
+        expect(result).to eq("https://localhost/#{project.full_path}.git")
+      end
+    end
+  end
+
+  describe '#geo_primary_ssh_url_to_repo' do
+    it 'returns a url in format user@host:namespace/repo.git' do
+      result = helper.geo_primary_ssh_url_to_repo(project)
+
+      expect(result).to eq("git@localhost:#{project.full_path}.git")
+    end
+  end
 end

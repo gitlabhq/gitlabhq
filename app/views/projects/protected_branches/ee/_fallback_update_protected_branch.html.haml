@@ -1,0 +1,44 @@
+- merge_access_level = protected_branch.merge_access_levels.for_role.first
+- push_access_level = protected_branch.push_access_levels.for_role.first
+
+- user_merge_access_levels = protected_branch.merge_access_levels.for_user
+- user_push_access_levels = protected_branch.push_access_levels.for_user
+
+- group_merge_access_levels = protected_branch.merge_access_levels.for_group
+- group_push_access_levels = protected_branch.push_access_levels.for_group
+
+%td
+  = hidden_field_tag "allowed_to_merge_#{protected_branch.id}", merge_access_level&.access_level
+  = dropdown_tag( (merge_access_level&.humanize || 'Select') ,
+                 options: { toggle_class: 'js-allowed-to-merge', dropdown_class: 'dropdown-menu-selectable js-allowed-to-merge-container capitalize-header',
+                 data: { field_name: "allowed_to_merge_#{protected_branch.id}", access_level_id: merge_access_level&.id }})
+  - if user_merge_access_levels.any?
+    %p.small
+      The following
+      #{ 'user'.pluralize(user_merge_access_levels.size) }
+      can also merge into this branch:
+      #{ user_merge_access_levels.map(&:humanize).to_sentence }
+  - if group_merge_access_levels.any?
+    %p.small
+      Members of
+      #{ group_merge_access_levels.size > 1 ? 'these groups' : 'this group' }
+      can also merge into this branch:
+      #{ group_merge_access_levels.map(&:humanize).to_sentence }
+
+%td
+  = hidden_field_tag "allowed_to_push_#{protected_branch.id}", push_access_level&.access_level
+  = dropdown_tag( (push_access_level&.humanize || 'Select') ,
+                 options: { toggle_class: 'js-allowed-to-push', dropdown_class: 'dropdown-menu-selectable js-allowed-to-push-container capitalize-header',
+                 data: { field_name: "allowed_to_push_#{protected_branch.id}", access_level_id: push_access_level&.id }})
+  - if user_push_access_levels.any?
+    %p.small
+      The following
+      #{ 'user'.pluralize(user_push_access_levels.size) }
+      can also push to this branch:
+      #{ user_push_access_levels.map(&:humanize).to_sentence }
+  - if group_push_access_levels.any?
+    %p.small
+      Members of
+      #{ group_push_access_levels.size > 1 ? 'these groups' : 'this group' }
+      can also push to this branch:
+      #{ group_push_access_levels.map(&:humanize).to_sentence }

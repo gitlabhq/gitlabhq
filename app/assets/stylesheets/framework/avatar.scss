@@ -35,6 +35,8 @@
   width: 40px;
   height: 40px;
   padding: 0;
+  background: $avatar-background;
+  overflow: hidden;
 
   &.avatar-inline {
     float: none;
@@ -64,7 +66,7 @@
   }
 
   &:not([href]):hover {
-    border-color: rgba($avatar-border, .2);
+    border-color: darken($avatar-border, 10%);
   }
 }
 
@@ -103,7 +105,7 @@
 .avatar-counter {
   background-color: $gray-darkest;
   color: $white-light;
-  border: 1px solid $border-color;
+  border: 1px solid $avatar-border;
   border-radius: 1em;
   font-family: $regular_font;
   font-size: 9px;

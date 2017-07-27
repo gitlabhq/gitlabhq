@@ -1,4 +1,6 @@
 module SearchHelper
+  prepend EE::SearchHelper
+
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -41,7 +43,7 @@ module SearchHelper
   def find_project_for_blob(blob)
     Project.find(blob['_parent'])
   end
-  
+
   private
 
   # Autocomplete results for various settings pages
@@ -75,16 +77,16 @@ module SearchHelper
       ref = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: namespace_project_tree_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Commits",        url: namespace_project_commits_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Network",        url: namespace_project_network_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Graph",          url: namespace_project_graph_path(@project.namespace, @project, ref) },
-        { category: "Current Project", label: "Issues",         url: namespace_project_issues_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Merge Requests", url: namespace_project_merge_requests_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Milestones",     url: namespace_project_milestones_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Snippets",       url: namespace_project_snippets_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Members",        url: namespace_project_settings_members_path(@project.namespace, @project) },
-        { category: "Current Project", label: "Wiki",           url: namespace_project_wikis_path(@project.namespace, @project) }
+        { category: "Current Project", label: "Files",          url: project_tree_path(@project, ref) },
+        { category: "Current Project", label: "Commits",        url: project_commits_path(@project, ref) },
+        { category: "Current Project", label: "Network",        url: project_network_path(@project, ref) },
+        { category: "Current Project", label: "Graph",          url: project_graph_path(@project, ref) },
+        { category: "Current Project", label: "Issues",         url: project_issues_path(@project) },
+        { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
+        { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
+        { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
+        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
+        { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else
       []
@@ -112,7 +114,7 @@ module SearchHelper
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
         label: "#{search_result_sanitize(p.name_with_namespace)}",
-        url: namespace_project_path(p.namespace, p)
+        url: project_path(p)
       }
     end
   end
@@ -132,6 +134,18 @@ module SearchHelper
 
     options = exist_opts.merge(options)
     search_path(options)
+  end
+
+  def search_filter_input_options(type)
+    {
+      id: "filtered-search-#{type}",
+      placeholder: 'Search or filter results...',
+      data: {
+        'project-id' => @project.id,
+        'username-params' => @users.to_json(only: [:id, :username]),
+        'base-endpoint' => project_path(@project)
+      }
+    }
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the

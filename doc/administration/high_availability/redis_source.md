@@ -4,6 +4,11 @@ This is the documentation for configuring a Highly Available Redis setup when
 you have installed Redis all by yourself and not using the bundled one that
 comes with the Omnibus packages.
 
+Note also that you may elect to override all references to
+`/home/git/gitlab/config/resque.yml` in accordance with the advanced Redis
+settings outlined in
+[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/README.md).
+
 We cannot stress enough the importance of reading the
 [Overview section](redis.md#overview) of the Omnibus Redis HA as it provides
 some invaluable information to the configuration of Redis. Please proceed to

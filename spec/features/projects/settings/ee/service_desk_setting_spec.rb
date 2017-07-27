@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe 'Service Desk Setting', js: true, feature: true do
-  let(:project) { create(:project_empty_repo, :private) }
+  let(:project) { create(:project_empty_repo, :private, service_desk_enabled: false) }
   let(:user) { create(:user) }
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(::Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   it 'shows activation checkbox' do

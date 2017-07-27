@@ -7,11 +7,11 @@ describe 'Guest navigation menu' do
   before do
     project.team << [guest, :guest]
 
-    gitlab_sign_in(guest)
+    sign_in(guest)
   end
 
   it 'shows allowed tabs only' do
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     within('.layout-nav') do
       expect(page).to have_content 'Project'
@@ -25,7 +25,7 @@ describe 'Guest navigation menu' do
   end
 
   it 'does not show fork button' do
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     within('.count-buttons') do
       expect(page).not_to have_link 'Fork'
@@ -33,7 +33,7 @@ describe 'Guest navigation menu' do
   end
 
   it 'does not show clone path' do
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
 
     within('.project-repo-buttons') do
       expect(page).not_to have_selector '.project-clone-holder'
@@ -49,7 +49,7 @@ describe 'Guest navigation menu' do
     end
 
     it 'does not show the project file list landing page' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).not_to have_selector '.project-stats'
       expect(page).not_to have_selector '.project-last-commit'
@@ -58,7 +58,7 @@ describe 'Guest navigation menu' do
     end
 
     it 'shows the customize workflow when issues and wiki are disabled' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_selector '.project-show-customize_workflow'
     end
@@ -66,7 +66,7 @@ describe 'Guest navigation menu' do
     it 'shows the wiki when enabled' do
       project.project_feature.update!(wiki_access_level: ProjectFeature::PRIVATE)
 
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_selector '.project-show-wiki'
     end
@@ -74,7 +74,7 @@ describe 'Guest navigation menu' do
     it 'shows the issues when enabled' do
       project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
 
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(page).to have_selector '.issues-list'
     end

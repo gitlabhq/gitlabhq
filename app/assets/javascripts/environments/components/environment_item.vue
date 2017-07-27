@@ -44,12 +44,6 @@ export default {
       required: false,
       default: false,
     },
-
-    toggleDeployBoard: {
-      type: Function,
-      required: false,
-    },
-
   },
 
   computed: {
@@ -426,6 +420,9 @@ export default {
     onClickFolder() {
       eventHub.$emit('toggleFolder', this.model, this.folderUrl);
     },
+    toggleDeployBoard() {
+      eventHub.$emit('toggleDeployBoard', this.model);
+    },
   },
 };
 </script>
@@ -443,17 +440,19 @@ export default {
       <span
         class="deploy-board-icon"
         v-if="model.hasDeployBoard"
-        @click="toggleDeployBoard(model)">
+        @click="toggleDeployBoard">
 
         <i
           v-show="!model.isDeployBoardVisible"
           class="fa fa-caret-right"
-          aria-hidden="true" />
+          aria-hidden="true">
+        </i>
 
         <i
           v-show="model.isDeployBoardVisible"
           class="fa fa-caret-down"
-          aria-hidden="true" />
+          aria-hidden="true">
+        </i>
       </span>
       <a
         v-if="!model.isFolder"
@@ -514,9 +513,9 @@ export default {
     <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
-        class="build-link"
+        class="build-link flex-truncate-parent"
         :href="buildPath">
-        {{buildName}}
+        <span class="flex-truncate-child">{{buildName}}</span>
       </a>
     </div>
 

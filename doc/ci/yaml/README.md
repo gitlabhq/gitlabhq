@@ -306,6 +306,53 @@ cache:
   untracked: true
 ```
 
+### cache:policy
+
+> Introduced in GitLab 9.4.
+
+The default behaviour of a caching job is to download the files at the start of
+execution, and to re-upload them at the end. This allows any changes made by the
+job to be persisted for future runs, and is known as the `pull-push` cache
+policy.
+
+If you know the job doesn't alter the cached files, you can skip the upload step
+by setting `policy: pull` in the job specification. Typically, this would be
+twinned with an ordinary cache job at an earlier stage to ensure the cache
+is updated from time to time:
+
+```yaml
+stages:
+  - setup
+  - test
+
+prepare:
+  stage: setup
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+  script:
+    - bundle install --deployment
+
+rspec:
+  stage: test
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+    policy: pull
+  script:
+    - bundle exec rspec ...
+```
+
+This helps to speed up job execution and reduce load on the cache server,
+especially when you have a large number of cache-using jobs executing in
+parallel.
+
+Additionally, if you have a job that unconditionally recreates the cache without
+reference to its previous contents, you can use `policy: push` in that job to
+skip the download step.
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -348,6 +395,7 @@ job_name:
 | after_script  | no       | Override a set of commands that are executed after job |
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
+| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
 
 ### script
 
@@ -1082,7 +1130,31 @@ A simple example:
 
 ```yaml
 job1:
+  script: rspec
   coverage: '/Code coverage: \d+\.\d+/'
+```
+
+### retry
+
+**Notes:**
+- [Introduced][ce-3442] in GitLab 9.5.
+
+`retry` allows you to configure how many times a job is going to be retried in
+case of a failure.
+
+When a job fails, and has `retry` configured it is going to be processed again
+up to the amount of times specified by the `retry` keyword.
+
+If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
+again. `retry` value has to be a positive integer, equal or larger than 0, but
+lower or equal to 2 (two retries maximum, three runs in total).
+
+A simple example:
+
+```yaml
+test:
+  script: rspec
+  retry: 2
 ```
 
 ## Git Strategy
@@ -1459,3 +1531,4 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
+[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442

@@ -41,7 +41,7 @@
 .member {
   &.is-overriden {
     .btn-ldap-override {
-      display: none!important;
+      display: none !important;
     }
   }
 
@@ -60,8 +60,6 @@
     @media (min-width: $screen-sm-min) {
       display: -webkit-flex;
       display: flex;
-      width: 400px;
-      max-width: 50%;
     }
   }
 
@@ -71,7 +69,6 @@
     @media (min-width: $screen-sm-min) {
       display: -webkit-flex;
       display: flex;
-      width: 100%;
       margin-top: 3px;
     }
   }
@@ -87,17 +84,9 @@
 
 .member-form-control {
   @media (max-width: $screen-xs-max) {
-    padding: 5px 0;
+    padding-bottom: 5px;
     margin-left: 0;
     margin-right: 0;
-  }
-
-  @media (min-width: $screen-sm-min) {
-    width: 50%;
-  }
-
-  .dropdown-menu-toggle {
-    width: 100%;
   }
 }
 
@@ -263,6 +252,105 @@
         margin-right: 0;
         margin-left: 0;
       }
+    }
+  }
+}
+
+.content-list.members-list li {
+  display: flex;
+  justify-content: space-between;
+
+  .list-item-name {
+    float: none;
+    display: flex;
+    flex: 1;
+  }
+
+  .user-info {
+    padding-right: 10px;
+  }
+
+  .member {
+    font-weight: bold;
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .member-group-link {
+    display: inline-block;
+  }
+
+  .form-control {
+    width: inherit;
+  }
+
+  .btn {
+    align-self: flex-start;
+  }
+
+  .form-horizontal ~ .btn {
+    margin-right: 0;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+
+    .controls > .btn {
+      margin-left: 0;
+      margin-right: 0;
+      display: block;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+    .member-access-text {
+      line-height: 0;
+      margin-left: 50px;
+    }
+
+    .member-controls {
+      margin-top: 5px;
+    }
+
+    .form-horizontal {
+      margin-top: 10px;
+    }
+  }
+}
+
+.panel-mobile {
+  .content-list.members-list li {
+    display: block;
+
+    .member-controls {
+      float: none;
+      display: block;
+    }
+
+    .dropdown-menu-toggle,
+    .dropdown-menu,
+    .form-control,
+    .list-item-name {
+      width: 100%;
+    }
+
+    .dropdown-menu {
+      margin-top: 0;
+    }
+
+    .form-horizontal {
+      display: block;
+    }
+
+    .member-form-control {
+      margin: 5px 0;
+    }
+
+    .btn {
+      width: 100%;
+      margin-left: 0;
     }
   }
 }

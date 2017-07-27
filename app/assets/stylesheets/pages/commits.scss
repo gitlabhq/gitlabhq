@@ -54,7 +54,11 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin: 0 -6px 0 0;
+    margin-right: 4px;
+
+    .stage-cell .stage-container {
+      margin: 3px 3px 3px 0;
+    }
 
     .dropdown-menu {
       margin-top: 11px;
@@ -178,6 +182,10 @@
   .merge-request-branches & {
     flex-direction: column;
   }
+
+  .project_namespace {
+    color: $gl-text-color-secondary;
+  }
 }
 
 .commit-content {
@@ -250,8 +258,8 @@
     }
 
     .committed_ago {
-      float: right;
       @extend .cgray;
+      float: right;
     }
   }
 }

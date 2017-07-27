@@ -6,4 +6,7 @@
     - providers.each do |provider|
       %span.light
         - has_icon = provider_has_icon?(provider)
-        = link_to provider_image_tag(provider), omniauth_authorize_path(:user, provider), method: :post, class: (has_icon ? 'oauth-image-link' : 'btn')
+        = link_to provider_image_tag(provider), omniauth_authorize_path(:user, provider), method: :post, class: 'oauth-login' + (has_icon ? ' oauth-image-link' : ' btn'), id: "oauth-login-#{provider}"
+    %fieldset.prepend-top-10
+      = check_box_tag :remember_me
+      = label_tag :remember_me, 'Remember me'

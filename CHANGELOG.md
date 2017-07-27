@@ -2,9 +2,244 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.1 (2017-07-25)
+
+- Fix pipeline_schedules pages throwing error 500 (when ref is empty). !12983
+- Fix editing project with container images present. !13028
+- Fix some invalid entries in PO files. !13032
+- Fix cross site request protection when logging in as a regular user when LDAP is enabled. !13049
+- Fix bug causing metrics files to be truncated. !35420
+- Fix anonymous access to public projects in groups with pending invites.
+- Fixed issue boards sidebar close icon size.
+- Fixed duplicate new milestone buttons when new navigation is turned on.
+- Fix margins in the mini graph for pipeline in commits box.
+
+## 9.4.0 (2017-07-22)
+
+- Add blame view age mapping. !7198 (Jeff Stubler)
+- Add support for image and services configuration in .gitlab-ci.yml. !8578
+- Fix an email parsing bug where brackets would be inserted in emails from some Outlook clients. !9045 (jneen)
+- Use fa-chevron-down on dropdown arrows for consistency. !9659 (TM Lee)
+- Update the devise mail templates to match the design of the pipeline emails. !10483 (Alexis Reigel)
+- Handle renamed submodules in repository browser. !10798 (David Turner)
+- Display all current broadcast messages, not just the last one. !11113 (rickettm)
+- Fix CI/CD status in case there are only allowed to failed jobs in the pipeline. !11166
+- Omit trailing / leading hyphens in CI_COMMIT_REF_SLUG variable to make it usable as a hostname. !11218 (Stefan Hanreich)
+- Moved "Members in a project" menu entry and path locations. !11560
+- Additional Prometheus metrics support. !11712
+- Rename all reserved paths that could have been created. !11713
+- Move uploads from `uploads/system` to `uploads/-/system` to free up `system` as a group name. !11713
+- Fix offline runner detection. !11751 (Alessio Caiazza)
+- Use authorize_update_pipeline_schedule in PipelineSchedulesController. !11846
+- Rollback project repo move if there is an error in Projects::TransferService. !11877
+- Help landing page customizations. !11878 (Robin Bobbitt)
+- Fixes "sign in / Register" active state underline misalignment. !11890 (Frank Sierra)
+- Honor the "Remember me" parameter for OAuth-based login. !11963
+- Instruct user to use personal access token for Git over HTTP. !11986 (Robin Bobbitt)
+- Accept image for avatar in project API. !11988 (Ivan Chernov)
+- Supplement Simplified Chinese translation of Project Page & Repository Page. !11994 (Huang Tao)
+- Supplement Traditional Chinese in Hong Kong translation of Project Page & Repository Page. !11995 (Huang Tao)
+- Make the revision on the `/help` page clickable. !12016
+- Display issue state in issue links section of merge request widget. !12021
+- Enable support for webpack code-splitting by dynamically setting publicPath at runtime. !12032
+- Replace PhantomJS with headless Chrome for karma test suite. !12036
+- Prevent description change notes when toggling tasks. !12057 (Jared Deckard <jared.deckard@gmail.com>)
+- Update QA Dockerfile to lock Chrome browser version. !12071
+- Fix FIDO U2F for Opera browser. !12082 (Jakub Kramarz and Jonas Kalderstam)
+- Supplement Bulgarian translation of Project Page & Repository Page. !12083 (Lyubomir Vasilev)
+- Removes deleted_at and pending_delete occurrences in Project related queries. !12091
+- Provide hint to create a personal access token for Git over HTTP. !12105 (Robin Bobbitt)
+- Display own user id in account settings page. !12141 (Riccardo Padovani)
+- Accept image for avatar in user API. !12143 (Ivan Chernov)
+- Disable fork button on project limit. !12145 (Ivan Chernov)
+- Added "created_after" and "created_before" params to issuables. !12151 (Kyle Bishop @kybishop)
+- Supplement Portuguese Brazil translation of Project Page & Repository Page. !12156 (Huang Tao)
+- Add review apps to usage metrics. !12185
+- Adding French translations. !12200 (Erwan "Dremor" Georget)
+- Ensures default user limits when external user is unchecked. !12218
+- Provide KUBECONFIG from KubernetesService for runners. !12223
+- Filter archived project in API v3 only if param present. !12245 (Ivan Chernov)
+- Add explicit message when no runners on admin. !12266 (Takuya Noguchi)
+- Split pipelines as internal and external in the usage data. !12277
+- Fix API Scoping. !12300
+- Remove registry image delete button if user cant delete it. !12317 (Ivan Chernov)
+- Allow the feature flags to be enabled/disabled with more granularity. !12357
+- Allow to enable the performance bar per user or Feature group. !12362
+- Rename duplicated variables with the same key for projects. Add environment_scope column to variables and add unique constraint to make sure that no variables could be created with the same key within a project. !12363
+- Add variables to pipelines schedules. !12372
+- Add User#full_private_access? to check if user has access to all private groups & projects. !12373
+- Change milestone endpoint for groups. !12374 (Takuya Noguchi)
+- Improve performance of the pipeline charts page. !12378
+- Add option to run Gitaly on a remote server. !12381
+- #20628 Enable implicit grant in GitLab as OAuth Provider. !12384 (Mateusz Pytel)
+- Replace 'snippets/snippets.feature' spinach with rspec. !12385 (Alexander Randa @randaalex)
+- Add Simplified Chinese translations of Commits Page. !12405 (Huang Tao)
+- Add Traditional Chinese in HongKong translations of Commits Page. !12406 (Huang Tao)
+- Add Traditional Chinese in Taiwan translations of Commits Page. !12407 (Huang Tao)
+- Add Portuguese Brazil translations of Commits Page. !12408 (Huang Tao)
+- Add French translations of Commits Page. !12409 (Huang Tao)
+- Add Esperanto translations of Commits Page. !12410 (Huang Tao)
+- Add Bulgarian translations of Commits Page. !12411 (Huang Tao)
+- Remove bin/ci/upgrade.rb as not working all. !12414 (Takuya Noguchi)
+- Store merge request ref_fetched status in the database. !12424
+- Replace 'dashboard/merge_requests' spinach with rspec. !12440 (Alexander Randa (@randaalex))
+- Add Esperanto translations for Cycle Analytics, Project, and Repository pages. !12442 (Huang Tao)
+- Allow unauthenticated access to the /api/v4/users API. !12445
+- Drop GFM support for the title of Milestone/MergeRequest in template. !12451 (Takuya Noguchi)
+- Replace 'dashboard/todos' spinach with rspec. !12453 (Alexander Randa (@randaalex))
+- Cache open issue and merge request counts for project tabs to speed up project pages. !12457
+- Introduce cache policies for CI jobs. !12483
+- Improve support for external issue references. !12485
+- Fix errors caused by attempts to report already blocked or deleted users. !12502 (Horacio Bertorello)
+- Allow customize CI config path. !12509 (Keith Pope)
+- Supplement Traditional Chinese in Taiwan translation of Project Page & Repository Page. !12514 (Huang Tao)
+- Closes any open Autocomplete of the markdown editor when the form is closed. !12521
+- Inserts exact matches of name, username and email to the top of the search list. !12525
+- Use smaller min-width for dropdown-menu-nav only on mobile. !12528 (Takuya Noguchi)
+- Hide archived project labels from group issue tracker. !12547 (Horacio Bertorello)
+- Replace 'dashboard/new-project.feature' spinach with rspec. !12550 (Alexander Randa (@randaalex))
+- Remove group modal like remove project modal (requires typing + confirmation). !12569 (Diego Souza)
+- Add Italian translation of Cycle Analytics Page & Project Page & Repository Page. !12578 (Huang Tao)
+- Add Group secret variables. !12582
+- Update jobs page output to have a scrollable page. !12587
+- Add user projects API. !12596 (Ivan Chernov)
+- Allow creation of files and directories with spaces through Web UI. !12608
+- Improve members view on mobile. !12619
+- Fixed the chart legend not being set correctly. !12628
+- Add Italian translations of Commits Page. !12645 (Huang Tao)
+- Allow admins to disable all restricted visibility levels. !12649
+- Allow admins to retrieve user agent details for an issue or snippet. !12655
+- Update welcome page UX for new users. !12662
+- N+1 problems on milestone page. !12670 (Takuya Noguchi)
+- Upgrade GitLab Workhorse to v2.3.0. !12676
+- Remove option to disable Gitaly. !12677
+- Improve the performance of the project list API. !12679
+- Add creation time filters to user search API for admins. !12682
+- Add Japanese translations for Cycle Analytics & Project pages & Repository pages & Commits pages & Pipeline Charts. !12693 (Huang Tao)
+- Undo adding the /reassign quick action. !12701
+- Fix dashboard labels dropdown. !12708
+- Username and password are no longer stripped from import url on mirror update. !12725
+- Add Russian translations for Cycle Analytics & Project pages & Repository pages & Commits pages & Pipeline Charts. !12743 (Huang Tao)
+- Add Ukrainian translations for Cycle Analytics & Project pages & Repository pages & Commits pages & Pipeline Charts. !12744 (Huang Tao)
+- Prevent bad data being added to application settings when Redis is unavailable. !12750
+- Do not show pipeline schedule button for non-member. !12757 (Takuya Noguchi)
+- Return `is_admin` attribute in the GET /user endpoint for admins. !12811
+- Recover from renaming project that has container images. !12840
+- Exact matches of username and email are now on top of the user search. !12868
+- Use Ghost user for last_edited_by and merge_user when original user is deleted. !12933
+- Fix docker tag reference routing constraints. !12961
+- Optimize creation of commit API by using Repository#commit instead of Repository#commits.
+- Speed up used languages calculation on charts page.
+- Make loading new merge requests (those created after the 9.4 upgrade) faster.
+- Ensure participants for issues, merge requests, etc. are calculated correctly when sending notifications.
+- Handle nameless legacy jobs.
+- Bump Faraday and dependent OAuth2 gem version to support no_proxy variable.
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Render CI statuses with warnings in orange.
+<<<<<<< HEAD
+- Add wells to admin dashboard overview to fix spacing problems.
+- Document the Delete Merged Branches functionality.
+=======
+- Document the Delete Merged Branches functionality.
+- Add wells to admin dashboard overview to fix spacing problems.
+>>>>>>> ce-com/master
+- Removes hover style for nodes that are either links or buttons in the pipeline graph.
+- more visual contrast in pagination widget.
+- Deprecate Healthcheck Access Token in favor of IP whitelist.
+- Drop GFM support for issuable title on milestone for consistency and performance. (Takuya Noguchi)
+- fix left & right padding on sidebar.
+- Cleanup minor UX issues in the performance dashboard.
+- Remove two columned layout from project member settings.
+- Make font size of contextual sub menu items 14px.
+- Fix vertical space in job details sidebar.
+- Fix alignment of controls in mr issuable list.
+- Add wip message to new navigation preference section.
+- Add group members counting and plan related data on namespaces API.
+- Fix spacing on runner buttons.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+- Change order of monospace fonts to fix bug on some linux distros.
+- Limit commit & snippets comments width.
+- Fixed dashboard milestone tabs not loading.
+- Detect if file that appears to be text in the first 1024 bytes is actually binary afer loading all data.
+- Fix inconsistent display of the "Browse files" button in the commit list.
+- Implement diff viewers.
+- Fix 'New merge request' button for users who don't have push access to canonical project.
+- Fix issues with non-UTF8 filenames by always fixing the encoding of tree and blob paths.
+- Show group name instead of path on group page.
+- Don't check if MailRoom is running on Omnibus.
+- Limit OpenGraph image size to 64x64.
+- Don't show auxiliary blob viewer for README when there is no wiki.
+- Strip trailing whitespace in relative submodule URL.
+- Update /target_branch slash command description to be more consistent.
+- Remove unnecessary top padding on group MR index.
+- Added printing_merge_requst_link_enabled to the API. (David Turner <dturner@twosigma.com>)
+- Re-enable realtime for environments table.
+- Create responsive mobile view for pipelines table.
+- Adds realtime feature to job show view header and sidebar info. Updates UX.
+- Use color inputs for broadcast messages.
+- Center dropdown for mini graph.
+- Users can subscribe to group labels on the group labels page.
+- Add issuable-list class to shared mr/issue lists to fix new responsive layout design.
+- Rename "Slash commands" to "Quick actions" and deprecate "chat commands" in favor of "slash commands".
+- Don't mark empty MRs as merged on push to the target branch.
+- Improve issue rendering performance with lots of notes from other users.
+- Fixed overflow on mobile screens for the slash commands.
+- Fix an infinite loop when handling user-supplied regular expressions.
+- Fixed sidebar not collapsing on merge requests in mobile screens.
+- Speed up project removals by adding foreign keys with cascading deletes to various tables.
+- Fix mobile view of files view buttons.
+- Fixed dropdown filter input not focusing after transition.
+- Fixed GFM references not being included when updating issues inline.
+- Remove issues/merge requests drag n drop and sorting from milestone view.
+- Add native group milestones.
+- Fix API bug accepting wrong parameter to create merge request.
+- Clean up UI of issuable lists and make more responsive.
+- Improve the overall UX for the new monitoring dashboard.
+- Fixed the y_label not setting correctly for each graph on the monitoring dashboard.
+- Changed utilities imports from ~ to relative paths.
+- Remove unused space in sidebar todo toggle when not signed in.
+- Limit the width of the projects README text.
+- Add a simple mode to merge request API.
+- Make Project#ensure_repository force create a repo.
+- Use uploads/system directory for personal snippets.
+- Defer project destroys within a namespace in Groups::DestroyService#async_execute.
+- Log rescued exceptions to Sentry.
+- Remove remaining N+1 queries in merge requests API with emojis and labels.
+
+## 9.3.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
+## 9.3.8 (2017-07-19)
+
+- Improve support for external issue references. !12485
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Use uploads/system directory for personal snippets.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+
+## 9.3.7 (2017-07-18)
+
+- Prevent bad data being added to application settings when Redis is unavailable. !12750
+- Return `is_admin` attribute in the GET /user endpoint for admins. !12811
+
+## 9.3.6 (2017-07-12)
+
+- Fix API Scoping. !12300
+- Username and password are no longer stripped from import url on mirror update. !12725
+- Fix issues with non-UTF8 filenames by always fixing the encoding of tree and blob paths.
+- Fixed GFM references not being included when updating issues inline.
+
+## 9.3.5 (2017-07-05)
+
+- Remove "Remove from board" button from backlog and closed list. !12430
+- Do not delete protected branches when deleting all merged branches. !12624
+- Set default for Remove source branch to false.
+- Prevent accidental deletion of protected MR source branch by repeating checks before actual deletion.
+- Expires full_path cache after a repository is renamed/transferred.
+
 ## 9.3.4 (2017-07-03)
 
-- No changes.
+- Update gitlab-shell to 5.1.1 !12615
 
 ## 9.3.3 (2017-06-30)
 
@@ -243,6 +478,17 @@ entry.
 - Cleanup ci_variables schema and table.
 - Remove foreigh key on ci_trigger_schedules only if it exists.
 - Allow translation of Pipeline Schedules.
+
+## 9.2.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
+## 9.2.8 (2017-07-19)
+
+- Improve support for external issue references. !12485
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
 
 ## 9.2.7 (2017-06-21)
 
@@ -489,6 +735,17 @@ entry.
 - Unassign all Issues and Merge Requests when member leaves a team.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
+
+## 9.1.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
+## 9.1.8 (2017-07-19)
+
+- Improve support for external issue references. !12485
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
 
 ## 9.1.7 (2017-06-07)
 
@@ -802,6 +1059,16 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.12 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
+## 9.0.11 (2017-07-19)
+
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
 
 ## 9.0.10 (2017-06-07)
 
@@ -1172,6 +1439,11 @@ entry.
 - hide loading spinners for server-rendered sidebar fields.
 - Change development tanuki favicon colors to match logo color order.
 - API issues - support filtering by iids.
+
+## 8.17.7 (2017-07-19)
+
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Fix incorrect project authorizations.
 
 ## 8.17.6 (2017-05-05)
 

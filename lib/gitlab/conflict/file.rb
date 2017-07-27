@@ -1,7 +1,7 @@
 module Gitlab
   module Conflict
     class File
-      include Gitlab::Routing.url_helpers
+      include Gitlab::Routing
       include IconsHelper
 
       MissingResolution = Class.new(ResolutionError)
@@ -205,9 +205,7 @@ module Gitlab
           old_path: their_path,
           new_path: our_path,
           blob_icon: file_type_icon_class('file', our_mode, our_path),
-          blob_path: namespace_project_blob_path(merge_request.project.namespace,
-                                                 merge_request.project,
-                                                 ::File.join(merge_request.diff_refs.head_sha, our_path))
+          blob_path: project_blob_path(merge_request.project, ::File.join(merge_request.diff_refs.head_sha, our_path))
         }
 
         json_hash.tap do |json_hash|
@@ -223,11 +221,10 @@ module Gitlab
       end
 
       def content_path
-        conflict_for_path_namespace_project_merge_request_path(merge_request.project.namespace,
-                                                               merge_request.project,
-                                                               merge_request,
-                                                               old_path: their_path,
-                                                               new_path: our_path)
+        conflict_for_path_project_merge_request_path(merge_request.project,
+                                                     merge_request,
+                                                     old_path: their_path,
+                                                     new_path: our_path)
       end
 
       # Don't try to print merge_request or repository.

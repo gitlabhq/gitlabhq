@@ -4,7 +4,7 @@ feature 'Profile > SSH Keys', feature: true do
   let(:user) { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'User adds a key' do

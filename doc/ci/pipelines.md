@@ -188,20 +188,10 @@ by name. The order of severity is:
 
 ### Multi-project pipelines graphs
 
-> [Introduced][ee-2121] in [GitLab Enterprise Edition Premium][eep] 9.3.
+With [multi-project pipeline graphs](multi_project_pipeline_graphs.md),
+you can visualize cross-project pipelines.
 
-Using the [`CI_JOB_TOKEN` when triggering pipelines][triggers], GitLab
-recognizes the source of the job token, and thus internally ties these pipelines
-together which makes it easy to start visualizing their relationships.
-
-Those relationships are displayed in the pipeline graph by showing inbound and
-outbound connections for upstream and downstream pipeline dependencies.
-
-![Multi-projects pipelines graphs](img/multi_project_pipelines_graph.png)
-
-This is useful for larger projects, especially those adopting a micro-services
-architecture, that often have a set of interdependent components which form the
-complete product.
+It is available only in [GitLab Enterprise Edition Premium][eep].
 
 ## How the pipeline duration is calculated
 
@@ -244,7 +234,7 @@ respective link in the [Pipelines settings] page.
 [manual]: yaml/README.md#manual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
-[runners]: runners/README.html
+[runners]: runners/README.md
 [pipelines settings]: ../user/project/pipelines/settings.md
 [triggers]: triggers/README.md#ci-job-token
 [ce-5742]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5742

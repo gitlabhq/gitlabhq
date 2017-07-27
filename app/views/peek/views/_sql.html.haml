@@ -1,13 +1,13 @@
 %strong
-  %a#peek-show-queries{ href: '#' }
+  %a.js-toggle-modal-peek-sql
     %span{ data: { defer_to: "#{view.defer_key}-duration" } }...
     \/
     %span{ data: { defer_to: "#{view.defer_key}-calls" } }...
 #modal-peek-pg-queries.modal{ tabindex: -1 }
-  .modal-dialog
-    #modal-peek-pg-queries-content.modal-content
+  .modal-dialog.modal-full
+    .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
+        %button.close.btn.btn-link.btn-sm{ type: 'button', data: { dismiss: 'modal' } } X
         %h4
           SQL queries
       .modal-body{ data: { defer_to: "#{view.defer_key}-queries" } }...

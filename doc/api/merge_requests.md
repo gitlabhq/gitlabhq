@@ -25,6 +25,7 @@ Parameters:
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 | `milestone`  | string  | no | Return merge requests for a specific milestone |
+| `view` | string | no | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request |
 | `labels`  | string  | no | Return merge requests matching a comma separated list of labels |
 | `created_after` | datetime | no | Return merge requests created after the given time (inclusive) |
 | `created_before` | datetime | no | Return merge requests created before the given time (inclusive) |
@@ -609,6 +610,12 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 |---------------------|---------|----------|---------------------|
 | `id`                | integer | yes      | The ID of a project |
 | `merge_request_iid` | integer | yes      | The IID of MR       |
+| `sha`               | string  | no       | The HEAD of the MR  |
+
+The `sha` parameter works in the same way as
+when [accepting a merge request](#accept-mr): if it is passed, then it must
+match the current HEAD of the merge request for the approval to be added. If it
+does not match, the response code will be `409`.
 
 ```json
 {

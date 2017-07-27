@@ -13,7 +13,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     let(:push_rule) { create(:push_rule, :commit_message) }
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -28,7 +28,7 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
     let(:push_rule) { create(:push_rule, :author_email) }
 
     before do
-      gitlab_sign_in user
+      sign_in user
       visit_merge_request(merge_request)
     end
 
@@ -40,6 +40,6 @@ feature 'Merge With Push Rules Validation', feature: true, js: true do
   end
 
   def visit_merge_request(merge_request)
-    visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+    visit project_merge_request_path(merge_request.project, merge_request)
   end
 end

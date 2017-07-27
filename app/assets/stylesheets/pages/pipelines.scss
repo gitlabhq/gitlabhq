@@ -269,6 +269,14 @@
         border-bottom: 2px solid $border-color;
       }
     }
+
+    &.has-downstream {
+      &::after {
+        content: '';
+        width: 0;
+        border: none;
+      }
+    }
   }
 }
 
@@ -618,8 +626,8 @@
 }
 
 // Dropdown button in mini pipeline graph
-.mini-pipeline-graph-dropdown-toggle,
-.linked-pipeline-mini-item {
+button.mini-pipeline-graph-dropdown-toggle,
+a.linked-pipeline-mini-item {
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;
@@ -630,6 +638,7 @@
   padding: 0;
   transition: all 0.2s linear;
   position: relative;
+  vertical-align: middle;
 
   > .fa.fa-caret-down {
     position: absolute;
@@ -934,12 +943,13 @@
 
   &.is-downstream {
     margin-left: -4px;
+    margin-right: 4px;
   }
 
   .arrow-icon {
     display: inline-block;
     vertical-align: middle;
-    margin: -2px 5px 0;
+    margin: -4px 2px 0 0;
 
     svg {
       fill: $gray-darkest;
@@ -956,20 +966,23 @@
     position: relative;
     display: inline-block;
     vertical-align: middle;
-    height: 20px;
-    width: 20px;
+    height: 22px;
+    width: 22px;
     transition: margin .2s linear;
-    margin: 2px 5px 3px -12px;
+    margin: 2px 7px 3px -14px;
 
     svg {
-      top: 0;
-      right: 0;
-      width: 18px;
-      height: 18px;
+      height: 22px;
+      width: 22px;
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      z-index: 2;
+      overflow: visible;
     }
     // override dropdown-toggle width expansion
     &:hover {
-      width: 20px;
+      width: 22px;
     }
 
     &:first-of-type:last-of-type {
@@ -1027,7 +1040,7 @@
 .linked-pipelines-column.stage-column {
   position: relative;
 
-  & > ul {
+  > ul {
     padding: 0;
   }
 

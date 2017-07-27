@@ -11,7 +11,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to the Edit Home Wiki page' do
-    expect(current_path).to eq namespace_project_wiki_path(project.namespace, project, :home)
+    expect(current_path).to eq project_wiki_path(project, :home)
   end
 
   step 'I create the Wiki Home page' do
@@ -42,7 +42,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I browse to that Wiki page' do
-    visit namespace_project_wiki_path(project.namespace, project, @page)
+    visit project_wiki_path(project, @page)
   end
 
   step 'I click on the Edit button' do
@@ -59,7 +59,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to that Wiki page' do
-    expect(current_path).to eq namespace_project_wiki_path(project.namespace, project, @page)
+    expect(current_path).to eq project_wiki_path(project, @page)
   end
 
   step 'That page has two revisions' do
@@ -95,7 +95,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I browse to wiki page with images' do
-    visit namespace_project_wiki_path(project.namespace, project, @wiki_page)
+    visit project_wiki_path(project, @wiki_page)
   end
 
   step 'I click on existing image link' do
@@ -114,7 +114,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'Image should be shown on the page' do
-    expect(page).to have_xpath("//img[@src=\"image.jpg\"]")
+    expect(page).to have_xpath("//img[@data-src=\"image.jpg\"]")
   end
 
   step 'I click on image link' do

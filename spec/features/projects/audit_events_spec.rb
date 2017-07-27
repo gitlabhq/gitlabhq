@@ -7,29 +7,55 @@ feature 'Projects > Audit Events', js: true, feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
+  end
+
+  context 'unlicensed' do
+    before do
+      stub_licensed_features(audit_events: false)
+    end
+
+    it 'returns 404' do
+      visit project_audit_events_path(project)
+
+      expect(page.status_code).to eq(404)
+    end
+
+    it 'does not have Audit Events button in head nav bar' do
+      visit edit_project_path(project)
+
+      expect(page).not_to have_link('Audit Events')
+    end
+  end
+
+  it 'has Audit Events button in head nav bar' do
+    visit edit_project_path(project)
+
+    expect(page).to have_link('Audit Events')
   end
 
   describe 'adding an SSH key' do
     it "appears in the project's audit events" do
-      visit new_namespace_project_deploy_key_path(project.namespace, project)
+      stub_licensed_features(audit_events: true)
+
+      visit new_project_deploy_key_path(project)
 
       fill_in 'deploy_key_title', with: 'laptop'
       fill_in 'deploy_key_key', with: 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzrEJUIR6Y03TCE9rIJ+GqTBvgb8t1jI9h5UBzCLuK4VawOmkLornPqLDrGbm6tcwM/wBrrLvVOqi2HwmkKEIecVO0a64A4rIYScVsXIniHRS6w5twyn1MD3sIbN+socBDcaldECQa2u1dI3tnNVcs8wi77fiRe7RSxePsJceGoheRQgC8AZ510UdIlO+9rjIHUdVN7LLyz512auAfYsgx1OfablkQ/XJcdEwDNgi9imI6nAXhmoKUm1IPLT2yKajTIC64AjLOnE0YyCh6+7RFMpiMyu1qiOCpdjYwTgBRiciNRZCH8xIedyCoAmiUgkUT40XYHwLuwiPJICpkAzp7Q== user@laptop'
 
       click_button 'Add key'
 
-      visit namespace_project_audit_events_path(project.namespace, project)
+      visit project_audit_events_path(project)
 
       expect(page).to have_content('Add deploy key')
 
-      visit namespace_project_deploy_keys_path(project.namespace, project)
+      visit project_deploy_keys_path(project)
 
       accept_confirm do
         click_on 'Remove'
       end
 
-      visit namespace_project_audit_events_path(project.namespace, project)
+      visit project_audit_events_path(project)
 
       expect(page).to have_content('Remove deploy key')
     end
@@ -41,7 +67,7 @@ feature 'Projects > Audit Events', js: true, feature: true do
     end
 
     it "appears in the project's audit events" do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
 
       project_member = project.project_member(pete)
 

@@ -22,7 +22,8 @@
         "properties": {
           "id": { "type": "integer" },
           "iid": { "type": "integer" },
-          "project_id": { "type": "integer" },
+          "project_id": { "type": ["integer", "null"] },
+          "group_id": { "type": ["integer", "null"] },
           "title": { "type": "string" },
           "description": { "type": ["string", "null"] },
           "state": { "type": "string" },
@@ -77,15 +78,14 @@
       "downvotes": { "type": "integer" },
       "due_date": { "type": ["date", "null"] },
       "confidential": { "type": "boolean" },
-      "web_url": { "type": "uri" },
-      "weight": { "type": ["integer", "null"] }
+      "web_url": { "type": "uri" }
     },
     "required": [
       "id", "iid", "project_id", "title", "description",
       "state", "created_at", "updated_at", "labels",
       "milestone", "assignees", "author", "user_notes_count",
       "upvotes", "downvotes", "due_date", "confidential",
-      "web_url", "weight"
+      "web_url"
     ],
     "additionalProperties": false
   }

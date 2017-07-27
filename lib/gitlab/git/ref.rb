@@ -1,3 +1,5 @@
+# Gitaly note: JV: probably no RPC's here (just one interaction with Rugged).
+
 module Gitlab
   module Git
     class Ref
@@ -24,16 +26,16 @@ module Gitlab
         str.gsub(/\Arefs\/heads\//, '')
       end
 
+      # Gitaly: this method will probably be migrated indirectly via its call sites.
       def self.dereference_object(object)
         object = object.target while object.is_a?(Rugged::Tag::Annotation)
 
         object
       end
 
-      def initialize(repository, name, target)
-        encode! name
-        @name = name.gsub(/\Arefs\/(tags|heads)\//, '')
-        @dereferenced_target = Gitlab::Git::Commit.find(repository, target)
+      def initialize(repository, name, target, derefenced_target)
+        @name = Gitlab::Git.ref_name(name)
+        @dereferenced_target = derefenced_target
         @target = if target.respond_to?(:oid)
                     target.oid
                   elsif target.respond_to?(:name)

@@ -8,14 +8,14 @@ describe 'Reportable note on commit', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'a normal note' do
     let!(:note) { create(:note_on_commit, commit_id: sample_commit.id, project: project) }
 
     before do
-      visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+      visit project_commit_path(project, sample_commit.id)
     end
 
     it_behaves_like 'reportable note'
@@ -25,7 +25,7 @@ describe 'Reportable note on commit', :feature, :js do
     let!(:note) { create(:diff_note_on_commit, commit_id: sample_commit.id, project: project) }
 
     before do
-      visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+      visit project_commit_path(project, sample_commit.id)
     end
 
     it_behaves_like 'reportable note'

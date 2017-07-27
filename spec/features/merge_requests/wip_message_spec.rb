@@ -6,21 +6,19 @@ feature 'Work In Progress help message', feature: true do
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with WIP commits' do
     it 'shows a specific WIP hint' do
-      visit namespace_project_new_merge_request_path(
-        project.namespace,
+      visit project_new_merge_request_path(
         project,
         merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
           source_branch: 'wip',
           target_branch: 'master'
-        }
-      )
+        })
 
       within_wip_explanation do
         expect(page).to have_text(
@@ -32,16 +30,14 @@ feature 'Work In Progress help message', feature: true do
 
   context 'without WIP commits' do
     it 'shows the regular WIP message' do
-      visit namespace_project_new_merge_request_path(
-        project.namespace,
+      visit project_new_merge_request_path(
         project,
         merge_request: {
           source_project_id: project.id,
           target_project_id: project.id,
           source_branch: 'fix',
           target_branch: 'master'
-        }
-      )
+        })
 
       within_wip_explanation do
         expect(page).not_to have_text(

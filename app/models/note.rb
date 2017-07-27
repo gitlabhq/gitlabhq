@@ -47,8 +47,8 @@ class Note < ActiveRecord::Base
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
 
-  has_many :todos, dependent: :destroy
-  has_many :events, as: :target, dependent: :destroy
+  has_many :todos, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
@@ -196,7 +196,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      @commit ||= project.commit(commit_id)
     else
       super
     end
@@ -336,8 +336,7 @@ class Note < ActiveRecord::Base
   def expire_etag_cache
     return unless for_issue?
 
-    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
-      noteable.project.namespace,
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
       noteable.project,
       target_type: noteable_type.underscore,
       target_id: noteable.id

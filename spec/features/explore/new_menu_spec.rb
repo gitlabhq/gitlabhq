@@ -1,22 +1,18 @@
 require 'spec_helper'
 
 feature 'Top Plus Menu', feature: true, js: true do
-  let(:user) { create :user }
-  let(:guest_user) { create :user}
+  let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
   let(:public_project) { create(:project, :public) }
 
   before do
     group.add_owner(user)
-    group.add_guest(guest_user)
-
-    project.add_guest(guest_user)
   end
 
   context 'used by full user' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     scenario 'click on New project shows new project page' do
@@ -39,7 +35,7 @@ feature 'Top Plus Menu', feature: true, js: true do
 
     scenario 'click on New snippet shows new snippet page' do
       visit root_dashboard_path
-      
+
       click_topmenuitem("New snippet")
 
       expect(page).to have_content('New Snippet')
@@ -47,7 +43,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New issue shows new issue page' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       click_topmenuitem("New issue")
 
@@ -56,7 +52,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New merge request shows new merge request page' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       click_topmenuitem("New merge request")
 
@@ -66,7 +62,7 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'click on New project snippet shows new snippet page' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       page.within '.header-content' do
         find('.header-new-dropdown-toggle').trigger('click')
@@ -102,12 +98,17 @@ feature 'Top Plus Menu', feature: true, js: true do
   end
 
   context 'used by guest user' do
+    let(:guest_user) { create(:user) }
+
     before do
-      gitlab_sign_in(guest_user)
+      group.add_guest(guest_user)
+      project.add_guest(guest_user)
+
+      sign_in(guest_user)
     end
 
     scenario 'click on New issue shows new issue page' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       click_topmenuitem("New issue")
 
@@ -116,31 +117,31 @@ feature 'Top Plus Menu', feature: true, js: true do
     end
 
     scenario 'has no New merge request menu item' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       hasnot_topmenuitem("New merge request")
     end
 
     scenario 'has no New project snippet menu item' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
 
     scenario 'public project has no New Issue Button' do
-      visit namespace_project_path(public_project.namespace, public_project)
+      visit project_path(public_project)
 
       hasnot_topmenuitem("New issue")
     end
 
     scenario 'public project has no New merge request menu item' do
-      visit namespace_project_path(public_project.namespace, public_project)
+      visit project_path(public_project)
 
       hasnot_topmenuitem("New merge request")
     end
 
     scenario 'public project has no New project snippet menu item' do
-      visit namespace_project_path(public_project.namespace, public_project)
+      visit project_path(public_project)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
@@ -153,7 +154,7 @@ feature 'Top Plus Menu', feature: true, js: true do
 
     scenario 'has no New project for group menu item' do
       visit group_path(group)
-      
+
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-group-project')
     end
   end
@@ -168,5 +169,5 @@ feature 'Top Plus Menu', feature: true, js: true do
 
   def hasnot_topmenuitem(item_name)
     expect(find('.header-new.dropdown')).not_to have_content(item_name)
-  end 
+  end
 end

@@ -32,6 +32,17 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
     end
   end
 
+  context 'with custom options' do
+    let(:vars) { { 'foobar' => 123, 'PWD' => path } }
+    let(:options) { { chdir: path } }
+
+    it 'calls popen3 with the provided environment variables' do
+      expect(Open3).to receive(:popen3).with(vars, 'ls', options)
+
+      @output, @status = @klass.new.popen(%w(ls), path, { 'foobar' => 123 })
+    end
+  end
+
   context 'without a directory argument' do
     before do
       @output, @status = @klass.new.popen(%w(ls))
@@ -45,7 +56,7 @@ describe 'Gitlab::Popen', lib: true, no_db: true do
     before do
       @output, @status = @klass.new.popen(%w[cat]) { |stdin| stdin.write 'hello' }
     end
-  
+
     it { expect(@status).to be_zero }
     it { expect(@output).to eq('hello') }
   end

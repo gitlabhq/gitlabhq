@@ -14,7 +14,7 @@ describe 'Related issues', feature: true, js: true do
 
   context 'when user has no permission to update related issues' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'with related_issues enabled' do
@@ -28,7 +28,7 @@ describe 'Related issues', feature: true, js: true do
 
         context 'visiting issue_a' do
           before do
-            visit namespace_project_issue_path(project.namespace, project, issue_a)
+            visit project_issue_path(project, issue_a)
             wait_for_requests
           end
 
@@ -43,7 +43,7 @@ describe 'Related issues', feature: true, js: true do
 
         context 'visiting issue_b which was targeted by issue_a' do
           before do
-            visit namespace_project_issue_path(project.namespace, project, issue_b)
+            visit project_issue_path(project, issue_b)
             wait_for_requests
           end
 
@@ -59,7 +59,7 @@ describe 'Related issues', feature: true, js: true do
     before do
       project.add_master(user)
       project_b.add_master(user)
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'with related_issues disabled' do
@@ -67,7 +67,7 @@ describe 'Related issues', feature: true, js: true do
       let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
 
       before do
-        visit namespace_project_issue_path(project.namespace, project, issue_a)
+        visit project_issue_path(project, issue_a)
         wait_for_requests
       end
 
@@ -83,7 +83,7 @@ describe 'Related issues', feature: true, js: true do
 
       context 'without existing related issues' do
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue_a)
+          visit project_issue_path(project, issue_a)
           wait_for_requests
         end
 
@@ -125,6 +125,20 @@ describe 'Related issues', feature: true, js: true do
           expect(items[0].text).to eq(issue_project_b_a.title)
           expect(find('.js-related-issues-header-issue-count')).to have_content('1')
         end
+
+        it 'pressing enter should submit the form' do
+          find('.js-issue-count-badge-add-button').click
+          find('.js-add-issuable-form-input').set "#{issue_project_b_a.to_reference(project)} "
+          find('.js-add-issuable-form-input').native.send_key(:enter)
+
+          wait_for_requests
+
+          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+
+          expect(items.count).to eq(1)
+          expect(items[0].text).to eq(issue_project_b_a.title)
+          expect(find('.js-related-issues-header-issue-count')).to have_content('1')
+        end
       end
 
       context 'with existing related issues' do
@@ -132,7 +146,7 @@ describe 'Related issues', feature: true, js: true do
         let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
 
         before do
-          visit namespace_project_issue_path(project.namespace, project, issue_a)
+          visit project_issue_path(project, issue_a)
           wait_for_requests
         end
 

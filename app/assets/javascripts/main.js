@@ -109,6 +109,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
@@ -143,26 +144,12 @@ import './render_math';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
 import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './task_list';
-import './todos';
-import './tree';
-import './usage_ping';
-import './user';
-import './user_tabs';
-import './username_validator';
-import './users_select';
-import './version_check_image';
-import './visibility_select';
-import './wikis';
-import './zen_mode';
 
 // EE-only scripts
 import './admin_email_select';
@@ -188,6 +175,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');
@@ -307,13 +299,7 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', function () {
-    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
-    $('.header-content .header-logo').toggle();
-    $('.header-content .navbar-collapse').toggle();
-    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
-    return $('.navbar-toggle').toggleClass('active');
-  });
+  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);

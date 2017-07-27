@@ -484,6 +484,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
 
     def each
+      return enum_for(:each) unless block_given?
+
       loop do
         break if @count.zero?
         # It is critical to decrement before yielding. We may never reach the lines after 'yield'.

@@ -1,0 +1,11 @@
+- project = local_assigns.fetch(:project)
+- flash_message_container = show_new_nav? ? :new_global_flash : :flash_message
+
+= content_for flash_message_container do
+  = render partial: 'deletion_failed', locals: { project: project }
+  - if current_user && can?(current_user, :download_code, project)
+    = render 'shared/no_ssh'
+    = render 'shared/no_password'
+    = render 'shared/shared_runners_minutes_limit', project: project
+    - if project.above_size_limit?
+      = render 'above_size_limit_warning'

@@ -37,13 +37,7 @@
               = f.label :default_branch, "Default Branch", class: 'label-light'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
-        - if current_user.admin?
-          .form-group
-            = f.label :repository_size_limit, class: 'label-light' do
-              Repository size limit (MB)
-            = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
-            %span.help-block#repository_size_limit_help_block
-              = size_limit_message(@project)
+        = render 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
@@ -138,7 +132,7 @@
             %h5.prepend-top-0
               Service Desk
               = link_to icon('question-circle'), help_page_path('user/project/service_desk')
-            .js-service-desk-setting-root{ data: { endpoint: namespace_project_service_desk_path(@project.namespace, @project),
+            .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
               enabled: "#{@project.service_desk_enabled}",
               incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
 
@@ -160,7 +154,7 @@
             .help-block The maximum file size allowed is 200KB.
             - if @project.avatar?
               %hr
-              = link_to 'Remove avatar', namespace_project_avatar_path(@project.namespace, @project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+              = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
 
   .row.prepend-top-default
@@ -174,7 +168,7 @@
           Runs a number of housekeeping tasks within the current repository,
           such as compressing file revisions and removing unreachable objects.
     .col-lg-8
-      = link_to 'Housekeeping', housekeeping_namespace_project_path(@project.namespace, @project),
+      = link_to 'Housekeeping', housekeeping_project_path(@project),
           method: :post, class: "btn btn-default"
   %hr
   .row.prepend-top-default
@@ -190,12 +184,12 @@
     .col-lg-8
 
       - if @project.export_project_path
-        = link_to 'Download export',  download_export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Download export',  download_export_project_path(@project),
                 rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
-        = link_to 'Generate new export',  generate_new_export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Generate new export',  generate_new_export_project_path(@project),
                 method: :post, class: "btn btn-default"
       - else
-        = link_to 'Export project', export_namespace_project_path(@project.namespace, @project),
+        = link_to 'Export project', export_project_path(@project),
                 method: :post, class: "btn btn-default"
 
       .bs-callout.bs-callout-info
@@ -233,13 +227,13 @@
         - if @project.archived?
           %p
             %strong Once active this project shows up in the search and on the dashboard.
-          = link_to 'Unarchive project', unarchive_namespace_project_path(@project.namespace, @project),
+          = link_to 'Unarchive project', unarchive_project_path(@project),
               data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
               method: :post, class: "btn btn-success"
         - else
           %p
             %strong Archived projects cannot be committed to!
-          = link_to 'Archive project', archive_namespace_project_path(@project.namespace, @project),
+          = link_to 'Archive project', archive_project_path(@project),
               data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
               method: :post, class: "btn btn-warning"
   %hr
@@ -278,7 +272,7 @@
         %p.append-bottom-0
           Please select the group you want to transfer this project to in the dropdown to the right.
       .col-lg-8
-        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_namespace_project_path(@project.namespace, @project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
+        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
           .form-group
             = label_tag :new_namespace_id, nil, class: 'label-light' do
               %span  Select a new namespace
@@ -302,7 +296,7 @@
             = succeed "." do
               = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
       .col-lg-8
-        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_namespace_project_path(@project.namespace, @project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
+        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
           %p
             %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
           = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
@@ -315,7 +309,7 @@
         %p.append-bottom-0
           Removing the project will delete its repository and all related resources including issues, merge requests etc.
       .col-lg-8
-        = form_tag(namespace_project_path(@project.namespace, @project), method: :delete) do
+        = form_tag(project_path(@project), method: :delete) do
           %p
             %strong Removed projects cannot be restored!
           = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }

@@ -43,9 +43,18 @@ module API
         requires :key, type: String, desc: 'The key of the variable'
         requires :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+
+        # EE
+        optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       post ':id/variables' do
-        variable = user_project.variables.create(declared_params(include_missing: false))
+        variable_params = declared_params(include_missing: false)
+
+        # EE
+        variable_params.delete(:environment_scope) unless
+            user_project.feature_available?(:variable_environment_scope)
+
+        variable = user_project.variables.create(variable_params)
 
         if variable.valid?
           present variable, with: Entities::Variable
@@ -61,13 +70,22 @@ module API
         optional :key, type: String, desc: 'The key of the variable'
         optional :value, type: String, desc: 'The value of the variable'
         optional :protected, type: String, desc: 'Whether the variable is protected'
+
+        # EE
+        optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key])
 
         return not_found!('Variable') unless variable
 
-        if variable.update(declared_params(include_missing: false).except(:key))
+        variable_params = declared_params(include_missing: false).except(:key)
+
+        # EE
+        variable_params.delete(:environment_scope) unless
+            user_project.feature_available?(:variable_environment_scope)
+
+        if variable.update(variable_params)
           present variable, with: Entities::Variable
         else
           render_validation_error!(variable)
@@ -84,6 +102,7 @@ module API
         variable = user_project.variables.find_by(key: params[:key])
         not_found!('Variable') unless variable
 
+        status 204
         variable.destroy
       end
     end

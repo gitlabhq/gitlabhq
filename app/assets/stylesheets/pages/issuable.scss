@@ -200,7 +200,6 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-  padding: 0 20px;
   z-index: 200;
   overflow: hidden;
 
@@ -222,6 +221,10 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar {
+      padding: 0 20px;
     }
 
     .issuable-sidebar-header {
@@ -343,13 +346,9 @@
         display: none;
       }
 
-      .avatar:hover,
-      .avatar-counter:hover {
-        border-color: $issuable-sidebar-color;
-      }
-
       .avatar-counter:hover {
         color: $issuable-sidebar-color;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
@@ -794,6 +793,29 @@
         display: none;
       }
     }
+  }
+}
+
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
   }
 }
 

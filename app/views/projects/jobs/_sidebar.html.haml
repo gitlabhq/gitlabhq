@@ -11,7 +11,7 @@
     #js-details-block-vue
 
     - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
-      .block{ class: ("block-first" if !@build.coverage) }
+      .block
         .title
           Job artifacts
         - if @build.artifacts_expired?
@@ -26,18 +26,18 @@
         - if @build.artifacts?
           .btn-group.btn-group-justified{ role: :group }
             - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
-              = link_to keep_namespace_project_job_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post do
+              = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
                 Keep
 
-            = link_to download_namespace_project_job_artifacts_path(@project.namespace, @project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
+            = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
               Download
 
             - if @build.browsable_artifacts?
-              = link_to browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default' do
+              = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                 Browse
 
     - if @build.trigger_request
-      .build-widget
+      .build-widget.block
         %h4.title
           Trigger
 
@@ -55,10 +55,10 @@
               .js-build-variable.trigger-build-variable= key
               .js-build-value.trigger-build-value= value
 
-    .block
+    %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
       %p
         Commit
-        = link_to @build.pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, @build.pipeline.sha), class: 'commit-sha link-commit'
+        = link_to @build.pipeline.short_sha, project_commit_path(@project, @build.pipeline.sha), class: 'commit-sha link-commit'
         = clipboard_button(text: @build.pipeline.short_sha, title: "Copy commit SHA to clipboard")
         - if @build.merge_request
           in
@@ -69,13 +69,13 @@
 
     - if @build.pipeline.stages_count > 1
       .dropdown.build-dropdown
-        .title
+        %div
           %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
             = ci_icon_for_status(@build.pipeline.status)
           Pipeline
-          = link_to "##{@build.pipeline.id}", namespace_project_pipeline_path(@project.namespace, @project, @build.pipeline), class: 'link-commit'
+          = link_to "##{@build.pipeline.id}", project_pipeline_path(@project, @build.pipeline), class: 'link-commit'
           from
-          = link_to "#{@build.pipeline.ref}", namespace_project_branch_path(@project.namespace, @project, @build.pipeline.ref), class: 'link-commit'
+          = link_to "#{@build.pipeline.ref}", project_branch_path(@project, @build.pipeline.ref), class: 'link-commit'
         %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.stage-selection More
           = icon('chevron-down')
@@ -88,7 +88,7 @@
     - HasStatus::ORDERED_STATUSES.each do |build_status|
       - builds.select{|build| build.status == build_status}.each do |build|
         .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
-          = link_to namespace_project_job_path(@project.namespace, @project, build) do
+          = link_to project_job_path(@project, build) do
             = icon('arrow-right')
             %span{ class: "ci-status-icon-#{build.status}" }
               = ci_icon_for_status(build.status)

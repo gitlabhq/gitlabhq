@@ -7,7 +7,19 @@ feature 'Project mirror', feature: true do
   describe 'On a project', js: true do
     before do
       project.team << [user, :master]
-      gitlab_sign_in user
+      sign_in user
+    end
+
+    context 'unlicensed' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'returns 404' do
+        visit project_mirror_path(project)
+
+        expect(page.status_code).to eq(404)
+      end
     end
 
     context 'with Update now button' do
@@ -24,7 +36,7 @@ feature 'Project mirror', feature: true do
           expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
           Timecop.freeze(timestamp) do
-            visit namespace_project_mirror_path(project.namespace, project)
+            visit project_mirror_path(project)
           end
 
           Sidekiq::Testing.fake! { click_link('Update Now') }
@@ -38,7 +50,7 @@ feature 'Project mirror', feature: true do
           expect_any_instance_of(EE::Project).not_to receive(:force_import_job!)
 
           Timecop.freeze(timestamp) do
-            visit namespace_project_mirror_path(project.namespace, project)
+            visit project_mirror_path(project)
           end
 
           expect(page).to have_content('Update Now')

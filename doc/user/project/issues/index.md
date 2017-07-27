@@ -5,13 +5,13 @@ for tracking the evolution of a new idea or the process
 of solving a problem.
 
 It allows you, your team, and your collaborators to share
-and discuss proposals, before and while implementing them.
+and discuss proposals before and while implementing them.
 
 Issues and the GitLab Issue Tracker are available in all
 [GitLab Products](https://about.gitlab.com/products/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
-## Use-Cases
+## Use cases
 
 Issues can have endless applications. Just to exemplify, these are
 some cases for which creating issues are most used:
@@ -23,7 +23,28 @@ some cases for which creating issues are most used:
 - Obtaining support
 - Elaborating new code implementations
 
-See also the blog post [Always start a discussion with an issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/).
+See also the blog post "[Always start a discussion with an issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)".
+
+### Keep private things private
+
+For instance, let's assume you have a public project but want to start a discussion on something
+you don't want to be public. With [Confidential Issues](#confidential-issues),
+you can discuss private matters among the project members, and still keep
+your project public, open to collaboration.
+
+### Streamline collaboration
+
+With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
+available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
+you can streamline collaboration and allow shared responsibilities to be clearly displayed.
+All assignees are shown across your workflows and receive notifications (as they
+would as single assignees), simplifying communication and ownership.
+
+### Consistent collaboration
+
+Create [issue templates](#issue-templates) to make collaboration consistent and
+containing all information you need. For example, you can create a template
+for feature proposals and another one for bug reports.
 
 ## Issue Tracker
 
@@ -102,8 +123,22 @@ Multiple Issue Boards enables you to create more than one Issue Board per projec
 It's great for large projects with more than one team or in situations where a
 repository is used to host the code of multiple products.
 
-[Multiple Issue Boards](../issue_board.html#multiple-issue-boards)
-are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+_[Multiple Issue Boards](../issue_board.md#multiple-issue-boards)
+are available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+
+### Export Issues to CSV (EES/EEP)
+
+Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your email as an attachment.
+
+_Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/)._
+
+## Related Issues (EES/SSP)
+
+Related Issues are a bi-directional relationship between any two issues
+and appear in a block below the issue description. Issues can be across groups
+and projects.
+
+Read more about [Related Issues](related_issues.md).
 
 ### Issue's API
 

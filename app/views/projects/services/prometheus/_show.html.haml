@@ -8,10 +8,10 @@
     %p
       Metrics are automatically configured and monitored
       based on a library of metrics from popular exporters.
-      = link_to 'More information', '#'
+      = link_to 'More information', help_page_path('user/project/integrations/prometheus')
 
   .col-lg-9
-    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{namespace_project_prometheus_active_metrics_path(@project.namespace, @project, :json)}" } }
+    .panel.panel-default.js-panel-monitored-metrics{ data: { "active-metrics" => "#{project_prometheus_active_metrics_path(@project, :json)}" } }
       .panel-heading
         %h3.panel-title
           Monitored
@@ -41,5 +41,5 @@
               %code
                 $CI_ENVIRONMENT_SLUG
               to exporter&rsquo;s queries.
-              = link_to 'More information', '#'
+              = link_to 'More information', help_page_path('user/project/integrations/prometheus', anchor: 'metrics-and-labels')
         %ul.list-unstyled.metrics-list.js-missing-var-metrics-list

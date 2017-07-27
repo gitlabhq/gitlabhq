@@ -478,13 +478,13 @@ production: &base
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
       # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
       #     app_secret: 'YOUR_CLIENT_SECRET',
       #     args: {
       #             scope: 'aq:name email~rs address aq:push'
-      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # callback_url: 'YOUR_CALLBACK_URL'
       #           }
       #   }
       # - { name: 'github',
@@ -545,10 +545,6 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # This setting controls whether GitLab uses Gitaly (new component
-    # introduced in 9.0). Eventually Gitaly use will become mandatory and
-    # this option will disappear.
-    enabled: true
     # Default Gitaly authentication token. Can be overriden per storage. Can
     # be left blank when Gitaly is running locally on a Unix socket, which
     # is the normal way to deploy Gitaly.
@@ -639,11 +635,14 @@ production: &base
     #   host: localhost
     #   port: 3808
 
-  ## GitLab Geo settings (EE-only)
-  geo_primary_role:
-    enabled: false
-  geo_secondary_role:
-    enabled: false
+  ## Monitoring
+  # Built in monitoring settings
+  monitoring:
+    # Time between sampling of unicorn socket metrics, in seconds
+    # unicorn_sampler_interval: 10
+    # IP whitelist to access monitoring endpoints
+    ip_whitelist:
+      - 127.0.0.0/8
 
   #
   # 5. Extra customization
@@ -716,6 +715,52 @@ test:
       title: "JIRA"
       url: https://sample_company.atlassian.net
       project_key: PROJECT
+
+  omniauth:
+    enabled: true
+    allow_single_sign_on: true
+    external_providers: []
+
+    providers:
+      - { name: 'cas3',
+          label: 'cas3',
+          args: { url: 'https://sso.example.com',
+                  disable_ssl_verification: false,
+                  login_url: '/cas/login',
+                  service_validate_url: '/cas/p3/serviceValidate',
+                  logout_url: '/cas/logout'} }
+      - { name: 'github',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          url: "https://github.com/",
+          verify_ssl: false,
+          args: { scope: 'user:email' } }
+      - { name: 'bitbucket',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'gitlab',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { scope: 'api' } }
+      - { name: 'google_oauth2',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { access_type: 'offline', approval_prompt: '' } }
+      - { name: 'facebook',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'twitter',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'auth0',
+          args: {
+            client_id: 'YOUR_AUTH0_CLIENT_ID',
+            client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+            namespace: 'YOUR_AUTH0_DOMAIN' } }
+      - { name: 'authentiq',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET',
+          args: { scope: 'aq:name email~rs address aq:push' } }
   ldap:
     enabled: false
     servers:
@@ -729,10 +774,6 @@ test:
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
-  geo_primary_role:
-    enabled: true
-  geo_secondary_role:
-    enabled: false
 
 staging:
   <<: *base

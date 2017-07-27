@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ScheduleUpdateUserActivityWorker, :redis do
+describe ScheduleUpdateUserActivityWorker, :clean_gitlab_redis_shared_state do
   let(:now) { Time.now }
 
   before do

@@ -6,8 +6,8 @@ feature 'Projects > Members > Member is removed from project', feature: true do
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_project_members_path(project.namespace, project)
+    sign_in(user)
+    visit project_project_members_path(project)
   end
 
   scenario 'user is removed from project' do

@@ -21,7 +21,7 @@
 
             %br
             Go to
-            = link_to namespace_project_runners_path(@build.project.namespace, @build.project) do
+            = link_to project_runners_path(@build.project) do
               Runners page
 
     = render "shared_runner_limit_warning", project: @build.project
@@ -56,23 +56,24 @@
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
 
-    .build-trace-container#build-trace
-      .top-bar.sticky
+    .build-trace-container.prepend-top-default
+      .top-bar.js-top-bar
         .js-truncated-info.truncated-info.hidden<
           Showing last
           %span.js-truncated-info-size.truncated-info-size><
           KiB of log -
-          %a.js-raw-link.raw-link{ href: raw_namespace_project_job_path(@project.namespace, @project, @build) }>< Complete Raw
+          %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
+
         .controllers
           - if @build.has_trace?
-            = link_to raw_namespace_project_job_path(@project.namespace, @project, @build),
+            = link_to raw_project_job_path(@project, @build),
                     title: 'Show complete raw',
                     data: { placement: 'top', container: 'body' },
                     class: 'js-raw-link-controller has-tooltip controllers-buttons' do
               = icon('file-text-o')
 
           - if can?(current_user, :update_build, @project) && @build.erasable?
-            = link_to erase_namespace_project_job_path(@project.namespace, @project, @build),
+            = link_to erase_project_job_path(@project, @build),
                       method: :post,
                       data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
                       title: 'Erase job log',
@@ -84,15 +85,17 @@
           .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
             %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
               = custom_icon('scroll_down')
-      .bash.sticky.js-scroll-container
-        %code.js-build-output
+
+      %pre.build-trace#build-trace
+        %code.bash.js-build-output
         .build-loader-animation.js-build-refresh
+
 
   = render "sidebar"
 
 .js-build-options{ data: javascript_build_options }
 
-#js-job-details-vue{ data: { endpoint: namespace_project_job_path(@project.namespace, @project, @build, format: :json) } }
+#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json) } }
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')

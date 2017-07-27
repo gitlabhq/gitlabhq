@@ -253,13 +253,13 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_issue(milestone: create(:milestone))
-        end
-
         it 'marks todos as done' do
+          update_issue(milestone: create(:milestone))
+
           expect(todo.reload.done?).to eq true
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do
@@ -489,6 +489,27 @@ describe Issues::UpdateService, services: true do
     context 'updating mentions' do
       let(:mentionable) { issue }
       include_examples 'updating mentions', Issues::UpdateService
+    end
+
+    context 'duplicate issue' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      context 'invalid canonical_issue_id' do
+        it 'does not call the duplicate service' do
+          expect(Issues::DuplicateService).not_to receive(:new)
+
+          update_issue(canonical_issue_id: 123456789)
+        end
+      end
+
+      context 'valid canonical_issue_id' do
+        it 'calls the duplicate service with both issues' do
+          expect_any_instance_of(Issues::DuplicateService)
+            .to receive(:execute).with(issue, canonical_issue)
+
+          update_issue(canonical_issue_id: canonical_issue.id)
+        end
+      end
     end
 
     include_examples 'issuable update service' do

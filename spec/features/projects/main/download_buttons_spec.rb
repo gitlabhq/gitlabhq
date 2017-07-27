@@ -22,20 +22,18 @@ feature 'Download buttons in project main page', feature: true do
   end
 
   background do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, role]
   end
 
   describe 'when checking project main page' do
     context 'with artifacts' do
       before do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
       end
 
       scenario 'shows download artifacts button' do
-        href = latest_succeeded_namespace_project_artifacts_path(
-          project.namespace, project, "#{project.default_branch}/download",
-          job: 'build')
+        href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href
       end

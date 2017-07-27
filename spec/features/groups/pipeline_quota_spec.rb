@@ -7,7 +7,7 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   before do
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'with no quota' do

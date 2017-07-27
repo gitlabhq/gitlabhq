@@ -5,21 +5,21 @@ feature 'list of badges' do
     user = create(:user)
     project = create(:project)
     project.team << [user, :master]
-    gitlab_sign_in(user)
-    visit namespace_project_pipelines_settings_path(project.namespace, project)
+    sign_in(user)
+    visit project_pipelines_settings_path(project)
   end
 
   scenario 'user wants to see build status badge' do
-    page.within('.build-status') do
-      expect(page).to have_content 'build status'
+    page.within('.pipeline-status') do
+      expect(page).to have_content 'pipeline status'
       expect(page).to have_content 'Markdown'
       expect(page).to have_content 'HTML'
       expect(page).to have_content 'AsciiDoc'
       expect(page).to have_css('.highlight', count: 3)
-      expect(page).to have_xpath("//img[@alt='build status']")
+      expect(page).to have_xpath("//img[@alt='pipeline status']")
 
       page.within('.highlight', match: :first) do
-        expect(page).to have_content 'badges/master/build.svg'
+        expect(page).to have_content 'badges/master/pipeline.svg'
       end
     end
   end
@@ -40,14 +40,14 @@ feature 'list of badges' do
   end
 
   scenario 'user changes current ref of build status badge', js: true do
-    page.within('.build-status') do
+    page.within('.pipeline-status') do
       first('.js-project-refs-dropdown').click
 
       page.within '.project-refs-form' do
         click_link 'improve/awesome'
       end
 
-      expect(page).to have_content 'badges/improve/awesome/build.svg'
+      expect(page).to have_content 'badges/improve/awesome/pipeline.svg'
     end
   end
 end

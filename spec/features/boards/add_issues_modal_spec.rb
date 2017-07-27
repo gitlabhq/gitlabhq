@@ -14,14 +14,14 @@ describe 'Issue Boards add issue modal', :feature, :js do
   before do
     project.team << [user, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 
   it 'resets filtered search state' do
-    visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
+    visit project_board_path(project, board, search: 'testing')
 
     wait_for_requests
 

@@ -8,7 +8,9 @@ require 'elasticsearch/rails/instrumentation'
 
 module Gitlab
   class Application < Rails::Application
-    require_dependency Rails.root.join('lib/gitlab/redis')
+    require_dependency Rails.root.join('lib/gitlab/redis/cache')
+    require_dependency Rails.root.join('lib/gitlab/redis/queues')
+    require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -29,7 +31,8 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
-                                     #{config.root}/app/uploaders/concerns))
+                                     #{config.root}/app/uploaders/concerns
+                                     #{config.root}/app/finders/concerns))
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -111,7 +114,7 @@ module Gitlab
     config.assets.precompile << "katex.css"
     config.assets.precompile << "katex.js"
     config.assets.precompile << "xterm/xterm.css"
-    config.assets.precompile << "peek.css"
+    config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
@@ -147,15 +150,15 @@ module Gitlab
       end
     end
 
-    # Use Redis caching across all environments
-    redis_config_hash = Gitlab::Redis.params
-    redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
-    redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
+    # Use caching across all environments
+    caching_config_hash = Gitlab::Redis::Cache.params
+    caching_config_hash[:namespace] = Gitlab::Redis::Cache::CACHE_NAMESPACE
+    caching_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     if Sidekiq.server? # threaded context
-      redis_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
-      redis_config_hash[:pool_timeout] = 1
+      caching_config_hash[:pool_size] = Sidekiq.options[:concurrency] + 5
+      caching_config_hash[:pool_timeout] = 1
     end
-    config.cache_store = :redis_store, redis_config_hash
+    config.cache_store = :redis_store, caching_config_hash
 
     config.active_record.raise_in_transactional_callbacks = true
 
@@ -170,6 +173,24 @@ module Gitlab
 
     config.generators do |g|
       g.factory_girl false
+    end
+
+    config.after_initialize do
+      Rails.application.reload_routes!
+
+      project_url_helpers = Module.new do
+        extend ActiveSupport::Concern
+
+        Gitlab::Application.routes.named_routes.helper_names.each do |name|
+          next unless name.include?('namespace_project')
+
+          define_method(name.sub('namespace_project', 'project')) do |project, *args|
+            send(name, project&.namespace, project, *args)
+          end
+        end
+      end
+
+      Gitlab::Routing.add_helpers(project_url_helpers)
     end
   end
 end

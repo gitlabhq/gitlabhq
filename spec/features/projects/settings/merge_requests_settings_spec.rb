@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 feature 'Project settings > Merge Requests', feature: true, js: true do
-  include GitlabRoutingHelper
-
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
 
   background do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'when Merge Request and Pipelines are initially enabled' do

@@ -72,7 +72,7 @@ describe Projects::CompareController do
            from: '',
            to: 'master')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, to: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, to: 'master'))
     end
 
     it 'redirects back to index when params[:to] is empty and preserves params[:from]' do
@@ -82,7 +82,7 @@ describe Projects::CompareController do
            from: 'master',
            to: '')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, from: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, from: 'master'))
     end
 
     it 'redirects back to index when params[:from] and params[:to] are empty' do

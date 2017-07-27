@@ -3,15 +3,15 @@ require 'spec_helper'
 feature 'Path Locks', feature: true, js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
-  let(:project_tree_path) { namespace_project_tree_path(project.namespace, project, project.repository.root_ref) }
+  let(:tree_path) { project_tree_path(project, project.repository.root_ref) }
 
   before do
-    allow(project).to receive(:feature_available?).with(:file_lock) { true }
+    allow(project).to receive(:feature_available?).with(:file_locks) { true }
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit project_tree_path
+    visit tree_path
   end
 
   scenario 'Locking folders' do
@@ -19,7 +19,7 @@ feature 'Path Locks', feature: true, js: true do
       click_link "encoding"
     end
     click_link "Lock"
-    visit project_tree_path
+    visit tree_path
 
     expect(page).to have_selector('.fa-lock')
   end
@@ -35,7 +35,7 @@ feature 'Path Locks', feature: true, js: true do
       click_link "Lock"
     end
 
-    visit project_tree_path
+    visit tree_path
 
     within page_tree do
       expect(page).to have_selector('.fa-lock')

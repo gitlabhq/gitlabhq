@@ -1,17 +1,14 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-/* global UsernameValidator */
-/* global ActiveTabMemoizer */
+/* global ProjectSelect */
 /* global ShortcutsNavigation */
 /* global IssuableIndex */
 /* global ShortcutsIssuable */
-/* global ZenMode */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
 /* global NotificationsForm */
-/* global TreeView */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
@@ -25,7 +22,6 @@
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
 /* global ProjectNew */
-/* global Star */
 /* global ProjectShow */
 /* global Labels */
 /* global Shortcuts */
@@ -47,7 +43,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
-import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
@@ -57,8 +52,19 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import SigninTabsMemoizer from './signin_tabs_memoizer';
+import Star from './star';
+import Todos from './todos';
+import TreeView from './tree';
+import UsagePing from './usage_ping';
+import UsernameValidator from './username_validator';
+import VersionCheckImage from './version_check_image';
+import Wikis from './wikis';
+import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
+import OAuthRememberMe from './oauth_remember_me';
+import PerformanceBar from './performance_bar';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -133,7 +139,8 @@ import AuditLogs from './audit_logs';
           break;
         case 'sessions:new':
           new UsernameValidator();
-          new ActiveTabMemoizer();
+          new SigninTabsMemoizer();
+          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
@@ -157,6 +164,9 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           break;
+        case 'dashboard:milestones:index':
+          new ProjectSelect();
+          break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
@@ -166,9 +176,10 @@ import AuditLogs from './audit_logs';
         case 'groups:issues':
         case 'groups:merge_requests':
           new UsersSelect();
+          new ProjectSelect();
           break;
         case 'dashboard:todos:index':
-          new gl.Todos();
+          new Todos();
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
@@ -260,6 +271,7 @@ import AuditLogs from './audit_logs';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
+          new ProjectSelect();
           new UsersSelect();
           break;
         case 'projects:commit:show':
@@ -326,7 +338,7 @@ import AuditLogs from './audit_logs';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:settings:members:show':
+        case 'projects:project_members:index':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -388,7 +400,7 @@ import AuditLogs from './audit_logs';
           new BlobViewer();
           break;
         case 'help:index':
-          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
           new Search();
@@ -404,17 +416,12 @@ import AuditLogs from './audit_logs';
           new AuditLogs();
           break;
         case 'projects:settings:repository:show':
-          // Initialize Protected Branch Settings
-          new gl.ProtectedBranchCreate();
-          new gl.ProtectedBranchEditList();
           new UsersSelect();
-          // Initialize Protected Tag Settings
-          new ProtectedTagCreate();
-          new ProtectedTagEditList();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
         case 'projects:settings:ci_cd:show':
+        case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':
@@ -451,7 +458,7 @@ import AuditLogs from './audit_logs';
           new Admin();
           switch (path[1]) {
             case 'cohorts':
-              new gl.UsagePing();
+              new UsagePing();
               break;
             case 'groups':
               new UsersSelect();
@@ -507,7 +514,7 @@ import AuditLogs from './audit_logs';
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new gl.Wikis();
+              new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
@@ -538,6 +545,10 @@ import AuditLogs from './audit_logs';
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         new Shortcuts();
+      }
+
+      if (document.querySelector('#peek')) {
+        new PerformanceBar({ container: '#peek' });
       }
     };
 

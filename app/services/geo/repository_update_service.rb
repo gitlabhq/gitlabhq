@@ -1,5 +1,7 @@
 module Geo
   class RepositoryUpdateService
+    include Gitlab::Geo::ProjectLogHelpers
+
     attr_reader :project, :clone_url, :logger
 
     LEASE_TIMEOUT = 1.hour.freeze
@@ -21,21 +23,21 @@ module Geo
         project.repository.expire_content_cache
       end
     rescue Gitlab::Shell::Error => e
-      logger.error "#{self.class.name}: Error fetching repository for project #{project.path_with_namespace}: #{e}"
+      log_error('Error fetching repository for project', e)
     rescue Gitlab::Git::Repository::NoRepository => e
-      logger.error "#{self.class.name}: Error invalid repository for project #{project.path_with_namespace}: #{e}"
-      logger.warn "#{self.class.name}: Invalidating cache for project #{project.path_with_namespace}"
+      log_error('Error invalid repository', e)
+      log_info('Invalidating cache for project')
       project.repository.after_create
     end
 
     private
 
     def try_obtain_lease
-      log('Trying to obtain lease to sync repository')
+      log_info('Trying to obtain lease to sync repository')
 
       repository_lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
       unless repository_lease.present?
-        log('Could not obtain lease to sync repository')
+        log_info('Could not obtain lease to sync repository')
 
         return
       end
@@ -43,17 +45,13 @@ module Geo
       begin
         yield
       ensure
-        log('Releasing leases to sync repository')
+        log_info('Releasing leases to sync repository')
         Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
       end
     end
 
     def lease_key
       @lease_key ||= "#{LEASE_KEY_PREFIX}:#{project.id}"
-    end
-
-    def log(message)
-      logger.info("#{self.class.name}: #{message} for project #{project.path_with_namespace} (#{project.id})")
     end
   end
 end

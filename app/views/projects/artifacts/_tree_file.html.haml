@@ -1,13 +1,10 @@
-- path_to_file = file_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path: file.path) if @build.downloadable_single_artifacts_file?
+- path_to_file = file_project_job_artifacts_path(@project, @build, path: file.path)
 
 %tr.tree-item{ 'data-link' => path_to_file }
   - blob = file.blob
   %td.tree-item-file-name
     = tree_icon('file', blob.mode, blob.name)
     %span.str-truncated
-      - if path_to_file
-        = link_to file.name, path_to_file
-      - else
-        = file.name
+      = link_to file.name, path_to_file
   %td
     = number_to_human_size(blob.size, precision: 2)

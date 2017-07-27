@@ -1,3 +1,5 @@
+# Gitaly note: JV: needs 1 RPC, migration is in progress.
+
 module Gitlab
   module Git
     class Tree
@@ -10,35 +12,22 @@ module Gitlab
         # Get list of tree objects
         # for repository based on commit sha and path
         # Uses rugged for raw objects
+        #
+        # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/320
         def where(repository, sha, path = nil)
           path = nil if path == '' || path == '/'
 
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
-
-          tree = if path
-                   id = find_id_by_path(repository, root_tree.oid, path)
-                   if id
-                     repository.lookup(id)
-                   else
-                     []
-                   end
-                 else
-                   root_tree
-                 end
-
-          tree.map do |entry|
-            new(
-              id: entry[:oid],
-              root_id: root_tree.oid,
-              name: entry[:name],
-              type: entry[:type],
-              mode: entry[:filemode].to_s(8),
-              path: path ? File.join(path, entry[:name]) : entry[:name],
-              commit_id: sha
-            )
+          Gitlab::GitalyClient.migrate(:tree_entries) do |is_enabled|
+            if is_enabled
+              client = Gitlab::GitalyClient::CommitService.new(repository)
+              client.tree_entries(repository, sha, path)
+            else
+              tree_entries_from_rugged(repository, sha, path)
+            end
           end
         end
+
+        private
 
         # Recursive search of tree id for path
         #
@@ -68,6 +57,34 @@ module Gitlab
             entry[:oid]
           end
         end
+
+        def tree_entries_from_rugged(repository, sha, path)
+          commit = repository.lookup(sha)
+          root_tree = commit.tree
+
+          tree = if path
+                   id = find_id_by_path(repository, root_tree.oid, path)
+                   if id
+                     repository.lookup(id)
+                   else
+                     []
+                   end
+                 else
+                   root_tree
+                 end
+
+          tree.map do |entry|
+            new(
+              id: entry[:oid],
+              root_id: root_tree.oid,
+              name: entry[:name],
+              type: entry[:type],
+              mode: entry[:filemode].to_s(8),
+              path: path ? File.join(path, entry[:name]) : entry[:name],
+              commit_id: sha
+            )
+          end
+        end
       end
 
       def initialize(options)
@@ -78,6 +95,10 @@ module Gitlab
 
       def name
         encode! @name
+      end
+
+      def path
+        encode! @path
       end
 
       def dir?

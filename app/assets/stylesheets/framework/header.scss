@@ -132,6 +132,22 @@ header {
     }
   }
 
+  &.navbar-gitlab-new {
+    .fa-times {
+      display: none;
+    }
+
+    .menu-expanded {
+      .fa-ellipsis-v {
+        display: none;
+      }
+
+      .fa-times {
+        display: block;
+      }
+    }
+  }
+
   .global-dropdown {
     position: absolute;
     left: -10px;
@@ -170,6 +186,19 @@ header {
     position: relative;
     min-height: $header-height;
     padding-left: 30px;
+
+    &.menu-expanded {
+      @media (max-width: $screen-xs-max) {
+        .header-logo,
+        .title-container {
+          display: none;
+        }
+
+        .navbar-collapse {
+          display: block;
+        }
+      }
+    }
 
     .dropdown-menu {
       margin-top: -5px;
@@ -330,7 +359,7 @@ header {
       padding-left: 5px;
 
       .nav > li:not(.hidden-xs) {
-        display: table-cell!important;
+        display: table-cell !important;
         width: 25%;
 
         a {

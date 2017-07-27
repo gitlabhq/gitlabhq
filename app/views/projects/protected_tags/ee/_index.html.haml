@@ -1,0 +1,10 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_bundle_tag('ee_protected_tags')
+
+- content_for :create_protected_tag do
+  = render 'projects/protected_tags/ee/create_protected_tag'
+
+- content_for :tag_list do
+  = render "projects/protected_tags/ee/tags_list"
+
+= render 'projects/protected_tags/shared/index'

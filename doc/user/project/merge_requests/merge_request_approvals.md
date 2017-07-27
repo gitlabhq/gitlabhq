@@ -1,12 +1,32 @@
 # Merge request approvals
 
-> Introduced in GitLab Enterprise Edition 7.13.
+> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only), available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/).
+
+## Overview
 
 If you want to make sure every merge request is approved by one or more
 people, you can enforce this workflow by using merge request approvals.
+
 Merge request approvals allow you to set the number of necessary approvals
 and predefine a list of approvers that will need to approve every
 merge request in a project.
+
+## Use cases
+
+There are numerous use cases for merge request approvals. For instance,
+let's consider you're a backend developer working in a team:
+
+1. You submit changes to your project via merge request
+1. You gather feedback from your team members in the merge request
+1. You build, test, and deploy your app with [GitLab CI/CD](../../../ci/README.md)
+1. Once everything is ready to ship, you add your manager and the project manager as approvers to that merge request
+1. Your approvers get a notification and review your modifications
+1. You need to address your managers' comments, so you push again to your branch
+1. Once you pushed, that merge request will need another round of approvals
+1. You ask your managers again for their approval
+1. They approve and merge
+
+This example workflow prevents your implementations from being merged before getting approvals from both managers.
 
 ## Configuring Approvals
 
@@ -21,6 +41,14 @@ users you want to be approvers.
 This sets the amount of approvals required before being able to merge a merge request.
 
 The number of approvers can be higher than the required approvals.
+
+### Can override approvers and approvals required per merge request
+
+> Introduced in GitLab Enterprise Edition 9.4.
+
+When this setting is enabled, the approvers for a project can be overridden for
+a merge request. When editing a merge request you can add or remove approvers,
+and increase the number of required approvers.
 
 ### Reset approvals on push
 

@@ -27,6 +27,10 @@ module API
       initial_current_user != current_user
     end
 
+    def user_group
+      @group ||= find_group!(params[:id])
+    end
+
     def user_project
       @project ||= find_project!(params[:id])
     end
@@ -286,6 +290,7 @@ module API
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
       finder_params[:archived] = params[:archived]
       finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
       finder_params
     end
 
@@ -331,7 +336,7 @@ module API
 
     def present_artifacts!(artifacts_file)
       return not_found! unless artifacts_file.exists?
-  
+
       if artifacts_file.file_storage?
         present_file!(artifacts_file.path, artifacts_file.filename)
       else
@@ -360,8 +365,8 @@ module API
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
+        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
         @initial_current_user ||= find_user_from_warden
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
@@ -428,6 +433,23 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    # An array of scopes that were registered (using `allow_access_with_scope`)
+    # for the current endpoint class. It also returns scopes registered on
+    # `API::API`, since these are meant to apply to all API routes.
+    def scopes_registered_for_endpoint
+      @scopes_registered_for_endpoint ||=
+        begin
+          endpoint_classes = [options[:for].presence, ::API::API].compact
+          endpoint_classes.reduce([]) do |memo, endpoint|
+            if endpoint.respond_to?(:allowed_scopes)
+              memo.concat(endpoint.allowed_scopes)
+            else
+              memo
+            end
+          end
+        end
     end
   end
 end

@@ -84,6 +84,10 @@ FactoryGirl.define do
       success
     end
 
+    trait :retried do
+      retried true
+    end
+
     trait :cancelable do
       pending
     end
@@ -106,7 +110,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |build, evaluator|
-      build.project = build.pipeline.project
+      build.project ||= build.pipeline.project
     end
 
     factory :ci_not_started_build do
@@ -212,7 +216,8 @@ FactoryGirl.define do
             cache: {
                 key: 'cache_key',
                 untracked: false,
-                paths: ['vendor/*']
+                paths: ['vendor/*'],
+                policy: 'pull-push'
             }
         }
       end

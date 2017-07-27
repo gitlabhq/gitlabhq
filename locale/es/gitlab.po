@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2017-06-21 12:09-0500\n"
+"PO-Revision-Date: 2017-07-13 12:10-0500\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -17,18 +17,26 @@ msgstr ""
 "Last-Translator: Bob Van Landuyt <bob@gitlab.com>\n"
 "X-Generator: Poedit 2.0.2\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
-msgid_plural "%d additional commits have been omitted to prevent performance issues."
-msgstr[0] "%d cambio adicional ha sido omitido para evitar problemas de rendimiento."
-msgstr[1] "%d cambios adicionales han sido omitidos para evitar problemas de rendimiento."
-
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] "%d cambio"
 msgstr[1] "%d cambios"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s cambio adicional ha sido omitido para evitar problemas de rendimiento."
+msgstr[1] "%s cambios adicionales han sido omitidos para evitar problemas de rendimiento."
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} cambió %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 pipeline"
+msgstr[1] "%d pipelines"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Una colección de gráficos sobre Integración Continua"
 
 msgid "About auto deploy"
 msgstr "Acerca del auto despliegue"
@@ -184,6 +192,9 @@ msgid_plural "Commits"
 msgstr[0] "Cambio"
 msgstr[1] "Cambios"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Duración de los cambios en minutos para los últimos 30"
+
 msgid "Commit message"
 msgstr "Mensaje del cambio"
 
@@ -223,6 +234,9 @@ msgstr "Copiar SHA del cambio al portapapeles"
 msgid "Create New Directory"
 msgstr "Crear Nuevo Directorio"
 
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr "Crear un token de acceso personal en tu cuenta para actualizar o enviar a través de %{protocol}."
+
 msgid "Create directory"
 msgstr "Crear directorio"
 
@@ -240,6 +254,9 @@ msgstr "Bifurcar"
 
 msgid "CreateTag|Tag"
 msgstr "Etiqueta"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "crear un token de acceso personal"
 
 msgid "Cron Timezone"
 msgstr "Zona horaria del Cron"
@@ -400,6 +417,15 @@ msgstr "Patrón de intervalo"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Introducción a Cycle Analytics"
+
+msgid "Jobs for last month"
+msgstr "Trabajos del mes pasado"
+
+msgid "Jobs for last week"
+msgstr "Trabajos de la semana pasada"
+
+msgid "Jobs for last year"
+msgstr "Trabajos del año pasado"
 
 msgid "LFSStatus|Disabled"
 msgstr "Deshabilitado"
@@ -566,6 +592,21 @@ msgstr "Programación del Pipeline"
 msgid "Pipeline Schedules"
 msgstr "Programaciones de los Pipelines"
 
+msgid "PipelineCharts|Failed:"
+msgstr "Fallidos:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "Estadísticas generales"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "Ratio de éxito"
+
+msgid "PipelineCharts|Successful:"
+msgstr "Exitosos:"
+
+msgid "PipelineCharts|Total:"
+msgstr "Total:"
+
 msgid "PipelineSchedules|Activated"
 msgstr "Activado"
 
@@ -578,6 +619,12 @@ msgstr "Todos"
 msgid "PipelineSchedules|Inactive"
 msgstr "Inactivos"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "Ingrese nombre de clave"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "Ingrese el valor de la variable"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "Próxima Ejecución"
 
@@ -585,7 +632,10 @@ msgid "PipelineSchedules|None"
 msgstr "Ninguno"
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr "Proporcione una breve descripción para este pipeline"
+msgstr "Proporcione una descripción breve para este pipeline"
+
+msgid "PipelineSchedules|Remove variable row"
+msgstr "Eliminar fila de variable"
 
 msgid "PipelineSchedules|Take ownership"
 msgstr "Tomar posesión"
@@ -593,8 +643,23 @@ msgstr "Tomar posesión"
 msgid "PipelineSchedules|Target"
 msgstr "Destino"
 
+msgid "PipelineSchedules|Variables"
+msgstr "Variables"
+
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Personalizado"
+
+msgid "Pipelines"
+msgstr "Pipelines"
+
+msgid "Pipelines charts"
+msgstr "Gráficos de los pipelines"
+
+msgid "Pipeline|all"
+msgstr "todos"
+
+msgid "Pipeline|success"
+msgstr "exitósos"
 
 msgid "Pipeline|with stage"
 msgstr "con etapa"
@@ -719,8 +784,8 @@ msgstr "Selecciona una zona horaria"
 msgid "Select target branch"
 msgstr "Selecciona una rama de destino"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
-msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr "Establezca una contraseña en su cuenta para actualizar o enviar a través de %{protocol}."
 
 msgid "Set up CI"
 msgstr "Configurar CI"
@@ -994,6 +1059,9 @@ msgstr "Privado"
 msgid "VisibilityLevel|Public"
 msgstr "Público"
 
+msgid "VisibilityLevel|Unknown"
+msgstr "Desconocido"
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "¿Quieres ver los datos? Por favor pide acceso al administrador."
 
@@ -1002,6 +1070,15 @@ msgstr "No hay suficientes datos para mostrar en esta etapa."
 
 msgid "Withdraw Access Request"
 msgstr "Retirar Solicitud de Acceso"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Va a eliminar %{group_name}.\n"
+"¡El grupo eliminado NO puede ser restaurado!\n"
+"¿Estás TOTALMENTE seguro?"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"

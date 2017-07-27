@@ -5,7 +5,7 @@
 Create projects and groups.
 
 - [Create a new project](../gitlab-basics/create-project.md)
-- [Create a new group](../gitlab-basics/create-group.md)
+- [Create a new group](../user/group/index.md#create-a-new-group)
 
 ## Prioritize
 
