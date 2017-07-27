@@ -36,7 +36,14 @@ RSpec.configure do |config|
     $capybara_server_already_started = true
   end
 
-  config.after(:each, :js) do |example|
+  config.before(:example, :js) do
+    allow(Gitlab::Application.routes).to receive(:default_url_options).and_return(
+      host: Capybara.current_session.server.host,
+      port: Capybara.current_session.server.port,
+      protocol: 'http')
+  end
+
+  config.after(:example, :js) do |example|
     # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
     # but `block_and_wait_for_requests_complete` is called before it so by
     # calling it explicitely here, we prevent any new requests from being fired
