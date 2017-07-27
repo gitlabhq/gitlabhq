@@ -1,6 +1,12 @@
 module Ci
   class CreatePipelineService < BaseService
-    class ParameterValidationError < StandardError end
+    class InsufficientConditionError < StandardError
+      attr_reader :pipeline
+
+      def initialize(pipeline)
+        @pipeline = pipeline
+      end
+    end
 
     attr_reader :pipeline
 
@@ -32,8 +38,8 @@ module Ci
             .execute(pipeline)
         end
 
-      rescue ParameterValidationError => e
-        return e
+      rescue InsufficientConditionError => e
+        return e.pipeline
 
       rescue ActiveRecord::RecordInvalid => e
         return error("Failed to persist the pipeline: #{e}")
@@ -53,39 +59,39 @@ module Ci
 
     def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
       unless project.builds_enabled?
-        raise ParameterValidationError, error('Pipeline is disabled')
+        raise InsufficientConditionError, error('Pipeline is disabled')
       end
 
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
-          raise ParameterValidationError, error("Insufficient permissions for protected ref '#{ref}'")
+          raise InsufficientConditionError, error("Insufficient permissions for protected ref '#{ref}'")
         else
-          raise ParameterValidationError, error('Insufficient permissions to create a new pipeline')
+          raise InsufficientConditionError, error('Insufficient permissions to create a new pipeline')
         end
       end
 
       unless branch? || tag?
-        raise ParameterValidationError, error('Reference not found')
+        raise InsufficientConditionError, error('Reference not found')
       end
 
       unless commit
-        raise ParameterValidationError, error('Commit not found')
+        raise InsufficientConditionError, error('Commit not found')
       end
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          raise ParameterValidationError, error("Missing #{pipeline.ci_yaml_file_path} file")
+          raise InsufficientConditionError, error("Missing #{pipeline.ci_yaml_file_path} file")
         end
-        raise ParameterValidationError, error(pipeline.yaml_errors, save: save_on_errors)
+        raise InsufficientConditionError, error(pipeline.yaml_errors, save: save_on_errors)
       end
 
       if !ignore_skip_ci && skip_ci?
         pipeline.skip if save_on_errors
-        return pipeline
+        raise InsufficientConditionError, pipeline
       end
 
       unless pipeline.has_stage_seeds?
-        raise ParameterValidationError, error('No stages / jobs for this pipeline.')
+        raise InsufficientConditionError, error('No stages / jobs for this pipeline.')
       end
     end
 

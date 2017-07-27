@@ -40,15 +40,6 @@ describe Ci::PipelineTriggerService, services: true do
             expect(result[:pipeline].variables.first.value).to eq(variables.values.first)
           end
         end
-
-        context 'when params have two variables and keys are duplicated' do
-          let(:variables) { [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }] }
-
-          it 'returns error' do
-            expect { result }.not_to change { Ci::Pipeline.count }
-            expect(result[:http_status]).to eq(400)
-          end
-        end
       end
 
       context 'when params have a non-existsed ref' do
