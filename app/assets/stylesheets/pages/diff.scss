@@ -559,6 +559,47 @@
   }
 }
 
+.diff-files-changed {
+  .commit-stat-summary {
+    z-index: -1;
+  }
+
+  @media (min-width: $screen-sm-min) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 100px;
+    background-color: $white-light;
+    z-index: 190;
+
+    + .files {
+      margin-top: 1px;
+    }
+
+    .diff-stats-additions-deletions-collapsed {
+      display: none;
+    }
+
+    &.is-stuck {
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom: 1px solid $white-dark;
+
+      .diff-stats-additions-deletions-expanded,
+      .inline-parallel-buttons {
+        display: none;
+      }
+
+      .diff-stats-additions-deletions-collapsed {
+        display: block;
+      }
+
+      + .files {
+        margin-top: 16px;
+      }
+    }
+  }
+}
+
 .diff-file-changes {
   width: 450px;
   z-index: 150;

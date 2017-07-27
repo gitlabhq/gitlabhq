@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
+import stickyMonitor from './lib/utils/sticky';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -267,6 +268,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           $container.html(data.html);
 
           this.initChangesDropdown();
+
+          stickyMonitor(document.querySelector('.js-diff-files-changed'));
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();

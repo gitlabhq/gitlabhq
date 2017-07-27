@@ -1,12 +1,20 @@
+- sum_added_lines = diff_files.sum(&:added_lines)
+- sum_removed_lines = diff_files.sum(&:removed_lines)
 .commit-stat-summary.dropdown
   Showing
   %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
     = pluralize(diff_files.size, "changed file")
     = icon("caret-down fw")
-  with
-  %strong.cgreen #{diff_files.sum(&:added_lines)} additions
-  and
-  %strong.cred #{diff_files.sum(&:removed_lines)} deletions
+  %span.diff-stats-additions-deletions-expanded
+    with
+    %strong.cgreen #{sum_added_lines} additions
+    and
+    %strong.cred #{sum_removed_lines} deletions
+  .diff-stats-additions-deletions-collapsed.pull-right{ "aria-hidden": "true" }
+    %strong.cgreen<
+      +#{sum_added_lines}
+    %strong.cred<
+      \-#{sum_removed_lines}
   .dropdown-menu.diff-file-changes
     = dropdown_filter("Search file")
     .dropdown-content
