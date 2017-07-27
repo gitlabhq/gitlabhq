@@ -2,6 +2,8 @@
 module Gitlab
   module LDAP
     class Config
+      include ::EE::Gitlab::LDAP::Config
+
       attr_accessor :provider, :options
 
       InvalidProvider = Class.new(StandardError)
@@ -14,6 +16,12 @@ module Gitlab
         Gitlab.config.ldap.servers.values
       rescue Settingslogic::MissingSetting
         []
+      end
+
+      def self.available_servers
+        return [] unless enabled?
+
+        enabled_extras? ? servers : Array.wrap(servers.first)
       end
 
       def self.providers
