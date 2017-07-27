@@ -9,19 +9,23 @@ describe Ci::PipelineTriggerService, services: true do
 
   describe '#execute' do
     let(:user) { create(:user) }
+    let(:trigger) { create(:ci_trigger, project: project, owner: user) }
+    let(:result) { described_class.new(project, user, params).execute }
+
+    let(:params) do
+      { token: token, ref: ref, variables: variables }
+    end
 
     before do
       project.add_developer(user)
     end
-
-    let(:result) { described_class.new(project, user, params).execute }
-    let(:trigger) { create(:ci_trigger, project: project, owner: user) }
 
     context 'when params have an existsed trigger token' do
       let(:token) { trigger.token }
 
       context 'when params have an existsed ref' do
         let(:ref) { 'master' }
+        let(:variables) {}
 
         it 'triggers a pipeline' do
           expect { result }.to change { Ci::Pipeline.count }.by(1)
@@ -44,6 +48,7 @@ describe Ci::PipelineTriggerService, services: true do
 
       context 'when params have a non-existsed ref' do
         let(:ref) { 'invalid-ref' }
+        let(:variables) {}
 
         it 'does not trigger a pipeline' do
           expect { result }.not_to change { Ci::Pipeline.count }
@@ -54,17 +59,13 @@ describe Ci::PipelineTriggerService, services: true do
 
     context 'when params have a non-existsed trigger token' do
       let(:token) { 'invalid-token' }
+      let(:ref) {}
+      let(:variables) {}
 
       it 'does not trigger a pipeline' do
         expect { result }.not_to change { Ci::Pipeline.count }
         expect(result).to be_nil
       end
     end
-  end
-
-  def params
-    { token: defined?(token) ? token : nil,
-      ref: defined?(ref) ? ref : nil,
-      variables: defined?(variables) ? variables : nil }
   end
 end
