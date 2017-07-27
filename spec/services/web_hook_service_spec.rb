@@ -53,7 +53,7 @@ describe WebHookService, services: true do
     end
 
     it 'handles exceptions' do
-      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout]
+      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout]
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
 
