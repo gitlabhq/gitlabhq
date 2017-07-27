@@ -23,7 +23,7 @@ describe('RepoSidebar', () => {
     expect(thead.querySelector('.last-commit').textContent).toEqual('Last Commit');
     expect(thead.querySelector('.last-update').textContent).toEqual('Last Update');
     expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
-    expect(tbody.querySelector('.prev-directory')).toBeTruthy();
+    expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
     expect(tbody.querySelector('.file')).toBeTruthy();
   });
@@ -47,5 +47,15 @@ describe('RepoSidebar', () => {
     const vm = createComponent();
 
     expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
+  });
+
+  it('renders a prev directory if isRoot', () => {
+    RepoStore.files = [{
+      id: 0,
+    }];
+    RepoStore.isRoot = true;
+    const vm = createComponent();
+
+    expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
   });
 });
