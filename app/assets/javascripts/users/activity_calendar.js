@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -18,6 +18,7 @@ export default class ActivityCalendar {
     this.daySizeWithSpace = this.daySize + (this.daySpace * 2);
     this.monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.months = [];
+
     // Loop through the timestamps to create a group of objects
     // The group of objects will be grouped based on the day of the week they are
     this.timestampsTmp = [];
@@ -36,7 +37,7 @@ export default class ActivityCalendar {
       date.setDate(date.getDate() + i);
 
       var day = date.getDay();
-      var count = timestamps[date.format('yyyy-mm-dd')];
+      var count = timestamps[date.format('yyyy-mm-dd')] || 0;
 
       // Create a new group array if this is the first day of the week
       // or if is first object
@@ -45,13 +46,9 @@ export default class ActivityCalendar {
         group += 1;
       }
 
-      var innerArray = this.timestampsTmp[group - 1];
       // Push to the inner array the values that will be used to render map
-      innerArray.push({
-        count: count || 0,
-        date: date,
-        day: day
-      });
+      var innerArray = this.timestampsTmp[group - 1];
+      innerArray.push({ count, date, day });
     }
 
     // Init color functions
@@ -97,15 +94,9 @@ export default class ActivityCalendar {
               lastMonthX = lastMonth.x;
             }
             if (lastMonth == null) {
-              return this.months.push({
-                month: month,
-                x: x
-              });
+              return this.months.push({ month, x });
             } else if (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonthX) {
-              return this.months.push({
-                month: month,
-                x: x
-              });
+              return this.months.push({ month, x });
             }
           }
         });
@@ -144,14 +135,14 @@ export default class ActivityCalendar {
     const days = [
       {
         text: 'M',
-        y: 29 + (this.daySizeWithSpace * 1)
+        y: 29 + (this.daySizeWithSpace * 1),
       }, {
         text: 'W',
-        y: 29 + (this.daySizeWithSpace * 3)
+        y: 29 + (this.daySizeWithSpace * 3),
       }, {
         text: 'F',
-        y: 29 + (this.daySizeWithSpace * 5)
-      }
+        y: 29 + (this.daySizeWithSpace * 5),
+      },
     ];
     this.svg.append('g')
       .selectAll('text')
@@ -227,8 +218,6 @@ export default class ActivityCalendar {
   }
 
   initTooltips() {
-    return $('.js-contrib-calendar .js-tooltip').tooltip({
-      html: true
-    });
+    $('.js-contrib-calendar .js-tooltip').tooltip({ html: true });
   }
 }
