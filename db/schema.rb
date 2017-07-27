@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170724214302) do
+ActiveRecord::Schema.define(version: 20170725145659) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
@@ -747,6 +747,7 @@ ActiveRecord::Schema.define(version: 20170724214302) do
     t.text "new_path", null: false
     t.text "old_path", null: false
     t.text "diff", null: false
+    t.boolean "binary"
   end
 
   add_index "merge_request_diff_files", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
