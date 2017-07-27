@@ -82,8 +82,7 @@ describe API::Triggers do
           post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_http_status(201)
-          expect(Ci::Pipeline.last.variables.first.key).to eq(variables.keys.first)
-          expect(Ci::Pipeline.last.variables.first.value).to eq(variables.values.first)
+          expect(pipeline.variables.map { |v| {v.key => v.value} }.last).to eq(variables)
         end
       end
     end
