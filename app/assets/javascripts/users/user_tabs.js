@@ -150,6 +150,7 @@ export default class UserTabs {
     const $calendarWrap = this.$parentEl.find('.user-calendar');
     const calendarPath = $calendarWrap.data('calendarPath');
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
+    const utcOffset = $calendarWrap.data('utcOffset');
 
     $.ajax({
       dataType: 'json',
@@ -158,7 +159,7 @@ export default class UserTabs {
         $calendarWrap.html(CALENDAR_TEMPLATE);
 
         // eslint-disable-next-line no-new
-        new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath);
+        new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath, utcOffset);
       },
     });
 
