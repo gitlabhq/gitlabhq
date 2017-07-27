@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -77,8 +77,8 @@ export default class ActivityCalendar {
   }
 
   renderSvg(group) {
-    var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
-    return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
+    var width = ((group + 1) * this.daySizeWithSpace) + this.getExtraWidthPadding(group);
+    this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
   }
 
   renderDays() {
@@ -88,7 +88,7 @@ export default class ActivityCalendar {
           var lastMonth, lastMonthX, month, x;
           if (a === 0 && stamp.day === 0) {
             month = stamp.date.getMonth();
-            x = (this.daySizeWithSpace * i + 1) + this.daySizeWithSpace;
+            x = (this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace;
             lastMonth = _.last(this.months);
             if (lastMonth != null) {
               lastMonthX = lastMonth.x;
@@ -100,7 +100,7 @@ export default class ActivityCalendar {
             }
           }
         });
-        return "translate(" + ((this.daySizeWithSpace * i + 1) + this.daySizeWithSpace) + ", 18)";
+        return "translate(" + ((this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace) + ", 18)";
       })
       .selectAll('rect')
       .data(stamp => stamp)
@@ -174,7 +174,7 @@ export default class ActivityCalendar {
     const keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
 
     this.svg.append('g')
-      .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
+      .attr('transform', `translate(18, ${(this.daySizeWithSpace * 8) + 16})`)
       .selectAll('rect')
         .data(keyColors)
         .enter()
