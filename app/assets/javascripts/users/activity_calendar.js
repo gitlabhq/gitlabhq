@@ -1,4 +1,4 @@
-/* eslint-disable no-var, vars-on-top, eqeqeq, newline-per-chained-call, one-var, one-var-declaration-per-line, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, one-var, one-var-declaration-per-line, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -70,7 +70,7 @@ export default class ActivityCalendar {
     var lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
     var secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
 
-    if (lastColMonth != secondLastColMonth) {
+    if (lastColMonth !== secondLastColMonth) {
       extraWidthPadding = 3;
     }
 
@@ -79,7 +79,11 @@ export default class ActivityCalendar {
 
   renderSvg(group) {
     var width = ((group + 1) * this.daySizeWithSpace) + this.getExtraWidthPadding(group);
-    this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
+    this.svg = d3.select('.js-contrib-calendar')
+      .append('svg')
+        .attr('width', width)
+        .attr('height', 167)
+        .attr('class', 'contrib-calendar');
   }
 
   renderDays() {
@@ -119,13 +123,10 @@ export default class ActivityCalendar {
         dateText = date.format('mmm d, yyyy');
         return `${contribText}<br />${gl.utils.getDayName(date)} ${dateText}`;
       })
-      .attr('class', 'user-contrib-cell js-tooltip').attr('fill', (stamp) => {
-        if (stamp.count !== 0) {
-          return this.color(Math.min(stamp.count, 40));
-        } else {
-          return '#ededed';
-        }
-      })
+      .attr('class', 'user-contrib-cell js-tooltip')
+      .attr('fill', stamp => (
+        stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'
+      ))
       .attr('data-container', 'body')
       .on('click', this.clickDay);
   }
