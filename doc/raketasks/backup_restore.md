@@ -270,6 +270,15 @@ For installations from source:
       remote_directory: 'gitlab_backups'
 ```
 
+### Specifying a custom directory for backups
+
+If you want to group your backups you can pass a `DIRECTORY` environment variable:
+
+```
+sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
+sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
+```
+
 ### Backup archive permissions
 
 The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)

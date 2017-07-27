@@ -459,10 +459,6 @@ Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = Settings.absolute(Settings.backup['path'] || "tmp/backups/")
 Settings.backup['archive_permissions'] ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
-# Convert upload connection settings to use symbol keys, to make Fog happy
-if Settings.backup['upload']['connection']
-  Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
-end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['storage_class'] ||= nil
