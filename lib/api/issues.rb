@@ -29,6 +29,10 @@ module API
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
         optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
+        optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
+        optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
+                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         use :pagination
       end
 
@@ -55,9 +59,11 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
+                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        issues = find_issues(scope: 'authored')
+        issues = find_issues
 
         present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
