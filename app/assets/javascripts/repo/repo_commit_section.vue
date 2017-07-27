@@ -56,13 +56,11 @@ export default RepoCommitSection;
   <form class="form-horizontal">
     <fieldset>
       <div class="form-group">
-        <label class="col-md-4 control-label">Staged files ({{changedFiles.length}})</label>
+        <label class="col-md-4 control-label staged-files">Staged files ({{changedFiles.length}})</label>
         <div class="col-md-4">
-          <ul class="list-unstyled">
+          <ul class="list-unstyled changed-files">
             <li v-for="file in changedFiles" :key="file.id">
-              <span class="help-block">
-                {{file.url}}
-              </span>
+              <span class="help-block">{{file.url}}</span>
             </li>
           </ul>
         </div>
@@ -81,7 +79,7 @@ export default RepoCommitSection;
         <label class="col-md-4 control-label" for="target-branch">Target branch</label>
         <div class="col-md-4">
           <div class="input-group">
-            <div class="input-group-btn">
+            <div class="input-group-btn branch-dropdown">
               <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
                 Action
                 <i class="fa fa-caret-down"></i>
@@ -102,7 +100,7 @@ export default RepoCommitSection;
       <div class="form-group">
         <label class="col-md-4 control-label" for="checkboxes"></label>
         <div class="col-md-4">
-          <div class="checkbox">
+          <div class="checkbox new-merge-request">
             <label for="checkboxes-0">
               <input id="checkboxes-0" name="checkboxes" type="checkbox" value="1"></input>
               Start a new merge request with these changes
@@ -111,9 +109,9 @@ export default RepoCommitSection;
         </div>
       </div>
       <div class="col-md-offset-4 col-md-4">
-        <button type="submit" :disabled="!commitMessage || submitCommitsLoading" class="btn btn-success" @click.prevent="makeCommit">
+        <button type="submit" :disabled="!commitMessage || submitCommitsLoading" class="btn btn-success submit-commit" @click.prevent="makeCommit">
           <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
-          <span>Commit {{changedFiles.length}} Files</span>
+          <span class="commit-summary">Commit {{changedFiles.length}} Files</span>
         </button>
       </div>
     </fieldset>

@@ -49,7 +49,7 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
-  commitMessage: 'Update README.md',
+  commitMessage: '',
   binaryMimeType: '',
   // scroll bar space for windows
   scrollWidth: 0,
