@@ -126,8 +126,8 @@ Groups can also be nested in [subgroups](group/subgroups/index.md).
 There is a lot you can customize and configure
 to enjoy the best of GitLab.
 
-Manage your user settings to change your personal info,
-personal access tokens, authorized applications, integrations, etc.
+[Manage your user settings](profile/index.md) to change your personal info,
+personal access tokens, authorized applications, etc.
 
 ### Authentication
 
