@@ -135,7 +135,6 @@ const RepoHelper = {
 
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
-    console.log('file', file);
     // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {

@@ -28,8 +28,6 @@ const RepoCommitSection = {
       Api.commitMultiple(Store.projectId, payload, (data) => {
         Store.submitCommitsLoading = false;
         Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
-        console.log('this.changedFiles', this.changedFiles);
-        console.log('this.files', this.files);
         this.changedFiles = [];
         this.openedFiles = [];
         this.commitMessage = '';

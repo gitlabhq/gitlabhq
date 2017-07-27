@@ -65,7 +65,6 @@ const RepoEditor = {
     },
 
     editMode() {
-      console.log('edit mode changed');
       const readOnly = !this.editMode;
 
       Store.readOnly = readOnly;

@@ -143,7 +143,6 @@ const RepoStore = {
 
     // now activate the right tab based on what you closed.
     if (RepoStore.openedFiles.length === 0) {
-      console.log('open 0');
       RepoStore.activeFile = {};
       return;
     }
