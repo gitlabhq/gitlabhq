@@ -13,12 +13,10 @@ const RepoBinaryViewer = {
 
   methods: {
     errored() {
-      console.log('errored');
       Store.binaryLoaded = false;
     },
 
     loaded() {
-      console.log('loaded');
       Store.binaryLoaded = true;
     },
 
@@ -39,7 +37,6 @@ const RepoBinaryViewer = {
       if (!this.binary) return;
       switch (this.binaryMimeType) {
         case 'image/png':
-          console.log('png bitch')
           this.binaryTypes.png = true;
           break;
         default:

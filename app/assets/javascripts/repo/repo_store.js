@@ -151,8 +151,25 @@ const RepoStore = {
 
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
+    let foundIndex;
+    RepoStore.openedFiles = RepoStore.openedFiles.filter((openedFile, i) => {
+      if(openedFile.url === file.url) foundIndex = i;
+      return openedFile.url !== file.url;
+    });
 
-    RepoStore.openedFiles = RepoStore.openedFiles.filter(openedFile => openedFile.url !== file.url);
+    // now activate the right tab based on what you closed.
+    if(RepoStore.openedFiles.length === 0) return;
+      
+    if(RepoStore.openedFiles.length === 1 || foundIndex === 0) {
+      RepoStore.setActiveFiles(RepoStore.openedFiles[0]);
+      return;
+    }
+
+    if(foundIndex) {
+      if(foundIndex > 0) {
+        RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
+      }
+    }
   },
 
   addPlaceholderFile() {
