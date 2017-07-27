@@ -5,7 +5,7 @@ class CreateGeoNodeGroupLinks < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def change
+  def up
     create_table :geo_node_group_links do |t|
       t.references :geo_node, index: true, foreign_key: { on_delete: :cascade }, null: false
       t.integer :group_id, index: true, null: false
@@ -14,5 +14,11 @@ class CreateGeoNodeGroupLinks < ActiveRecord::Migration
     add_timestamps_with_timezone :geo_node_group_links
 
     add_concurrent_foreign_key :geo_node_group_links, :namespaces, column: :group_id, on_delete: :cascade
+  end
+
+  def down
+    remove_foreign_key :geo_node_group_links, column: :group_id
+
+    drop_table :geo_node_group_links
   end
 end
