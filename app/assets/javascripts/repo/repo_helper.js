@@ -4,6 +4,24 @@ import Store from './repo_store';
 import '../flash';
 
 const RepoHelper = {
+  getDefaultActiveFile() {
+    return {
+      active: true,
+      binary: false,
+      extension: '',
+      html: '',
+      mime_type: '',
+      name: 'loading...',
+      plain: '',
+      size: 0,
+      url: '',
+      raw: false,
+      newContent: '',
+      changed: false,
+      loading: false,
+    }
+  },
+
   key: '',
 
   isTree(data) {
@@ -165,7 +183,6 @@ const RepoHelper = {
     })
     .catch((e) => {
       // RepoHelper.setLoading(false, loadingData);
-      console.log('catch', e)
       RepoHelper.loadingError();
     });
   },
