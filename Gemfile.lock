@@ -1020,8 +1020,8 @@ DEPENDENCIES
   google-api-client (~> 0.8.6)
   grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
-  gssapi
   grape-route-helpers (~> 2.0.0)
+  gssapi
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
