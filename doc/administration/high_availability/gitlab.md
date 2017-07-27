@@ -70,6 +70,12 @@ for each GitLab application server in your environment.
     gitlab_rails['redis_host'] = '10.1.0.6' # IP/hostname of Redis server
     gitlab_rails['redis_password'] = 'Redis Password'
     ```
+    
+    > **Note:** To maintain uniformity of links across HA clusters, the `external_url` 
+    on the master as well as all secondary application servers should point to the 
+    eventual url that users will use to access GitLab. In a typical HA setup, 
+    this will be the url of the load balancer which will route traffic to all 
+    GitLab application servers in the HA cluster. 
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
