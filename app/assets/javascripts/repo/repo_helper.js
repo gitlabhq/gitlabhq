@@ -117,6 +117,7 @@ const RepoHelper = {
 
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
+    console.log('file',file)
     // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
@@ -130,7 +131,8 @@ const RepoHelper = {
 
         if (data.binary) {
           Store.binaryMimeType = data.mime_type;
-          const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url);
+          // file might be undefined
+          const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
           RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           data.binary = true;
         } else {
@@ -161,8 +163,9 @@ const RepoHelper = {
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
-    .catch(() => {
+    .catch((e) => {
       // RepoHelper.setLoading(false, loadingData);
+      console.log('catch', e)
       RepoHelper.loadingError();
     });
   },
