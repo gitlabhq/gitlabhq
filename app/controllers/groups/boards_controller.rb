@@ -3,7 +3,7 @@ class Groups::BoardsController < Groups::ApplicationController
   before_action :assign_endpoint_vars
 
   def index
-    @boards = ::Boards::ListService.new(group, current_user).execute
+    @boards = Boards::ListService.new(group, current_user).execute
 
     respond_to do |format|
       format.html

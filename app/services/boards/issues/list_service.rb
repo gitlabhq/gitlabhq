@@ -11,7 +11,7 @@ module Boards
       private
 
       def board
-        @board ||= project.boards.find(params[:board_id])
+        @board ||= parent.boards.find(params[:board_id])
       end
 
       def list
@@ -34,7 +34,7 @@ module Boards
 
       def filter_params
         set_default_scope
-        set_project
+        set_parent
         set_state
 
         params
@@ -44,8 +44,9 @@ module Boards
         params[:scope] = 'all'
       end
 
-      def set_project
-        params[:project_id] = project.id
+      def set_parent
+        param_key = parent.is_a?(Group) ? :group_id : :project_id
+        params[param_key] = parent.id
       end
 
       def set_state

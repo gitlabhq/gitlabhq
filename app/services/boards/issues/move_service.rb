@@ -11,7 +11,7 @@ module Boards
       private
 
       def board
-        @board ||= project.boards.find(params[:board_id])
+        @board ||= parent.boards.find(params[:board_id])
       end
 
       def move_between_lists?
@@ -28,7 +28,7 @@ module Boards
       end
 
       def update_service
-        ::Issues::UpdateService.new(project, current_user, issue_params)
+        ::Issues::UpdateService.new(board.parent, current_user, issue_params)
       end
 
       def issue_params
@@ -60,8 +60,10 @@ module Boards
         label_ids =
           if moving_to_list.movable?
             moving_from_list.label_id
+          elsif board.is_group_board?
+            Label.on_group_boards(parent.id).pluck(:label_id)
           else
-            Label.on_project_boards(project.id).pluck(:label_id)
+            Label.on_project_boards(parent.id).pluck(:label_id)
           end
 
         Array(label_ids).compact

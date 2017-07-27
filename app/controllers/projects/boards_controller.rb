@@ -6,7 +6,7 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :assign_endpoint_vars
 
   def index
-    @boards = ::Boards::ListService.new(project, current_user).execute
+    @boards = Boards::ListService.new(project, current_user).execute
 
     respond_to do |format|
       format.html

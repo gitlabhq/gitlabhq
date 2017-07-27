@@ -5,7 +5,6 @@ module Boards
 
     def initialize(parent, user, params = {})
       @parent, @current_user, @params = parent, user, params.dup
-      super
     end
   end
 end
