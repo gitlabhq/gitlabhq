@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Prioritize labels', feature: true do
+feature 'Prioritize labels' do
   include DragTo
 
   let(:user)     { create(:user) }

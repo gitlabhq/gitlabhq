@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::User, lib: true do
-  let(:oauth_user) { Gitlab::OAuth::User.new(auth_hash) }
+describe Gitlab::OAuth::User do
+  let(:oauth_user) { described_class.new(auth_hash) }
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
   let(:provider) { 'my-provider' }

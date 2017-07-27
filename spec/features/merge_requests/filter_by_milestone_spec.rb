@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge Request filtering by Milestone', feature: true do
+feature 'Merge Request filtering by Milestone' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 

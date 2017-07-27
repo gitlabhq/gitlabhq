@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # We stub Gitaly in `spec/support/gitaly.rb` for other tests. We don't want
 # those stubs while testing the GitalyClient itself.
-describe Gitlab::GitalyClient, lib: true, skip_gitaly_mock: true do
+describe Gitlab::GitalyClient, skip_gitaly_mock: true do
   describe '.stub' do
     # Notice that this is referring to gRPC "stubs", not rspec stubs
     before do

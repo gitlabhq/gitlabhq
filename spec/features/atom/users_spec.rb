@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "User Feed", feature: true  do
+describe "User Feed"  do
   describe "GET /" do
     let!(:user) { create(:user) }
 

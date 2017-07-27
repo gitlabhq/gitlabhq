@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Internal Group access', feature: true do
+describe 'Internal Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :internal) }

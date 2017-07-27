@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "GitLab Flavored Markdown", feature: true do
+describe "GitLab Flavored Markdown" do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
@@ -49,7 +49,7 @@ describe "GitLab Flavored Markdown", feature: true do
     end
   end
 
-  describe "for issues", feature: true, js: true do
+  describe "for issues", js: true do
     before do
       @other_issue = create(:issue,
                             author: user,

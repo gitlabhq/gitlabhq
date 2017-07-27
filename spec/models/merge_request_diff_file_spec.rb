@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MergeRequestDiffFile, type: :model do
+describe MergeRequestDiffFile do
   describe '#diff' do
     let(:unpacked) { 'unpacked' }
     let(:packed) { [unpacked].pack('m0') }

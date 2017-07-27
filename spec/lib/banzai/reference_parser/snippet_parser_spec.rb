@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::SnippetParser, lib: true do
+describe Banzai::ReferenceParser::SnippetParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:empty_project, :public) }

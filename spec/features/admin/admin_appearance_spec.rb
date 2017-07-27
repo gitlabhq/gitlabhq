@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin Appearance', feature: true do
+feature 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
 
   scenario 'Create new appearance' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Clicking toggle commit message link', feature: true, js: true do
+feature 'Clicking toggle commit message link', js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:issue_1) { create(:issue, project: project)}

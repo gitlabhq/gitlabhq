@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'fileutils'
 
-feature 'User wants to add a Dockerfile file', feature: true do
+feature 'User wants to add a Dockerfile file' do
   before do
     user = create(:user)
     project = create(:project)

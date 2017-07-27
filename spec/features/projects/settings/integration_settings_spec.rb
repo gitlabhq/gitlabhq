@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Integration settings', feature: true do
+feature 'Integration settings' do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:role) { :developer }

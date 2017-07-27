@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff note avatars', feature: true, js: true do
+feature 'Diff note avatars', js: true do
   include NoteInteractionHelpers
 
   let(:user)          { create(:user) }

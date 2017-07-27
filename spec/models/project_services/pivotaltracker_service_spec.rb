@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PivotaltrackerService, models: true do
+describe PivotaltrackerService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -26,7 +26,7 @@ describe PivotaltrackerService, models: true do
 
   describe 'Execute' do
     let(:service) do
-      PivotaltrackerService.new.tap do |service|
+      described_class.new.tap do |service|
         service.token = 'secret_api_token'
       end
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Anonymous user sees members', feature: true, js: true do
+feature 'Projects > Members > Anonymous user sees members', js: true do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:project) { create(:empty_project, :public) }

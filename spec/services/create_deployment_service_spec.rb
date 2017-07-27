@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateDeploymentService, services: true do
+describe CreateDeploymentService do
   let(:user) { create(:user) }
   let(:options) { nil }
 

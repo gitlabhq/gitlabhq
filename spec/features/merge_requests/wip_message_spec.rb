@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Work In Progress help message', feature: true do
+feature 'Work In Progress help message' do
   let!(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let!(:user)    { create(:user) }
 

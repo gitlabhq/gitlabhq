@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GemnasiumService, models: true do
+describe GemnasiumService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -31,7 +31,7 @@ describe GemnasiumService, models: true do
     let(:project) { create(:project, :repository) }
 
     before do
-      @gemnasium_service = GemnasiumService.new
+      @gemnasium_service = described_class.new
       allow(@gemnasium_service).to receive_messages(
         project_id: project.id,
         project: project,

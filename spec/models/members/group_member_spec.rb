@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupMember, models: true do
+describe GroupMember do
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options_with_owner' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)

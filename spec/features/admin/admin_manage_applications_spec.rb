@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'admin manage applications', feature: true do
+RSpec.describe 'admin manage applications' do
   before do
     sign_in(create(:admin))
   end

@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService, services: true do
+describe Issues::UpdateService do
   include EmailHelpers
 
   let(:user) { create(:user) }
@@ -488,7 +488,7 @@ describe Issues::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { issue }
-      include_examples 'updating mentions', Issues::UpdateService
+      include_examples 'updating mentions', described_class
     end
 
     context 'duplicate issue' do

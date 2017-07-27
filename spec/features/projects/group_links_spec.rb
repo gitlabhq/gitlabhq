@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project group links', :feature, :js do
+feature 'Project group links', :js do
   include Select2Helper
 
   let(:master) { create(:user) }

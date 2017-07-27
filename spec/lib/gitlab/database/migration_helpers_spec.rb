@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Database::MigrationHelpers, lib: true do
+describe Gitlab::Database::MigrationHelpers do
   let(:model) do
     ActiveRecord::Migration.new.extend(
-      Gitlab::Database::MigrationHelpers
+      described_class
     )
   end
 

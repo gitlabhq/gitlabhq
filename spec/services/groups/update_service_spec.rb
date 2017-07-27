@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::UpdateService, services: true do
+describe Groups::UpdateService do
   let!(:user) { create(:user) }
   let!(:private_group) { create(:group, :private) }
   let!(:internal_group) { create(:group, :internal) }
