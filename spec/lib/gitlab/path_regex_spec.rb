@@ -86,7 +86,7 @@ describe Gitlab::PathRegex, lib: true do
       route.split('/')[1]
     end.compact.uniq
 
-    words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)
+    words + files_in_public + Array(API::API.prefix.to_s)
   end
 
   let(:ee_top_level_words) do
@@ -143,7 +143,7 @@ describe Gitlab::PathRegex, lib: true do
   let(:paths_after_group_id) do
     group_routes.map do |route|
       route.gsub(STARTING_WITH_GROUP, '').split('/').first
-    end.uniq + ee_paths_after_group_id
+    end.uniq
   end
 
   let(:ee_paths_after_group_id) do
