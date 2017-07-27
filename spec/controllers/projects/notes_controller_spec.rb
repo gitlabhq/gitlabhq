@@ -131,7 +131,7 @@ describe Projects::NotesController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "returns status 302 for html" do
@@ -163,6 +163,66 @@ describe Projects::NotesController do
         post :create, request_params
 
         expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when creating a commit comment from an MR fork' do
+      let(:project) { create(:project) }
+
+      let(:fork_project) do
+        create(:project).tap do |fork|
+          create(:forked_project_link, forked_to_project: fork, forked_from_project: project)
+        end
+      end
+
+      let(:merge_request) do
+        create(:merge_request, source_project: fork_project, target_project: project, source_branch: 'feature', target_branch: 'master')
+      end
+
+      let(:existing_comment) do
+        create(:note_on_commit, note: 'a note', project: fork_project, commit_id: merge_request.commit_shas.first)
+      end
+
+      def post_create(extra_params = {})
+        post :create, {
+               note: { note: 'some other note' },
+               namespace_id: project.namespace,
+               project_id: project,
+               target_type: 'merge_request',
+               target_id: merge_request.id,
+               note_project_id: fork_project.id,
+               in_reply_to_discussion_id: existing_comment.discussion_id
+             }.merge(extra_params)
+      end
+
+      context 'when the note_project_id is not correct' do
+        it 'returns a 404' do
+          post_create(note_project_id: Project.maximum(:id).succ)
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when the user has no access to the fork' do
+        it 'returns a 404' do
+          post_create
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'when the user has access to the fork' do
+        let(:discussion) { fork_project.notes.find_discussion(existing_comment.discussion_id) }
+
+        before do
+          fork_project.add_developer(user)
+
+          existing_comment
+        end
+
+        it 'creates the note' do
+          expect { post_create }.to change { fork_project.notes.count }.by(1)
+        end
       end
     end
   end
