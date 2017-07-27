@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environment', :feature do
+feature 'Environment' do
   given(:project) { create(:empty_project) }
   given(:user) { create(:user) }
   given(:role) { :developer }

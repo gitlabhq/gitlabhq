@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::ExportCsvService, services: true do
+describe Issues::ExportCsvService do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
   let!(:issue)  { create(:issue, project: project, author: user) }

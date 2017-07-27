@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Edit Merge Request', feature: true do
+feature 'Edit Merge Request' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }

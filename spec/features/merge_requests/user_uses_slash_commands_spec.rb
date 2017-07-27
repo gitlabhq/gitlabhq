@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses quick actions', feature: true, js: true do
+feature 'Merge Requests > User uses quick actions', js: true do
   include QuickActionsHelpers
 
   let(:user) { create(:user) }

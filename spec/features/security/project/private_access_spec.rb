@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Private Project Access", feature: true  do
+describe "Private Project Access"  do
   include AccessMatchers
 
   set(:project) { create(:project, :private, public_builds: false) }

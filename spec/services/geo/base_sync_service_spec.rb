@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::BaseSyncService, services: true do
+describe Geo::BaseSyncService do
   let(:project) { build('project')}
   subject { described_class.new(project) }
 

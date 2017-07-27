@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin cohorts page', feature: true do
+feature 'Admin cohorts page' do
   before do
     sign_in(create(:admin))
   end

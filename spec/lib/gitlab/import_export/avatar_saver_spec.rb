@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AvatarSaver, lib: true do
+describe Gitlab::ImportExport::AvatarSaver do
   let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: 'test') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
   let(:project_with_avatar) { create(:empty_project, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }

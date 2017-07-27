@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'issuable templates', feature: true, js: true do
+feature 'issuable templates', js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

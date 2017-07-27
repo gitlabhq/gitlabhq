@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe NotificationSetting, type: :model do
+RSpec.describe NotificationSetting do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:source) }
   end
 
   describe "Validation" do
-    subject { NotificationSetting.new(source_id: 1, source_type: 'Project') }
+    subject { described_class.new(source_id: 1, source_type: 'Project') }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:level) }
@@ -15,7 +15,7 @@ RSpec.describe NotificationSetting, type: :model do
 
     context "events" do
       let(:user) { create(:user) }
-      let(:notification_setting) { NotificationSetting.new(source_id: 1, source_type: 'Project', user_id: user.id) }
+      let(:notification_setting) { described_class.new(source_id: 1, source_type: 'Project', user_id: user.id) }
 
       before do
         notification_setting.level = "custom"

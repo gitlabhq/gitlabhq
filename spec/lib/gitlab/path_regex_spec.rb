@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Gitlab::PathRegex, lib: true do
+describe Gitlab::PathRegex do
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)

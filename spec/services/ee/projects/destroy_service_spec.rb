@@ -1,7 +1,7 @@
 # rubocop:disable RSpec/FilePath
 require 'spec_helper'
 
-describe Projects::DestroyService, services: true do
+describe Projects::DestroyService do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:project_id) { project.id }
@@ -26,7 +26,7 @@ describe Projects::DestroyService, services: true do
       Gitlab::Mirror.increment_capacity(project_mirror.id)
 
       expect do
-        Projects::DestroyService.new(project_mirror, project_mirror.owner, {}).execute
+        described_class.new(project_mirror, project_mirror.owner, {}).execute
       end.to change { Gitlab::Mirror.available_capacity }.from(max_capacity - 1).to(max_capacity)
     end
   end

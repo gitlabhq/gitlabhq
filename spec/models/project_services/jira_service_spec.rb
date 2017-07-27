@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe JiraService, models: true do
+describe JiraService do
   include Gitlab::Routing
 
   describe "Associations" do
@@ -80,7 +80,7 @@ describe JiraService, models: true do
     let(:merge_request) { create(:merge_request) }
 
     before do
-      @jira_service = JiraService.new
+      @jira_service = described_class.new
       allow(@jira_service).to receive_messages(
         project_id: project.id,
         project: project,
@@ -170,7 +170,7 @@ describe JiraService, models: true do
       stub_config_setting(relative_url_root: '/gitlab')
       stub_config_setting(url: Settings.send(:build_gitlab_url))
 
-      allow(JiraService).to receive(:default_url_options) do
+      allow(described_class).to receive(:default_url_options) do
         { script_name: '/gitlab' }
       end
 
@@ -224,7 +224,7 @@ describe JiraService, models: true do
 
     context "when a password was previously set" do
       before do
-        @jira_service = JiraService.create!(
+        @jira_service = described_class.create!(
           project: project,
           properties: {
             url: 'http://jira.example.com/web',
@@ -305,7 +305,7 @@ describe JiraService, models: true do
 
     context 'when no password was previously set' do
       before do
-        @jira_service = JiraService.create(
+        @jira_service = described_class.create(
           project: project,
           properties: {
             url: 'http://jira.example.com/rest/api/2',

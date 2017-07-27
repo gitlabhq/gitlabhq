@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge requests filter clear button', feature: true, js: true do
+feature 'Merge requests filter clear button', js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
   include IssueHelpers

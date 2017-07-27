@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge request conflict resolution', js: true, feature: true do
+feature 'Merge request conflict resolution', js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

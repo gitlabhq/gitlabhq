@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User edits snippet', :js, feature: true do
+feature 'User edits snippet', :js do
   include DropzoneHelper
 
   let(:file_name) { 'test.rb' }

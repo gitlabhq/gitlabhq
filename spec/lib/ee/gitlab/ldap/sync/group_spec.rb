@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::Sync::Group, lib: true do
+describe EE::Gitlab::LDAP::Sync::Group do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }
@@ -21,7 +21,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     it 'uses the ldap sync state machine' do
       expect(group).to receive(:start_ldap_sync)
       expect(group).to receive(:finish_ldap_sync)
-      expect(EE::Gitlab::LDAP::Sync::Group)
+      expect(described_class)
         .to receive(:new).at_most(:twice).and_call_original
 
       execute
@@ -51,7 +51,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
       it 'does not update permissions' do
         group.start_ldap_sync
 
-        expect_any_instance_of(EE::Gitlab::LDAP::Sync::Group)
+        expect_any_instance_of(described_class)
           .not_to receive(:update_permissions)
 
         execute

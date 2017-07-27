@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Issue prioritization', feature: true do
+feature 'Issue prioritization' do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 

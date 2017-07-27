@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Build, :models do
+describe Ci::Build do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -244,7 +244,7 @@ describe Ci::Build, :models do
     it 'expects to have retried builds instead the original ones' do
       project.add_developer(user)
 
-      retried_rspec = Ci::Build.retry(rspec_test, user)
+      retried_rspec = described_class.retry(rspec_test, user)
 
       expect(staging.depends_on_builds.map(&:id))
         .to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
@@ -639,9 +639,9 @@ describe Ci::Build, :models do
   describe '#first_pending' do
     let!(:first) { create(:ci_build, pipeline: pipeline, status: 'pending', created_at: Date.yesterday) }
     let!(:second) { create(:ci_build, pipeline: pipeline, status: 'pending') }
-    subject { Ci::Build.first_pending }
+    subject { described_class.first_pending }
 
-    it { is_expected.to be_a(Ci::Build) }
+    it { is_expected.to be_a(described_class) }
     it('returns with the first pending build') { is_expected.to eq(first) }
   end
 
@@ -964,7 +964,7 @@ describe Ci::Build, :models do
     end
 
     context 'when build is retried' do
-      let!(:new_build) { Ci::Build.retry(build, user) }
+      let!(:new_build) { described_class.retry(build, user) }
 
       it 'does not return any of them' do
         is_expected.not_to include(build, new_build)
@@ -972,7 +972,7 @@ describe Ci::Build, :models do
     end
 
     context 'when other build is retried' do
-      let!(:retried_build) { Ci::Build.retry(other_build, user) }
+      let!(:retried_build) { described_class.retry(other_build, user) }
 
       before do
         retried_build.success

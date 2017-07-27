@@ -1,7 +1,7 @@
 # rubocop:disable RSpec/FilePath
 require 'spec_helper'
 
-describe Projects::TransferService, services: true do
+describe Projects::TransferService do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }

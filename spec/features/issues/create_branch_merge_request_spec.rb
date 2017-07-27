@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js: true do
+feature 'Create Branch/Merge Request Dropdown on issue page', js: true do
   let(:user) { create(:user) }
   let!(:project) { create(:project) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }

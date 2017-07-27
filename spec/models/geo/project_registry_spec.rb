@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::ProjectRegistry, models: true do
+describe Geo::ProjectRegistry do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end

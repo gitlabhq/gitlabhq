@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::GitlabCiYml, model: true do
+describe BlobViewer::GitlabCiYml do
   include FakeBlobHelpers
 
   let(:project) { build(:project) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Geo clone instructions', feature: true, js: true do
+feature 'Geo clone instructions', :js do
   include Devise::Test::IntegrationHelpers
 
   let(:project) { create(:empty_project, :empty_repo) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > Account', feature: true do
+feature 'Profile > Account' do
   given(:user) { create(:user, username: 'foo') }
 
   before do

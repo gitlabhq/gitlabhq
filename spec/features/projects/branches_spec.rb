@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Branches', feature: true do
+describe 'Branches' do
   include ProtectedBranchHelpers
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SanitizationFilter, lib: true do
+describe Banzai::Filter::SanitizationFilter do
   include FilterSpecHelper
 
   describe 'default whitelist' do

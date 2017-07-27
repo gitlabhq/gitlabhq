@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Auth::ContainerRegistryAuthenticationService, services: true do
+describe Auth::ContainerRegistryAuthenticationService do
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }

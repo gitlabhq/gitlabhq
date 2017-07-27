@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Milestones on EE', feature: true do
+describe 'Milestones on EE' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }

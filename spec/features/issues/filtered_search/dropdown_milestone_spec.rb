@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown milestone', :feature, :js do
+describe 'Dropdown milestone', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }

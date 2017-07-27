@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Namespace, models: true do
+describe Namespace do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_one(:namespace_statistics) }

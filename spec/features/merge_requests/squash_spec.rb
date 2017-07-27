@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Squashing merge requests', js: true, feature: true do
+feature 'Squashing merge requests', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:source_branch) { 'csv' }

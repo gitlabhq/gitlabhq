@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::AutocompleteService, services: true do
+describe Projects::AutocompleteService do
   describe '#issues' do
     describe 'confidential issues' do
       let(:author) { create(:user) }

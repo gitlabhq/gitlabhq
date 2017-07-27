@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Group, models: true do
+describe Group do
   let!(:group) { create(:group, :access_requestable) }
 
   describe 'associations' do
@@ -376,7 +376,7 @@ describe Group, models: true do
     subject { build(:group, :nested) }
 
     it { is_expected.to be_valid }
-    it { expect(subject.parent).to be_kind_of(Group) }
+    it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
   describe '#members_with_parents', :nested_groups do

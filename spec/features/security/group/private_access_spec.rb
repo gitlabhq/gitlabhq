@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Private Group access', feature: true do
+describe 'Private Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :private) }

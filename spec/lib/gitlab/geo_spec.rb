@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo, lib: true do
+describe Gitlab::Geo do
   let(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
   let(:secondary_node) { FactoryGirl.create(:geo_node) }
 

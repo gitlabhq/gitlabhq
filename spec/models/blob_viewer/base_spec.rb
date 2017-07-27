@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::Base, model: true do
+describe BlobViewer::Base do
   include FakeBlobHelpers
 
   let(:project) { build(:empty_project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Triggers', feature: true, js: true do
+feature 'Triggers', js: true do
   let(:trigger_title) { 'trigger desc' }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

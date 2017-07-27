@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ProjectSearchResults, lib: true do
+describe Gitlab::ProjectSearchResults do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:query) { 'hello world' }

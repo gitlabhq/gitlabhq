@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipeline Schedules', :feature, js: true do
+feature 'Pipeline Schedules', :js do
   include PipelineSchedulesHelper
 
   let!(:project) { create(:project) }

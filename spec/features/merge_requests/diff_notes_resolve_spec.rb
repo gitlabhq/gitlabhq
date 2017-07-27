@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff notes resolve', feature: true, js: true do
+feature 'Diff notes resolve', js: true do
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }

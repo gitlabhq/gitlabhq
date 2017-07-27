@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Service Desk Setting', js: true, feature: true do
+describe 'Service Desk Setting', :js do
   let(:project) { create(:project_empty_repo, :private, service_desk_enabled: false) }
   let(:user) { create(:user) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::ScheduleRepoUpdateService, services: true do
+describe Geo::ScheduleRepoUpdateService do
   include RepoHelpers
 
   let(:user) { create :user }

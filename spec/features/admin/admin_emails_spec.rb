@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Emails", feature: true, js: true do
+describe "Admin::Emails", :js do
   let!(:current_user) { create(:admin) }
   let!(:group) { create(:group) }
   let!(:project) { create(:project, namespace: group) }
