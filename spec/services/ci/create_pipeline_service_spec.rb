@@ -532,6 +532,7 @@ describe Ci::CreatePipelineService, :services do
         context 'when no one can create the tag' do
           let!(:protected_tag) do
             create(:protected_tag,
+                   :remove_default_access_levels,
                    :no_one_can_create,
                    project: project,
                    name: ref)
