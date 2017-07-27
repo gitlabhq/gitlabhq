@@ -145,7 +145,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
@@ -358,4 +357,9 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    event.preventDefault();
+    gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
+  });
 });
