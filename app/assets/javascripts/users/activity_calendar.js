@@ -1,6 +1,12 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
+
+const LOADING_HTML = `
+  <div class="text-center">
+    <i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i>
+  </div>
+`;
 
 export default class ActivityCalendar {
   constructor(timestamps, calendar_activities_path) {
@@ -79,40 +85,41 @@ export default class ActivityCalendar {
   }
 
   renderDays() {
-    return this.svg.selectAll('g').data(this.timestampsTmp).enter().append('g').attr('transform', (function(_this) {
-      return function(group, i) {
-        _.each(group, function(stamp, a) {
+    this.svg.selectAll('g').data(this.timestampsTmp).enter().append('g')
+      .attr('transform', (group, i) => {
+        _.each(group, (stamp, a) => {
           var lastMonth, lastMonthX, month, x;
           if (a === 0 && stamp.day === 0) {
             month = stamp.date.getMonth();
-            x = (_this.daySizeWithSpace * i + 1) + _this.daySizeWithSpace;
-            lastMonth = _.last(_this.months);
+            x = (this.daySizeWithSpace * i + 1) + this.daySizeWithSpace;
+            lastMonth = _.last(this.months);
             if (lastMonth != null) {
               lastMonthX = lastMonth.x;
             }
             if (lastMonth == null) {
-              return _this.months.push({
+              return this.months.push({
                 month: month,
                 x: x
               });
-            } else if (month !== lastMonth.month && x - _this.daySizeWithSpace !== lastMonthX) {
-              return _this.months.push({
+            } else if (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonthX) {
+              return this.months.push({
                 month: month,
                 x: x
               });
             }
           }
         });
-        return "translate(" + ((_this.daySizeWithSpace * i + 1) + _this.daySizeWithSpace) + ", 18)";
-      };
-    })(this)).selectAll('rect').data(function(stamp) {
-      return stamp;
-    }).enter().append('rect').attr('x', '0').attr('y', (function(_this) {
-      return function(stamp, i) {
-        return _this.daySizeWithSpace * stamp.day;
-      };
-    })(this)).attr('width', this.daySize).attr('height', this.daySize).attr('title', (function(_this) {
-      return function(stamp) {
+        return "translate(" + ((this.daySizeWithSpace * i + 1) + this.daySizeWithSpace) + ", 18)";
+      })
+      .selectAll('rect')
+      .data(stamp => stamp)
+      .enter()
+      .append('rect')
+      .attr('x', '0')
+      .attr('y', stamp => this.daySizeWithSpace * stamp.day)
+      .attr('width', this.daySize)
+      .attr('height', this.daySize)
+      .attr('title', (stamp) => {
         var contribText, date, dateText;
         date = new Date(stamp.date);
         contribText = 'No contributions';
@@ -121,21 +128,20 @@ export default class ActivityCalendar {
         }
         dateText = date.format('mmm d, yyyy');
         return contribText + "<br />" + (gl.utils.getDayName(date)) + " " + dateText;
-      };
-    })(this)).attr('class', 'user-contrib-cell js-tooltip').attr('fill', (function(_this) {
-      return function(stamp) {
+      })
+      .attr('class', 'user-contrib-cell js-tooltip').attr('fill', (stamp) => {
         if (stamp.count !== 0) {
-          return _this.color(Math.min(stamp.count, 40));
+          return this.color(Math.min(stamp.count, 40));
         } else {
           return '#ededed';
         }
-      };
-    })(this)).attr('data-container', 'body').on('click', this.clickDay);
+      })
+      .attr('data-container', 'body')
+      .on('click', this.clickDay);
   }
 
   renderDayTitles() {
-    var days;
-    days = [
+    const days = [
       {
         text: 'M',
         y: 29 + (this.daySizeWithSpace * 1)
@@ -147,21 +153,29 @@ export default class ActivityCalendar {
         y: 29 + (this.daySizeWithSpace * 5)
       }
     ];
-    return this.svg.append('g').selectAll('text').data(days).enter().append('text').attr('text-anchor', 'middle').attr('x', 8).attr('y', function(day) {
-      return day.y;
-    }).text(function(day) {
-      return day.text;
-    }).attr('class', 'user-contrib-text');
+    this.svg.append('g')
+      .selectAll('text')
+        .data(days)
+        .enter()
+        .append('text')
+          .attr('text-anchor', 'middle')
+          .attr('x', 8)
+          .attr('y', day => day.y)
+          .text(day => day.text)
+          .attr('class', 'user-contrib-text');
   }
 
   renderMonths() {
-    return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
-      return date.x;
-    }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
-      return function(date) {
-        return _this.monthNames[date.month];
-      };
-    })(this));
+    this.svg.append('g')
+      .attr('direction', 'ltr')
+      .selectAll('text')
+        .data(this.months)
+        .enter()
+        .append('text')
+          .attr('x', date => date.x)
+          .attr('y', 10)
+          .attr('class', 'user-contrib-text')
+          .text(date => this.monthNames[date.month]);
   }
 
   renderKey() {
@@ -206,12 +220,8 @@ export default class ActivityCalendar {
         },
         cache: false,
         dataType: 'html',
-        beforeSend: function() {
-          return $('.user-calendar-activities').html('<div class="text-center"><i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i></div>');
-        },
-        success: function(data) {
-          return $('.user-calendar-activities').html(data);
-        }
+        beforeSend: () => $('.user-calendar-activities').html(LOADING_HTML),
+        success: data => $('.user-calendar-activities').html(data),
       });
     } else {
       this.currentSelectedDate = '';
