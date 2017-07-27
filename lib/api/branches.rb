@@ -4,12 +4,14 @@ module API
   class Branches < Grape::API
     include PaginationParams
 
+    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository branches' do
         success Entities::RepoBranch
       end
@@ -28,7 +30,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      get ':id/repository/branches/:branch', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
+      get ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         branch = user_project.repository.find_branch(params[:branch])
         not_found!("Branch") unless branch
 
@@ -46,7 +48,7 @@ module API
         optional :developers_can_push, type: Boolean, desc: 'Flag if developers can push to that branch'
         optional :developers_can_merge, type: Boolean, desc: 'Flag if developers can merge to that branch'
       end
-      put ':id/repository/branches/:branch/protect', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
+      put ':id/repository/branches/:branch/protect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -81,7 +83,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      put ':id/repository/branches/:branch/unprotect', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
+      put ':id/repository/branches/:branch/unprotect', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_admin_project
 
         branch = user_project.repository.find_branch(params[:branch])
@@ -118,7 +120,7 @@ module API
       params do
         requires :branch, type: String, desc: 'The name of the branch'
       end
-      delete ':id/repository/branches/:branch', requirements: { id: %r{[^/]+}, branch: %r{[^/]+} } do
+      delete ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
         result = DeleteBranchService.new(user_project, current_user)
