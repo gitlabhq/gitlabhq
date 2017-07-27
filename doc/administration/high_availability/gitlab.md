@@ -5,7 +5,7 @@ configure the GitLab application server(s) now. Complete the steps below
 for each GitLab application server in your environment.
 
 > **Note:** There is some additional configuration near the bottom for
-  secondary GitLab application servers. It's important to read and understand
+  additional GitLab application servers. It's important to read and understand
   these additional steps before proceeding with GitLab installation.
 
 1. If necessary, install the NFS client utility packages using the following
@@ -72,14 +72,14 @@ for each GitLab application server in your environment.
     ```
     
     > **Note:** To maintain uniformity of links across HA clusters, the `external_url` 
-    on the master as well as all secondary application servers should point to the 
-    eventual url that users will use to access GitLab. In a typical HA setup, 
-    this will be the url of the load balancer which will route traffic to all 
-    GitLab application servers in the HA cluster. 
+    on the first application server as well as the additional application 
+    servers should point to the external url that users will use to access GitLab. 
+    In a typical HA setup, this will be the url of the load balancer which will
+    route traffic to all GitLab application servers in the HA cluster. 
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
-## Primary GitLab application server
+## First GitLab application server
 
 As a final step, run the setup rake task on the first GitLab application server.
 It is not necessary to run this on additional application servers.
@@ -95,10 +95,10 @@ It is not necessary to run this on additional application servers.
   [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
   for more information.
 
-## Additional configuration for secondary GitLab application servers
+## Extra configuration for additional GitLab application servers
 
-Secondary GitLab servers (servers configured **after** the first GitLab server)
-need some additional configuration.
+Additional GitLab servers (servers configured **after** the first GitLab server)
+need some extra configuration.
 
 1. Configure shared secrets. These values can be obtained from the primary
    GitLab server in `/etc/gitlab/gitlab-secrets.json`. Add these to
