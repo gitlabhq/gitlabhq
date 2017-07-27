@@ -745,42 +745,17 @@ module API
 
     class ApplicationSetting < Grape::Entity
       expose :id
-      expose :default_projects_limit
-      expose :signup_enabled
-      expose :password_authentication_enabled
-      expose :password_authentication_enabled, as: :signin_enabled
-      expose :gravatar_enabled
-      expose :sign_in_text
-      expose :after_sign_up_text
-      expose :created_at
-      expose :updated_at
-      expose :home_page_url
-      expose :default_branch_protection
+      expose(*ApplicationSettingsHelper.visible_attributes)
+      expose(*EE::ApplicationSettingsHelper.repository_mirror_attributes, if: lambda do |_instance, _options|
+        ::License.feature_available?(:repository_mirrors)
+      end)
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end
-      expose :max_attachment_size
-      expose :session_expire_delay
       expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
-      expose :default_artifacts_expire_in
-      expose :domain_whitelist
-      expose :domain_blacklist_enabled
-      expose :domain_blacklist
-      expose :user_oauth_applications
-      expose :after_sign_out_path
-      expose :container_registry_token_expire_delay
-      expose :repository_storages
-      expose :koding_enabled
-      expose :koding_url
-      expose :plantuml_enabled
-      expose :plantuml_url
-      expose :terminal_max_session_time
-      expose :polling_interval_multiplier
-      expose :help_page_hide_commercial_content
-      expose :help_page_text
-      expose :help_page_support_url
+      expose :password_authentication_enabled, as: :signin_enabled
     end
 
     class Release < Grape::Entity
