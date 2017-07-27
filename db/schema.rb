@@ -540,6 +540,36 @@ ActiveRecord::Schema.define(version: 20170725145659) do
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
 
+  create_table "gpg_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.binary "primary_keyid"
+    t.binary "fingerprint"
+    t.text "key"
+  end
+
+  add_index "gpg_keys", ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
+  add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", unique: true, using: :btree
+  add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
+
+  create_table "gpg_signatures", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "project_id"
+    t.integer "gpg_key_id"
+    t.boolean "valid_signature"
+    t.binary "commit_sha"
+    t.binary "gpg_key_primary_keyid"
+    t.text "gpg_key_user_name"
+    t.text "gpg_key_user_email"
+  end
+
+  add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree
+  add_index "gpg_signatures", ["gpg_key_id"], name: "index_gpg_signatures_on_gpg_key_id", using: :btree
+  add_index "gpg_signatures", ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
+  add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -1602,6 +1632,9 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "gpg_keys", "users", on_delete: :cascade
+  add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
+  add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade

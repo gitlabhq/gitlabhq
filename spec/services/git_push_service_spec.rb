@@ -681,6 +681,24 @@ describe GitPushService do
     end
   end
 
+  describe '#update_signatures' do
+    let(:service) do
+      described_class.new(
+        project,
+        user,
+        oldrev: sample_commit.parent_id,
+        newrev: sample_commit.id,
+        ref: 'refs/heads/master'
+      )
+    end
+
+    it 'calls CreateGpgSignatureWorker.perform_async for each commit' do
+      expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
+    end
+  end
+
   def execute_service(project, user, oldrev, newrev, ref)
     service = described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref )
     service.execute
