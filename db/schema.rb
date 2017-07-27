@@ -640,8 +640,8 @@ ActiveRecord::Schema.define(version: 20170803130232) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "geo_node_group_links", ["geo_node_id", "group_id"], name: "index_geo_node_group_links_on_geo_node_id_and_group_id", unique: true, using: :btree
   add_index "geo_node_group_links", ["geo_node_id"], name: "index_geo_node_group_links_on_geo_node_id", using: :btree
-  add_index "geo_node_group_links", ["group_id"], name: "index_geo_node_group_links_on_group_id", using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
@@ -1985,7 +1985,7 @@ ActiveRecord::Schema.define(version: 20170803130232) do
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_node_group_links", "geo_nodes", on_delete: :cascade
-  add_foreign_key "geo_node_group_links", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "geo_node_group_links", "namespaces", column: "group_id", name: "fk_e684c3550a", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
