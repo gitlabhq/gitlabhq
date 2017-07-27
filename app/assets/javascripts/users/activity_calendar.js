@@ -1,4 +1,4 @@
-/* eslint-disable no-var, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
+/* eslint-disable no-var, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
 
 import d3 from 'd3';
 
@@ -9,8 +9,8 @@ const LOADING_HTML = `
 `;
 
 export default class ActivityCalendar {
-  constructor(timestamps, calendar_activities_path) {
-    this.calendar_activities_path = calendar_activities_path;
+  constructor(timestamps, calendarActivitiesPath) {
+    this.calendarActivitiesPath = calendarActivitiesPath;
     this.clickDay = this.clickDay.bind(this);
     this.currentSelectedDate = '';
     this.daySpace = 1;
@@ -209,15 +209,12 @@ export default class ActivityCalendar {
   }
 
   clickDay(stamp) {
-    var formatted_date;
     if (this.currentSelectedDate !== stamp.date) {
       this.currentSelectedDate = stamp.date;
-      formatted_date = this.currentSelectedDate.getFullYear() + "-" + (this.currentSelectedDate.getMonth() + 1) + "-" + this.currentSelectedDate.getDate();
+      const date = this.currentSelectedDate.getFullYear() + "-" + (this.currentSelectedDate.getMonth() + 1) + "-" + this.currentSelectedDate.getDate();
       return $.ajax({
-        url: this.calendar_activities_path,
-        data: {
-          date: formatted_date
-        },
+        url: this.calendarActivitiesPath,
+        data: { date },
         cache: false,
         dataType: 'html',
         beforeSend: () => $('.user-calendar-activities').html(LOADING_HTML),
