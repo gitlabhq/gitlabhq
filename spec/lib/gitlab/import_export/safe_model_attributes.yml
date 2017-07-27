@@ -195,6 +195,7 @@ MergeRequestDiffFile:
 - a_mode
 - b_mode
 - too_large
+- binary
 Ci::Pipeline:
 - id
 - project_id
