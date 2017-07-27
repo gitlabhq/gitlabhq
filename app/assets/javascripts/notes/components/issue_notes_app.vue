@@ -5,7 +5,6 @@
   import { mapGetters, mapActions, mapMutations } from 'vuex';
   import store from '../stores/';
   import * as constants from '../constants'
-  import * as types from '../stores/mutation_types';
   import eventHub from '../event_hub';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';
@@ -17,6 +16,16 @@
 
   export default {
     name: 'IssueNotes',
+    props: {
+      issueData: {
+        type: Object,
+        required: true,
+      },
+      notesData: {
+        type: Object,
+        required: true,
+      },
+    },
     store,
     data() {
       return {
@@ -36,20 +45,19 @@
       ...mapGetters([
         'notes',
         'notesById',
+        'getNotesData',
+        'getNotesDataByProp',
+        'setLastFetchedAt',
+        'setTargetNoteHash',
       ]),
     },
     methods: {
       ...mapActions({
         actionFetchNotes: 'fetchNotes',
-      }),
-      ...mapActions([
-        'poll',
-        'toggleAward',
-        'scrollToNoteIfNeeded',
-      ]),
-      ...mapMutations({
-        setLastFetchedAt: types.SET_LAST_FETCHED_AT,
-        setTargetNoteHash: types.SET_TARGET_NOTE_HASH,
+        poll: 'poll',
+        toggleAward: 'toggleAward',
+        scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
+        setNotesData: 'setNotesData'
       }),
       getComponentName(note) {
         if (note.isPlaceholderNote) {
@@ -67,9 +75,7 @@
         return note.individual_note ? note.notes[0] : note;
       },
       fetchNotes() {
-        const { discussionsPath } = this.$el.parentNode.dataset;
-
-        this.actionFetchNotes(discussionsPath)
+        this.actionFetchNotes(his.getNotesDataByProp('discussionsPath'))
           .then(() => {
             this.isLoading = false;
 
@@ -78,23 +84,19 @@
               this.checkLocationHash();
             });
           })
-          .catch(() => {
-            Flash('Something went wrong while fetching issue comments. Please try again.');
-          });
+          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'));
       },
       initPolling() {
-        const { lastFetchedAt } = $('.js-notes-wrapper')[0].dataset;
-        this.setLastFetchedAt(lastFetchedAt);
+        this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
         // FIXME: @fatihacet Implement real polling mechanism
+        // TODO: FILIPA: DEAL WITH THIS
         setInterval(() => {
           this.poll()
             .then((res) => {
               this.setLastFetchedAt(res.lastFetchedAt);
             })
-            .catch(() => {
-              Flash('Something went wrong while fetching latest comments.');
-            });
+            .catch(() => Flash('Something went wrong while fetching latest comments.'));
         }, 15000);
       },
       bindEventHubListeners() {
@@ -106,6 +108,7 @@
             .catch(() => Flash('Something went wrong on our end.'));
         });
 
+        //TODO: FILIPA: REMOVE JQUERY
         $(document).on('issuable:change', (e, isClosed) => {
           eventHub.$emit('issueStateChanged', isClosed);
         });
@@ -119,6 +122,10 @@
           this.scrollToNoteIfNeeded($el);
         }
       },
+    },
+    created() {
+      this.setNotesData(this.notesData);
+      this.setIssueData(this.issueData);
     },
     mounted() {
       this.fetchNotes();
@@ -135,10 +142,12 @@
       class="loading">
       <loading-icon />
     </div>
+
     <ul
       v-if="!isLoading"
       id="notes-list"
       class="notes main-notes-list timeline">
+
       <component
         v-for="note in notes"
         :is="getComponentName(note)"
@@ -146,6 +155,7 @@
         :key="note.id"
         />
     </ul>
-    <issue-comment-form v-if="!isLoading" />
+
+    <issue-comment-form />
   </div>
 </template>

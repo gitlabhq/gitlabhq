@@ -7,6 +7,13 @@ import service from '../services/issue_notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 
+export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
+export const setIssueData = ({ commit }, data) => commit(types.SET_ISSUE_DATA, data);
+export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
+export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
+export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITAL_NOTES, data);
+export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+
 export const fetchNotes = ({ commit }, path) => service
   .fetchNotes(path)
   .then(res => res.json())
@@ -20,43 +27,31 @@ export const deleteNote = ({ commit }, note) => service
     commit(types.DELETE_NOTE, note);
   });
 
-export const updateNote = ({ commit }, data) => {
-  const { endpoint, note } = data;
+export const updateNote = ({ commit }, { endpoint, note }) => service
+  .updateNote(endpoint, note)
+  .then(res => res.json())
+  .then((res) => {
+    commit(types.UPDATE_NOTE, res);
+  });
 
-  return service
-    .updateNote(endpoint, note)
-    .then(res => res.json())
-    .then((res) => {
-      commit(types.UPDATE_NOTE, res);
-    });
-};
+export const replyToDiscussion = ({ commit }, { endpoint, data }) => service
+  .replyToDiscussion(endpoint, data)
+  .then(res => res.json())
+  .then((res) => {
+    commit(types.ADD_NEW_REPLY_TO_DISCUSSION, res);
 
-export const replyToDiscussion = ({ commit }, note) => {
-  const { endpoint, data } = note;
+    return res;
+  });
 
-  return service
-    .replyToDiscussion(endpoint, data)
-    .then(res => res.json())
-    .then((res) => {
-      commit(types.ADD_NEW_REPLY_TO_DISCUSSION, res);
-
-      return res;
-    });
-};
-
-export const createNewNote = ({ commit }, note) => {
-  const { endpoint, data } = note;
-
-  return service
-    .createNewNote(endpoint, data)
-    .then(res => res.json())
-    .then((res) => {
-      if (!res.errors) {
-        commit(types.ADD_NEW_NOTE, res);
-      }
-      return res;
-    });
-};
+export const createNewNote = ({ commit }, { endpoint, data }) => service
+  .createNewNote(endpoint, data)
+  .then(res => res.json())
+  .then((res) => {
+    if (!res.errors) {
+      commit(types.ADD_NEW_NOTE, res);
+    }
+    return res;
+  });
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
@@ -91,6 +86,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
       if (hasQuickActions && Object.keys(errors).length) {
         dispatch('poll');
+
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
         Flash('Commands applied', 'notice', $(noteData.flashContainer));
       }
@@ -136,9 +132,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 export const poll = ({ commit, state, getters }) => {
-  const { notesPath } = $('.js-notes-wrapper')[0].dataset;
-
-  return service.poll(`${notesPath}?full_data=1`, state.lastFetchedAt)
+  return service.poll(state.notesData.notesPath, state.lastFetchedAt)
     .then(res => res.json())
     .then((res) => {
       if (res.notes.length) {
@@ -160,7 +154,6 @@ export const poll = ({ commit, state, getters }) => {
           }
         });
       }
-
       return res;
     });
 };
@@ -175,20 +168,24 @@ export const toggleAward = ({ commit, getters, dispatch }, data) => {
     .then(() => {
       commit(types.TOGGLE_AWARD, { awardName, note });
 
-      if (!skipMutalityCheck && (awardName === 'thumbsup' || awardName === 'thumbsdown')) {
-        const counterAward = awardName === 'thumbsup' ? 'thumbsdown' : 'thumbsup';
+      if (!skipMutalityCheck &&
+        (awardName === constants.EMOJI_THUMBSUP || awardName === constants.EMOJI_THUMBSDOWN)) {
+        const counterAward = awardName === constants.EMOJI_THUMBSUP ?
+          constants.EMOJI_THUMBSDOWN :
+          constants.EMOJI_THUMBSUP;
+
         const targetNote = getters.notesById[noteId];
-        let amIAwarded = false;
+        let noteHasAward = false;
 
         targetNote.award_emoji.forEach((a) => {
           if (a.name === counterAward && a.user.id === window.gon.current_user_id) {
-            amIAwarded = true;
+            noteHasAward = true;
           }
         });
 
-        if (amIAwarded) {
-          data.awardName = counterAward;
-          data.skipMutalityCheck = true;
+        if (noteHasAward) {
+          Object.assign(data, { awardName: counterAward });
+          Object.assign(data, { kipMutalityCheck: true });
 
           dispatch(types.TOGGLE_AWARD, data);
         }
@@ -197,9 +194,7 @@ export const toggleAward = ({ commit, getters, dispatch }, data) => {
 };
 
 export const scrollToNoteIfNeeded = (context, el) => {
-  const isInViewport = gl.utils.isInViewport(el[0]);
-
-  if (!isInViewport) {
+  if (!gl.utils.isInViewport(el[0])) {
     gl.utils.scrollToElement(el);
   }
 };

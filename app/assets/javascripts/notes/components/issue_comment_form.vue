@@ -1,7 +1,7 @@
 <script>
 /* global Flash */
 
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
@@ -30,6 +30,10 @@
       issueNoteSignedOutWidget,
     },
     computed: {
+      ...mapGetters([
+        'getNotesDataByProp',
+        'getIssueDataByProp',
+      ]),
       isLoggedIn() {
         return window.gon.current_user_id;
       },
@@ -57,8 +61,7 @@
         };
       },
       canUpdateIssue() {
-        const { issueData } = window.gl;
-        return issueData && issueData.current_user.can_update;
+        return this.getIssueDataByProp(current_user).can_update;
       },
     },
     methods: {
@@ -146,11 +149,8 @@
       },
     },
     mounted() {
-      const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
-      const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
-
-      this.markdownDocsUrl = issueData.markdownDocs;
-      this.quickActionsDocsUrl = issueData.quickActionsDocs;
+      this.markdownDocsUrl = this.getIssueDataByProp(markdownDocs);
+      this.quickActionsDocsUrl = this.getIssueDataByProp(quickActionsDocs);
 
       eventHub.$on('issueStateChanged', (isClosed) => {
         this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;

@@ -6,3 +6,5 @@ export const COMMENT = 'comment';
 export const OPENED = 'opened';
 export const REOPENED = 'reopened';
 export const CLOSED = 'closed';
+export const EMOJI_THUMBSUP = 'thumbsup';
+export const EMOJI_THUMBSDOWN = 'thumbsdown';

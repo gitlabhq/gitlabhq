@@ -38,8 +38,9 @@
     :class="{ target: isTargetNote }"
     class="note system-note timeline-entry">
     <div class="timeline-entry-inner">
-      <div class="timeline-icon">
-        <span v-html="svg"></span>
+      <div
+        class="timeline-icon"
+        v-html="svg">
       </div>
       <div class="timeline-content">
         <div class="note-header">

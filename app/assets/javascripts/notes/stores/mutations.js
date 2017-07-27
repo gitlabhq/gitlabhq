@@ -58,6 +58,18 @@ export default {
     }
   },
 
+  [types.SET_NOTES_DATA](state, data) {
+    state.notesData = data;
+  },
+
+  [types.SET_ISSUE_DATA](state, data) {
+    state.issueData = data;
+  },
+
+  [types.SET_USER_DATA](state, data) {
+    state.userData = data;
+  },
+
   [types.SET_INITAL_NOTES](state, notes) {
     state.notes = notes;
   },

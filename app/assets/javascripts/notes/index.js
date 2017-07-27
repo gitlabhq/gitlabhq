@@ -1,25 +1,39 @@
 import Vue from 'vue';
-import issueNotes from './components/issue_notes.vue';
-import '../vue_shared/vue_resource_interceptor';
+import issueNotesApp from './components/issue_notes_app.vue';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const vm = new Vue({
-    el: '#js-notes',
-    components: {
-      issueNotes,
-    },
-    render(createElement) {
-      return createElement('issue-notes', {
-        attrs: {
-          ref: 'notes',
-        },
-      });
-    },
-  });
+document.addEventListener('DOMContentLoaded', () => new Vue({
+  el: '#js-vue-notes',
+  components: {
+    issueNotesApp,
+  },
+  data() {
+    const notesDataset = document.getElementById('js-vue-notes').dataset;
 
-  window.issueNotes = {
-    refresh() {
-      vm.$refs.notes.$store.dispatch('poll');
-    },
-  };
-});
+    return {
+      issueData: JSON.parse(notesDataset.issueData),
+      currentUserData: JSON.parse(notesDataset.currentUserData),
+      notesData: {
+        lastFetchedAt: notesDataset.lastFetchedAt,
+        discussionsPath: notesDataset.discussionsPath,
+      },
+    };
+  },
+  render(createElement) {
+    return createElement('issue-notes-app', {
+      attrs: {
+        ref: 'notes',
+      },
+      props: {
+        issueData: this.issueData,
+        notesData: this.notesData,
+      },
+    });
+  },
+}));
+
+  // // TODO: FILIPA: FIX THIS
+  // window.issueNotes = {
+  //   refresh() {
+  //     vm.$refs.notes.$store.dispatch('poll');
+  //   },
+  // };
