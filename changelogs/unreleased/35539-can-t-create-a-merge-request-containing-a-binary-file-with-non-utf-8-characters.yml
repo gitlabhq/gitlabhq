@@ -1,0 +1,5 @@
+---
+title: Fix creating merge request diffs when diff contains bytes that are invalid
+  in UTF-8
+merge_request:
+author:

@@ -5,7 +5,14 @@ describe Ci::API::Triggers do
     let!(:trigger_token) { 'secure token' }
     let!(:project) { create(:project, :repository, ci_id: 10) }
     let!(:project2) { create(:empty_project, ci_id: 11) }
-    let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
+
+    let!(:trigger) do
+      create(:ci_trigger,
+             project: project,
+             token: trigger_token,
+             owner: create(:user))
+    end
+
     let(:options) do
       {
         token: trigger_token
@@ -14,6 +21,8 @@ describe Ci::API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
+
+      project.add_developer(trigger.owner)
     end
 
     context 'Handles errors' do
@@ -47,7 +56,8 @@ describe Ci::API::Triggers do
       it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post ci_api("/projects/#{project.ci_id}/refs/other-branch/trigger"), options
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('No builds created')
+        expect(json_response['message']['base'])
+          .to contain_exactly('Reference not found')
       end
 
       context 'Validates variables' do

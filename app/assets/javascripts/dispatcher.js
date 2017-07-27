@@ -20,6 +20,8 @@
 /* global NamespaceSelects */
 /* global Project */
 /* global ProjectAvatar */
+/* global MergeRequest */
+/* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectNew */
 /* global ProjectShow */
@@ -228,6 +230,19 @@ import initIssuableSidebar from './init_issuable_sidebar';
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
+          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
+          if (mrNewCompareNode) {
+            new Compare({
+              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
+              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
+              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
+            });
+          } else {
+            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
+            new MergeRequest({
+              action: mrNewSubmitNode.dataset.mrSubmitAction,
+            });
+          }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
@@ -267,8 +282,14 @@ import initIssuableSidebar from './init_issuable_sidebar';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+
           initIssuableSidebar();
           initNotes();
+
+          const mrShowNode = document.querySelector('.merge-request');
+          window.mergeRequest = new MergeRequest({
+            action: mrShowNode.dataset.mrAction,
+          });
           break;
         case 'dashboard:activity':
           new gl.Activities();

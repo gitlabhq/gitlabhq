@@ -956,21 +956,25 @@ describe Repository, models: true do
     end
   end
 
-  describe '#exists?' do
+  shared_examples 'repo exists check' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to eq(true)
     end
 
-    it 'returns false when a repository does not exist' do
-      allow(repository).to receive(:refs_directory_exists?).and_return(false)
-
-      expect(repository.exists?).to eq(false)
-    end
-
-    it 'returns false when there is no namespace' do
+    it 'returns false if no full path can be constructed' do
       allow(repository).to receive(:path_with_namespace).and_return(nil)
 
       expect(repository.exists?).to eq(false)
+    end
+  end
+
+  describe '#exists?' do
+    context 'when repository_exists is disabled' do
+      it_behaves_like 'repo exists check'
+    end
+
+    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+      it_behaves_like 'repo exists check'
     end
   end
 

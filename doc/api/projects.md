@@ -99,7 +99,16 @@ Parameters:
       "repository_size": 1038090,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
-    }
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
+    },
   },
   {
     "id": 6,
@@ -168,6 +177,15 @@ Parameters:
       "repository_size": 2066080,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
     }
   }
 ]
@@ -257,6 +275,15 @@ Parameters:
       "repository_size": 1038090,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
     }
   },
   {
@@ -326,6 +353,15 @@ Parameters:
       "repository_size": 2066080,
       "lfs_objects_size": 0,
       "job_artifacts_size": 0
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
     }
   }
 ]
@@ -427,6 +463,15 @@ Parameters:
     "repository_size": 1038090,
     "lfs_objects_size": 0,
     "job_artifacts_size": 0
+  },
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members"
   }
 }
 ```
@@ -659,7 +704,16 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members"
+  }
 }
 ```
 
@@ -725,7 +779,16 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members"
+  }
 }
 ```
 
@@ -809,7 +872,16 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members"
+  }
 }
 ```
 
@@ -893,7 +965,16 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
-  "request_access_enabled": false
+  "request_access_enabled": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects",
+    "issues": "http://example.com/api/v4/projects/1/issues",
+    "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+    "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+    "labels": "http://example.com/api/v4/projects/1/labels",
+    "events": "http://example.com/api/v4/projects/1/events",
+    "members": "http://example.com/api/v4/projects/1/members"
+  }
 }
 ```
 
