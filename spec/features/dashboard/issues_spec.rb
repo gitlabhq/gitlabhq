@@ -80,6 +80,8 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows the new issue page', js: true do
+      original_defaults = Gitlab::Application.routes.default_url_options
+
       Gitlab::Application.routes.default_url_options = {
         host: Capybara.current_session.server.host,
         port: Capybara.current_session.server.port,
@@ -95,6 +97,8 @@ RSpec.describe 'Dashboard Issues' do
       page.within('#content-body') do
         expect(page).to have_selector('.issue-form')
       end
+
+      Gitlab::Application.routes.default_url_options = original_defaults
     end
   end
 end
