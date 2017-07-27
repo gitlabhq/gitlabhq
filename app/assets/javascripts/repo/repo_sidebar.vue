@@ -82,6 +82,7 @@ export default RepoSidebar;
         :is-mini="isMini"
         :project-name="projectName"/>
       <repo-previous-directory
+        v-if="isRoot"
         :prev-url="prevURL"
         @linkclicked="linkClicked(prevURL)"/>
       <repo-loading-file

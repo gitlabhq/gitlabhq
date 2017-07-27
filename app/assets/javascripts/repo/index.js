@@ -23,13 +23,14 @@ function initRepo() {
   Store.checkIsCommitable();
   Store.projectId = repo.dataset.projectId;
   Store.tempPrivateToken = repo.dataset.tempToken;
+  Store.projectUrl = repo.dataset.projectUrl;
 
   this.vm = new Vue({
     el: repo,
     data: () => Store,
     template: `
       <div class="tree-content-holder">
-        <repo-sidebar/><div class="panel-right" :class="{'edit-mode': readOnly}">
+        <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
           <repo-tabs/>
           <repo-file-buttons/>
           <repo-editor/>

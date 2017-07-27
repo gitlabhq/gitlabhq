@@ -11,9 +11,11 @@ const RepoStore = {
   editButton: '',
   editMode: false,
   isTree: false,
+  isRoot: false,
   prevURL: '',
   projectId: '',
   projectName: '',
+  projectUrl: '',
   trees: [],
   blobs: [],
   submodules: [],
@@ -27,21 +29,7 @@ const RepoStore = {
   tempPrivateToken: '',
   submitCommitsLoading: false,
   binaryLoaded:false,
-  activeFile: {
-    active: true,
-    binary: false,
-    extension: '',
-    html: '',
-    mime_type: '',
-    name: 'loading...',
-    plain: '',
-    size: 0,
-    url: '',
-    raw: false,
-    newContent: '',
-    changed: false,
-    loading: false,
-  },
+  activeFile: RepoHelper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: 0,
   activeFileLabel: 'Raw',
@@ -64,7 +52,6 @@ const RepoStore = {
   readOnly: true,
 
   // mutations
-
   checkIsCommitable() {
     RepoStore.service.checkCurrentBranchIsCommitable()
       .then((data) => {
@@ -87,7 +74,6 @@ const RepoStore = {
 
   setActiveFiles(file) {
     if (RepoStore.isActiveFile(file)) return;
-
     RepoStore.openedFiles = RepoStore.openedFiles
       .map((openedFile, i) => RepoStore.setFileActivity(file, openedFile, i));
 
@@ -149,8 +135,29 @@ const RepoStore = {
 
   removeFromOpenedFiles(file) {
     if (file.type === 'tree') return;
+    let foundIndex;
+    RepoStore.openedFiles = RepoStore.openedFiles.filter((openedFile, i) => {
+      if(openedFile.url === file.url) foundIndex = i;
+      return openedFile.url !== file.url;
+    });
 
-    RepoStore.openedFiles = RepoStore.openedFiles.filter(openedFile => openedFile.url !== file.url);
+    // now activate the right tab based on what you closed.
+    if(RepoStore.openedFiles.length === 0) {
+      console.log('open 0')
+      RepoStore.activeFile = {};
+      return;
+    }
+      
+    if(RepoStore.openedFiles.length === 1 || foundIndex === 0) {
+      RepoStore.setActiveFiles(RepoStore.openedFiles[0]);
+      return;
+    }
+
+    if(foundIndex) {
+      if(foundIndex > 0) {
+        RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
+      }
+    }
   },
 
   addPlaceholderFile() {
