@@ -39,6 +39,71 @@ describe NotesHelper do
     end
   end
 
+  describe '#note_first_contribution_for_user?' do
+    let(:project) { create(:empty_project) }
+    let(:other_project) { create(:empty_project) }
+
+    let(:contributor) { create(:user) }
+    let(:first_time_contributor) { create(:user) }
+
+    # there should be a way to disable the lazy loading on these
+    let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
+
+    context "notes for a merge request" do
+      let(:guest_merge_request) { create(:merge_request, author: guest, target_project: project, source_project: project) }
+      let(:contributor_note) { create(:note, noteable: merged_mr, author: contributor, project: merged_mr.project) }
+      let(:first_time_contributor_note) { create(:note, noteable: open_mr, author: first_time_contributor, project: open_mr.project) }
+      let(:first_time_contributor_note_other_project) { create(:note, noteable: merged_mr_other_project, author: first_time_contributor, project: merged_mr_other_project.project) }
+      let(:guest_note) { create(:note, noteable: guest_merge_request, author: first_time_contributor, project: project) }
+
+      it "is true when you don't have any merged MR" do
+        expect(helper.note_first_contribution_for_user? contributor_note).to be false
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note).to be true
+      end
+
+      it "handle multiple projects separately" do
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note).to be true
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note_other_project).to be false
+      end
+
+      it "should only apply to the noteable's author" do
+        expect(helper.note_first_contribution_for_user? guest_note).to be false
+      end
+    end
+
+    context "notes for an issue" do
+      let(:guest_issue) { create(:issue, author: guest, project: project) }
+      let(:contributor_issue) { create(:issue, author: contributor, project: project) }
+      let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
+      let(:first_time_contributor_issue_other_project) { create(:issue, author: first_time_contributor, project: other_project) }
+        
+      let(:contributor_note) { create(:note, noteable: contributor_issue, author: contributor, project: project) }
+      let(:first_time_contributor_note) { create(:note, noteable: first_time_contributor_issue, author: first_time_contributor, project: project) }
+      let(:first_time_contributor_note_other_project) { create(:note, noteable: first_time_contributor_issue_other_project, author: first_time_contributor, project: other_project) }
+      let(:guest_note) { create(:note, noteable: guest_issue, author: first_time_contributor, project: project) }
+
+      it "is true when you don't have any merged MR" do
+        expect(merged_mr).to be
+        expect(helper.note_first_contribution_for_user? contributor_note).to be false
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note).to be true
+      end
+
+      it "handle multiple projects separately" do
+        expect(merged_mr).to be
+        expect(merged_mr_other_project).to be
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note).to be true
+        expect(helper.note_first_contribution_for_user? first_time_contributor_note_other_project).to be false
+      end
+
+      it "should only apply to the noteable's author" do
+        expect(merged_mr).to be
+        expect(helper.note_first_contribution_for_user? guest_note).to be false
+      end
+    end
+  end
+
   describe '#discussion_path' do
     let(:project) { create(:project, :repository) }
 

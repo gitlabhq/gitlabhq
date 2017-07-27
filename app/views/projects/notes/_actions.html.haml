@@ -1,6 +1,9 @@
 - access = note_max_access_for_user(note)
 - if access
   %span.note-role= access
+- if note_first_contribution_for_user?(note)
+  %span.note-role.has-tooltip{ title: _("This user hasn't yet contributed code to this project. Handle with care.")}
+    = _('First-time contributor')
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)
