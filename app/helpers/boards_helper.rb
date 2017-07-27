@@ -36,11 +36,21 @@ module BoardsHelper
     end
   end
 
-  def multiple_boards_available
-    if @project
-      @project.feature_available?(:multiple_issue_boards)
-    elsif @group
-      @group.feature_available?(:multiple_issue_boards)
+  def multiple_boards_available?
+    current_board_parent.multiple_issue_boards_available?(current_user)
+  end
+
+  def board_path(board)
+    @board_path ||= begin
+      if board.is_group_board?
+        group_board_path(current_board_parent, board)
+      else
+        project_board_path(current_board_parent, board)
+      end
     end
+  end
+
+  def current_board_parent
+    @current_board_parent ||= @project || @group
   end
 end

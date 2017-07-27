@@ -1438,6 +1438,10 @@ class Project < ActiveRecord::Base
     feature_available?(:multiple_issue_boards, user)
   end
 
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone, user)
+  end
+
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
   alias_method :path_with_namespace, :full_path

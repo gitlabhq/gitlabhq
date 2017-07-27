@@ -1,5 +1,5 @@
 module EE
-  module Projects
+  module Boards
     module BoardsController
       extend ActiveSupport::Concern
       prepended do

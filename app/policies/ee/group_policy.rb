@@ -6,6 +6,14 @@ module EE
       with_scope :subject
       condition(:ldap_synced) { @subject.ldap_synced? }
 
+      rule { reporter }.policy do
+        enable :admin_list
+        enable :admin_board
+      end
+
+      rule { public_group }      .enable :read_board
+      rule { guest }             .enable :read_board
+
       rule { ldap_synced }.prevent :admin_group_member
 
       rule { ldap_synced & admin }.policy do

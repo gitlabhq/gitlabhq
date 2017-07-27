@@ -22,9 +22,7 @@ module BoardsAuthorizations
   end
 
   def authorize_admin_list!
-    ability = board.is_group_board? ? :admin_milestones : :admin_list
-
-    return render_403 unless action_allowed_for?(board.parent, ability)
+    return render_403 unless action_allowed_for?(board.parent, :admin_list)
   end
 
 

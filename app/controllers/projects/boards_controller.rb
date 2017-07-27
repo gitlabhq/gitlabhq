@@ -1,5 +1,5 @@
 class Projects::BoardsController < Projects::ApplicationController
-  prepend EE::Projects::BoardsController
+  prepend EE::Boards::BoardsController
   include IssuableCollections
 
   before_action :authorize_read_board!, only: [:index, :show]
