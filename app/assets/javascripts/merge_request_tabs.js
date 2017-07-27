@@ -266,6 +266,8 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
           const $container = $('#diffs');
           $container.html(data.html);
 
+          this.initChangesDropdown();
+
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
           }
@@ -311,6 +313,13 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
             anchor.addClass('target');
           }
         },
+      });
+    }
+
+    initChangesDropdown() {
+      $('.js-diff-stats-dropdown').glDropdown({
+        filterable: true,
+        remoteFilter: false,
       });
     }
 

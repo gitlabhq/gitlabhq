@@ -395,12 +395,11 @@
   background-color: transparent;
   border: 0;
   color: $gl-link-color;
-  transition: color 0.1s linear;
+  font-weight: 600;
 
   &:hover,
   &:focus {
     outline: none;
-    text-decoration: underline;
     color: $gl-link-hover-color;
   }
 }
@@ -558,4 +557,18 @@
   &:focus {
     outline: 0;
   }
+}
+
+.diff-file-changes {
+  width: 450px;
+  z-index: 150;
+
+  a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.diff-file-changes-path {
+  @include str-truncated(78%);
 }

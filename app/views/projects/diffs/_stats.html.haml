@@ -1,36 +1,24 @@
-.js-toggle-container
-  .commit-stat-summary
-    Showing
-    %button.diff-stats-summary-toggler.js-toggle-button{ type: "button" }
-      %strong= pluralize(diff_files.size, "changed file")
-    with
-    %strong.cgreen #{diff_files.sum(&:added_lines)} additions
-    and
-    %strong.cred #{diff_files.sum(&:removed_lines)} deletions
-  .file-stats.js-toggle-content.hide
-    %ul
-      - diff_files.each do |diff_file|
-        - file_hash = hexdigest(diff_file.file_path)
-        %li
-          - if diff_file.deleted_file?
-            %span.deleted-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-minus
-                = diff_file.old_path
-          - elsif diff_file.renamed_file?
-            %span.renamed-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-minus
-                = diff_file.old_path
-                &rarr;
-                = diff_file.new_path
-          - elsif diff_file.new_file?
-            %span.new-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-plus
-                = diff_file.new_path
-          - else
-            %span.edit-file
-              %a{ href: "##{file_hash}" }
-                %i.fa.fa-adjust
-                = diff_file.new_path
+.commit-stat-summary.dropdown
+  Showing
+  %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
+    = pluralize(diff_files.size, "changed file")
+    = icon("caret-down fw")
+  with
+  %strong.cgreen #{diff_files.sum(&:added_lines)} additions
+  and
+  %strong.cred #{diff_files.sum(&:removed_lines)} deletions
+  .dropdown-menu.diff-file-changes
+    = dropdown_filter("Search file")
+    .dropdown-content
+      %ul
+        - diff_files.each do |diff_file|
+          - file_hash = hexdigest(diff_file.file_path)
+          - added_lines = diff_file.added_lines
+          - removed_lines = diff_file.removed_lines
+          %li
+            %a{ href: "##{file_hash}", title: diff_file.new_path }
+              = icon("#{diff_file_changed_icon(diff_file)} fw", class: "#{diff_file_changed_icon_color(diff_file)} append-right-5")
+              %span.diff-file-changes-path= diff_file.new_path
+              .pull-right
+                %span.cgreen= "+#{added_lines}"
+                %span.cred= "-#{removed_lines}"
