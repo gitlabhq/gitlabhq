@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     modal: true,
     show: false,
   });
-  $('.how_to_merge_link').bind('click', () => {
+  $('.how_to_merge_link').on('click', () => {
     modal.show();
   });
-  $('.modal-header .close').bind('click', () => {
+  $('.modal-header .close').on('click', () => {
     modal.hide();
   });
 });
