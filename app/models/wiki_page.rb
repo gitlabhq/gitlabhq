@@ -138,6 +138,10 @@ class WikiPage
     versions.first
   end
 
+  def last_commit_sha
+    commit&.sha
+  end
+
   # Returns the Date that this latest version was
   # created on.
   def created_at
@@ -196,7 +200,7 @@ class WikiPage
     @attributes[:content] = new_content
     @attributes[:format] = format
 
-    if last_commit_sha && last_commit_sha != commit.sha
+    if last_commit_sha && last_commit_sha != self.last_commit_sha
       raise PageChangedError.new("You are attempting to update a page that has changed since you started editing it.")
     end
 
