@@ -154,7 +154,7 @@ export default class UserTabs {
   }
 
   loadActivities() {
-    if (this.loaded['activity']) {
+    if (this.loaded.activity) {
       return;
     }
     const $calendarWrap = this.$parentEl.find('.user-calendar');
@@ -172,7 +172,7 @@ export default class UserTabs {
     });
 
     new gl.Activities();
-    this.loaded['activity'] = true;
+    this.loaded.activity = true;
   }
 
   toggleLoading(status) {
