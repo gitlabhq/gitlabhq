@@ -229,7 +229,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
       get api(issues_route, user)
 
       expect(response).to have_http_status(200)
-      expect(response).to match_response_schema('public_api/v4/issues')
+      expect(response).to match_response_schema('public_api/v4/ee/issues')
     end
 
     it 'returns a 401 error if user not authenticated' do
