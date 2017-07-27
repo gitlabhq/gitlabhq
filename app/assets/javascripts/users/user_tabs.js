@@ -163,7 +163,6 @@ export default class UserTabs {
 
     $.ajax({
       dataType: 'json',
-      type: 'GET',
       url: calendarPath,
       success: (activityData) => {
         $calendarWrap.html(CALENDAR_TEMPLATE);
