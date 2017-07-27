@@ -71,6 +71,11 @@ your code, use it as an issue tracker, collaborate on code, and continuously
 build, test, and deploy your app with built-in GitLab CI/CD. Or, you can do
 it all at once, from one single project.
 
+### Repository
+
+Host your codebase in [GitLab repositories](project/repository/index.md) with version control
+and as part of a fully integrated platform.
+
 ### Issues
 
 Explore the best of GitLab [Issues](project/issues/index.md).
