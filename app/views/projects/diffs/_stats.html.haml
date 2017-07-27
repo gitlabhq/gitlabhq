@@ -20,5 +20,7 @@
               = icon("#{diff_file_changed_icon(diff_file)} fw", class: "#{diff_file_changed_icon_color(diff_file)} append-right-5")
               %span.diff-file-changes-path= diff_file.new_path
               .pull-right
-                %span.cgreen= "+#{added_lines}"
-                %span.cred= "-#{removed_lines}"
+                %span.cgreen<
+                  +#{added_lines}
+                %span.cred<
+                  \-#{removed_lines}

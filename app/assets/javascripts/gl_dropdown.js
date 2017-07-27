@@ -731,8 +731,14 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
     if (this.options.filterable) {
       this.dropdown.one('transitionend', () => {
+        const initialScrollTop = $(window).scrollTop();
+
         if (this.dropdown.is('.open')) {
           this.filterInput.focus();
+        }
+
+        if ($(window).scrollTop() < initialScrollTop) {
+          $(window).scrollTop(initialScrollTop);
         }
       });
 
