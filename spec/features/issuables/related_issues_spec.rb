@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Related issues', feature: true, js: true do
+describe 'Related issues', :js do
   let(:project) { create(:project_empty_repo, :public) }
   let(:project_b) { create(:project_empty_repo, :public) }
   let(:project_unauthorized) { create(:project_empty_repo, :public) }

@@ -15,6 +15,10 @@ You can use [project services][project-services] to store credentials to
 your infrastructure provider and they will be available during the
 deployment.
 
+## Quick start
+
+We made a [simple guide](quick_start_guide.md) to using Auto Deploy with GitLab.com.
+
 ## Supported templates
 
 The list of supported auto deploy templates is available in the

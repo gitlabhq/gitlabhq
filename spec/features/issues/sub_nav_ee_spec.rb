@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues sub nav EE', :feature do
+describe 'Issues sub nav EE' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
 

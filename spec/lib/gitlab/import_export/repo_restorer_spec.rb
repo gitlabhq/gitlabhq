@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RepoRestorer, services: true do
+describe Gitlab::ImportExport::RepoRestorer do
   describe 'bundle a project Git repo' do
     let(:user) { create(:user) }
     let!(:project_with_repo) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }

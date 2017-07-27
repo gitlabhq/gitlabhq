@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::AuthorizedDestroyService, services: true do
+describe Members::AuthorizedDestroyService do
   let(:member_user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
   let(:group) { create(:group, :public) }

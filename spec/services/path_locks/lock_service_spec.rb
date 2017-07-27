@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PathLocks::LockService, services: true do
+describe PathLocks::LockService do
   let(:current_user) { create(:user) }
   let(:project)      { create(:empty_project) }
   let(:path)         { 'app/models' }

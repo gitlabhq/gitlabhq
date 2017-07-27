@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environments page', :feature, :js do
+feature 'Environments page', :js do
   given(:project) { create(:empty_project) }
   given(:user) { create(:user) }
   given(:role) { :developer }

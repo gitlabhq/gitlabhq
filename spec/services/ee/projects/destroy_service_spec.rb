@@ -1,7 +1,7 @@
 # rubocop:disable RSpec/FilePath
 require 'spec_helper'
 
-describe Projects::DestroyService, services: true do
+describe Projects::DestroyService do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:project_id) { project.id }
@@ -26,7 +26,7 @@ describe Projects::DestroyService, services: true do
       Gitlab::Mirror.increment_capacity(project_mirror.id)
 
       expect do
-        Projects::DestroyService.new(project_mirror, project_mirror.owner, {}).execute
+        described_class.new(project_mirror, project_mirror.owner, {}).execute
       end.to change { Gitlab::Mirror.available_capacity }.from(max_capacity - 1).to(max_capacity)
     end
   end
@@ -38,6 +38,15 @@ describe Projects::DestroyService, services: true do
       # Run Sidekiq immediately to check that renamed repository will be removed
       Sidekiq::Testing.inline! do
         expect { subject.execute }.to change(Geo::RepositoryDeletedEvent, :count).by(1)
+      end
+    end
+
+    it 'does not log event to the Geo log if project deletion fails' do
+      expect_any_instance_of(Project)
+        .to receive(:destroy!).and_raise(StandardError.new('Other error message'))
+
+      Sidekiq::Testing.inline! do
+        expect { subject.execute }.not_to change(Geo::RepositoryDeletedEvent, :count)
       end
     end
   end

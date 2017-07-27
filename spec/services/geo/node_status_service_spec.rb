@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::NodeStatusService, services: true do
+describe Geo::NodeStatusService do
   let!(:primary)  { create(:geo_node, :primary) }
   let(:secondary) { create(:geo_node) }
 

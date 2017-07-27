@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -78,7 +78,7 @@ describe Project, models: true do
 
     context 'after initialized' do
       it "has a project_feature" do
-        expect(Project.new.project_feature).to be_present
+        expect(described_class.new.project_feature).to be_present
       end
     end
 
@@ -128,8 +128,8 @@ describe Project, models: true do
         project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
         project1 = create(:project, wiki_access_level: ProjectFeature::DISABLED)
 
-        expect(Project.with_wiki_enabled).to include(project)
-        expect(Project.with_wiki_enabled).not_to include(project1)
+        expect(described_class.with_wiki_enabled).to include(project)
+        expect(described_class.with_wiki_enabled).not_to include(project1)
       end
     end
   end
@@ -476,7 +476,7 @@ describe Project, models: true do
   end
 
   it 'returns valid url to repo' do
-    project = Project.new(path: 'somewhere')
+    project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
@@ -1098,7 +1098,7 @@ describe Project, models: true do
   end
 
   describe '.with_shared_runners' do
-    subject { Project.with_shared_runners }
+    subject { described_class.with_shared_runners }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:empty_project, shared_runners_enabled: true) }
@@ -1123,10 +1123,10 @@ describe Project, models: true do
     let!(:project2) { create(:empty_project, :public, group: group) }
 
     it 'returns total project count' do
-      expect(Project).to receive(:count).once.and_call_original
+      expect(described_class).to receive(:count).once.and_call_original
 
       3.times do
-        expect(Project.cached_count).to eq(2)
+        expect(described_class.cached_count).to eq(2)
       end
     end
   end
@@ -1171,7 +1171,7 @@ describe Project, models: true do
       user1.toggle_star(project1)
       user2.toggle_star(project2)
 
-      expect(Project.starred_by(user1)).to contain_exactly(project1)
+      expect(described_class.starred_by(user1)).to contain_exactly(project1)
     end
   end
 
@@ -1821,7 +1821,7 @@ describe Project, models: true do
       let(:project) { create(:empty_project, :mirror) }
 
       it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
-        allow_any_instance_of(Project).to receive(:repository_exists?).and_return(false, true)
+        allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
         expect_any_instance_of(EE::Project).to receive(:force_import_job!)
         expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
 
@@ -2176,13 +2176,13 @@ describe Project, models: true do
   describe '.where_full_path_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
-        expect(Project.where_full_path_in([])).to eq([])
+        expect(described_class.where_full_path_in([])).to eq([])
       end
     end
 
     context 'without any valid paths' do
       it 'returns an empty relation' do
-        expect(Project.where_full_path_in(%w[foo])).to eq([])
+        expect(described_class.where_full_path_in(%w[foo])).to eq([])
       end
     end
 
@@ -2191,15 +2191,15 @@ describe Project, models: true do
       let!(:project2) { create(:project) }
 
       it 'returns the projects matching the paths' do
-        projects = Project.where_full_path_in([project1.path_with_namespace,
-                                               project2.path_with_namespace])
+        projects = described_class.where_full_path_in([project1.path_with_namespace,
+                                                       project2.path_with_namespace])
 
         expect(projects).to contain_exactly(project1, project2)
       end
 
       it 'returns projects regardless of the casing of paths' do
-        projects = Project.where_full_path_in([project1.path_with_namespace.upcase,
-                                               project2.path_with_namespace.upcase])
+        projects = described_class.where_full_path_in([project1.path_with_namespace.upcase,
+                                                       project2.path_with_namespace.upcase])
 
         expect(projects).to contain_exactly(project1, project2)
       end
@@ -2520,7 +2520,7 @@ describe Project, models: true do
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do
-      expect(Project.inside_path(path)).to eq([project1])
+      expect(described_class.inside_path(path)).to eq([project1])
     end
   end
 
@@ -2724,7 +2724,7 @@ describe Project, models: true do
 
     context 'with a user' do
       let(:projects) do
-        Project.all.public_or_visible_to_user(user)
+        described_class.all.public_or_visible_to_user(user)
       end
 
       it 'includes projects the user has access to' do
@@ -2738,7 +2738,7 @@ describe Project, models: true do
 
     context 'without a user' do
       it 'only includes public projects' do
-        projects = Project.all.public_or_visible_to_user
+        projects = described_class.all.public_or_visible_to_user
 
         expect(projects).to eq([public_project])
       end

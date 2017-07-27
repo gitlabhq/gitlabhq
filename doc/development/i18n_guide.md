@@ -204,6 +204,9 @@ There is also and alternative method to [translate messages from validation erro
 
 ## Adding a new language
 
+**Please note in order for a new language to be accepted, it must have at least a 
+50% translation coverage.**
+
 Let's suppose you want to add translations for a new language, let's say French.
 
 1. The first step is to register the new language in `lib/gitlab/i18n.rb`:

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph', :js, :feature do
+feature 'Mini Pipeline Graph', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }

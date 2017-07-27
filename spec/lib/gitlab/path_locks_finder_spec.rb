@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::PathLocksFinder, lib: true do
+describe Gitlab::PathLocksFinder do
   let(:project) { create :empty_project }
   let(:user) { create :user }
-  let(:finder) { Gitlab::PathLocksFinder.new(project) }
+  let(:finder) { described_class.new(project) }
 
   it "returns correct lock information" do
     lock1 = create :path_lock, project: project, path: 'app'

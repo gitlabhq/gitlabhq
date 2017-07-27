@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Burndown, models: true do
+describe Burndown do
   let(:start_date) { "2017-03-01" }
   let(:due_date)   { "2017-03-05" }
   let(:milestone)  { create(:milestone, start_date: start_date, due_date: due_date) }

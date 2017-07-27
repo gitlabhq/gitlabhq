@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PathLock, models: true do
+describe PathLock do
   let!(:path_lock) { create(:path_lock, path: 'app/models') }
   let(:project) { path_lock.project }
 

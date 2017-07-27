@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::ProjectCreator, lib: true do
+describe Gitlab::GitlabImport::ProjectCreator do
   let(:user) { create(:user) }
   let(:repo) do
     {
@@ -23,7 +23,7 @@ describe Gitlab::GitlabImport::ProjectCreator, lib: true do
   it 'creates project' do
     allow_any_instance_of(EE::Project).to receive(:add_import_job)
 
-    project_creator = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, user, access_params)
+    project_creator = described_class.new(repo, namespace, user, access_params)
     project = project_creator.execute
 
     expect(project.import_url).to eq("https://oauth2:asdffg@gitlab.com/asd/vim.git")

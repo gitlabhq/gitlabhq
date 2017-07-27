@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemNoteService, services: true do
+describe SystemNoteService do
   include Gitlab::Routing
 
   let(:project)  { create(:empty_project) }

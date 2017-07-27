@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedTags::UpdateService, services: true do
+describe ProtectedTags::UpdateService do
   let(:protected_tag) { create(:protected_tag) }
   let(:project) { protected_tag.project }
   let(:user) { project.owner }

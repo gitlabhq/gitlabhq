@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Gitlab::Shell, lib: true do
+describe Gitlab::Shell do
   let(:project) { double('Project', id: 7, path: 'diaspora') }
-  let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:gitlab_shell) { described_class.new }
   let(:popen_vars) { { 'GIT_TERMINAL_PROMPT' => ENV['GIT_TERMINAL_PROMPT'] } }
 
   before do
@@ -30,7 +30,7 @@ describe Gitlab::Shell, lib: true do
       allow(Gitlab.config.gitlab_shell).to receive(:secret_file).and_return(secret_file)
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-secret-test')
       FileUtils.mkdir('tmp/tests/shell-secret-test')
-      Gitlab::Shell.ensure_secret_token!
+      described_class.ensure_secret_token!
     end
 
     after do
@@ -39,7 +39,7 @@ describe Gitlab::Shell, lib: true do
     end
 
     it 'creates and links the secret token file' do
-      secret_token = Gitlab::Shell.secret_token
+      secret_token = described_class.secret_token
 
       expect(File.exist?(secret_file)).to be(true)
       expect(File.read(secret_file).chomp).to eq(secret_token)
@@ -394,7 +394,7 @@ describe Gitlab::Shell, lib: true do
     end
   end
 
-  describe Gitlab::Shell::KeyAdder, lib: true do
+  describe Gitlab::Shell::KeyAdder do
     describe '#add_key' do
       it 'removes trailing garbage' do
         io = spy(:io)

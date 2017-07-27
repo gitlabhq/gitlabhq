@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project mirror', feature: true do
+feature 'Project mirror' do
   let(:project) { create(:project, :mirror, :import_finished, creator: user, name: 'Victorialand') }
   let(:user) { create(:user) }
 

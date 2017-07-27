@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::RetryBuildService, :services do
+describe Ci::RetryBuildService do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

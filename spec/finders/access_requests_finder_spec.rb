@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AccessRequestsFinder, services: true do
+describe AccessRequestsFinder do
   let(:user) { create(:user) }
   let(:access_requester) { create(:user) }
 

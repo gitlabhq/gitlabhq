@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssueReferenceFilter, lib: true do
+describe Banzai::Filter::IssueReferenceFilter do
   include FilterSpecHelper
 
   def helper

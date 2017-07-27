@@ -6,7 +6,7 @@ describe API::Internal do
   let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 
-  describe "GET /internal/check", no_db: true do
+  describe "GET /internal/check" do
     it do
       get api("/internal/check"), secret_token: secret_token
 

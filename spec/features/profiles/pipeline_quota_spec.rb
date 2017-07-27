@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Profile > Pipeline Quota', feature: true do
+feature 'Profile > Pipeline Quota' do
   let(:user) { create(:user) }
   let(:namespace) { create(:namespace, owner: user) }
   let!(:project) { create(:empty_project, namespace: namespace, shared_runners_enabled: true) }

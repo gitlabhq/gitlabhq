@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService, services: true do
+describe MergeRequests::UpdateService do
   include EmailHelpers
 
   let(:project) { create(:project, :repository) }
@@ -55,7 +55,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -145,7 +145,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       context 'without pipeline' do
         before do
@@ -205,7 +205,7 @@ describe MergeRequests::UpdateService, services: true do
 
       context 'with a non-authorised user' do
         let(:visitor) { create(:user) }
-        let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
+        let(:service) { described_class.new(project, visitor, opts) }
 
         before do
           merge_request.update_attribute(:merge_error, 'Error')
@@ -377,7 +377,7 @@ describe MergeRequests::UpdateService, services: true do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+          @merge_request = described_class.new(project, user, opts).execute(merge_request)
         end
 
         should_email(subscriber)
@@ -393,7 +393,7 @@ describe MergeRequests::UpdateService, services: true do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -404,7 +404,7 @@ describe MergeRequests::UpdateService, services: true do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -467,7 +467,7 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { merge_request }
-      include_examples 'updating mentions', MergeRequests::UpdateService
+      include_examples 'updating mentions', described_class
     end
 
     context 'when MergeRequest has tasks' do

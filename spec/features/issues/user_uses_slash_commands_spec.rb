@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > User uses quick actions', feature: true, js: true do
+feature 'Issues > User uses quick actions', js: true do
   include QuickActionsHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do

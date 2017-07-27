@@ -403,7 +403,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'net-ntp'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.18.0'
+gem 'gitaly', '~> 0.19.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

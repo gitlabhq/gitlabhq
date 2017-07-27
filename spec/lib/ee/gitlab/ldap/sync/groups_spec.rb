@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
+describe EE::Gitlab::LDAP::Sync::Groups do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }

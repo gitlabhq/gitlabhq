@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Daemon, lib: true do
+describe Gitlab::Geo::LogCursor::Daemon do
   describe '#run!' do
     it 'traps signals' do
       allow(subject).to receive(:exit?) { true }

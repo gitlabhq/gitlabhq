@@ -90,9 +90,9 @@
                   List
 
             = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Board' do
+              = link_to project_boards_path(@project), title: 'Boards' do
                 %span
-                  Board
+                  Boards
 
           - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
             = nav_link(controller: :merge_requests) do

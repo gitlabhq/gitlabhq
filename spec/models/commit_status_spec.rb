@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitStatus, :models do
+describe CommitStatus do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IssueLinks::ListService, service: true do
+describe IssueLinks::ListService do
   let(:user) { create :user }
   let(:project) { create(:project_empty_repo, :private) }
   let(:issue) { create :issue, project: project }

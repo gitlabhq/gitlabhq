@@ -293,7 +293,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly (0.18.0)
+    gitaly (0.19.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.0)
     github-linguist (4.7.6)
@@ -1008,7 +1008,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly (~> 0.18.0)
+  gitaly (~> 0.19.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
@@ -1020,8 +1020,8 @@ DEPENDENCIES
   google-api-client (~> 0.8.6)
   grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
-  gssapi
   grape-route-helpers (~> 2.0.0)
+  gssapi
   haml_lint (~> 0.21.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes

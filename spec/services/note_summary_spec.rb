@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NoteSummary, services: true do
+describe NoteSummary do
   let(:project)  { build(:empty_project) }
   let(:noteable) { build(:issue) }
   let(:user)     { build(:user) }

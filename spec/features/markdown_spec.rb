@@ -24,7 +24,7 @@ require 'erb'
 #
 # See the MarkdownFeature class for setup details.
 
-describe 'GitLab Markdown', feature: true do
+describe 'GitLab Markdown' do
   include Capybara::Node::Matchers
   include MarkupHelper
   include MarkdownMatchers

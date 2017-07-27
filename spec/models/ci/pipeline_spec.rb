@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
+describe Ci::Pipeline do
   include EmailHelpers
 
   let(:user) { create(:user) }

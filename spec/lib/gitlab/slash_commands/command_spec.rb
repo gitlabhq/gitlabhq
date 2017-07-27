@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Command, service: true do
+describe Gitlab::SlashCommands::Command do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin uses repository checks', feature: true do
+feature 'Admin uses repository checks' do
   include StubENV
 
   before do

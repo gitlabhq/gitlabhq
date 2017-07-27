@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group elastic search', js: true, feature: true do
+feature 'Group elastic search', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }

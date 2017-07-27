@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::ApplicationHelp, service: true do
+describe Gitlab::SlashCommands::ApplicationHelp do
   let(:params) { { command: '/gitlab', text: 'help' } }
 
   describe '#execute' do

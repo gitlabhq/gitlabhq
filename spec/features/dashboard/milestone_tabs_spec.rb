@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dashboard milestone tabs', :js, :feature do
+describe 'Dashboard milestone tabs', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let!(:label) { create(:label, project: project) }

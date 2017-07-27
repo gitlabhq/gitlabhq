@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::Sync::AdminUsers, lib: true do
+describe EE::Gitlab::LDAP::Sync::AdminUsers do
   include LdapHelpers
 
   let(:adapter) { ldap_adapter }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Audit Events', js: true, feature: true do
+feature 'Groups > Audit Events', :js do
   let(:user) { create(:user) }
   let(:pete) { create(:user, name: 'Pete') }
   let(:group) { create(:group) }

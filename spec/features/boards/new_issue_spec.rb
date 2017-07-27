@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards new issue', feature: true, js: true do
+describe 'Issue Boards new issue', js: true do
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }

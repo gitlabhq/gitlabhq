@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project owner creates a license file', feature: true, js: true do
+feature 'project owner creates a license file', js: true do
   let(:project_master) { create(:user) }
   let(:project) { create(:project) }
   background do

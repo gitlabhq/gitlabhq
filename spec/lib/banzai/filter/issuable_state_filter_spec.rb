@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssuableStateFilter, lib: true do
+describe Banzai::Filter::IssuableStateFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 

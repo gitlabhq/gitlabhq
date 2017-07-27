@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diffs URL', js: true, feature: true do
+feature 'Diffs URL', js: true do
   let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 

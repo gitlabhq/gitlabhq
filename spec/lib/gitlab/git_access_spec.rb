@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::GitAccess, lib: true do
+describe Gitlab::GitAccess do
   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
   let(:push_access_check) { access.check('git-receive-pack', '_any') }
-  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
@@ -280,7 +280,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'when project is public' do
         let(:public_project) { create(:project, :public, :repository) }
-        let(:access) { Gitlab::GitAccess.new(nil, public_project, 'web', authentication_abilities: []) }
+        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: []) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -453,7 +453,7 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           permissions_matrix[role].each do |action, allowed|
-            context action do
+            context action.to_s do
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do
@@ -480,7 +480,7 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           permissions_matrix[role].each do |action, allowed|
-            context action do
+            context action.to_s do
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do

@@ -49,7 +49,11 @@ module MergeRequests
     end
 
     def git_env
-      { 'GL_ID' => Gitlab::GlId.gl_id(current_user), 'GL_PROTOCOL' => 'web' }
+      {
+        'GL_ID' => Gitlab::GlId.gl_id(current_user),
+        'GL_PROTOCOL' => 'web',
+        'GL_REPOSITORY' => Gitlab::GlRepository.gl_repository(project, false)
+      }
     end
 
     # Don't try to print expensive instance variables.

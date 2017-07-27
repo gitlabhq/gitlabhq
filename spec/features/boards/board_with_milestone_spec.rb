@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Board with milestone', :feature, :js do
+describe 'Board with milestone', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
   let!(:milestone) { create(:milestone, project: project) }

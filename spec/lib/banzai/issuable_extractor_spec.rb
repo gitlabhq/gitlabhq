@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::IssuableExtractor, lib: true do
+describe Banzai::IssuableExtractor do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:extractor) { described_class.new(project, user) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge request approvals', js: true, feature: true do
+feature 'Merge request approvals', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, approvals_before_merge: 1) }
 

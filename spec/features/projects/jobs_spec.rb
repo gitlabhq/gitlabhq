@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :feature do
+feature 'Jobs' do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project) }

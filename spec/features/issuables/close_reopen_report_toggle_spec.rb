@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issuables Close/Reopen/Report toggle', :feature do
+describe 'Issuables Close/Reopen/Report toggle' do
   let(:user) { create(:user) }
 
   shared_examples 'an issuable close/reopen/report toggle' do
