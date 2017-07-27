@@ -36,9 +36,10 @@ Shortcuts to GitLab's most visited docs:
 
 ### User account
 
-- [User documentation](user/index.md)
-- [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
-- [Profile settings](profile/README.md): Manage your profile settings, two factor authentication and more.
+- [User documentation](user/index.md): Learn how to use GitLab and explore its features
+- [User account](user/profile/index.md): Manage your account
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
+  - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 
 ### Projects and groups
