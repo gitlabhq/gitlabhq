@@ -1,13 +1,5 @@
 module Ci
   class CreatePipelineService < BaseService
-    class InsufficientConditionError < StandardError
-      attr_reader :pipeline
-
-      def initialize(pipeline)
-        @pipeline = pipeline
-      end
-    end
-
     attr_reader :pipeline
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil)
@@ -23,11 +15,13 @@ module Ci
         pipeline_schedule: schedule
       )
 
-      begin
-        validate(current_user || trigger_request.trigger.owner,
-                 ignore_skip_ci: ignore_skip_ci,
-                 save_on_errors: save_on_errors)
+      result = validate(current_user || trigger_request.trigger.owner,
+                        ignore_skip_ci: ignore_skip_ci,
+                        save_on_errors: save_on_errors)
 
+      return result if result
+
+      begin
         Ci::Pipeline.transaction do
           pipeline.save!
 
@@ -37,13 +31,8 @@ module Ci
             .new(project, current_user)
             .execute(pipeline)
         end
-
-      rescue InsufficientConditionError => e
-        return e.pipeline
-
       rescue ActiveRecord::RecordInvalid => e
         return error("Failed to persist the pipeline: #{e}")
-
       end
 
       update_merge_requests_head_pipeline
@@ -59,30 +48,30 @@ module Ci
 
     def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
       unless project.builds_enabled?
-        raise InsufficientConditionError, error('Pipeline is disabled')
+        return error('Pipeline is disabled')
       end
 
       unless allowed_to_trigger_pipeline?(triggering_user)
         if can?(triggering_user, :create_pipeline, project)
-          raise InsufficientConditionError, error("Insufficient permissions for protected ref '#{ref}'")
+          return error("Insufficient permissions for protected ref '#{ref}'")
         else
-          raise InsufficientConditionError, error('Insufficient permissions to create a new pipeline')
+          return error('Insufficient permissions to create a new pipeline')
         end
       end
 
       unless branch? || tag?
-        raise InsufficientConditionError, error('Reference not found')
+        return error('Reference not found')
       end
 
       unless commit
-        raise InsufficientConditionError, error('Commit not found')
+        return error('Commit not found')
       end
 
       unless pipeline.config_processor
         unless pipeline.ci_yaml_file
-          raise InsufficientConditionError, error("Missing #{pipeline.ci_yaml_file_path} file")
+          return error("Missing #{pipeline.ci_yaml_file_path} file")
         end
-        raise InsufficientConditionError, error(pipeline.yaml_errors, save: save_on_errors)
+        return error(pipeline.yaml_errors, save: save_on_errors)
       end
 
       if !ignore_skip_ci && skip_ci?
@@ -91,7 +80,7 @@ module Ci
       end
 
       unless pipeline.has_stage_seeds?
-        raise InsufficientConditionError, error('No stages / jobs for this pipeline.')
+        return error('No stages / jobs for this pipeline.')
       end
     end
 
