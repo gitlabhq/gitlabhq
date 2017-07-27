@@ -151,12 +151,17 @@ export default class UserTabs {
     const calendarPath = $calendarWrap.data('calendarPath');
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
     const utcOffset = $calendarWrap.data('utcOffset');
+    let utcFormatted = 'UTC';
+    if (utcOffset !== 0) {
+      utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${(utcOffset / 3600)}`;
+    }
 
     $.ajax({
       dataType: 'json',
       url: calendarPath,
       success: (activityData) => {
         $calendarWrap.html(CALENDAR_TEMPLATE);
+        $calendarWrap.find('.calendar-hint').append(`(Timezone: ${utcFormatted})`);
 
         // eslint-disable-next-line no-new
         new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath, utcOffset);
