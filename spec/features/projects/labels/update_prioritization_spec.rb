@@ -114,6 +114,12 @@ feature 'Prioritize labels', feature: true do
         expect(page.all('li').last).to have_content('bug')
       end
     end
+
+    it 'shows a help message about prioritized labels' do
+      visit project_labels_path(project)
+
+      expect(page).to have_content 'Star a label'
+    end
   end
 
   context 'as a guest' do
@@ -128,6 +134,7 @@ feature 'Prioritize labels', feature: true do
       expect(page).to have_content 'wontfix'
       expect(page).to have_content 'feature'
       expect(page).not_to have_css('.prioritized-labels')
+      expect(page).not_to have_content 'Star a label'
     end
   end
 
@@ -139,6 +146,7 @@ feature 'Prioritize labels', feature: true do
       expect(page).to have_content 'wontfix'
       expect(page).to have_content 'feature'
       expect(page).not_to have_css('.prioritized-labels')
+      expect(page).not_to have_content 'Star a label'
     end
   end
 end
