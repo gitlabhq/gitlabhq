@@ -359,7 +359,12 @@ $(function () {
   $(document).trigger('init.scrolling-tabs');
 
   $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
     event.preventDefault();
-    gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
   });
 });
