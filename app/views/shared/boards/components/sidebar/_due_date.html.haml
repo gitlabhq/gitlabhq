@@ -1,7 +1,7 @@
 .block.due_date
   .title
     Due date
-    - if can?(current_user, :admin_issue, @project)
+    - if can?(current_user, :admin_issue, current_board_parent)
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
@@ -10,12 +10,12 @@
         No due date
       %span.bold{ "v-if" => "issue.dueDate" }
         {{ issue.dueDate | due-date }}
-      - if can?(current_user, :admin_issue, @project)
+      - if can?(current_user, :admin_issue, current_board_parent)
         %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
           \-
           %a.js-remove-due-date{ href: "#", role: "button" }
             remove due date
-  - if can?(current_user, :admin_issue, @project)
+  - if can?(current_user, :admin_issue, current_board_parent)
     .selectbox
       %input{ type: "hidden",
         name: "issue[due_date]",

@@ -143,8 +143,6 @@ $(() => {
     data: {
       modal: ModalStore.store,
       store: Store.state,
-      isFullscreen: false,
-      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
     },
     watch: {
       disabled() {
@@ -180,14 +178,6 @@ $(() => {
           this.toggleModal(true);
         }
       },
-      toggleFocusMode() {
-        if (!this.focusModeAvailable) { return; }
-
-        $(this.$refs.toggleFocusModeButton).tooltip('hide');
-        issueBoardsContent.classList.toggle('is-focused');
-
-        this.isFullscreen = !this.isFullscreen;
-      },
     },
     mounted() {
       this.updateTooltip();
@@ -205,6 +195,30 @@ $(() => {
           @click="openModal">
           Add issues
         </button>
+      </div>
+    `,
+  });
+
+  gl.IssueBoardsToggleFocusBtn = new Vue({
+    el: document.getElementById('js-toggle-focus-btn'),
+    data: {
+      modal: ModalStore.store,
+      store: Store.state,
+      isFullscreen: false,
+      focusModeAvailable: gl.utils.convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
+    },
+    methods: {
+      toggleFocusMode() {
+        if (!this.focusModeAvailable) { return; }
+
+        $(this.$refs.toggleFocusModeButton).tooltip('hide');
+        issueBoardsContent.classList.toggle('is-focused');
+
+        this.isFullscreen = !this.isFullscreen;
+      },
+    },
+    template: `
+      <div class="board-extra-actions">
         <a
           href="#"
           class="btn btn-default has-tooltip prepend-left-10"

@@ -54,12 +54,6 @@ module BoardsHelper
     @current_board_parent ||= @project || @group
   end
 
-  def can_create_board_list?
-    board_parent = @project || @group
-
-    can?(current_user, :admin_list, board_parent)
-  end
-
   def board_list_data
     namespace_path = current_board_parent.try(:path) || current_board_parent.namespace.try(:path)
 
