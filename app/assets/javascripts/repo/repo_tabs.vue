@@ -2,10 +2,10 @@
 import Vue from 'vue';
 import Store from './repo_store';
 import RepoTab from './repo_tab.vue';
-import RepoMiniMixin from './repo_mini_mixin';
+import RepoMixin from './repo_mixin';
 
 const RepoTabs = {
-  mixins: [RepoMiniMixin],
+  mixins: [RepoMixin],
 
   components: {
     'repo-tab': RepoTab,

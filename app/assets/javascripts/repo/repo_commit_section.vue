@@ -2,9 +2,12 @@
 /* global Flash */
 import Store from './repo_store';
 import Api from '../api';
+import RepoMixin from './repo_mixin'
 
 const RepoCommitSection = {
   data: () => Store,
+
+  mixins: [RepoMixin],
 
   methods: {
     makeCommit() {
@@ -34,14 +37,6 @@ const RepoCommitSection = {
         this.editMode = false;
         $('html, body').animate({ scrollTop: 0 }, 'fast');
       });
-    },
-  },
-
-  computed: {
-    changedFiles() {
-      const changedFileList = this.openedFiles
-      .filter(file => file.changed);
-      return changedFileList;
     },
   },
 };

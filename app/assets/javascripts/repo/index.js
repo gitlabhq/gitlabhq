@@ -10,7 +10,8 @@ import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoBinaryViewer from './repo_binary_viewer.vue';
 import { repoEditorLoader } from './repo_editor';
-import RepoMiniMixin from './repo_mini_mixin';
+import RepoMixin from './repo_mixin';
+import PopupDialog from '../vue_shared/components/popup_dialog.vue'
 
 function initRepo() {
   const repo = document.getElementById('repo');
@@ -36,9 +37,10 @@ function initRepo() {
           <repo-binary-viewer/>
         </div>
         <repo-commit-section/>
+        <popup-dialog :open="dialog.open" kind="warning" title="Are you sure?" body="Are you sure you want to discard your changes?" @toggle="dialogToggled" @submit="dialogSubmitted"></popup-dialog>
       </div>
     `,
-    mixins: [RepoMiniMixin],
+    mixins: [RepoMixin],
     components: {
       'repo-sidebar': RepoSidebar,
       'repo-tabs': RepoTabs,
@@ -46,7 +48,19 @@ function initRepo() {
       'repo-binary-viewer': RepoBinaryViewer,
       'repo-editor': repoEditorLoader,
       'repo-commit-section': RepoCommitSection,
+      'popup-dialog': PopupDialog,
     },
+
+    methods: {
+      dialogToggled(toggle) {
+        this.dialog.open = toggle;
+      },
+
+      dialogSubmitted(status) {
+        this.dialog.open = false;
+        this.dialog.status = status;
+      }
+    }
   });
 
   const editButton = document.getElementById('editable-mode');

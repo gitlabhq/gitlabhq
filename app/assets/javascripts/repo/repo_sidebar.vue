@@ -6,10 +6,10 @@ import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFileOptions from './repo_file_options.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
-import RepoMiniMixin from './repo_mini_mixin';
+import RepoMixin from './repo_mixin';
 
 const RepoSidebar = {
-  mixins: [RepoMiniMixin],
+  mixins: [RepoMixin],
   components: {
     'repo-file-options': RepoFileOptions,
     'repo-previous-directory': RepoPreviousDirectory,
