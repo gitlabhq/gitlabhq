@@ -1,4 +1,4 @@
-.tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path, 'data-pathlocks-available':@project.feature_available?(:file_locks), 'data-path-locks-toggle': toggle_project_path_locks_path(@project), 'data-path-locks-path': @path }
+.tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path, 'data-pathlocks-available': ('true' if @project.feature_available?(:file_locks)), 'data-path-locks-toggle': toggle_project_path_locks_path(@project), 'data-path-locks-path': @path }
   .table-holder
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
       %thead
@@ -22,3 +22,7 @@
 - if can_edit_tree?
   = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, @id), method: :post
   = render 'projects/blob/new_dir'
+
+- if @project.feature_available?(:file_locks)
+  :javascript
+    alert('LALAL 1')
