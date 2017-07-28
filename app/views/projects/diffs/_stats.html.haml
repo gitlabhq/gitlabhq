@@ -4,7 +4,7 @@
   Showing
   %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
     = pluralize(diff_files.size, "changed file")
-    = icon("caret-down fw")
+    = icon("caret-down", class: "prepend-left-5")
   %span.diff-stats-additions-deletions-expanded#diff-stats
     with
     %strong.cgreen #{sum_added_lines} additions
@@ -16,7 +16,7 @@
     %strong.cred<
       \-#{sum_removed_lines}
   .dropdown-menu.diff-file-changes
-    = dropdown_filter("Search file")
+    = dropdown_filter("Search files")
     .dropdown-content
       %ul
         - diff_files.each do |diff_file|
