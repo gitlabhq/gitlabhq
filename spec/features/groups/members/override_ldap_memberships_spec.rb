@@ -26,6 +26,18 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
     expect(page).not_to have_button 'Edit permissions'
   end
 
+  scenario 'owner cannot override LDAP access level', js: true do
+    stub_application_setting(allow_group_owners_to_manage_ldap: false)
+
+    visit group_group_members_path(group)
+
+    within "#group_member_#{ldap_member.id}" do
+      expect(page).not_to have_content 'LDAP'
+      expect(page).not_to have_button 'Guest'
+      expect(page).not_to have_button 'Edit permissions'
+    end
+  end
+
   scenario 'owner can override LDAP access level', js: true do
     ldap_override_message = 'John Doe is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.'
 

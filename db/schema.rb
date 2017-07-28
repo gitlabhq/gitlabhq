@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170719182937) do
+ActiveRecord::Schema.define(version: 20170726111039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 20170719182937) do
     t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
+    t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
