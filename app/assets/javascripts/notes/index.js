@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       notesData: {
         lastFetchedAt: notesDataset.lastFetchedAt,
         discussionsPath: notesDataset.discussionsPath,
+        newSessionPath: notesDataset.newSessionPath,
+        registerPath: notesDataset.registerPath,
+        notesPath: notesDataset.notesPath,
       },
     };
   },
@@ -26,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       props: {
         issueData: this.issueData,
         notesData: this.notesData,
+        userData: this.currentUserData,
       },
     });
   },

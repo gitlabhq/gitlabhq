@@ -1,7 +1,7 @@
 <script>
-/* global Flash */
+  /* global Flash */
 
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapActions } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
@@ -10,18 +10,18 @@
 
   export default {
     data() {
-      const { create_note_path, state } = window.gl.issueData;
-      const { currentUserData } = window.gl;
+      const { getUserData, getIssueData } = this.$store.getters;
 
       return {
         note: '',
-        markdownDocsUrl: '',
-        quickActionsDocsUrl: null,
-        markdownPreviewUrl: gl.issueData.preview_note_path,
+        markdownDocsUrl: getIssueData.markdownDocs,
+        quickActionsDocsUrl: getIssueData.quickActionsDocs,
+        markdownPreviewUrl: getIssueData.preview_note_path,
         noteType: constants.COMMENT,
-        issueState: state,
-        endpoint: create_note_path,
-        author: currentUserData,
+        issueState: getIssueData.state,
+        endpoint: getIssueData.create_note_path,
+        author: getUserData,
+        canUpdateIssue: getIssueData.current_user.can_update,
       };
     },
     components: {
@@ -30,10 +30,6 @@
       issueNoteSignedOutWidget,
     },
     computed: {
-      ...mapGetters([
-        'getNotesDataByProp',
-        'getIssueDataByProp',
-      ]),
       isLoggedIn() {
         return window.gon.current_user_id;
       },
@@ -59,9 +55,6 @@
           'js-note-target-close': this.isIssueOpen,
           'js-note-target-reopen': !this.isIssueOpen,
         };
-      },
-      canUpdateIssue() {
-        return this.getIssueDataByProp(current_user).can_update;
       },
     },
     methods: {
@@ -106,12 +99,12 @@
 
         if (withIssueAction) {
           if (this.isIssueOpen) {
-            gl.issueData.state = constants.CLOSED;
             this.issueState = constants.CLOSED;
           } else {
-            gl.issueData.state = constants.REOPENED;
             this.issueState =constants.REOPENED;
           }
+
+          gl.issueData.state = this.issueState;
           this.isIssueOpen = !this.isIssueOpen;
 
           // This is out of scope for the Notes Vue component.
@@ -139,7 +132,7 @@
       editMyLastNote() {
         if (this.note === '') {
           const myLastNoteId = $('.js-my-note').last().attr('id');
-
+          debugger;
           if (myLastNoteId) {
             eventHub.$emit('enterEditMode', {
               noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
@@ -149,9 +142,6 @@
       },
     },
     mounted() {
-      this.markdownDocsUrl = this.getIssueDataByProp(markdownDocs);
-      this.quickActionsDocsUrl = this.getIssueDataByProp(quickActionsDocs);
-
       eventHub.$on('issueStateChanged', (isClosed) => {
         this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
       });

@@ -1,16 +1,12 @@
 <script>
   export default {
     data() {
-      return {
-        signInLink: '#',
-      };
-    },
-    mounted() {
-      const wrapper = document.querySelector('.js-notes-wrapper');
+      const { newSessionPath, registerPath } = this.$store.getters.notesData;
 
-      if (wrapper) {
-        this.signInLink = wrapper.dataset.newSessionPath;
-      }
+      return {
+        signInLink: newSessionPath,
+        registerLink: registerPath,
+      };
     },
   };
 </script>
@@ -20,7 +16,7 @@
     Please
     <a :href="signInLink">register</a>
     or
-    <a :href="signInLink">sign in</a>
+    <a :href="registerLink">sign in</a>
     to reply
   </div>
 </template>

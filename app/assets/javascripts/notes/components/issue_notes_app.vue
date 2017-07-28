@@ -25,6 +25,10 @@
         type: Object,
         required: true,
       },
+      userData: {
+        type: Object,
+        required: true,
+      },
     },
     store,
     data() {
@@ -43,21 +47,21 @@
     },
     computed: {
       ...mapGetters([
-        'notes',
-        'notesById',
-        'getNotesData',
         'getNotesDataByProp',
-        'setLastFetchedAt',
-        'setTargetNoteHash',
       ]),
     },
     methods: {
+      ...mapGetters([
+        'getNotesDataByProp',
+      ]),
       ...mapActions({
         actionFetchNotes: 'fetchNotes',
         poll: 'poll',
         toggleAward: 'toggleAward',
         scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
-        setNotesData: 'setNotesData'
+        setNotesData: 'setNotesData',
+        setIssueData: 'setIssueData',
+        setUserData: 'setUserData',
       }),
       getComponentName(note) {
         if (note.isPlaceholderNote) {
@@ -75,7 +79,7 @@
         return note.individual_note ? note.notes[0] : note;
       },
       fetchNotes() {
-        this.actionFetchNotes(his.getNotesDataByProp('discussionsPath'))
+        this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
           .then(() => {
             this.isLoading = false;
 
@@ -126,6 +130,7 @@
     created() {
       this.setNotesData(this.notesData);
       this.setIssueData(this.issueData);
+      this.setUserData(this.userData)
     },
     mounted() {
       this.fetchNotes();

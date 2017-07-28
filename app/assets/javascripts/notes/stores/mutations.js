@@ -69,7 +69,6 @@ export default {
   [types.SET_USER_DATA](state, data) {
     state.userData = data;
   },
-
   [types.SET_INITAL_NOTES](state, notes) {
     state.notes = notes;
   },
