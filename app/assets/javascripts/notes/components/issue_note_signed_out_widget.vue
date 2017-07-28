@@ -14,9 +14,9 @@
 <template>
   <div class="disabled-comment text-center">
     Please
-    <a :href="signInLink">register</a>
+    <a :href="registerLink">register</a>
     or
-    <a :href="registerLink">sign in</a>
+    <a :href="signInLink">sign in</a>
     to reply
   </div>
 </template>
