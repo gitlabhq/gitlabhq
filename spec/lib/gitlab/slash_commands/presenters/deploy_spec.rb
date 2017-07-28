@@ -27,7 +27,7 @@ describe Gitlab::SlashCommands::Presenters::Deploy do
 
     it 'tells the user there is no action' do
       expect(subject[:response_type]).to be(:ephemeral)
-      expect(subject[:text]).to eq "Couldn't find a deployment action."
+      expect(subject[:text]).to eq "Couldn't find a deployment manual action."
     end
   end
 end

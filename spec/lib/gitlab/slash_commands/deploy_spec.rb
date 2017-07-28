@@ -22,7 +22,7 @@ describe Gitlab::SlashCommands::Deploy do
     context 'if no environment is defined' do
       it 'does not execute an action' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to eq "Couldn't find a deployment action."
+        expect(subject[:text]).to eq "Couldn't find a deployment manual action."
       end
     end
 
@@ -35,7 +35,7 @@ describe Gitlab::SlashCommands::Deploy do
       context 'without actions' do
         it 'does not execute an action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to eq "Couldn't find a deployment action."
+          expect(subject[:text]).to eq "Couldn't find a deployment manual action."
         end
       end
 
@@ -66,7 +66,7 @@ describe Gitlab::SlashCommands::Deploy do
           end
 
           it 'returns error about too many actions defined' do
-            expect(subject[:text]).to eq("Couldn't find a deployment action.")
+            expect(subject[:text]).to eq("Couldn't find a deployment manual action.")
             expect(subject[:response_type]).to be(:ephemeral)
           end
         end

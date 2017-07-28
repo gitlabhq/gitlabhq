@@ -24,7 +24,7 @@ It is possible to create new issue, display issue details and search up to 5 iss
 ## Deploy command
 
 In order to deploy to an environment, GitLab will try to find a deployment
-action in the pipeline.
+manual action in the pipeline.
 
 If there is only one action for a given environment, it is going to be triggered.
 If there is more than one action defined, GitLab will try to find an action

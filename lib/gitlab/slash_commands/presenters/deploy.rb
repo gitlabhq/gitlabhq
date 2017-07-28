@@ -10,7 +10,7 @@ module Gitlab
         end
 
         def action_not_found
-          ephemeral_response(text: "Couldn't find a deployment action.")
+          ephemeral_response(text: "Couldn't find a deployment manual action.")
         end
       end
     end
