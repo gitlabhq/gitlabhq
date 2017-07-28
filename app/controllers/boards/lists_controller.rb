@@ -34,7 +34,7 @@ module Boards
 
     def destroy
       list = board.lists.destroyable.find(params[:id])
-      service = Boards::Lists::DestroyService.new(project, current_user)
+      service = Boards::Lists::DestroyService.new(board_parent, current_user)
 
       if service.execute(list)
         head :ok

@@ -116,13 +116,13 @@
             = icon('times')
         .filter-dropdown-container
           - if type == :boards
-            - if can?(current_user, :admin_list, @project)
+            - if can_create_board_list?
               .dropdown.prepend-left-10#js-add-list
-                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:path), project_path: @project.try(:path) } }
+                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
                   Add list
                 .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
                   = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
-                  - if can?(current_user, :admin_label, @project)
+                  - if can?(current_user, :admin_label, current_board_parent)
                     = render partial: "shared/issuable/label_page_create"
                   = dropdown_loading
               #js-add-issues-btn.prepend-left-10

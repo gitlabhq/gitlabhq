@@ -14,7 +14,13 @@ class Groups::LabelsController < Groups::ApplicationController
       end
 
       format.json do
-        available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
+        available_labels =
+          if params[:group_labels_only]
+            LabelsFinder.new(current_user, group_id: @group.id).execute
+          else
+            group.labels
+          end
+
         render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end

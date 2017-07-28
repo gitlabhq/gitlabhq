@@ -53,4 +53,22 @@ module BoardsHelper
   def current_board_parent
     @current_board_parent ||= @project || @group
   end
+
+  def can_create_board_list?
+    board_parent = @project || @group
+
+    can?(current_user, :admin_list, board_parent)
+  end
+
+  def board_list_data
+    namespace_path = current_board_parent.try(:path) || current_board_parent.namespace.try(:path)
+
+    {
+      toggle: "dropdown",
+      labels: labels_filter_path(only_group_labels: true),
+      namespace_path: namespace_path,
+      project_path: @project&.try(:path), # Change this one on JS to use a single property: parent_path
+      group_path: @group&.try(:path) # Same here
+    }
+  end
 end

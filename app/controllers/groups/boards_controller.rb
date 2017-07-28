@@ -15,6 +15,17 @@ class Groups::BoardsController < Groups::ApplicationController
     end
   end
 
+  def show
+    @board = group.boards.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: serialize_as_json(@board)
+      end
+    end
+  end
+
   def assign_endpoint_vars
     @boards_endpoint = group_boards_path(group)
     @issues_path = issues_group_path(group)

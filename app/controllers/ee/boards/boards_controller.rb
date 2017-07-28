@@ -9,7 +9,7 @@ module EE
       end
 
       def create
-        board = ::Boards::CreateService.new(project, current_user, board_params).execute
+        board = ::Boards::CreateService.new(parent, current_user, board_params).execute
 
         respond_to do |format|
           format.json do
@@ -23,7 +23,7 @@ module EE
       end
 
       def update
-        service = ::Boards::UpdateService.new(project, current_user, board_params)
+        service = ::Boards::UpdateService.new(parent, current_user, board_params)
 
         service.execute(@board)
 
@@ -39,18 +39,18 @@ module EE
       end
 
       def destroy
-        service = ::Boards::DestroyService.new(project, current_user)
+        service = ::Boards::DestroyService.new(parent, current_user)
         service.execute(@board)
 
         respond_to do |format|
-          format.html { redirect_to project_boards_path(@project), status: 302 }
+          format.html { redirect_to boards_path, status: 302 }
         end
       end
 
       private
 
       def authorize_admin_board!
-        return render_404 unless can?(current_user, :admin_board, project)
+        return render_404 unless can?(current_user, :admin_board, parent)
       end
 
       def board_params
@@ -58,7 +58,19 @@ module EE
       end
 
       def find_board
-        @board = project.boards.find(params[:id])
+        @board = parent.boards.find(params[:id])
+      end
+
+      def parent
+        @parent ||= @project || @group
+      end
+
+      def boards_path
+        if parent.is_a?(Group)
+          group_boards_path(parent)
+        else
+          project_boards_path(parent)
+        end
       end
 
       def serialize_as_json(resource)

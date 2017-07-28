@@ -121,8 +121,8 @@ module LabelsHelper
     end
   end
 
-  def labels_filter_path
-    return group_labels_path(@group, :json) if @group
+  def labels_filter_path(only_group_labels = false)
+    return group_labels_path(@group, :json, only_group_labels: only_group_labels) if @group
 
     project = @target_project || @project
 
