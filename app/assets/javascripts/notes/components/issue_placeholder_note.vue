@@ -1,14 +1,20 @@
 <script>
+  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+
   export default {
+    name: 'issuePlaceholderNote',
     props: {
       note: {
         type: Object,
         required: true,
       },
     },
+    components: {
+      userAvatarLink,
+    },
     data() {
       return {
-        currentUser: window.gl.currentUserData,
+        currentUser: this.$store.getters.getUserData,
       };
     },
   };
@@ -18,12 +24,11 @@
   <li class="note being-posted fade-in-half timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
-        <a :href="currentUser.path">
-          <img
-            :src="currentUser.avatar_url"
-            class="avatar s40"
-            />
-        </a>
+        <user-avatar-link
+          :link-href="currentUser.path"
+          :img-src="currentUser.avatar_url"
+          :size="40"
+          />
       </div>
       <div
         :class="{ discussion: !note.individual_note }"

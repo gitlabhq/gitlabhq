@@ -1,5 +1,6 @@
 <script>
   export default {
+    name: 'placeholderSystemNote',
     props: {
       note: {
         type: Object,
