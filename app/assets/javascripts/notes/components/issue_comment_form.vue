@@ -195,7 +195,7 @@
             <div class="note-form-actions">
               <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                 <button
-                  @click="handleSave()"
+                  @click="handleSave"
                   :disabled="!note.length"
                   class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
                   type="button">
@@ -213,16 +213,17 @@
                     class="fa fa-caret-down toggle-icon">
                   </i>
                 </button>
+
                 <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
-                  <li
-                    :class="{ 'droplab-item-selected': noteType === 'comment' }"
-                    @click.prevent="setNoteType('comment')">
+                  <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
                     <button
                       type="button"
-                      class="btn btn-transparent">
+                      class="btn btn-transparent"
+                      @click.prevent="setNoteType('comment')">
                       <i
                         aria-hidden="true"
-                        class="fa fa-check icon"></i>
+                        class="fa fa-check icon">
+                      </i>
                       <div class="description">
                         <strong>Comment</strong>
                         <p>
@@ -232,12 +233,11 @@
                     </button>
                   </li>
                   <li class="divider droplab-item-ignore"></li>
-                  <li
-                    :class="{ 'droplab-item-selected': noteType === 'discussion' }"
-                    @click.prevent="setNoteType('discussion')">
+                  <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
                     <button
                       type="button"
-                      class="btn btn-transparent">
+                      class="btn btn-transparent"
+                      @click.prevent="setNoteType('discussion')">
                       <i
                         aria-hidden="true"
                         class="fa fa-check icon">
