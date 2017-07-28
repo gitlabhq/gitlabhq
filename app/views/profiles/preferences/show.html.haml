@@ -40,6 +40,28 @@
       New
   .col-sm-12
     %hr
+  .col-lg-4.profile-settings-sidebar#new-navigation
+    %h4.prepend-top-0
+      New Repository
+    %p
+      This setting allows you to turn on or off the new upcoming repository concept.
+  .col-lg-8.syntax-theme
+    .nav-wip
+      %p
+        The new repository is currently a work-in-progress concept and  only usable on wide-screens. There are a number of improvements that we are working on in order to further refine the repository view.
+      %p
+        %a{ href: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/31890', target: 'blank' } Learn more
+        about the improvements that are coming soon!
+    = label_tag do
+      .preview= image_tag "old_repo.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "false", name: "new_repo", checked: !show_new_repo? }
+      Old
+    = label_tag do
+      .preview= image_tag "new_repo.png"
+      %input.js-experiment-feature-toggle{ type: "radio", value: "true", name: "new_repo", checked: show_new_repo? }
+      New
+  .col-sm-12
+    %hr
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
       Behavior

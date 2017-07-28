@@ -301,4 +301,8 @@ module ApplicationHelper
   def show_new_nav?
     cookies["new_nav"] == "true"
   end
+
+  def show_new_repo?
+    cookies["new_repo"] == "true"
+  end
 end
