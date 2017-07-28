@@ -94,7 +94,6 @@
         to ensure information is not lost.
     </div>
     <form
-      @submit="handleUpdate"
       class="edit-note common-note-form">
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
@@ -103,7 +102,7 @@
         <textarea
           id="note-body"
           name="note[note]"
-          class="note-textarea js-gfm-input js-autosize markdown-area js-note-text"
+          class="note-textarea js-gfm-input js-autosize markdown-area"
           data-supports-slash-commands="true"
           data-supports-quick-actions="true"
           aria-label="Description"
@@ -118,7 +117,8 @@
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          type="submit"
+          type="button"
+           @click="handleUpdate"
           class="btn btn-nr btn-save">
           {{saveButtonTitle}}
         </button>

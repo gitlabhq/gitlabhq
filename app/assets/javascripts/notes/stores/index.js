@@ -16,7 +16,6 @@ export default new Vuex.Store({
     notesData: {},
     userData: {},
     issueData: {},
-    paths: {},
   },
   actions,
   getters,

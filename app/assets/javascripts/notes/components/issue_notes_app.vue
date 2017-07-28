@@ -48,6 +48,7 @@
     computed: {
       ...mapGetters([
         'notes',
+        'notesById',
         'getNotesDataByProp',
       ]),
     },
@@ -55,7 +56,7 @@
       ...mapActions({
         actionFetchNotes: 'fetchNotes',
         poll: 'poll',
-        toggleAward: 'toggleAward',
+        actionToggleAward: 'toggleAward',
         scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
         setNotesData: 'setNotesData',
         setIssueData: 'setIssueData',
@@ -113,11 +114,11 @@
           const { awardName, noteId } = data;
           const endpoint = this.notesById[noteId].toggle_award_path;
 
-          this.toggleAward({ endpoint, awardName, noteId })
-            .catch(() => Flash('Something went wrong on our end.'));
+          this.actionToggleAward({ endpoint, awardName, noteId })
+            .catch((error) => Flash('Something went wrong on our end.'));
         });
 
-        //TODO: FILIPA: REMOVE JQUERY
+        // JQuery is needed here because it is a custom event being dispatched with jQuery.
         $(document).on('issuable:change', (e, isClosed) => {
           eventHub.$emit('issueStateChanged', isClosed);
         });

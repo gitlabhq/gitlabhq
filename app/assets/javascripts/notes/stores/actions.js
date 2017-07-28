@@ -131,32 +131,31 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     });
 };
 
-export const poll = ({ commit, state, getters }) => {
-  return service.poll(state.notesData.notesPath, state.lastFetchedAt)
-    .then(res => res.json())
-    .then((res) => {
-      if (res.notes.length) {
-        const { notesById } = getters;
+export const poll = ({ commit, state, getters }) => service
+  .poll(state.notesData.notesPath, state.lastFetchedAt)
+  .then(res => res.json())
+  .then((res) => {
+    if (res.notes.length) {
+      const { notesById } = getters;
 
-        res.notes.forEach((note) => {
-          if (notesById[note.id]) {
-            commit(types.UPDATE_NOTE, note);
-          } else if (note.type === constants.DISCUSSION_NOTE) {
-            const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
+      res.notes.forEach((note) => {
+        if (notesById[note.id]) {
+          commit(types.UPDATE_NOTE, note);
+        } else if (note.type === constants.DISCUSSION_NOTE) {
+          const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
-            if (discussion) {
-              commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
-            } else {
-              commit(types.ADD_NEW_NOTE, note);
-            }
+          if (discussion) {
+            commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
           } else {
             commit(types.ADD_NEW_NOTE, note);
           }
-        });
-      }
-      return res;
-    });
-};
+        } else {
+          commit(types.ADD_NEW_NOTE, note);
+        }
+      });
+    }
+    return res;
+  });
 
 export const toggleAward = ({ commit, getters, dispatch }, data) => {
   const { endpoint, awardName, noteId, skipMutalityCheck } = data;

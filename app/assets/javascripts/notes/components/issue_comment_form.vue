@@ -89,10 +89,10 @@
                 if (res.errors.commands_only) {
                   this.discard();
                 } else {
-                  this.handleError();
+                  return Flash('Something went wrong while adding your comment. Please try again.');
                 }
               } else {
-                return Flash('Something went wrong while adding your comment. Please try again.');
+                this.discard();
               }
             })
             .catch(() => {
@@ -132,7 +132,7 @@
       editCurrentUserLastNote() {
         if (this.note === '') {
           const lastNote = this.getCurrentUserLastNote(window.gon.current_user_id);
-          console.log(lastNote)
+
           if (lastNote) {
             eventHub.$emit('enterEditMode', {
               noteId: lastNote.id,
@@ -172,102 +172,104 @@
               />
           </div>
           <div class="js-main-target-form timeline-content timeline-content-form common-note-form">
-            <markdown-field
-              :markdown-preview-url="markdownPreviewUrl"
-              :markdown-docs="markdownDocsUrl"
-              :quick-actions-docs="quickActionsDocsUrl"
-              :add-spacing-classes="false">
-              <textarea
-                id="note-body"
-                name="note[note]"
-                class="note-textarea js-gfm-input js-autosize markdown-area js-note-text"
-                data-supports-slash-commands="true"
-                data-supports-quick-actions="true"
-                aria-label="Description"
-                v-model="note"
-                ref="textarea"
-                slot="textarea"
-                placeholder="Write a comment or drag your files here..."
-                @keydown.up="editCurrentUserLastNote()"
-                @keydown.meta.enter="handleSave()">
-              </textarea>
-            </markdown-field>
-            <div class="note-form-actions">
-              <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
-                <button
-                  @click="handleSave"
-                  :disabled="!note.length"
-                  class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
-                  type="button">
-                  {{commentButtonTitle}}
-                </button>
-                <button
-                  :disabled="!note.length"
-                  name="button"
-                  type="button"
-                  class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
-                  data-toggle="dropdown"
-                  aria-label="Open comment type dropdown">
-                  <i
-                    aria-hidden="true"
-                    class="fa fa-caret-down toggle-icon">
-                  </i>
-                </button>
+            <form>
+              <markdown-field
+                :markdown-preview-url="markdownPreviewUrl"
+                :markdown-docs="markdownDocsUrl"
+                :quick-actions-docs="quickActionsDocsUrl"
+                :add-spacing-classes="false">
+                <textarea
+                  id="note-body"
+                  name="note[note]"
+                  class="note-textarea js-gfm-input js-autosize markdown-area js-note-text"
+                  data-supports-slash-commands="true"
+                  data-supports-quick-actions="true"
+                  aria-label="Description"
+                  v-model="note"
+                  ref="textarea"
+                  slot="textarea"
+                  placeholder="Write a comment or drag your files here..."
+                  @keydown.up="editCurrentUserLastNote()"
+                  @keydown.meta.enter="handleSave()">
+                </textarea>
+              </markdown-field>
+              <div class="note-form-actions">
+                <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
+                  <button
+                    @click="handleSave()"
+                    :disabled="!note.length"
+                    class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
+                    type="button">
+                    {{commentButtonTitle}}
+                  </button>
+                  <button
+                    :disabled="!note.length"
+                    name="button"
+                    type="button"
+                    class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-label="Open comment type dropdown">
+                    <i
+                      aria-hidden="true"
+                      class="fa fa-caret-down toggle-icon">
+                    </i>
+                  </button>
 
-                <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
-                  <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
-                    <button
-                      type="button"
-                      class="btn btn-transparent"
-                      @click.prevent="setNoteType('comment')">
-                      <i
-                        aria-hidden="true"
-                        class="fa fa-check icon">
-                      </i>
-                      <div class="description">
-                        <strong>Comment</strong>
-                        <p>
-                          Add a general comment to this issue.
-                        </p>
-                      </div>
-                    </button>
-                  </li>
-                  <li class="divider droplab-item-ignore"></li>
-                  <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
-                    <button
-                      type="button"
-                      class="btn btn-transparent"
-                      @click.prevent="setNoteType('discussion')">
-                      <i
-                        aria-hidden="true"
-                        class="fa fa-check icon">
+                  <ul class="note-type-dropdown dropdown-open-top dropdown-menu">
+                    <li :class="{ 'droplab-item-selected': noteType === 'comment' }">
+                      <button
+                        type="button"
+                        class="btn btn-transparent"
+                        @click.prevent="setNoteType('comment')">
+                        <i
+                          aria-hidden="true"
+                          class="fa fa-check icon">
                         </i>
-                      <div class="description">
-                        <strong>Start discussion</strong>
-                        <p>
-                          Discuss a specific suggestion or question.
-                        </p>
-                      </div>
-                    </button>
-                  </li>
-                </ul>
+                        <div class="description">
+                          <strong>Comment</strong>
+                          <p>
+                            Add a general comment to this issue.
+                          </p>
+                        </div>
+                      </button>
+                    </li>
+                    <li class="divider droplab-item-ignore"></li>
+                    <li :class="{ 'droplab-item-selected': noteType === 'discussion' }">
+                      <button
+                        type="button"
+                        class="btn btn-transparent"
+                        @click.prevent="setNoteType('discussion')">
+                        <i
+                          aria-hidden="true"
+                          class="fa fa-check icon">
+                          </i>
+                        <div class="description">
+                          <strong>Start discussion</strong>
+                          <p>
+                            Discuss a specific suggestion or question.
+                          </p>
+                        </div>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+                <button
+                  type="button"
+                  @click="handleSave(true)"
+                  v-if="canUpdateIssue"
+                  :class="actionButtonClassNames"
+                  class="btn btn-nr btn-comment btn-comment-and-close">
+                  {{issueActionButtonTitle}}
+                </button>
+                <button
+                  type="button"
+                  v-if="note.length"
+                  @click="discard"
+                  class="btn btn-cancel js-note-discard">
+                  Discard draft
+                </button>
               </div>
-              <button
-                type="button"
-                @click="handleSave(true)"
-                v-if="canUpdateIssue"
-                :class="actionButtonClassNames"
-                class="btn btn-nr btn-comment btn-comment-and-close">
-                {{issueActionButtonTitle}}
-              </button>
-              <button
-                type="button"
-                v-if="note.length"
-                @click="discard"
-                class="btn btn-cancel js-note-discard">
-                Discard draft
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       </li>
