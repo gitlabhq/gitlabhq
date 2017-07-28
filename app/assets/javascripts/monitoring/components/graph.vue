@@ -3,10 +3,10 @@
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
+  import monitoringPaths from './monitoring_paths.vue';
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { formatRelevantDigits } from '../../lib/utils/number_utils';
   import { timeScaleFormat } from '../utils/date_time_formatters';
   import bp from '../../breakpoints';
 
@@ -39,36 +39,40 @@
         graphHeight: 450,
         graphWidth: 600,
         graphHeightOffset: 120,
-        xScale: {},
-        yScale: {},
         margin: {},
-        data: [],
+        breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
         areaColorRgb: '#8fbce8',
         lineColorRgb: '#1f78d1',
         yAxisLabel: '',
         legendTitle: '',
         reducedDeploymentData: [],
-        area: '',
-        line: '',
         measurements: measurements.large,
         currentData: {
           time: new Date(),
           value: 0,
         },
-        currentYCoordinate: 0,
+        currentDataIndex: 0,
         currentXCoordinate: 0,
         currentFlagPosition: 0,
         metricUsage: '',
         showFlag: false,
         showDeployInfo: true,
+        timeSeries: [],
       };
     },
 
     components: {
+<<<<<<< HEAD:app/assets/javascripts/monitoring/components/graph.vue
       GraphLegend,
       GraphFlag,
       GraphDeployment,
+=======
+      monitoringLegends,
+      monitoringFlag,
+      monitoringDeployment,
+      monitoringPaths,
+>>>>>>> Refactored the monitoring_column component to process all of the time series:app/assets/javascripts/monitoring/components/monitoring_column.vue
     },
 
     computed: {
@@ -104,17 +108,14 @@
           this.margin = measurements.small.margin;
           this.measurements = measurements.small;
         }
-        this.data = query.result[0].values;
         this.unitOfDisplay = query.unit || '';
         this.yAxisLabel = this.graphData.y_label || 'Values';
         this.legendTitle = query.label || 'Average';
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
         this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
-        if (this.data !== undefined) {
-          this.renderAxesPaths();
-          this.formatDeployments();
-        }
+        this.renderAxesPaths();
+        this.formatDeployments();
       },
 
       handleMouseOverGraph(e) {
@@ -123,16 +124,17 @@
         point.y = e.clientY;
         point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
         point.x = point.x += 7;
-        const timeValueOverlay = this.xScale.invert(point.x);
-        const overlayIndex = bisectDate(this.data, timeValueOverlay, 1);
-        const d0 = this.data[overlayIndex - 1];
-        const d1 = this.data[overlayIndex];
+        const firstTimeSeries = this.timeSeries[0];
+        const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
+        const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
+        const d0 = firstTimeSeries.values[overlayIndex - 1];
+        const d1 = firstTimeSeries.values[overlayIndex];
         if (d0 === undefined || d1 === undefined) return;
         const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
         this.currentData = evalTime ? d1 : d0;
-        this.currentXCoordinate = Math.floor(this.xScale(this.currentData.time));
+        this.currentDataIndex = evalTime ? overlayIndex : (overlayIndex - 1);
+        this.currentXCoordinate = Math.floor(firstTimeSeries.timeSeriesScaleX(this.currentData.time));
         const currentDeployXPos = this.mouseOverDeployInfo(point.x);
-        this.currentYCoordinate = this.yScale(this.currentData.value);
 
         if (this.currentXCoordinate > (this.graphWidth - 200)) {
           this.currentFlagPosition = this.currentXCoordinate - 103;
@@ -145,17 +147,45 @@
         } else {
           this.showFlag = true;
         }
-
-        this.metricUsage = `${formatRelevantDigits(this.currentData.value)} ${this.unitOfDisplay}`;
       },
 
       renderAxesPaths() {
+        this.timeSeries = this.columnData.queries[0].result.map((timeSeries) => {
+          const timeSeriesScaleX = d3.time.scale()
+            .range([0, this.graphWidth - 70]);
+
+          const timeSeriesScaleY = d3.scale.linear()
+            .range([this.graphHeight - this.graphHeightOffset, 0]);
+
+          timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
+          timeSeriesScaleY.domain([0, d3.max(timeSeries.values.map(d => d.value))]);
+
+          const lineFunction = d3.svg.line()
+            .x(d => timeSeriesScaleX(d.time))
+            .y(d => timeSeriesScaleY(d.value));
+
+          const areaFunction = d3.svg.area()
+            .x(d => timeSeriesScaleX(d.time))
+            .y0(this.graphHeight - this.graphHeightOffset)
+            .y1(d => timeSeriesScaleY(d.value))
+            .interpolate('linear');
+
+          return {
+            linePath: lineFunction(timeSeries.values),
+            areaPath: areaFunction(timeSeries.values),
+            timeSeriesScaleX,
+            timeSeriesScaleY,
+            values: timeSeries.values,
+          };
+        });
+
         const axisXScale = d3.time.scale()
           .range([0, this.graphWidth]);
-        this.yScale = d3.scale.linear()
+        const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
-        axisXScale.domain(d3.extent(this.data, d => d.time));
-        this.yScale.domain([0, d3.max(this.data.map(d => d.value))]);
+
+        axisXScale.domain(d3.extent(this.timeSeries[0].values, d => d.time));
+        axisYScale.domain([0, d3.max(this.timeSeries[0].values.map(d => d.value))]);
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
@@ -164,7 +194,7 @@
           .orient('bottom');
 
         const yAxis = d3.svg.axis()
-          .scale(this.yScale)
+          .scale(axisYScale)
           .ticks(measurements.yTicks)
           .orient('left');
 
@@ -180,25 +210,6 @@
                 .attr('class', 'axis-tick');
             } // Avoid adding the class to the first tick, to prevent coloring
           }); // This will select all of the ticks once they're rendered
-
-        this.xScale = d3.time.scale()
-          .range([0, this.graphWidth - 70]);
-
-        this.xScale.domain(d3.extent(this.data, d => d.time));
-
-        const areaFunction = d3.svg.area()
-          .x(d => this.xScale(d.time))
-          .y0(this.graphHeight - this.graphHeightOffset)
-          .y1(d => this.yScale(d.value))
-          .interpolate('linear');
-
-        const lineFunction = d3.svg.line()
-          .x(d => this.xScale(d.time))
-          .y(d => this.yScale(d.value));
-
-        this.line = lineFunction(this.data);
-
-        this.area = areaFunction(this.data);
       },
     },
 
@@ -248,12 +259,15 @@
           :area-color-rgb="areaColorRgb"
           :legend-title="legendTitle"
           :y-axis-label="yAxisLabel"
-          :metric-usage="metricUsage"
+          :time-series="timeSeries"
+          :unit-of-display="unitOfDisplay"
+          :current-data-index="currentDataIndex"
         />
         <svg
           class="graph-data"
           :viewBox="innerViewBox"
           ref="graphData">
+<<<<<<< HEAD:app/assets/javascripts/monitoring/components/graph.vue
             <path
               class="metric-area"
               :d="area"
@@ -269,6 +283,25 @@
               transform="translate(-5, 20)">
             </path>
             <graph-deployment
+=======
+            <monitoring-paths 
+              v-for="(path, index) in timeSeries"
+              :key="index"
+              :generated-line-path="path.linePath"
+              :generated-area-path="path.areaPath"
+              :line-color="lineColorRgb"
+              :area-color="areaColorRgb"
+            />
+            <rect
+              class="prometheus-graph-overlay"
+              :width="(graphWidth - 70)"
+              :height="(graphHeight - 100)"
+              transform="translate(-5, 20)"
+              ref="graphOverlay"
+              @mousemove="handleMouseOverGraph($event)">
+            </rect>
+            <monitoring-deployment
+>>>>>>> Refactored the monitoring_column component to process all of the time series:app/assets/javascripts/monitoring/components/monitoring_column.vue
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
               :graph-height="graphHeight"
@@ -277,7 +310,6 @@
             <graph-flag
               v-if="showFlag"
               :current-x-coordinate="currentXCoordinate"
-              :current-y-coordinate="currentYCoordinate"
               :current-data="currentData"
               :current-flag-position="currentFlagPosition"
               :graph-height="graphHeight"
