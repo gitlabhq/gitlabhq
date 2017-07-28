@@ -128,6 +128,17 @@ module Gitlab
         response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
       end
 
+      def raw_blame(revision, path)
+        request = Gitaly::RawBlameRequest.new(
+          repository: @gitaly_repo,
+          revision: revision,
+          path: path
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
+        response.reduce("") { |memo, msg| memo << msg.data }
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
