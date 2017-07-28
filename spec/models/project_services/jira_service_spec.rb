@@ -197,21 +197,38 @@ describe JiraService do
       )
     end
 
-    def test_settings(api_url)
+    def test_settings(api_url = nil)
+      api_url ||= 'jira.example.com'
       test_url = "http://#{api_url}/rest/api/2/serverInfo"
 
       WebMock.stub_request(:get, test_url).with(basic_auth: %w(jira_username jira_password)).to_return(body: { url: 'http://url' }.to_json )
 
-      jira_service.test_settings
+      jira_service.test(nil)
     end
 
-    it 'tries to get JIRA project with URL when API URL not set' do
-      test_settings('jira.example.com')
+    context 'when the test succeeds' do
+      it 'tries to get JIRA project with URL when API URL not set' do
+        test_settings('jira.example.com')
+      end
+
+      it 'returns correct result' do
+        expect(test_settings).to eq( { success: true, result: { 'url' => 'http://url' } })
+      end
+
+      it 'tries to get JIRA project with API URL if set' do
+        jira_service.update(api_url: 'http://jira.api.com')
+        test_settings('jira.api.com')
+      end
     end
 
-    it 'tries to get JIRA project with API URL if set' do
-      jira_service.update(api_url: 'http://jira.api.com')
-      test_settings('jira.api.com')
+    context 'when the test fails' do
+      it 'returns result with the error' do
+        test_url = 'http://jira.example.com/rest/api/2/serverInfo'
+        WebMock.stub_request(:get, test_url).with(basic_auth: %w(jira_username jira_password))
+          .to_raise(JIRA::HTTPError.new(double(message: 'Some specific failure.')))
+
+        expect(jira_service.test(nil)).to eq( { success: false, result: 'Some specific failure.' })
+      end
     end
   end
 
