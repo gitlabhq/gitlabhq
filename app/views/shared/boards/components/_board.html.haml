@@ -12,7 +12,7 @@
         .issue-count-badge.pull-right.clearfix{ "v-if" => 'list.type !== "blank"' }
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
-          - if can?(current_user, :admin_issue, @project)
+          - if can?(current_user, :admin_issue, current_board_parent)
             %button.issue-count-badge-add-button.btn.btn-small.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",
               "@click" => "showNewIssueForm",
               "v-if" => 'list.type !== "closed"',
@@ -20,7 +20,7 @@
               "title" => "New issue",
               data: { placement: "top", container: "body" } }
               = icon("plus", class: "js-no-trigger-collapse")
-        - if can?(current_user, :admin_list, @project)
+        - if can?(current_user, :admin_list, current_board_parent)
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
@@ -34,5 +34,5 @@
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
       "ref" => "board-list" }
-    - if can?(current_user, :admin_list, @project)
+    - if can?(current_user, :admin_list, current_board_parent)
       %board-blank-state{ "v-if" => 'list.id == "blank"' }
