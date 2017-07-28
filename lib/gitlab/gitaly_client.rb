@@ -57,7 +57,7 @@ module Gitlab
       metadata = yield(metadata) if block_given?
       stub(service, storage).send(rpc, request, metadata)
     end
-  
+
     def self.request_metadata(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       { metadata: { 'authorization' => "Bearer #{encoded_token}" } }

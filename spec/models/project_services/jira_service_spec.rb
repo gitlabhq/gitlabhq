@@ -15,7 +15,6 @@ describe JiraService do
       end
 
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_presence_of(:project_key) }
       it_behaves_like 'issue tracker service URL attribute', :url
     end
 
@@ -34,7 +33,6 @@ describe JiraService do
           active: true,
           username: 'username',
           password: 'test',
-          project_key: 'TEST',
           jira_issue_transition_id: 24,
           url: 'http://jira.test.com'
         )
@@ -88,7 +86,6 @@ describe JiraService do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        project_key: 'GitLabProject',
         jira_issue_transition_id: "custom-id"
       )
 
@@ -196,15 +193,14 @@ describe JiraService do
         project: create(:project),
         url: 'http://jira.example.com',
         username: 'jira_username',
-        password: 'jira_password',
-        project_key: 'GitLabProject'
+        password: 'jira_password'
       )
     end
 
     def test_settings(api_url)
-      project_url = "http://#{api_url}/rest/api/2/project/GitLabProject"
+      test_url = "http://#{api_url}/rest/api/2/serverInfo"
 
-      WebMock.stub_request(:get, project_url).with(basic_auth: %w(jira_username jira_password))
+      WebMock.stub_request(:get, test_url).with(basic_auth: %w(jira_username jira_password)).to_return(body: { url: 'http://url' }.to_json )
 
       jira_service.test_settings
     end

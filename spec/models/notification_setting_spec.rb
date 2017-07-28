@@ -11,7 +11,14 @@ RSpec.describe NotificationSetting do
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:level) }
-    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:source_id, :source_type]).with_message(/already exists in source/) }
+
+    describe 'user_id' do
+      before do
+        subject.user = create(:user)
+      end
+
+      it { is_expected.to validate_uniqueness_of(:user_id).scoped_to([:source_type, :source_id]).with_message(/already exists in source/) }
+    end
 
     context "events" do
       let(:user) { create(:user) }

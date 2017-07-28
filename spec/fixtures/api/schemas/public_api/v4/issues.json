@@ -86,7 +86,6 @@
       "milestone", "assignees", "author", "user_notes_count",
       "upvotes", "downvotes", "due_date", "confidential",
       "web_url"
-    ],
-    "additionalProperties": false
+    ]
   }
 }

@@ -30,5 +30,25 @@ describe GlobalPolicy do
         it { is_expected.to be_allowed(:read_users_list) }
       end
     end
+
+    context "for an admin" do
+      let(:current_user) { create(:admin) }
+
+      context "when the public level is restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+        end
+
+        it { is_expected.to be_allowed(:read_users_list) }
+      end
+
+      context "when the public level is not restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [])
+        end
+
+        it { is_expected.to be_allowed(:read_users_list) }
+      end
+    end
   end
 end

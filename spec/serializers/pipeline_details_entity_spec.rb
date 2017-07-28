@@ -9,6 +9,8 @@ describe PipelineDetailsEntity do
   end
 
   before do
+    stub_not_protect_default_branch
+
     allow(request).to receive(:current_user).and_return(user)
   end
 
@@ -52,7 +54,7 @@ describe PipelineDetailsEntity do
 
       context 'user has ability to retry pipeline' do
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
         end
 
         it 'retryable flag is true' do
@@ -97,7 +99,7 @@ describe PipelineDetailsEntity do
 
     context 'when pipeline has commit statuses' do
       let(:pipeline) { create(:ci_empty_pipeline) }
-    
+
       before do
         create(:generic_commit_status, pipeline: pipeline)
       end

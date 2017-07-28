@@ -45,6 +45,8 @@ module Gitlab
                 :bare?,
                 to: :rugged
 
+      delegate :exists?, to: :gitaly_repository_client
+
       # Default branch in the repository
       def root_ref
         @root_ref ||= gitaly_migrate(:root_ref) do |is_enabled|
@@ -210,10 +212,6 @@ module Gitlab
 
       def has_commits?
         !empty?
-      end
-
-      def repo_exists?
-        !!rugged
       end
 
       # Discovers the default branch based on the repository's available branches
@@ -655,6 +653,10 @@ module Gitlab
 
       def gitaly_commit_client
         @gitaly_commit_client ||= Gitlab::GitalyClient::CommitService.new(self)
+      end
+
+      def gitaly_repository_client
+        @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
       end
 
       private

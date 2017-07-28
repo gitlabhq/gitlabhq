@@ -7,6 +7,10 @@ describe Projects::JobsController do
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
 
+  before do
+    stub_not_protect_default_branch
+  end
+
   describe 'GET index' do
     context 'when scope is pending' do
       before do

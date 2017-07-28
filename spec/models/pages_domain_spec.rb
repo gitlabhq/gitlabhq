@@ -11,7 +11,7 @@ describe PagesDomain do
     context 'is unique' do
       let(:domain) { 'my.domain.com' }
 
-      it { is_expected.to validate_uniqueness_of(:domain) }
+      it { is_expected.to validate_uniqueness_of(:domain).case_insensitive }
     end
 
     {

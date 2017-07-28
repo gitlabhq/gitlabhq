@@ -123,7 +123,9 @@ describe User do
       end
 
       it 'validates uniqueness' do
-        expect(subject).to validate_uniqueness_of(:username).case_insensitive
+        user = build(:user)
+
+        expect(user).to validate_uniqueness_of(:username).case_insensitive
       end
     end
 

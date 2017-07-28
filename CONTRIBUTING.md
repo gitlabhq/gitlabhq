@@ -115,8 +115,8 @@ scheduling into milestones. Labelling is a task for everyone.
 Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
-- Subject: ~wiki, ~"container registry", ~ldap, ~api, etc.
-- Team: ~CI, ~Discussion, ~Edge, ~Frontend, ~Platform, etc.
+- Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
+- Team: ~CI, ~Discussion, ~Edge, ~Platform, etc.
 - Priority: ~Deliverable, ~Stretch
 
 All labels, their meaning and priority are defined on the
@@ -279,7 +279,7 @@ For feature proposals for EE, open an issue on the
 In order to help track the feature proposals, we have created a
 [`feature proposal`][fpl] label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team]
-members to add the label `feature proposal` to the issue or add the following
+members to add the label ~"feature proposal" to the issue or add the following
 code snippet right after your description in a new line: `~"feature proposal"`.
 
 Please keep feature proposals as small and simple as possible, complex ones

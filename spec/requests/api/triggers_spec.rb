@@ -55,7 +55,8 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('base' => ["Reference not found"])
+        expect(json_response['message']['base'])
+          .to contain_exactly('Reference not found')
       end
 
       context 'Validates variables' do
@@ -92,7 +93,7 @@ describe API::Triggers do
 
         expect(response).to have_http_status(404)
       end
-  
+
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
@@ -113,7 +114,7 @@ describe API::Triggers do
         end
       end
     end
-  
+
     context 'when triggering a pipeline from a job token' do
       let(:other_job) { create(:ci_build, :running, user: other_user) }
       let(:params) { { ref: 'refs/heads/other-branch' } }
@@ -127,7 +128,7 @@ describe API::Triggers do
 
         it 'does not leak the presence of project when using valid token' do
           subject
-          
+
           expect(response).to have_http_status(404)
         end
       end
