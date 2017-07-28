@@ -297,7 +297,7 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit project_merge_requests_path(project, assignee_id: user.id)
 
-      expect_tokens([{ name: 'assignee', value: "#{user.username}" }])
+      expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
       expect_filtered_search_input_empty
     end
 
