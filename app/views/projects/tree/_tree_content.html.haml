@@ -1,4 +1,4 @@
-.tree-content-holder
+.tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path, 'data-pathlocks-available':@project.feature_available?(:file_locks), 'data-path-locks-toggle': toggle_project_path_locks_path(@project), 'data-path-locks-path': @path }
   .table-holder
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
       %thead
@@ -29,10 +29,3 @@
       '#{toggle_project_path_locks_path(@project)}',
       '#{@path}'
     );
-
-
-:javascript
-  // Load last commit log for each file in tree
-  $('#tree-slider').waitForImages(function() {
-    gl.utils.ajaxGet("#{escape_javascript(@logs_path)}");
-  });
