@@ -1,7 +1,15 @@
 - commit = local_assigns.fetch(:commit) { @repository.commit }
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
+
 #tree-holder.tree-holder.clearfix
   .nav-block
-    = render 'projects/tree/tree_header'
-  = render 'projects/tree/tree_content'
+    = render 'projects/tree/tree_header', tree: @tree
+
+  - if !show_new_repo? && commit
+    .info-well.hidden-xs.project-last-commit.append-bottom-default
+      .well-segment
+        %ul.blob-commit-info
+          = render 'projects/commits/commit', commit: commit, ref: ref, project: project
+
+  = render 'projects/tree/tree_content', tree: @tree
