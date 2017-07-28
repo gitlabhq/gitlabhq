@@ -1,5 +1,6 @@
 <script>
   export default {
+    name: 'singInLinksNotes',
     data() {
       const { newSessionPath, registerPath } = this.$store.getters.notesData;
 

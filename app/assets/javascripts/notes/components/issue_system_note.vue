@@ -4,6 +4,7 @@
   import issueNoteHeader from './issue_note_header.vue';
 
   export default {
+    name: 'systemNote',
     props: {
       note: {
         type: Object,
