@@ -2,10 +2,14 @@
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path
 
+  - if !show_new_repo?
+    = render 'projects/tree/old_tree_header'
+
 .tree-controls
-  %a.btn.btn-default#editable-mode{ "href"=>"#", "@click.prevent" => "editClicked", "v-cloak" => 1, "v-if" => "isCommitable" }
-    %i{ ":class" => "buttonIcon" }
-    %span {{buttonLabel}}
+  - if show_new_repo?
+    = render 'shared/repo/editable_mode'
+  - else
+    = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
 
