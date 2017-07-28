@@ -1,4 +1,6 @@
 <script>
+  import { formatRelevantDigits } from '../../lib/utils/number_utils';
+
   export default {
     props: {
       graphWidth: {
@@ -29,8 +31,16 @@
         type: String,
         required: true,
       },
-      metricUsage: {
+      timeSeries: {
+        type: Array,
+        required: true,
+      },
+      unitOfDisplay: {
         type: String,
+        required: true,
+      },
+      currentDataIndex: {
+        type: Number,
         required: true,
       },
     },
@@ -62,6 +72,16 @@
 
       yPosition() {
         return ((this.graphHeight - this.margin.top) + this.measurements.axisLabelLineOffset) || 0;
+      },
+
+    },
+    methods: {
+      translateLegendGroup(index) {
+        return `translate(${120 * index}, 0)`;
+      },
+
+      formatMetricUsage(series) {
+        return `${formatRelevantDigits(series.values[this.currentDataIndex].value)} ${this.unitOfDisplay}`;
       },
     },
     mounted() {
@@ -121,24 +141,35 @@
       dy=".35em">
       Time
     </text>
-    <rect
-      :fill="areaColorRgb"
-      :width="measurements.legends.width"
-      :height="measurements.legends.height"
-      x="20"
-      :y="graphHeight - measurements.legendOffset">
-    </rect>
-    <text
-      class="text-metric-title"
-      x="50"
-      :y="graphHeight - 25">
-      {{legendTitle}}
-    </text>
-    <text
-      class="text-metric-usage"
-      x="50"
-      :y="graphHeight - 10">
-      {{metricUsage}}
-    </text>
+    <g class="legend-group"
+      v-for="(series, index) in timeSeries"
+      :key="index"
+      :transform="translateLegendGroup(index)">
+      <rect
+        :fill="areaColorRgb"
+        :width="measurements.legends.width"
+        :height="measurements.legends.height"
+        x="20"
+        :y="graphHeight - measurements.legendOffset">
+      </rect>
+      <text
+        class="text-metric-title"
+        x="45"
+        :y="graphHeight - 30">
+        {{legendTitle}}
+      </text>
+      <text
+        class="text-metric-title"
+        x="45"
+        :y="graphHeight - 20">
+        Series {{index + 1}}
+      </text>
+      <text
+        class="text-metric-usage"
+        x="45"
+        :y="graphHeight - 10">
+        {{formatMetricUsage(series)}}
+      </text>
+    </g>
   </g>
 </template>
