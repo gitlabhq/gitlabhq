@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :conversational_development_index_metric, class: ConversationalDevelopmentIndex::Metric do
     leader_issues 9.256
     instance_issues 1.234
+    percentage_issues 13.33
 
     leader_notes 30.33333
     instance_notes 28.123
