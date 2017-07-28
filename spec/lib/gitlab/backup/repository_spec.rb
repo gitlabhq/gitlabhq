@@ -81,13 +81,13 @@ describe Backup::Repository do
           end
 
           it 'returns false, regardless of bad cache value' do
-            expect(Backup::Repository.new.send(:empty_repo?, wiki)).to be_falsey
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_falsey
           end
         end
 
         context '`repository.exists?` is correctly cached as true' do
           it 'returns false' do
-            expect(Backup::Repository.new.send(:empty_repo?, wiki)).to be_falsey
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_falsey
           end
         end
       end
@@ -102,13 +102,13 @@ describe Backup::Repository do
           end
 
           it 'returns true, regardless of bad cache value' do
-            expect(Backup::Repository.new.send(:empty_repo?, wiki)).to be_truthy
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
           end
         end
 
         context '`repository.exists?` is correctly cached as false' do
           it 'returns true' do
-            expect(Backup::Repository.new.send(:empty_repo?, wiki)).to be_truthy
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
           end
         end
       end
