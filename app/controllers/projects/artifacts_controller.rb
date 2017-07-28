@@ -1,6 +1,7 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
+  include BlobRequestFormat
 
   layout 'project'
   before_action :authorize_read_build!
@@ -26,6 +27,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def file
+    set_blob_request_format
     blob = @entry.blob
     conditionally_expand_blob(blob)
 
