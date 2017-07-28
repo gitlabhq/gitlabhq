@@ -37,10 +37,6 @@ export default class Todos {
     this.initFilterDropdown($('.js-type-search'), 'type');
     this.initFilterDropdown($('.js-action-search'), 'action_id');
 
-    $('form.filter-form').on('submit', function applyFilters(event) {
-      event.preventDefault();
-      gl.utils.visitUrl(`${this.action}&${$(this).serialize()}`);
-    });
     return new UsersSelect();
   }
 

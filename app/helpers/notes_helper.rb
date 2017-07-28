@@ -130,4 +130,14 @@ module NotesHelper
       can?(current_user, :create_note, @project)
     end
   end
+
+  def initial_notes_data(autocomplete)
+    {
+      notesUrl: notes_url,
+      notesIds: @notes.map(&:id),
+      now: Time.now.to_i,
+      diffView: diff_view,
+      autocomplete: autocomplete
+    }
+  end
 end
