@@ -54,6 +54,7 @@ import ShortcutsBlob from './shortcuts_blob';
 import SigninTabsMemoizer from './signin_tabs_memoizer';
 import Star from './star';
 import Todos from './todos';
+import TreeView from './tree';
 import UsagePing from './usage_ping';
 import UsernameValidator from './username_validator';
 import VersionCheckImage from './version_check_image';
@@ -68,6 +69,7 @@ import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
+import FeatureHelper from './helpers/feature_helper';
 
 (function() {
   var Dispatcher;
@@ -323,6 +325,11 @@ import GpgBadges from './gpg_badges';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
+
+          if (FeatureHelper.isNewRepo()) break;
+
+          if ($('#tree-slider').length) new TreeView();
+          if ($('#blob-viewer').length) new BlobViewer();
           break;
         case 'projects:edit':
           setupProjectEdit();
@@ -376,8 +383,21 @@ import GpgBadges from './gpg_badges';
         case 'admin:groups:edit':
           new GroupAvatar();
           break;
+        case 'projects:tree:show':
+          shortcut_handler = new ShortcutsNavigation();
+
+          if (FeatureHelper.isNewRepo()) break;
+
+          new TreeView();
+          new BlobViewer();
+          break;
         case 'projects:find_file:show':
           shortcut_handler = true;
+          break;
+        case 'projects:blob:show':
+          if (FeatureHelper.isNewRepo()) break;
+          new BlobViewer();
+          initBlob();
           break;
         case 'projects:blame:show':
           initBlob();
