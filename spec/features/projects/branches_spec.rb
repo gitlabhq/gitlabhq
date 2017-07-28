@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe 'Branches' do
+<<<<<<< HEAD
   include ProtectedBranchHelpers
 
+=======
+>>>>>>> upstream/master
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }

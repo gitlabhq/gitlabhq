@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::GitAccessWiki do
   let(:access) { described_class.new(user, project, 'web', authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+<<<<<<< HEAD
   let!(:project) { create(:project, :repository) }
+=======
+  let(:project) { create(:project, :repository) }
+>>>>>>> upstream/master
   let(:user) { create(:user) }
   let(:changes) { ['6f6d7e7ed 570e7b2ab refs/heads/master'] }
   let(:redirected_path) { nil }

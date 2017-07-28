@@ -1,7 +1,11 @@
 module ApplicationSettingsHelper
+<<<<<<< HEAD
   prepend EE::ApplicationSettingsHelper
   extend self
 
+=======
+  extend self
+>>>>>>> upstream/master
   delegate  :gravatar_enabled?,
             :signup_enabled?,
             :password_authentication_enabled?,

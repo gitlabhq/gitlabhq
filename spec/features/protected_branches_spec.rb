@@ -1,8 +1,12 @@
 require 'spec_helper'
 
+<<<<<<< HEAD
 feature 'Protected Branches', :js do
   include ProtectedBranchHelpers
 
+=======
+feature 'Protected Branches', js: true do
+>>>>>>> upstream/master
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

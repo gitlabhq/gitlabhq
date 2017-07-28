@@ -727,6 +727,7 @@ a.allowed-to-push {
   background-color: transparent;
   border: 0;
   text-align: left;
+  text-overflow: ellipsis;
 }
 
 .protected-branches-list,

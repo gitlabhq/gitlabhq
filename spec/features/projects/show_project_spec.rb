@@ -8,7 +8,11 @@ describe 'Project show page', feature: true do
       sign_in(project.owner)
     end
 
+<<<<<<< HEAD
     it 'shows flash error if deletion for project fails' do
+=======
+    it 'shows error message if deletion for project fails' do
+>>>>>>> upstream/master
       project.update_attributes(delete_error: "Something went wrong", pending_delete: false)
 
       visit project_path(project)

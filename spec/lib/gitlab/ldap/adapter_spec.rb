@@ -21,7 +21,11 @@ describe Gitlab::LDAP::Adapter do
       expect(adapter).to receive(:ldap_search) do |arg|
         expect(arg[:filter].to_s).to eq('(uid=johndoe)')
         expect(arg[:base]).to eq('dc=example,dc=com')
+<<<<<<< HEAD
         expect(arg[:attributes]).to match(user_search_attributes('uid'))
+=======
+        expect(arg[:attributes]).to match(%w{uid cn dn uid userid sAMAccountName mail email userPrincipalName})
+>>>>>>> upstream/master
       end.and_return({})
 
       adapter.users('uid', 'johndoe')
@@ -31,7 +35,11 @@ describe Gitlab::LDAP::Adapter do
       expect(adapter).to receive(:ldap_search).with(
         base: 'uid=johndoe,ou=users,dc=example,dc=com',
         scope: Net::LDAP::SearchScope_BaseObject,
+<<<<<<< HEAD
         attributes: user_search_attributes('uid'),
+=======
+        attributes: %w{uid cn dn uid userid sAMAccountName mail email userPrincipalName},
+>>>>>>> upstream/master
         filter: nil
       ).and_return({})
 
@@ -68,7 +76,11 @@ describe Gitlab::LDAP::Adapter do
     it 'uses the right uid attribute when non-default' do
       stub_ldap_config(uid: 'sAMAccountName')
       expect(adapter).to receive(:ldap_search).with(
+<<<<<<< HEAD
         hash_including(attributes: user_search_attributes('sAMAccountName'))
+=======
+        hash_including(attributes: %w{sAMAccountName cn dn uid userid sAMAccountName mail email userPrincipalName})
+>>>>>>> upstream/master
       ).and_return({})
 
       adapter.users('sAMAccountName', 'johndoe')

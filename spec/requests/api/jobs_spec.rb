@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe API::Jobs do
+<<<<<<< HEAD
   let(:project) do
+=======
+  let!(:project) do
+>>>>>>> upstream/master
     create(:project, :repository, public_builds: false)
   end
 

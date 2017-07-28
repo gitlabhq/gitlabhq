@@ -93,6 +93,18 @@ describe NotificationService do
     end
   end
 
+  describe 'GpgKeys' do
+    describe '#new_gpg_key' do
+      let!(:key) { create(:gpg_key) }
+
+      it { expect(notification.new_gpg_key(key)).to be_truthy }
+
+      it 'sends email to key owner' do
+        expect{ notification.new_gpg_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+  end
+
   describe 'Email' do
     describe '#new_email' do
       let!(:email) { create(:email) }

@@ -14,6 +14,10 @@ describe API::Settings, 'Settings' do
       expect(json_response['signin_enabled']).to be_truthy
       expect(json_response['repository_storages']).to eq(['default'])
       expect(json_response['password_authentication_enabled']).to be_truthy
+<<<<<<< HEAD
+=======
+      expect(json_response['repository_storages']).to eq(['default'])
+>>>>>>> upstream/master
       expect(json_response['koding_enabled']).to be_falsey
       expect(json_response['koding_url']).to be_nil
       expect(json_response['plantuml_enabled']).to be_falsey
@@ -36,6 +40,10 @@ describe API::Settings, 'Settings' do
           default_projects_limit: 3,
           repository_storages: ['custom'],
           password_authentication_enabled: false,
+<<<<<<< HEAD
+=======
+          repository_storages: ['custom'],
+>>>>>>> upstream/master
           koding_enabled: true,
           koding_url: 'http://koding.example.com',
           plantuml_enabled: true,

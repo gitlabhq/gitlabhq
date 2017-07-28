@@ -211,6 +211,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  &.affix-top .issuable-sidebar {
+    height: 100%;
+  }
+
   &.right-sidebar-expanded {
     width: $gutter_width;
 

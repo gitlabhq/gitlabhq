@@ -168,20 +168,13 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
-        rugged.references.each("refs/tags/*").map do |ref|
-          message = nil
-
-          if ref.target.is_a?(Rugged::Tag::Annotation)
-            tag_message = ref.target.message
-
-            if tag_message.respond_to?(:chomp)
-              message = tag_message.chomp
-            end
+        gitaly_migrate(:tags) do |is_enabled|
+          if is_enabled
+            tags_from_gitaly
+          else
+            tags_from_rugged
           end
-
-          target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
-        end.sort_by(&:name)
+        end
       end
 
       # Returns true if the given tag exists
@@ -955,6 +948,27 @@ module Gitlab
         else
           branches
         end
+      end
+
+      def tags_from_rugged
+        rugged.references.each("refs/tags/*").map do |ref|
+          message = nil
+
+          if ref.target.is_a?(Rugged::Tag::Annotation)
+            tag_message = ref.target.message
+
+            if tag_message.respond_to?(:chomp)
+              message = tag_message.chomp
+            end
+          end
+
+          target_commit = Gitlab::Git::Commit.find(self, ref.target)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
+        end.sort_by(&:name)
+      end
+
+      def tags_from_gitaly
+        gitaly_ref_client.tags
       end
 
       def gitaly_migrate(method, &block)

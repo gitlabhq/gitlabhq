@@ -107,7 +107,11 @@ module Gitlab
       end
 
       def user_attributes
+<<<<<<< HEAD
         %W(#{config.uid} cn mail dn memberof)
+=======
+        %W(#{config.uid} cn dn) + config.attributes['username'] + config.attributes['email']
+>>>>>>> upstream/master
       end
     end
   end

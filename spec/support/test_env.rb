@@ -5,6 +5,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
+    'signed-commits'                     => '5d4a1cb',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -43,7 +44,11 @@ module TestEnv
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
+<<<<<<< HEAD
     'squash-large-files'                 => '54cec52'
+=======
+    'add-pdf-text-binary'                => '79faa7b'
+>>>>>>> upstream/master
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -147,7 +152,7 @@ module TestEnv
     gitaly_exec = File.join(gitaly_dir, 'gitaly')
     gitaly_config = File.join(gitaly_dir, 'config.toml')
     log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file)
+    @gitaly_pid = Bundler.with_original_env { spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file) }
   end
 
   def stop_gitaly

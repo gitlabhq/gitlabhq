@@ -14,6 +14,7 @@ describe GitPushService do
     project.team << [user, :master]
   end
 
+<<<<<<< HEAD
   describe 'with remote mirrors' do
     let(:project)  { create(:project, :remote_mirror) }
 
@@ -37,6 +38,10 @@ describe GitPushService do
 
   describe 'Push branches' do
     subject do
+=======
+  describe 'Push branches' do
+    subject do
+>>>>>>> upstream/master
       execute_service(project, user, oldrev, newrev, ref)
     end
 
@@ -158,6 +163,7 @@ describe GitPushService do
     end
   end
 
+<<<<<<< HEAD
   describe "ES indexing" do
     before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
@@ -184,6 +190,12 @@ describe GitPushService do
     let!(:push_data) { push_data_from_service(project, user, oldrev, newrev, ref) }
     let(:event) { Event.find_by_action(Event::PUSHED) }
 
+=======
+  describe "Push Event" do
+    let!(:push_data) { push_data_from_service(project, user, oldrev, newrev, ref) }
+    let(:event) { Event.find_by_action(Event::PUSHED) }
+
+>>>>>>> upstream/master
     it { expect(event).not_to be_nil }
     it { expect(event.project).to eq(project) }
     it { expect(event.action).to eq(Event::PUSHED) }
@@ -192,8 +204,13 @@ describe GitPushService do
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
         expect(UpdateMergeRequestsWorker).to receive(:perform_async)
+<<<<<<< HEAD
             .with(project.id, user.id, blankrev, 'newrev', ref)
         execute_service(project, user, blankrev, 'newrev', ref)
+=======
+                                                .with(project.id, user.id, blankrev, 'newrev', ref)
+        execute_service(project, user, blankrev, 'newrev', ref )
+>>>>>>> upstream/master
       end
     end
 
@@ -467,11 +484,12 @@ describe GitPushService do
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
-                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-                                                    safe_message: message,
-                                                    author_name: commit_author.name,
-                                                    author_email: commit_author.email
-                                                  })
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: message,
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
+
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
@@ -536,13 +554,21 @@ describe GitPushService do
             let(:message) { "this is some work.\n\ncloses #1" }
 
             it "does not initiates one api call to jira server to close the issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
 
               expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
             end
 
             it "does not initiates one api call to jira server to comment on the issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
 
               expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
                 body: comment_body
@@ -555,13 +581,21 @@ describe GitPushService do
             let(:message) { "this is some work.\n\ncloses JIRA-1 \n\n closes #{issue.to_reference}" }
 
             it "initiates one api call to jira server to close the jira issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
 
               expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
             end
 
             it "initiates one api call to jira server to comment on the jira issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
 
               expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
                 body: comment_body
@@ -569,14 +603,22 @@ describe GitPushService do
             end
 
             it "closes the internal issue" do
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
               expect(issue.reload).to be_closed
             end
 
             it "adds a note indicating that the issue is now closed" do
               expect(SystemNoteService).to receive(:change_status)
                 .with(issue, project, commit_author, "closed", closing_commit)
+<<<<<<< HEAD
               execute_service(project, commit_author, oldrev, newrev, ref )
+=======
+              execute_service(project, commit_author, oldrev, newrev, ref)
+>>>>>>> upstream/master
             end
           end
         end
@@ -717,6 +759,24 @@ describe GitPushService do
       expect(ProcessCommitWorker).not_to receive(:perform_async)
 
       service.process_commit_messages
+    end
+  end
+
+  describe '#update_signatures' do
+    let(:service) do
+      described_class.new(
+        project,
+        user,
+        oldrev: oldrev,
+        newrev: newrev,
+        ref: 'refs/heads/master'
+      )
+    end
+
+    it 'calls CreateGpgSignatureWorker.perform_async for each commit' do
+      expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+
+      execute_service(project, user, oldrev, newrev, ref)
     end
   end
 

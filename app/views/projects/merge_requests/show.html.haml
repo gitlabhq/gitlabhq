@@ -3,11 +3,16 @@
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
+<<<<<<< HEAD
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('diff_notes')
   = webpack_bundle_tag('issuable')
+=======
+  = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('diff_notes')
+>>>>>>> upstream/master
 
-.merge-request{ 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
+.merge-request{ 'data-mr-action': "#{j params[:tab].presence || 'show'}", 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
@@ -16,6 +21,7 @@
     - if @merge_request.source_branch_exists?
       = render "projects/merge_requests/how_to_merge"
 
+    -# haml-lint:disable InlineJavaScript
     :javascript
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
@@ -29,7 +35,6 @@
     #js-vue-mr-widget.mr-widget
 
     - content_for :page_specific_javascripts do
-      = webpack_bundle_tag 'common_vue'
       = webpack_bundle_tag 'vue_merge_request_widget'
 
     .content-block.content-block-small.emoji-list-container
@@ -96,10 +101,3 @@
   = render "projects/commit/change", type: 'revert', commit: @merge_request.merge_commit, title: @merge_request.title
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit, title: @merge_request.title
-
-:javascript
-  $(function () {
-    window.mergeRequest = new MergeRequest({
-      action: "#{j params[:tab].presence || 'show'}",
-    });
-  });

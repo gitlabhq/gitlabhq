@@ -37,7 +37,11 @@ describe Projects::TransferService do
     end
 
     it 'executes system hooks' do
+<<<<<<< HEAD
       expect_any_instance_of(SystemHooksService).to receive(:execute_hooks_for).with(project, :transfer)
+=======
+      expect_any_instance_of(described_class).to receive(:execute_system_hooks)
+>>>>>>> upstream/master
 
       transfer_project(project, user, group)
     end
@@ -80,7 +84,11 @@ describe Projects::TransferService do
     end
 
     it "doesn't run system hooks" do
+<<<<<<< HEAD
       expect_any_instance_of(SystemHooksService).not_to receive(:execute_hooks_for).with(project, :transfer)
+=======
+      expect_any_instance_of(described_class).not_to receive(:execute_system_hooks)
+>>>>>>> upstream/master
 
       attempt_project_transfer
     end

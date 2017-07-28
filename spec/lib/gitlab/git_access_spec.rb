@@ -454,6 +454,7 @@ describe Gitlab::GitAccess do
 
           permissions_matrix[role].each do |action, allowed|
             context action.to_s do
+<<<<<<< HEAD
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do
@@ -481,6 +482,8 @@ describe Gitlab::GitAccess do
 
           permissions_matrix[role].each do |action, allowed|
             context action.to_s do
+=======
+>>>>>>> upstream/master
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do
