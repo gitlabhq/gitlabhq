@@ -14,11 +14,11 @@ describe Members::RequestAccessService do
       expect { described_class.new(source, user).execute }.to change { source.access_requests.count }.by(1)
     end
 
-    it 'returns a <Source>Member' do
-      member = described_class.new(source, user).execute
+    it 'returns a <Source>AccessRequest' do
+      access_requests = described_class.new(source, user).execute
 
-      expect(member).to be_a "#{source.class}Member".constantize
-      expect(member.requested_at).to be_present
+      expect(access_requests).to be_a "#{source.class}AccessRequest".constantize
+      expect(access_requests.created_at).to be_present
     end
   end
 

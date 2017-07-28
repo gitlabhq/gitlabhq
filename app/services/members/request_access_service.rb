@@ -10,10 +10,7 @@ module Members
     def execute
       raise Gitlab::Access::AccessDeniedError unless can_request_access?(source)
 
-      source.members.create(
-        access_level: Gitlab::Access::DEVELOPER,
-        user: current_user,
-        requested_at: Time.now.utc)
+      source.access_requests.create!(user: current_user)
     end
 
     private

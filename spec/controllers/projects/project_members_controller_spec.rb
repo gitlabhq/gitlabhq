@@ -195,14 +195,12 @@ describe Projects::ProjectMembersController do
       sign_in(user)
     end
 
-    it 'creates a new ProjectMember that is not a team member' do
+    it 'creates a ProjectAccessRequest' do
       post :request_access, namespace_id: project.namespace,
                             project_id: project
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'
-      expect(response).to redirect_to(
-        project_path(project)
-      )
+      expect(response).to redirect_to(project)
       expect(project.access_requests.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
     end

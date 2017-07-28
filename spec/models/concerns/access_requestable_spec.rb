@@ -27,7 +27,7 @@ describe AccessRequestable do
       let(:project) { create(:project, :public, :access_requestable) }
       let(:user) { create(:user) }
 
-      it { expect(project.request_access(user)).to be_a(ProjectMember) }
+      it { expect(project.request_access(user)).to be_a(ProjectAccessRequest) }
     end
 
     describe '#access_requested?' do
