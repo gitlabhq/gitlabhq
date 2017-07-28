@@ -1,5 +1,5 @@
-export const isSticky = (el, stickyTop) => {
-  const top = el.getBoundingClientRect().top;
+export const isSticky = (el, scrollY, stickyTop) => {
+  const top = el.offsetTop - scrollY;
 
   if (top === stickyTop) {
     el.classList.add('is-stuck');
@@ -15,7 +15,7 @@ export default (el) => {
 
   const stickyTop = parseInt(computedStyle.top, 10);
 
-  document.addEventListener('scroll', () => isSticky(el, stickyTop), {
+  document.addEventListener('scroll', () => isSticky(el, window.scrollY, stickyTop), {
     passive: true,
   });
 };

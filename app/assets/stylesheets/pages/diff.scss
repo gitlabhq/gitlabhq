@@ -562,12 +562,18 @@
 .diff-files-changed {
   .commit-stat-summary {
     z-index: -1;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: -$gl-padding;
+      padding-left: $gl-padding;
+      background-color: $white-light;
+    }
   }
 
   @media (min-width: $screen-sm-min) {
     position: -webkit-sticky;
     position: sticky;
-    top: 100px;
+    top: 84px;
     background-color: $white-light;
     z-index: 190;
 
@@ -575,7 +581,7 @@
       margin-top: 1px;
     }
 
-    .diff-stats-additions-deletions-collapsed {
+    &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
       display: none;
     }
 
@@ -583,18 +589,15 @@
       padding-top: 0;
       padding-bottom: 0;
       border-bottom: 1px solid $white-dark;
+      transform: translateY(16px);
 
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
         display: none;
       }
 
-      .diff-stats-additions-deletions-collapsed {
-        display: block;
-      }
-
       + .files {
-        margin-top: 16px;
+        margin-top: 30px;
       }
     }
   }
@@ -603,6 +606,10 @@
 .diff-file-changes {
   width: 450px;
   z-index: 150;
+
+  @media (min-width: $screen-sm-min) {
+    left: $gl-padding;
+  }
 
   a {
     padding-top: 8px;

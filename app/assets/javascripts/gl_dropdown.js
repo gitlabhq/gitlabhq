@@ -114,7 +114,7 @@ GitLabDropdownFilter = (function() {
     } else {
       elements = this.options.elements();
       if (search_text) {
-        return elements.each(function() {
+        elements.each(function() {
           var $el, matches;
           $el = $(this);
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
@@ -127,8 +127,10 @@ GitLabDropdownFilter = (function() {
           }
         });
       } else {
-        return elements.show().removeClass('option-hidden');
+        elements.show().removeClass('option-hidden');
       }
+
+      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
     }
   };
 

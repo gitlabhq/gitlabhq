@@ -5,12 +5,12 @@
   %button.diff-stats-summary-toggler.js-diff-stats-dropdown{ type: "button", data: { toggle: "dropdown" } }<
     = pluralize(diff_files.size, "changed file")
     = icon("caret-down fw")
-  %span.diff-stats-additions-deletions-expanded
+  %span.diff-stats-additions-deletions-expanded#diff-stats
     with
     %strong.cgreen #{sum_added_lines} additions
     and
     %strong.cred #{sum_removed_lines} deletions
-  .diff-stats-additions-deletions-collapsed.pull-right{ "aria-hidden": "true" }
+  .diff-stats-additions-deletions-collapsed.pull-right{ "aria-hidden": "true", "aria-describedby": "diff-stats" }
     %strong.cgreen<
       +#{sum_added_lines}
     %strong.cred<
@@ -32,3 +32,6 @@
                   +#{added_lines}
                 %span.cred<
                   \-#{removed_lines}
+        %li.dropdown-menu-empty-link.hidden
+          %a{ href: "#" }
+            No files found.
