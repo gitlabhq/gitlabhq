@@ -7,9 +7,6 @@
     = render 'projects/tree/tree_header', tree: @tree
 
   - if !show_new_repo? && commit
-    .info-well.hidden-xs.project-last-commit.append-bottom-default
-      .well-segment
-        %ul.blob-commit-info
-          = render 'projects/commits/commit', commit: commit, ref: ref, project: project
+    = render 'shared/commit_well', commit: commit, ref: ref, project: project
 
   = render 'projects/tree/tree_content', tree: @tree
