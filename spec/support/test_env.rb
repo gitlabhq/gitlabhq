@@ -147,7 +147,7 @@ module TestEnv
     gitaly_exec = File.join(gitaly_dir, 'gitaly')
     gitaly_config = File.join(gitaly_dir, 'config.toml')
     log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file)
+    @gitaly_pid = Bundler.with_original_env { spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file) }
   end
 
   def stop_gitaly
