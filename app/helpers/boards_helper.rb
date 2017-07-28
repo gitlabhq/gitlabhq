@@ -59,7 +59,7 @@ module BoardsHelper
 
     {
       toggle: "dropdown",
-      labels: labels_filter_path(only_group_labels: true),
+      labels: labels_filter_path(true),
       namespace_path: namespace_path,
       project_path: @project&.try(:path), # Change this one on JS to use a single property: parent_path
       group_path: @group&.try(:path) # Same here

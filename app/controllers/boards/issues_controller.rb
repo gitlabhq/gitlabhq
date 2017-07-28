@@ -1,10 +1,10 @@
 module Boards
   class IssuesController < Boards::ApplicationController
-    include BoardsAuthorizations
+    include BoardsResponses
 
-    before_action :authorize_read_issue!, only: [:index]
-    before_action :authorize_create_issue!, only: [:create]
-    before_action :authorize_update_issue!, only: [:update]
+    before_action :authorize_read_issue, only: [:index]
+    before_action :authorize_create_issue, only: [:create]
+    before_action :authorize_update_issue, only: [:update]
 
     def index
       issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
@@ -83,4 +83,3 @@ module Boards
     end
   end
 end
-

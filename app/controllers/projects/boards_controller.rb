@@ -1,6 +1,7 @@
 class Projects::BoardsController < Projects::ApplicationController
   prepend EE::Boards::BoardsController
   include IssuableCollections
+  include BoardsResponses
 
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars
@@ -8,23 +9,13 @@ class Projects::BoardsController < Projects::ApplicationController
   def index
     @boards = Boards::ListService.new(project, current_user).execute
 
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: serialize_as_json(@boards)
-      end
-    end
+    respond_with_boards
   end
 
   def show
     @board = project.boards.find(params[:id])
 
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: serialize_as_json(@board)
-      end
-    end
+    respond_with_boards
   end
 
   private
@@ -32,7 +23,6 @@ class Projects::BoardsController < Projects::ApplicationController
   def assign_endpoint_vars
     @boards_endpoint = project_boards_path(project)
     @issues_path = project_issues_path(project)
-
     @bulk_issues_path = bulk_update_project_issues_path(@project)
   end
 

@@ -19,4 +19,3 @@ module Boards
     end
   end
 end
-

@@ -66,7 +66,7 @@ module EE
       end
 
       def boards_path
-        if parent.is_a?(Group)
+        if @group
           group_boards_path(parent)
         else
           project_boards_path(parent)
