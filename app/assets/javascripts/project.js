@@ -77,7 +77,6 @@ import Cookies from 'js-cookie';
               },
               dataType: "json"
             }).done(function(refs) {
-              console.log(refs);
               return callback(refs);
             });
           },
@@ -118,9 +117,15 @@ import Cookies from 'js-cookie';
             e.preventDefault();
             if ($('input[name="ref"]').length) {
               var $form = $dropdown.closest('form');
+
+              var $visit = $dropdown.data('visit');
+              var shouldVisit = typeof $visit === 'undefined' ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
-              gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+              if(shouldVisit){
+                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());  
+              }
+              
             }
           }
         });

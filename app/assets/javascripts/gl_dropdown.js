@@ -206,7 +206,7 @@ GitLabDropdown = (function() {
 
   CURSOR_SELECT_SCROLL_PADDING = 5;
 
-  FILTER_INPUT = '.dropdown-input .dropdown-input-field';
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field:not(.dropdown-no-filter)';
 
   function GitLabDropdown(el1, options) {
     var searchFields, selector, self;

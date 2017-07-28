@@ -7,6 +7,22 @@
   transition: opacity .5s;
 }
 
+.modal.popup-dialog {
+  display: block;
+
+
+  @media (min-width: 992px) {
+    .modal-dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
+}
+
+.project-refs-form, .project-refs-target-form {
+  display: inline-block;
+}
+
 .fade-enter,
 .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
   opacity: 0;
@@ -55,7 +71,6 @@
     }
 
     #tabs {
-      height: 61px;
       border-bottom: 1px solid $white-normal;
       padding-left: 0;
       margin-bottom: 0;
@@ -65,14 +80,6 @@
       overflow-y: hidden;
       overflow-x: auto;
 
-      &.overflown {
-        height: 61px;
-
-        li {
-          padding: 20px 18px;
-        }
-      }
-
       li {
         animation: swipeRightAppear ease-in 0.1s;
         animation-iteration-count: 1;
@@ -80,9 +87,10 @@
         list-style-type: none;
         background: $gray-normal;
         display: inline-block;
-        padding: 20px 18px;
+        padding: 10px 18px;
         border-right: 1px solid $border-color;
         white-space: nowrap;
+        border-radius: 3px 3px 0 0;
 
         &.active {
           background: $white-light;

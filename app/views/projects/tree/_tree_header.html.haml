@@ -1,6 +1,8 @@
 .tree-ref-container
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path
+    =icon('long-arrow-right', title: 'to target branch')
+    = render 'shared/target_switcher', destination: 'tree', path: @path
 
 .tree-controls
   %a.btn.btn-default#editable-mode{ "href"=>"#", "@click.prevent" => "editClicked", "v-cloak" => 1, "v-if" => "isCommitable" }

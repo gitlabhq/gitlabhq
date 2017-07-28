@@ -29,6 +29,11 @@ const RepoStore = {
   tempPrivateToken: '',
   submitCommitsLoading: false,
   binaryLoaded:false,
+  dialog: {
+    open: false,
+    title: '',
+    status: false,
+  },
   activeFile: RepoHelper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: 0,
@@ -143,7 +148,6 @@ const RepoStore = {
 
     // now activate the right tab based on what you closed.
     if(RepoStore.openedFiles.length === 0) {
-      console.log('open 0')
       RepoStore.activeFile = {};
       return;
     }

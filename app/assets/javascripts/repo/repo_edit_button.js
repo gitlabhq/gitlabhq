@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Store from './repo_store';
+import RepoMixin from './repo_mixin'
 
 export default class RepoEditButton {
   constructor(el) {
@@ -9,10 +10,11 @@ export default class RepoEditButton {
   initVue(el) {
     this.vue = new Vue({
       el,
+      mixins: [RepoMixin],
       data: () => Store,
       computed: {
         buttonLabel() {
-          return this.editMode ? 'Read-only mode' : 'Edit mode';
+          return this.editMode ? 'Cancel edit' : 'Edit';
         },
 
         buttonIcon() {
@@ -21,9 +23,25 @@ export default class RepoEditButton {
       },
       methods: {
         editClicked() {
+          console.log('thiscf', this.changedFiles)
+          if(this.changedFiles.length) {
+            this.dialog.open = true;
+            return;
+          }
           this.editMode = !this.editMode;
         },
       },
+
+      watch: {
+        dialog: {
+          handler(obj) {
+            if(obj.status) {
+              obj.status = false;
+            }
+          },
+          deep: true,
+        }
+      }
     });
   }
 }
