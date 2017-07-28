@@ -13,13 +13,21 @@ class MonitoringStore {
     let metricsRow = [];
     let index = 1;
     Object.keys(currentMetrics).forEach((key) => {
-      const metricValues = currentMetrics[key].queries[0].result[0].values;
+      const metricValues = currentMetrics[key].queries[0].result;
       if (metricValues != null) {
-        const literalMetrics = metricValues.map(metric => ({
-          time: new Date(metric[0] * 1000),
-          value: metric[1],
-        }));
-        currentMetrics[key].queries[0].result[0].values = literalMetrics;
+        currentMetrics[key].queries[0].result = metricValues.map((series) => {
+          let convertedValues = [];
+          if (series != null) {
+            convertedValues = series.values.map(metric => ({
+              time: new Date(metric[0] * 1000),
+              value: metric[1],
+            }));
+          }
+          return {
+            metric: series.metric,
+            values: convertedValues,
+          };
+        });
         metricsRow.push(currentMetrics[key]);
         if (index % 2 === 0) {
           availableMetrics.push(metricsRow);
