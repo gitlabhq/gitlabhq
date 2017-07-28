@@ -35,6 +35,16 @@ describe Groups::DestroyService do
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
+    context 'mattermost team' do
+      let!(:chat_team) { create(:chat_team, namespace: group) }
+
+      it 'destroys the team too' do
+        expect_any_instance_of(Mattermost::Team).to receive(:destroy)
+
+        destroy_group(group, user, async)
+      end
+    end
+
     context 'file system' do
       context 'Sidekiq inline' do
         before do
