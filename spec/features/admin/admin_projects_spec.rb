@@ -4,17 +4,18 @@ describe "Admin::Projects"  do
   include Select2Helper
 
   let(:user) { create :user }
-  let!(:project) { create(:project) }
-  let!(:current_user) { create(:admin) }
+  let(:project) { create(:empty_project) }
+  let(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
   end
 
   describe "GET /admin/projects" do
-    let!(:archived_project) { create :project, :public, :archived }
+    let!(:archived_project) { create :empty_project, :public, :archived }
 
     before do
+      expect(project).to be_persisted
       visit admin_projects_path
     end
 
@@ -39,15 +40,14 @@ describe "Admin::Projects"  do
 
   describe "GET /admin/projects/:namespace_id/:id" do
     before do
-      visit admin_projects_path
-      click_link "#{project.name}"
-    end
+      expect(project).to be_persisted
 
-    it do
-      expect(current_path).to eq admin_project_path(project)
+      visit admin_projects_path
+      click_link project.name
     end
 
     it "has project info" do
+      expect(current_path).to eq admin_project_path(project)
       expect(page).to have_content(project.path)
       expect(page).to have_content(project.name)
       expect(page).to have_content(project.name_with_namespace)
@@ -56,6 +56,9 @@ describe "Admin::Projects"  do
   end
 
   describe 'transfer project' do
+    # The gitlab-shell transfer will fail for a project without a repository
+    let(:project) { create(:project, :repository) }
+
     before do
       create(:group, name: 'Web')
 

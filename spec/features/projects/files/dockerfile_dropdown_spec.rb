@@ -4,7 +4,7 @@ require 'fileutils'
 feature 'User wants to add a Dockerfile file' do
   before do
     user = create(:user)
-    project = create(:project)
+    project = create(:project, :repository)
     project.team << [user, :master]
 
     sign_in user

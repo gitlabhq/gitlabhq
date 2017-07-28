@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'toggler_behavior', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }
   let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
   let(:fragment_id) { "#note_#{note.id}" }

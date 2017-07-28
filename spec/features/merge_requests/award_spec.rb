@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Merge request awards', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   describe 'logged in' do

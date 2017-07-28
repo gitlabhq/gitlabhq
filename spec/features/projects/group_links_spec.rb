@@ -4,7 +4,7 @@ feature 'Project group links', :js do
   include Select2Helper
 
   let(:master) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let!(:group) { create(:group) }
 
   background do
@@ -35,7 +35,7 @@ feature 'Project group links', :js do
   context 'nested group project' do
     let!(:nested_group) { create(:group, parent: group) }
     let!(:another_group) { create(:group) }
-    let!(:project) { create(:project, namespace: nested_group) }
+    let!(:project) { create(:empty_project, namespace: nested_group) }
 
     background do
       group.add_master(master)

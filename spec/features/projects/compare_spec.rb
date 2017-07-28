@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "Compare", js: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]

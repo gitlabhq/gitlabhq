@@ -49,7 +49,7 @@ feature 'Edit group settings' do
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, group: group, path: 'project') }
+      given!(:project) { create(:empty_project, group: group) }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
 
@@ -65,14 +65,14 @@ feature 'Edit group settings' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
     end
   end

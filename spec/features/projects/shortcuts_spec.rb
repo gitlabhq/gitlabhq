@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Project shortcuts' do
-  let(:project) { create(:project, name: 'Victorialand') }
+  let(:project) { create(:empty_project, name: 'Victorialand') }
   let(:user) { create(:user) }
 
   describe 'On a project', js: true do

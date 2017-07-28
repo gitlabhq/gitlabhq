@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Tooltips on .timeago dates', js: true do
   let(:user)            { create(:user) }
-  let(:project)         { create(:project, name: 'test', namespace: user.namespace) }
+  let(:project)         { create(:empty_project, name: 'test', namespace: user.namespace) }
   let(:created_date)    { Date.yesterday.to_time }
   let(:expected_format) { created_date.in_time_zone.strftime('%b %-d, %Y %l:%M%P') }
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Archived Project' do
   let(:user) { create :user }
   let(:project) { create :project}
-  let(:archived_project) { create(:project, :archived) }
+  let(:archived_project) { create(:empty_project, :archived) }
 
   before do
     project.team << [user, :master]

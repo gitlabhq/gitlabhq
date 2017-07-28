@@ -4,7 +4,7 @@ describe 'Public Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :public) }
-  let(:project) { create(:project, :public, group: group) }
+  let(:project) { create(:empty_project, :public, group: group) }
   let(:project_guest) do
     create(:user) do |user|
       project.add_guest(user)
@@ -49,6 +49,7 @@ describe 'Public Group access' do
   end
 
   describe 'GET /groups/:path/merge_requests' do
+    let(:project) { create(:project, :public, :repository, group: group) }
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }

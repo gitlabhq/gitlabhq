@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Find file keyboard shortcuts', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
