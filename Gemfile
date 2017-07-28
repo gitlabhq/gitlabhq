@@ -406,11 +406,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'net-ntp'
 
 # Gitaly GRPC client
-<<<<<<< HEAD
-gem 'gitaly', '~> 0.19.0'
-=======
 gem 'gitaly', '~> 0.21.0'
->>>>>>> upstream/master
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

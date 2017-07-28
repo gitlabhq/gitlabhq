@@ -281,9 +281,9 @@ group you can use the following syntax:
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
-Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
+Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
-nested members in the user filter should not be confused with 
+nested members in the user filter should not be confused with
 [group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by
@@ -318,7 +318,6 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
-<<<<<<< HEAD
 ## Adjusting LDAP user and group sync schedules
 
 You can manually configure LDAP user and group sync times by setting the
@@ -386,7 +385,7 @@ your installation compares before proceeding.
     ```
 
 1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
-=======
+
 ## Encryption
 
 ### TLS Server Authentication

@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
-<<<<<<< HEAD
   include LdapHelpers
-=======
->>>>>>> upstream/master
+
   let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
 

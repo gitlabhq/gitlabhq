@@ -230,7 +230,6 @@ describe Namespace do
     end
   end
 
-<<<<<<< HEAD
   describe '#actual_size_limit' do
     let(:namespace) { build(:namespace) }
 
@@ -243,8 +242,6 @@ describe Namespace do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe '#rm_dir', 'callback' do
     let!(:project) { create(:project_empty_repo, namespace: namespace) }
     let(:repository_storage_path) { Gitlab.config.repositories.storages.default['path'] }

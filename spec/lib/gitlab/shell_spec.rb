@@ -169,7 +169,6 @@ describe Gitlab::Shell do
     end
   end
 
-<<<<<<< HEAD
   describe '#remove_key' do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
@@ -395,8 +394,6 @@ describe Gitlab::Shell do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe Gitlab::Shell::KeyAdder do
     describe '#add_key' do
       it 'removes trailing garbage' do

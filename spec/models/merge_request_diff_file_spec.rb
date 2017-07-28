@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe MergeRequestDiffFile do
-<<<<<<< HEAD
-=======
   describe '#diff' do
     let(:unpacked) { 'unpacked' }
     let(:packed) { [unpacked].pack('m0') }
@@ -28,7 +26,6 @@ describe MergeRequestDiffFile do
     end
   end
 
->>>>>>> upstream/master
   describe '#utf8_diff' do
     it 'does not raise error when the diff is binary' do
       subject.diff = "\x05\x00\x68\x65\x6c\x6c\x6f"

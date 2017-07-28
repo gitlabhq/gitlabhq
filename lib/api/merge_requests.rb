@@ -92,7 +92,6 @@ module API
           render_api_error!(errors, 400)
         end
 
-<<<<<<< HEAD
         def check_sha_param!(params, merge_request)
           if params[:sha] && merge_request.diff_head_sha != params[:sha]
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
@@ -116,8 +115,6 @@ module API
             .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
         end
 
-=======
->>>>>>> upstream/master
         params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'

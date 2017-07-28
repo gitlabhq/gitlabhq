@@ -176,11 +176,9 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
-<<<<<<< HEAD
     server['external_groups'] = [] if server['external_groups'].nil?
     server['sync_ssh_keys'] = 'sshPublicKey' if server['sync_ssh_keys'].to_s == 'true'
     Settings.ldap['servers'][key] = server
-=======
 
     # For backwards compatibility
     server['encryption'] ||= server['method']
@@ -199,7 +197,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
       MSG
       Rails.logger.warn(message)
     end
->>>>>>> upstream/master
   end
 end
 

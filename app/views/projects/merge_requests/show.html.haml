@@ -3,14 +3,9 @@
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-<<<<<<< HEAD
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('diff_notes')
-  = webpack_bundle_tag('issuable')
-=======
   = webpack_bundle_tag('common_vue')
   = webpack_bundle_tag('diff_notes')
->>>>>>> upstream/master
+  = webpack_bundle_tag('issuable')
 
 .merge-request{ 'data-mr-action': "#{j params[:tab].presence || 'show'}", 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
   = render "projects/merge_requests/mr_title"

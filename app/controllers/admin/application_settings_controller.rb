@@ -78,14 +78,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
-<<<<<<< HEAD
-      permitted_application_setting_attributes
-    )
-  end
-
-  def permitted_application_setting_attributes
-    ApplicationSettingsHelper.visible_attributes + [
-=======
       visible_application_setting_attributes
     )
   end
@@ -93,7 +85,6 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def visible_application_setting_attributes
     ApplicationSettingsHelper.visible_attributes + [
       :domain_blacklist_file,
->>>>>>> upstream/master
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],

@@ -2,15 +2,13 @@
 module Gitlab
   module LDAP
     class Config
-<<<<<<< HEAD
       include ::EE::Gitlab::LDAP::Config
-=======
+
       NET_LDAP_ENCRYPTION_METHOD = {
         simple_tls: :simple_tls,
         start_tls:  :start_tls,
         plain:      nil
       }.freeze
->>>>>>> upstream/master
 
       attr_accessor :provider, :options
 
@@ -30,12 +28,6 @@ module Gitlab
         return [] unless enabled?
 
         enabled_extras? ? servers : Array.wrap(servers.first)
-      end
-
-      def self.available_servers
-        return [] unless enabled?
-
-        Array.wrap(servers.first)
       end
 
       def self.providers

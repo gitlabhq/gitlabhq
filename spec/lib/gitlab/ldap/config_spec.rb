@@ -14,13 +14,8 @@ describe Gitlab::LDAP::Config do
       expect(config).to be_a described_class
     end
 
-<<<<<<< HEAD
-    it "raises an error if a unknow provider is used" do
-      expect{ described_class.new 'unknown' }.to raise_error(Gitlab::LDAP::Config::InvalidProvider)
-=======
     it 'raises an error if a unknown provider is used' do
-      expect{ described_class.new 'unknown' }.to raise_error(RuntimeError)
->>>>>>> upstream/master
+      expect{ described_class.new 'unknown' }.to raise_error(Gitlab::LDAP::Config::InvalidProvider)
     end
   end
 

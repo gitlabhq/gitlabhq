@@ -1,12 +1,7 @@
 # Reducing the repository size using Git
 
-<<<<<<< HEAD
-A GitLab administrator can set a [repository size limit][admin-repo-size] which
-will prevent you to exceed it.
-=======
 A GitLab Entrerprise Edition administrator can set a [repository size limit][admin-repo-size]
 which will prevent you to exceed it.
->>>>>>> upstream/master
 
 When a project has reached its size limit, you will not be able to push to it,
 create a new merge request, or merge existing ones. You will still be able to
@@ -81,10 +76,6 @@ As an alternative to `filter-branch`, you can use the `bfg` tool with a
 command like: `bfg --delete-files path/to/big_file.mpg`. Read the
 [BFG Repo-Cleaner][bfg] documentation for more information.
 
-<<<<<<< HEAD
-[admin-repo-size]: ../../admin_area/settings/account_and_limit_settings.md#repository-size-limit
-=======
 [admin-repo-size]: https://docs.gitlab.com/ee/user/admin_area/settings/account_and_limit_settings.html#repository-size-limit
->>>>>>> upstream/master
 [bfg]: https://rtyley.github.io/bfg-repo-cleaner/
 [gitscm]: https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch
