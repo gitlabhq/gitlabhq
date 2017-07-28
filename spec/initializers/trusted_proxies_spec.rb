@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'trusted_proxies', lib: true do
+describe 'trusted_proxies' do
   context 'with default config' do
     before do
       set_trusted_proxies([])

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group member cannot request access to his group project', feature: true do
+feature 'Projects > Members > Group member cannot request access to his group project' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }

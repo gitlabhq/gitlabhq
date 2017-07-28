@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'user browses project', feature: true, js: true do
+feature 'user browses project', js: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

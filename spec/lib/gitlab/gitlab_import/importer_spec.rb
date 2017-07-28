@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::Importer, lib: true do
+describe Gitlab::GitlabImport::Importer do
   include ImportSpecHelper
 
   describe '#execute' do

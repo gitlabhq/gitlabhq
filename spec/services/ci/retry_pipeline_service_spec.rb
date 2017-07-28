@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::RetryPipelineService, '#execute', :services do
+describe Ci::RetryPipelineService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

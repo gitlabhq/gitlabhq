@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Projects tab on a user profile', :feature, :js do
+describe 'Projects tab on a user profile', :js do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace) }
   let!(:project2) { create(:empty_project, namespace: user.namespace) }

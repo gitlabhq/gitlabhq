@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Ref switcher', feature: true, js: true do
+feature 'Ref switcher', js: true do
   let(:user)      { create(:user) }
   let(:project)   { create(:project, :public) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels subscription', feature: true do
+feature 'Labels subscription' do
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
   let!(:feature) { create(:group_label, group: group, title: 'feature') }

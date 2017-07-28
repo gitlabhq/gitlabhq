@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::CycleAnalytics::StageSummary, models: true do
+describe Gitlab::CycleAnalytics::StageSummary do
   let(:project) { create(:project, :repository) }
   let(:from) { 1.day.ago }
   let(:user) { create(:user, :admin) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'New/edit issue', :feature, :js do
+describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 

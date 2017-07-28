@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Filter merge requests', feature: true do
+describe 'Filter merge requests' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 

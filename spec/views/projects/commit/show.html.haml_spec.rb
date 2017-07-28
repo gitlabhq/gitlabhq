@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/commit/show.html.haml', :view do
+describe 'projects/commit/show.html.haml' do
   let(:project) { create(:project, :repository) }
 
   before do

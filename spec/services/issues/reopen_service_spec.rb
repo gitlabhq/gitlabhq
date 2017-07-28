@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::ReopenService, services: true do
+describe Issues::ReopenService do
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, :closed, project: project) }
 

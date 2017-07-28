@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService, '#execute', :services do
+describe Ci::ProcessPipelineService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
 

@@ -315,7 +315,9 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
+  # DEPRECATED
   # repository_storage is still required in the API. Remove in 9.0
+  # Still used in API v3
   def repository_storage
     repository_storages.first
   end

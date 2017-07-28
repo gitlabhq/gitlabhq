@@ -5,9 +5,9 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version** of GitLab on which
-it was created. The best way to migrate your repositories from one server to
-another is through backup restore.
+You can only restore a backup to **exactly the same version and type (CE/EE)** 
+of GitLab on which it was created. The best way to migrate your repositories 
+from one server to another is through backup restore.
 
 ## Backup
 
@@ -378,8 +378,8 @@ The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version** of GitLab that
-you created it on, for example 9.1.0.
+You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
 
@@ -450,8 +450,8 @@ Deleting tmp directories...[DONE]
 
 This procedure assumes that:
 
-- You have installed the **exact same version** of GitLab Omnibus with which the
-  backup was created.
+- You have installed the **exact same version and type (CE/EE)** of GitLab 
+  Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Edit Project Settings', feature: true do
+describe 'Edit Project Settings' do
   include Select2Helper
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/notes/_more_actions_dropdown', :view do
+describe 'projects/notes/_more_actions_dropdown' do
   let(:author_user) { create(:user) }
   let(:not_author_user) { create(:user) }
 

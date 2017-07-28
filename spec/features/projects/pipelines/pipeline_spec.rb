@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Pipeline', :feature, :js do
+describe 'Pipeline', :js do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 

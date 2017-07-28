@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::WikiFormatter, lib: true do
+describe Gitlab::GithubImport::WikiFormatter do
   let(:project) do
     create(:project,
            namespace: create(:namespace, path: 'gitlabhq'),

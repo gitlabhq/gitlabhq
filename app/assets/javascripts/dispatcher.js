@@ -67,6 +67,7 @@ import PerformanceBar from './performance_bar';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import GpgBadges from './gpg_badges';
 
 (function() {
   var Dispatcher;
@@ -310,6 +311,9 @@ import initIssuableSidebar from './init_issuable_sidebar';
           }).bindEvents();
           break;
         case 'projects:commits:show':
+          shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
+          break;
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
           break;

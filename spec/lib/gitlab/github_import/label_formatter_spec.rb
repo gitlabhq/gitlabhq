@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::LabelFormatter, lib: true do
+describe Gitlab::GithubImport::LabelFormatter do
   let(:project) { create(:empty_project) }
   let(:raw) { double(name: 'improvements', color: 'e6e6e6') }
 

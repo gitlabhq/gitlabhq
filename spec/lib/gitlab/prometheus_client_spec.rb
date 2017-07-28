@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::PrometheusClient, lib: true do
+describe Gitlab::PrometheusClient do
   include PrometheusHelpers
 
   subject { described_class.new(api_url: 'https://prometheus.example.com') }

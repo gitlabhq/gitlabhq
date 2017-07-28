@@ -82,10 +82,14 @@ module Gitlab
       end
 
       # Returns an Array of Branches
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/389
-      def branches(sort_by: nil)
-        branches_filter(sort_by: sort_by)
+      def branches
+        gitaly_migrate(:branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.branches
+          else
+            branches_filter
+          end
+        end
       end
 
       def reload_rugged
@@ -164,20 +168,13 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
-        rugged.references.each("refs/tags/*").map do |ref|
-          message = nil
-
-          if ref.target.is_a?(Rugged::Tag::Annotation)
-            tag_message = ref.target.message
-
-            if tag_message.respond_to?(:chomp)
-              message = tag_message.chomp
-            end
+        gitaly_migrate(:tags) do |is_enabled|
+          if is_enabled
+            tags_from_gitaly
+          else
+            tags_from_rugged
           end
-
-          target_commit = Gitlab::Git::Commit.find(self, ref.target)
-          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
-        end.sort_by(&:name)
+        end
       end
 
       # Returns true if the given tag exists
@@ -478,20 +475,6 @@ module Gitlab
         end
       end
 
-      # Sets HEAD to the commit specified by +ref+; +ref+ can be a branch or
-      # tag name or a commit SHA.  Valid +reset_type+ values are:
-      #
-      #  [:soft]
-      #    the head will be moved to the commit.
-      #  [:mixed]
-      #    will trigger a +:soft+ reset, plus the index will be replaced
-      #    with the content of the commit tree.
-      #  [:hard]
-      #    will trigger a +:mixed+ reset and the working directory will be
-      #    replaced with the content of the index. (Untracked and ignored files
-      #    will be left alone)
-      delegate :reset, to: :rugged
-
       # Mimic the `git clean` command and recursively delete untracked files.
       # Valid keys that can be passed in the +options+ hash are:
       #
@@ -514,154 +497,6 @@ module Gitlab
         strategies.push(:remove_ignored) if options[:x]
 
         # TODO: implement this method
-      end
-
-      # Check out the specified ref. Valid options are:
-      #
-      #  :b - Create a new branch at +start_point+ and set HEAD to the new
-      #       branch.
-      #
-      #  * These options are passed to the Rugged::Repository#checkout method:
-      #
-      #  :progress ::
-      #    A callback that will be executed for checkout progress notifications.
-      #    Up to 3 parameters are passed on each execution:
-      #
-      #    - The path to the last updated file (or +nil+ on the very first
-      #      invocation).
-      #    - The number of completed checkout steps.
-      #    - The number of total checkout steps to be performed.
-      #
-      #  :notify ::
-      #    A callback that will be executed for each checkout notification
-      #    types specified with +:notify_flags+. Up to 5 parameters are passed
-      #    on each execution:
-      #
-      #    - An array containing the +:notify_flags+ that caused the callback
-      #      execution.
-      #    - The path of the current file.
-      #    - A hash describing the baseline blob (or +nil+ if it does not
-      #      exist).
-      #    - A hash describing the target blob (or +nil+ if it does not exist).
-      #    - A hash describing the workdir blob (or +nil+ if it does not
-      #      exist).
-      #
-      #  :strategy ::
-      #    A single symbol or an array of symbols representing the strategies
-      #    to use when performing the checkout. Possible values are:
-      #
-      #    :none ::
-      #      Perform a dry run (default).
-      #
-      #    :safe ::
-      #      Allow safe updates that cannot overwrite uncommitted data.
-      #
-      #    :safe_create ::
-      #      Allow safe updates plus creation of missing files.
-      #
-      #    :force ::
-      #      Allow all updates to force working directory to look like index.
-      #
-      #    :allow_conflicts ::
-      #      Allow checkout to make safe updates even if conflicts are found.
-      #
-      #    :remove_untracked ::
-      #      Remove untracked files not in index (that are not ignored).
-      #
-      #    :remove_ignored ::
-      #      Remove ignored files not in index.
-      #
-      #    :update_only ::
-      #      Only update existing files, don't create new ones.
-      #
-      #    :dont_update_index ::
-      #      Normally checkout updates index entries as it goes; this stops
-      #      that.
-      #
-      #    :no_refresh ::
-      #      Don't refresh index/config/etc before doing checkout.
-      #
-      #    :disable_pathspec_match ::
-      #      Treat pathspec as simple list of exact match file paths.
-      #
-      #    :skip_locked_directories ::
-      #      Ignore directories in use, they will be left empty.
-      #
-      #    :skip_unmerged ::
-      #      Allow checkout to skip unmerged files (NOT IMPLEMENTED).
-      #
-      #    :use_ours ::
-      #      For unmerged files, checkout stage 2 from index (NOT IMPLEMENTED).
-      #
-      #    :use_theirs ::
-      #      For unmerged files, checkout stage 3 from index (NOT IMPLEMENTED).
-      #
-      #    :update_submodules ::
-      #      Recursively checkout submodules with same options (NOT
-      #      IMPLEMENTED).
-      #
-      #    :update_submodules_if_changed ::
-      #      Recursively checkout submodules if HEAD moved in super repo (NOT
-      #      IMPLEMENTED).
-      #
-      #  :disable_filters ::
-      #    If +true+, filters like CRLF line conversion will be disabled.
-      #
-      #  :dir_mode ::
-      #    Mode for newly created directories. Default: +0755+.
-      #
-      #  :file_mode ::
-      #    Mode for newly created files. Default: +0755+ or +0644+.
-      #
-      #  :file_open_flags ::
-      #    Mode for opening files. Default:
-      #    <code>IO::CREAT | IO::TRUNC | IO::WRONLY</code>.
-      #
-      #  :notify_flags ::
-      #    A single symbol or an array of symbols representing the cases in
-      #    which the +:notify+ callback should be invoked. Possible values are:
-      #
-      #    :none ::
-      #      Do not invoke the +:notify+ callback (default).
-      #
-      #    :conflict ::
-      #      Invoke the callback for conflicting paths.
-      #
-      #    :dirty ::
-      #      Invoke the callback for "dirty" files, i.e. those that do not need
-      #      an update but no longer match the baseline.
-      #
-      #    :updated ::
-      #      Invoke the callback for any file that was changed.
-      #
-      #    :untracked ::
-      #      Invoke the callback for untracked files.
-      #
-      #    :ignored ::
-      #      Invoke the callback for ignored files.
-      #
-      #    :all ::
-      #      Invoke the callback for all these cases.
-      #
-      #  :paths ::
-      #    A glob string or an array of glob strings specifying which paths
-      #    should be taken into account for the checkout operation. +nil+ will
-      #    match all files.  Default: +nil+.
-      #
-      #  :baseline ::
-      #    A Rugged::Tree that represents the current, expected contents of the
-      #    workdir.  Default: +HEAD+.
-      #
-      #  :target_directory ::
-      #    A path to an alternative workdir directory in which the checkout
-      #    should be performed.
-      def checkout(ref, options = {}, start_point = "HEAD")
-        if options[:b]
-          rugged.branches.create(ref, start_point)
-          options.delete(:b)
-        end
-        default_options = { strategy: [:recreate_missing, :safe] }
-        rugged.checkout(ref, default_options.merge(options))
       end
 
       # Delete the specified branch from the repository
@@ -1113,6 +948,27 @@ module Gitlab
         else
           branches
         end
+      end
+
+      def tags_from_rugged
+        rugged.references.each("refs/tags/*").map do |ref|
+          message = nil
+
+          if ref.target.is_a?(Rugged::Tag::Annotation)
+            tag_message = ref.target.message
+
+            if tag_message.respond_to?(:chomp)
+              message = tag_message.chomp
+            end
+          end
+
+          target_commit = Gitlab::Git::Commit.find(self, ref.target)
+          Gitlab::Git::Tag.new(self, ref.name, ref.target, target_commit, message)
+        end.sort_by(&:name)
+      end
+
+      def tags_from_gitaly
+        gitaly_ref_client.tags
       end
 
       def gitaly_migrate(method, &block)

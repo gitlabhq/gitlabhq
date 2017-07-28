@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge immediately', :feature, :js do
+feature 'Merge immediately', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 

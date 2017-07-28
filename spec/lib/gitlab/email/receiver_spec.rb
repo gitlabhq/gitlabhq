@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative 'email_shared_blocks'
 
-describe Gitlab::Email::Receiver, lib: true do
+describe Gitlab::Email::Receiver do
   include_context :email_shared_context
 
   context "when the email contains a valid email address in a Delivered-To header" do

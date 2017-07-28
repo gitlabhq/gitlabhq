@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue Sidebar', feature: true do
+feature 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }

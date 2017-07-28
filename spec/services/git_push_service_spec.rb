@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitPushService, services: true do
+describe GitPushService do
   include RepoHelpers
 
   let(:user)    { create(:user) }
@@ -678,6 +678,24 @@ describe GitPushService, services: true do
       expect(ProcessCommitWorker).not_to receive(:perform_async)
 
       service.process_commit_messages
+    end
+  end
+
+  describe '#update_signatures' do
+    let(:service) do
+      described_class.new(
+        project,
+        user,
+        oldrev: sample_commit.parent_id,
+        newrev: sample_commit.id,
+        ref: 'refs/heads/master'
+      )
+    end
+
+    it 'calls CreateGpgSignatureWorker.perform_async for each commit' do
+      expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+
+      execute_service(project, user, @oldrev, @newrev, @ref)
     end
   end
 
