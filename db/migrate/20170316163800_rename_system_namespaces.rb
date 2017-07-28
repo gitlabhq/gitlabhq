@@ -15,6 +15,7 @@ class RenameSystemNamespaces < ActiveRecord::Migration
     has_one :route, as: :source
     has_many :children, class_name: 'RenameSystemNamespaces::Namespace', foreign_key: :parent_id
     belongs_to :owner, class_name: 'RenameSystemNamespaces::User'
+    has_many :children, class_name: 'Namespace', foreign_key: :parent_id
 
     # Overridden to have the correct `source_type` for the `route` relation
     def self.name
@@ -76,6 +77,9 @@ class RenameSystemNamespaces < ActiveRecord::Migration
     def repository_storage_path
       Gitlab.config.repositories.storages[repository_storage]['path']
     end
+  end
+
+  class Group < Namespace
   end
 
   DOWNTIME = false
