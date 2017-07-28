@@ -25,6 +25,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓       | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^1] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
+| See related issues                    | ✓       | ✓          | ✓           | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
 | See a job   log                       | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^2]  | ✓          | ✓           | ✓        | ✓      |
@@ -38,6 +39,7 @@ The following table depicts the various user permission levels in a project.
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
+| Manage related issues                 |         | ✓          | ✓           | ✓        | ✓      |
 | Use environment terminals             |         |            |             | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |

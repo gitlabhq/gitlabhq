@@ -34,7 +34,7 @@ module EE
         prevent :admin_issue_link
       end
 
-      rule { can?(:guest_access) }.enable :read_issue_link
+      rule { can?(:read_issue) }.enable :read_issue_link
 
       rule { can?(:reporter_access) }.policy do
         enable :admin_board

@@ -12,9 +12,114 @@ describe 'Related issues', :js do
   let(:issue_project_unauthorized_a) { create(:issue, project: project_unauthorized) }
   let(:user) { create(:user) }
 
+  context 'widget visibility' do
+    before do
+      stub_licensed_features(related_issues: true)
+    end
+
+    context 'when not logged in' do
+      it 'does not show widget when internal project' do
+        project = create :project_empty_repo, :internal
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_css('.related-issues-block')
+      end
+
+      it 'does not show widget when private project' do
+        project = create :project_empty_repo, :private
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_css('.related-issues-block')
+      end
+
+      it 'shows widget when public project' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+    end
+
+    context 'when logged in but not a member' do
+      before do
+        gitlab_sign_in(user)
+      end
+
+      it 'shows widget when internal project' do
+        project = create :project_empty_repo, :internal
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+
+      it 'does not show widget when private project' do
+        project = create :project_empty_repo, :private
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).not_to have_css('.related-issues-block')
+      end
+
+      it 'shows widget when public project' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+    end
+
+    context 'when logged in and a member' do
+      before do
+        gitlab_sign_in(user)
+      end
+
+      it 'shows widget when internal project' do
+        project = create :project_empty_repo, :internal
+        issue = create :issue, project: project
+        project.add_guest(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+
+      it 'shows widget when private project' do
+        project = create :project_empty_repo, :private
+        issue = create :issue, project: project
+        project.add_guest(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+
+      it 'shows widget when public project' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project
+        project.add_guest(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+      end
+    end
+  end
+
   context 'when user has no permission to update related issues' do
     before do
-      sign_in(user)
+      project.add_guest(user)
+      gitlab_sign_in(user)
     end
 
     context 'with related_issues enabled' do
@@ -59,7 +164,7 @@ describe 'Related issues', :js do
     before do
       project.add_master(user)
       project_b.add_master(user)
-      sign_in(user)
+      gitlab_sign_in(user)
     end
 
     context 'with related_issues disabled' do
