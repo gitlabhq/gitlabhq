@@ -33,7 +33,7 @@ const RepoCommitSection = {
         this.commitMessage = '';
         this.editMode = false;
         $('html, body').animate({ scrollTop: 0 }, 'fast');
-      }, Store.tempPrivateToken);
+      });
     },
   },
 

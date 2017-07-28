@@ -26,7 +26,6 @@ const RepoStore = {
   defaultTabSize: 100,
   minTabSize: 30,
   tabsOverflow: 41,
-  tempPrivateToken: '',
   submitCommitsLoading: false,
   binaryLoaded: false,
   activeFile: RepoHelper.getDefaultActiveFile(),
