@@ -14,7 +14,7 @@ unless Sidekiq.server?
     config.lograge.custom_options = lambda do |event|
       {
         time: event.time.utc.iso8601(3),
-        params: event.payload[:params].except(%w(controller action format))
+        params: event.payload[:params].except(*%w(controller action format))
       }
     end
   end
