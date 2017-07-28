@@ -195,23 +195,32 @@ $new-sidebar-width: 220px;
   > li {
     > a {
       @media (min-width: $screen-sm-min) {
-        margin-left: 4px;
         margin-right: 2px;
+      }
+
+      &:hover {
+        color: $gl-text-color;
       }
     }
 
     &:not(.active) {
+      a {
+        margin-left: 1px;
+        margin-right: 3px;
+      }
+
       .sidebar-sub-level-items {
         @media (min-width: $screen-sm-min) {
           position: fixed;
           top: 0;
-          left: 219px;
+          left: 220px;
           width: 150px;
           margin-top: -1px;
-          padding: 1px;
+          padding: 8px 1px;
           background-color: $white-light;
           box-shadow: 2px 1px 3px $dropdown-shadow-color;
           border: 1px solid $gray-darker;
+          border-left: 0;
           border-radius: 0 3px 3px 0;
 
           &::before {
@@ -248,6 +257,8 @@ $new-sidebar-width: 220px;
           }
 
           a {
+            color: $gl-text-color;
+
             &:hover,
             &:focus {
               background-color: $gray-darker;
@@ -266,6 +277,10 @@ $new-sidebar-width: 220px;
     &.active {
       background: $active-background;
 
+      > a {
+        margin-left: 4px;
+      }
+
       .badge {
         color: $active-color;
         font-weight: 600;
@@ -279,11 +294,6 @@ $new-sidebar-width: 220px;
     &:not(.active):hover > a,
     > a:hover {
       background-color: $white-light;
-
-      .badge {
-        background-color: $indigo-500;
-        color: $hover-color;
-      }
     }
   }
 }
