@@ -15,16 +15,14 @@ feature 'Create Branch/Merge Request Dropdown on issue page', js: true do
       visit project_issue_path(project, issue)
 
       select_dropdown_option('create-mr')
+      
+      expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+      expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
-      wait_for_requests
+      visit project_issue_path(project, issue)
 
       expect(page).to have_content("created branch 1-cherry-coloured-funk")
       expect(page).to have_content("mentioned in merge request !1")
-
-      visit project_merge_request_path(project, MergeRequest.first)
-
-      expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-      expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
     end
 
     it 'allows creating a branch from the issue page' do
