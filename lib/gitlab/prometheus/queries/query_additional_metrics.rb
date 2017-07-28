@@ -67,6 +67,18 @@ module Gitlab
 
           result.select { |group| group.metrics.any? }
         end
+
+        def common_query_context(environment)
+          variables = {
+            ci_environment_slug: environment.slug,
+            kube_namespace: environment.project.kubernetes_service.actual_namespace,
+          }.flat_map { |k, v| [[k, v], [k.upcase, v]] }.to_h
+
+          macros = {
+            environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
+          }
+          variables.merge(macros)
+        end
       end
     end
   end
