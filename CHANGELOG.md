@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.2 (2017-07-28)
+
+- Fix job merge request link to a forked source project. !12965
+- Improve redirect route query performance. !13062
+- Allow admin to read_users_list even if it's restricted. !13066
+- Fixes 500 error caused by pending delete projects in admin dashboard. !13067
+- Add instrumentation to MarkupHelper#link_to_gfm. !13069
+- Pending delete projects should not show in deploy keys. !13088
+- Fix sizing of custom header logo in new navigation.
+- Fix crash on /help/ui.
+- Fix creating merge request diffs when diff contains bytes that are invalid in UTF-8.
+- fix vertical alignment of New Project button.
+- Add LDAP SSL certificate verification option.
+- Fix vertical alignment in firefox and safari for pipeline mini graph.
+
 ## 9.4.1 (2017-07-25)
 
 - Fix pipeline_schedules pages throwing error 500 (when ref is empty). !12983
