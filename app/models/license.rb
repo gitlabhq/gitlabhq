@@ -19,6 +19,7 @@ class License < ActiveRecord::Base
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
   JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
+  LDAP_EXTRAS_FEATURE = 'GitLab_LdapExtras'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
@@ -39,6 +40,7 @@ class License < ActiveRecord::Base
     db_load_balancing: DB_LOAD_BALANCING_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
     geo: GEO_FEATURE,
+    ldap_extras: LDAP_EXTRAS_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
     repository_size_limit: REPOSITORY_SIZE_LIMIT_FEATURE,
@@ -87,6 +89,7 @@ class License < ActiveRecord::Base
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
     { JENKINS_INTEGRATION_FEATURE => 1 },
+    { LDAP_EXTRAS_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },

@@ -1,4 +1,4 @@
-- if ldap_enabled?
+- if Gitlab::LDAP::Config.enabled_extras?
   = nav_link(path: 'ldap_group_links#index') do
     = link_to group_ldap_group_links_path(@group), title: 'LDAP Group' do
       %span
