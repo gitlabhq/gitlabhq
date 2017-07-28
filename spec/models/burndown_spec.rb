@@ -63,14 +63,14 @@ describe Burndown do
     expect(burndown).to be_accurate
   end
 
-  context "when all closed and reopened issues does not have closed_at" do
+  context "when all closed issues does not have closed_at" do
     before do
       milestone.issues.update_all(closed_at: nil)
     end
 
     it "considers closed_at as milestone start date" do
       expect(subject).to eq([
-        ["2017-03-01", 15, 30],
+        ["2017-03-01", 27, 54],
         ["2017-03-02", 27, 54],
         ["2017-03-03", 27, 54],
         ["2017-03-04", 27, 54],
@@ -85,7 +85,7 @@ describe Burndown do
     end
   end
 
-  context "when one or more closed or reopened issues does not have closed_at" do
+  context "when one or more closed issues does not have closed_at" do
     before do
       milestone.issues.closed.first.update(closed_at: nil)
     end

@@ -86,7 +86,7 @@ describe MergeRequests::RefreshService do
       let(:refresh_service) { service.new(@project, @user) }
 
       before do
-        @merge_request.update(state: :reopened)
+        @merge_request.update(state: :opened)
 
         allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
