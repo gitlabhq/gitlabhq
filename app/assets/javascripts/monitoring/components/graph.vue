@@ -40,7 +40,6 @@
         graphWidth: 600,
         graphHeightOffset: 120,
         margin: {},
-        breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
         areaColorRgb: '#8fbce8',
         lineColorRgb: '#1f78d1',
