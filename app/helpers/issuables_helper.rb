@@ -214,7 +214,6 @@ module IssuablesHelper
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
       initialTaskStatus: issuable.task_status,
-      quickActionsDocs: help_page_path('user/project/quick_actions'),
     }
 
     data.merge!(updated_at_by(issuable))

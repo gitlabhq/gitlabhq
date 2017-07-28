@@ -91,7 +91,7 @@
       },
       getAwardClassBindings(awardList, awardName) {
         return {
-          active: this.amIAwarded(awardList),
+          active: this.hasReactionByCurrentUser(awardList),
           disabled: !this.canInteractWithEmoji(awardList, awardName),
         };
       },
@@ -107,18 +107,16 @@
 
         return this.canAward && isAllowed;
       },
-      amIAwarded(awardList) {
-        const isAwarded = awardList.filter(award => award.user.id === this.myUserId);
-
-        return isAwarded.length;
+      hasReactionByCurrentUser(awardList) {
+        return awardList.filter(award => award.user.id === this.myUserId).length;
       },
       awardTitle(awardsList) {
-        const amIAwarded = this.amIAwarded(awardsList);
-        const TOOLTIP_NAME_COUNT = amIAwarded ? 9 : 10;
+        const hasReactionByCurrentUser = this.hasReactionByCurrentUser(awardsList);
+        const TOOLTIP_NAME_COUNT = hasReactionByCurrentUser ? 9 : 10;
         let awardList = awardsList;
 
         // Filter myself from list if I am awarded.
-        if (amIAwarded) {
+        if (hasReactionByCurrentUser) {
           awardList = awardList.filter(award => award.user.id !== this.myUserId);
         }
 
@@ -129,7 +127,7 @@
         const remainingAwardList = awardList.slice(TOOLTIP_NAME_COUNT, awardList.length);
 
         // Add myself to the begining of the list so title will start with You.
-        if (amIAwarded) {
+        if (hasReactionByCurrentUser) {
           namesToShow.unshift('You');
         }
 

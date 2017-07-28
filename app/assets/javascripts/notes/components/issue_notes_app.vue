@@ -47,13 +47,11 @@
     },
     computed: {
       ...mapGetters([
+        'notes',
         'getNotesDataByProp',
       ]),
     },
     methods: {
-      ...mapGetters([
-        'getNotesDataByProp',
-      ]),
       ...mapActions({
         actionFetchNotes: 'fetchNotes',
         poll: 'poll',

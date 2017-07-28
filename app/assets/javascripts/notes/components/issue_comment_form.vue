@@ -10,12 +10,12 @@
 
   export default {
     data() {
-      const { getUserData, getIssueData } = this.$store.getters;
+      const { getUserData, getIssueData, getNotesData } = this.$store.getters;
 
       return {
         note: '',
-        markdownDocsUrl: getIssueData.markdownDocs,
-        quickActionsDocsUrl: getIssueData.quickActionsDocs,
+        markdownDocsUrl: getNotesData.markdownDocs,
+        quickActionsDocsUrl: getNotesData.quickActionsDocs,
         markdownPreviewUrl: getIssueData.preview_note_path,
         noteType: constants.COMMENT,
         issueState: getIssueData.state,
@@ -89,7 +89,7 @@
                   this.handleError();
                 }
               } else {
-                this.discard();
+                return Flash('Something went wrong while adding your comment. Please try again.');
               }
             })
             .catch(() => {
@@ -125,9 +125,6 @@
       },
       setNoteType(type) {
         this.noteType = type;
-      },
-      handleError() {
-        Flash('Something went wrong while adding your comment. Please try again.');
       },
       editMyLastNote() {
         if (this.note === '') {

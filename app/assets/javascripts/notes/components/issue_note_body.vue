@@ -51,11 +51,12 @@
           });
         }
       },
-      handleFormUpdate() {
-        this.formUpdateHandler({
-          note: this.$refs.noteForm.note,
-        });
+      handleFormUpdate(note) {
+        this.$emit('handleFormUpdate', note);
       },
+      formCancelHandler(shouldConfirm, isDirty) {
+        this.$emit('cancelFormEdition', shouldConfirm, isDirty);
+      }
     },
     mounted() {
       this.renderGFM();
@@ -78,10 +79,11 @@
     <issue-note-form
       v-if="isEditing"
       ref="noteForm"
-      :update-handler="handleFormUpdate"
-      :cancel-handler="formCancelHandler"
+      @handleFormUpdate="handleFormUpdate"
+      @cancelFormEdition="formCancelHandler"
       :note-body="noteBody"
-      :note-id="note.id" />
+      :note-id="note.id"
+      />
     <textarea
       v-if="canEdit"
       v-model="note.note"
@@ -91,12 +93,14 @@
       v-if="note.last_edited_by"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
-      actionText="Edited" />
+      actionText="Edited"
+      />
     <issue-note-awards-list
       v-if="note.award_emoji.length"
       :note-id="note.id"
       :note-author-id="note.author.id"
       :awards="note.award_emoji"
-      :toggle-award-path="note.toggle_award_path" />
+      :toggle-award-path="note.toggle_award_path"
+      />
   </div>
 </template>

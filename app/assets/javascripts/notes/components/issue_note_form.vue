@@ -13,14 +13,6 @@
         type: Number,
         required: false,
       },
-      updateHandler: {
-        type: Function,
-        required: true,
-      },
-      cancelHandler: {
-        type: Function,
-        required: true,
-      },
       saveButtonTitle: {
         type: String,
         required: false,
@@ -42,18 +34,13 @@
       markdownField,
     },
     computed: {
-      isDirty() {
-        return this.initialNote !== this.note;
-      },
       noteHash() {
         return `#note_${this.noteId}`;
       },
     },
     methods: {
       handleUpdate() {
-        this.updateHandler({
-          note: this.note,
-        });
+        this.$emit('handleFormUpdate', note);
       },
       editMyLastNote() {
         if (this.note === '') {
@@ -67,6 +54,10 @@
           }
         }
       },
+      cancelHandler(shouldConfirm = false) {
+        // Sends information about confirm message and if the textarea has changed
+        this.$emit('cancelFormEdition', shouldConfirm, this.initialNote !== this.note);
+      }
     },
     mounted() {
       this.$refs.textarea.focus();
@@ -95,7 +86,9 @@
         rel="noopener noreferrer">updated comment</a>
         to ensure information is not lost.
     </div>
-    <form class="edit-note common-note-form">
+    <form
+      @submit="handleUpdate"
+      class="edit-note common-note-form">
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
         :markdown-docs="markdownDocsUrl"
@@ -118,8 +111,7 @@
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          @click="handleUpdate"
-          type="button"
+          type="submit"
           class="btn btn-nr btn-save">
           {{saveButtonTitle}}
         </button>

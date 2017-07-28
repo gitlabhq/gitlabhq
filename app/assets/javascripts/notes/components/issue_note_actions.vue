@@ -53,6 +53,7 @@
         emojiSmiling,
         emojiSmile,
         emojiSmiley,
+        currentUserId: window.gon.current_user_id,
       };
     },
     components: {
@@ -60,13 +61,13 @@
     },
     computed: {
       shouldShowActionsDropdown() {
-        return window.gon.current_user_id && (this.canEdit || this.canReportAsAbuse);
+        return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
       },
       canAddAwardEmoji() {
-        return window.gon.current_user_id;
+        return this.currentUserId;
       },
-      isAuthoredByMe() {
-        return this.authorId === window.gon.current_user_id;
+      isAuthoredByCurrentUser() {
+        return this.authorId === this.currentUserId
       },
     },
   };
@@ -82,7 +83,7 @@
     <a
       v-tooltip
       v-if="canAddAwardEmoji"
-      :class="{ 'js-user-authored': isAuthoredByMe }"
+      :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
       class="note-action-button note-emoji-button js-add-award js-note-emoji"
       data-position="right"
       href="#"

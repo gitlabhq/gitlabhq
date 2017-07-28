@@ -14,7 +14,7 @@
   <li class="note system-note timeline-entry being-posted fade-in-half">
    <div class="timeline-entry-inner">
      <div class="timeline-content">
-       <i>{{note.body}}</i>
+       <em>{{note.body}}</em>
      </div>
    </div>
   </li>

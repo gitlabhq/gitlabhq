@@ -175,17 +175,17 @@ export const toggleAward = ({ commit, getters, dispatch }, data) => {
           constants.EMOJI_THUMBSUP;
 
         const targetNote = getters.notesById[noteId];
-        let noteHasAward = false;
+        let noteHasAwardByCurrentUser = false;
 
         targetNote.award_emoji.forEach((a) => {
           if (a.name === counterAward && a.user.id === window.gon.current_user_id) {
-            noteHasAward = true;
+            noteHasAwardByCurrentUser = true;
           }
         });
 
-        if (noteHasAward) {
+        if (noteHasAwardByCurrentUser) {
           Object.assign(data, { awardName: counterAward });
-          Object.assign(data, { kipMutalityCheck: true });
+          Object.assign(data, { skipMutalityCheck: true });
 
           dispatch(types.TOGGLE_AWARD, data);
         }

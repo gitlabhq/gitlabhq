@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
         newSessionPath: notesDataset.newSessionPath,
         registerPath: notesDataset.registerPath,
         notesPath: notesDataset.notesPath,
+        markdownDocs: notesDataset.markdownDocs,
+        quickActionsDocs: notesDataset.quickActionsDocs,
       },
     };
   },

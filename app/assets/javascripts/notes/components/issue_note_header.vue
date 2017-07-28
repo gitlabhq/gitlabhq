@@ -93,7 +93,7 @@
           @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
-            tooltipPlacement="bottom"
+            tooltip-placement="bottom"
             />
         </a>
       </span>

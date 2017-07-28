@@ -19,6 +19,7 @@
       return {
         isEditing: false,
         isDeleting: false,
+        currentUserId: window.gon.current_user_id,
       };
     },
     components: {
@@ -38,12 +39,12 @@
         return {
           'is-editing': this.isEditing,
           'disabled-content': this.isDeleting,
-          'js-my-note': this.author.id === window.gon.current_user_id,
+          'js-my-note': this.author.id === this.currentUserId,
           target: this.targetNoteHash === this.noteAnchorId,
         };
       },
       canReportAsAbuse() {
-        return this.note.report_abuse_path && this.author.id !== window.gon.current_user_id;
+        return this.note.report_abuse_path && this.author.id !== this.currentUserId;
       },
       noteAnchorId() {
         return `note_${this.note.id}`;
@@ -59,8 +60,8 @@
         this.isEditing = true;
       },
       deleteHandler() {
-        const msg = 'Are you sure you want to delete this list?';
-        const isConfirmed = confirm(msg); // eslint-disable-line
+        // eslint-disable-next-line no-alert
+        const isConfirmed = confirm('Are you sure you want to delete this list?');
 
         if (isConfirmed) {
           this.isDeleting = true;
@@ -88,17 +89,15 @@
         this.updateNote(data)
           .then(() => {
             this.isEditing = false;
+            // TODO: this could be moved down, by setting a prop
             $(this.$refs.noteBody.$el).renderGFM();
           })
           .catch(() => Flash('Something went wrong while editing your comment. Please try again.'));
       },
-      formCancelHandler(shouldConfirm) {
-        if (shouldConfirm && this.$refs.noteBody.$refs.noteForm.isDirty) {
-          const msg = 'Are you sure you want to cancel editing this comment?';
-          const isConfirmed = confirm(msg); // eslint-disable-line
-          if (!isConfirmed) {
-            return;
-          }
+      formCancelHandler(shouldConfirm, isDirty) {
+        if (shouldConfirm && isDirty) {
+          // eslint-disable-next-line no-alert
+          if (!confirm('Are you sure you want to cancel editing this comment?')) return;
         }
 
         this.isEditing = false;
@@ -135,7 +134,7 @@
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
-            actionText="commented"
+            action-text="commented"
             />
           <issue-note-actions
             :author-id="author.id"
@@ -153,8 +152,8 @@
           :note="note"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
-          :form-update-handler="formUpdateHandler"
-          :form-cancel-handler="formCancelHandler"
+          @handleFormUpdate="formUpdateHandler"
+          @cancelFormEdition="formCancelHandler"
           ref="noteBody"
           />
       </div>
