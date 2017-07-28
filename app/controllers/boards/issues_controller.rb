@@ -47,15 +47,19 @@ module Boards
     end
 
     def issue
-      @issue ||=
-        IssuesFinder.new(current_user, project_id: board_parent.id)
-                    .execute
-                    .where(iid: params[:id])
-                    .first!
+      @issue ||= issues_finder.execute.where(iid: params[:id]).first!
     end
 
     def filter_params
       params.merge(board_id: params[:board_id], id: params[:list_id]).compact
+    end
+
+    def issues_finder
+      if board.is_group_board?
+        IssuesFinder.new(current_user, group_id: board_parent.id)
+      else
+        IssuesFinder.new(current_user, project_id: board_parent.id)
+      end
     end
 
     def move_params

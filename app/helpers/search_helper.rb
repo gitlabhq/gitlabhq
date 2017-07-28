@@ -137,11 +137,8 @@ module SearchHelper
   end
 
   def search_filter_input_options(type)
-    if @group
-      base_endpoint = group_path(@group)
-    elsif @project
-      base_endpoint = project_path(@project)
-    end
+    base_endpoint = @group&.web_url || project_path(@project)
+
     {
       id: "filtered-search-#{type}",
       placeholder: 'Search or filter results...',

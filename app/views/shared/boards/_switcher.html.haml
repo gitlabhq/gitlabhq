@@ -1,8 +1,10 @@
 - parent = board.parent
+- milestone_filter_opts = { format: :json }
+- milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.is_group_board?
 
 %boards-selector{ "inline-template" => true,
   ":current-board" => current_board_json,
-  "milestone-path" => milestones_filter_path(:json) }
+  "milestone-path" => milestones_filter_path(milestone_filter_opts) }
   .dropdown
     %button.dropdown-menu-toggle{ "@click" => "loadBoards",
       data: { toggle: "dropdown" } }

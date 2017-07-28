@@ -12,7 +12,7 @@ class Groups::MilestonesController < Groups::ApplicationController
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
-        render json: milestones.map { |m| m.for_display.slice(:title, :name) }
+        render json: milestones.map { |m| m.for_display.slice(:title, :name, :id) }
       end
     end
   end
@@ -78,7 +78,9 @@ class Groups::MilestonesController < Groups::ApplicationController
     search_params = params.merge(group_ids: group.id)
 
     milestones = MilestonesFinder.new(search_params).execute
-    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params)
+
+    legacy_milestones = []
+    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params) unless params[:only_group_milestones]
 
     milestones + legacy_milestones
   end

@@ -46,7 +46,7 @@ class FilteredSearchDropdownManager {
       milestone: {
         reference: null,
         gl: 'DropdownNonUser',
-        extraArguments: [`${this.baseEndpoint}/milestones.json`, '%'],
+        extraArguments: [`${this.baseEndpoint}/milestones.json?only_group_milestones=true`, '%'],
         element: this.container.querySelector('#js-dropdown-milestone'),
       },
       label: {
