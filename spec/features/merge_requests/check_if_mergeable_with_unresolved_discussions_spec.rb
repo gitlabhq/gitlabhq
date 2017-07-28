@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Check if mergeable with unresolved discussions', js: true do
   let(:user)           { create(:user) }
-  let(:project)        { create(:project) }
+  let(:project)        { create(:project, :repository) }
   let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
   before do

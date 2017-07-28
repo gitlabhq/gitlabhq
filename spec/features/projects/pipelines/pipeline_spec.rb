@@ -42,7 +42,7 @@ describe 'Pipeline', :js do
   describe 'GET /:project/pipelines/:id' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
     before do
@@ -188,7 +188,7 @@ describe 'Pipeline', :js do
   describe 'GET /:project/pipelines/:id/builds' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
@@ -262,7 +262,7 @@ describe 'Pipeline', :js do
   end
 
   describe 'GET /:project/pipelines/:id/failures' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }

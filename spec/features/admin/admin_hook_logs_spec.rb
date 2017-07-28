@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Admin::HookLogs' do
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:system_hook) { create(:system_hook) }
   let(:hook_log) { create(:web_hook_log, web_hook: system_hook, internal_error_message: 'some error') }
 

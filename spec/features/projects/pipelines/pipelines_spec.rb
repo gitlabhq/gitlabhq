@@ -12,7 +12,7 @@ describe 'Pipelines', :js do
     end
 
     describe 'GET /:project/pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       let!(:pipeline) do
         create(
@@ -385,7 +385,7 @@ describe 'Pipelines', :js do
     end
 
     describe 'GET /:project/pipelines/show' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
         create(:ci_empty_pipeline,
@@ -437,7 +437,7 @@ describe 'Pipelines', :js do
     end
 
     describe 'POST /:project/pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         visit new_project_pipeline_path(project)
@@ -476,7 +476,7 @@ describe 'Pipelines', :js do
     end
 
     describe 'Create pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         visit new_project_pipeline_path(project)
@@ -512,14 +512,14 @@ describe 'Pipelines', :js do
     end
 
     context 'when project is public' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
 
       it { expect(page).to have_content 'Build with confidence' }
       it { expect(page).to have_http_status(:success) }
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private) }
+      let(:project) { create(:project, :private, :repository) }
 
       it { expect(page).to have_content 'You need to sign in' }
     end

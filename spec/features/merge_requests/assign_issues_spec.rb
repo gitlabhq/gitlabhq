@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Merge request issue assignment', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue1) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue1.to_reference} and #{issue2.to_reference}") }

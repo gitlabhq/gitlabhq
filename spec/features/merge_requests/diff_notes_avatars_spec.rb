@@ -4,7 +4,7 @@ feature 'Diff note avatars', js: true do
   include NoteInteractionHelpers
 
   let(:user)          { create(:user) }
-  let(:project)       { create(:project, :public) }
+  let(:project)       { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
   let(:path)          { "files/ruby/popen.rb" }
   let(:position) do

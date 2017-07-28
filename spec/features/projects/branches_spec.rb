@@ -4,7 +4,7 @@ describe 'Branches' do
   include ProtectedBranchHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
   context 'logged in as developer' do

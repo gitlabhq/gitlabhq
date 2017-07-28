@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'project owner creates a license file', js: true do
   let(:project_master) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   background do
     project.repository.delete_file(project_master, 'LICENSE',
       message: 'Remove LICENSE', branch_name: 'master')

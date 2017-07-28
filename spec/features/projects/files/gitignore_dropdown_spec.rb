@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'User wants to add a .gitignore file' do
   before do
     user = create(:user)
-    project = create(:project)
+    project = create(:project, :repository)
     project.team << [user, :master]
     sign_in user
     visit project_new_blob_path(project, 'master', file_name: '.gitignore')

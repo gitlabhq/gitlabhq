@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Find files button in the tree header' do
   given(:user) { create(:user) }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   background do
     sign_in(user)

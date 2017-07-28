@@ -4,7 +4,7 @@ require 'tempfile'
 feature 'Jobs' do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
