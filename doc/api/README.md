@@ -78,7 +78,8 @@ be a compatibility layer on top of GraphQL.
 ## Basic usage
 
 API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`][lib-api-url].
+is defined in [`lib/api.rb`][lib-api-url]. For example, the root of the v4 API
+is at `/api/v4`.
 
 For endpoints that require [authentication](#authentication), you need to pass
 a `private_token` parameter via query string or header. If passed as a header,
