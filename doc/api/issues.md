@@ -14,7 +14,9 @@ Read more on [pagination](README.md#pagination).
 
 ## List issues
 
-Get all issues created by the authenticated user.
+Get all issues the authenticated user has access to. By default it
+returns only issues created by the current user. To get all issues,
+use parameter `scope=all`.
 
 ```
 GET /issues
@@ -35,12 +37,12 @@ GET /issues?assignee_id=5
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
-| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
-| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
 | `search`    | string         | no       | Search issues against their `title` and `description`                                                                       |
 
 ```bash
@@ -132,12 +134,12 @@ GET /groups/:id/issues?assignee_id=5
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
-| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
-| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                  |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
+| `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
+| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                 |
 
 
 ```bash
@@ -229,12 +231,12 @@ GET /projects/:id/issues?assignee_id=5
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`                                               |
-| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`.                           |
-| `assignee_id` | integer      | no       | Return issues assigned to the given user `id`                                                                               |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
+| `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
+| `search`    | string         | no       | Search project issues against their `title` and `description`                                                               |
 | `created_after` | datetime | no | Return issues created after the given time (inclusive) |
 | `created_before` | datetime | no | Return issues created before the given time (inclusive) |
 
@@ -1035,3 +1037,5 @@ Example response:
   "akismet_submitted": false
 }
 ```
+
+[ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004

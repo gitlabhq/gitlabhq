@@ -32,7 +32,7 @@ module API
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         use :pagination
       end
 
@@ -60,7 +60,7 @@ module API
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
         optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
         issues = find_issues
