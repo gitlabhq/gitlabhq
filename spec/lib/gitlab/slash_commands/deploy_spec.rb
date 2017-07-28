@@ -22,7 +22,7 @@ describe Gitlab::SlashCommands::Deploy do
     context 'if no environment is defined' do
       it 'does not execute an action' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to eq("No action found to be executed")
+        expect(subject[:text]).to eq "Couldn't find a deployment action."
       end
     end
 
@@ -35,12 +35,12 @@ describe Gitlab::SlashCommands::Deploy do
       context 'without actions' do
         it 'does not execute an action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to eq("No action found to be executed")
+          expect(subject[:text]).to eq "Couldn't find a deployment action."
         end
       end
 
-      context 'with action' do
-        let!(:manual1) do
+      context 'when single action has been matched' do
+        before do
           create(:ci_build, :manual, pipeline: pipeline,
                                      name: 'first',
                                      environment: 'production')
@@ -48,31 +48,61 @@ describe Gitlab::SlashCommands::Deploy do
 
         it 'returns success result' do
           expect(subject[:response_type]).to be(:in_channel)
-          expect(subject[:text]).to start_with('Deployment started from staging to production')
+          expect(subject[:text])
+            .to start_with('Deployment started from staging to production')
         end
+      end
 
-        context 'when duplicate action exists' do
-          let!(:manual2) do
+      context 'when more than one action has been matched' do
+        context 'when there is no specific actions with a environment name' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
             create(:ci_build, :manual, pipeline: pipeline,
                                        name: 'second',
                                        environment: 'production')
           end
 
-          it 'returns error' do
+          it 'returns error about too many actions defined' do
+            expect(subject[:text]).to eq("Couldn't find a deployment action.")
             expect(subject[:response_type]).to be(:ephemeral)
-            expect(subject[:text]).to eq('Too many actions defined')
           end
         end
 
-        context 'when teardown action exists' do
-          let!(:teardown) do
+        context 'when one of the actions is environement specific action' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'production',
+                                       environment: 'production')
+          end
+
+          it 'deploys to production' do
+            expect(subject[:text])
+              .to start_with('Deployment started from staging to production')
+            expect(subject[:response_type]).to be(:in_channel)
+          end
+        end
+
+        context 'when one of the actions is a teardown action' do
+          before do
+            create(:ci_build, :manual, pipeline: pipeline,
+                                       name: 'first',
+                                       environment: 'production')
+
             create(:ci_build, :manual, :teardown_environment,
                    pipeline: pipeline, name: 'teardown', environment: 'production')
           end
 
-          it 'returns the success message' do
+          it 'deploys to production' do
+            expect(subject[:text])
+              .to start_with('Deployment started from staging to production')
             expect(subject[:response_type]).to be(:in_channel)
-            expect(subject[:text]).to start_with('Deployment started from staging to production')
           end
         end
       end
