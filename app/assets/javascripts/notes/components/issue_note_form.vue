@@ -18,6 +18,10 @@
         required: false,
         default: 'Save comment',
       },
+      discussion: {
+        type: Array,
+        required: false,
+      }
     },
     data() {
       const { getIssueData, getNotesData } =  this.$store.getters;
@@ -44,8 +48,13 @@
       },
       editMyLastNote() {
         if (this.note === '') {
+          // TODO: HANDLE THIS WITHOUTH JQUERY OR QUERYING THE DOM
+          // FIND the discussion we are in and the last comment on that discussion
           const discussion = $(this.$el).closest('.discussion-notes');
           const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
+
+          debugger;
+          const lastNoteInDiscussion = this.$store.getters.getDiscussionLastNote(this.discussion);
 
           if (myLastNoteId) {
             eventHub.$emit('enterEditMode', {
@@ -116,7 +125,7 @@
           {{saveButtonTitle}}
         </button>
         <button
-          @click="cancelHandler"
+          @click="cancelHandler()"
           class="btn btn-nr btn-cancel note-edit-cancel"
           type="button">
           Cancel

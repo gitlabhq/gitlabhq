@@ -1,7 +1,7 @@
 <script>
   /* global Flash */
 
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
@@ -30,6 +30,9 @@
       issueNoteSignedOutWidget,
     },
     computed: {
+       ...mapGetters([
+        'getCurrentUserLastNote',
+      ]),
       isLoggedIn() {
         return window.gon.current_user_id;
       },
@@ -126,13 +129,13 @@
       setNoteType(type) {
         this.noteType = type;
       },
-      editMyLastNote() {
+      editCurrentUserLastNote() {
         if (this.note === '') {
-          const myLastNoteId = $('.js-my-note').last().attr('id');
-          debugger;
-          if (myLastNoteId) {
+          const lastNote = this.getCurrentUserLastNote(window.gon.current_user_id);
+          console.log(lastNote)
+          if (lastNote) {
             eventHub.$emit('enterEditMode', {
-              noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+              noteId: lastNote.id,
             });
           }
         }
@@ -185,7 +188,7 @@
                 ref="textarea"
                 slot="textarea"
                 placeholder="Write a comment or drag your files here..."
-                @keydown.up="editMyLastNote"
+                @keydown.up="editCurrentUserLastNote()"
                 @keydown.meta.enter="handleSave()">
               </textarea>
             </markdown-field>

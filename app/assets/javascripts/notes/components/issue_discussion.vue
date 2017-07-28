@@ -164,8 +164,9 @@
                   <issue-note-form
                     v-if="isReplying"
                     saveButtonTitle="Comment"
-                    :update-handler="saveReply"
-                    :cancel-handler="cancelReplyForm"
+                    :discussion="note"
+                    @handleFormUpdate="saveReply"
+                    @cancelFormEdition="cancelReplyForm"
                     ref="noteForm"
                     />
                   <issue-note-signed-out-widget v-if="!canReply" />

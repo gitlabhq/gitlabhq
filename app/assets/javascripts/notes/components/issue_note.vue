@@ -118,7 +118,8 @@
   <li
     class="note timeline-entry"
     :id="noteAnchorId"
-    :class="classNameBindings">
+    :class="classNameBindings"
+    :note-id="note.id">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link

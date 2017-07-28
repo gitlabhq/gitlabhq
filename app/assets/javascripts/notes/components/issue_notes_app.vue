@@ -60,6 +60,7 @@
         setNotesData: 'setNotesData',
         setIssueData: 'setIssueData',
         setUserData: 'setUserData',
+        setLastFetchedAt: 'setLastFetchedAt'
       }),
       getComponentName(note) {
         if (note.isPlaceholderNote) {
@@ -86,7 +87,10 @@
               this.checkLocationHash();
             });
           })
-          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'));
+          .catch((error) => {
+            console.log(error)
+            Flash('Something went wrong while fetching issue comments. Please try again.')
+            });
       },
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
@@ -98,7 +102,10 @@
             .then((res) => {
               this.setLastFetchedAt(res.lastFetchedAt);
             })
-            .catch(() => Flash('Something went wrong while fetching latest comments.'));
+            .catch((error) =>{
+              console.log(error)
+              Flash('Something went wrong while fetching latest comments.')
+            } );
         }, 15000);
       },
       bindEventHubListeners() {

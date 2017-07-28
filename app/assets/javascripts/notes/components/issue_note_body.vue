@@ -19,14 +19,6 @@
         required: false,
         default: false,
       },
-      formUpdateHandler: {
-        type: Function,
-        required: true,
-      },
-      formCancelHandler: {
-        type: Function,
-        required: true,
-      },
     },
     components: {
       issueNoteEditedText,
@@ -93,7 +85,7 @@
       v-if="note.last_edited_by"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
-      actionText="Edited"
+      action-text="Edited"
       />
     <issue-note-awards-list
       v-if="note.award_emoji.length"
