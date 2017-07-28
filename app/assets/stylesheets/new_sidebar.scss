@@ -204,7 +204,7 @@ $new-sidebar-width: 220px;
     }
 
     &:not(.active) {
-      a {
+      > a {
         margin-left: 1px;
         margin-right: 3px;
       }
