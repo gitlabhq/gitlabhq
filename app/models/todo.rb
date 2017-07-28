@@ -51,7 +51,7 @@ class Todo < ApplicationRecord
     # Priority sorting isn't displayed in the dropdown, because we don't show
     # milestones, but still show something if the user has a URL with that
     # selected.
-    def sort(method)
+    def sort_by_attr(method)
       case method.to_s
       when 'priority', 'label_priority' then order_by_labels_priority
       else order_by(method)
