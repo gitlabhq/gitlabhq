@@ -16,8 +16,8 @@ describe ProtectedBranch do
 
       context "while checking uniqueness of a role-based #{human_association_name}" do
         it "allows a single #{human_association_name} for a role (per protected branch)" do
-          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
-          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          first_protected_branch = create(:protected_branch, default_access_level: false)
+          second_protected_branch = create(:protected_branch, default_access_level: false)
 
           first_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
           second_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
@@ -31,7 +31,7 @@ describe ProtectedBranch do
         end
 
         it "does not count a user-based #{human_association_name} with an `access_level` set" do
-          protected_branch = create(:protected_branch, :remove_default_access_levels)
+          protected_branch = create(:protected_branch, default_access_level: false)
 
           protected_branch.send(association_name) << build(factory_name, user: user, access_level: Gitlab::Access::MASTER)
           protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
@@ -41,7 +41,7 @@ describe ProtectedBranch do
 
         it "does not count a group-based #{human_association_name} with an `access_level` set" do
           group = create(:group)
-          protected_branch = create(:protected_branch, :remove_default_access_levels)
+          protected_branch = create(:protected_branch, default_access_level: false)
 
           protected_branch.send(association_name) << build(factory_name, group: group, access_level: Gitlab::Access::MASTER)
           protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
@@ -52,8 +52,8 @@ describe ProtectedBranch do
 
       context "while checking uniqueness of a user-based #{human_association_name}" do
         it "allows a single #{human_association_name} for a user (per protected branch)" do
-          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
-          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          first_protected_branch = create(:protected_branch, default_access_level: false)
+          second_protected_branch = create(:protected_branch, default_access_level: false)
 
           first_protected_branch.send(association_name) << build(factory_name, user: user)
           second_protected_branch.send(association_name) << build(factory_name, user: user)
@@ -67,7 +67,7 @@ describe ProtectedBranch do
         end
 
         it "ignores the `access_level` while validating a user-based #{human_association_name}" do
-          protected_branch = create(:protected_branch, :remove_default_access_levels)
+          protected_branch = create(:protected_branch, default_access_level: false)
 
           protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
           protected_branch.send(association_name) << build(factory_name, user: user, access_level: Gitlab::Access::MASTER)
@@ -80,8 +80,8 @@ describe ProtectedBranch do
         let(:group) { create(:group) }
 
         it "allows a single #{human_association_name} for a group (per protected branch)" do
-          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
-          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          first_protected_branch = create(:protected_branch, default_access_level: false)
+          second_protected_branch = create(:protected_branch, default_access_level: false)
 
           first_protected_branch.send(association_name) << build(factory_name, group: group)
           second_protected_branch.send(association_name) << build(factory_name, group: group)
@@ -95,7 +95,7 @@ describe ProtectedBranch do
         end
 
         it "ignores the `access_level` while validating a group-based #{human_association_name}" do
-          protected_branch = create(:protected_branch, :remove_default_access_levels)
+          protected_branch = create(:protected_branch, default_access_level: false)
 
           protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
           protected_branch.send(association_name) << build(factory_name, group: group, access_level: Gitlab::Access::MASTER)
