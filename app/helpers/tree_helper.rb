@@ -14,7 +14,7 @@ module TreeHelper
 
   def repo_url(project)
     if controller_name == 'projects'
-      readme_path(project)
+      readme_path(project) || project_tree_path(project, project.default_branch)
     else
       request.original_url
     end
