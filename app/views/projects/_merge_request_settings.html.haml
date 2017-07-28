@@ -1,10 +1,5 @@
 - form = local_assigns.fetch(:form)
 
-%fieldset.features.merge-requests-feature.append-bottom-default
-  %hr
-  %h5.prepend-top-0
-    Merge Requests
+= render 'projects/ee/merge_request_settings', form: form, project: @project
 
-  = render 'projects/ee/merge_request_settings', form: form, project: @project
-
-  = render 'projects/merge_request_merge_settings', form: form
+= render 'projects/merge_request_merge_settings', form: form
