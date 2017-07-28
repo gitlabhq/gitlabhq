@@ -245,7 +245,7 @@ import AuditLogs from './audit_logs';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
@@ -311,7 +311,7 @@ import AuditLogs from './audit_logs';
           setupProjectEdit();
           break;
         case 'projects:pipelines:new':
-          new NewBranchForm($('.js-new-pipeline-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
