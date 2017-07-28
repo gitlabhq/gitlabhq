@@ -1,4 +1,4 @@
-#repo{ data: { url: repo_url(@project), 'project-name' => @project.name, refs_url: refs_namespace_project_path(@project.namespace, @project, format: "json"), project_url: namespace_project_path(@project.namespace, @project), project_id: @project.id, temp_token: @current_user.private_token } }
+#repo{ data: { url: repo_url(@project), 'project-name' => @project.name, refs_url: refs_namespace_project_path(@project.namespace, @project, format: "json"), project_url: namespace_project_path(@project.namespace, @project), project_id: @project.id, temp_token: current_user.private_token } }
 
 :javascript
   // Load last commit log for each file in tree
