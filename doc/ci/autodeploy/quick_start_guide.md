@@ -7,17 +7,17 @@ We made a minimal [Ruby application](https://gitlab.com/gitlab-examples/minimal-
 * `server.rb` - our application. It will start an HTTP server on port 5000 and render “Hello, world!”
 * `Dockerfile` - to build our app into a container image. It will use a ruby base image and run `server.rb`
 
-### Fork sample project on GitLab.com
+## Fork sample project on GitLab.com
 
 Let’s start by forking our sample application. Go to [the project page](https://gitlab.com/gitlab-examples/minimal-ruby-app) and press the `Fork` button. Soon you should have a project under your namespace with the necessary files.
 
-### Setup your own cluster on Google Container Engine
+## Setup your own cluster on Google Container Engine
 
 If you do not already have a Google Cloud account, create one at https://console.cloud.google.com.
 
 Visit the [`Container Engine`](https://console.cloud.google.com/kubernetes/list) tab and create a new cluster. You can change the name and leave the rest of the default settings. Once you have your cluster running, you need to connect to the cluster by following the Google interface.
 
-### Connect to Kubernetes cluster
+## Connect to Kubernetes cluster
 
 You need to have the Google Cloud SDK installed. e.g.
 On OSX, install [homebrew](https://brew.sh):
@@ -31,7 +31,7 @@ Now go back to the Google interface, find your cluster, and follow the instructi
 
 ![connect to cluster](img/guide_connect_cluster.png)
 
-### Copy credentials to GitLab.com project
+## Copy credentials to GitLab.com project
 
 Once you have the Kubernetes Dashboard interface running, you should visit `Secrets` under the  `Config` section. There you should find the settings we need for GitLab integration: ca.crt and token.
 
@@ -43,11 +43,11 @@ You need to copy-paste the ca.crt and token into your project on GitLab.com in t
 
 For API URL, you should use the `Endpoint` IP from your cluster page on Google Cloud Platform.
 
-### Expose application to the world
+## Expose application to the world
 
 In order to be able to visit your application, you need to install an NGINX ingress controller and point your domain name to its external IP address.
 
-#### Set up Ingress controller
+### Set up Ingress controller
 
 You’ll need to make sure you have an ingress controller. If you don’t have one, do:
 
@@ -59,7 +59,7 @@ helm install --name ruby-app stable/nginx-ingress
 
 This should create several services including `ruby-app-nginx-ingress-controller`. You can list your services by running `kubectl get svc` to confirm that.
 
-#### Point DNS at Cluster IP
+### Point DNS at Cluster IP
 
 Find out the external IP address of the `ruby-app-nginx-ingress-controller` by running:
 
@@ -71,7 +71,7 @@ Use this IP address to configure your DNS. This part heavily depends on your pre
 
 Use `nslookup minimal-ruby-app-staging.<yourdomain>` to confirm that domain is assigned to the cluster IP.
 
-### Setup Auto Deploy
+## Setup Auto Deploy
 
 Visit the home page of your GitLab.com project and press "Set up Auto Deploy" button.
 
