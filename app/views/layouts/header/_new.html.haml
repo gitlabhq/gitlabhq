@@ -70,6 +70,7 @@
                     = link_to "Settings", profile_path
                   %li
                     = link_to "Turn off new navigation", profile_preferences_path(anchor: "new-navigation")
+                  = render 'shared/repo/user_dropdown_link'
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
