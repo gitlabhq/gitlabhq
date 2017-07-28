@@ -4,6 +4,8 @@
   = form_errors(@page)
 
   = f.hidden_field :title, value: @page.title
+  - if @page.persisted?
+    = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
   .form-group
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12

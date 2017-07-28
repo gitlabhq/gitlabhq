@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GenericCommitStatus, models: true do
+describe GenericCommitStatus do
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:external_url) { 'http://example.gitlab.com/status' }

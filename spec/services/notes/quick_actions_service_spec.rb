@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Notes::QuickActionsService, services: true do
+describe Notes::QuickActionsService do
   shared_context 'note on noteable' do
     let(:project) { create(:empty_project) }
     let(:master) { create(:user).tap { |u| project.team << [u, :master] } }

@@ -18,13 +18,12 @@ function initRepo() {
 
   Store.service = Service;
   Store.service.url = repo.dataset.url;
-  Store.projectName = repo.dataset.projectName;
   Store.service.refsUrl = repo.dataset.refsUrl;
+  Store.projectId = repo.dataset.projectId;
+  Store.projectName = repo.dataset.projectName;
+  Store.projectUrl = repo.dataset.projectUrl;
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
-  Store.projectId = repo.dataset.projectId;
-  Store.tempPrivateToken = repo.dataset.tempToken;
-  Store.projectUrl = repo.dataset.projectUrl;
 
   this.vm = new Vue({
     el: repo,

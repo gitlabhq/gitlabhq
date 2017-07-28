@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter, lib: true do
+describe Banzai::Filter::RelativeLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,

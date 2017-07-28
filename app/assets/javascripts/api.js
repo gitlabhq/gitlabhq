@@ -96,15 +96,12 @@ const Api = {
       .done(projects => callback(projects));
   },
 
-  commitMultiple(id, data, callback, token) {
+  commitMultiple(id, data, callback) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', id);
     return $.ajax({
       url,
-      headers: {
-        PRIVATE_TOKEN: token,
-      },
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data),

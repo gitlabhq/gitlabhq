@@ -60,6 +60,31 @@ module Gitlab
         entry
       end
 
+      def tree_entries(repository, revision, path)
+        request = Gitaly::GetTreeEntriesRequest.new(
+          repository: @gitaly_repo,
+          revision: revision,
+          path: path.presence || '.'
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
+
+        response.flat_map do |message|
+          message.entries.map do |gitaly_tree_entry|
+            entry_path = gitaly_tree_entry.path.dup
+            Gitlab::Git::Tree.new(
+              id: gitaly_tree_entry.oid,
+              root_id: gitaly_tree_entry.root_oid,
+              type: gitaly_tree_entry.type.downcase,
+              mode: gitaly_tree_entry.mode.to_s(8),
+              name: File.basename(entry_path),
+              path: entry_path,
+              commit_id: gitaly_tree_entry.commit_oid
+            )
+          end
+        end
+      end
+
       def commit_count(ref)
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
@@ -80,6 +105,19 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def find_all_commits(opts = {})
+        request = Gitaly::FindAllCommitsRequest.new(
+          repository: @gitaly_repo,
+          revision: opts[:ref].to_s,
+          max_count: opts[:max_count].to_i,
+          skip: opts[:skip].to_i
+        )
+        request.order = opts[:order].upcase if opts[:order].present?
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request)
+        consume_commits_response(response)
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
@@ -94,7 +132,12 @@ module Gitlab
       end
 
       def consume_commits_response(response)
-        response.flat_map { |r| r.commits }
+        response.flat_map do |message|
+          message.commits.map do |gitaly_commit|
+            commit = GitalyClient::Commit.new(@repository, gitaly_commit)
+            Gitlab::Git::Commit.new(commit)
+          end
+        end
       end
     end
   end

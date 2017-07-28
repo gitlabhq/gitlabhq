@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Event, models: true do
+describe Event do
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target) }

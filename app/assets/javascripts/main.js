@@ -109,6 +109,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
@@ -144,7 +145,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
@@ -158,6 +158,8 @@ document.addEventListener('beforeunload', function () {
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -165,6 +167,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');
@@ -241,6 +248,11 @@ $(function () {
       return $(el).data('placement') || 'bottom';
     }
   });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
+  });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
   // Form submitter
@@ -284,13 +296,7 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', function () {
-    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
-    $('.header-content .header-logo').toggle();
-    $('.header-content .navbar-collapse').toggle();
-    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
-    return $('.navbar-toggle').toggleClass('active');
-  });
+  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);
@@ -347,4 +353,14 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

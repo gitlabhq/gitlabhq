@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Group label on issue', :feature do
+describe 'Group label on issue' do
   it 'renders link to the project issues page' do
     group = create(:group)
     project = create(:empty_project, :public, namespace: group)

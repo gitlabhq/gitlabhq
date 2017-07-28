@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
 import './lib/utils/common_utils';
+import { placeholderImage } from './lazy_loader';
 
 const gfmRules = {
   // The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert
@@ -54,6 +55,11 @@ const gfmRules = {
   ImageLinkFilter: {
     'a.no-attachment-icon'(el, text) {
       return text;
+    },
+  },
+  ImageLazyLoadFilter: {
+    'img'(el, text) {
+      return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
     },
   },
   VideoLinkFilter: {
@@ -163,7 +169,9 @@ const gfmRules = {
       return text.trim().split('\n').map(s => `> ${s}`.trim()).join('\n');
     },
     'img'(el) {
-      return `![${el.getAttribute('alt')}](${el.getAttribute('src')})`;
+      const imageSrc = el.src;
+      const imageUrl = imageSrc && imageSrc !== placeholderImage ? imageSrc : (el.dataset.src || '');
+      return `![${el.getAttribute('alt')}](${imageUrl})`;
     },
     'a.anchor'(el, text) {
       // Don't render a Markdown link for the anchor link inside a heading

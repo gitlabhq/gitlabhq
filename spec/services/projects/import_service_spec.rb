@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ImportService, services: true do
+describe Projects::ImportService do
   let!(:project) { create(:empty_project) }
   let(:user) { project.creator }
 

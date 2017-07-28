@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Mattermost slash commands', :feature, :js do
+feature 'Setup Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -159,7 +159,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
 
-        expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+        expect(value).to match("api/v4/projects/#{project.id}/services/mattermost_slash_commands/trigger")
       end
 
       it 'shows a token placeholder' do

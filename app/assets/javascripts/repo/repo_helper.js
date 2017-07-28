@@ -19,7 +19,7 @@ const RepoHelper = {
       newContent: '',
       changed: false,
       loading: false,
-    }
+    };
   },
 
   key: '',
@@ -173,14 +173,14 @@ const RepoHelper = {
         }
       } else {
         // it's a tree
-        if(!file) Store.isRoot = RepoHelper.isRoot(Service.url);
+        if (!file) Store.isRoot = RepoHelper.isRoot(Service.url);
         file = RepoHelper.setDirectoryOpen(file);
         const newDirectory = RepoHelper.dataToListOfFiles(data);
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
-    .catch((e) => {
+    .catch(() => {
       // RepoHelper.setLoading(false, loadingData);
       RepoHelper.loadingError();
     });

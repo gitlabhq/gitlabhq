@@ -4,6 +4,7 @@ class Projects::BlobController < Projects::ApplicationController
   include CreatesCommit
   include RendersBlob
   include ActionView::Helpers::SanitizeHelper
+  include ApplicationHelper
 
   # Raised when given an invalid file path
   InvalidPathError = Class.new(StandardError)
@@ -40,7 +41,7 @@ class Projects::BlobController < Projects::ApplicationController
         assign_ref_vars
         @last_commit = @repository.last_commit_for_path(@commit.id, tree.path) || @commit
 
-        render 'projects/tree/show'
+        show_new_repo? ? render('projects/tree/show') : render('show')
       end
 
       format.json do

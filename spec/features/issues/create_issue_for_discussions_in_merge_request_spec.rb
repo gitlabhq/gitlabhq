@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Resolving all open discussions in a merge request from an issue', feature: true, js: true do
+feature 'Resolving all open discussions in a merge request from an issue', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 

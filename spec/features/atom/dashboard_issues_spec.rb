@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe "Dashboard Issues Feed", feature: true  do
+describe "Dashboard Issues Feed"  do
   describe "GET /issues" do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
-    let!(:project1) { create(:project) }
-    let!(:project2) { create(:project) }
+    let!(:project1) { create(:empty_project) }
+    let!(:project2) { create(:empty_project) }
 
     before do
       project1.team << [user, :master]

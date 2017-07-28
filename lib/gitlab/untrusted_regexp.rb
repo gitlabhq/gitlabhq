@@ -22,13 +22,9 @@ module Gitlab
     end
 
     def scan(text)
-      scan_regexp.scan(text).map do |match|
-        if regexp.number_of_capturing_groups == 0
-          match.first
-        else
-          match
-        end
-      end
+      matches = scan_regexp.scan(text).to_a
+      matches.map!(&:first) if regexp.number_of_capturing_groups.zero?
+      matches
     end
 
     def replace(text, rewrite)
@@ -43,7 +39,7 @@ module Gitlab
     # groups, so work around it
     def scan_regexp
       @scan_regexp ||=
-        if regexp.number_of_capturing_groups == 0
+        if regexp.number_of_capturing_groups.zero?
           RE2::Regexp.new('(' + regexp.source + ')')
         else
           regexp

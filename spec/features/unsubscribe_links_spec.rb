@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Unsubscribe links', feature: true do
+describe 'Unsubscribe links' do
   include Warden::Test::Helpers
 
   let(:recipient) { create(:user) }

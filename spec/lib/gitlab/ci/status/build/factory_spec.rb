@@ -7,7 +7,9 @@ describe Gitlab::Ci::Status::Build::Factory do
   let(:factory) { described_class.new(build, user) }
 
   before do
-    project.team << [user, :developer]
+    stub_not_protect_default_branch
+
+    project.add_developer(user)
   end
 
   context 'when build is successful' do
@@ -225,19 +227,19 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       context 'when user has ability to play action' do
-        before do
-          project.add_developer(user)
-
-          create(:protected_branch, :developers_can_merge,
-                 name: build.ref, project: project)
-        end
-
         it 'fabricates status that has action' do
           expect(status).to have_action
         end
       end
 
       context 'when user does not have ability to play action' do
+        before do
+          allow(build.project).to receive(:empty_repo?).and_return(false)
+
+          create(:protected_branch, :no_one_can_push,
+                 name: build.ref, project: build.project)
+        end
+
         it 'fabricates status that has no action' do
           expect(status).not_to have_action
         end
@@ -262,6 +264,13 @@ describe Gitlab::Ci::Status::Build::Factory do
       end
 
       context 'when user is not allowed to execute manual action' do
+        before do
+          allow(build.project).to receive(:empty_repo?).and_return(false)
+
+          create(:protected_branch, :no_one_can_push,
+                 name: build.ref, project: build.project)
+        end
+
         it 'fabricates status with correct details' do
           expect(status.text).to eq 'manual'
           expect(status.group).to eq 'manual'

@@ -26,7 +26,6 @@ const RepoStore = {
   defaultTabSize: 100,
   minTabSize: 30,
   tabsOverflow: 41,
-  tempPrivateToken: '',
   submitCommitsLoading: false,
   binaryLoaded:false,
   dialog: {
@@ -42,7 +41,7 @@ const RepoStore = {
   isCommitable: false,
   binary: false,
   currentBranch: '',
-  commitMessage: 'Update README.md',
+  commitMessage: '',
   binaryMimeType: '',
   // scroll bar space for windows
   scrollWidth: 0,
@@ -142,23 +141,23 @@ const RepoStore = {
     if (file.type === 'tree') return;
     let foundIndex;
     RepoStore.openedFiles = RepoStore.openedFiles.filter((openedFile, i) => {
-      if(openedFile.url === file.url) foundIndex = i;
+      if (openedFile.url === file.url) foundIndex = i;
       return openedFile.url !== file.url;
     });
 
     // now activate the right tab based on what you closed.
-    if(RepoStore.openedFiles.length === 0) {
+    if (RepoStore.openedFiles.length === 0) {
       RepoStore.activeFile = {};
       return;
     }
-      
-    if(RepoStore.openedFiles.length === 1 || foundIndex === 0) {
+
+    if (RepoStore.openedFiles.length === 1 || foundIndex === 0) {
       RepoStore.setActiveFiles(RepoStore.openedFiles[0]);
       return;
     }
 
-    if(foundIndex) {
-      if(foundIndex > 0) {
+    if (foundIndex) {
+      if (foundIndex > 0) {
         RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
       }
     }

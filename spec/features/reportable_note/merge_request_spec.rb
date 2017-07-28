@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Reportable note on merge request', :feature, :js do
+describe 'Reportable note on merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'Branches', feature: true do
+describe 'Branches' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
   def set_protected_branch_name(branch_name)

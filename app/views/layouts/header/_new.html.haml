@@ -6,8 +6,8 @@
         %h1.title
           = link_to root_path, title: 'Dashboard' do
             = brand_header_logo
-            %span.hidden-xs
-              GitLab
+            %span.logo-text.hidden-xs
+              = render 'shared/logo_type.svg'
 
         - if current_user
           = render "layouts/nav/new_dashboard"
@@ -70,6 +70,7 @@
                     = link_to "Settings", profile_path
                   %li
                     = link_to "Turn off new navigation", profile_preferences_path(anchor: "new-navigation")
+                  = render 'shared/repo/user_dropdown_link'
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
@@ -81,6 +82,6 @@
       %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v', class: 'js-navbar-toggle-right')
-        = icon('times', class: 'js-navbar-toggle-left', style: 'display: none;')
+        = icon('times', class: 'js-navbar-toggle-left')
 
 = render 'shared/outdated_browser'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Reportable note on commit', :feature, :js do
+describe 'Reportable note on commit', :js do
   include RepoHelpers
 
   let(:user) { create(:user) }

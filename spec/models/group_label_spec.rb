@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupLabel, models: true do
+describe GroupLabel do
   describe 'relationships' do
     it { is_expected.to belong_to(:group) }
   end

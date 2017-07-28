@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery, lib: true do
+describe Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery do
   include Prometheus::MetricBuilders
 
   let(:client) { double('prometheus_client') }

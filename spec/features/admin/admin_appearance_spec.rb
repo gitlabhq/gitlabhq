@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin Appearance', feature: true do
+feature 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
 
   scenario 'Create new appearance' do
@@ -63,11 +63,11 @@ feature 'Admin Appearance', feature: true do
   end
 
   def logo_selector
-    '//img[@src^="/uploads/-/system/appearance/logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/logo"]'
   end
 
   def header_logo_selector
-    '//img[@src^="/uploads/-/system/appearance/header_logo"]'
+    '//img[data-src^="/uploads/-/system/appearance/header_logo"]'
   end
 
   def logo_fixture

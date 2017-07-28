@@ -50,9 +50,5 @@ export default RepoFileButtons;
   </div>
 
   <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>
-
-  <button type="button" class="btn btn-default replace" data-target="#modal-upload-blob" data-toggle="modal">Replace</button>
-
-  <a href="#" class="btn btn-danger delete">Delete</a>
 </div>
 </template>

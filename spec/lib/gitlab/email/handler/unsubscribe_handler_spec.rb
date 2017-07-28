@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-describe Gitlab::Email::Handler::UnsubscribeHandler, lib: true do
+describe Gitlab::Email::Handler::UnsubscribeHandler do
   include_context :email_shared_context
 
   before do

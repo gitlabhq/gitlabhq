@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DeployKey, models: true do
+describe DeployKey do
   include EmailHelpers
 
   describe "Associations" do

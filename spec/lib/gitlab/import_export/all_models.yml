@@ -102,6 +102,7 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- variables
 - auto_canceled_by
 - auto_canceled_pipelines
 - auto_canceled_jobs
@@ -112,6 +113,8 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+pipeline_variables:
+- pipeline
 stages:
 - project
 - pipeline

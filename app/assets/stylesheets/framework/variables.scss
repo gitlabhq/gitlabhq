@@ -380,7 +380,9 @@ $issue-boards-card-shadow: rgba(186, 186, 186, 0.5);
 * Avatar
 */
 $avatar_radius: 50%;
-$avatar-border: $border-color;
+$avatar-border: $gray-normal;
+$avatar-border-hover: $gray-darker;
+$avatar-background: $gray-lightest;
 $gl-avatar-size: 40px;
 
 /*

@@ -4,7 +4,7 @@
       = pipeline_schedule.description
     %td.branch-name-cell
       = icon('code-fork')
-      - if pipeline_schedule.ref
+      - if pipeline_schedule.ref.present?
         = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td
       - if pipeline_schedule.last_pipeline

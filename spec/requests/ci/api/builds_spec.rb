@@ -69,6 +69,72 @@ describe Ci::API::Builds do
         end
       end
 
+      context 'when an old image syntax is used' do
+        before do
+          build.update!(options: { image: 'codeclimate' })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "image" => "codeclimate" })
+        end
+      end
+
+      context 'when a new image syntax is used' do
+        before do
+          build.update!(options: { image: { name: 'codeclimate' } })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "image" => "codeclimate" })
+        end
+      end
+
+      context 'when an old service syntax is used' do
+        before do
+          build.update!(options: { services: ['mysql'] })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "services" => ["mysql"] })
+        end
+      end
+
+      context 'when a new service syntax is used' do
+        before do
+          build.update!(options: { services: [name: 'mysql'] })
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["options"]).to eq({ "services" => ["mysql"] })
+        end
+      end
+
+      context 'when no image or service is defined' do
+        before do
+          build.update!(options: {})
+        end
+
+        it 'starts a build' do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+      
+          expect(json_response["options"]).to be_empty
+        end
+      end
+
       context 'when there is a pending build' do
         it 'starts a build' do
           register_builds info: { platform: :darwin }

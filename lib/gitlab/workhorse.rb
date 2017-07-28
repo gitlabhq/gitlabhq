@@ -35,7 +35,10 @@ module Gitlab
                           when 'git_receive_pack'
                             Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                           when 'git_upload_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            Gitlab::GitalyClient.feature_enabled?(
+                              :post_upload_pack,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+                            )
                           when 'info_refs'
                             true
                           else
@@ -62,7 +65,7 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:project_raw_show)
+        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show)
                    {
                      'GitalyServer' => gitaly_server_hash(repository),
                      'GetBlobRequest' => {
