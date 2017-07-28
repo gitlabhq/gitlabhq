@@ -1,4 +1,5 @@
 <script>
+  import { mapGetters } from 'vuex';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import eventHub from '../event_hub';
 
@@ -19,7 +20,7 @@
         default: 'Save comment',
       },
       discussion: {
-        type: Array,
+        type: Object,
         required: false,
       }
     },
@@ -38,6 +39,9 @@
       markdownField,
     },
     computed: {
+      ...mapGetters([
+        'getDiscussionLastNote',
+      ]),
       noteHash() {
         return `#note_${this.noteId}`;
       },
@@ -48,17 +52,11 @@
       },
       editMyLastNote() {
         if (this.note === '') {
-          // TODO: HANDLE THIS WITHOUTH JQUERY OR QUERYING THE DOM
-          // FIND the discussion we are in and the last comment on that discussion
-          const discussion = $(this.$el).closest('.discussion-notes');
-          const myLastNoteId = discussion.find('.js-my-note').last().attr('id');
+          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion, window.gon.current_user_id);
 
-          debugger;
-          const lastNoteInDiscussion = this.$store.getters.getDiscussionLastNote(this.discussion);
-
-          if (myLastNoteId) {
+          if (lastNoteInDiscussion) {
             eventHub.$emit('enterEditMode', {
-              noteId: parseInt(myLastNoteId.replace('note_', ''), 10),
+              noteId: lastNoteInDiscussion.id,
             });
           }
         }

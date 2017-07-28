@@ -31,6 +31,6 @@ export const getCurrentUserLastNote = state => userId => reverseNotes(state.note
     return acc;
   }, []).filter(el => el !== undefined)[0];
 
-export const getDiscussionLastNote = state => (discussion, userId) => reverseNotes(discussion[0].notes)
+export const getDiscussionLastNote = state => (discussion, userId) => reverseNotes(discussion.notes)
   .find(el => isLastNote(el, userId));
 
