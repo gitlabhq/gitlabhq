@@ -64,6 +64,9 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initNotes from './init_notes';
+import initLegacyFilters from './init_legacy_filters';
+import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
 
 (function() {
@@ -159,6 +162,8 @@ import GpgBadges from './gpg_badges';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -169,10 +174,12 @@ import GpgBadges from './gpg_badges';
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
         case 'groups:issues':
         case 'groups:merge_requests':
-          new UsersSelect();
           new ProjectSelect();
+          initLegacyFilters();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -253,6 +260,9 @@ import GpgBadges from './gpg_badges';
           new gl.GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
           break;
+        case 'projects:snippets:show':
+          initNotes();
+          break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
@@ -273,6 +283,10 @@ import GpgBadges from './gpg_badges';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+
+          initIssuableSidebar();
+          initNotes();
+
           const mrShowNode = document.querySelector('.merge-request');
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
@@ -280,11 +294,6 @@ import GpgBadges from './gpg_badges';
           break;
         case 'dashboard:activity':
           new gl.Activities();
-          break;
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
-          new ProjectSelect();
-          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -294,6 +303,7 @@ import GpgBadges from './gpg_badges';
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          initNotes();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
@@ -390,10 +400,20 @@ import GpgBadges from './gpg_badges';
         case 'projects:labels:edit':
           new Labels();
           break;
+        case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
+          $('.label-subscription').each((i, el) => {
+            const $el = $(el);
+
+            if ($el.find('.dropdown-group-label').length) {
+              new gl.GroupLabelSubscription($el);
+            } else {
+              new gl.ProjectLabelSubscription($el);
+            }
+          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -438,9 +458,14 @@ import GpgBadges from './gpg_badges';
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          initNotes();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
+          break;
+        case 'profiles:personal_access_tokens:index':
+        case 'admin:impersonation_tokens:index':
+          new gl.DueDateSelectors();
           break;
       }
       switch (path.first()) {
