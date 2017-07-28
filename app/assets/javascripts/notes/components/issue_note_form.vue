@@ -28,11 +28,13 @@
       },
     },
     data() {
+      const { getIssueData, getNotesData } =  this.$store.getters;
+
       return {
         initialNote: this.noteBody,
         note: this.noteBody,
-        markdownPreviewUrl: gl.issueData.preview_note_path,
-        markdownDocsUrl: '',
+        markdownPreviewUrl: getIssueData.preview_note_path,
+        markdownDocsUrl: getNotesData.markdownDocs,
         conflictWhileEditing: false,
       };
     },
@@ -67,10 +69,6 @@
       },
     },
     mounted() {
-      const issuableDataEl = document.getElementById('js-issuable-app-initial-data');
-      const issueData = JSON.parse(issuableDataEl.innerHTML.replace(/&quot;/g, '"'));
-
-      this.markdownDocsUrl = issueData.markdownDocs;
       this.$refs.textarea.focus();
     },
     watch: {
@@ -126,7 +124,7 @@
           {{saveButtonTitle}}
         </button>
         <button
-          @click="cancelHandler()"
+          @click="cancelHandler"
           class="btn btn-nr btn-cancel note-edit-cancel"
           type="button">
           Cancel
