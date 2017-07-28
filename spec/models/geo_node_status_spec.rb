@@ -126,6 +126,23 @@ describe GeoNodeStatus do
     end
   end
 
+  describe '#repositories_failed_count' do
+    before do
+      create(:geo_project_registry, :sync_failed, project: project_1)
+      create(:geo_project_registry, :sync_failed, project: project_3)
+    end
+
+    it 'returns the right number of failed repos with no group restrictions' do
+      expect(subject.repositories_failed_count).to eq(2)
+    end
+
+    it 'returns the right number of failed repos with group restrictions' do
+      geo_node.update_attribute(:groups, [group])
+
+      expect(subject.repositories_failed_count).to eq(1)
+    end
+  end
+
   describe '#repositories_synced_in_percentage' do
     it 'returns 0 when no projects are available' do
       expect(subject.repositories_synced_in_percentage).to eq(0)
