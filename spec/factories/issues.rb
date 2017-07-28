@@ -16,12 +16,8 @@ FactoryGirl.define do
       state :closed
     end
 
-    trait :reopened do
-      state :reopened
-    end
-
     factory :closed_issue, traits: [:closed]
-    factory :reopened_issue, traits: [:reopened]
+    factory :reopened_issue, traits: [:opened]
 
     factory :labeled_issue do
       transient do

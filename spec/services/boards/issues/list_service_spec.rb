@@ -20,7 +20,7 @@ describe Boards::Issues::ListService do
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project) }
+    let!(:reopened_issue1) { create(:issue, :opened, project: project) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, labels: [development]) }
