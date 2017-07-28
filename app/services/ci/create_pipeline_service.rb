@@ -76,7 +76,7 @@ module Ci
 
       if !ignore_skip_ci && skip_ci?
         pipeline.skip if save_on_errors
-        raise InsufficientConditionError, pipeline
+        return pipeline
       end
 
       unless pipeline.has_stage_seeds?
