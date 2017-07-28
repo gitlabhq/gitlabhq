@@ -13,8 +13,15 @@ import { repoEditorLoader } from './repo_editor';
 import RepoMixin from './repo_mixin';
 import PopupDialog from '../vue_shared/components/popup_dialog.vue'
 
+function addEventsForNonVueEls() {
+  $(document).on('change', '.dropdown', () => {
+    Store.targetBranch = $('.project-refs-target-form input[name="ref"]').val();
+  });
+}
+
 function initRepo() {
   const repo = document.getElementById('repo');
+
 
   Store.service = Service;
   Store.service.url = repo.dataset.url;
@@ -24,6 +31,7 @@ function initRepo() {
   Store.projectUrl = repo.dataset.projectUrl;
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
+  addEventsForNonVueEls();
 
   this.vm = new Vue({
     el: repo,

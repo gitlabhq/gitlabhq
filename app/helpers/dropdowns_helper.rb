@@ -72,7 +72,7 @@ module DropdownsHelper
 
   def dropdown_input(placeholder, input_id: nil)
     content_tag :div, class: "dropdown-input" do
-      filter_output = search_field_tag input_id, nil, class: "dropdown-input-field dropdown-no-filter", placeholder: placeholder, autocomplete: 'off'
+      filter_output = text_field_tag input_id, nil, class: "dropdown-input-field dropdown-no-filter", placeholder: placeholder, autocomplete: 'off'
       filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
 
       filter_output.html_safe

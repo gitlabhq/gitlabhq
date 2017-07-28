@@ -23,7 +23,6 @@ export default class RepoEditButton {
       },
       methods: {
         editClicked() {
-          console.log('thiscf', this.changedFiles)
           if(this.changedFiles.length) {
             this.dialog.open = true;
             return;

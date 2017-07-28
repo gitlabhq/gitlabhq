@@ -3,19 +3,31 @@
 import Store from './repo_store';
 import Api from '../api';
 import RepoMixin from './repo_mixin'
+import Helper from './repo_helper'
 
 const RepoCommitSection = {
   data: () => Store,
 
   mixins: [RepoMixin],
+  
+  computed: {
+    branchPaths() {
+      let branch = Helper.getBranch();
+      return this.changedFiles.map((f) => {
+        console.log('branch', branch)
+        console.log(Helper.getFilePathFromFullPath(f.url, branch))
+        return Helper.getFilePathFromFullPath(f.url, branch);
+      });
+    }
+  },
 
   methods: {
     makeCommit() {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const branch = $('button.dropdown-menu-toggle').attr('data-ref');
+      const branch = Helper.getBranch();
       const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map((f) => {
-        const filePath = f.url.split(branch)[1];
+      const actions = this.branchPaths.map((f) => {
+        const filePath = Helper.getFilePathFromFullPath(f.url, branch);
         return {
           action: 'update',
           file_path: filePath,
@@ -52,8 +64,8 @@ export default RepoCommitSection;
         <label class="col-md-4 control-label staged-files">Staged files ({{changedFiles.length}})</label>
         <div class="col-md-4">
           <ul class="list-unstyled changed-files">
-            <li v-for="file in changedFiles" :key="file.id">
-              <span class="help-block">{{file.url}}</span>
+            <li v-for="file in branchPaths">
+              <span class="help-block">{{file}}</span>
             </li>
           </ul>
         </div>
@@ -71,34 +83,7 @@ export default RepoCommitSection;
       <div class="form-group">
         <label class="col-md-4 control-label" for="target-branch">Target branch</label>
         <div class="col-md-4">
-          <div class="input-group">
-            <div class="input-group-btn branch-dropdown">
-              <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-                Action
-                <i class="fa fa-caret-down"></i>
-              </button>
-              <ul class="dropdown-menu pull-right">
-                <li>
-                  <a href="#">Target branch</a>
-                </li>
-                <li>
-                  <a href="#">Create my own branch</a>
-                </li>
-              </ul>
-            </div>
-            <input class="form-control" id="target-branch" name="target-branch" placeholder="placeholder" type="text"></input>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="col-md-4 control-label" for="checkboxes"></label>
-        <div class="col-md-4">
-          <div class="checkbox new-merge-request">
-            <label for="checkboxes-0">
-              <input id="checkboxes-0" name="checkboxes" type="checkbox" value="1"></input>
-              Start a new merge request with these changes
-            </label>
-          </div>
+          <span class="help-block">{{targetBranch}}</span>
         </div>
       </div>
       <div class="col-md-offset-4 col-md-4">

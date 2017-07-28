@@ -155,6 +155,10 @@
   #commit-area {
     background: $gray-light;
     padding: 20px;
+
+    span.help-block {
+      padding-top: 7px;
+    }
   }
 
   #view-toggler {
