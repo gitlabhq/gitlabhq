@@ -39,8 +39,6 @@ describe 'Edit Project Settings' do
           end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
-
-          sleep 0.1
         end
       end
     end
@@ -180,7 +178,11 @@ describe 'Edit Project Settings' do
     it "disables repository related features" do
       select "Disabled", from: "project_project_feature_attributes_repository_access_level"
 
-      expect(find(".edit-project")).to have_selector("select.disabled", count: 2)
+      page.within('.sharing-permissions') do
+        click_button "Save changes"
+      end
+
+      expect(find(".sharing-permissions")).to have_selector("select.disabled", count: 2)
     end
 
     it "shows empty features project homepage" do
@@ -188,7 +190,9 @@ describe 'Edit Project Settings' do
       select "Disabled", from: "project_project_feature_attributes_issues_access_level"
       select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
 
-      click_button "Save changes"
+      page.within('.sharing-permissions') do
+        click_button "Save changes"
+      end
       wait_for_requests
 
       visit project_path(project)
@@ -201,7 +205,9 @@ describe 'Edit Project Settings' do
       select "Disabled", from: "project_project_feature_attributes_issues_access_level"
       select "Disabled", from: "project_project_feature_attributes_wiki_access_level"
 
-      click_button "Save changes"
+      page.within('.sharing-permissions') do
+        click_button "Save changes"
+      end
       wait_for_requests
 
       visit activity_project_path(project)
@@ -242,7 +248,9 @@ describe 'Edit Project Settings' do
     end
 
     def save_changes_and_check_activity_tab
-      click_button "Save changes"
+      page.within('.sharing-permissions') do
+        click_button "Save changes"
+      end
       wait_for_requests
 
       visit activity_project_path(project)

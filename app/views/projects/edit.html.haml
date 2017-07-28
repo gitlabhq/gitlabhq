@@ -15,52 +15,52 @@
         Update your project name, description, avatar, and other general settings.
     .settings-content.no-animate{ class: ('expanded' if expanded) }
       .project-edit-errors
-        = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
-          %fieldset
-            .row
-              .form-group.col-md-9
-                = f.label :name, class: 'label-light', for: 'project_name_edit' do
-                  Project name
-                = f.text_field :name, class: "form-control", id: "project_name_edit"
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
+        %fieldset
+          .row
+            .form-group.col-md-9
+              = f.label :name, class: 'label-light', for: 'project_name_edit' do
+                Project name
+              = f.text_field :name, class: "form-control", id: "project_name_edit"
 
-              .form-group.col-md-3
-                = f.label :id, class: 'label-light' do
-                  Project ID
-                = f.text_field :id, class: 'form-control', readonly: true
+            .form-group.col-md-3
+              = f.label :id, class: 'label-light' do
+                Project ID
+              = f.text_field :id, class: 'form-control', readonly: true
 
-            .form-group
-              = f.label :description, class: 'label-light' do
-                Project description
-                %span.light (optional)
-              = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
-
-            - unless @project.empty_repo?
-              .form-group
-                = f.label :default_branch, "Default Branch", class: 'label-light'
-                = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
           .form-group
-            = f.label :tag_list, "Tags", class: 'label-light'
-            = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
-            %p.help-block Separate tags with commas.
-          %fieldset.features
-            %h5.prepend-top-0
-              Project avatar
+            = f.label :description, class: 'label-light' do
+              Project description
+              %span.light (optional)
+            = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+
+          - unless @project.empty_repo?
             .form-group
-              - if @project.avatar?
-                .avatar-container.s160
-                  = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
-              %p.light
-                - if @project.avatar_in_git
-                  Project avatar in repository: #{ @project.avatar_in_git }
-              %a.choose-btn.btn.js-choose-project-avatar-button
-                Browse file...
-              %span.file_name.prepend-left-default.js-avatar-filename No file chosen
-              = f.file_field :avatar, class: "js-project-avatar-input hidden"
-              .help-block The maximum file size allowed is 200KB.
-              - if @project.avatar?
-                %hr
-                = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
-          = f.submit 'Save changes', class: "btn btn-save"
+              = f.label :default_branch, "Default Branch", class: 'label-light'
+              = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
+        .form-group
+          = f.label :tag_list, "Tags", class: 'label-light'
+          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
+          %p.help-block Separate tags with commas.
+        %fieldset.features
+          %h5.prepend-top-0
+            Project avatar
+          .form-group
+            - if @project.avatar?
+              .avatar-container.s160
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
+            %p.light
+              - if @project.avatar_in_git
+                Project avatar in repository: #{ @project.avatar_in_git }
+            %a.choose-btn.btn.js-choose-project-avatar-button
+              Browse file...
+            %span.file_name.prepend-left-default.js-avatar-filename No file chosen
+            = f.file_field :avatar, class: "js-project-avatar-input hidden"
+            .help-block The maximum file size allowed is 200KB.
+            - if @project.avatar?
+              %hr
+              = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
+        = f.submit 'Save changes', class: "btn btn-save"
 
   %section.settings.sharing-permissions
     .settings-header
@@ -70,7 +70,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
-    .settings-content.no-animate{ class: ('expaneded' if expanded) }
+    .settings-content.no-animate{ class: ('expanded' if expanded) }
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
         .form_group.sharing-and-permissions
           .row.js-visibility-select
@@ -148,7 +148,7 @@
         = f.submit 'Save changes', class: "btn btn-save"
 
 
-  %section.settings.merge-request-settings{ style: ("display: none;" if @project.project_feature.send(:merge_requests_access_level) == 0) }
+  %section.settings.merge-requests-feature{ style: ("display: none;" if @project.project_feature.send(:merge_requests_access_level) == 0) }
     .settings-header
       %h4
         Merge request settings
