@@ -71,6 +71,15 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def authenticate_user!
+    return if current_user
+
+    notice = "You need to sign in."
+
+    store_location_for :user, request.fullpath
+    redirect_to new_user_session_path, notice: notice
+  end
+
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
     token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
