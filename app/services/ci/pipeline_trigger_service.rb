@@ -60,6 +60,7 @@ module Ci
       return @job if defined?(@job)
 
       @job = Ci::Build.find_by_token(params[:token].to_s)
+    end
 
     def create_pipeline_variables!(pipeline)
       return unless params[:variables]
