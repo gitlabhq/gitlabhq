@@ -8,5 +8,9 @@ FactoryGirl.define do
     trait :avatar do
       file_type :avatar
     end
+
+    trait :lfs do
+      file_type :lfs
+    end
   end
 end

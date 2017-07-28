@@ -27,7 +27,6 @@ module Geo
           other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
 
           Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-
         else
           Upload.all
         end

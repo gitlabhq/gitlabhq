@@ -15,7 +15,12 @@ class GeoNodeStatus
   end
 
   def repositories_count
-    @repositories_count ||= Project.count
+    @repositories_count ||=
+      if restricted_project_ids
+        Project.where(id: restricted_project_ids).count
+      else
+        Project.count
+      end
   end
 
   def repositories_count=(value)
@@ -23,7 +28,12 @@ class GeoNodeStatus
   end
 
   def repositories_synced_count
-    @repositories_synced_count ||= Geo::ProjectRegistry.synced.count
+    @repositories_synced_count ||=
+      if restricted_project_ids
+        Geo::ProjectRegistry.synced.where(project_id: restricted_project_ids).count
+      else
+        Geo::ProjectRegistry.synced.count
+      end
   end
 
   def repositories_synced_count=(value)
@@ -35,7 +45,12 @@ class GeoNodeStatus
   end
 
   def repositories_failed_count
-    @repositories_failed_count ||= Geo::ProjectRegistry.failed.count
+    @repositories_failed_count ||=
+      if restricted_project_ids
+        Geo::ProjectRegistry.failed.where(project_id: restricted_project_ids).count
+      else
+        Geo::ProjectRegistry.failed.count
+      end
   end
 
   def repositories_failed_count=(value)
@@ -43,7 +58,7 @@ class GeoNodeStatus
   end
 
   def lfs_objects_count
-    @lfs_objects_count ||= LfsObject.count
+    @lfs_objects_count ||= lfs_objects.count
   end
 
   def lfs_objects_count=(value)
@@ -51,7 +66,15 @@ class GeoNodeStatus
   end
 
   def lfs_objects_synced_count
-    @lfs_objects_synced_count ||= Geo::FileRegistry.where(file_type: :lfs).count
+    @lfs_objects_synced_count ||= begin
+      relation = Geo::FileRegistry.where(file_type: :lfs)
+
+      if restricted_project_ids
+        relation = relation.where(file_id: lfs_objects.pluck(:id))
+      end
+
+      relation.count
+    end
   end
 
   def lfs_objects_synced_count=(value)
@@ -63,7 +86,7 @@ class GeoNodeStatus
   end
 
   def attachments_count
-    @attachments_count ||= Upload.count
+    @attachments_count ||= attachments.count
   end
 
   def attachments_count=(value)
@@ -72,7 +95,7 @@ class GeoNodeStatus
 
   def attachments_synced_count
     @attachments_synced_count ||= begin
-      upload_ids = Upload.pluck(:id)
+      upload_ids = attachments.pluck(:id)
       synced_ids = Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
 
       (synced_ids & upload_ids).length
@@ -93,5 +116,34 @@ class GeoNodeStatus
     return 0 if total.zero?
 
     (synced.to_f / total.to_f) * 100.0
+  end
+
+  def attachments
+    @attachments ||=
+      if restricted_project_ids
+        uploads_table   = Upload.arel_table
+        group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.group_ids))
+        project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
+        other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
+
+        Upload.where(group_uploads.or(project_uploads).or(other_uploads))
+      else
+        Upload.all
+      end
+  end
+
+  def lfs_objects
+    @lfs_objects ||=
+      if restricted_project_ids
+        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+      else
+        LfsObject.all
+      end
+  end
+
+  def restricted_project_ids
+    return @restricted_project_ids if defined?(@restricted_project_ids)
+
+    @restricted_project_ids = Gitlab::Geo.current_node.project_ids
   end
 end
