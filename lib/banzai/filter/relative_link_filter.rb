@@ -22,6 +22,7 @@ module Banzai
 
         doc.css('img, video').each do |el|
           process_link_attr el.attribute('src')
+          process_link_attr el.attribute('data-src')
         end
 
         doc

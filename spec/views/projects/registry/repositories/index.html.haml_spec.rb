@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/registry/repositories/index', :view do
+describe 'projects/registry/repositories/index' do
   let(:group) { create(:group, path: 'group') }
   let(:project) { create(:empty_project, group: group, path: 'test') }
 

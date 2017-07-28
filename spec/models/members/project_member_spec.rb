@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectMember, models: true do
+describe ProjectMember do
   describe 'associations' do
     it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
@@ -139,7 +139,7 @@ describe ProjectMember, models: true do
       @project_1.team << [@user_1, :developer]
       @project_2.team << [@user_2, :reporter]
 
-      ProjectMember.truncate_teams([@project_1.id, @project_2.id])
+      described_class.truncate_teams([@project_1.id, @project_2.id])
     end
 
     it { expect(@project_1.users).to be_empty }

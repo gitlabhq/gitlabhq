@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LegacyDiffDiscussion, models: true do
+describe LegacyDiffDiscussion do
   subject { create(:legacy_diff_note_on_merge_request).to_discussion }
 
   describe '#reply_attributes' do

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Create Snippet', :js, feature: true do
+feature 'Create Snippet', :js do
   include DropzoneHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :repository, :public) }
+  let(:project) { create(:empty_project, :public) }
 
   def fill_form
     fill_in 'project_snippet_title', with: 'My Snippet Title'

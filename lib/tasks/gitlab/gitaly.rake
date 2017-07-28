@@ -19,7 +19,7 @@ namespace :gitlab do
 
       Dir.chdir(args.dir) do
         create_gitaly_configuration
-        run_command!([command])
+        Bundler.with_original_env { run_command!([command]) }
       end
     end
 

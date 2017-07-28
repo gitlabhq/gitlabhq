@@ -5,7 +5,14 @@ end
 
 RSpec::Matchers.define :match_response_schema do |schema, **options|
   match do |response|
-    JSON::Validator.validate!(schema_path(schema), response.body, options)
+    @errors = JSON::Validator.fully_validate(schema_path(schema), response.body, options)
+
+    @errors.empty?
+  end
+
+  failure_message do |response|
+    "didn't match the schema defined by #{schema_path(schema)}" \
+    " The validation errors were:\n#{@errors.join("\n")}"
   end
 end
 

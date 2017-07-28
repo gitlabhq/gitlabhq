@@ -70,6 +70,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def append_info_to_payload(payload)
+    super
+    payload[:remote_ip] = request.remote_ip
+
+    if current_user.present?
+      payload[:user_id] = current_user.id
+      payload[:username] = current_user.username
+    end
+  end
+
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
     token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence

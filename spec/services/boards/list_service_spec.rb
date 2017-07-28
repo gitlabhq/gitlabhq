@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Boards::ListService, services: true do
+describe Boards::ListService do
   describe '#execute' do
     let(:project) { create(:empty_project) }
 

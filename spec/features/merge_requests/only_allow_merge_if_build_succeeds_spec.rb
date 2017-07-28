@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Only allow merge requests to be merged if the pipeline succeeds', feature: true, js: true do
+feature 'Only allow merge requests to be merged if the pipeline succeeds', js: true do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 

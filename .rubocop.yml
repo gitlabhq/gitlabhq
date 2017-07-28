@@ -563,7 +563,7 @@ Style/Proc:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 57.08
+  Max: 56.96
 
 # This cop checks if the length of a block exceeds some maximum value.
 Metrics/BlockLength:

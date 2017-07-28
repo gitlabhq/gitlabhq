@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'Dashboard > label filter', feature: true, js: true do
+describe 'Dashboard > label filter', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
-  let(:project2) { create(:project, name: 'test2', path: 'test2', namespace: user.namespace) }
+  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project2) { create(:empty_project, name: 'test2', path: 'test2', namespace: user.namespace) }
   let(:label) { create(:label, title: 'bug', color: '#ff0000') }
   let(:label2) { create(:label, title: 'bug') }
 

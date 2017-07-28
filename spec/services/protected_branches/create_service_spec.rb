@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedBranches::CreateService, services: true do
+describe ProtectedBranches::CreateService do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:params) do

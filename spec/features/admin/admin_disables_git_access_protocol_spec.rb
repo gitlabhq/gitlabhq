@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin disables Git access protocol', feature: true do
+feature 'Admin disables Git access protocol' do
   include StubENV
 
   let(:project) { create(:empty_project, :empty_repo) }

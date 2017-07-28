@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Reportable note on issue', :feature, :js do
+describe 'Reportable note on issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }

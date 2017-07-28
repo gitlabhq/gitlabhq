@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Gitlab::Git::Tree, seed_helper: true do
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
+
   context :repo do
-    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
     let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
 
     it { expect(tree).to be_kind_of Array }
@@ -72,6 +73,26 @@ describe Gitlab::Git::Tree, seed_helper: true do
       it { expect(submodule.id).to eq('79bceae69cb5750d6567b223597999bfa91cb3b9') }
       it { expect(submodule.commit_id).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d') }
       it { expect(submodule.name).to eq('gitlab-shell') }
+    end
+  end
+
+  describe '#where' do
+    context 'with gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+      end
+
+      it 'calls #tree_entries_from_rugged' do
+        expect(described_class).to receive(:tree_entries_from_rugged)
+
+        described_class.where(repository, SeedRepo::Commit::ID, '/')
+      end
+    end
+
+    it 'gets the tree entries from GitalyClient' do
+      expect_any_instance_of(Gitlab::GitalyClient::CommitService).to receive(:tree_entries)
+
+      described_class.where(repository, SeedRepo::Commit::ID, '/')
     end
   end
 end

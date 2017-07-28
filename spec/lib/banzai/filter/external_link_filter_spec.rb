@@ -17,7 +17,7 @@ shared_examples 'an external link with rel attribute' do
   end
 end
 
-describe Banzai::Filter::ExternalLinkFilter, lib: true do
+describe Banzai::Filter::ExternalLinkFilter do
   include FilterSpecHelper
 
   it 'ignores elements without an href attribute' do

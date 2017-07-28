@@ -21,6 +21,8 @@ module Groups
         DestroyService.new(group, current_user).execute
       end
 
+      group.chat_team&.remove_mattermost_team(current_user)
+
       group.really_destroy!
     end
   end

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Slack slash commands', feature: true do
+feature 'Slack slash commands' do
   given(:user) { create(:user) }
-  given(:project) { create(:project) }
+  given(:project) { create(:empty_project) }
   given(:service) { project.create_slack_slash_commands_service }
 
   background do
@@ -40,6 +40,6 @@ feature 'Slack slash commands', feature: true do
 
   it 'shows the correct trigger url' do
     value = find_field('url').value
-    expect(value).to match("api/v3/projects/#{project.id}/services/slack_slash_commands/trigger")
+    expect(value).to match("api/v4/projects/#{project.id}/services/slack_slash_commands/trigger")
   end
 end

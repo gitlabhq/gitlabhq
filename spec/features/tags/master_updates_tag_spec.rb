@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master updates tag', feature: true do
+feature 'Master updates tag' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 

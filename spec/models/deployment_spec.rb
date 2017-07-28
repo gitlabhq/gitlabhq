@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Deployment, models: true do
+describe Deployment do
   subject { build(:deployment) }
 
   it { is_expected.to belong_to(:project) }

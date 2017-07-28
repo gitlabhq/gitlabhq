@@ -1,7 +1,6 @@
 - @no_container = true
 - breadcrumb_title "Project"
 - @content_class = "limit-container-width" unless fluid_layout
-- flash_message_container = show_new_nav? ? :new_global_flash : :flash_message
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
@@ -10,10 +9,7 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'repo'
 
-= content_for flash_message_container do
-  - if current_user && can?(current_user, :download_code, @project)
-    = render 'shared/no_ssh'
-    = render 'shared/no_password'
+= render partial: 'flash_messages', locals: { project: @project }
 
 = render "projects/head"
 = render "projects/last_push"

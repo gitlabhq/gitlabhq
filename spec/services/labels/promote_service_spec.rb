@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Labels::PromoteService, services: true do
+describe Labels::PromoteService do
   describe '#execute' do
     let!(:user) { create(:user) }
 

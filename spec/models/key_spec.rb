@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Key, models: true do
+describe Key do
   include EmailHelpers
 
   describe "Associations" do

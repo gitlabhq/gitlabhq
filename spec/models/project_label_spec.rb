@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectLabel, models: true do
+describe ProjectLabel do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end

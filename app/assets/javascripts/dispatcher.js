@@ -20,6 +20,8 @@
 /* global NamespaceSelects */
 /* global Project */
 /* global ProjectAvatar */
+/* global MergeRequest */
+/* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectNew */
 /* global ProjectShow */
@@ -41,7 +43,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
-import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
@@ -63,6 +64,10 @@ import ScrollHelper from './helpers/scroll_helper';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initNotes from './init_notes';
+import initLegacyFilters from './init_legacy_filters';
+import initIssuableSidebar from './init_issuable_sidebar';
+import GpgBadges from './gpg_badges';
 
 (function() {
   var Dispatcher;
@@ -160,6 +165,8 @@ import PerformanceBar from './performance_bar';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -170,10 +177,12 @@ import PerformanceBar from './performance_bar';
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
         case 'groups:issues':
         case 'groups:merge_requests':
-          new UsersSelect();
           new ProjectSelect();
+          initLegacyFilters();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -225,6 +234,19 @@ import PerformanceBar from './performance_bar';
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
+          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
+          if (mrNewCompareNode) {
+            new Compare({
+              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
+              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
+              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
+            });
+          } else {
+            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
+            new MergeRequest({
+              action: mrNewSubmitNode.dataset.mrSubmitAction,
+            });
+          }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
@@ -240,6 +262,9 @@ import PerformanceBar from './performance_bar';
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
           new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          break;
+        case 'projects:snippets:show':
+          initNotes();
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
@@ -261,14 +286,17 @@ import PerformanceBar from './performance_bar';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+
+          initIssuableSidebar();
+          initNotes();
+
+          const mrShowNode = document.querySelector('.merge-request');
+          window.mergeRequest = new MergeRequest({
+            action: mrShowNode.dataset.mrAction,
+          });
           break;
         case 'dashboard:activity':
           new gl.Activities();
-          break;
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
-          new ProjectSelect();
-          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -278,6 +306,7 @@ import PerformanceBar from './performance_bar';
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          initNotes();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
@@ -285,6 +314,9 @@ import PerformanceBar from './performance_bar';
           }).bindEvents();
           break;
         case 'projects:commits:show':
+          shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
+          break;
         case 'projects:activity':
           shortcut_handler = new ShortcutsNavigation();
           break;
@@ -356,10 +388,20 @@ import PerformanceBar from './performance_bar';
         case 'projects:labels:edit':
           new Labels();
           break;
+        case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
+          $('.label-subscription').each((i, el) => {
+            const $el = $(el);
+
+            if ($el.find('.dropdown-group-label').length) {
+              new gl.GroupLabelSubscription($el);
+            } else {
+              new gl.ProjectLabelSubscription($el);
+            }
+          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -384,12 +426,6 @@ import PerformanceBar from './performance_bar';
           new Search();
           break;
         case 'projects:settings:repository:show':
-          // Initialize Protected Branch Settings
-          new gl.ProtectedBranchCreate();
-          new gl.ProtectedBranchEditList();
-          // Initialize Protected Tag Settings
-          new ProtectedTagCreate();
-          new ProtectedTagEditList();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;
@@ -410,9 +446,14 @@ import PerformanceBar from './performance_bar';
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          initNotes();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
+          break;
+        case 'profiles:personal_access_tokens:index':
+        case 'admin:impersonation_tokens:index':
+          new gl.DueDateSelectors();
           break;
       }
       switch (path.first()) {
@@ -510,6 +551,13 @@ import PerformanceBar from './performance_bar';
             case 'protected_branches':
               shortcut_handler = new ShortcutsNavigation();
           }
+          break;
+        case 'users':
+          const action = path[1];
+          import(/* webpackChunkName: 'user_profile' */ './users')
+            .then(user => user.default(action))
+            .catch(() => {});
+          break;
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {

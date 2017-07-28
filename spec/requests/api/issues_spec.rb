@@ -71,7 +71,6 @@ describe API::Issues do
         expect(response).to have_http_status(401)
       end
     end
-
     context "when authenticated" do
       let(:first_issue) { json_response.first }
 
@@ -103,6 +102,42 @@ describe API::Issues do
         expect_paginated_array_response(size: 2)
         expect(first_issue['id']).to eq(issue.id)
         expect(json_response.second['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns issues assigned to me' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user2), scope: 'assigned-to-me'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues authored by the given author id' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), author_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues assigned to the given assignee id' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user), assignee_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues authored by the given author id and assigned to the given assignee id' do
+        issue2 = create(:issue, author: user2, assignees: [user2], project: project)
+
+        get api('/issues', user), author_id: user2.id, assignee_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
       end
 
       it 'returns issues matching given search string for title' do
@@ -691,6 +726,19 @@ describe API::Issues do
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
+    end
+
+    context 'links exposure' do
+      it 'exposes related resources full URIs' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+        links = json_response['_links']
+
+        expect(links['self']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}")
+        expect(links['notes']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/notes")
+        expect(links['award_emoji']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/award_emoji")
+        expect(links['project']).to end_with("/api/v4/projects/#{project.id}")
+      end
     end
 
     it "returns a project issue by internal id" do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Labels::TransferService, services: true do
+describe Labels::TransferService do
   describe '#execute' do
     let(:user)    { create(:admin) }
     let(:group_1) { create(:group) }

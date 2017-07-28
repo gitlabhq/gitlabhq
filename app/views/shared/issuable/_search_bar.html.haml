@@ -108,12 +108,3 @@
               #js-add-issues-btn.prepend-left-10
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
-
-- unless type === :boards_modal
-  :javascript
-    $(document).off('page:restore').on('page:restore', function (event) {
-      if (gl.FilteredSearchManager) {
-        const filteredSearchManager = new gl.FilteredSearchManager();
-        filteredSearchManager.setup();
-      }
-    });

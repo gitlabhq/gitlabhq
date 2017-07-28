@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuickActions::InterpretService, services: true do
+describe QuickActions::InterpretService do
   let(:project) { create(:empty_project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
@@ -258,6 +258,15 @@ describe QuickActions::InterpretService, services: true do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(emoji_award: "100")
+      end
+    end
+
+    shared_examples 'duplicate command' do
+      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
+        issue_duplicate # populate the issue
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
       end
     end
 
@@ -644,6 +653,41 @@ describe QuickActions::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
+    context '/duplicate command' do
+      it_behaves_like 'duplicate command' do
+        let(:issue_duplicate) { create(:issue, project: project) }
+        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate' }
+        let(:issuable) { issue }
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'duplicate command' do
+          let(:other_project) { create(:empty_project, :public) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/duplicate imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:empty_project, :private) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+    end
+
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
@@ -691,6 +735,11 @@ describe QuickActions::InterpretService, services: true do
 
       it_behaves_like 'empty command' do
         let(:content) { '/remove_due_date' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "Admin Health Check", feature: true do
+feature "Admin Health Check" do
   include StubENV
 
   before do

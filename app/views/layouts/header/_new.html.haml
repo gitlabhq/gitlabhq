@@ -6,8 +6,8 @@
         %h1.title
           = link_to root_path, title: 'Dashboard' do
             = brand_header_logo
-            %span.hidden-xs
-              GitLab
+            %span.logo-text.hidden-xs
+              = render 'shared/logo_type.svg'
 
         - if current_user
           = render "layouts/nav/new_dashboard"
@@ -81,6 +81,6 @@
       %button.navbar-toggle.hidden-sm.hidden-md.hidden-lg{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v', class: 'js-navbar-toggle-right')
-        = icon('times', class: 'js-navbar-toggle-left', style: 'display: none;')
+        = icon('times', class: 'js-navbar-toggle-left')
 
 = render 'shared/outdated_browser'

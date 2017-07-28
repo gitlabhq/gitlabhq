@@ -378,144 +378,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#reset" do
-    change_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "CHANGELOG")
-    untracked_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "UNTRACKED")
-    tracked_path = File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, "files", "ruby", "popen.rb")
-
-    change_text = "New changelog text"
-    untracked_text = "This file is untracked"
-
-    reset_commit = SeedRepo::LastCommit::ID
-
-    context "--hard" do
-      before(:all) do
-        # Modify a tracked file
-        File.open(change_path, "w") do |f|
-          f.write(change_text)
-        end
-
-        # Add an untracked file to the working directory
-        File.open(untracked_path, "w") do |f|
-          f.write(untracked_text)
-        end
-
-        @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
-        @normal_repo.reset("HEAD", :hard)
-      end
-
-      it "should replace the working directory with the content of the index" do
-        File.open(change_path, "r") do |f|
-          expect(f.each_line.first).not_to eq(change_text)
-        end
-
-        File.open(tracked_path, "r") do |f|
-          expect(f.each_line.to_a[8]).to include('raise RuntimeError, "System commands')
-        end
-      end
-
-      it "should not touch untracked files" do
-        expect(File.exist?(untracked_path)).to be_truthy
-      end
-
-      it "should move the HEAD to the correct commit" do
-        new_head = @normal_repo.rugged.head.target.oid
-        expect(new_head).to eq(reset_commit)
-      end
-
-      it "should move the tip of the master branch to the correct commit" do
-        new_tip = @normal_repo.rugged.references["refs/heads/master"]
-          .target.oid
-
-        expect(new_tip).to eq(reset_commit)
-      end
-
-      after(:all) do
-        # Fast-forward to the original HEAD
-        FileUtils.rm_rf(TEST_NORMAL_REPO_PATH)
-        ensure_seeds
-      end
-    end
-  end
-
-  describe "#checkout" do
-    new_branch = "foo_branch"
-
-    context "-b" do
-      before(:all) do
-        @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
-        @normal_repo.checkout(new_branch, { b: true }, "origin/feature")
-      end
-
-      it "should create a new branch" do
-        expect(@normal_repo.rugged.branches[new_branch]).not_to be_nil
-      end
-
-      it "should move the HEAD to the correct commit" do
-        expect(@normal_repo.rugged.head.target.oid).to(
-          eq(@normal_repo.rugged.branches["origin/feature"].target.oid)
-        )
-      end
-
-      it "should refresh the repo's #heads collection" do
-        head_names = @normal_repo.branches.map { |h| h.name }
-        expect(head_names).to include(new_branch)
-      end
-
-      after(:all) do
-        FileUtils.rm_rf(TEST_NORMAL_REPO_PATH)
-        ensure_seeds
-      end
-    end
-
-    context "without -b" do
-      context "and specifying a nonexistent branch" do
-        it "should not do anything" do
-          normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
-
-          expect { normal_repo.checkout(new_branch) }.to raise_error(Rugged::ReferenceError)
-          expect(normal_repo.rugged.branches[new_branch]).to be_nil
-          expect(normal_repo.rugged.head.target.oid).to(
-            eq(normal_repo.rugged.branches["master"].target.oid)
-          )
-
-          head_names = normal_repo.branches.map { |h| h.name }
-          expect(head_names).not_to include(new_branch)
-        end
-
-        after(:all) do
-          FileUtils.rm_rf(TEST_NORMAL_REPO_PATH)
-          ensure_seeds
-        end
-      end
-
-      context "and with a valid branch" do
-        before(:all) do
-          @normal_repo = Gitlab::Git::Repository.new('default', TEST_NORMAL_REPO_PATH)
-          @normal_repo.rugged.branches.create("feature", "origin/feature")
-          @normal_repo.checkout("feature")
-        end
-
-        it "should move the HEAD to the correct commit" do
-          expect(@normal_repo.rugged.head.target.oid).to(
-            eq(@normal_repo.rugged.branches["feature"].target.oid)
-          )
-        end
-
-        it "should update the working directory" do
-          File.open(File.join(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH, ".gitignore"), "r") do |f|
-            expect(f.read.each_line.to_a).not_to include(".DS_Store\n")
-          end
-        end
-
-        after(:all) do
-          FileUtils.rm_rf(SEED_STORAGE_PATH, TEST_NORMAL_REPO_PATH)
-          ensure_seeds
-        end
-      end
-    end
-  end
-
   describe "#delete_branch" do
     before(:all) do
       @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH)
@@ -1049,19 +911,49 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#branches with deleted branch' do
-    before(:each) do
-      ref = double()
-      allow(ref).to receive(:name) { 'bad-branch' }
-      allow(ref).to receive(:target) { raise Rugged::ReferenceError }
-      branches = double()
-      allow(branches).to receive(:each) { [ref].each }
-      allow(repository.rugged).to receive(:branches) { branches }
+  describe '#branches' do
+    subject { repository.branches }
+
+    context 'with local and remote branches' do
+      let(:repository) do
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+      end
+
+      before do
+        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        repository.create_branch('local_branch', 'master')
+      end
+
+      after do
+        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+        ensure_seeds
+      end
+
+      it 'returns the local and remote branches' do
+        expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to eq(true)
+        expect(subject.any? { |b| b.name == 'local_branch' }).to eq(true)
+      end
     end
 
-    it 'should return empty branches' do
-      expect(repository.branches).to eq([])
+    # With Gitaly enabled, Gitaly just doesn't return deleted branches.
+    context 'with deleted branch with Gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+      end
+
+      it 'returns no results' do
+        ref = double()
+        allow(ref).to receive(:name) { 'bad-branch' }
+        allow(ref).to receive(:target) { raise Rugged::ReferenceError }
+        branches = double()
+        allow(branches).to receive(:each) { [ref].each }
+        allow(repository.rugged).to receive(:branches) { branches }
+
+        expect(subject).to be_empty
+      end
     end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branches
   end
 
   describe '#branch_count' do
@@ -1208,7 +1100,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     it 'returns the local branches' do
-      create_remote_branch('joe', 'remote_branch', 'master')
+      create_remote_branch(@repo, 'joe', 'remote_branch', 'master')
       @repo.create_branch('local_branch', 'master')
 
       expect(@repo.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
@@ -1235,9 +1127,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  def create_remote_branch(remote_name, branch_name, source_branch_name)
-    source_branch = @repo.branches.find { |branch| branch.name == source_branch_name }
-    rugged = @repo.rugged
+  def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
+    source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
+    rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
   end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlBuilder, lib: true do
+describe Gitlab::UrlBuilder do
   describe '.build' do
     context 'when passing a Commit' do
       it 'returns a proper URL' do

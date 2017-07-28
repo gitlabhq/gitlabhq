@@ -54,7 +54,11 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin: 0 -6px 0 0;
+    margin-right: 4px;
+
+    .stage-cell .stage-container {
+      margin: 3px 3px 3px 0;
+    }
 
     .dropdown-menu {
       margin-top: 11px;
@@ -278,4 +282,64 @@
   .commit-row-message {
     color: $gl-text-color;
   }
+}
+
+
+.gpg-status-box {
+  &.valid {
+    @include green-status-color;
+  }
+
+  &.invalid {
+    @include status-color($gray-dark, $gray, $common-gray-dark);
+    border-color: $common-gray-light;
+  }
+}
+
+.gpg-popover-status {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  line-height: 1.5;
+}
+
+.gpg-popover-icon {
+  // same margin as .s32.avatar
+  margin-right: $btn-side-margin;
+
+  &.valid {
+    svg {
+      border: 1px solid $brand-success;
+
+      fill: $brand-success;
+    }
+  }
+
+  &.invalid {
+    svg {
+      border: 1px solid $common-gray-light;
+
+      fill: $common-gray-light;
+    }
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+}
+
+.gpg-popover-user-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: $gl-padding / 2;
+  text-decoration: none;
+  color: $gl-text-color;
+}
+
+.commit .gpg-popover-help-link {
+  display: block;
+  color: $link-color;
 }

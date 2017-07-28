@@ -138,17 +138,4 @@
               = project_ref
           = clipboard_button(text: project_ref, title: "Copy reference to clipboard", placement: "left")
 
-    :javascript
-      gl.sidebarOptions = {
-        endpoint: "#{issuable_json_path(issuable)}?basic=true",
-        editable: #{can_edit_issuable ? true : false},
-        currentUser: #{current_user.to_json(only: [:username, :id, :name], methods: :avatar_url)},
-        rootPath: "#{root_path}"
-      };
-
-      new MilestoneSelect('{"full_path":"#{@project.full_path}"}');
-      new LabelsSelect();
-      new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
-      gl.Subscription.bindAll('.subscription');
-      new gl.DueDateSelectors();
-      window.sidebar = new Sidebar();
+    %script.js-sidebar-options{ type: "application/json" }= issuable_sidebar_options(issuable, can_edit_issuable).to_json.html_safe

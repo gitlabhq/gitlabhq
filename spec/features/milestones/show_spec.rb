@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Milestone show', feature: true do
+describe 'Milestone show' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project) }

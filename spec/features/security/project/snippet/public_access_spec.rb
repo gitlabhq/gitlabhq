@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Public Project Snippets Access", feature: true  do
+describe "Public Project Snippets Access"  do
   include AccessMatchers
 
   let(:project) { create(:empty_project, :public) }
