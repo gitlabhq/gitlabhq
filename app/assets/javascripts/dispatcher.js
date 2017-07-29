@@ -366,7 +366,7 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-        
+
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
             PathLocks.init(
               document.querySelector('.js-tree-content').dataset.pathLocksToggle,
