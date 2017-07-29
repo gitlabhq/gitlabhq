@@ -48,7 +48,9 @@ export default RepoFile;
   </td>
 
   <td v-if="!isMini" class="hidden-sm hidden-xs">
-    <div class="commit-message">{{file.lastCommitMessage}}</div>
+    <div class="commit-message">
+      <a :href="file.lastCommitUrl">{{file.lastCommitMessage}}</a>
+    </div>
   </td>
 
   <td v-if="!isMini" class="hidden-xs">

@@ -216,12 +216,12 @@ const RepoHelper = {
   },
 
   serializeRepoEntity(type, entity) {
-    const { url, name, icon } = entity;
-
+    const { url, name, icon, last_commit } = entity;
     return {
       type,
       name,
       url,
+      lastCommitUrl: `${Store.projectUrl}/commit/${last_commit.id}`,
       icon: RepoHelper.toFA(icon),
       level: 0,
       loading: false,
