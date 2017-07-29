@@ -57,12 +57,13 @@
         }, {});
 
         const orderedAwards = {};
+        const { thumbsdown, thumbsup } = awards;
         // Always show thumbsup and thumbsdown first
-        if (awards.thumbsup) {
+        if (thumbsup) {
           orderedAwards.thumbsup = thumbsup;
           delete awards.thumbsup;
         }
-        if (awards.thumbsdown) {
+        if (thumbsdown) {
           orderedAwards.thumbsdown = thumbsdown;
           delete awards.thumbsdown;
         }
