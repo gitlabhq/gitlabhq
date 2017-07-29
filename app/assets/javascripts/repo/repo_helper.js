@@ -58,6 +58,7 @@ const RepoHelper = {
 
     file.opened = true;
     file.icon = 'fa-folder-open';
+    RepoHelper.toURL(file.url)
     return file;
   },
 
