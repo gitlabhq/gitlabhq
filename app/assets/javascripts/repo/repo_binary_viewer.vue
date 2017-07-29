@@ -7,7 +7,18 @@ const RepoBinaryViewer = {
 
   computed: {
     pngBlobWithDataURI() {
-      return `data:image/png;base64,${this.blobRaw}`;
+      if(this.binaryTypes.png){
+        return `data:image/png;base64,${this.blobRaw}`;  
+      }
+      return '';
+      
+    },
+
+    svgBlobWithDataURI() {
+      if(this.binaryTypes.svg){
+        return `data:image/svg+xml;utf8,${this.blobRaw}`;
+      }
+      return '';
     },
   },
 
@@ -20,29 +31,24 @@ const RepoBinaryViewer = {
       Store.binaryLoaded = true;
     },
 
-    isMarkdown() {
-      return this.activeFile.extension === 'md';
-    },
+    getBinaryType() {
+      if(this.binaryTypes.hasOwnProperty(this.activeFile.extension)) {
+        return this.activeFile.extension;
+      }
+      return 'unknown';
+    }
   },
 
   watch: {
     blobRaw() {
-      if (this.isMarkdown()) {
-        this.binaryTypes.markdown = true;
+      Store.resetBinaryTypes();
+      if (RepoHelper.isKindaBinary()) {
         this.activeFile.raw = false;
         // counts as binaryish so we use the binary viewer in this case.
         this.binary = true;
-        return;
       }
       if (!this.binary) return;
-      switch (this.binaryMimeType) {
-        case 'image/png':
-          this.binaryTypes.png = true;
-          break;
-        default:
-          RepoHelper.loadingError();
-          break;
-      }
+      this.binaryTypes[this.getBinaryType()] = true;
     },
   },
 };
@@ -53,6 +59,10 @@ export default RepoBinaryViewer;
 <template>
 <div id="binary-viewer" v-if="binary && !activeFile.raw">
   <img v-show="binaryTypes.png && binaryLoaded" @error="errored" @load="loaded" :src="pngBlobWithDataURI" :alt="activeFile.name"/>
+  <img v-show="binaryTypes.svg" @error="errored" @load="loaded" :src="svgBlobWithDataURI" :alt="activeFile.name"/>
   <div v-if="binaryTypes.markdown" v-html="activeFile.html"></div>
+  <div class="binary-unknown" v-if="binaryTypes.unknown">
+    <span>Binary Unloadable</span>
+  </div>
 </div>
 </template>

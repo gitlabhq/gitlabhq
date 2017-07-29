@@ -48,13 +48,22 @@ const RepoStore = {
   scrollWidth: 0,
   binaryTypes: {
     png: false,
-    markdown: false,
+    md: false,
+    svg: false,
+    unknown: false,
   },
   loading: {
     tree: false,
     blob: false,
   },
   readOnly: true,
+
+  resetBinaryTypes() {
+    let s = '';
+    for(s in RepoStore.binaryTypes){
+      RepoStore.binaryTypes[s] = false;
+    }
+  },
 
   // mutations
   checkIsCommitable() {
@@ -86,11 +95,12 @@ const RepoStore = {
 
     if (file.binary) {
       RepoStore.blobRaw = file.base64;
+      RepoStore.binaryMimeType = file.mime_type;
     } else {
       RepoStore.blobRaw = file.plain;
     }
 
-    if (!file.loading) RepoHelper.toURL(file.url);
+    if (!file.loading) RepoHelper.toURL(file.url, file.name);
     RepoStore.binary = file.binary;
   },
 

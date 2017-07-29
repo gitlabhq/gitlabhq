@@ -58,12 +58,17 @@ const RepoHelper = {
 
     file.opened = true;
     file.icon = 'fa-folder-open';
-    RepoHelper.toURL(file.url)
+    RepoHelper.toURL(file.url, file.name)
     return file;
   },
 
   getRawURLFromBlobURL(url) {
     return url.replace('blob', 'raw');
+  },
+
+  isKindaBinary() {
+    const okExts = ['md', 'svg'];
+    return okExts.indexOf(Store.activeFile.extension) > -1;
   },
 
   getBlameURLFromBlobURL(url) {
@@ -269,12 +274,16 @@ const RepoHelper = {
     RepoHelper.key = key;
   },
 
-  toURL(url) {
+  toURL(url, title) {
     const history = window.history;
 
     RepoHelper.key = RepoHelper.genKey();
 
     history.pushState({ key: RepoHelper.key }, '', url);
+
+    if(title) {
+      document.title = `${title} · GitLab`;
+    }
   },
 
   loadingError() {

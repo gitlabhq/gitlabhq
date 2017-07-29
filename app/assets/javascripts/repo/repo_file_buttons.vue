@@ -19,7 +19,7 @@ const RepoFileButtons = {
     },
 
     canPreview() {
-      return this.activeFile.extension === 'md';
+      return Helper.isKindaBinary();
     },
 
     rawFileURL() {
