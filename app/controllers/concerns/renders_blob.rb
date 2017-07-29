@@ -28,7 +28,7 @@ module RendersBlob
         plain: blob.data,
         name: blob.name,
         extension: blob.extension,
-        size: blob.size,
+        size: blob.raw_size,
         mime_type: blob.mime_type
       }
     end
