@@ -52,7 +52,7 @@ export default RepoFile;
   </td>
 
   <td v-if="!isMini" class="hidden-xs">
-    <span class="commit-update">{{timeFormated(file.lastCommitUpdate)}}</span>
+    <span class="commit-update" :title="tooltipTitle(file.lastCommitUpdate)">{{timeFormated(file.lastCommitUpdate)}}</span>
   </td>
 </tr>
 </template>
