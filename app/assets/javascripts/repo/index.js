@@ -24,6 +24,11 @@ function repoEditorLoader() {
   });
 }
 
+function initDropdowns() {
+  $('.project-refs-target-form').hide();
+  $('.fa-long-arrow-right').hide();
+}
+
 function addEventsForNonVueEls() {
   $(document).on('change', '.dropdown', () => {
     Store.targetBranch = $('.project-refs-target-form input[name="ref"]').val();
@@ -56,6 +61,7 @@ function initRepo() {
   Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
   Store.checkIsCommitable();
   addEventsForNonVueEls();
+  initDropdowns();
 
   this.vm = new Vue({
     el: repo,

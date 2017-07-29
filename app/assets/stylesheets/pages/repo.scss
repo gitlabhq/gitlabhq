@@ -21,6 +21,11 @@
 
 .project-refs-form, .project-refs-target-form {
   display: inline-block;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .fade-enter,

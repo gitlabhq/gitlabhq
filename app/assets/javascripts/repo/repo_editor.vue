@@ -70,6 +70,16 @@ const RepoEditor = {
       this.monacoInstance.updateOptions({
         readOnly,
       });
+
+      if(this.editMode){
+        $('.project-refs-form').addClass('disabled');
+        $('.fa-long-arrow-right').show();
+        $('.project-refs-target-form').show();
+      }else{
+        $('.project-refs-form').removeClass('disabled');
+        $('.fa-long-arrow-right').hide();
+        $('.project-refs-target-form').hide();
+      }
     },
 
     activeFileLabel() {
