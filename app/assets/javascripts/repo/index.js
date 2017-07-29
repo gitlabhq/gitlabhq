@@ -9,9 +9,20 @@ import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoBinaryViewer from './repo_binary_viewer.vue';
-import { repoEditorLoader } from './repo_editor';
+import RepoEditor from './repo_editor.vue';
+import monacoLoader from './monaco_loader';
 import RepoMixin from './repo_mixin';
 import PopupDialog from '../vue_shared/components/popup_dialog.vue'
+
+function repoEditorLoader() {
+  return new Promise((resolve) => {
+    monacoLoader(['vs/editor/editor.main'], () => {
+      Store.monaco = monaco;
+
+      resolve(RepoEditor);
+    });
+  });
+}
 
 function addEventsForNonVueEls() {
   $(document).on('change', '.dropdown', () => {

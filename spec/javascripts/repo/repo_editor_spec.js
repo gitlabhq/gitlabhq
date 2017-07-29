@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoEditor from '~/repo/repo_editor';
+import repoEditor from '~/repo/repo_editor.vue';
 import RepoStore from '~/repo/repo_store';
 
 describe('RepoEditor', () => {
