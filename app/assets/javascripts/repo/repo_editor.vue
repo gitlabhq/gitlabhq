@@ -1,12 +1,10 @@
+<script>
 /* global monaco */
 import Store from './repo_store';
 import Helper from './repo_helper';
-import monacoLoader from './monaco_loader';
 
 const RepoEditor = {
   data: () => Store,
-
-  template: '<div id="ide"></div>',
 
   mounted() {
     const monacoInstance = this.monaco.editor.create(this.$el, {
@@ -106,17 +104,9 @@ const RepoEditor = {
   },
 };
 
-function repoEditorLoader() {
-  return new Promise((resolve) => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      Store.monaco = monaco;
+export default RepoEditor;
+</script>
 
-      resolve(RepoEditor);
-    });
-  });
-}
-
-export {
-  RepoEditor as default,
-  repoEditorLoader,
-};
+<template>
+<div id="ide"></div>
+</template>
