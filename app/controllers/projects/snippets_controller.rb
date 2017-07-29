@@ -64,7 +64,7 @@ class Projects::SnippetsController < Projects::ApplicationController
         @noteable = @snippet
 
         @discussions = @snippet.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes))
+        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
         render 'show'
       end
 

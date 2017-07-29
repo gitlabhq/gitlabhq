@@ -73,12 +73,7 @@ module NotesHelper
   end
 
   def note_max_access_for_user(note)
-    note.project.team.human_max_access(note.author_id)
-  end
-
-  def note_first_contribution_for_user?(note)
-    note.noteable.author_id == note.author_id &&
-    note.project.merge_requests.merged.where(author_id: note.author_id).empty?
+    note.project.team.max_member_access(note.author_id)
   end
 
   def discussion_path(discussion)

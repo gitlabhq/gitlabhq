@@ -127,7 +127,7 @@ class Projects::CommitController < Projects::ApplicationController
     @discussions = commit.discussions
 
     @notes = (@grouped_diff_discussions.values.flatten + @discussions).flat_map(&:notes)
-    @notes = prepare_notes_for_rendering(@notes)
+    @notes = prepare_notes_for_rendering(@notes, @commit)
   end
 
   def assign_change_commit_vars
