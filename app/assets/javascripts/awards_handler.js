@@ -238,7 +238,7 @@ class AwardsHandler {
     const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
 
     if (this.isInIssuePage() && !isMainAwardsBlock) {
-      const id = votesBlock[0].id.replace('note_', '');
+      const id = votesBlock.attr('id').replace('note_', '');
 
       $('.emoji-menu').removeClass('is-visible');
       $('.js-add-award.is-active').removeClass('is-active');
