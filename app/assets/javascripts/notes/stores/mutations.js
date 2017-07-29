@@ -101,7 +101,7 @@ export default {
 
   [types.TOGGLE_AWARD](state, data) {
     const { awardName, note } = data;
-    const { id, name, username } = window.gl.currentUserData;
+    const { id, name, username } = state.userData;
     let index = -1;
 
     note.award_emoji.forEach((a, i) => {
@@ -110,7 +110,7 @@ export default {
       }
     });
 
-    if (index > -1) { // if I am awarded, remove my award
+    if (index > -1) { // If current user has awarded this emoji, remove it.
       note.award_emoji.splice(index, 1);
     } else {
       note.award_emoji.push({

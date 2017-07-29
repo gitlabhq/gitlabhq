@@ -51,32 +51,22 @@
       // }
       // We need to do this otherwise we will render the same emoji over and over again.
       groupedAwards() {
-        const awards = {};
+        const awards = this.awards.reduce((acc, award) => {
+          Object.assign(acc, {[award.name]: [award]});
+          return acc;
+        }, {});
+
         const orderedAwards = {};
-
-        this.awards.forEach((award) => {
-          awards[award.name] = awards[award.name] || [];
-          awards[award.name].push(award);
-        });
-
         // Always show thumbsup and thumbsdown first
-        const { thumbsup, thumbsdown } = awards;
-        if (thumbsup) {
+        if (awards.thumbsup) {
           orderedAwards.thumbsup = thumbsup;
           delete awards.thumbsup;
         }
-        if (thumbsdown) {
+        if (awards.thumbsdown) {
           orderedAwards.thumbsdown = thumbsdown;
           delete awards.thumbsdown;
         }
-
-        // Because for-in forbidden
-        const keys = Object.keys(awards);
-        keys.forEach((key) => {
-          orderedAwards[key] = awards[key];
-        });
-
-        return orderedAwards;
+        return  Object.assign({}, orderedAwards, awards);
       },
       isAuthoredByMe() {
         return this.noteAuthorId === window.gon.current_user_id;
@@ -152,7 +142,8 @@
         const data = {
           endpoint: this.toggleAwardPath,
           noteId: this.noteId,
-          awardName,
+        // 100 emoji is a number. Callback for v-for click sends it as a string
+          awardName: awardName === "100" ? 100: awardName,
         };
 
         this.toggleAward(data)

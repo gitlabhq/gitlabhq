@@ -77,9 +77,7 @@
   <div class="note-actions">
     <span
       v-if="accessLevel"
-      class="note-role">
-      {{accessLevel}}
-    </span>
+      class="note-role">{{accessLevel}}</span>
     <a
       v-tooltip
       v-if="canAddAwardEmoji"
