@@ -16,7 +16,11 @@ const RepoCommitSection = {
       return this.changedFiles.map((f) => {
         return Helper.getFilePathFromFullPath(f.url, branch);
       });
-    }
+    },
+
+    filePluralize() {
+      return this.changedFiles.length > 1 ? 'files' : 'file'
+    },
   },
 
   methods: {
@@ -87,7 +91,7 @@ export default RepoCommitSection;
       <div class="col-md-offset-4 col-md-4">
         <button type="submit" :disabled="!commitMessage || submitCommitsLoading" class="btn btn-success submit-commit" @click.prevent="makeCommit">
           <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
-          <span class="commit-summary">Commit {{changedFiles.length}} Files</span>
+          <span class="commit-summary">Commit {{changedFiles.length}} {{filePluralize}}</span>
         </button>
       </div>
     </fieldset>
