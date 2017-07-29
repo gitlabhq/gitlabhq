@@ -48,7 +48,7 @@ module Gitlab
     end
 
     def starting_month
-      Date.today.month
+      Date.current.month
     end
 
     private
@@ -66,7 +66,7 @@ module Gitlab
         .select(:id)
 
       conditions = t[:created_at].gteq(date_from.beginning_of_day)
-        .and(t[:created_at].lteq(Date.today.end_of_day))
+        .and(t[:created_at].lteq(Date.current.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
       Event.reorder(nil)
