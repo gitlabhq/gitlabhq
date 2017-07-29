@@ -9,6 +9,11 @@ const RepoFileButtons = {
   mixins: [RepoMixin],
 
   computed: {
+
+    rawDownloadButtonLabel() {
+      return this.binary ? 'Download' : 'Raw';
+    },
+
     editableBorder() {
       return this.editMode ? '1px solid rgb(31, 120, 209)' : '1px solid rgb(240,240,240)';
     },
@@ -40,7 +45,7 @@ export default RepoFileButtons;
 
 <template>
 <div id="repo-file-buttons" v-if="isMini" :style="{'border-bottom': editableBorder}">
-  <a :href="rawFileURL" target="_blank" class="btn btn-default raw">Raw</a>
+  <a :href="rawFileURL" target="_blank" class="btn btn-default raw">{{rawDownloadButtonLabel}}</a>
 
   <div class="btn-group" role="group" aria-label="File actions">
     <a :href="blameFileURL" class="btn btn-default blame">Blame</a>
