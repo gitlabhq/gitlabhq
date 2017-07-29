@@ -323,7 +323,7 @@ GEM
       multi_json (~> 1.10)
       retriable (~> 1.4)
       signet (~> 0.6)
-    google-protobuf (3.2.0.2)
+    google-protobuf (3.3.0)
     googleauth (0.5.1)
       faraday (~> 0.9)
       jwt (~> 1.4)
