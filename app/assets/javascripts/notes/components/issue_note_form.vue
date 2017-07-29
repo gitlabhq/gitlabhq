@@ -32,6 +32,7 @@
         note: this.noteBody,
         markdownPreviewUrl: getIssueData.preview_note_path,
         markdownDocsUrl: getNotesData.markdownDocs,
+        quickActionsDocsUrl: getNotesData.quickActionsDocs,
         conflictWhileEditing: false,
       };
     },
@@ -98,7 +99,8 @@
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
         :markdown-docs="markdownDocsUrl"
-        :addSpacingClasses="false">
+        :quick-actions-docs="quickActionsDocsUrl"
+        :add-spacing-classes="false">
         <textarea
           id="note-body"
           name="note[note]"

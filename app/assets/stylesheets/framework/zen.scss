@@ -19,7 +19,7 @@
       display: block;
       outline: none;
       resize: none;
-      height: 100vh !important; // reason being: https://github.com/vuejs/vue/issues/6246
+      height: 100vh;
       max-height: calc(100vh - 10px);
       max-width: 900px;
       margin: 0 auto 10px;
