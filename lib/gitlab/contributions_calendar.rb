@@ -69,9 +69,11 @@ module Gitlab
         .and(t[:created_at].lteq(Date.current.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
+      timezone_adjust = "INTERVAL '#{Time.zone.now.utc_offset} SECONDS'"
+
       Event.reorder(nil)
-        .select(t[:project_id], t[:target_type], t[:action], 'date(created_at) AS date', 'count(id) as total_amount')
-        .group(t[:project_id], t[:target_type], t[:action], 'date(created_at)')
+        .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{timezone_adjust}) AS date", 'count(id) as total_amount')
+        .group(t[:project_id], t[:target_type], t[:action], "date(created_at + #{timezone_adjust})")
         .where(conditions)
         .having(t[:project_id].in(Arel::Nodes::SqlLiteral.new(authed_projects.to_sql)))
     end
