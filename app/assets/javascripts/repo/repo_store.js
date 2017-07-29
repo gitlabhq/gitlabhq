@@ -196,10 +196,11 @@ const RepoStore = {
 
   setActiveFileContents(contents) {
     if (!RepoStore.editMode) return;
-
+    const currentFile = RepoStore.openedFiles[RepoStore.activeFileIndex];
     RepoStore.activeFile.newContent = contents;
     RepoStore.activeFile.changed = RepoStore.activeFile.plain !== RepoStore.activeFile.newContent;
-    RepoStore.openedFiles[RepoStore.activeFileIndex].changed = RepoStore.activeFile.changed;
+    currentFile.changed = RepoStore.activeFile.changed;
+    currentFile.newContent = contents;
   },
 
   // getters

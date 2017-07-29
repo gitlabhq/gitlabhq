@@ -45,7 +45,6 @@ const RepoHelper = {
   },
 
   getFilePathFromFullPath(fullPath, branch) {
-    console.log(fullPath, branch)
     return fullPath.split(branch)[1];
   },
 
