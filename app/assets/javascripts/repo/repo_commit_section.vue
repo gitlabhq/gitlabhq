@@ -24,10 +24,6 @@ const RepoCommitSection = {
       // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
       const branch = Helper.getBranch();
       const commitMessage = this.commitMessage;
-      this.changedFiles.map((f) => {
-        console.log('fffff',f.newContent)
-      });
-      return;
       const actions = this.changedFiles.map((f) => {
         const filePath = Helper.getFilePathFromFullPath(f.url, branch);
         return {
@@ -37,7 +33,7 @@ const RepoCommitSection = {
         };
       });
       const payload = {
-        branch,
+        branch: Store.targetBranch,
         commit_message: commitMessage,
         actions,
       };

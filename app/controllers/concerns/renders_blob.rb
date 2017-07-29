@@ -20,7 +20,7 @@ module RendersBlob
         mime_type: blob.mime_type,
         name: blob.name,
         extension: blob.extension,
-        size: blob.size
+        size: blob.raw_size
       }
     else
       render json: {
