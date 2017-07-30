@@ -7,6 +7,8 @@ module Gitlab
       def initialize(cron, cron_timezone = 'UTC')
         @cron = cron
         @cron_timezone = ActiveSupport::TimeZone.find_tzinfo(cron_timezone).name
+      rescue TZInfo::InvalidTimezoneIdentifier
+        @cron_timezone = nil
       end
 
       def next_time_from(time)
@@ -19,7 +21,7 @@ module Gitlab
       end
 
       def cron_timezone_valid?
-        try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_timezone).present?
+        @cron_timezone && try_parse_cron(VALID_SYNTAX_SAMPLE_CRON, @cron_timezone).present?
       end
 
       private
