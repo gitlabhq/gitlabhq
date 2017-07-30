@@ -480,6 +480,27 @@ a.deploy-project-label {
   }
 }
 
+.project-template {
+  .project-templates-buttons {
+    i {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    img {
+      display: block;
+      height: 24px;
+      margin: 0 auto 4px;
+    }
+  }
+
+    &:after {
+      content: "OR";
+      float: right;
+    }
+}
+
 .project-stats {
   font-size: 0;
   text-align: center;

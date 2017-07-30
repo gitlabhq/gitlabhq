@@ -1,8 +1,14 @@
-.col-sm-12.template-buttons
+
+.btn-group.project-templates-buttons{ data: { toggle: "buttons" }}
+  %label.btn.active
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates" }
+    = icon('file-o')
+    Blank
   - Gitlab::ProjectTemplate.all.each do |template|
     -# The title should be the value posted to the controller, a pretty name to print would be
     -# template.name
-    = template.title
-    = image_tag(template.logo_path)
+    %label.btn
+      %input{ type: "radio",  autocomplete: "off", name: "project_templates" }
+      = image_tag(template.logo_path)
+      = template.title
 
-  = f.text_field :template_title, placeholder: "rails", class: "form-control", tabindex: 2, autofocus: true, required: true
