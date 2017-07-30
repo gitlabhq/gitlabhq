@@ -130,7 +130,7 @@ describe Ci::API::Builds do
           register_builds info: { platform: :darwin }
 
           expect(response).to have_http_status(201)
-      
+
           expect(json_response["options"]).to be_empty
         end
       end
@@ -882,7 +882,7 @@ describe Ci::API::Builds do
           shared_examples 'having downloadable artifacts' do
             it 'download artifacts' do
               expect(response).to have_http_status(200)
-              expect(response.headers).to include download_headers
+              expect(response.headers.to_hash).to include download_headers
             end
           end
 

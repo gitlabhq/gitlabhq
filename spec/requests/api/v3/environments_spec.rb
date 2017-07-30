@@ -17,13 +17,15 @@ describe API::V3::Environments do
     end
 
     it 'has pagination headers' do
-      expect(response.headers).to include('X-Total')
-      expect(response.headers).to include('X-Total-Pages')
-      expect(response.headers).to include('X-Per-Page')
-      expect(response.headers).to include('X-Page')
-      expect(response.headers).to include('X-Next-Page')
-      expect(response.headers).to include('X-Prev-Page')
-      expect(response.headers).to include('Link')
+      response_headers = response.headers.to_hash
+
+      expect(response_headers).to include('X-Total')
+      expect(response_headers).to include('X-Total-Pages')
+      expect(response_headers).to include('X-Per-Page')
+      expect(response_headers).to include('X-Page')
+      expect(response_headers).to include('X-Next-Page')
+      expect(response_headers).to include('X-Prev-Page')
+      expect(response_headers).to include('Link')
     end
   end
 

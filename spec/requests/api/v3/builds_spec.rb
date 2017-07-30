@@ -201,7 +201,7 @@ describe API::V3::Builds do
 
         it 'returns specific job artifacts' do
           expect(response).to have_http_status(200)
-          expect(response.headers).to include(download_headers)
+          expect(response.headers.to_hash).to include(download_headers)
           expect(response.body).to match_file(build.artifacts_file.file.file)
         end
       end
@@ -287,7 +287,7 @@ describe API::V3::Builds do
         end
 
         it { expect(response).to have_http_status(200) }
-        it { expect(response.headers).to include(download_headers) }
+        it { expect(response.headers.to_hash).to include(download_headers) }
       end
 
       context 'with regular branch' do
