@@ -30,17 +30,6 @@ export default class RepoEditButton {
           this.editMode = !this.editMode;
         },
       },
-
-      watch: {
-        dialog: {
-          handler(obj) {
-            if(obj.status) {
-              obj.status = false;
-            }
-          },
-          deep: true,
-        }
-      }
     });
   }
 }

@@ -24,7 +24,7 @@ const RepoTab = {
 
     xClicked(file) {
       if (file.changed) return;
-      RepoStore.removeFromOpenedFiles(file);
+      this.$emit('xclicked', file);
     },
   },
 };

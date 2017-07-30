@@ -17,6 +17,10 @@ const RepoTabs = {
     isOverflow() {
       return this.$el.scrollWidth > this.$el.offsetWidth;
     },
+
+    xclicked(file) {
+      Store.removeFromOpenedFiles(file);
+    }
   },
 
   watch: {
@@ -33,6 +37,6 @@ export default RepoTabs;
 
 <template>
 <ul id="tabs" v-if="isMini" v-cloak :class="{'overflown': tabsOverflow}">
-  <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}"/>
+  <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}" @xclicked="xclicked"/>
 </ul>
 </template>

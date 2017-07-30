@@ -97,6 +97,15 @@
         white-space: nowrap;
         border-radius: 3px 3px 0 0;
 
+        &.remove {
+          animation: swipeRightDissapear ease-in 0.1s;
+          animation-iteration-count: 1;
+          transform-origin: 0% 50%;
+          a {
+            width: 0;
+          }
+        }
+
         &.active {
           background: $white-light;
         }
@@ -372,11 +381,17 @@
     transform: scaleX(0.00);
   }
 
-  45% {
-    transform: scaleX(0.26);
+  100% {
+    transform: scaleX(1.00);
+  }
+}
+
+@keyframes swipeRightDissapear {
+  0% {
+    transform: scaleX(1.00);
   }
 
   100% {
-    transform: scaleX(1.00);
+    transform: scaleX(0.00);
   }
 }

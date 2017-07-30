@@ -86,6 +86,23 @@ const RepoEditor = {
       this.showHide();
     },
 
+    dialog: {
+      handler(obj) {
+        if(obj.status) {
+          obj.status = false;
+          this.openedFiles.map((f) => {
+            if(f.active) {
+              this.blobRaw = f.plain;
+            }
+            f.changed = false;
+            delete f.newContent;
+          });
+          this.editMode = false;
+        }
+      },
+      deep: true,
+    },
+
     isTree() {
       this.showHide();
     },

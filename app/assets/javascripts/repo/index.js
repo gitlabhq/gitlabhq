@@ -37,7 +37,6 @@ function addEventsForNonVueEls() {
   window.onbeforeunload = function (e) {
     const hasChanged = Store.openedFiles
       .some(file => file.changed);
-    console.log('hasChanged',hasChanged)
     if(!hasChanged) return;
     e = e || window.event;
     if (e) {

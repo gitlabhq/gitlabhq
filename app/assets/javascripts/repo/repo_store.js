@@ -97,7 +97,7 @@ const RepoStore = {
       RepoStore.blobRaw = file.base64;
       RepoStore.binaryMimeType = file.mime_type;
     } else {
-      RepoStore.blobRaw = file.plain;
+      RepoStore.blobRaw = file.newContent || file.plain;
     }
 
     if (!file.loading) RepoHelper.toURL(file.url, file.name);
