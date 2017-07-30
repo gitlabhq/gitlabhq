@@ -75,7 +75,7 @@ function initRepo() {
           <repo-binary-viewer/>
         </div>
         <repo-commit-section/>
-        <popup-dialog :open="dialog.open" kind="warning" title="Are you sure?" body="Are you sure you want to discard your changes?" @toggle="dialogToggled" @submit="dialogSubmitted"></popup-dialog>
+        <popup-dialog primary-button-label="Discard changes" :open="dialog.open" kind="warning" title="Are you sure?" body="Are you sure you want to discard your changes?" @toggle="dialogToggled" @submit="dialogSubmitted"></popup-dialog>
       </div>
     `,
     mixins: [RepoMixin],

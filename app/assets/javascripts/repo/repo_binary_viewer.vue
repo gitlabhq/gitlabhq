@@ -60,7 +60,7 @@ export default RepoBinaryViewer;
 <div id="binary-viewer" v-if="binary && !activeFile.raw">
   <img v-show="binaryTypes.png && binaryLoaded" @error="errored" @load="loaded" :src="pngBlobWithDataURI" :alt="activeFile.name"/>
   <img v-show="binaryTypes.svg" @error="errored" @load="loaded" :src="svgBlobWithDataURI" :alt="activeFile.name"/>
-  <div v-if="binaryTypes.markdown" v-html="activeFile.html"></div>
+  <div v-if="binaryTypes.md" v-html="activeFile.html"></div>
   <div class="binary-unknown" v-if="binaryTypes.unknown">
     <span>Binary file. No preview available.</span>
   </div>
