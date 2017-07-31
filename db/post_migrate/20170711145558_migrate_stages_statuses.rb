@@ -28,8 +28,6 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   def down
     disable_statement_timeout
 
-    execute <<-SQL.strip_heredoc
-      UPDATE ci_stages SET status = null
-    SQL
+    update_column_in_batches(:ci_stages, :status, nil)
   end
 end
