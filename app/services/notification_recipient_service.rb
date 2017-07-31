@@ -56,7 +56,8 @@ module NotificationRecipientService
       end
 
       def make_recipient(user, type)
-        NotificationRecipient.new(user, project, type,
+        NotificationRecipient.new(user, type,
+          project: project,
           custom_action: custom_action,
           target: target,
           acting_user: acting_user,
