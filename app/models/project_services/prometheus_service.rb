@@ -75,11 +75,6 @@ class PrometheusService < MonitoringService
     with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
   end
 
-  def with_reactive_cache(name, *args, &block)
-    vals = args.map(&:to_s)
-    yield calculate_reactive_cache(name, *vals)
-  end
-
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
