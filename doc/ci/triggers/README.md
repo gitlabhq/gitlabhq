@@ -38,8 +38,7 @@ build_docs:
 ```
 
 Pipelines triggered that way also expose a special variable:
-`CI_PIPELINE_SOURCE=pipeline`. This method currently doesn't support
-[the usage of trigger variables](#making-use-of-trigger-variables).
+`CI_PIPELINE_SOURCE=pipeline`.
 
 For more information, read about [triggering a pipeline](#triggering-a-pipeline).
 
