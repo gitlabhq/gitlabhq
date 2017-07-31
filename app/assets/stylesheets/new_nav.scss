@@ -309,6 +309,25 @@ header.navbar-gitlab-new {
       outline: 0;
     }
   }
+
+  // TODO: fallback to global style
+  .dropdown-menu {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
 }
 
 .breadcrumbs-container {
