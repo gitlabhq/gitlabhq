@@ -35,6 +35,7 @@ RSpec.shared_examples 'additional metrics query' do
             environment_filter: "container_name!=\"POD\",environment=\"#{environment.slug}\""
           )
         )
+
         subject.query(*query_params)
       end
     end
