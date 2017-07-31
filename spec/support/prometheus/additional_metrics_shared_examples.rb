@@ -10,12 +10,39 @@ RSpec.shared_examples 'additional metrics query' do
     [{ 'metric': {}, 'values': [[1488758662.506, '0.00002996364761904785'], [1488758722.506, '0.00003090239047619091']] }]
   end
 
+  let(:client) { double('prometheus_client') }
+  let(:environment) { create(:environment, slug: 'environment-slug') }
+
   before do
     allow(client).to receive(:label_values).and_return(metric_names)
     allow(metric_group_class).to receive(:all).and_return([simple_metric_group(metrics: [simple_metric])])
   end
 
+  context 'metrics rendering' do
+    subject! { described_class.new(client) }
+
+    before do
+
+    end
+
+    describe 'project has kubernetes service' do
+      let(:project) { create(:kubernetes_project) }
+      let(:environment) { create(:environment, slug: 'environment-slug', project: project)  }
+      let(:kube_namespace) { project.kubernetes_service.actual_namespace }
+
+      it 'query context contains kube namespace' do
+        expect(subject).to receive(:query_metrics).with(
+          hash_including(
+            kube_namespace: kube_namespace)
+        )
+        subject.query(*query_params)
+      end
+    end
+  end
+
   context 'with one group where two metrics is found' do
+    let(:query_result) { described_class.new(client).query(*query_params) }
+
     before do
       allow(metric_group_class).to receive(:all).and_return([simple_metric_group])
     end
@@ -50,7 +77,9 @@ RSpec.shared_examples 'additional metrics query' do
   end
 
   context 'with two groups with one metric each' do
+    let(:query_result) { described_class.new(client).query(*query_params) }
     let(:metrics) { [simple_metric(queries: [simple_query])] }
+
     before do
       allow(metric_group_class).to receive(:all).and_return(
         [
