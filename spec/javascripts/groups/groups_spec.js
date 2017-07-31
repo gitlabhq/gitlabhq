@@ -2,6 +2,7 @@ import Vue from 'vue';
 import eventHub from '~/groups/event_hub';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
+import groupIdenticonComponent from '~/groups/components/group_identicon.vue';
 import groupsComponent from '~/groups/components/groups.vue';
 import GroupsStore from '~/groups/stores/groups_store';
 import { groupsData } from './mock_data';
@@ -14,6 +15,7 @@ describe('Groups Component', () => {
 
   beforeEach((done) => {
     Vue.component('group-folder', groupFolderComponent);
+    Vue.component('group-identicon', groupIdenticonComponent);
     Vue.component('group-item', groupItemComponent);
 
     store = new GroupsStore();
@@ -62,6 +64,19 @@ describe('Groups Component', () => {
       expect(lists[0].querySelector('#group-1119').classList.contains('has-subgroups')).toBe(true);
 
       expect(lists[2].querySelector('#group-1120').textContent).toContain(groups.id1119.subGroups.id1120.name);
+    });
+
+    it('should render group identicon when group avatar is not present', () => {
+      const avatar = component.$el.querySelector('#group-12 .avatar-container .avatar');
+      expect(avatar.nodeName).toBe('DIV');
+      expect(avatar.classList.contains('identicon')).toBeTruthy();
+      expect(avatar.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
+    });
+
+    it('should render group avatar when group avatar is present', () => {
+      const avatar = component.$el.querySelector('#group-1120 .avatar-container .avatar');
+      expect(avatar.nodeName).toBe('IMG');
+      expect(avatar.classList.contains('identicon')).toBeFalsy();
     });
 
     it('should remove prefix of parent group', () => {

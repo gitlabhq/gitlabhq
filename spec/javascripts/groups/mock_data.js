@@ -71,7 +71,7 @@ const group21 = {
   path: 'chef',
   description: 'foo',
   visibility: 'public',
-  avatar_url: null,
+  avatar_url: '/uploads/-/system/group/avatar/2/GitLab.png',
   web_url: 'http://localhost:3000/groups/devops/chef',
   group_path: '/devops/chef',
   full_name: 'devops / chef',
