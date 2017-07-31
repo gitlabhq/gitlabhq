@@ -44,16 +44,17 @@ Shortcuts to GitLab's most visited docs:
 
 ### Projects and groups
 
-- [Create a project](gitlab-basics/create-project.md)
-- [Fork a project](gitlab-basics/fork-project.md)
-- [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+- [Projects](user/project/index.md):
+  - [Create a project](gitlab-basics/create-project.md)
+  - [Fork a project](gitlab-basics/fork-project.md)
+  - [Importing and exporting projects between instances](user/project/settings/import_export.md).
+  - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+  - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+  - [Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 
 ### Repository
 
