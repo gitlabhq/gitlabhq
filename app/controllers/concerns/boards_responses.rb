@@ -18,7 +18,7 @@ module BoardsResponses
   end
 
   def authorize_create_issue
-    authorize_action_for!(board.parent, :admin_issue)
+    authorize_action_for!(project, :admin_issue)
   end
 
   def authorize_admin_list

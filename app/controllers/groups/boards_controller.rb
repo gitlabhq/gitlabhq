@@ -20,5 +20,7 @@ class Groups::BoardsController < Groups::ApplicationController
   def assign_endpoint_vars
     @boards_endpoint = group_boards_path(group)
     @issues_path = issues_group_path(group)
+    @namespace_path = group.path
+    @labels_endpoint = group_labels_path(group)
   end
 end

@@ -26,7 +26,7 @@ gl.issueBoards.newListDropdownInit = () => {
 
     $this.glDropdown({
       data(term, callback) {
-        $.get($this.attr('data-labels'))
+        $.get($this.attr('data-list-labels-path'))
           .then((resp) => {
             callback(resp);
           });

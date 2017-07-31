@@ -55,14 +55,13 @@ module BoardsHelper
   end
 
   def board_list_data
-    namespace_path = current_board_parent.try(:path) || current_board_parent.namespace.try(:path)
-
     {
       toggle: "dropdown",
-      labels: labels_filter_path(true),
-      namespace_path: namespace_path,
-      project_path: @project&.try(:path), # Change this one on JS to use a single property: parent_path
-      group_path: @group&.try(:path) # Same here
+      list_labels_path: labels_filter_path(true),
+      labels_endpoint: @labels_endpoint,
+      namespace_path: @namespace_path,
+      project_path: @project&.try(:path),
+      group_path: @group&.try(:path)
     }
   end
 

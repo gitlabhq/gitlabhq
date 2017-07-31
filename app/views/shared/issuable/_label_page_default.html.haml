@@ -20,7 +20,7 @@
             %a.dropdown-toggle-page{ href: "#" }
               Create new label
         %li
-          = link_to labels_filter_path, :"data-is-link" => true do
+          = link_to labels_path, :"data-is-link" => true do
             - if show_create && can?(current_user, :admin_label, current_board_parent)
               Manage labels
             - else

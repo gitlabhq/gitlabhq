@@ -6,7 +6,8 @@ const Api = {
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json?simple=true',
-  labelsPath: '/:namespace_path/:project_path/labels',
+  projectLabelsPath: '/:namespace_path/:project_path/labels',
+  groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
@@ -67,9 +68,16 @@ const Api = {
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
-    const url = Api.buildUrl(Api.labelsPath)
-      .replace(':namespace_path', namespacePath)
-      .replace(':project_path', projectPath);
+    var url = ""
+
+    if (projectPath) {
+      url = Api.buildUrl(Api.projectLabelsPath)
+        .replace(':namespace_path', namespacePath)
+        .replace(':project_path', projectPath);
+    } else {
+      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath)
+    }
+
     return $.ajax({
       url,
       type: 'POST',

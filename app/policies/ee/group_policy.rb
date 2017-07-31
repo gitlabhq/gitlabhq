@@ -11,8 +11,8 @@ module EE
         enable :admin_board
       end
 
-      rule { public_group }      .enable :read_board
-      rule { guest }             .enable :read_board
+      rule { public_group }.enable :read_board
+      rule { guest }.enable :read_board
 
       rule { ldap_synced }.prevent :admin_group_member
 

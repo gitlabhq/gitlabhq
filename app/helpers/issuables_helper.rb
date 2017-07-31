@@ -362,4 +362,12 @@ module IssuablesHelper
       params[:format] = :json if issuable.is_a?(Issue)
     end
   end
+
+  def labels_path
+    if @project
+      project_labels_path(@project)
+    elsif @group
+      group_labels_path(@group)
+    end
+  end
 end

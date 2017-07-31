@@ -8,7 +8,7 @@ module Boards
       private
 
       def board
-        @board ||= project.boards.find(params.delete(:board_id))
+        @board ||= parent.boards.find(params.delete(:board_id))
       end
 
       def list
@@ -16,7 +16,7 @@ module Boards
       end
 
       def create_issue(params)
-        ::Issues::CreateService.new(project, current_user, params).execute
+        ::Issues::CreateService.new(parent, current_user, params).execute
       end
     end
   end

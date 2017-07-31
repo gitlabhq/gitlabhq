@@ -18,7 +18,7 @@ module Boards
     end
 
     def create
-      service = Boards::Issues::CreateService.new(board_parent, current_user, issue_params)
+      service = Boards::Issues::CreateService.new(project, current_user, issue_params)
       issue = service.execute
 
       if issue.valid?
@@ -60,6 +60,11 @@ module Boards
       else
         IssuesFinder.new(current_user, project_id: board_parent.id)
       end
+    end
+
+    def project
+      @project ||=
+        board.is_group_board? ? Project.find(params[:project_id]) : board.parent
     end
 
     def move_params
