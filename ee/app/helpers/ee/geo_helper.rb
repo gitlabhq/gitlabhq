@@ -1,5 +1,9 @@
 module EE
   module GeoHelper
+    def node_selected_groups_to_replicate(node)
+      node.groups.sort_by(&:human_name).map(&:human_name).join(', ')
+    end
+
     def node_status_icon(node)
       unless node.primary?
         status = node.enabled? ? 'unknown' : 'disabled'

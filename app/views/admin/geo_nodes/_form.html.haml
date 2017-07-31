@@ -21,3 +21,11 @@
         %p.help-block
           Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
           = link_to "here", help_page_path("ssh/README")
+
+- if geo_node.persisted? && geo_node.secondary?
+  .form-group
+    = form.label :group_ids, 'Groups to replicate', class: 'control-label'
+    .col-sm-10
+      = form.select :group_ids, namespaces_options(geo_node.group_ids), { include_hidden: false }, multiple: true, class: 'select2 select-wide', data: { field: 'group_ids' }
+      .help-block
+        Choose which groups you wish to replicate.

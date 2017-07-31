@@ -33,6 +33,12 @@
               %span.help-block Primary node
             - else
               = status_loading_icon
+              - if node.groups.any?
+                %p
+                  %span.help-block
+                    Groups to replicate:
+                    %strong.node-info
+                      = node_selected_groups_to_replicate(node)
               .js-geo-node-status{ style: 'display: none' }
                 - if node.enabled?
                   %p
