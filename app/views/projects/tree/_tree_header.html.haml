@@ -1,7 +1,7 @@
 .tree-ref-container
   .tree-ref-holder
     = render 'shared/ref_switcher', destination: 'tree', path: @path
-    - if !show_new_repo?
+    - if show_new_repo?
       =icon('long-arrow-right', title: 'to target branch')
       = render 'shared/target_switcher', destination: 'tree', path: @path
 
