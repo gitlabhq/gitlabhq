@@ -92,6 +92,13 @@ export default {
     hasGroups() {
       return Object.keys(this.group.subGroups).length > 0;
     },
+    hasAvatar() {
+      if (this.group.avatarUrl) {
+        return this.group.avatarUrl.indexOf('/assets/no_group_avatar') === -1;
+      } else {
+        return false;
+      }
+    },
   },
 };
 </script>
@@ -194,8 +201,14 @@ export default {
         <a
           :href="group.groupPath">
           <img
+            v-if="hasAvatar"
             class="avatar s40"
             :src="group.avatarUrl"
+          />
+          <group-identicon
+            v-else
+            :id=group.id
+            :name="group.name"
           />
         </a>
       </div>

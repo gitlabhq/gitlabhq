@@ -5,6 +5,7 @@ import GroupFilterableList from './groups_filterable_list';
 import GroupsComponent from './components/groups.vue';
 import GroupFolder from './components/group_folder.vue';
 import GroupItem from './components/group_item.vue';
+import GroupIdenticon from './components/group_identicon.vue';
 import GroupsStore from './stores/groups_store';
 import GroupsService from './services/groups_service';
 import eventHub from './event_hub';
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Vue.component('groups-component', GroupsComponent);
   Vue.component('group-folder', GroupFolder);
   Vue.component('group-item', GroupItem);
+  Vue.component('group-identicon', GroupIdenticon);
 
   // eslint-disable-next-line no-new
   new Vue({
