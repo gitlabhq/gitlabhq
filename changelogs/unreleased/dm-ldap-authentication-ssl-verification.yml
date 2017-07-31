@@ -1,0 +1,4 @@
+---
+title: Fix LDAP authentication to Git repository or container registry
+merge_request:
+author:
