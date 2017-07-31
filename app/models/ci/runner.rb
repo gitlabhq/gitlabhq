@@ -5,7 +5,7 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked protected].freeze
 
     has_many :builds
     has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

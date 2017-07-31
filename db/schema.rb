@@ -371,6 +371,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.string "architecture"
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
+    t.boolean "protected", default: false, null: false
   end
 
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
