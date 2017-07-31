@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Store from './repo_store';
-import RepoMixin from './repo_mixin'
+import RepoMixin from './repo_mixin';
+import { __ } from '../locale';
 
 export default class RepoEditButton {
   constructor(el) {
@@ -14,7 +15,7 @@ export default class RepoEditButton {
       data: () => Store,
       computed: {
         buttonLabel() {
-          return this.editMode ? 'Cancel edit' : 'Edit';
+          return this.editMode ? __('Cancel edit') : __('Edit');
         },
 
         buttonIcon() {

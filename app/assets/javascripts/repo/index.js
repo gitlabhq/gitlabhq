@@ -1,6 +1,7 @@
 /* global monaco */
 import $ from 'jquery';
 import Vue from 'vue';
+import Translate from '../vue_shared/translate';
 import RepoSidebar from './repo_sidebar.vue';
 import EditButton from './repo_edit_button';
 import Service from './repo_service';
@@ -13,6 +14,8 @@ import RepoEditor from './repo_editor.vue';
 import monacoLoader from './monaco_loader';
 import RepoMixin from './repo_mixin';
 import PopupDialog from '../vue_shared/components/popup_dialog.vue'
+
+Vue.use(Translate);
 
 function repoEditorLoader() {
   return new Promise((resolve) => {
@@ -74,7 +77,15 @@ function initRepo() {
           <repo-binary-viewer/>
         </div>
         <repo-commit-section/>
-        <popup-dialog primary-button-label="Discard changes" :open="dialog.open" kind="warning" title="Are you sure?" body="Are you sure you want to discard your changes?" @toggle="dialogToggled" @submit="dialogSubmitted"></popup-dialog>
+        <popup-dialog
+          :primary-button-label="__('Discard changes')"
+          :open="dialog.open"
+          kind="warning"
+          :title="__('Are you sure?')"
+          :body="__('Are you sure you want to discard your changes?')"
+          @toggle="dialogToggled"
+          @submit="dialogSubmitted"
+        />
       </div>
     `,
     mixins: [RepoMixin],
