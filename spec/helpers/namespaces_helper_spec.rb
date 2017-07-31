@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NamespacesHelper, type: :helper do
+describe NamespacesHelper do
   let!(:admin) { create(:admin) }
   let!(:admin_group) { create(:group, :private) }
   let!(:user) { create(:user) }

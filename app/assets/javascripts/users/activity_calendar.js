@@ -1,10 +1,28 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, camelcase, vars-on-top, object-shorthand, comma-dangle, eqeqeq, no-mixed-operators, no-return-assign, newline-per-chained-call, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, prefer-template, quotes, no-unused-vars, no-else-return, max-len, class-methods-use-this */
-
 import d3 from 'd3';
 
+const LOADING_HTML = `
+  <div class="text-center">
+    <i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i>
+  </div>
+`;
+
+function formatTooltipText({ date, count }) {
+  const dateObject = new Date(date);
+  const dateDayName = gl.utils.getDayName(dateObject);
+  const dateText = dateObject.format('mmm d, yyyy');
+
+  let contribText = 'No contributions';
+  if (count > 0) {
+    contribText = `${count} contribution${count > 1 ? 's' : ''}`;
+  }
+  return `${contribText}<br />${dateDayName} ${dateText}`;
+}
+
+const initColorKey = () => d3.scale.linear().range(['#acd5f2', '#254e77']).domain([0, 3]);
+
 export default class ActivityCalendar {
-  constructor(timestamps, calendar_activities_path) {
-    this.calendar_activities_path = calendar_activities_path;
+  constructor(container, timestamps, calendarActivitiesPath) {
+    this.calendarActivitiesPath = calendarActivitiesPath;
     this.clickDay = this.clickDay.bind(this);
     this.currentSelectedDate = '';
     this.daySpace = 1;
@@ -12,25 +30,26 @@ export default class ActivityCalendar {
     this.daySizeWithSpace = this.daySize + (this.daySpace * 2);
     this.monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.months = [];
+
     // Loop through the timestamps to create a group of objects
     // The group of objects will be grouped based on the day of the week they are
     this.timestampsTmp = [];
-    var group = 0;
+    let group = 0;
 
-    var today = new Date();
+    const today = new Date();
     today.setHours(0, 0, 0, 0, 0);
 
-    var oneYearAgo = new Date(today);
+    const oneYearAgo = new Date(today);
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
-    var days = gl.utils.getDayDifference(oneYearAgo, today);
+    const days = gl.utils.getDayDifference(oneYearAgo, today);
 
-    for (var i = 0; i <= days; i += 1) {
-      var date = new Date(oneYearAgo);
+    for (let i = 0; i <= days; i += 1) {
+      const date = new Date(oneYearAgo);
       date.setDate(date.getDate() + i);
 
-      var day = date.getDay();
-      var count = timestamps[date.format('yyyy-mm-dd')];
+      const day = date.getDay();
+      const count = timestamps[date.format('yyyy-mm-dd')] || 0;
 
       // Create a new group array if this is the first day of the week
       // or if is first object
@@ -39,129 +58,119 @@ export default class ActivityCalendar {
         group += 1;
       }
 
-      var innerArray = this.timestampsTmp[group - 1];
       // Push to the inner array the values that will be used to render map
-      innerArray.push({
-        count: count || 0,
-        date: date,
-        day: day
-      });
+      const innerArray = this.timestampsTmp[group - 1];
+      innerArray.push({ count, date, day });
     }
 
     // Init color functions
-    this.colorKey = this.initColorKey();
+    this.colorKey = initColorKey();
     this.color = this.initColor();
+
     // Init the svg element
-    this.renderSvg(group);
+    this.svg = this.renderSvg(container, group);
     this.renderDays();
     this.renderMonths();
     this.renderDayTitles();
     this.renderKey();
-    this.initTooltips();
+
+    // Init tooltips
+    $(`${container} .js-tooltip`).tooltip({ html: true });
   }
 
   // Add extra padding for the last month label if it is also the last column
   getExtraWidthPadding(group) {
-    var extraWidthPadding = 0;
-    var lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
-    var secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
+    let extraWidthPadding = 0;
+    const lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
+    const secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
 
-    if (lastColMonth != secondLastColMonth) {
+    if (lastColMonth !== secondLastColMonth) {
       extraWidthPadding = 3;
     }
 
     return extraWidthPadding;
   }
 
-  renderSvg(group) {
-    var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
-    return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
+  renderSvg(container, group) {
+    const width = ((group + 1) * this.daySizeWithSpace) + this.getExtraWidthPadding(group);
+    return d3.select(container)
+      .append('svg')
+        .attr('width', width)
+        .attr('height', 167)
+        .attr('class', 'contrib-calendar');
   }
 
   renderDays() {
-    return this.svg.selectAll('g').data(this.timestampsTmp).enter().append('g').attr('transform', (function(_this) {
-      return function(group, i) {
-        _.each(group, function(stamp, a) {
-          var lastMonth, lastMonthX, month, x;
+    this.svg.selectAll('g').data(this.timestampsTmp).enter().append('g')
+      .attr('transform', (group, i) => {
+        _.each(group, (stamp, a) => {
           if (a === 0 && stamp.day === 0) {
-            month = stamp.date.getMonth();
-            x = (_this.daySizeWithSpace * i + 1) + _this.daySizeWithSpace;
-            lastMonth = _.last(_this.months);
-            if (lastMonth != null) {
-              lastMonthX = lastMonth.x;
-            }
-            if (lastMonth == null) {
-              return _this.months.push({
-                month: month,
-                x: x
-              });
-            } else if (month !== lastMonth.month && x - _this.daySizeWithSpace !== lastMonthX) {
-              return _this.months.push({
-                month: month,
-                x: x
-              });
+            const month = stamp.date.getMonth();
+            const x = (this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace;
+            const lastMonth = _.last(this.months);
+            if (
+              lastMonth == null ||
+              (month !== lastMonth.month && x - this.daySizeWithSpace !== lastMonth.x)
+            ) {
+              this.months.push({ month, x });
             }
           }
         });
-        return "translate(" + ((_this.daySizeWithSpace * i + 1) + _this.daySizeWithSpace) + ", 18)";
-      };
-    })(this)).selectAll('rect').data(function(stamp) {
-      return stamp;
-    }).enter().append('rect').attr('x', '0').attr('y', (function(_this) {
-      return function(stamp, i) {
-        return _this.daySizeWithSpace * stamp.day;
-      };
-    })(this)).attr('width', this.daySize).attr('height', this.daySize).attr('title', (function(_this) {
-      return function(stamp) {
-        var contribText, date, dateText;
-        date = new Date(stamp.date);
-        contribText = 'No contributions';
-        if (stamp.count > 0) {
-          contribText = stamp.count + " contribution" + (stamp.count > 1 ? 's' : '');
-        }
-        dateText = date.format('mmm d, yyyy');
-        return contribText + "<br />" + (gl.utils.getDayName(date)) + " " + dateText;
-      };
-    })(this)).attr('class', 'user-contrib-cell js-tooltip').attr('fill', (function(_this) {
-      return function(stamp) {
-        if (stamp.count !== 0) {
-          return _this.color(Math.min(stamp.count, 40));
-        } else {
-          return '#ededed';
-        }
-      };
-    })(this)).attr('data-container', 'body').on('click', this.clickDay);
+        return `translate(${(this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace}, 18)`;
+      })
+      .selectAll('rect')
+        .data(stamp => stamp)
+        .enter()
+        .append('rect')
+          .attr('x', '0')
+          .attr('y', stamp => this.daySizeWithSpace * stamp.day)
+          .attr('width', this.daySize)
+          .attr('height', this.daySize)
+          .attr('fill', stamp => (
+            stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'
+          ))
+          .attr('title', stamp => formatTooltipText(stamp))
+          .attr('class', 'user-contrib-cell js-tooltip')
+          .attr('data-container', 'body')
+          .on('click', this.clickDay);
   }
 
   renderDayTitles() {
-    var days;
-    days = [
+    const days = [
       {
         text: 'M',
-        y: 29 + (this.daySizeWithSpace * 1)
+        y: 29 + (this.daySizeWithSpace * 1),
       }, {
         text: 'W',
-        y: 29 + (this.daySizeWithSpace * 3)
+        y: 29 + (this.daySizeWithSpace * 3),
       }, {
         text: 'F',
-        y: 29 + (this.daySizeWithSpace * 5)
-      }
+        y: 29 + (this.daySizeWithSpace * 5),
+      },
     ];
-    return this.svg.append('g').selectAll('text').data(days).enter().append('text').attr('text-anchor', 'middle').attr('x', 8).attr('y', function(day) {
-      return day.y;
-    }).text(function(day) {
-      return day.text;
-    }).attr('class', 'user-contrib-text');
+    this.svg.append('g')
+      .selectAll('text')
+        .data(days)
+        .enter()
+        .append('text')
+          .attr('text-anchor', 'middle')
+          .attr('x', 8)
+          .attr('y', day => day.y)
+          .text(day => day.text)
+          .attr('class', 'user-contrib-text');
   }
 
   renderMonths() {
-    return this.svg.append('g').attr('direction', 'ltr').selectAll('text').data(this.months).enter().append('text').attr('x', function(date) {
-      return date.x;
-    }).attr('y', 10).attr('class', 'user-contrib-text').text((function(_this) {
-      return function(date) {
-        return _this.monthNames[date.month];
-      };
-    })(this));
+    this.svg.append('g')
+      .attr('direction', 'ltr')
+      .selectAll('text')
+        .data(this.months)
+        .enter()
+        .append('text')
+          .attr('x', date => date.x)
+          .attr('y', 10)
+          .attr('class', 'user-contrib-text')
+          .text(date => this.monthNames[date.month]);
   }
 
   renderKey() {
@@ -169,7 +178,7 @@ export default class ActivityCalendar {
     const keyColors = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
 
     this.svg.append('g')
-      .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
+      .attr('transform', `translate(18, ${(this.daySizeWithSpace * 8) + 16})`)
       .selectAll('rect')
         .data(keyColors)
         .enter()
@@ -185,43 +194,31 @@ export default class ActivityCalendar {
   }
 
   initColor() {
-    var colorRange;
-    colorRange = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
+    const colorRange = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
     return d3.scale.threshold().domain([0, 10, 20, 30]).range(colorRange);
   }
 
-  initColorKey() {
-    return d3.scale.linear().range(['#acd5f2', '#254e77']).domain([0, 3]);
-  }
-
   clickDay(stamp) {
-    var formatted_date;
     if (this.currentSelectedDate !== stamp.date) {
       this.currentSelectedDate = stamp.date;
-      formatted_date = this.currentSelectedDate.getFullYear() + "-" + (this.currentSelectedDate.getMonth() + 1) + "-" + this.currentSelectedDate.getDate();
-      return $.ajax({
-        url: this.calendar_activities_path,
-        data: {
-          date: formatted_date
-        },
+
+      const date = [
+        this.currentSelectedDate.getFullYear(),
+        this.currentSelectedDate.getMonth() + 1,
+        this.currentSelectedDate.getDate(),
+      ].join('-');
+
+      $.ajax({
+        url: this.calendarActivitiesPath,
+        data: { date },
         cache: false,
         dataType: 'html',
-        beforeSend: function() {
-          return $('.user-calendar-activities').html('<div class="text-center"><i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i></div>');
-        },
-        success: function(data) {
-          return $('.user-calendar-activities').html(data);
-        }
+        beforeSend: () => $('.user-calendar-activities').html(LOADING_HTML),
+        success: data => $('.user-calendar-activities').html(data),
       });
     } else {
       this.currentSelectedDate = '';
-      return $('.user-calendar-activities').html('');
+      $('.user-calendar-activities').html('');
     }
-  }
-
-  initTooltips() {
-    return $('.js-contrib-calendar .js-tooltip').tooltip({
-      html: true
-    });
   }
 }

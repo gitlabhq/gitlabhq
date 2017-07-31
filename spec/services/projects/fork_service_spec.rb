@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ForkService, services: true do
+describe Projects::ForkService do
   describe 'fork by user' do
     before do
       @from_user = create(:user)

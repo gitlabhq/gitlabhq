@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::UploadLinkFilter, lib: true do
+describe Banzai::Filter::UploadLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       project: project

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues', feature: true do
+describe 'Issues' do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper

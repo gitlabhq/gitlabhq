@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, feature: true do
+describe 'Navigation bar counter', :use_clean_rails_memory_store_caching do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }

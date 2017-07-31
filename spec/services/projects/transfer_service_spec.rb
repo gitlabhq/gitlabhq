@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::TransferService, services: true do
+describe Projects::TransferService do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
@@ -37,7 +37,7 @@ describe Projects::TransferService, services: true do
     end
 
     it 'executes system hooks' do
-      expect_any_instance_of(Projects::TransferService).to receive(:execute_system_hooks)
+      expect_any_instance_of(described_class).to receive(:execute_system_hooks)
 
       transfer_project(project, user, group)
     end
@@ -80,7 +80,7 @@ describe Projects::TransferService, services: true do
     end
 
     it "doesn't run system hooks" do
-      expect_any_instance_of(Projects::TransferService).not_to receive(:execute_system_hooks)
+      expect_any_instance_of(described_class).not_to receive(:execute_system_hooks)
 
       attempt_project_transfer
     end

@@ -160,7 +160,10 @@ class JiraService < IssueTrackerService
 
   def test(_)
     result = test_settings
-    { success: result.present?, result: result }
+    success = result.present?
+    result = @error if @error && !success
+
+    { success: success, result: result }
   end
 
   # JIRA does not need test data.
@@ -288,7 +291,8 @@ class JiraService < IssueTrackerService
     yield
 
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{e.message}"
+    @error = e.message
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{@error}"
     nil
   end
 

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe RepositoryCache, lib: true do
+describe RepositoryCache do
   let(:project) { create(:empty_project) }
   let(:backend) { double('backend').as_null_object }
-  let(:cache) { RepositoryCache.new('example', project.id, backend) }
+  let(:cache) { described_class.new('example', project.id, backend) }
 
   describe '#cache_key' do
     it 'includes the namespace' do

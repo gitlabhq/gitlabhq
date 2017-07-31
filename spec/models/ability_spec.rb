@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Ability, lib: true do
+describe Ability do
   context 'using a nil subject' do
     it 'has no permissions' do
-      expect(Ability.policy_for(nil, nil)).to be_banned
+      expect(described_class.policy_for(nil, nil)).to be_banned
     end
   end
 

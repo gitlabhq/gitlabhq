@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'issuable list', feature: true do
+describe 'issuable list' do
   let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
 

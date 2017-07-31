@@ -145,7 +145,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
@@ -159,6 +158,8 @@ document.addEventListener('beforeunload', function () {
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -246,6 +247,11 @@ $(function () {
     placement: function (tip, el) {
       return $(el).data('placement') || 'bottom';
     }
+  });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
@@ -347,4 +353,14 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

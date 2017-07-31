@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin updates settings', feature: true do
+feature 'Admin updates settings' do
   include StubENV
 
   before do

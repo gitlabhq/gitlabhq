@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe User, models: true do
+describe User do
   include Gitlab::CurrentSettings
 
   describe 'modules' do
@@ -261,7 +261,7 @@ describe User, models: true do
       it "returns users with 2fa enabled via OTP" do
         user_with_2fa = create(:user, :two_factor_via_otp)
         user_without_2fa = create(:user)
-        users_with_two_factor = User.with_two_factor.pluck(:id)
+        users_with_two_factor = described_class.with_two_factor.pluck(:id)
 
         expect(users_with_two_factor).to include(user_with_2fa.id)
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
@@ -270,7 +270,7 @@ describe User, models: true do
       it "returns users with 2fa enabled via U2F" do
         user_with_2fa = create(:user, :two_factor_via_u2f)
         user_without_2fa = create(:user)
-        users_with_two_factor = User.with_two_factor.pluck(:id)
+        users_with_two_factor = described_class.with_two_factor.pluck(:id)
 
         expect(users_with_two_factor).to include(user_with_2fa.id)
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
@@ -279,7 +279,7 @@ describe User, models: true do
       it "returns users with 2fa enabled via OTP and U2F" do
         user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
         user_without_2fa = create(:user)
-        users_with_two_factor = User.with_two_factor.pluck(:id)
+        users_with_two_factor = described_class.with_two_factor.pluck(:id)
 
         expect(users_with_two_factor).to eq([user_with_2fa.id])
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
@@ -290,7 +290,7 @@ describe User, models: true do
       it "excludes users with 2fa enabled via OTP" do
         user_with_2fa = create(:user, :two_factor_via_otp)
         user_without_2fa = create(:user)
-        users_without_two_factor = User.without_two_factor.pluck(:id)
+        users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
@@ -299,7 +299,7 @@ describe User, models: true do
       it "excludes users with 2fa enabled via U2F" do
         user_with_2fa = create(:user, :two_factor_via_u2f)
         user_without_2fa = create(:user)
-        users_without_two_factor = User.without_two_factor.pluck(:id)
+        users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
@@ -308,7 +308,7 @@ describe User, models: true do
       it "excludes users with 2fa enabled via OTP and U2F" do
         user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
         user_without_2fa = create(:user)
-        users_without_two_factor = User.without_two_factor.pluck(:id)
+        users_without_two_factor = described_class.without_two_factor.pluck(:id)
 
         expect(users_without_two_factor).to include(user_without_2fa.id)
         expect(users_without_two_factor).not_to include(user_with_2fa.id)
@@ -324,8 +324,8 @@ describe User, models: true do
         create(:todo, user: current_user, author: user_2, state: :done)
         create(:todo, user: current_user, author: user_3, state: :pending)
 
-        expect(User.todo_authors(current_user.id, 'pending')).to eq [user_3]
-        expect(User.todo_authors(current_user.id, 'done')).to eq [user_2]
+        expect(described_class.todo_authors(current_user.id, 'pending')).to eq [user_3]
+        expect(described_class.todo_authors(current_user.id, 'done')).to eq [user_2]
       end
     end
   end
@@ -346,6 +346,26 @@ describe User, models: true do
         expect(external_user.can_create_team).to be_falsey
         expect(external_user.can_create_group).to be_falsey
         expect(external_user.projects_limit).to be 0
+      end
+    end
+  end
+
+  describe 'after update hook' do
+    describe '.update_invalid_gpg_signatures' do
+      let(:user) do
+        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+          user.skip_reconfirmation!
+        end
+      end
+
+      it 'does nothing when the name is updated' do
+        expect(user).not_to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(name: 'Bette')
+      end
+
+      it 'synchronizes the gpg keys when the email is updated' do
+        expect(user).to receive(:update_invalid_gpg_signatures)
+        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
       end
     end
   end
@@ -609,39 +629,39 @@ describe User, models: true do
     let(:user) { double }
 
     it 'filters by active users by default' do
-      expect(User).to receive(:active).and_return([user])
+      expect(described_class).to receive(:active).and_return([user])
 
-      expect(User.filter(nil)).to include user
+      expect(described_class.filter(nil)).to include user
     end
 
     it 'filters by admins' do
-      expect(User).to receive(:admins).and_return([user])
+      expect(described_class).to receive(:admins).and_return([user])
 
-      expect(User.filter('admins')).to include user
+      expect(described_class.filter('admins')).to include user
     end
 
     it 'filters by blocked' do
-      expect(User).to receive(:blocked).and_return([user])
+      expect(described_class).to receive(:blocked).and_return([user])
 
-      expect(User.filter('blocked')).to include user
+      expect(described_class.filter('blocked')).to include user
     end
 
     it 'filters by two_factor_disabled' do
-      expect(User).to receive(:without_two_factor).and_return([user])
+      expect(described_class).to receive(:without_two_factor).and_return([user])
 
-      expect(User.filter('two_factor_disabled')).to include user
+      expect(described_class.filter('two_factor_disabled')).to include user
     end
 
     it 'filters by two_factor_enabled' do
-      expect(User).to receive(:with_two_factor).and_return([user])
+      expect(described_class).to receive(:with_two_factor).and_return([user])
 
-      expect(User.filter('two_factor_enabled')).to include user
+      expect(described_class.filter('two_factor_enabled')).to include user
     end
 
     it 'filters by wop' do
-      expect(User).to receive(:without_projects).and_return([user])
+      expect(described_class).to receive(:without_projects).and_return([user])
 
-      expect(User.filter('wop')).to include user
+      expect(described_class.filter('wop')).to include user
     end
   end
 
@@ -662,9 +682,9 @@ describe User, models: true do
       project.request_access(user_without_project2)
     end
 
-    it { expect(User.without_projects).not_to include user }
-    it { expect(User.without_projects).to include user_without_project }
-    it { expect(User.without_projects).to include user_without_project2 }
+    it { expect(described_class.without_projects).not_to include user }
+    it { expect(described_class.without_projects).to include user_without_project }
+    it { expect(described_class.without_projects).to include user_without_project2 }
   end
 
   describe 'user creation' do
@@ -680,7 +700,7 @@ describe User, models: true do
     end
 
     describe 'with defaults' do
-      let(:user) { User.new }
+      let(:user) { described_class.new }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
@@ -690,7 +710,7 @@ describe User, models: true do
     end
 
     describe 'with default overrides' do
-      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
+      let(:user) { described_class.new(projects_limit: 123, can_create_group: false, can_create_team: true) }
 
       it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
@@ -740,18 +760,18 @@ describe User, models: true do
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')
 
-      expect(User.find_by_any_email(user.email)).to eq user
+      expect(described_class.find_by_any_email(user.email)).to eq user
     end
 
     it 'finds by secondary email' do
       email = create(:email, email: 'foo@example.com')
       user  = email.user
 
-      expect(User.find_by_any_email(email.email)).to eq user
+      expect(described_class.find_by_any_email(email.email)).to eq user
     end
 
     it 'returns nil when nothing found' do
-      expect(User.find_by_any_email('')).to be_nil
+      expect(described_class.find_by_any_email('')).to be_nil
     end
   end
 
@@ -899,12 +919,12 @@ describe User, models: true do
     let!(:user) { create(:user, username: username) }
 
     it 'gets the correct user' do
-      expect(User.by_login(user.email.upcase)).to eq user
-      expect(User.by_login(user.email)).to eq user
-      expect(User.by_login(username.downcase)).to eq user
-      expect(User.by_login(username)).to eq user
-      expect(User.by_login(nil)).to be_nil
-      expect(User.by_login('')).to be_nil
+      expect(described_class.by_login(user.email.upcase)).to eq user
+      expect(described_class.by_login(user.email)).to eq user
+      expect(described_class.by_login(username.downcase)).to eq user
+      expect(described_class.by_login(username)).to eq user
+      expect(described_class.by_login(nil)).to be_nil
+      expect(described_class.by_login('')).to be_nil
     end
   end
 
@@ -938,12 +958,12 @@ describe User, models: true do
       let!(:route) { user.namespace.route }
 
       it 'returns the user' do
-        expect(User.find_by_full_path(route.path)).to eq(user)
+        expect(described_class.find_by_full_path(route.path)).to eq(user)
       end
 
       it 'is case-insensitive' do
-        expect(User.find_by_full_path(route.path.upcase)).to eq(user)
-        expect(User.find_by_full_path(route.path.downcase)).to eq(user)
+        expect(described_class.find_by_full_path(route.path.upcase)).to eq(user)
+        expect(described_class.find_by_full_path(route.path.downcase)).to eq(user)
       end
     end
 
@@ -952,18 +972,18 @@ describe User, models: true do
 
       context 'without the follow_redirects option' do
         it 'returns nil' do
-          expect(User.find_by_full_path(redirect_route.path)).to eq(nil)
+          expect(described_class.find_by_full_path(redirect_route.path)).to eq(nil)
         end
       end
 
       context 'with the follow_redirects option set to true' do
         it 'returns the user' do
-          expect(User.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
+          expect(described_class.find_by_full_path(redirect_route.path, follow_redirects: true)).to eq(user)
         end
 
         it 'is case-insensitive' do
-          expect(User.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
-          expect(User.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
+          expect(described_class.find_by_full_path(redirect_route.path.upcase, follow_redirects: true)).to eq(user)
+          expect(described_class.find_by_full_path(redirect_route.path.downcase, follow_redirects: true)).to eq(user)
         end
       end
     end
@@ -971,12 +991,12 @@ describe User, models: true do
     context 'without a route or a redirect route matching the given path' do
       context 'without the follow_redirects option' do
         it 'returns nil' do
-          expect(User.find_by_full_path('unknown')).to eq(nil)
+          expect(described_class.find_by_full_path('unknown')).to eq(nil)
         end
       end
       context 'with the follow_redirects option set to true' do
         it 'returns nil' do
-          expect(User.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
+          expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)
         end
       end
     end
@@ -986,7 +1006,7 @@ describe User, models: true do
         let!(:group) { create(:group, path: 'group_path', owner: user) }
 
         it 'returns nil' do
-          expect(User.find_by_full_path('group_path')).to eq(nil)
+          expect(described_class.find_by_full_path('group_path')).to eq(nil)
         end
       end
 
@@ -994,7 +1014,7 @@ describe User, models: true do
         let!(:group) { create(:group, path: 'group_path') }
 
         it 'returns nil' do
-          expect(User.find_by_full_path('group_path')).to eq(nil)
+          expect(described_class.find_by_full_path('group_path')).to eq(nil)
         end
       end
     end
@@ -1044,7 +1064,7 @@ describe User, models: true do
   end
 
   describe '#requires_ldap_check?' do
-    let(:user) { User.new }
+    let(:user) { described_class.new }
 
     it 'is false when LDAP is disabled' do
       # Create a condition which would otherwise cause 'true' to be returned
@@ -1215,7 +1235,7 @@ describe User, models: true do
 
   describe '#sort' do
     before do
-      User.delete_all
+      described_class.delete_all
       @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
       @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
       @user2 = create :user, created_at: Date.today - 2, last_sign_in_at: nil, name: 'Beta'
@@ -1223,34 +1243,34 @@ describe User, models: true do
 
     context 'when sort by recent_sign_in' do
       it 'sorts users by the recent sign-in time' do
-        expect(User.sort('recent_sign_in').first).to eq(@user)
+        expect(described_class.sort('recent_sign_in').first).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('recent_sign_in').third).to eq(@user2)
+        expect(described_class.sort('recent_sign_in').third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
       it 'sorts users by the oldest sign-in time' do
-        expect(User.sort('oldest_sign_in').first).to eq(@user1)
+        expect(described_class.sort('oldest_sign_in').first).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort('oldest_sign_in').third).to eq(@user2)
+        expect(described_class.sort('oldest_sign_in').third).to eq(@user2)
       end
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(User.sort('created_desc').first).to eq(@user)
+      expect(described_class.sort('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(User.sort('created_asc').first).to eq(@user2)
+      expect(described_class.sort('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(User.sort(nil).first).to eq(@user2)
+      expect(described_class.sort(nil).first).to eq(@user2)
     end
   end
 
@@ -1770,7 +1790,7 @@ describe User, models: true do
 
   describe '.ghost' do
     it "creates a ghost user if one isn't already present" do
-      ghost = User.ghost
+      ghost = described_class.ghost
 
       expect(ghost).to be_ghost
       expect(ghost).to be_persisted
@@ -1778,16 +1798,16 @@ describe User, models: true do
 
     it "does not create a second ghost user if one is already present" do
       expect do
-        User.ghost
-        User.ghost
-      end.to change { User.count }.by(1)
-      expect(User.ghost).to eq(User.ghost)
+        described_class.ghost
+        described_class.ghost
+      end.to change { described_class.count }.by(1)
+      expect(described_class.ghost).to eq(described_class.ghost)
     end
 
     context "when a regular user exists with the username 'ghost'" do
       it "creates a ghost user with a non-conflicting username" do
         create(:user, username: 'ghost')
-        ghost = User.ghost
+        ghost = described_class.ghost
 
         expect(ghost).to be_persisted
         expect(ghost.username).to eq('ghost1')
@@ -1797,7 +1817,7 @@ describe User, models: true do
     context "when a regular user exists with the email 'ghost@example.com'" do
       it "creates a ghost user with a non-conflicting email" do
         create(:user, email: 'ghost@example.com')
-        ghost = User.ghost
+        ghost = described_class.ghost
 
         expect(ghost).to be_persisted
         expect(ghost.email).to eq('ghost1@example.com')
@@ -1810,7 +1830,7 @@ describe User, models: true do
       end
 
       it 'creates a ghost user' do
-        expect(User.ghost).to be_persisted
+        expect(described_class.ghost).to be_persisted
       end
     end
   end
@@ -1889,13 +1909,13 @@ describe User, models: true do
 
   context '.active' do
     before do
-      User.ghost
+      described_class.ghost
       create(:user, name: 'user', state: 'active')
       create(:user, name: 'user', state: 'blocked')
     end
 
     it 'only counts active and non internal users' do
-      expect(User.active.count).to eq(1)
+      expect(described_class.active.count).to eq(1)
     end
   end
 

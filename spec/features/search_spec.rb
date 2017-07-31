@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Search", feature: true  do
+describe "Search"  do
   include FilteredSearchHelpers
 
   let(:user) { create(:user) }
@@ -154,7 +154,7 @@ describe "Search", feature: true  do
     end
   end
 
-  describe 'Right header search field', feature: true do
+  describe 'Right header search field' do
     it 'allows enter key to search', js: true do
       visit project_path(project)
       fill_in 'search', with: 'gitlab'

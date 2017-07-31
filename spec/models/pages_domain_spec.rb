@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PagesDomain, models: true do
+describe PagesDomain do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end

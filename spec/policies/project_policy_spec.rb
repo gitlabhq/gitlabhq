@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectPolicy, models: true do
+describe ProjectPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:dev) { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::AvatarRestorer, lib: true do
+describe Gitlab::ImportExport::AvatarRestorer do
   include UploadHelpers
 
   let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: 'test') }

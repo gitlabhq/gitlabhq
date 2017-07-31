@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
+describe Ci::Pipeline do
   include EmailHelpers
 
   let(:user) { create(:user) }
@@ -17,6 +17,7 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }

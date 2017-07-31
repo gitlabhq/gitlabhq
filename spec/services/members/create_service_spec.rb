@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::CreateService, services: true do
+describe Members::CreateService do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:project_user) { create(:user) }

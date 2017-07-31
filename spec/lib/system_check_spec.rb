@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck, lib: true do
+describe SystemCheck do
   class SimpleCheck < SystemCheck::BaseCheck
     def check?
       true
@@ -19,7 +19,7 @@ describe SystemCheck, lib: true do
   end
 
   describe '.run' do
-    subject { SystemCheck }
+    subject { described_class }
 
     it 'detects execution of SimpleCheck' do
       is_expected.to execute_check(SimpleCheck)

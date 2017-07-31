@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Global search', feature: true do
+feature 'Global search' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
 

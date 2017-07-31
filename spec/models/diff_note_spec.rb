@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffNote, models: true do
+describe DiffNote do
   include RepoHelpers
 
   let(:merge_request) { create(:merge_request) }

@@ -21,13 +21,21 @@ module Ci
 
       return result if result
 
-      Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
+      begin
+        Ci::Pipeline.transaction do
+          pipeline.save!
 
-        Ci::CreatePipelineStagesService
-          .new(project, current_user)
-          .execute(pipeline)
+          yield(pipeline) if block_given?
+
+          Ci::CreatePipelineStagesService
+            .new(project, current_user)
+            .execute(pipeline)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        return error("Failed to persist the pipeline: #{e}")
       end
+
+      update_merge_requests_head_pipeline
 
       cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
 

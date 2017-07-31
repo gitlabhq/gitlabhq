@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/_home_panel', :view do
+describe 'projects/_home_panel' do
   let(:project) { create(:empty_project, :public) }
 
   let(:notification_settings) do

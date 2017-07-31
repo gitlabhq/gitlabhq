@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/6_validations.rb'
 
-describe '6_validations', lib: true do
+describe '6_validations' do
   before :all do
     FileUtils.mkdir_p('tmp/tests/paths/a/b/c/d')
     FileUtils.mkdir_p('tmp/tests/paths/a/b/c2')

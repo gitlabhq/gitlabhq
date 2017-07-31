@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'html/pipeline'
 
-describe Banzai::Filter::LabelReferenceFilter, lib: true do
+describe Banzai::Filter::LabelReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public, name: 'sample-project') }

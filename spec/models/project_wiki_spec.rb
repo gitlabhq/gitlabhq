@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe ProjectWiki, models: true do
+describe ProjectWiki do
   let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
-  let(:project_wiki) { ProjectWiki.new(project, user) }
+  let(:project_wiki) { described_class.new(project, user) }
 
   subject { project_wiki }
 
@@ -21,7 +21,7 @@ describe ProjectWiki, models: true do
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      expect(subject.web_url).to match("https?://[^\/]+/#{project.path_with_namespace}/wikis/home")
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/wikis/home")
     end
   end
 

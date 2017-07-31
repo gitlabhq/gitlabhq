@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LfsToken, lib: true do
+describe Gitlab::LfsToken do
   describe '#token' do
     shared_examples 'an LFS token generator' do
       it 'returns a randomly generated token' do

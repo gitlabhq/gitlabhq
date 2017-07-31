@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > User uses quick actions', feature: true, js: true do
+feature 'Issues > User uses quick actions', js: true do
   include QuickActionsHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
@@ -9,7 +9,7 @@ feature 'Issues > User uses quick actions', feature: true, js: true do
 
   describe 'issue-only commands' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:empty_project, :public) }
 
     before do
       project.team << [user, :master]

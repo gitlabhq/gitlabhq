@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'test coverage badge' do
   given!(:user) { create(:user) }
-  given!(:project) { create(:project, :private) }
+  given!(:project) { create(:empty_project, :private) }
 
   context 'when user has access to view badge' do
     background do
@@ -55,7 +55,7 @@ feature 'test coverage badge' do
   end
 
   def create_pipeline
-    opts = { project: project, ref: 'master', sha: project.commit.id }
+    opts = { project: project }
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline

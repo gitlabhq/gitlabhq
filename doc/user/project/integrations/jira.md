@@ -1,17 +1,21 @@
 # GitLab JIRA integration
 
-GitLab can be configured to interact with JIRA. Configuration happens via
-user name and password. Connecting to a JIRA server via CAS is not possible.
+GitLab can be configured to interact with [JIRA], a project management platform.
 
-Each project can be configured to connect to a different JIRA instance, see the
-[configuration](#configuration) section. If you have one JIRA instance you can
-pre-fill the settings page with a default template. To configure the template
-see the [Services Templates][services-templates] document.
+Once your GitLab project is connected to JIRA, you can reference and close the
+issues in JIRA directly from GitLab.
 
-Once the project is connected to JIRA, you can reference and close the issues
-in JIRA directly from GitLab.
+For a use case, check out this article of [How and why to integrate GitLab with
+JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
 
 ## Configuration
+
+Each GitLab project can be configured to connect to a different JIRA instance.
+If you have one JIRA instance you can pre-fill the settings page with a default
+template, see the [Services Templates][services-templates] docs.
+
+Configuration happens via user name and password. Connecting to a JIRA server
+via CAS is not possible.
 
 In order to enable the JIRA service in GitLab, you need to first configure the
 project in JIRA and then enter the correct values in GitLab.
@@ -213,3 +217,4 @@ your project needs to close a ticket.
 
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md
+[jira]: https://www.atlassian.com/software/jira
