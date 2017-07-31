@@ -37,18 +37,18 @@ describe Projects::TransferService do
     end
 
     it 'executes system hooks' do
-      expect_any_instance_of(SystemHooksService).to receive(:execute_hooks_for).with(project, :transfer)
-
-      transfer_project(project, user, group)
+      transfer_project(project, user, group) do |service|
+        expect(service).to receive(:execute_system_hooks)
+      end
     end
   end
 
   context 'when transfer fails' do
     let!(:original_path) { project_path(project) }
 
-    def attempt_project_transfer
+    def attempt_project_transfer(&block)
       expect do
-        transfer_project(project, user, group)
+        transfer_project(project, user, group, &block)
       end.to raise_error(ActiveRecord::ActiveRecordError)
     end
 
@@ -80,9 +80,9 @@ describe Projects::TransferService do
     end
 
     it "doesn't run system hooks" do
-      expect_any_instance_of(SystemHooksService).not_to receive(:execute_hooks_for).with(project, :transfer)
-
-      attempt_project_transfer
+      attempt_project_transfer do |service|
+        expect(service).not_to receive(:execute_system_hooks)
+      end
     end
   end
 
@@ -120,7 +120,11 @@ describe Projects::TransferService do
   end
 
   def transfer_project(project, user, new_namespace)
-    Projects::TransferService.new(project, user).execute(new_namespace)
+    service = Projects::TransferService.new(project, user)
+
+    yield(service) if block_given?
+
+    service.execute(new_namespace)
   end
 
   context 'visibility level' do
