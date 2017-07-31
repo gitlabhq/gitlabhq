@@ -3,7 +3,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   include SortingHelper
 
   # Authorize
-  before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access, :withdraw_access_request]
 
   def index
     @sort = params[:sort].presence || sort_value_name

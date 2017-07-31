@@ -44,4 +44,22 @@ module MembersHelper
     path << "?#{options.to_param}"
     path
   end
+
+  # Returns a `<action>_<source>_access_request` association, e.g.:
+  # - destroy_project_access_request
+  # - destroy_group_access_request
+  def action_access_request_permission(action, access_request)
+    "#{action}_#{access_request.class.name.underscore}".to_sym
+  end
+
+  def withdraw_access_request_message(access_request)
+    source =
+      if access_request.is_a?(ProjectAccessRequest)
+        "the #{access_request.project.human_name} project"
+      elsif access_request.is_a?(GroupAccessRequest)
+        "the #{access_request.group.human_name} group"
+      end
+
+    "Are you sure you want to withdraw your access request for the #{source}?"
+  end
 end

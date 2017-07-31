@@ -215,10 +215,10 @@ class NotificationService
     mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
   end
 
-  def decline_access_request(member)
-    return true unless member.notifiable?(:subscription)
+  def decline_access_request(access_request)
+    return true unless access_request.notifiable?(:subscription)
 
-    mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
+    mailer.member_access_denied_email(access_request.real_source_type, access_request.source_id, access_request.user_id).deliver_later
   end
 
   # Project invite

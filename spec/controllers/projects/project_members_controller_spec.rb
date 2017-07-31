@@ -171,22 +171,6 @@ describe Projects::ProjectMembersController do
           expect(response).to have_http_status(403)
         end
       end
-
-      context 'and has requested access' do
-        before do
-          project.request_access(user)
-        end
-
-        it 'removes user from members' do
-          delete :leave, namespace_id: project.namespace,
-                         project_id: project
-
-          expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
-          expect(response).to redirect_to(project_path(project))
-          expect(project.access_requests).to be_empty
-          expect(project.users).not_to include user
-        end
-      end
     end
   end
 
@@ -203,6 +187,54 @@ describe Projects::ProjectMembersController do
       expect(response).to redirect_to(project)
       expect(project.access_requests.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
+    end
+  end
+
+  describe 'DELETE withdraw_access_request' do
+    context 'when the current_user has requested access to the project' do
+      let!(:access_request) { project.request_access(user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'redirects with success message' do
+        delete :withdraw_access_request, namespace_id: project.namespace,
+                                         project_id: project
+
+        expect(response).to set_flash.to /Your access request .* has been withdrawn/
+        expect(response).to redirect_to(project)
+      end
+
+      it 'destroys the access request' do
+        delete :withdraw_access_request, namespace_id: project.namespace,
+                                         project_id: project
+
+        expect(project.access_requests.where(user: user)).not_to exist
+      end
+    end
+
+    context 'when the current_user has not requested access to the project' do
+      let(:other_user) { create(:user) }
+      let!(:other_access_request) { project.request_access(other_user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'responds 404 Not Found' do
+        delete :withdraw_access_request, namespace_id: project.namespace,
+                                         project_id: project
+
+        expect(response).to have_http_status(404)
+      end
+
+      it "does not destroy another user's access request" do
+        delete :withdraw_access_request, namespace_id: project.namespace,
+                                         project_id: project
+
+        expect(project.access_requests.where(user: other_user)).to exist
+      end
     end
   end
 

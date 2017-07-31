@@ -10,4 +10,8 @@ module AccessRequestable
   def request_access(user)
     Members::RequestAccessService.new(self, user).execute
   end
+
+  def withdraw_access_request(user)
+    Members::DestroyAccessRequestService.new(self, user, user).execute
+  end
 end

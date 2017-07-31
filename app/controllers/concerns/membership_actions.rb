@@ -31,8 +31,15 @@ module MembershipActions
   def request_access
     membershipable.request_access(current_user)
 
-    redirect_to polymorphic_path(membershipable),
+    redirect_to membershipable,
                 notice: 'Your request for access has been queued for review.'
+  end
+
+  def withdraw_access_request
+    membershipable.withdraw_access_request(current_user)
+
+    redirect_to membershipable,
+                notice: "Your access request to the #{source_type} has been withdrawn."
   end
 
   def approve_access_request
@@ -45,16 +52,11 @@ module MembershipActions
     member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
       .execute(:all)
 
-    notice =
-      if member.request?
-        "Your access request to the #{source_type} has been withdrawn."
-      else
-        "You left the \"#{membershipable.human_name}\" #{source_type}."
-      end
+    notice = "You left the \"#{membershipable.human_name}\" #{source_type}."
 
     respond_to do |format|
       format.html do
-        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+        redirect_path = [:dashboard, membershipable.class.to_s.tableize]
         redirect_to redirect_path, notice: notice
       end
 

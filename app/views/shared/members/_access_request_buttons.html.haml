@@ -9,9 +9,9 @@
               class: 'btn'
 - elsif access_request = source.access_requests.find_by(user_id: current_user.id)
   .project-action-button.inline
-    = link_to _('Withdraw Access Request'), polymorphic_path([:leave, source, :members]),
+    = link_to _('Withdraw Access Request'), polymorphic_path([:withdraw_access_request, source, :members]),
               method: :delete,
-              data: { confirm: remove_member_message(access_request) },
+              data: { confirm: withdraw_access_request_message(access_request) },
               class: 'btn'
 - elsif source.request_access_enabled && can?(current_user, :request_access, source)
   .project-action-button.inline
