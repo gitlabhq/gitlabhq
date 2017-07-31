@@ -146,10 +146,13 @@ module TestEnv
   end
 
   def start_gitaly(gitaly_dir)
-    gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    gitaly_config = File.join(gitaly_dir, 'config.toml')
-    log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = Bundler.with_original_env { spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file) }
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
+    end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
   end
 
   def stop_gitaly
