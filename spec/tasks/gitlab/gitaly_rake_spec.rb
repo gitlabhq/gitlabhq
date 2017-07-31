@@ -41,6 +41,16 @@ describe 'gitlab:gitaly namespace rake task' do
     end
 
     describe 'gmake/make' do
+      let(:command_preamble) { %w[/usr/bin/env -u BUNDLE_GEMFILE] }
+
+      before(:all) do
+        @old_env_ci = ENV.delete('CI')
+      end
+
+      after(:all) do
+        ENV['CI'] = @old_env_ci if @old_env_ci
+      end
+
       before do
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original
@@ -49,12 +59,12 @@ describe 'gitlab:gitaly namespace rake task' do
       context 'gmake is available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
-          allow_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['gmake']).and_return(true)
         end
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['gmake']).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
@@ -63,12 +73,12 @@ describe 'gitlab:gitaly namespace rake task' do
       context 'gmake is not available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
-          allow_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
         end
 
         it 'calls make in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
-          expect_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
