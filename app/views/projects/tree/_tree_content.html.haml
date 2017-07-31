@@ -2,10 +2,3 @@
   = render 'shared/repo/repo', project: @project
 - else
   = render 'projects/tree/old_tree_content', tree: tree
-
-
-:javascript
-  // Load last commit log for each file in tree
-  $('#tree-slider').waitForImages(function() {
-    gl.utils.ajaxGet("#{escape_javascript(@logs_path)}");
-  });
