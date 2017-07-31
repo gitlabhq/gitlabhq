@@ -1,14 +1,24 @@
 
-.btn-group.project-templates-buttons{ data: { toggle: "buttons" }}
-  %label.btn.active
-    %input{ type: "radio",  autocomplete: "off", name: "project_templates" }
+.project-templates-buttons.import-buttons{ data: { toggle: "buttons" }}
+  %div.btn.btn-default.active
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "blank", checked: "true" }
     = icon('file-o')
     Blank
   - Gitlab::ProjectTemplate.all.each do |template|
     -# The title should be the value posted to the controller, a pretty name to print would be
     -# template.name
-    %label.btn
-      %input{ type: "radio",  autocomplete: "off", name: "project_templates" }
+    %div.btn
+      %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: template.name }
       = image_tag(template.logo_path)
       = template.title
 
+  %div.btn.btn-default
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "blank" }
+    = icon('file-o')
+    Node Express
+
+
+  %div.btn.btn-default
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "blank"}
+    = icon('file-o')
+    Java Spring

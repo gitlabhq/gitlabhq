@@ -456,6 +456,7 @@ a.deploy-project-label {
   }
 }
 
+.project-template,
 .project-import {
   .form-group {
     margin-bottom: 5px;
@@ -470,7 +471,7 @@ a.deploy-project-label {
 
     .btn {
       padding: 8px;
-      margin-left: 10px;
+      margin-right: 10px;
     }
 
     > div {
@@ -482,23 +483,112 @@ a.deploy-project-label {
 
 .project-template {
   .project-templates-buttons {
-    i {
-      display: block;
-      font-size: 24px;
-      margin-bottom: 4px;
-    }
-
+    i,
     img {
       display: block;
       height: 24px;
-      margin: 0 auto 4px;
+      font-size: 24px;
+      margin: 4px auto;
+    }
+
+    @media (max-width: $screen-md-max) {
+      i,
+      img {
+        display: inline-block;
+        height: 20px;
+        font-size: 14px;
+        margin: 0;
+      }
     }
   }
 
+  &:after {
+    content: "OR";
+    position: absolute;
+    color: $gray-darkest;
+    right: 13px;
+    z-index: 2;
+    top: 78px;
+  }
+
+  @media (max-width: $screen-md-max) {
     &:after {
-      content: "OR";
-      float: right;
+      top: 100%;
+      left: 49%;
+      margin-top: 10px;
     }
+  }
+
+  @media (max-width: $screen-xs-min) {
+    &:after {
+      top: 100%;
+      left: 46%;
+      margin-top: 10px;
+    }
+  }
+
+  @media (min-width: $screen-xs-max) and (max-width: $screen-md-max) {
+    &:after {
+      top: 100%;
+      left: 49%;
+      margin-top: 10px;
+    }
+  }
+
+}
+
+.new-project-first-column {
+  &:after {
+    background: $white-light;
+    content: " ";
+    position: absolute;
+    top: 66%;
+    height: 40px;
+    width: 20px;
+    right: 7px;
+    z-index: 1;
+  }
+
+  @media (min-width: $screen-xs-max) and (max-width: $screen-md-max) {
+    margin-bottom: 40px;
+    &:after {
+      top: 100%;
+      left: 47%;
+      width: 50px;
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    margin-bottom: 40px;
+
+    &:after {
+      top: 100%;
+      left: 42%;
+      width: 50px;
+    }
+  }
+}
+
+.new-project-second-column {
+  &:before {
+    background: $gray-darkest;
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    left: -23px;
+    display: inline-block;
+    content: " ";
+  }
+
+  @media (max-width: $screen-md-max) {
+    &:before {
+      height: 1px;
+      left: 15px;
+      top: -20px;
+      right: 15px;
+      width: auto;
+    }
+  }
 }
 
 .project-stats {

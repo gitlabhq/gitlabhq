@@ -18,15 +18,15 @@
     .col-lg-9.js-toggle-container
       = form_for @project, html: { class: 'new_project' } do |f|
         .row
-          .col-lg-6.col-sm-12
+          .col-lg-6.col-sm-12.new-project-first-column
             .project-template
               .form_group.clearfix
                 = f.label :template_project, class: 'label-light' do
                   Create from template
                   = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: "What's included in a template?" }, title: "What's included in a template?", class: 'has-tooltip', data: { placement: 'top'}
-                .col-sm-12.import-buttons
+                %div
                   = render 'project_templates', f: f
-          .col-lg-6.col-sm-12
+          .col-lg-6.col-sm-12.new-project-second-column
             - if import_sources_enabled?
               .project-import
                 .form-group.clearfix
