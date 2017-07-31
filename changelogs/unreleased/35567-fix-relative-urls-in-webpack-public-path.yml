@@ -1,0 +1,5 @@
+---
+title: Fix asynchronous javascript paths when GitLab is installed under a relative
+  URL
+merge_request: 13165
+author:
