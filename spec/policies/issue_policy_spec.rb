@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IssuePolicy, models: true do
+describe IssuePolicy do
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }

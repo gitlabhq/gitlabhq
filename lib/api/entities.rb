@@ -82,6 +82,38 @@ module API
     end
 
     class Project < Grape::Entity
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :_links do
+        expose :self do |project|
+          expose_url(api_v4_projects_path(id: project.id))
+        end
+
+        expose :issues, if: -> (*args) { issues_available?(*args) } do |project|
+          expose_url(api_v4_projects_issues_path(id: project.id))
+        end
+
+        expose :merge_requests, if: -> (*args) { mrs_available?(*args) } do |project|
+          expose_url(api_v4_projects_merge_requests_path(id: project.id))
+        end
+
+        expose :repo_branches do |project|
+          expose_url(api_v4_projects_repository_branches_path(id: project.id))
+        end
+
+        expose :labels do |project|
+          expose_url(api_v4_projects_labels_path(id: project.id))
+        end
+
+        expose :events do |project|
+          expose_url(api_v4_projects_events_path(id: project.id))
+        end
+
+        expose :members do |project|
+          expose_url(api_v4_projects_members_path(id: project.id))
+        end
+      end
+
       expose :id, :description, :default_branch, :tag_list
       expose :archived?, as: :archived
       expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
@@ -109,7 +141,7 @@ module API
         user.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
+      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
@@ -269,8 +301,8 @@ module API
 
     class Milestone < Grape::Entity
       expose :id, :iid
-      expose(:project_id) { |entity| entity&.project_id }
-      expose(:group_id) { |entity| entity&.group_id }
+      expose :project_id, if: -> (entity, options) { entity&.project_id }
+      expose :group_id, if: -> (entity, options) { entity&.group_id }
       expose :title, :description
       expose :state, :created_at, :updated_at
       expose :due_date
@@ -297,6 +329,26 @@ module API
     end
 
     class Issue < IssueBasic
+      include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :_links do
+        expose :self do |issue|
+          expose_url(api_v4_project_issue_path(id: issue.project_id, issue_iid: issue.iid))
+        end
+
+        expose :notes do |issue|
+          expose_url(api_v4_projects_issues_notes_path(id: issue.project_id, noteable_id: issue.iid))
+        end
+
+        expose :award_emoji do |issue|
+          expose_url(api_v4_projects_issues_award_emoji_path(id: issue.project_id, issue_iid: issue.iid))
+        end
+
+        expose :project do |issue|
+          expose_url(api_v4_projects_path(id: issue.project_id))
+        end
+      end
+
       expose :subscribed do |issue, options|
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
@@ -619,43 +671,14 @@ module API
 
     class ApplicationSetting < Grape::Entity
       expose :id
-      expose :default_projects_limit
-      expose :signup_enabled
-      expose :password_authentication_enabled
-      expose :password_authentication_enabled, as: :signin_enabled
-      expose :gravatar_enabled
-      expose :sign_in_text
-      expose :after_sign_up_text
-      expose :created_at
-      expose :updated_at
-      expose :home_page_url
-      expose :default_branch_protection
+      expose(*::ApplicationSettingsHelper.visible_attributes)
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end
-      expose :max_attachment_size
-      expose :session_expire_delay
       expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
-      expose :default_artifacts_expire_in
-      expose :domain_whitelist
-      expose :domain_blacklist_enabled
-      expose :domain_blacklist
-      expose :user_oauth_applications
-      expose :after_sign_out_path
-      expose :container_registry_token_expire_delay
-      expose :repository_storage
-      expose :repository_storages
-      expose :koding_enabled
-      expose :koding_url
-      expose :plantuml_enabled
-      expose :plantuml_url
-      expose :terminal_max_session_time
-      expose :polling_interval_multiplier
-      expose :help_page_hide_commercial_content
-      expose :help_page_text
-      expose :help_page_support_url
+      expose :password_authentication_enabled, as: :signin_enabled
     end
 
     class Release < Grape::Entity

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
+describe Banzai::Filter::MergeRequestReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:empty_project, :public) }

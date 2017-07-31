@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge request conflict resolution', js: true, feature: true do
+feature 'Merge request conflict resolution', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     # In order to have the diffs collapsed, we need to disable the increase feature

@@ -54,8 +54,8 @@ describe Gitlab::UntrustedRegexp do
       let(:regexp) { '' }
       let(:text) { 'foo' }
 
-      it 'returns an array of empty matches' do
-        is_expected.to eq(['', '', ''])
+      it 'returns an array of nil matches' do
+        is_expected.to eq([nil, nil, nil, nil])
       end
     end
 
@@ -63,8 +63,8 @@ describe Gitlab::UntrustedRegexp do
       let(:regexp) { '()' }
       let(:text) { 'foo' }
 
-      it 'returns arrays of empty matches in an array' do
-        is_expected.to eq([[''], [''], ['']])
+      it 'returns an array of nil matches in an array' do
+        is_expected.to eq([[nil], [nil], [nil], [nil]])
       end
     end
 

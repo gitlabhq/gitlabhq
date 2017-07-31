@@ -22,28 +22,9 @@ module Gitlab
     end
 
     def scan(text)
-      text = text.dup # modified in-place
-      results = []
-
-      loop do
-        match = scan_regexp.match(text)
-        break unless match
-
-        # Ruby scan returns empty strings, not nil
-        groups = match.to_a.map(&:to_s)
-
-        results << 
-          if regexp.number_of_capturing_groups.zero?
-            groups[0]
-          else
-            groups[1..-1]
-          end
-
-        text.slice!(0, match.end(0) || 1)
-        break unless text.present?
-      end
-
-      results
+      matches = scan_regexp.scan(text).to_a
+      matches.map!(&:first) if regexp.number_of_capturing_groups.zero?
+      matches
     end
 
     def replace(text, rewrite)

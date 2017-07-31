@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PushoverService, models: true do
+describe PushoverService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -29,7 +29,7 @@ describe PushoverService, models: true do
   end
 
   describe 'Execute' do
-    let(:pushover) { PushoverService.new }
+    let(:pushover) { described_class.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:sample_data) do

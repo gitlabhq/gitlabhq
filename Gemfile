@@ -15,7 +15,8 @@ gem 'default_value_for', '~> 3.0.0'
 gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.25.1.1'
+gem 'rugged', '~> 0.26.0'
+gem 'grape-route-helpers', '~> 2.0.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -57,10 +58,14 @@ gem 'validates_hostname', '~> 1.0.6'
 # Browser detection
 gem 'browser', '~> 2.2'
 
+# GPG
+gem 'gpgme'
+
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
+gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
@@ -164,7 +169,7 @@ gem 'rainbow', '~> 2.2'
 gem 'settingslogic', '~> 2.0.9'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.0.0'
+gem 're2', '~> 1.1.1'
 
 # Misc
 
@@ -284,7 +289,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta9'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -353,7 +358,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'shoulda-matchers', '~> 2.8.0', require: false
+  gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 1.6.0'
   gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 2.3.2'
@@ -386,7 +391,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.18.0'
+gem 'gitaly', '~> 0.21.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

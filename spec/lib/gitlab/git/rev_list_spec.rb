@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::RevList, lib: true do
+describe Gitlab::Git::RevList do
   let(:project) { create(:project, :repository) }
 
   before do
@@ -11,7 +11,7 @@ describe Gitlab::Git::RevList, lib: true do
   end
 
   context "#new_refs" do
-    let(:rev_list) { Gitlab::Git::RevList.new(newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
+    let(:rev_list) { described_class.new(newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
 
     it 'calls out to `popen`' do
       expect(Gitlab::Popen).to receive(:popen).with([
@@ -33,7 +33,7 @@ describe Gitlab::Git::RevList, lib: true do
   end
 
   context "#missed_ref" do
-    let(:rev_list) { Gitlab::Git::RevList.new(oldrev: 'oldrev', newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
+    let(:rev_list) { described_class.new(oldrev: 'oldrev', newrev: 'newrev', path_to_repo: project.repository.path_to_repo) }
 
     it 'calls out to `popen`' do
       expect(Gitlab::Popen).to receive(:popen).with([

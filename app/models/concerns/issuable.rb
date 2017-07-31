@@ -71,9 +71,8 @@ module Issuable
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
-    scope :opened, -> { with_state(:opened, :reopened) }
+    scope :opened, -> { with_state(:opened) }
     scope :only_opened, -> { with_state(:opened) }
-    scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
@@ -234,7 +233,7 @@ module Issuable
   end
 
   def open?
-    opened? || reopened?
+    opened?
   end
 
   def user_notes_count

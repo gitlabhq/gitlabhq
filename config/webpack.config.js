@@ -42,6 +42,7 @@ var config = {
     group:                './group.js',
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
     job_details:          './jobs/job_details_bundle.js',
@@ -67,7 +68,6 @@ var config = {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
-    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
@@ -186,7 +186,6 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
-        'users',
         'monitoring',
       ],
     }),

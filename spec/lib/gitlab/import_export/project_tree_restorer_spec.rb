@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
+describe Gitlab::ImportExport::ProjectTreeRestorer do
   describe 'restore project tree' do
     before(:context) do
       @user = create(:user)

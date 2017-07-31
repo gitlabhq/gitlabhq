@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Trigger, models: true do
+describe Ci::Trigger do
   let(:project) { create :empty_project }
 
   describe 'associations' do

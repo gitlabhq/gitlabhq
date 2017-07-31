@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffDiscussion, model: true do
+describe DiffDiscussion do
   include RepoHelpers
 
   subject { described_class.new([diff_note]) }

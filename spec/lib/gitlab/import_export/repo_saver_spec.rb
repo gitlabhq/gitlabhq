@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RepoSaver, services: true do
+describe Gitlab::ImportExport::RepoSaver do
   describe 'bundle a project Git repo' do
     let(:user) { create(:user) }
     let!(:project) { create(:empty_project, :public, name: 'searchable_project') }

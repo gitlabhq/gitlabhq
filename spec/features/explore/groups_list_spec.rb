@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Explore Groups page', :js, :feature do
+describe 'Explore Groups page', :js do
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }

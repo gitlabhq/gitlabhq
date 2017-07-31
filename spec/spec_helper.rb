@@ -59,6 +59,7 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
+  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
@@ -148,3 +149,10 @@ FactoryGirl::SyntaxRunner.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

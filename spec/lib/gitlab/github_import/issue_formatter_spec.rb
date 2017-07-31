@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::IssueFormatter, lib: true do
+describe Gitlab::GithubImport::IssueFormatter do
   let(:client) { double }
   let!(:project) { create(:empty_project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }

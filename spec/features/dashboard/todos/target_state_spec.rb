@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Dashboard > Todo target states' do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
 
   before do
     sign_in(user)

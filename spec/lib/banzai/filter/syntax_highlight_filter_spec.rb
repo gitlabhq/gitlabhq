@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SyntaxHighlightFilter, lib: true do
+describe Banzai::Filter::SyntaxHighlightFilter do
   include FilterSpecHelper
 
   context "when no language is specified" do

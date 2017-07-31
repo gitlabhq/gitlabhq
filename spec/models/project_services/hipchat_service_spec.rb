@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HipchatService, models: true do
+describe HipchatService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -25,7 +25,7 @@ describe HipchatService, models: true do
   end
 
   describe "Execute" do
-    let(:hipchat) { HipchatService.new }
+    let(:hipchat) { described_class.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:api_url) { 'https://hipchat.example.com/v2/room/123456/notification?auth_token=verySecret' }

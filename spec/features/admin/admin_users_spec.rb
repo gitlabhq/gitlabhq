@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Users", feature: true do
+describe "Admin::Users" do
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
@@ -257,7 +257,7 @@ describe "Admin::Users", feature: true do
 
   describe "GET /admin/users/:id/projects" do
     let(:group) { create(:group) }
-    let!(:project) { create(:project, group: group) }
+    let!(:project) { create(:empty_project, group: group) }
 
     before do
       group.add_developer(user)

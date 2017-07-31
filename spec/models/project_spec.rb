@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -77,7 +77,7 @@ describe Project, models: true do
 
     context 'after initialized' do
       it "has a project_feature" do
-        expect(Project.new.project_feature).to be_present
+        expect(described_class.new.project_feature).to be_present
       end
     end
 
@@ -438,7 +438,7 @@ describe Project, models: true do
   end
 
   it 'returns valid url to repo' do
-    project = Project.new(path: 'somewhere')
+    project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
@@ -533,15 +533,48 @@ describe Project, models: true do
     end
 
     context 'with external issues tracker' do
+      let!(:internal_issue) { create(:issue, project: project) }
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow(project).to receive(:external_issue_tracker).and_return(true)
       end
 
-      it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234', user)
-        expect(issue).to be_kind_of(ExternalIssue)
-        expect(issue.iid).to eq 'FOO-1234'
-        expect(issue.project).to eq project
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+      context 'when internal issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        it 'returns always an External issues' do
+          issue = project.get_issue(internal_issue.iid, user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq(internal_issue.iid.to_s)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
       end
     end
   end
@@ -884,7 +917,7 @@ describe Project, models: true do
   end
 
   describe '.with_shared_runners' do
-    subject { Project.with_shared_runners }
+    subject { described_class.with_shared_runners }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:empty_project, shared_runners_enabled: true) }
@@ -909,10 +942,10 @@ describe Project, models: true do
     let!(:project2) { create(:empty_project, :public, group: group) }
 
     it 'returns total project count' do
-      expect(Project).to receive(:count).once.and_call_original
+      expect(described_class).to receive(:count).once.and_call_original
 
       3.times do
-        expect(Project.cached_count).to eq(2)
+        expect(described_class.cached_count).to eq(2)
       end
     end
   end
@@ -957,7 +990,7 @@ describe Project, models: true do
       user1.toggle_star(project1)
       user2.toggle_star(project2)
 
-      expect(Project.starred_by(user1)).to contain_exactly(project1)
+      expect(described_class.starred_by(user1)).to contain_exactly(project1)
     end
   end
 
@@ -1979,7 +2012,7 @@ describe Project, models: true do
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do
-      expect(Project.inside_path(path)).to eq([project1])
+      expect(described_class.inside_path(path)).to eq([project1])
     end
   end
 
@@ -2183,7 +2216,7 @@ describe Project, models: true do
 
     context 'with a user' do
       let(:projects) do
-        Project.all.public_or_visible_to_user(user)
+        described_class.all.public_or_visible_to_user(user)
       end
 
       it 'includes projects the user has access to' do
@@ -2197,7 +2230,7 @@ describe Project, models: true do
 
     context 'without a user' do
       it 'only includes public projects' do
-        projects = Project.all.public_or_visible_to_user
+        projects = described_class.all.public_or_visible_to_user
 
         expect(projects).to eq([public_project])
       end

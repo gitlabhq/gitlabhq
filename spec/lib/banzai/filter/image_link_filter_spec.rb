@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::ImageLinkFilter, lib: true do
+describe Banzai::Filter::ImageLinkFilter do
   include FilterSpecHelper
 
   def image(path)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitRange, models: true do
+describe CommitRange do
   describe 'modules' do
     subject { described_class }
 

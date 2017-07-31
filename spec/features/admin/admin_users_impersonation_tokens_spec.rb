@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Admin > Users > Impersonation Tokens', feature: true, js: true do
+describe 'Admin > Users > Impersonation Tokens', js: true do
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 

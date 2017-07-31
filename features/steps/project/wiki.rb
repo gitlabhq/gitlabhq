@@ -63,7 +63,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'That page has two revisions' do
-    @page.update("new content", :markdown, "second commit")
+    @page.update("new content", message: "second commit")
   end
 
   step 'I click the History button' do
@@ -114,7 +114,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'Image should be shown on the page' do
-    expect(page).to have_xpath("//img[@src=\"image.jpg\"]")
+    expect(page).to have_xpath("//img[@data-src=\"image.jpg\"]")
   end
 
   step 'I click on image link' do

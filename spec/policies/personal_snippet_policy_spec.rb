@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PersonalSnippetPolicy, models: true do
+describe PersonalSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
   let(:admin_user) { create(:user, :admin) }

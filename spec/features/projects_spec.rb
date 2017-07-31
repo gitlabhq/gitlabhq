@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project', feature: true do
+feature 'Project' do
   describe 'description' do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }

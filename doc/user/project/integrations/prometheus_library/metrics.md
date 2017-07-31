@@ -4,6 +4,7 @@
 GitLab offers automatic detection of select [Prometheus exporters](https://prometheus.io/docs/instrumenting/exporters/). Currently supported exporters are:
 * [Kubernetes](kubernetes.md)
 * [NGINX](nginx.md)
+* [HAProxy](haproxy.md)
 * [Amazon Cloud Watch](cloudwatch.md)
 
 We have tried to surface the most important metrics for each exporter, and will be continuing to add support for additional exporters in future releases. If you would like to add support for other official exporters, [contributions](#adding-to-the-library) are welcome.

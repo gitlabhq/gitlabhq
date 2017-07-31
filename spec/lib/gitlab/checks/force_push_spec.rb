@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Checks::ForcePush, lib: true do
+describe Gitlab::Checks::ForcePush do
   let(:project) { create(:project, :repository) }
 
   context "exit code checking" do

@@ -5,6 +5,7 @@ module Issues
     def execute(issue)
       handle_move_between_iids(issue)
       filter_spam_check_params
+      change_issue_duplicate(issue)
       update(issue)
     end
 
@@ -53,14 +54,6 @@ module Issues
       end
     end
 
-    def reopen_service
-      Issues::ReopenService
-    end
-
-    def close_service
-      Issues::CloseService
-    end
-
     def handle_move_between_iids(issue)
       return unless params[:move_between_iids]
 
@@ -70,6 +63,15 @@ module Issues
       issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid
 
       issue.move_between(issue_before, issue_after)
+    end
+
+    def change_issue_duplicate(issue)
+      canonical_issue_id = params.delete(:canonical_issue_id)
+      canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
+
+      if canonical_issue
+        Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
+      end
     end
 
     private
