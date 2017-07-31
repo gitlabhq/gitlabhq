@@ -61,16 +61,6 @@ class MergeRequest < ActiveRecord::Base
       transition locked: :opened
     end
 
-    after_transition any => :locked do |merge_request, transition|
-      merge_request.locked_at = Time.now
-      merge_request.save
-    end
-
-    after_transition locked: (any - :locked) do |merge_request, transition|
-      merge_request.locked_at = nil
-      merge_request.save
-    end
-
     state :opened
     state :closed
     state :merged
@@ -390,6 +380,12 @@ class MergeRequest < ActiveRecord::Base
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
+  end
+
+  def merge_ongoing?
+    return false unless merge_jid
+
+    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
   end
 
   def closed_without_fork?
@@ -723,12 +719,6 @@ class MergeRequest < ActiveRecord::Base
     else
       source_project.repository.branch_names
     end
-  end
-
-  def locked_long_ago?
-    return false unless locked?
-
-    locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 
   def has_ci?

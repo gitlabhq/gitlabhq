@@ -20,7 +20,6 @@ export default {
   "human_time_estimate": null,
   "human_total_time_spent": null,
   "in_progress_merge_commit_sha": null,
-  "locked_at": null,
   "merge_commit_sha": "53027d060246c8f47e4a9310fb332aa52f221775",
   "merge_error": null,
   "merge_params": {
