@@ -65,4 +65,20 @@ module BoardsHelper
       group_path: @group&.try(:path) # Same here
     }
   end
+
+  def board_sidebar_user_data
+    dropdown_options = issue_assignees_dropdown_options
+
+    {
+      toggle: 'dropdown',
+      field_name: 'issue[assignee_ids][]',
+      first_user: current_user&.username,
+      current_user: 'true',
+      project_id: @project&.try(:id),
+      null_user: 'true',
+      multi_select: 'true',
+      'dropdown-header': dropdown_options[:data][:'dropdown-header'],
+      'max-select': dropdown_options[:data][:'max-select']
+    }
+  end
 end

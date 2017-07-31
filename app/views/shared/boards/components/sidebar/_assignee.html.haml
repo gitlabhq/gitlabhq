@@ -2,13 +2,13 @@
   %template{ "v-if" => "issue.assignees" }
     %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
       ":loading" => "loadingAssignees",
-      ":editable" => can?(current_user, :admin_issue, @project) }
+      ":editable" => "issue.canEdit" }
     %assignees.value{ "root-path" => "#{root_url}",
       ":users" => "issue.assignees",
-      ":editable" => can?(current_user, :admin_issue, @project),
+      ":editable" => "issue.canEdit",
       "@assign-self" => "assignSelf" }
 
-  - if can?(current_user, :admin_issue, @project)
+  %template{ "v-if" => "issue.canEdit" }
     .selectbox.hide-collapsed
       %input.js-vue{ type: "hidden",
         name: "issue[assignee_ids][]",
@@ -20,9 +20,9 @@
         ":data-username" => "assignee.username" }
       .dropdown
         - dropdown_options = issue_assignees_dropdown_options
-        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: { toggle: 'dropdown', field_name: 'issue[assignee_ids][]', first_user: current_user&.username, current_user: 'true', project_id: @project.id, null_user: 'true', multi_select: 'true', 'dropdown-header': dropdown_options[:data][:'dropdown-header'], 'max-select': dropdown_options[:data][:'max-select'] },
+        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: board_sidebar_user_data,
           ":data-issuable-id" => "issue.id",
-          ":data-issue-update" => "'#{project_issues_path(@project)}/' + issue.id + '.json'" }
+          ":data-issue-update" => "'#{@issues_path}/' + issue.id + '.json'" }
           = dropdown_options[:title]
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author

@@ -18,6 +18,9 @@ class ListIssue {
     this.selected = false;
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
+    this.updateUrl = obj.update_url;
+    this.canEdit = obj.can_edit;
+    this.projectId = obj.project_id;
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -88,7 +91,7 @@ class ListIssue {
       data.issue.label_ids = [''];
     }
 
-    return Vue.http.patch(url, data);
+    return Vue.http.patch(this.updateUrl, data);
   }
 }
 

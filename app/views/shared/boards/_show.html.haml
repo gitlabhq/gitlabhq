@@ -5,7 +5,7 @@
 
 - if show_new_nav?
   - content_for :sub_title_before do
-    %li= link_to "Issues", project_issues_path(@project)
+    %li= link_to "Issues", @issues_path
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'

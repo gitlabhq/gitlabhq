@@ -10,6 +10,7 @@ import eventHub from '../../sidebar/event_hub';
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
 import './sidebar/remove_issue';
+import UsersSelect from '../../users_select';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -58,6 +59,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
         this.list = this.detail.list;
 
         this.$nextTick(() => {
+          new UsersSelect();
           this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
         });
       },
