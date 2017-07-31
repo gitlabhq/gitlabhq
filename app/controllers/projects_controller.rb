@@ -7,6 +7,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -389,5 +390,9 @@ class ProjectsController < Projects::ApplicationController
     params[:id] = project.to_param
 
     url_for(params)
+  end
+
+  def project_export_enabled
+    render_404 unless current_application_settings.project_export_enabled?
   end
 end
