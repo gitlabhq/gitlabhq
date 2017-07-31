@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Build, models: true do
+describe Ci::Build do
   let(:project) { create(:project) }
 
   let(:pipeline) do

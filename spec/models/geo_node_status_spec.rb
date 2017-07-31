@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoNodeStatus, model: true do
+describe GeoNodeStatus do
   subject { described_class.new }
 
   describe '#healthy?' do

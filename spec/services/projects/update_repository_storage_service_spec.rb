@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateRepositoryStorageService, services: true do
+describe Projects::UpdateRepositoryStorageService do
   subject { described_class.new(project) }
 
   describe "#execute" do
@@ -26,7 +26,7 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       FileUtils.rm_rf('tmp/tests/storage_b')
     end
 
-    context 'without wiki' do
+    context 'without wiki', skip_gitaly_mock: true do
       let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
 
       context 'when the move succeeds' do
@@ -62,7 +62,7 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       end
     end
 
-    context 'with wiki' do
+    context 'with wiki', skip_gitaly_mock: true do
       let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
 
       before do

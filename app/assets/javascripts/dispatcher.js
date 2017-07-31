@@ -8,6 +8,7 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -21,6 +22,7 @@
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
+/* global PathLocks */
 /* global ProjectNew */
 /* global ProjectShow */
 /* global Labels */
@@ -65,6 +67,9 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import initNotes from './init_notes';
+import initLegacyFilters from './init_legacy_filters';
+import initIssuableSidebar from './init_issuable_sidebar';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -163,6 +168,8 @@ import AuditLogs from './audit_logs';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
@@ -173,10 +180,12 @@ import AuditLogs from './audit_logs';
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
         case 'groups:issues':
         case 'groups:merge_requests':
-          new UsersSelect();
           new ProjectSelect();
+          initLegacyFilters();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -243,7 +252,10 @@ import AuditLogs from './audit_logs';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'));
+          break;
+        case 'projects:snippets:show':
+          initNotes();
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
@@ -265,14 +277,11 @@ import AuditLogs from './audit_logs';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
           break;
         case 'dashboard:activity':
           new gl.Activities();
-          break;
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
-          new ProjectSelect();
-          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -282,6 +291,7 @@ import AuditLogs from './audit_logs';
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          initNotes();
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
@@ -307,6 +317,9 @@ import AuditLogs from './audit_logs';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -361,6 +374,17 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
+
+          if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
+            PathLocks.init(
+              document.querySelector('.js-tree-content').dataset.pathLocksToggle,
+              document.querySelector('.js-tree-content').dataset.pathLocksPath,
+            );
+          }
+
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
@@ -378,10 +402,20 @@ import AuditLogs from './audit_logs';
         case 'projects:labels:edit':
           new Labels();
           break;
+        case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
+          $('.label-subscription').each((i, el) => {
+            const $el = $(el);
+
+            if ($el.find('.dropdown-group-label').length) {
+              new gl.GroupLabelSubscription($el);
+            } else {
+              new gl.ProjectLabelSubscription($el);
+            }
+          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -437,9 +471,14 @@ import AuditLogs from './audit_logs';
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          initNotes();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
+          break;
+        case 'profiles:personal_access_tokens:index':
+        case 'admin:impersonation_tokens:index':
+          new gl.DueDateSelectors();
           break;
       }
       switch (path.first()) {
@@ -518,6 +557,7 @@ import AuditLogs from './audit_logs';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
+              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::ReadonlyGeo, lib: true do
+describe Gitlab::Middleware::ReadonlyGeo do
   include Rack::Test::Methods
 
   RSpec::Matchers.define :be_a_redirect do

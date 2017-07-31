@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Merge requests filter clear button', feature: true, js: true do
+feature 'Merge requests filter clear button', js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
   include IssueHelpers
 
-  let!(:project) { create(:project, :public) }
+  let!(:project) { create(:project, :public, :repository) }
   let!(:user) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:bug) { create(:label, project: project, name: 'bug')}

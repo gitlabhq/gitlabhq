@@ -610,7 +610,7 @@ describe 'project routing' do
     end
   end
 
-  describe Projects::Registry::TagsController, :routing do
+  describe Projects::Registry::TagsController, 'routing' do
     describe '#destroy' do
       it 'correctly routes to a destroy action' do
         expect(delete('/gitlab/gitlabhq/registry/repository/1/tags/rc1'))

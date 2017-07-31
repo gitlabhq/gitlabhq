@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Top Plus Menu', feature: true, js: true do
+feature 'Top Plus Menu', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
-  let(:public_project) { create(:project, :public) }
+  let(:public_project) { create(:empty_project, :public) }
 
   before do
     group.add_owner(user)

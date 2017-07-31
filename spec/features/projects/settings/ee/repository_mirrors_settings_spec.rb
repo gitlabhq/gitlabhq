@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project settings > [EE] repository', feature: true do
+describe 'Project settings > [EE] repository' do
   include Select2Helper
 
   let(:user) { create(:user) }

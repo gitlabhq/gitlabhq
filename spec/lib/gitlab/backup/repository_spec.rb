@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Backup::Repository, lib: true do
+describe Backup::Repository do
   let(:progress) { StringIO.new }
   let!(:project) { create(:empty_project) }
 

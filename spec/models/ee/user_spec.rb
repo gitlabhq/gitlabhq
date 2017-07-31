@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::User, models: true do
+describe EE::User do
   describe '#access_level=' do
     let(:user) { build(:user) }
 

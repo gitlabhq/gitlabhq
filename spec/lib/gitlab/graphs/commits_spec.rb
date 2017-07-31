@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Graphs::Commits, lib: true do
+describe Gitlab::Graphs::Commits do
   let!(:project) { create(:empty_project, :public) }
 
   let!(:commit1) { create(:commit, git_commit: RepoHelpers.sample_commit, project: project, committed_date: Time.now) }

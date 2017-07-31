@@ -4,7 +4,7 @@ class PathLock < ActiveRecord::Base
 
   validates :project, presence: true
   validates :user, presence: true
-  validates :path, presence: true, uniqueness: { scope: :project }
+  validates :path, presence: true, uniqueness: { scope: :project_id }
   validate :path_unique_validation
 
   def downstream?(path)

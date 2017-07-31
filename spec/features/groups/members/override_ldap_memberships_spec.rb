@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Master/Owner can override LDAP access levels', feature: true do
+feature 'Groups > Members > Master/Owner can override LDAP access levels' do
   include WaitForRequests
 
   let(:johndoe)  { create(:user, name: 'John Doe') }
@@ -24,6 +24,18 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels', featu
     visit namespace_project_project_members_path(group, project)
 
     expect(page).not_to have_button 'Edit permissions'
+  end
+
+  scenario 'owner cannot override LDAP access level', js: true do
+    stub_application_setting(allow_group_owners_to_manage_ldap: false)
+
+    visit group_group_members_path(group)
+
+    within "#group_member_#{ldap_member.id}" do
+      expect(page).not_to have_content 'LDAP'
+      expect(page).not_to have_button 'Guest'
+      expect(page).not_to have_button 'Edit permissions'
+    end
   end
 
   scenario 'owner can override LDAP access level', js: true do

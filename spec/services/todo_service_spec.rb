@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe TodoService, services: true do
+describe TodoService do
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
   let(:non_member) { create(:user) }
@@ -903,21 +903,21 @@ describe TodoService, services: true do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
       todos = TodosFinder.new(john_doe, {}).execute
-      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }
+      expect { described_class.new.mark_todos_as_done(todos, john_doe) }
        .to change { john_doe.todos.done.count }.from(0).to(1)
     end
 
     it 'marks an array of todos as done' do
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }
+      expect { described_class.new.mark_todos_as_done([todo], john_doe) }
         .to change { todo.reload.state }.from('pending').to('done')
     end
 
     it 'returns the ids of updated todos' do # Needed on API
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
 
-      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq([todo.id])
+      expect(described_class.new.mark_todos_as_done([todo], john_doe)).to eq([todo.id])
     end
 
     context 'when some of the todos are done already' do
@@ -925,23 +925,23 @@ describe TodoService, services: true do
       let!(:second_todo) { create(:todo, :mentioned, user: john_doe, target: another_issue, project: project) }
 
       it 'returns the ids of those still pending' do
-        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([second_todo.id])
+        expect(described_class.new.mark_todos_as_done(Todo.all, john_doe)).to eq([second_todo.id])
       end
 
       it 'returns an empty array if all are done' do
-        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
-        TodoService.new.mark_pending_todos_as_done(another_issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(issue, john_doe)
+        described_class.new.mark_pending_todos_as_done(another_issue, john_doe)
 
-        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
+        expect(described_class.new.mark_todos_as_done(Todo.all, john_doe)).to eq([])
       end
     end
 
     it 'caches the number of todos of a user', :use_clean_rails_memory_store_caching do
       create(:todo, :mentioned, user: john_doe, target: issue, project: project)
       todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
-      TodoService.new.mark_todos_as_done([todo], john_doe)
+      described_class.new.mark_todos_as_done([todo], john_doe)
 
       expect_any_instance_of(TodosFinder).not_to receive(:execute)
 

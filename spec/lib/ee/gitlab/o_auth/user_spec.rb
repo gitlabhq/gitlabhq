@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::User, lib: true do
+describe Gitlab::OAuth::User do
   include LdapHelpers
 
   describe 'login through kerberos with linkable LDAP user' do
@@ -10,7 +10,7 @@ describe Gitlab::OAuth::User, lib: true do
     let(:base_dn)    { 'ou=users,dc=ad,dc=example,dc=com' }
     let(:info_hash)  { { email: uid + '@' + realm, username: uid } }
     let(:auth_hash)  { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
-    let(:oauth_user) { Gitlab::OAuth::User.new(auth_hash) }
+    let(:oauth_user) { described_class.new(auth_hash) }
     let(:real_email) { 'myname@example.com' }
 
     before do

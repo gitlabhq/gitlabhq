@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::BuildService, services: true do # rubocop:disable RSpec/FilePath
+describe MergeRequests::BuildService do # rubocop:disable RSpec/FilePath
   let(:source_project) { project }
   let(:target_project) { project }
   let(:user) { create(:user) }
@@ -14,7 +14,7 @@ describe MergeRequests::BuildService, services: true do # rubocop:disable RSpec/
   let(:commits) { nil }
 
   let(:service) do
-    MergeRequests::BuildService.new(project, user,
+    described_class.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
                                     target_branch: target_branch,

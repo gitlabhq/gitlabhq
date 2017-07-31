@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Auth, lib: true do
+describe Gitlab::Auth do
   let(:gl_auth) { described_class }
 
   describe 'constants' do

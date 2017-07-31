@@ -37,14 +37,3 @@
   .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
     - if has_labels
       = render 'shared/labels_row', labels: @labels
-
-:javascript
-  new LabelsSelect();
-  new MilestoneSelect();
-  new IssueStatusSelect();
-  new WeightSelect();
-  new SubscriptionSelect();
-  $('form.filter-form').on('submit', function (event) {
-    event.preventDefault();
-    gl.utils.visitUrl(this.action + '&' + $(this).serialize());
-  });

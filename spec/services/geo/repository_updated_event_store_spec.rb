@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::RepositoryUpdatedEventStore, services: true do
+describe Geo::RepositoryUpdatedEventStore do
   let(:project)  { create(:project) }
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:refs)     { ['refs/heads/tést', 'refs/tags/tag'] }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IssueLinks::DestroyService, service: true do
+describe IssueLinks::DestroyService do
   describe '#execute' do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }

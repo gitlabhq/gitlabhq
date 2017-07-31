@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', js: true do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::GoogleCodeImport::Importer, lib: true do
+describe Gitlab::GoogleCodeImport::Importer do
   let(:mapped_user) { create(:user, username: "thilo123") }
   let(:raw_data) { JSON.parse(fixture_file("GoogleCodeProjectHosting.json")) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }

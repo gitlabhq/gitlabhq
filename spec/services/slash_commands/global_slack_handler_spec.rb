@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlashCommands::GlobalSlackHandler, service: true do
+describe SlashCommands::GlobalSlackHandler do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:verification_token) { '123' }

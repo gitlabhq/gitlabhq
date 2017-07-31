@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Issue Sidebar', feature: true do
+feature 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }
-  let(:project) { create(:project, :public, namespace: group) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }

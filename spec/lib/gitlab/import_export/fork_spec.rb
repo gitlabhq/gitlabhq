@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'forked project import', services: true do
+describe 'forked project import' do
   let(:user) { create(:user) }
   let!(:project_with_repo) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
   let!(:project) { create(:empty_project, name: 'test-repo-restorer-no-repo', path: 'test-repo-restorer-no-repo') }

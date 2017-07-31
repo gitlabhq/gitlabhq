@@ -48,6 +48,17 @@
         = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
         %span.help-block#clone-protocol-help
           Allow only the selected protocols to be used for Git access.
+    - if ldap_enabled?
+      .form-group
+        = f.label :allow_group_owners_to_manage_ldap, 'LDAP settings', class: 'control-label col-sm-2'
+        .col-sm-10
+          .checkbox
+            = f.label :allow_group_owners_to_manage_ldap do
+              = f.check_box :allow_group_owners_to_manage_ldap
+              Allow group owners to manage LDAP-related settings
+          %span.help-block
+            If checked, group owners can manage LDAP group links and LDAP member overrides
+            = link_to icon('question-circle'), help_page_path('administration/auth/ldap-ee')
 
   %fieldset
     %legend Account and Limit Settings

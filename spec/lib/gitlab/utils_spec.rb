@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Utils, lib: true do
+describe Gitlab::Utils do
   delegate :to_boolean, :boolean_to_yes_no, to: :described_class
 
   # EE

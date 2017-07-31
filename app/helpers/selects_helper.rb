@@ -25,7 +25,7 @@ module SelectsHelper
 
   def ldap_server_select_options
     options_from_collection_for_select(
-      Gitlab::LDAP::Config.servers,
+      Gitlab::LDAP::Config.available_servers,
       'provider_name',
       'label'
     )

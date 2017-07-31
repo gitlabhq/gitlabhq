@@ -1,5 +1,14 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.4.2 (2017-07-28)
+
+- Adds lower bound to pull mirror scheduling feature. !2366
+- Add warning and option toggle when rebuilding authorized_keys. !2508
+- Fix CSS for mini graph with downstream pipeline.
+- Renamed board to boards in new project sidebar.
+- Fix Rebasing not working with Merge Requests.
+- Fixed issue boards focus mode when new navigation is turned on.
+
 ## 9.4.1 (2017-07-25)
 
 - Cleans up mirror capacity in project destroy service if project is a scheduled mirror. !2445

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Elastic::SearchResults, lib: true do
+describe Gitlab::Elastic::SearchResults do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
@@ -358,7 +358,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::SearchResults.new(user, 'term', [project.id])
+      result = described_class.new(user, 'term', [project.id])
 
       expect(result.issues_count).to eq(2)
       expect(result.merge_requests_count).to eq(2)

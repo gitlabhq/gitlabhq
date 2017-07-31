@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Manually create a todo item from issue', feature: true, js: true do
-  let!(:project)   { create(:project) }
-  let!(:issue)     { create(:issue, project: project) }
-  let!(:user)      { create(:user)}
+feature 'Manually create a todo item from issue', js: true do
+  let!(:project) { create(:empty_project) }
+  let!(:issue)   { create(:issue, project: project) }
+  let!(:user)    { create(:user)}
 
   before do
     project.team << [user, :master]

@@ -3,42 +3,56 @@ FactoryGirl.define do
     name
     project
 
-    after(:build) do |protected_tag|
-      protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
-    end
-
     transient do
+      # EE
       authorize_user_to_create nil
       authorize_group_to_create nil
-    end
 
-    trait :remove_default_access_levels do
-      after(:build) do |protected_tag|
-        protected_tag.create_access_levels = []
-      end
+      default_access_level true
     end
 
     trait :developers_can_create do
-      after(:create) do |protected_tag|
-        protected_tag.create_access_levels.create!(access_level: Gitlab::Access::DEVELOPER)
+      transient do
+        default_access_level false
+      end
+
+      after(:build) do |protected_tag|
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
     trait :no_one_can_create do
-      after(:create) do |protected_tag|
-        protected_tag.create_access_levels.create!(access_level: Gitlab::Access::NO_ACCESS)
+      transient do
+        default_access_level false
+      end
+
+      after(:build) do |protected_tag|
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::NO_ACCESS)
       end
     end
 
     trait :masters_can_create do
-      after(:create) do |protected_tag|
-        protected_tag.create_access_levels.create!(access_level: Gitlab::Access::MASTER)
+      transient do
+        default_access_level false
+      end
+
+      after(:build) do |protected_tag|
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
       end
     end
 
-    after(:create) do |protected_tag, evaluator|
-      protected_tag.create_access_levels.create!(user: evaluator.authorize_user_to_create) if evaluator.authorize_user_to_create
-      protected_tag.create_access_levels.create!(group: evaluator.authorize_group_to_create) if evaluator.authorize_group_to_create
+    after(:build) do |protected_tag, evaluator|
+      # EE
+      if evaluator.authorize_user_to_create
+        protected_tag.create_access_levels.new(user: evaluator.authorize_user_to_create)
+      end
+      if evaluator.authorize_group_to_create
+        protected_tag.create_access_levels.new(group: evaluator.authorize_group_to_create)
+      end
+
+      if evaluator.default_access_level
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
+      end
     end
   end
 end

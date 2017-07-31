@@ -82,7 +82,7 @@ module MergeRequests
 
     # Note: Closed merge requests also need approvals reset.
     def reset_approvals_for_merge_requests
-      merge_requests = merge_requests_for(@branch_name, mr_states: [:opened, :reopened, :closed])
+      merge_requests = merge_requests_for(@branch_name, mr_states: [:opened, :closed])
 
       merge_requests.each do |merge_request|
         target_project = merge_request.target_project

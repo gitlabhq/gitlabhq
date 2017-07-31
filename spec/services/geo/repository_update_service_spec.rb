@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::RepositoryUpdateService, services: true do
+describe Geo::RepositoryUpdateService do
   let(:project) { create(:empty_project) }
   let(:clone_url) { project.ssh_url_to_repo }
 

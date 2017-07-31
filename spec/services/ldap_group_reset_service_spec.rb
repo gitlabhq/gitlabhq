@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe LdapGroupResetService, services: true do
+describe LdapGroupResetService do
   # TODO: refactor to multi-ldap setup
   let(:group) { create(:group) }
   let(:user) { create(:user) }
@@ -17,7 +17,7 @@ describe LdapGroupResetService, services: true do
   describe '#execute' do
     context 'initiated by ldap user' do
       before do
-        LdapGroupResetService.new.execute(group, ldap_user)
+        described_class.new.execute(group, ldap_user)
       end
 
       it { expect(member_access(ldap_user)).to eq Gitlab::Access::OWNER }
@@ -29,7 +29,7 @@ describe LdapGroupResetService, services: true do
 
     context 'initiated by regular user' do
       before do
-        LdapGroupResetService.new.execute(group, user)
+        described_class.new.execute(group, user)
       end
 
       it { expect(member_access(ldap_user)).to eq Gitlab::Access::GUEST }

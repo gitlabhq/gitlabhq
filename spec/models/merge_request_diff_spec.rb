@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestDiff, models: true do
+describe MergeRequestDiff do
   describe 'create new record' do
     subject { create(:merge_request).merge_request_diff }
 
@@ -98,7 +98,7 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive_message_chain(:compare, :commits)
+      allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
         .and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff

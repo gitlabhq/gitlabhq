@@ -2,6 +2,7 @@
 /* global Flash */
 
 import Vue from 'vue';
+import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import './merge_conflict_service';
 import './mixins/line_conflict_utils';
@@ -18,6 +19,8 @@ $(() => {
     conflictsPath: conflictsEl.dataset.conflictsPath,
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
   });
+
+  initIssuableSidebar();
 
   gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',

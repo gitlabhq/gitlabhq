@@ -22,6 +22,7 @@ describe API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
+      trigger.update(owner: user)
     end
 
     context 'Handles errors' do
@@ -81,7 +82,7 @@ describe API::Triggers do
           post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_http_status(201)
-          expect(pipeline.builds.reload.first.trigger_request.variables).to eq(variables)
+          expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
         end
       end
     end
@@ -92,7 +93,7 @@ describe API::Triggers do
 
         expect(response).to have_http_status(404)
       end
-  
+
       it 'creates builds from the ref given in the URL, not in the body' do
         expect do
           post api("/projects/#{project.id}/ref/master/trigger/pipeline?token=#{trigger_token}"), { ref: 'refs/heads/other-branch' }
@@ -113,7 +114,7 @@ describe API::Triggers do
         end
       end
     end
-  
+
     context 'when triggering a pipeline from a job token' do
       let(:other_job) { create(:ci_build, :running, user: other_user) }
       let(:params) { { ref: 'refs/heads/other-branch' } }
@@ -127,7 +128,7 @@ describe API::Triggers do
 
         it 'does not leak the presence of project when using valid token' do
           subject
-          
+
           expect(response).to have_http_status(404)
         end
       end

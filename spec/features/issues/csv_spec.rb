@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issues csv', feature: true do
+describe 'Issues csv' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }

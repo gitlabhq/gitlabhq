@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Editing file blob', feature: true, js: true do
+feature 'Editing file blob', js: true do
   include TreeHelper
 
   let(:project) { create(:project, :public, :test_repo) }

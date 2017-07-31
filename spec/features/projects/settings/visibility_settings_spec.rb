@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Visibility settings', feature: true, js: true do
+feature 'Visibility settings', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
+  let(:project) { create(:empty_project, namespace: user.namespace, visibility_level: 20) }
 
   context 'as owner' do
     before do

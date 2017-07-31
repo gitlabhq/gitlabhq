@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::ScheduleRepoCreateService, services: true do
+describe Geo::ScheduleRepoCreateService do
   let(:project) { create(:project) }
   subject { described_class.new(project_id: project.id) }
 

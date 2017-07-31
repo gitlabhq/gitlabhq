@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe RegisterJobService, services: true do
+  describe RegisterJobService do
     let!(:project) { FactoryGirl.create :empty_project, shared_runners_enabled: false }
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
     let!(:pending_build) { FactoryGirl.create :ci_build, pipeline: pipeline }

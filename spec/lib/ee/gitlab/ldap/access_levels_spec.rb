@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::LDAP::AccessLevels, lib: true do
+describe EE::Gitlab::LDAP::AccessLevels do
   describe '#set' do
     let(:access_levels) { described_class.new }
     let(:dns) do

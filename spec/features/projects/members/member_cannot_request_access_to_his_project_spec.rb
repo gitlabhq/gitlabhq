@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Member cannot request access to his project', feature: true do
+feature 'Projects > Members > Member cannot request access to his project' do
   let(:member) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   background do
     project.team << [member, :developer]

@@ -1,17 +1,17 @@
 require "spec_helper"
 
-describe WikiPage, models: true do
+describe WikiPage do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
-  subject { WikiPage.new(wiki) }
+  subject { described_class.new(wiki) }
 
   describe '.group_by_directory' do
     context 'when there are no pages' do
       it 'returns an empty array' do
-        expect(WikiPage.group_by_directory(nil)).to eq([])
-        expect(WikiPage.group_by_directory([])).to eq([])
+        expect(described_class.group_by_directory(nil)).to eq([])
+        expect(described_class.group_by_directory([])).to eq([])
       end
     end
 
@@ -39,7 +39,7 @@ describe WikiPage, models: true do
       it 'returns an array with pages and directories' do
         expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
 
-        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = described_class.group_by_directory(wiki.pages)
 
         grouped_entries.each_with_index do |page_or_dir, i|
           expected_page_or_dir = expected_grouped_entries[i]
@@ -56,7 +56,7 @@ describe WikiPage, models: true do
         expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
                           'dir_2/page_4', 'dir_2/page_5']
 
-        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = described_class.group_by_directory(wiki.pages)
 
         actual_order =
           grouped_entries.map do |page_or_dir|
@@ -72,7 +72,7 @@ describe WikiPage, models: true do
     it 'removes hyphens from a name' do
       name = 'a-name--with-hyphens'
 
-      expect(WikiPage.unhyphenize(name)).to eq('a name with hyphens')
+      expect(described_class.unhyphenize(name)).to eq('a name with hyphens')
     end
   end
 
@@ -81,7 +81,7 @@ describe WikiPage, models: true do
       before do
         create_page("test page", "test content")
         @page = wiki.wiki.paged("test page")
-        @wiki_page = WikiPage.new(wiki, @page, true)
+        @wiki_page = described_class.new(wiki, @page, true)
       end
 
       it "sets the slug attribute" do

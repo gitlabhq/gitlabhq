@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Boards::Issues::ListService, services: true do
+describe Boards::Issues::ListService do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:project) { create(:empty_project) }
@@ -23,7 +23,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project, title: 'Issue 3' ) }
+    let!(:reopened_issue1) { create(:issue, :opened, project: project, title: 'Issue 3' ) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }

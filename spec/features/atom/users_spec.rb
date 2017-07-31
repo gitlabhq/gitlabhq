@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "User Feed", feature: true  do
+describe "User Feed"  do
   describe "GET /" do
     let!(:user) { create(:user) }
 
@@ -19,7 +19,7 @@ describe "User Feed", feature: true  do
     end
 
     context 'feed content' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:issue) do
         create(:issue,
                project: project,

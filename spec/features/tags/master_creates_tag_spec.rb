@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master creates tag', feature: true do
+feature 'Master creates tag' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 

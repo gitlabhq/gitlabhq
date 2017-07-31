@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe 'Git HTTP requests', lib: true do
+describe 'Git HTTP requests' do
   include GitHttpHelpers
   include WorkhorseHelpers
   include UserActivitiesHelpers

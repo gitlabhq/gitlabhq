@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request Discussions', feature: true do
+feature 'Merge Request Discussions' do
   before do
     sign_in(create(:admin))
   end

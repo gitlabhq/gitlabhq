@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::GitAccess, lib: true do
+describe Gitlab::GitAccess do
   let(:pull_access_check) { access.check('git-upload-pack', '_any') }
   let(:push_access_check) { access.check('git-receive-pack', '_any') }
-  let(:access) { Gitlab::GitAccess.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:actor) { user }
@@ -280,7 +280,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context 'when project is public' do
         let(:public_project) { create(:project, :public, :repository) }
-        let(:access) { Gitlab::GitAccess.new(nil, public_project, 'web', authentication_abilities: []) }
+        let(:access) { described_class.new(nil, public_project, 'web', authentication_abilities: []) }
 
         context 'when repository is enabled' do
           it 'give access to download code' do
@@ -453,7 +453,7 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           permissions_matrix[role].each do |action, allowed|
-            context action do
+            context action.to_s do
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do
@@ -480,7 +480,7 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           permissions_matrix[role].each do |action, allowed|
-            context action do
+            context action.to_s do
               subject { access.send(:check_push_access!, changes[action]) }
 
               it do
@@ -556,7 +556,7 @@ describe Gitlab::GitAccess, lib: true do
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before do
-          create(:protected_branch, :remove_default_access_levels, :masters_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :masters_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix)
@@ -564,7 +564,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
@@ -572,7 +572,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project)
+          create(:protected_branch, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project)
         end
 
         context "when a merge request exists for the given source/target branch" do
@@ -601,7 +601,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :remove_default_access_levels, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
@@ -612,7 +612,7 @@ describe Gitlab::GitAccess, lib: true do
           let(:user) { create(:user) }
 
           before do
-            create(:protected_branch, :remove_default_access_levels, authorize_user_to_push: user, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_user_to_push: user, name: protected_branch_name, project: project)
           end
 
           run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
@@ -625,7 +625,7 @@ describe Gitlab::GitAccess, lib: true do
 
           before do
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
-            create(:protected_branch, :remove_default_access_levels, authorize_user_to_merge: user, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_user_to_merge: user, name: protected_branch_name, project: project)
           end
 
           run_permission_checks(permissions_matrix.deep_merge(admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
@@ -640,7 +640,7 @@ describe Gitlab::GitAccess, lib: true do
 
           before do
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
-            create(:protected_branch, :remove_default_access_levels, authorize_user_to_push: user, authorize_user_to_merge: user, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_user_to_push: user, authorize_user_to_merge: user, name: protected_branch_name, project: project)
           end
 
           run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
@@ -656,7 +656,7 @@ describe Gitlab::GitAccess, lib: true do
 
           before do
             group.add_master(user)
-            create(:protected_branch, :remove_default_access_levels, authorize_group_to_push: group, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_group_to_push: group, name: protected_branch_name, project: project)
           end
 
           permissions = permissions_matrix.except(:admin).deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
@@ -673,7 +673,7 @@ describe Gitlab::GitAccess, lib: true do
           before do
             group.add_master(user)
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
-            create(:protected_branch, :remove_default_access_levels, authorize_group_to_merge: group, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_group_to_merge: group, name: protected_branch_name, project: project)
           end
 
           permissions = permissions_matrix.except(:admin).deep_merge(master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
@@ -691,7 +691,7 @@ describe Gitlab::GitAccess, lib: true do
           before do
             group.add_master(user)
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
-            create(:protected_branch, :remove_default_access_levels, authorize_group_to_push: group, authorize_group_to_merge: group, name: protected_branch_name, project: project)
+            create(:protected_branch, authorize_group_to_push: group, authorize_group_to_merge: group, name: protected_branch_name, project: project)
           end
 
           permissions = permissions_matrix.except(:admin).deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true },
@@ -704,7 +704,7 @@ describe Gitlab::GitAccess, lib: true do
 
       context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
         before do
-          create(:protected_branch, :remove_default_access_levels, :no_one_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },

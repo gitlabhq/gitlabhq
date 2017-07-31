@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RelationFactory, lib: true do
+describe Gitlab::ImportExport::RelationFactory do
   let(:project) { create(:empty_project) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:user) { create(:admin) }

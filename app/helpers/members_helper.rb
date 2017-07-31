@@ -1,7 +1,7 @@
 module MembersHelper
   # Returns a `<action>_<source>_member` association, e.g.:
   # - admin_project_member, update_project_member, destroy_project_member
-  # - admin_group_member, update_group_member, destroy_group_member
+  # - admin_group_member, update_group_member, destroy_group_member, override_group_member
   def action_member_permission(action, member)
     "#{action}_#{member.type.underscore}".to_sym
   end

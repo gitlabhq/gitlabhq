@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SnippetReferenceFilter, lib: true do
+describe Banzai::Filter::SnippetReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public) }

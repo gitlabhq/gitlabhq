@@ -1,12 +1,37 @@
 require 'spec_helper'
 
-feature 'Edit group settings', feature: true do
+feature 'Edit group settings' do
   given(:user)  { create(:user) }
   given(:group) { create(:group, path: 'foo') }
 
   background do
     group.add_owner(user)
     sign_in(user)
+  end
+
+  describe 'navbar' do
+    context 'with LDAP enabled' do
+      before do
+        allow_any_instance_of(Group).to receive(:ldap_synced?).and_return(true)
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+      end
+
+      scenario 'is able to navigate to LDAP group section' do
+        visit edit_group_path(group)
+
+        expect(find('div.sub-nav')).to have_content('LDAP Group')
+      end
+
+      context 'with owners not being able to manage LDAP' do
+        scenario 'is not able to navigate to LDAP group section' do
+          stub_application_setting(allow_group_owners_to_manage_ldap: false)
+
+          visit edit_group_path(group)
+
+          expect(find('div.sub-nav')).not_to have_content('LDAP Group')
+        end
+      end
+    end
   end
 
   describe 'when the group path is changed' do
@@ -49,7 +74,7 @@ feature 'Edit group settings', feature: true do
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, group: group, path: 'project') }
+      given!(:project) { create(:empty_project, group: group) }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
 
@@ -65,14 +90,14 @@ feature 'Edit group settings', feature: true do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
     end
   end

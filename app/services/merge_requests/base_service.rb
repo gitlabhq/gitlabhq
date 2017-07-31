@@ -2,8 +2,8 @@ module MergeRequests
   class BaseService < ::IssuableBaseService
     prepend EE::MergeRequests::BaseService
 
-    def create_note(merge_request)
-      SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
+    def create_note(merge_request, state = merge_request.state)
+      SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
     def create_title_change_note(issuable, old_title)
@@ -46,7 +46,7 @@ module MergeRequests
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
-    def merge_requests_for(source_branch, mr_states: [:opened, :reopened])
+    def merge_requests_for(source_branch, mr_states: [:opened])
       MergeRequest
         .with_state(mr_states)
         .where(source_branch: source_branch, source_project_id: @project.id)

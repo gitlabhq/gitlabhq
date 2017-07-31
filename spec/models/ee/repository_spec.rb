@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Repository, models: true do
+describe EE::Repository do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequest, models: true do
+describe MergeRequest do
   let(:project) { create(:project) }
 
   subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestPolicy, models: true do
+describe MergeRequestPolicy do
   let(:guest) { create(:user) }
   let(:developer) { create(:user) }
   let(:master) { create(:user) }

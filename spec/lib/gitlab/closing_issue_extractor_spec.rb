@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ClosingIssueExtractor, lib: true do
+describe Gitlab::ClosingIssueExtractor do
   let(:project) { create(:empty_project) }
   let(:project2) { create(:empty_project) }
   let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }

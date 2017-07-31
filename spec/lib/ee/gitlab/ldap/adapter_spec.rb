@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Adapter, lib: true do
+describe Gitlab::LDAP::Adapter do
   include LdapHelpers
 
   it 'includes the EE module' do
-    expect(Gitlab::LDAP::Adapter).to include_module(EE::Gitlab::LDAP::Adapter)
+    expect(described_class).to include_module(EE::Gitlab::LDAP::Adapter)
   end
 
   let(:adapter) { ldap_adapter('ldapmain') }

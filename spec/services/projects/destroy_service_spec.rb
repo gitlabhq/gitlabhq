@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::DestroyService, services: true do
+describe Projects::DestroyService do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:path) { project.repository.path_to_repo }
@@ -94,7 +94,7 @@ describe Projects::DestroyService, services: true do
     before do
       new_user = create(:user)
       project.team.add_user(new_user, Gitlab::Access::DEVELOPER)
-      allow_any_instance_of(Projects::DestroyService).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
+      allow_any_instance_of(described_class).to receive(:flush_caches).and_raise(::Redis::CannotConnectError)
     end
 
     it 'keeps project team intact upon an error' do
@@ -127,7 +127,7 @@ describe Projects::DestroyService, services: true do
     context 'errors' do
       context 'when `remove_legacy_registry_tags` fails' do
         before do
-          expect_any_instance_of(Projects::DestroyService)
+          expect_any_instance_of(described_class)
             .to receive(:remove_legacy_registry_tags).and_return(false)
         end
 
@@ -136,7 +136,7 @@ describe Projects::DestroyService, services: true do
 
       context 'when `remove_repository` fails' do
         before do
-          expect_any_instance_of(Projects::DestroyService)
+          expect_any_instance_of(described_class)
             .to receive(:remove_repository).and_return(false)
         end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupPolicy, models: true do
+describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }
@@ -25,12 +25,22 @@ describe GroupPolicy, models: true do
       let(:current_user) { owner }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_allowed(:admin_ldap_group_links) }
+
+      context 'does not allow group owners to manage ldap' do
+        before do
+          stub_application_setting(allow_group_owners_to_manage_ldap: false)
+        end
+
+        it { is_expected.to be_disallowed(:admin_ldap_group_links) }
+      end
     end
 
     context 'admin' do
       let(:current_user) { admin }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_allowed(:admin_ldap_group_links) }
     end
   end
 
@@ -43,42 +53,59 @@ describe GroupPolicy, models: true do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
     context 'guests' do
       let(:current_user) { guest }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
     context 'reporter' do
       let(:current_user) { reporter }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
     context 'developer' do
       let(:current_user) { developer }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
     context 'master' do
       let(:current_user) { master }
 
       it { is_expected.to be_disallowed(:override_group_member) }
+      it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
     context 'owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:override_group_member) }
+      context 'allow group owners to manage ldap' do
+        it { is_expected.to be_allowed(:override_group_member) }
+      end
+
+      context 'does not allow group owners to manage ldap' do
+        before do
+          stub_application_setting(allow_group_owners_to_manage_ldap: false)
+        end
+
+        it { is_expected.to be_disallowed(:override_group_member) }
+        it { is_expected.to be_disallowed(:admin_ldap_group_links) }
+      end
     end
 
     context 'admin' do
       let(:current_user) { admin }
 
       it { is_expected.to be_allowed(:override_group_member) }
+      it { is_expected.to be_allowed(:admin_ldap_group_links) }
     end
   end
 end

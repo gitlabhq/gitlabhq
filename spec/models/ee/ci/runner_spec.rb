@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Ci::Runner, models: true do
+describe EE::Ci::Runner do
   describe '#tick_runner_queue' do
     it 'sticks the runner to the primary and calls the original method' do
       runner = create(:ci_runner)
