@@ -90,7 +90,7 @@ header.navbar-gitlab-new {
 
     @media (max-width: $screen-xs-max) {
       margin-left: -$gl-padding;
-      margin-right: -10px;
+      padding-right: 28px;
     }
 
     .dropdown-bold-header {
@@ -128,7 +128,6 @@ header.navbar-gitlab-new {
     .navbar-nav {
       @media (max-width: $screen-xs-max) {
         display: flex;
-        padding-right: 10px;
       }
 
       li {
@@ -140,11 +139,6 @@ header.navbar-gitlab-new {
     }
 
     .nav > li {
-      &.header-user {
-        @media (max-width: $screen-xs-max) {
-          padding-left: 10px;
-        }
-      }
 
       > a {
         background: none;

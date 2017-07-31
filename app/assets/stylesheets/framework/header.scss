@@ -120,6 +120,7 @@ header {
         border-radius: 0;
         right: -10px;
         padding: 6px 10px;
+        position: absolute;
 
         &:hover {
           background-color: $white-normal;
@@ -185,7 +186,7 @@ header {
     justify-content: space-between;
     position: relative;
     min-height: $header-height;
-    padding-left: 30px;
+    padding-left: 25px;
 
     &.menu-expanded {
       @media (max-width: $screen-xs-max) {
@@ -352,22 +353,22 @@ header {
     font-size: 18px;
 
     .navbar-nav {
-      display: table;
-      table-layout: fixed;
-      width: 100%;
       margin: 0;
       text-align: right;
+      display: flex;
+      justify-content: space-between;
     }
 
     .navbar-collapse {
-      padding-left: 5px;
+      padding-right: 16px;
 
       .nav > li:not(.hidden-xs) {
-        display: table-cell !important;
-        width: 25%;
+        display: inline-block;
 
         a {
-          margin-right: 8px;
+          margin-right: 0;
+          margin-left: 0;
+          min-width: 0;
         }
       }
     }
