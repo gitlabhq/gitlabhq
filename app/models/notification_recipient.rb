@@ -1,11 +1,13 @@
 class NotificationRecipient
   attr_reader :user, :type
-  def initialize(user, type,
-                 custom_action: nil,
-                 target: nil,
-                 acting_user: nil,
-                 read_ability: nil,
-                 project: nil)
+  def initialize(
+    user, type,
+    custom_action: nil,
+    target: nil,
+    acting_user: nil,
+    read_ability: nil,
+    project: nil
+  )
     @custom_action = custom_action
     @acting_user = acting_user
     @read_ability = read_ability
@@ -103,4 +105,3 @@ class NotificationRecipient
     user.global_notification_setting
   end
 end
-
