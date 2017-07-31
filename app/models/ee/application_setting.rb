@@ -39,7 +39,8 @@ module EE
           repository_size_limit: 0,
           mirror_max_delay: Settings.gitlab['mirror_max_delay'],
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
-          mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold']
+          mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
+          allow_group_owners_to_manage_ldap: true
         )
       end
     end

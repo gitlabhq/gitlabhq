@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false)
       @pipeline = Ci::Pipeline.new(
         source: source,
         project: project,
@@ -22,7 +22,27 @@ module Ci
 
       return result if result
 
-      _create_pipeline(source, &block)
+      begin
+        Ci::Pipeline.transaction do
+          pipeline.save!
+
+          yield(pipeline) if block_given?
+
+          Ci::CreatePipelineStagesService
+            .new(project, current_user)
+            .execute(pipeline)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        return error("Failed to persist the pipeline: #{e}")
+      end
+
+      update_merge_requests_head_pipeline
+
+      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+
+      pipeline_created_counter.increment(source: source)
+
+      pipeline.tap(&:process!)
     end
 
     private
@@ -67,24 +87,6 @@ module Ci
       unless pipeline.has_stage_seeds?
         return error('No stages / jobs for this pipeline.')
       end
-    end
-
-    def _create_pipeline(source)
-      Ci::Pipeline.transaction do
-        update_merge_requests_head_pipeline if pipeline.save
-
-        yield(pipeline) if block_given?
-
-        Ci::CreatePipelineStagesService
-          .new(project, current_user)
-          .execute(pipeline)
-      end
-
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
-
-      pipeline_created_counter.increment(source: source)
-
-      pipeline.tap(&:process!)
     end
 
     def allowed_to_trigger_pipeline?(triggering_user)

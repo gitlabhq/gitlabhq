@@ -24,11 +24,6 @@ class AuditLogs {
     $('.project-item-select').on('click', () => {
       $('form.filter-form').submit();
     });
-
-    $('form.filter-form').on('submit', function applyFilters(event) {
-      event.preventDefault();
-      gl.utils.visitUrl(`${this.action}?${$(this).serialize()}`);
-    });
   }
 
   initFilterDropdown($dropdown, fieldName, searchFields, cb) {

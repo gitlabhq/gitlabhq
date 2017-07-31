@@ -86,7 +86,6 @@ class IssuableFinder
     end
 
     counts[:all] = counts.values.sum
-    counts[:opened] += counts[:reopened]
 
     counts.with_indifferent_access
   end

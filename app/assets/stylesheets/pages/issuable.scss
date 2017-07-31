@@ -445,6 +445,14 @@
   }
 }
 
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+  }
+}
+
 .detail-page-description {
   padding: 16px 0;
 

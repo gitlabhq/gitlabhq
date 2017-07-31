@@ -29,6 +29,29 @@ feature 'Admin updates settings' do
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
   end
 
+  describe 'LDAP settings' do
+    context 'with LDAP enabled' do
+      scenario 'Change allow group owners to manage ldap' do
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        visit admin_application_settings_path
+
+        find('#application_setting_allow_group_owners_to_manage_ldap').set(false)
+        click_button 'Save'
+
+        expect(page).to have_content('Application settings saved successfully')
+        expect(find('#application_setting_allow_group_owners_to_manage_ldap')).not_to be_checked
+      end
+    end
+
+    context 'with LDAP disabled' do
+      scenario 'Does not show option to allow group owners to manage ldap' do
+        visit admin_application_settings_path
+
+        expect(page).not_to have_css('#application_setting_allow_group_owners_to_manage_ldap')
+      end
+    end
+  end
+
   scenario 'Change application settings' do
     uncheck 'Gravatar enabled'
     fill_in 'Home page URL', with: 'https://about.gitlab.com/'

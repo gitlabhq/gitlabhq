@@ -53,7 +53,7 @@ export default {
       return this.state && this.state.length > 0;
     },
     isOpen() {
-      return this.state === 'opened' || this.state === 'reopened';
+      return this.state === 'opened';
     },
     isClosed() {
       return this.state === 'closed';

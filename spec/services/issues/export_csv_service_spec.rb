@@ -35,7 +35,7 @@ describe Issues::ExportCsvService do
       issue.update!(milestone: milestone,
                     assignees: [user],
                     description: 'Issue with details',
-                    state: :reopened,
+                    state: :opened,
                     due_date: DateTime.new(2014, 3, 2),
                     created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),

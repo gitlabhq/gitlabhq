@@ -17,7 +17,11 @@
       - if @remote_mirror.last_error.present?
         .panel.panel-danger
           .panel-heading
-            The remote repository failed to update #{time_ago_with_tooltip(@remote_mirror.last_update_at)}.
+            - if @remote_mirror.last_update_at
+              The remote repository failed to update #{time_ago_with_tooltip(@remote_mirror.last_update_at)}.
+            - else
+              The remote repository failed to update.
+
             - if @remote_mirror.last_successful_update_at
               Last successful update #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
           .panel-body

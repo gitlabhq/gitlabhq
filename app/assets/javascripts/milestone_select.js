@@ -8,7 +8,7 @@
       var _this, $els;
       if (currentProject != null) {
         _this = this;
-        this.currentProject = JSON.parse(currentProject);
+        this.currentProject = typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
       }
 
       $els = $(els);
