@@ -73,7 +73,7 @@ describe Boards::Issues::MoveService do
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug, testing)
-        expect(issue).to be_reopened
+        expect(issue).to be_opened
       end
     end
 

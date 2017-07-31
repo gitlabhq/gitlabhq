@@ -64,10 +64,10 @@
     color: $gl-text-color;
     position: sticky;
     position: -webkit-sticky;
-    top: 50px;
+    top: $header-height;
 
     &.affix {
-      top: 50px;
+      top: $header-height;
     }
 
     // with sidebar
@@ -86,6 +86,7 @@
       position: absolute;
       right: 0;
       left: 0;
+      top: 0;
     }
 
     .truncated-info {
@@ -168,6 +169,16 @@
     margin: auto auto 12px 2px;
     border-radius: 50%;
     animation: blinking-dots 1s linear infinite;
+  }
+}
+
+.with-performance-bar .build-page {
+  .top-bar {
+    top: $header-height + $performance-bar-height;
+
+    &.affix {
+      top: $header-height + $performance-bar-height;
+    }
   }
 }
 

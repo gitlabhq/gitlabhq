@@ -127,3 +127,7 @@ of the body element here, we negate cascading side effects but allow momentum sc
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.with-performance-bar .page-with-sidebar {
+  margin-top: $header-height + $performance-bar-height;
+}

@@ -8,6 +8,7 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -263,7 +264,7 @@ import FeatureHelper from './helpers/feature_helper';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -334,6 +335,9 @@ import FeatureHelper from './helpers/feature_helper';
         case 'projects:edit':
           setupProjectEdit();
           break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
+          break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
@@ -390,6 +394,9 @@ import FeatureHelper from './helpers/feature_helper';
 
           new TreeView();
           new BlobViewer();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
@@ -548,6 +555,7 @@ import FeatureHelper from './helpers/feature_helper';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
+              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

@@ -264,7 +264,11 @@ module ApplicationHelper
   end
 
   def page_class
-    "issue-boards-page" if current_controller?(:boards)
+    class_names = []
+    class_names << 'issue-boards-page' if current_controller?(:boards)
+    class_names << 'with-performance-bar' if performance_bar_enabled?
+
+    class_names
   end
 
   # Returns active css class when condition returns true

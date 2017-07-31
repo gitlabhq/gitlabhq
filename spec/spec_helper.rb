@@ -59,6 +59,7 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
+  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
