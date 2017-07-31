@@ -9,6 +9,8 @@ export const isSticky = (el, scrollY, stickyTop) => {
 };
 
 export default (el) => {
+  if (!el) return;
+
   const computedStyle = window.getComputedStyle(el);
 
   if (!/sticky/.test(computedStyle.position)) return;
