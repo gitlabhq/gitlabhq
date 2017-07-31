@@ -8,6 +8,7 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -21,6 +22,7 @@
 /* global Project */
 /* global ProjectAvatar */
 /* global CompareAutocomplete */
+/* global PathLocks */
 /* global ProjectNew */
 /* global ProjectShow */
 /* global Labels */
@@ -250,7 +252,7 @@ import AuditLogs from './audit_logs';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -316,6 +318,9 @@ import AuditLogs from './audit_logs';
         case 'projects:edit':
           setupProjectEdit();
           break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
+          break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
@@ -369,6 +374,17 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
+
+          if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
+            PathLocks.init(
+              document.querySelector('.js-tree-content').dataset.pathLocksToggle,
+              document.querySelector('.js-tree-content').dataset.pathLocksPath,
+            );
+          }
+
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
           shortcut_handler = true;
@@ -541,6 +557,7 @@ import AuditLogs from './audit_logs';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
+              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
