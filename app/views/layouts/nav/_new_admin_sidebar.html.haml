@@ -87,8 +87,8 @@
     = nav_link(controller: :abuse_reports) do
       = link_to admin_abuse_reports_path, title: "Abuse Reports" do
         %span
-          Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
+          Abuse Reports
 
     - if akismet_enabled?
       = nav_link(controller: :spam_logs) do
