@@ -89,6 +89,10 @@
   }
 }
 
+.with-performance-bar .right-sidebar.affix {
+  top: $header-height + $performance-bar-height;
+}
+
 @mixin maintain-sidebar-dimensions {
   display: block;
   width: $gutter-width;
