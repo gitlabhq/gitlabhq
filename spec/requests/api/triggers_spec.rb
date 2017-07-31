@@ -22,6 +22,7 @@ describe API::Triggers do
 
     before do
       stub_ci_pipeline_to_return_yaml_file
+      trigger.update(owner: user)
     end
 
     context 'Handles errors' do
@@ -55,8 +56,7 @@ describe API::Triggers do
         post api("/projects/#{project.id}/trigger/pipeline"), options.merge(ref: 'other-branch')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']['base'])
-          .to contain_exactly('Reference not found')
+        expect(json_response['message']).to eq('base' => ["Reference not found"])
       end
 
       context 'Validates variables' do
@@ -82,7 +82,7 @@ describe API::Triggers do
           post api("/projects/#{project.id}/trigger/pipeline"), options.merge(variables: variables, ref: 'master')
 
           expect(response).to have_http_status(201)
-          expect(pipeline.builds.reload.first.trigger_request.variables).to eq(variables)
+          expect(pipeline.variables.map { |v| { v.key => v.value } }.last).to eq(variables)
         end
       end
     end

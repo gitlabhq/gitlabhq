@@ -1487,6 +1487,12 @@ describe Ci::Build do
       it { is_expected.to include(predefined_trigger_variable) }
     end
 
+    context 'when pipeline has a variable' do
+      let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
+
+      it { is_expected.to include(pipeline_variable.to_runner_variable) }
+    end
+
     context 'when a job was triggered by a pipeline schedule' do
       let(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 

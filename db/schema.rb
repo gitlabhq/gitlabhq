@@ -357,6 +357,17 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_index "ci_pipeline_schedules", ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
   add_index "ci_pipeline_schedules", ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
 
+  create_table "ci_pipeline_variables", force: :cascade do |t|
+    t.string "key", null: false
+    t.text "value"
+    t.text "encrypted_value"
+    t.string "encrypted_value_salt"
+    t.string "encrypted_value_iv"
+    t.integer "pipeline_id", null: false
+  end
+
+  add_index "ci_pipeline_variables", ["pipeline_id", "key"], name: "index_ci_pipeline_variables_on_pipeline_id_and_key", unique: true, using: :btree
+
   create_table "ci_pipelines", force: :cascade do |t|
     t.string "ref"
     t.string "sha"
@@ -1907,6 +1918,7 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
+  add_foreign_key "ci_pipeline_variables", "ci_pipelines", column: "pipeline_id", name: "fk_f29c5f4380", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
