@@ -8,7 +8,7 @@ module Gitlab
         @cron = cron
         @cron_timezone = ActiveSupport::TimeZone.find_tzinfo(cron_timezone).name
       rescue TZInfo::InvalidTimezoneIdentifier
-        @cron_timezone = nil
+        @cron_timezone = false
       end
 
       def next_time_from(time)
