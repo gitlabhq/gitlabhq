@@ -183,7 +183,7 @@ describe Groups::GroupMembersController do
       sign_in(user)
     end
 
-    it 'creates a new GroupMember that is not a team member' do
+    it 'creates a new GroupAccessRequest that is not a team member' do
       post :request_access, group_id: group
 
       expect(response).to set_flash.to 'Your request for access has been queued for review.'

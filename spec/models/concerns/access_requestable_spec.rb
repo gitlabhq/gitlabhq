@@ -6,7 +6,7 @@ describe AccessRequestable do
       let(:group) { create(:group, :public, :access_requestable) }
       let(:user) { create(:user) }
 
-      it { expect(group.request_access(user)).to be_a(GroupMember) }
+      it { expect(group.request_access(user)).to be_a(GroupAccessRequest) }
       it { expect(group.request_access(user).user).to eq(user) }
     end
 
