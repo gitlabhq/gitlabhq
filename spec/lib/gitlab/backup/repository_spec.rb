@@ -60,4 +60,58 @@ describe Backup::Repository do
       end
     end
   end
+
+  describe '#empty_repo?' do
+    context 'for a wiki' do
+      let(:wiki) { create(:project_wiki) }
+
+      context 'wiki repo has content' do
+        let!(:wiki_page) { create(:wiki_page, wiki: wiki) }
+
+        before do
+          wiki.repository.exists? # initial cache
+        end
+
+        context '`repository.exists?` is incorrectly cached as false' do
+          before do
+            repo = wiki.repository
+            repo.send(:cache).expire(:exists?)
+            repo.send(:cache).fetch(:exists?) { false }
+            repo.send(:instance_variable_set, :@exists, false)
+          end
+
+          it 'returns false, regardless of bad cache value' do
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_falsey
+          end
+        end
+
+        context '`repository.exists?` is correctly cached as true' do
+          it 'returns false' do
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_falsey
+          end
+        end
+      end
+
+      context 'wiki repo does not have content' do
+        context '`repository.exists?` is incorrectly cached as true' do
+          before do
+            repo = wiki.repository
+            repo.send(:cache).expire(:exists?)
+            repo.send(:cache).fetch(:exists?) { true }
+            repo.send(:instance_variable_set, :@exists, true)
+          end
+
+          it 'returns true, regardless of bad cache value' do
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
+          end
+        end
+
+        context '`repository.exists?` is correctly cached as false' do
+          it 'returns true' do
+            expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
+          end
+        end
+      end
+    end
+  end
 end
