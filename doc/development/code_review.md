@@ -13,6 +13,8 @@ There are a few rules to get your merge request accepted:
     be **approved by a [UX team member][team]**.
   1. If your merge request includes adding a new JavaScript library [^1], it must be
     **approved by a [frontend lead][team]**.
+  1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
+    **approved by a [UX lead][team]**.
   1. If your merge request includes frontend and backend changes [^1], it must
     be **approved by a [frontend and a backend maintainer][projects]**.
   1. If your merge request includes UX and frontend changes [^1], it must
