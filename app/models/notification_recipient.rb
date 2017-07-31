@@ -1,5 +1,5 @@
 class NotificationRecipient
-  attr_reader :user, :project, :type
+  attr_reader :user, :type
   def initialize(user, type,
                  custom_action: nil,
                  target: nil,
@@ -13,8 +13,6 @@ class NotificationRecipient
     @project = project || @target&.project
     @user = user
     @type = type
-
-    raise ArgumentError, "Project is missing" if @project.nil?
   end
 
   def notification_setting
