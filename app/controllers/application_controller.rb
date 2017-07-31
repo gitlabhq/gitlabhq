@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include GitlabRoutingHelper
   include PageLayoutHelper
   include SentryHelper
+  include RequestHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
