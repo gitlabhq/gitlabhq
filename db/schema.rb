@@ -524,6 +524,16 @@ ActiveRecord::Schema.define(version: 20170803130232) do
     t.float "instance_service_desk_issues", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "percentage_boards", default: 0.0, null: false
+    t.float "percentage_ci_pipelines", default: 0.0, null: false
+    t.float "percentage_deployments", default: 0.0, null: false
+    t.float "percentage_environments", default: 0.0, null: false
+    t.float "percentage_issues", default: 0.0, null: false
+    t.float "percentage_merge_requests", default: 0.0, null: false
+    t.float "percentage_milestones", default: 0.0, null: false
+    t.float "percentage_notes", default: 0.0, null: false
+    t.float "percentage_projects_prometheus_active", default: 0.0, null: false
+    t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
