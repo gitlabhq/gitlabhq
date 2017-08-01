@@ -175,9 +175,7 @@ module NotificationRecipientService
       end
 
       def user_ids_with_global_level_custom(ids, action)
-        settings = settings_with_global_level_of(:custom, ids)
-        settings = settings.select { |setting| setting.event_enabled?(action) }
-        settings.map(&:user_id)
+        settings_with_global_level_of(:custom, ids).pluck(:user_id)
       end
 
       def settings_with_global_level_of(level, ids)
