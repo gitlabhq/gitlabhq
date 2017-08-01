@@ -83,8 +83,9 @@ describe Gitlab::Geo::LogCursor::Daemon do
 
     context 'when node have group restrictions' do
       let(:geo_node) { create(:geo_node, :current) }
-      let(:group) { create(:group) }
-      let(:project) { create(:empty_project, group: group) }
+      let(:group_1) { create(:group) }
+      let(:group_2) { create(:group) }
+      let(:project) { create(:empty_project, group: group_1) }
       let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
@@ -94,15 +95,31 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
 
       it 'replays events for projects that belong to selected groups to replicate' do
-        geo_node.update_attribute(:groups, [group])
+        geo_node.update_attribute(:groups, [group_1])
 
         expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
       it 'does not replay events for projects that do not belong to selected groups to replicate' do
-        geo_node.update_attribute(:groups, [create(:group)])
+        geo_node.update_attribute(:groups, [group_2])
 
         expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      context 'when performing a full scan' do
+        subject { described_class.new(full_scan: true) }
+
+        it 'creates registries for missing projects that belong to selected groups' do
+          geo_node.update_attribute(:groups, [group_1])
+
+          expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
+        end
+
+        it 'does not create registries for missing projects that do not belong to selected groups' do
+          geo_node.update_attribute(:groups, [group_2])
+
+          expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+        end
       end
     end
   end

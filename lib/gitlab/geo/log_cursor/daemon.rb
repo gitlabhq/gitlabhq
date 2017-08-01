@@ -38,7 +38,17 @@ module Gitlab
           # Projects without corresponding ProjectRegistry in the DR database
           # See: https://robots.thoughtbot.com/postgres-foreign-data-wrapper (requires PG 9.6)
           $stdout.print 'Searching for non replicated projects...'
-          Project.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
+
+          restricted_project_ids = Gitlab::Geo.current_node.project_ids
+
+          relation =
+            if restricted_project_ids
+              Project.where(id: restricted_project_ids)
+            else
+              Project.all
+            end
+
+          relation.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
             $stdout.print '.'
 
             project_ids = batch.map(&:id)
