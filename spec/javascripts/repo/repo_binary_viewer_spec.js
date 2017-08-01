@@ -30,7 +30,7 @@ describe('RepoBinaryViewer', () => {
 
   it('renders an div with content if its markdown', () => {
     const binaryTypes = {
-      markdown: true,
+      md: true,
     };
     const activeFile = {
       html: 'markdown',
