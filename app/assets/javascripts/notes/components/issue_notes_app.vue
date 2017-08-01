@@ -110,8 +110,8 @@
         }, 15000);
       },
       bindEventHubListeners() {
-        eventHub.$on('toggleAward', (data) => {
-          const { awardName, noteId } = data;
+        this.$el.parentElement.addEventListener('toggleAward', (event) => {
+          const { awardName, noteId } = event.detail;
           const endpoint = this.notesById[noteId].toggle_award_path;
 
           this.actionToggleAward({ endpoint, awardName, noteId })

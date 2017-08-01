@@ -2,7 +2,6 @@
 /* global Flash */
 
 import Cookies from 'js-cookie';
-import issueNotesEventHub from './notes/event_hub';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
 const transitionEndEventString = 'transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd';
@@ -242,8 +241,14 @@ class AwardsHandler {
 
       $('.emoji-menu').removeClass('is-visible');
       $('.js-add-award.is-active').removeClass('is-active');
+      const toggleAwardEvent = new CustomEvent('toggleAward', {
+        detail: {
+          awardName: emoji,
+          noteId: id,
+        },
+      });
 
-      return issueNotesEventHub.$emit('toggleAward', { awardName: emoji, noteId: id });
+      document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
     }
 
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);

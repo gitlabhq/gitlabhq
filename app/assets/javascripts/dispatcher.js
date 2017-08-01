@@ -170,7 +170,6 @@ import GpgBadges from './gpg_badges';
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
           initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:milestones:index':
           new ProjectSelect();
