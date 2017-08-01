@@ -2,6 +2,7 @@ class ProjectWiki
   include Gitlab::ShellAdapter
   include Elastic::WikiRepositoriesSearch
   include Gitlab::CurrentSettings
+  include Storage::LegacyProjectWiki
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -28,16 +29,19 @@ class ProjectWiki
     @project.path + '.wiki'
   end
 
-  def path_with_namespace
-    @project.path_with_namespace + ".wiki"
+  def full_path
+    @project.full_path + '.wiki'
   end
+
+  # @deprecated use full_path when you need it for an URL route or disk_path when you want to point to the filesystem
+  alias_method :path_with_namespace, :full_path
 
   def web_url
     Gitlab::Routing.url_helpers.project_wiki_url(@project, :home)
   end
 
   def url_to_repo
-    gitlab_shell.url_to_repo(path_with_namespace)
+    gitlab_shell.url_to_repo(full_path)
   end
 
   def ssh_url_to_repo
@@ -45,16 +49,16 @@ class ProjectWiki
   end
 
   def http_url_to_repo
-    "#{Gitlab.config.gitlab.url}/#{path_with_namespace}.git"
+    "#{Gitlab.config.gitlab.url}/#{full_path}.git"
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
-    [Gitlab.config.build_gitlab_kerberos_url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.build_gitlab_kerberos_url, '/', full_path, '.git'].join('')
   end
 
   def wiki_base_path
-    [Gitlab.config.gitlab.relative_url_root, "/", @project.path_with_namespace, "/wikis"].join('')
+    [Gitlab.config.gitlab.relative_url_root, '/', @project.full_path, '/wikis'].join('')
   end
 
   # Returns the Gollum::Wiki object.
@@ -147,7 +151,7 @@ class ProjectWiki
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, @project)
+    @repository ||= Repository.new(full_path, @project, disk_path: disk_path)
   end
 
   def default_branch
@@ -155,7 +159,7 @@ class ProjectWiki
   end
 
   def create_repo!
-    if init_repo(path_with_namespace)
+    if init_repo(disk_path)
       wiki = Gollum::Wiki.new(path_to_repo)
     else
       raise CouldNotCreateWikiError
@@ -175,15 +179,15 @@ class ProjectWiki
       web_url: web_url,
       git_ssh_url: ssh_url_to_repo,
       git_http_url: http_url_to_repo,
-      path_with_namespace: path_with_namespace,
+      path_with_namespace: full_path,
       default_branch: default_branch
     }
   end
 
   private
 
-  def init_repo(path_with_namespace)
-    gitlab_shell.add_repository(project.repository_storage_path, path_with_namespace)
+  def init_repo(disk_path)
+    gitlab_shell.add_repository(project.repository_storage_path, disk_path)
   end
 
   def commit_details(action, message = nil, title = nil)
@@ -197,7 +201,7 @@ class ProjectWiki
   end
 
   def path_to_repo
-    @path_to_repo ||= File.join(project.repository_storage_path, "#{path_with_namespace}.git")
+    @path_to_repo ||= File.join(project.repository_storage_path, "#{disk_path}.git")
   end
 
   def update_project_activity

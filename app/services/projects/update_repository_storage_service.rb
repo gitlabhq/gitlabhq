@@ -8,10 +8,10 @@ module Projects
 
     def execute(new_repository_storage_key)
       new_storage_path = Gitlab.config.repositories.storages[new_repository_storage_key]['path']
-      result = move_storage(project.path_with_namespace, new_storage_path)
+      result = move_storage(project.disk_path, new_storage_path)
 
       if project.wiki.repository_exists?
-        result &&= move_storage("#{project.path_with_namespace}.wiki", new_storage_path)
+        result &&= move_storage("#{project.disk_path}.wiki", new_storage_path)
       end
 
       if result
@@ -31,20 +31,20 @@ module Projects
 
     def mark_old_paths_for_archive
       old_repository_storage_path = project.repository_storage_path
-      new_project_path = moved_path(project.path_with_namespace)
+      new_project_path = moved_path(project.disk_path)
 
       # Notice that the block passed to `run_after_commit` will run with `project`
       # as its context
       project.run_after_commit do
         GitlabShellWorker.perform_async(:mv_repository,
                                         old_repository_storage_path,
-                                        path_with_namespace,
+                                        disk_path,
                                         new_project_path)
 
         if wiki.repository_exists?
           GitlabShellWorker.perform_async(:mv_repository,
                                           old_repository_storage_path,
-                                          "#{path_with_namespace}.wiki",
+                                          "#{disk_path}.wiki",
                                           "#{new_project_path}.wiki")
         end
       end

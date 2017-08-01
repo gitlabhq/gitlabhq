@@ -80,7 +80,7 @@ namespace :gitlab do
           print '-'
         else
           if Gitlab::Shell.new.add_repository(project.repository_storage_path,
-                                              project.path_with_namespace)
+                                              project.disk_path)
             print '.'
           else
             print 'F'

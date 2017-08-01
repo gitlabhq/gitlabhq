@@ -51,7 +51,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
     end
     page.within '.sub-nav' do
       find('a', text: 'General').trigger('click')
-    end    
+    end
   end
 
   step 'I enable membership lock' do
@@ -65,7 +65,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
       click_link 'Projects'
     end
 
-    link = "/#{@project.path_with_namespace}/project_members"
+    link = "/#{@project.full_path}/project_members"
     find(:xpath, "//a[@href=\"#{link}\"]").click
   end
 

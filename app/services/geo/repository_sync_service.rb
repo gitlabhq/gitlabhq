@@ -33,7 +33,7 @@ module Geo
     end
 
     def ssh_url_to_repo
-      "#{primary_ssh_path_prefix}#{project.path_with_namespace}.git"
+      "#{primary_ssh_path_prefix}#{project.full_path}.git"
     end
   end
 end

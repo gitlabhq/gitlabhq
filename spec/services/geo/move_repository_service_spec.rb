@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Geo::MoveRepositoryService do
   let(:project) { create(:project) }
-  let(:new_path) { project.path_with_namespace + '+renamed' }
+  let(:new_path) { project.full_path + '+renamed' }
   let(:full_new_path) { File.join(project.repository_storage_path, new_path) }
-  subject { described_class.new(project.id, project.name, project.path_with_namespace, new_path) }
+  subject { described_class.new(project.id, project.name, project.full_path, new_path) }
 
   describe '#execute' do
     it 'renames the path' do

@@ -161,7 +161,7 @@ describe MergeRequests::SquashService do
       end
 
       it 'logs the MR reference and exception' do
-        expect(service).to receive(:log_error).with(a_string_including("#{project.path_with_namespace}#{merge_request.to_reference}"))
+        expect(service).to receive(:log_error).with(a_string_including("#{project.full_path}#{merge_request.to_reference}"))
         expect(service).to receive(:log_error).with(error)
 
         service.execute(merge_request)
