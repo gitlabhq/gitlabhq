@@ -20,17 +20,26 @@
   position: fixed;
   top: 0;
   width: 100%;
-  background: $white-light;
+  background: $red-400;
+  color: $white-light;
   text-align: center;
   z-index: 400;
 
+  .close {
+    color: $white-dark;
+    opacity: 0.7;
+
+    &:hover {
+      color: $black;
+    }
+  }
+
   p a {
-    color: $gl-link-color;
     text-decoration: none;
     font-weight: bold;
 
     &:hover {
-      color: $gl-link-hover-color;
+      color: $white-dark;
       text-decoration: underline;
     }
   }
