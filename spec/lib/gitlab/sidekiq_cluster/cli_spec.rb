@@ -12,12 +12,28 @@ describe Gitlab::SidekiqCluster::CLI do
 
     context 'with arguments' do
       it 'starts the Sidekiq workers' do
-        expect(Gitlab::SidekiqCluster).to receive(:start).and_return([])
+        expect(Gitlab::SidekiqCluster).to receive(:start).with([['foo']], 'test', Dir.pwd).and_return([])
         expect(cli).to receive(:write_pid)
         expect(cli).to receive(:trap_signals)
         expect(cli).to receive(:start_loop)
 
         cli.run(%w(foo))
+      end
+
+      context 'with --negate argument' do
+        it 'starts Sidekiq workers for all queues except the negated ones' do
+          expect(Gitlab::SidekiqConfig).to receive(:queues)
+                                             .with(Dir.pwd, except: ['foo', 'bar'])
+                                             .and_return(['baz'])
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+                                              .with([['baz']], 'test', Dir.pwd)
+                                              .and_return([])
+          expect(cli).to receive(:write_pid)
+          expect(cli).to receive(:trap_signals)
+          expect(cli).to receive(:start_loop)
+
+          cli.run(%w(-n foo,bar))
+        end
       end
     end
   end
