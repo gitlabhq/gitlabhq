@@ -225,8 +225,8 @@ class ProjectsController < Projects::ApplicationController
     find_branches = true
     find_tags = true
     find_commits = true
-    
-    if !find_refs.nil?
+
+    unless find_refs.nil?
       find_branches = find_refs.include? 'branches'
       find_tags = find_refs.include? 'tags'
       find_commits = find_refs.include? 'commits'
