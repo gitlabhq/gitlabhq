@@ -169,7 +169,12 @@ module Gitlab
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         gitaly_migrate(:tags) do |is_enabled|
-          if is_enabled
+          # We disable this because:
+          # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2554#note_36403262
+          # We should flip it back in:
+          # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13092
+          # rubocop:disable Lint/LiteralInCondition
+          if false # is_enabled
             tags_from_gitaly
           else
             tags_from_rugged
