@@ -16,37 +16,43 @@ describe API::Users do
       it "returns authorization error when the `username` parameter is not passed" do
         get api("/users")
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns the user when a valid `username` parameter is passed" do
-        user = create(:user)
-
         get api("/users"), username: user.username
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response[0]['id']).to eq(user.id)
         expect(json_response[0]['username']).to eq(user.username)
       end
 
-      it "returns authorization error when the `username` parameter refers to an inaccessible user" do
-        user = create(:user)
-
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-
-        get api("/users"), username: user.username
-
-        expect(response).to have_http_status(403)
-      end
-
       it "returns an empty response when an invalid `username` parameter is passed" do
         get api("/users"), username: 'invalid'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(0)
+      end
+
+      context "when public level is restricted" do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+        end
+
+        it "returns authorization error when the `username` parameter refers to an inaccessible user" do
+          get api("/users"), username: user.username
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+
+        it "returns authorization error when the `username` parameter is not passed" do
+          get api("/users")
+
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
@@ -58,10 +64,10 @@ describe API::Users do
         end
 
         context 'when authenticate as a regular user' do
-          it "renders 403" do
+          it "renders 200" do
             get api("/users", user)
 
-            expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
 
