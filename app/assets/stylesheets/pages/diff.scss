@@ -577,7 +577,8 @@
     background-color: $white-light;
     z-index: 190;
 
-    + .files {
+    + .files,
+    + .alert {
       margin-top: 1px;
     }
 
@@ -596,7 +597,8 @@
         display: none;
       }
 
-      + .files {
+      + .files,
+      + .alert {
         margin-top: 30px;
       }
     }
