@@ -4,13 +4,14 @@ describe GeoNodeStatusEntity, :postgresql do
   let(:geo_node_status) do
     GeoNodeStatus.new(
       id: 1,
-      health: nil,
+      health: '',
       attachments_count: 329,
       attachments_synced_count: 141,
       lfs_objects_count: 256,
       lfs_objects_synced_count: 123,
       repositories_count: 10,
-      repositories_synced_count: 5
+      repositories_synced_count: 5,
+      repositories_failed_count: 0
     )
   end
 
