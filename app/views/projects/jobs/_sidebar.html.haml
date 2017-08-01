@@ -49,11 +49,10 @@
           %p
             %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
 
-
-          - @build.trigger_request.variables.each do |key, value|
-            .hide.js-build
-              .js-build-variable.trigger-build-variable= key
-              .js-build-value.trigger-build-value= value
+          %dl.js-build-variables.trigger-build-variables.hide
+            - @build.trigger_request.variables.each do |key, value|
+              %dt.js-build-variable.trigger-build-variable= key
+              %dd.js-build-value.trigger-build-value= value
 
     %div{ class: (@build.pipeline.stages_count > 1 ? "block" : "block-last") }
       %p
