@@ -12,7 +12,7 @@ where they were originally published.
 
 ## Authentication
 
-Learn how to explore GitLab's supported [authentications methods](../topics/authentication/index.md):
+Explore GitLab's supported [authentications methods](../topics/authentication/index.md):
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
@@ -34,6 +34,7 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [Automated Debian Package Build with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/) | Tutorial | 2016/10/12 |
 | [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/) | Tutorial | 2016/08/11 |
 | [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/) | Technical overview | 2016/06/09 |
+| [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/) | Technical overview | 2016/05/23 |
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017/05/15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016/03/10 |
 
@@ -84,17 +85,18 @@ Install, upgrade, integrate, migrate to GitLab:
 
 ## Software development
 
-Learn how to explore the best of GitLab's software development's capabilities:
+Explore the best of GitLab's software development's capabilities:
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017/07/13 |
 | [From 2/3 of the Self-Hosted Git Market, to the Next-Generation CI System, to Auto DevOps](https://about.gitlab.com/2017/06/29/whats-next-for-gitlab-ci/)| Concepts | 2017/06/29 |
 | [Fast and Natural Continuous Integration with GitLab CI](https://about.gitlab.com/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/) | Concepts | 2017/05/22 |
+| [Demo: Auto-Deploy from GitLab to an OpenShift Container Cluster](https://about.gitlab.com/2017/05/16/devops-containers-gitlab-openshift/) | Technical overview | 2017/05/16 |
 | [Demo: GitLab Service Desk](https://about.gitlab.com/2017/05/09/demo-service-desk/) | Feature highlight | 2017/05/09 |
-| [Demo - Mapping Work Versus Time, With Burndown Charts](https://about.gitlab.com/2017/04/25/mapping-work-to-do-versus-time-with-burndown-charts/) | Feature highlight | 2017/04/25 |
-| [Demo – Cloud Native Development with GitLab](https://about.gitlab.com/2017/04/18/cloud-native-demo/) | Feature highlight | 2017/04/18 |
-| [Demo - Mastering Code Review With GitLab](https://about.gitlab.com/2017/03/17/demo-mastering-code-review-with-gitlab/) | Feature highlight | 2017/03/17 |
+| [Demo: Mapping Work Versus Time, With Burndown Charts](https://about.gitlab.com/2017/04/25/mapping-work-to-do-versus-time-with-burndown-charts/) | Feature highlight | 2017/04/25 |
+| [Demo: Cloud Native Development with GitLab](https://about.gitlab.com/2017/04/18/cloud-native-demo/) | Feature highlight | 2017/04/18 |
+| [Demo:  Mastering Code Review With GitLab](https://about.gitlab.com/2017/03/17/demo-mastering-code-review-with-gitlab/) | Feature highlight | 2017/03/17 |
 | [In 13 minutes from Kubernetes to a complete application development tool](https://about.gitlab.com/2016/11/14/idea-to-production/) | Technical overview | 2016/11/14 |
 | [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/) | Technical overview | 2016/10/25 |
 | [Trends in Version Control Land: Microservices](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/) | Concepts | 2016/08/16 |
@@ -109,4 +111,3 @@ Learn how to explore the best of GitLab's software development's capabilities:
 | [Why we are not leaving the cloud](https://about.gitlab.com/2017/03/02/why-we-are-not-leaving-the-cloud/) | Concepts | 2017/03/02 |
 | [Why We Chose Vue.js](https://about.gitlab.com/2016/10/20/why-we-chose-vue/) | Concepts | 2016/10/20 |
 | [Markdown Kramdown Tips & Tricks](https://about.gitlab.com/2016/07/19/markdown-kramdown-tips-and-tricks/) | Technical overview | 2016/07/19 |
-
