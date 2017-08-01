@@ -66,7 +66,7 @@ For more use cases please check our [Technical Articles](../articles/index.md).
 
 ## Projects
 
-In GitLab, you can create projects for numerous reasons, such as, host
+In GitLab, you can create [projects](project/index.md) for numerous reasons, such as, host
 your code, use it as an issue tracker, collaborate on code, and continuously
 build, test, and deploy your app with built-in GitLab CI/CD. Or, you can do
 it all at once, from one single project.

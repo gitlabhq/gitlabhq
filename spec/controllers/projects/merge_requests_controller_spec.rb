@@ -609,7 +609,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'links to the environment on that project' do
-        expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
+        expect(json_response.first['url']).to match /#{forked.full_path}/
       end
     end
   end

@@ -181,8 +181,6 @@ module Gitlab
     end
 
     def find_merge_base_with_master(branch:)
-      return if merge_base_found?
-
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20

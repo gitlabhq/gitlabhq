@@ -118,7 +118,7 @@ $new-sidebar-width: 220px;
   z-index: 400;
   width: $new-sidebar-width;
   transition: left $sidebar-transition-duration;
-  top: 50px;
+  top: $header-height;
   bottom: 0;
   left: 0;
   overflow: auto;
@@ -161,6 +161,10 @@ $new-sidebar-width: 220px;
   @media (max-width: $screen-xs-max) {
     left: (-$new-sidebar-width);
   }
+}
+
+.with-performance-bar .nav-sidebar {
+  top: $header-height + $performance-bar-height;
 }
 
 .sidebar-sub-level-items {
@@ -260,7 +264,7 @@ $new-sidebar-width: 220px;
 // Make issue boards full-height now that sub-nav is gone
 
 .boards-list {
-  height: calc(100vh - 50px);
+  height: calc(100vh - #{$header-height});
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
@@ -268,6 +272,10 @@ $new-sidebar-width: 220px;
     height: calc(100vh - 180px);
     // scss-lint:enable DuplicateProperty
   }
+}
+
+.with-performance-bar .boards-list {
+  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
 }
 
 

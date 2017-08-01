@@ -96,6 +96,7 @@ stages:
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
     - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
@@ -221,6 +222,7 @@ setup-test-env:
     - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
@@ -486,6 +488,7 @@ karma:
     BABEL_ENV: "coverage"
     CHROME_LOG_FILE: "chrome_debug.log"
   script:
+    - scripts/gitaly-test-spawn
     - bundle exec rake gettext:po_to_json
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'

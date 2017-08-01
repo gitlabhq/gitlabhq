@@ -4,7 +4,7 @@ describe Gitlab::GitalyClient::NotificationService do
   describe '#post_receive' do
     let(:project) { create(:empty_project) }
     let(:storage_name) { project.repository_storage }
-    let(:relative_path) { project.path_with_namespace + '.git' }
+    let(:relative_path) { project.disk_path + '.git' }
     subject { described_class.new(project.repository) }
 
     it 'sends a post_receive message' do

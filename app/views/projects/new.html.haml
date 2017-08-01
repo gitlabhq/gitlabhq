@@ -4,6 +4,8 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
 - visibility_level = params.dig(:project, :visibility_level) || default_project_visibility
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'project_new'
 
 .project-edit-container
   .project-edit-errors
@@ -111,46 +113,3 @@
       %i.fa.fa-spinner.fa-spin
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.
-
-:javascript
-  var importBtnTooltip = "Please enter a valid project name.";
-  var $importBtnWrapper = $('.import_gitlab_project');
-
-  $('.how_to_import_link').bind('click', function (e) {
-    e.preventDefault();
-    var import_modal = $(this).next(".modal").show();
-  });
-
-  $('.modal-header .close').bind('click', function() {
-    $(".modal").hide();
-  });
-
-  $('.btn_import_gitlab_project').bind('click', function() {
-    var _href = $("a.btn_import_gitlab_project").attr("href");
-    $(".btn_import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
-  });
-
-  $('.btn_import_gitlab_project').attr('disabled', $('#project_path').val().trim().length === 0);
-  $importBtnWrapper.attr('title', importBtnTooltip);
-
-  $('#new_project').submit(function(){
-    var $path = $('#project_path');
-    $path.val($path.val().trim());
-  });
-
-  $('#project_path').keyup(function(){
-    if($(this).val().trim().length !== 0) {
-      $('.btn_import_gitlab_project').attr('disabled', false);
-      $importBtnWrapper.attr('title','');
-      $importBtnWrapper.removeClass('has-tooltip');
-    } else {
-      $('.btn_import_gitlab_project').attr('disabled',true);
-      $importBtnWrapper.addClass('has-tooltip');
-    }
-  });
-
-  $('#project_import_url').disable();
-  $('.import_git').click(function( event ) {
-    $projectImportUrl = $('#project_import_url');
-    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'));
-  });

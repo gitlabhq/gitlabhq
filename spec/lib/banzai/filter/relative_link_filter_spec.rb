@@ -26,7 +26,7 @@ describe Banzai::Filter::RelativeLinkFilter do
   end
 
   let(:project)        { create(:project, :repository) }
-  let(:project_path)   { project.path_with_namespace }
+  let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }

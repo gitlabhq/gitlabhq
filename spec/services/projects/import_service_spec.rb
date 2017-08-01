@@ -26,7 +26,7 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - The repository could not be created."
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The repository could not be created."
       end
     end
 
@@ -52,7 +52,7 @@ describe Projects::ImportService do
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
+          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Failed to import the repository"
         end
 
         it 'does not remove the GitHub remote' do
@@ -86,7 +86,7 @@ describe Projects::ImportService do
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
+          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Failed to import the repository"
         end
       end
     end
@@ -129,7 +129,7 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - The remote data could not be imported."
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The remote data could not be imported."
       end
 
       it 'fails if importer raise an error' do
@@ -139,7 +139,7 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Github: failed to connect API"
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Github: failed to connect API"
       end
 
       it 'expires content cache after error' do

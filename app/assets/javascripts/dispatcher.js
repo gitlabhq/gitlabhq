@@ -8,6 +8,8 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global CommitsList */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -18,15 +20,20 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
+/* global NewCommitForm */
+/* global NewBranchForm */
 /* global Project */
 /* global ProjectAvatar */
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
+/* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
+/* global ProjectImport */
 /* global Labels */
 /* global Shortcuts */
+/* global ShortcutsFindFile */
 /* global Sidebar */
 /* global ShortcutsWiki */
 
@@ -194,7 +201,6 @@ import GpgBadges from './gpg_badges';
           break;
         case 'explore:groups:index':
           new GroupsList();
-
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(
@@ -216,6 +222,10 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          break;
+        case 'projects:branches:new':
+        case 'projects:branches:create':
+          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
@@ -258,7 +268,7 @@ import GpgBadges from './gpg_badges';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -304,18 +314,23 @@ import GpgBadges from './gpg_badges';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
-          break;
-        case 'projects:commits:show':
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
+          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:commits:show':
+          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
+          new gl.Activities();
+          shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -329,6 +344,12 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          break;
+        case 'projects:imports:show':
+          new ProjectImport();
+          break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -383,8 +404,19 @@ import GpgBadges from './gpg_badges';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
+          new NewCommitForm($('.js-create-dir-form'));
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
+          const findElement = document.querySelector('.js-file-finder');
+          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
+            url: findElement.dataset.fileFindUrl,
+            treeUrl: findElement.dataset.findTreeUrl,
+            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+          });
+          new ShortcutsFindFile(projectFindFile);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
@@ -540,6 +572,7 @@ import GpgBadges from './gpg_badges';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
+              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

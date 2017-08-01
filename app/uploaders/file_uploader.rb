@@ -30,7 +30,7 @@ class FileUploader < GitlabUploader
   #
   # Returns a String without a trailing slash
   def self.dynamic_path_segment(model)
-    File.join(CarrierWave.root, base_dir, model.path_with_namespace)
+    File.join(CarrierWave.root, base_dir, model.full_path)
   end
 
   attr_accessor :model
