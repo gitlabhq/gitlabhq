@@ -311,9 +311,7 @@
     }
 
     .dropdown-menu {
-      right: $gl-padding;
-      left: $gl-padding;
-      width: auto;
+      margin-top: -$gl-padding;
     }
 
     svg {
