@@ -23,10 +23,10 @@ const PopupDialog = {
   computed: {
     typeOfClass() {
       const className = `btn-${this.kind}`;
-      let returnObj = {};
+      const returnObj = {};
       returnObj[className] = true;
       return returnObj;
-    }
+    },
   },
 
   methods: {
@@ -40,8 +40,8 @@ const PopupDialog = {
 
     noClick() {
       this.$emit('submit', false);
-    }
-  }
+    },
+  },
 };
 
 export default PopupDialog;

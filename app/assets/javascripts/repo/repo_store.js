@@ -27,7 +27,7 @@ const RepoStore = {
   minTabSize: 30,
   tabsOverflow: 41,
   submitCommitsLoading: false,
-  binaryLoaded:false,
+  binaryLoaded: false,
   dialog: {
     open: false,
     title: '',
@@ -60,7 +60,7 @@ const RepoStore = {
 
   resetBinaryTypes() {
     let s = '';
-    for(s in RepoStore.binaryTypes){
+    for (s in RepoStore.binaryTypes) {
       RepoStore.binaryTypes[s] = false;
     }
   },

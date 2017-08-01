@@ -7,15 +7,14 @@ const RepoBinaryViewer = {
 
   computed: {
     pngBlobWithDataURI() {
-      if(this.binaryTypes.png){
-        return `data:image/png;base64,${this.blobRaw}`;  
+      if (this.binaryTypes.png) {
+        return `data:image/png;base64,${this.blobRaw}`;
       }
       return '';
-      
     },
 
     svgBlobWithDataURI() {
-      if(this.binaryTypes.svg){
+      if (this.binaryTypes.svg) {
         return `data:image/svg+xml;utf8,${this.blobRaw}`;
       }
       return '';
@@ -32,11 +31,11 @@ const RepoBinaryViewer = {
     },
 
     getBinaryType() {
-      if(this.binaryTypes.hasOwnProperty(this.activeFile.extension)) {
+      if (this.binaryTypes.hasOwnProperty(this.activeFile.extension)) {
         return this.activeFile.extension;
       }
       return 'unknown';
-    }
+    },
   },
 
   watch: {

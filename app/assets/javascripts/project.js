@@ -123,10 +123,9 @@ import Cookies from 'js-cookie';
               var shouldVisit = typeof $visit === 'undefined' ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
-              if(shouldVisit){
-                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());  
+              if (shouldVisit) {
+                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
               }
-              
             }
           }
         });

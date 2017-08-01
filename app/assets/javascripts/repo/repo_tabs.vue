@@ -20,7 +20,7 @@ const RepoTabs = {
 
     xclicked(file) {
       Store.removeFromOpenedFiles(file);
-    }
+    },
   },
 
   watch: {

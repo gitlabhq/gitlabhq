@@ -24,7 +24,7 @@ export default class RepoEditButton {
       },
       methods: {
         editClicked() {
-          if(this.changedFiles.length) {
+          if (this.changedFiles.length) {
             this.dialog.open = true;
             return;
           }

@@ -30,9 +30,9 @@ GitLabDropdownInput = (function() {
       }
     })
     .on('input', function(e) {
-      var val = e.currentTarget.value || 'new-branch'
+      var val = e.currentTarget.value || 'new-branch';
       val = val.split(' ').join('-') // replaces space with dash
-        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() //replace non alphanumeric
+        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
         .replace(/(-)\1+/g, '-'); // replace repeated dashes
       _this.cb(_this.options.fieldName, val, {}, true);
       _this.input.closest('.dropdown')
@@ -43,7 +43,7 @@ GitLabDropdownInput = (function() {
 
   GitLabDropdownInput.prototype.onInput = function(cb) {
     this.cb = cb;
-  }
+  };
 
   return GitLabDropdownInput;
 })();
@@ -306,9 +306,9 @@ GitLabDropdown = (function() {
         });
       }
     }
-    if(this.noFilterInput.length) {
+    if (this.noFilterInput.length) {
       this.plainInput = new GitLabDropdownInput(this.noFilterInput, this.options);
-      this.plainInput.onInput(this.addInput.bind(this))
+      this.plainInput.onInput(this.addInput.bind(this));
     }
     // Init filterable
     if (this.options.filterable) {
@@ -798,10 +798,10 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
     var $input;
     // Create hidden input for form
-    if(single){
-      $('input[name="' + fieldName + '"]').remove();  
+    if (single) {
+      $('input[name="' + fieldName + '"]').remove();
     }
-    
+
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);

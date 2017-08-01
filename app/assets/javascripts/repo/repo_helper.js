@@ -58,7 +58,7 @@ const RepoHelper = {
 
     file.opened = true;
     file.icon = 'fa-folder-open';
-    RepoHelper.toURL(file.url, file.name)
+    RepoHelper.toURL(file.url, file.name);
     return file;
   },
 
@@ -281,7 +281,7 @@ const RepoHelper = {
 
     history.pushState({ key: RepoHelper.key }, '', url);
 
-    if(title) {
+    if (title) {
       document.title = `${title} · GitLab`;
     }
   },

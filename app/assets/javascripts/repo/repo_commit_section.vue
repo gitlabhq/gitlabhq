@@ -2,24 +2,22 @@
 /* global Flash */
 import Store from './repo_store';
 import Api from '../api';
-import RepoMixin from './repo_mixin'
-import Helper from './repo_helper'
+import RepoMixin from './repo_mixin';
+import Helper from './repo_helper';
 
 const RepoCommitSection = {
   data: () => Store,
 
   mixins: [RepoMixin],
-  
+
   computed: {
     branchPaths() {
-      let branch = Helper.getBranch();
-      return this.changedFiles.map((f) => {
-        return Helper.getFilePathFromFullPath(f.url, branch);
-      });
+      const branch = Helper.getBranch();
+      return this.changedFiles.map(f => Helper.getFilePathFromFullPath(f.url, branch));
     },
 
     filePluralize() {
-      return this.changedFiles.length > 1 ? 'files' : 'file'
+      return this.changedFiles.length > 1 ? 'files' : 'file';
     },
   },
 

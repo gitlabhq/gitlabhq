@@ -71,11 +71,11 @@ const RepoEditor = {
         readOnly,
       });
 
-      if(this.editMode){
+      if (this.editMode) {
         $('.project-refs-form').addClass('disabled');
         $('.fa-long-arrow-right').show();
         $('.project-refs-target-form').show();
-      }else{
+      } else {
         $('.project-refs-form').removeClass('disabled');
         $('.fa-long-arrow-right').hide();
         $('.project-refs-target-form').hide();
@@ -88,10 +88,10 @@ const RepoEditor = {
 
     dialog: {
       handler(obj) {
-        if(obj.status) {
+        if (obj.status) {
           obj.status = false;
           this.openedFiles.map((f) => {
-            if(f.active) {
+            if (f.active) {
               this.blobRaw = f.plain;
             }
             f.changed = false;

@@ -13,7 +13,7 @@ import RepoBinaryViewer from './repo_binary_viewer.vue';
 import RepoEditor from './repo_editor.vue';
 import monacoLoader from './monaco_loader';
 import RepoMixin from './repo_mixin';
-import PopupDialog from '../vue_shared/components/popup_dialog.vue'
+import PopupDialog from '../vue_shared/components/popup_dialog.vue';
 
 Vue.use(Translate);
 
@@ -40,7 +40,7 @@ function addEventsForNonVueEls() {
   window.onbeforeunload = function (e) {
     const hasChanged = Store.openedFiles
       .some(file => file.changed);
-    if(!hasChanged) return;
+    if (!hasChanged) return;
     e = e || window.event;
     if (e) {
       e.returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -52,7 +52,6 @@ function addEventsForNonVueEls() {
 
 function initRepo() {
   const repo = document.getElementById('repo');
-
 
   Store.service = Service;
   Store.service.url = repo.dataset.url;
@@ -107,8 +106,8 @@ function initRepo() {
       dialogSubmitted(status) {
         this.dialog.open = false;
         this.dialog.status = status;
-      }
-    }
+      },
+    },
   });
 
   const editButton = document.getElementById('editable-mode');
