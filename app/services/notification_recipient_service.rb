@@ -50,9 +50,18 @@ module NotificationRecipientService
 
       def <<(arg)
         users, type = arg
+
+        if users.is_a?(ActiveRecord::Relation)
+          users = users.includes(:notification_settings)
+        end
+
         users = Array(users)
         users.compact!
         recipients.concat(users.map { |u| make_recipient(u, type) })
+      end
+
+      def user_scope
+        User.includes(:notification_settings)
       end
 
       def make_recipient(user, type)
@@ -114,7 +123,7 @@ module NotificationRecipientService
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
-        self << [User.find(user_ids), :watch]
+        self << [user_scope.where(id: user_ids), :watch]
       end
 
       def add_project_watchers
@@ -133,7 +142,7 @@ module NotificationRecipientService
         user_ids_with_project_setting = select_project_members_ids(project, user_ids_with_project_global, user_ids)
         user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
 
-        User.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq).to_a
+        user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
       end
 
       def add_subscribed_users
