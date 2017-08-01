@@ -311,10 +311,6 @@ module NotificationRecipientService
         @read_ability ||= :"read_#{target.class.model_name.name.underscore}"
       end
 
-      def subject
-        note.for_personal_snippet? ? note.noteable : note.project
-      end
-
       def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
