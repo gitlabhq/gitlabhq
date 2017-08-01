@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GeoRepositoryDestroyWorker do
   let!(:project) { create :project_empty_repo }
-  let!(:path) { project.repository.path_with_namespace }
+  let!(:path) { project.repository.full_path }
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
   let(:perform!) { subject.perform(project.id, project.name, path) }
 

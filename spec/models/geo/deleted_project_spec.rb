@@ -23,7 +23,7 @@ RSpec.describe Geo::DeletedProject, type: :model do
   describe '#repository' do
     it 'returns a valid repository' do
       expect(subject.repository).to be_kind_of(Repository)
-      expect(subject.repository.path_with_namespace).to eq('root/sample')
+      expect(subject.repository.full_path).to eq('root/sample')
     end
   end
 end
