@@ -6,7 +6,7 @@ module Storage
       full_path
     end
 
-    def ensure_dir_exist
+    def ensure_storage_path_exist
       gitlab_shell.add_namespace(repository_storage_path, namespace.full_path)
     end
 
