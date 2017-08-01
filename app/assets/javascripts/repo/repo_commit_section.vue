@@ -27,7 +27,6 @@ const RepoCommitSection = {
       const branch = Helper.getBranch();
       const commitMessage = this.commitMessage;
       const actions = this.changedFiles.map((f) => {
-        const filePath = Helper.getFilePathFromFullPath(f.url, branch);
         return {
           action: 'update',
           file_path: Helper.getFilePathFromFullPath(f.url, branch),

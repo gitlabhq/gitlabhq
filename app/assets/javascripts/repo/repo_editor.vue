@@ -89,13 +89,16 @@ const RepoEditor = {
     dialog: {
       handler(obj) {
         if (obj.status) {
-          obj.status = false;
-          this.openedFiles.map((f) => {
+          obj.status = false; // eslint-disable-line no-param-reassign
+          this.openedFiles.map((file) => {
+            const f = file;
             if (f.active) {
               this.blobRaw = f.plain;
             }
             f.changed = false;
             delete f.newContent;
+
+            return f;
           });
           this.editMode = false;
         }

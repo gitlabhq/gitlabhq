@@ -42,7 +42,9 @@ describe('RepoCommitSection', () => {
     expect(changedFiles.length).toEqual(2);
 
     changedFiles.forEach((changedFile, i) => {
-      expect(changedFile.textContent).toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[i].url, branch));
+      const filePath = RepoHelper.getFilePathFromFullPath(openedFiles[i].url, branch);
+
+      expect(changedFile.textContent).toEqual(filePath);
     });
 
     expect(commitMessage.tagName).toEqual('TEXTAREA');
