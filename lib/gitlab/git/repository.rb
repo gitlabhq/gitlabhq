@@ -636,6 +636,33 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def languages(ref = nil)
+        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.languages(ref)
+          else
+            ref ||= rugged.head.target_id
+            languages = Linguist::Repository.new(rugged, ref).languages
+            total = languages.map(&:last).sum
+
+            languages = languages.map do |language|
+              name, share = language
+              color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
+              {
+                value: (share.to_f * 100 / total).round(2),
+                label: name,
+                color: color,
+                highlight: color
+              }
+            end
+
+            languages.sort do |x, y|
+              y[:value] <=> x[:value]
+            end
+          end
+        end
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path)
       end

@@ -28,9 +28,9 @@
     = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
       = link_to issues_group_path(@group), title: 'Issues' do
         %span
-          Issues
           - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
           %span.badge.count= number_with_delimiter(issues.count)
+          Issues
 
       %ul.sidebar-sub-level-items
         = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
@@ -51,9 +51,9 @@
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
         %span
-          Merge Requests
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
           %span.badge.count= number_with_delimiter(merge_requests.count)
+          Merge Requests
     = nav_link(path: 'group_members#index') do
       = link_to group_group_members_path(@group), title: 'Members' do
         %span

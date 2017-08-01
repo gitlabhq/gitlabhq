@@ -96,7 +96,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   #   Example: '/etc/ca.pem'
   #
-  ca_cert: ''
+  ca_file: ''
 
   # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
   # is not appropriate.
@@ -259,9 +259,9 @@ group you can use the following syntax:
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
-Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
+Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
-nested members in the user filter should not be confused with 
+nested members in the user filter should not be confused with
 [group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by

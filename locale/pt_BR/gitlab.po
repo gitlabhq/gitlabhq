@@ -413,14 +413,14 @@ msgstr[0] "Fork"
 msgstr[1] "Forks"
 
 msgid "ForkedFromProjectPath|Forked from"
-msgstr "Forked de"
+msgstr "Fork criado a partir de"
 
 msgid "From issue creation until deploy to production"
 msgstr "Da abertura de tarefas até a implantação para a produção"
 
 msgid "From merge request merge until deploy to production"
 msgstr ""
-"Da aceitação da solicitação de incorporação  até a implantação em produção"
+"Do merge request até a implantação em produção"
 
 msgid "Go to your fork"
 msgstr "Ir para seu fork"
@@ -576,7 +576,7 @@ msgid "NotificationEvent|Successful pipeline"
 msgstr "Pipeline bem sucedido"
 
 msgid "NotificationLevel|Custom"
-msgstr "Personalizar"
+msgstr "Personalizado"
 
 msgid "NotificationLevel|Disabled"
 msgstr "Desabilitado"
@@ -881,9 +881,9 @@ msgid ""
 "the issue to a milestone, or add the issue to a list on your Issue Board. "
 "Begin creating issues to see data for this stage."
 msgstr ""
-"A etapa de relatos mostra o tempo que leva desde a criação de uma issue até "
-"sua atribuição a um marco, ou sua adição a uma lista no seu Issue Board. "
-"Comece a criar issues para ver dados para esta etapa."
+"A etapa de planejamento mostra o tempo que se leva desde a criação de uma "
+"issue até sua atribuição à um milestone, ou sua adição a uma lista no seu "
+"Issue Board. Comece a criar issues para ver dados para esta etapa."
 
 msgid "The phase of the development lifecycle."
 msgstr "A fase do ciclo de vida do desenvolvimento."
@@ -974,7 +974,7 @@ msgid "Time before an issue gets scheduled"
 msgstr "Tempo até que uma issue seja agendada"
 
 msgid "Time before an issue starts implementation"
-msgstr "Tempo até que uma issue comece a ser implementado"
+msgstr "Tempo até que uma issue comece a ser implementada"
 
 msgid "Time between merge request creation and merge/close"
 msgstr ""

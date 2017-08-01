@@ -2,7 +2,7 @@
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is what you use to store your codebase in GitLab and change it with version control.
-A repository is part of a project, which has a lot of other features.
+A repository is part of a [project](../index.md), which has a lot of other features.
 
 ## Create a repository
 

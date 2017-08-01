@@ -313,6 +313,29 @@ header {
   .impersonation i {
     color: $red-500;
   }
+
+  // TODO: fallback to global style
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
+}
+
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
 }
 
 .navbar-nav {

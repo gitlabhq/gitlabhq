@@ -129,10 +129,14 @@ RSpec.configure do |config|
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.around(:each, :nested_groups) do |example|

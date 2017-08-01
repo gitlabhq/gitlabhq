@@ -53,13 +53,13 @@ describe ProjectsHelper do
     end
 
     it "returns a valid cach key" do
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-#{project.commit.id}-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-#{project.commit.id}-readme")
     end
 
     it "returns a valid cache key if HEAD does not exist" do
       allow(project).to receive(:commit) { nil }
 
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-nil-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-nil-readme")
     end
   end
 
