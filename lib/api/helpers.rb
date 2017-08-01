@@ -33,10 +33,6 @@ module API
       @project ||= find_project!(params[:id])
     end
 
-    def user_group
-      @group ||= find_group!(params[:id])
-    end
-
     def available_labels
       @available_labels ||= LabelsFinder.new(current_user, project_id: user_project.id).execute
     end
