@@ -199,32 +199,6 @@ module NotificationRecipientService
         )
       end
 
-      def reject_unsubscribed_users
-        return unless target.respond_to? :subscriptions
-
-        recipients.reject! do |recipient|
-          user = recipient.user
-          subscription = target.subscriptions.find_by_user_id(user.id)
-          subscription && !subscription.subscribed
-        end
-      end
-
-      def reject_users_without_access
-        recipients.select! { |r| r.user.can?(:receive_notifications) }
-
-        return unless read_ability
-
-        DeclarativePolicy.subject_scope do
-          recipients.select! do |recipient|
-            recipient.user.can?(read_ability, target)
-          end
-        end
-      end
-
-      def reject_user(user)
-        recipients.reject! { |r| r.user == user }
-      end
-
       def add_labels_subscribers(labels: nil)
         return unless target.respond_to? :labels
 
