@@ -28,8 +28,9 @@ module DeclarativePolicy
 
       subject = find_delegate(subject)
 
-      class_for_class(subject.class) \
-        or raise "no policy for #{subject.class.name}"
+      policy_class = class_for_class(subject.class)
+      raise "no policy for #{subject.class.name}" if policy_class.nil?
+      policy_class
     end
 
     def has_policy?(subject)
