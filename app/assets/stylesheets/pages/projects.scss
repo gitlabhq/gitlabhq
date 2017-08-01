@@ -489,7 +489,7 @@ a.deploy-project-label {
     @media (max-width: $screen-md-max) {
       .btn-template-icon {
         display: inline-block;
-        height: 20px;
+        height: 14px;
         font-size: 14px;
         margin: 0;
       }
@@ -507,8 +507,6 @@ a.deploy-project-label {
       fill: #70AD51;
     }
 
-
-
     > div {
       margin-bottom: 10px;
       padding-left: 0;
@@ -516,93 +514,50 @@ a.deploy-project-label {
   }
 }
 
-.project-template {
+.new-project-second-column {
+  padding-top: 30px;
 
-  &:after {
+  @media (min-width: $screen-lg-min) {
+    padding-top: 0;
+  }
+
+  &::before {
     content: "OR";
     position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 10;
+    padding: 0 10px;
+    text-align: center;
+    background-color: $white-light;
     color: $gray-darkest;
-    right: 13px;
-    z-index: 2;
-    top: 78px;
-  }
+    transform: translateX(-50%);
 
-  @media (max-width: $screen-md-max) {
-    &:after {
-      top: 100%;
-      left: 49%;
-      margin-top: 10px;
+    @media (min-width: $screen-lg-min) {
+      left: -35px;
+      top: 50%;
+      padding: 10px 0;
+      width: 20px;
+      line-height: 20px;
+      transform: translateY(-50%);
     }
   }
 
-  @media (max-width: $screen-xs-min) {
-    &:after {
-      top: 100%;
-      left: 46%;
-      margin-top: 10px;
-    }
-  }
-
-  @media (min-width: $screen-xs-max) and (max-width: $screen-md-max) {
-    &:after {
-      top: 100%;
-      left: 49%;
-      margin-top: 10px;
-    }
-  }
-
-}
-
-.new-project-first-column {
-  &:after {
-    background: $white-light;
-    content: " ";
+  &::after {
+    content: "";
     position: absolute;
-    top: 66%;
-    height: 40px;
-    width: 20px;
-    right: 7px;
-    z-index: 1;
-  }
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    height: 1px;
+    background-color: $gray-darkest;
 
-  @media (min-width: $screen-xs-max) and (max-width: $screen-md-max) {
-    margin-bottom: 40px;
-    &:after {
-      top: 100%;
-      left: 47%;
-      width: 50px;
-    }
-  }
-
-  @media (max-width: $screen-xs-max) {
-    margin-bottom: 40px;
-
-    &:after {
-      top: 100%;
-      left: 42%;
-      width: 50px;
-    }
-  }
-}
-
-.new-project-second-column {
-  &:before {
-    background: $gray-darkest;
-    width: 1px;
-    height: 100%;
-    position: absolute;
-    left: -23px;
-    display: inline-block;
-    content: " ";
-  }
-
-  @media (max-width: $screen-md-max) {
-    &:before {
-      height: 1px;
-      left: 15px;
-      top: -20px;
-      right: 15px;
-      width: auto;
+    @media (min-width: $screen-lg-min) {
+      bottom: 0;
+      left: -25px;
+      right: auto;
+      height: 100%;
+      width: 1px;
     }
   }
 }
