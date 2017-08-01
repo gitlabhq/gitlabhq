@@ -248,7 +248,15 @@
     padding: 16px 0;
   }
 
+  .trigger-build-variables {
+    margin: 0;
+    overflow-x: auto;
+    -ms-overflow-style: scrollbar;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .trigger-build-variable {
+    font-weight: normal;
     color: $code-color;
   }
 
