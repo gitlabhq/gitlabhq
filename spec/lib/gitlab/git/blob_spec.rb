@@ -78,12 +78,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
     context 'large file' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
+      let(:stub_limit) { 1000 }
+
+      before do
+        stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', stub_limit)
+      end
 
       it { expect(blob.size).to eq(blob_size) }
-      it { expect(blob.data.length).to eq(blob_size) }
+      it { expect(blob.data.length).to eq(stub_limit) }
 
       it 'check that this test is sane' do
-        expect(blob.size).to be <= Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
+        # It only makes sense to test limiting if the blob is larger than the limit.
+        expect(blob.size).to be > Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
       end
 
       it 'can load all data' do
