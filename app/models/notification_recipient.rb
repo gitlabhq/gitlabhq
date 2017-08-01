@@ -27,7 +27,8 @@ class NotificationRecipient
 
   def notification_level
     # custom is treated the same as watch if it's enabled - otherwise it's
-    # as :disabled.
+    # set to :custom, meaning to send exactly when our type is :participating
+    # or :mention.
     @notification_level ||=
       case raw_notification_level
       when :custom
