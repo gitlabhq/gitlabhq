@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape, max-len, quotes, no-var, no-underscore-dangle, func-names, space-before-function-paren, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
 
-import 'vendor/cropper';
+import 'cropper';
 
 ((global) => {
   // Matches everything but the file name
