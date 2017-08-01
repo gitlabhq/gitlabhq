@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import FilteredSearchContainer from './container';
 
 class DropdownUtils {

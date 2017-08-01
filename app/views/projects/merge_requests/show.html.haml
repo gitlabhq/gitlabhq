@@ -18,6 +18,7 @@
 
     -# haml-lint:disable InlineJavaScript
     :javascript
+      window.gl = window.gl || {};
       window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
       // Append static, server-generated data not included in merge request entity (EE-Only)
