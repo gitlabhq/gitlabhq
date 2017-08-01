@@ -58,7 +58,9 @@ module API
     def find_project!(id)
       project = find_project(id)
 
-      if can?(current_user, :read_project, project)
+      if ci_job_token && !current_user.authorized_projects.exists?(project)
+        not_found!('Project')
+      elsif can?(current_user, :read_project, project)
         project
       else
         not_found!('Project')
@@ -84,7 +86,9 @@ module API
     def find_group!(id)
       group = find_group(id)
 
-      if can?(current_user, :read_group, group)
+      if ci_job_token
+        not_found!('Group')
+      elsif can?(current_user, :read_group, group)
         group
       else
         not_found!('Group')
@@ -348,6 +352,10 @@ module API
 
     def private_token
       params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
+    end
+
+    def ci_job_token
+      params[APIGuard::CI_JOB_TOKEN_PARAM] || env[APIGuard::CI_JOB_TOKEN_HEADER]
     end
 
     def warden

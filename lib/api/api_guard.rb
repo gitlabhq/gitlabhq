@@ -8,7 +8,8 @@ module API
 
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
     PRIVATE_TOKEN_PARAM = :private_token
-    CI_JOB_TOKEN_PARAM = :ci_job_token
+    CI_JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
+    CI_JOB_TOKEN_PARAM = :job_token
 
     included do |base|
       # OAuth2 Resource Server Authentication
@@ -91,11 +92,10 @@ module API
       def find_user_by_ci_token
         return nil unless route_authentication_setting[:job_token_allowed]
 
-        job_token = params[CI_JOB_TOKEN_PARAM].to_s
+        token_string = (params[CI_JOB_TOKEN_PARAM] || env[CI_JOB_TOKEN_HEADER]).to_s
+        return nil unless token_string.present?
 
-        return nil unless job_token.present?
-
-        Ci::Build.find_by_token(job_token)&.user
+        Ci::Build.find_by_token(token_string)&.user
       end
 
       def current_user
