@@ -330,7 +330,7 @@ import FeatureHelper from './helpers/feature_helper';
           if (FeatureHelper.isNewRepo()) break;
 
           if ($('#tree-slider').length) new TreeView();
-          if ($('#blob-viewer').length) new BlobViewer();
+          if ($('.blob-viewer').length) new BlobViewer();
           break;
         case 'projects:edit':
           setupProjectEdit();
