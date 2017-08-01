@@ -8,6 +8,7 @@ describe('Fly out sidebar navigation', () => {
   let el;
   beforeEach(() => {
     el = document.createElement('div');
+    el.style.position = 'relative';
     document.body.appendChild(el);
   });
 
@@ -89,7 +90,7 @@ describe('Fly out sidebar navigation', () => {
 
   describe('showSubLevelItems', () => {
     beforeEach(() => {
-      el.innerHTML = '<div class="sidebar-sub-level-items"></div>';
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute;"></div>';
     });
 
     it('adds is-over class to el', () => {
@@ -111,18 +112,17 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('sets transform of sub-items', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
       showSubLevelItems(el);
 
       expect(
-        el.querySelector('.sidebar-sub-level-items').style.transform,
-      ).toBe(`translate3d(0px, ${el.offsetTop}px, 0px)`);
+        subItems.style.transform,
+      ).toBe(`translate3d(0px, ${el.getBoundingClientRect().top}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
       subItems.style.height = `${window.innerHeight + el.offsetHeight}px`;
-      subItems.style.position = 'absolute';
-      el.style.position = 'relative';
       el.style.top = `${window.innerHeight - el.offsetHeight}px`;
 
       spyOn(subItems.classList, 'add');

@@ -18,7 +18,7 @@ export const showSubLevelItems = (el) => {
   const top = calculateTop(boundingRect, $subitems.offsetHeight);
   const isAbove = top < boundingRect.top;
 
-  $subitems.style.transform = `translate3d(0, ${top}px, 0)`;
+  $subitems.style.transform = `translate3d(0, ${Math.floor(top)}px, 0)`;
 
   if (isAbove) {
     $subitems.classList.add('is-above');
