@@ -44,6 +44,10 @@ module NotificationRecipientService
         raise 'abstract'
       end
 
+      def project
+        target.project
+      end
+
       def recipients
         @recipients ||= []
       end
@@ -138,7 +142,7 @@ module NotificationRecipientService
 
         user_ids = user_ids_with_global_level_watch((user_ids_with_project_global + user_ids_with_group_global).uniq)
 
-        user_ids_with_project_setting = select_project_members_ids(project, user_ids_with_project_global, user_ids)
+        user_ids_with_project_setting = select_project_members_ids(user_ids_with_project_global, user_ids)
         user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
@@ -163,7 +167,7 @@ module NotificationRecipientService
       end
 
       # Build a list of user_ids based on project notification settings
-      def select_project_members_ids(project, global_setting, user_ids_global_level_watch)
+      def select_project_members_ids(global_setting, user_ids_global_level_watch)
         user_ids = user_ids_notifiable_on(project, :watch)
 
         # If project setting is global, add to watch list if global setting is watch
@@ -230,14 +234,12 @@ module NotificationRecipientService
     end
 
     class Default < Base
-      attr_reader :project
       attr_reader :target
       attr_reader :current_user
       attr_reader :action
       attr_reader :previous_assignee
       attr_reader :skip_current_user
-      def initialize(project, target, current_user, action:, previous_assignee: nil, skip_current_user: true)
-        @project = project
+      def initialize(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
         @action = action
@@ -280,12 +282,10 @@ module NotificationRecipientService
     end
 
     class Relabeled < Base
-      attr_reader :project
       attr_reader :target
       attr_reader :current_user
       attr_reader :labels
-      def initialize(project, target, current_user, labels:)
-        @project = project
+      def initialize(target, current_user, labels:)
         @target = target
         @current_user = current_user
         @labels = labels
@@ -297,13 +297,17 @@ module NotificationRecipientService
     end
 
     class NewNote < Base
-      attr_reader :project
       attr_reader :note
-      attr_reader :target
-      def initialize(project, note)
-        @project = project
+      def initialize(note)
         @note = note
-        @target = note.noteable
+      end
+
+      def target
+        note.noteable
+      end
+
+      def project
+        note.project
       end
 
       def read_ability
