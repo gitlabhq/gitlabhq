@@ -54,7 +54,7 @@ class NotificationRecipient
 
     return false if %i[watch participating].include?(notification_level) && excluded_watcher_action?
 
-    return false unless NotificationSetting.levels[notification_level] <= NotificationSetting.levels[type]
+    return false unless NotificationSetting.levels[notification_level] <= NotificationSetting.levels[@type]
 
     return false if unsubscribed?
 
