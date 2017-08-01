@@ -6,7 +6,7 @@ class AddProtectedToCiPipelines < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:ci_pipelines, :protected, :boolean, default: false)
+    add_column(:ci_pipelines, :protected, :boolean)
   end
 
   def down
