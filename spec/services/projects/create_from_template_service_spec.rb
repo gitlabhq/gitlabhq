@@ -12,7 +12,7 @@ describe Projects::CreateFromTemplateService do
   subject { described_class.new(user, project_params) }
 
   it 'calls the importer service' do
-    expect_any_instance_of(Projects::GitlabProjectsImporterService).to receive(:execute)
+    expect_any_instance_of(Projects::GitlabProjectsImportService).to receive(:execute)
 
     subject.execute
   end

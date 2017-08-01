@@ -35,13 +35,28 @@ describe Gitlab::ProjectTemplate do
   end
 
   describe 'validate all templates' do
+    set(:admin) { create(:admin) }
+
     described_class.all.each do |template|
       it "#{template.name} has a valid archive" do
         archive = template.archive_path
-        logo = Rails.root.join("app/assets/images/#{template.logo_path}")
 
         expect(File.exist?(archive)).to be(true)
-        expect(File.exist?(logo)).to be(true)
+      end
+
+      context 'with valid parameters' do
+        it 'can be imported' do
+          params = {
+            template_name: template.name,
+            namespace_id: admin.namespace.id,
+            path: template.name
+          }
+
+          project = Projects::CreateFromTemplateService.new(admin, params).execute
+
+          expect(project).to be_valid
+          expect(project).to be_persisted
+        end
       end
     end
   end

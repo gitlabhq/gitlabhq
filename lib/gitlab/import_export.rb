@@ -17,7 +17,7 @@ module Gitlab
     def import_upload_path(filename:)
       milliseconds = Process.clock_gettime(Process::CLOCK_REALTIME, :millisecond)
 
-      File.join(storage_path, 'uploads', "#{millisecond}-#{filename}")
+      File.join(storage_path, 'uploads', "#{milliseconds}-#{filename}")
     end
 
     def project_filename

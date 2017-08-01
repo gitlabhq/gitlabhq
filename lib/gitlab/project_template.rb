@@ -24,13 +24,13 @@ module Gitlab
       name == other.name && title == other.title
     end
 
-    TemplatesTable = [
+    TEMPLATES_TABLE = [
       ProjectTemplate.new('rails', 'Ruby on Rails')
     ].freeze
 
     class << self
       def all
-        TemplatesTable
+        TEMPLATES_TABLE
       end
 
       def find(name)

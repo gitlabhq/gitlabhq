@@ -10,15 +10,15 @@ feature 'Project', feature: true do
       visit new_project_path
     end
 
-    it "allows creation from the #{template.name} template" do
-      fill_in("project_template_title", with: template.title)
+    it "allows creation from templates" do
+      fill_in("project_template_name", with: template.title)
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
         click_button "Create project"
       end
 
-      expect(page).to have_content 'Import'
+      expect(page).to have_content 'Import in progress'
     end
   end
 

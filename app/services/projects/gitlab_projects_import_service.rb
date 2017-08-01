@@ -2,7 +2,7 @@
 # creating a project from a template.
 # The latter will under the hood just import an archive supplied by GitLab.
 module Projects
-  class GitlabProjectsImporterService
+  class GitlabProjectsImportService
     attr_reader :current_user, :params
 
     def initialize(user, params)

@@ -329,7 +329,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
-      :template_title,
+      :template_name,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -352,7 +352,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_from_template?
-    project_params[:template_title]&.present?
+    project_params[:template_name]&.present?
   end
 
   def project_view_files?
