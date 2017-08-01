@@ -33,8 +33,68 @@ class NotificationRecipientService
         NotificationRecipientService.notification_setting_for_user_project(user, @builder.project)
     end
 
-    def notification_level
+    def raw_notification_level
       notification_setting&.level&.to_sym
+    end
+
+    def notification_level
+      # custom is treated the same as watch if it's enabled - otherwise it's
+      # as :disabled.
+      @notification_level ||=
+        case raw_notification_level
+        when :custom
+          notification_setting.event_enabled?(@builder.custom_action) ? :watch : :custom
+        else
+          raw_notification_level
+        end
+    end
+
+    def notifiable?
+      return false unless has_access?
+      return false if own_activity?
+
+      return true if @type == :subscription
+
+      return false if notification_level.nil? || notification_level == :disabled
+
+      return %i[participating mention].include?(@type) if notification_level == :custom
+
+      return false if %i[watch participating].include?(notification_level) && excluded_watcher_action?
+
+      return false unless NotificationSetting.levels[notification_level] <= NotificationSetting.levels[type]
+
+      return false if unsubscribed?
+
+      true
+    end
+
+    def unsubscribed?
+      return false unless @builder.target.respond_to?(:subscriptions)
+
+      subscription = @builder.target.subscriptions.find_by_user_id(@user.id)
+      subscription && !subscription.subscribed
+    end
+
+    def own_activity?
+      return false unless @builder.acting_user
+      return false if @builder.acting_user.notified_of_own_activity?
+
+      user == @builder.acting_user
+    end
+
+    def has_access?
+      return false unless user.can?(:receive_notifications)
+      return true unless @builder.read_ability
+
+      DeclarativePolicy.subject_scope do
+        user.can?(@builder.read_ability, @builder.target)
+      end
+    end
+
+    def excluded_watcher_action?
+      return false if raw_notification_level == :custom
+
+      NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@builder.custom_action)
     end
   end
 
@@ -49,7 +109,11 @@ class NotificationRecipientService
       end
 
       def filter!
-        raise 'abstract'
+        recipients.select!(&:notifiable?)
+      end
+
+      def acting_user
+        current_user
       end
 
       def target
@@ -78,12 +142,6 @@ class NotificationRecipientService
           end
       end
 
-      # Remove users with disabled notifications from array
-      # Also remove duplications and nil recipients
-      def reject_muted_users
-        reject_users(:disabled)
-      end
-
       def read_ability
         @read_ability ||=
           case target
@@ -99,23 +157,23 @@ class NotificationRecipientService
       def add_participants(user)
         return unless target.respond_to?(:participants)
 
-        self << [target.participants(user), :participating]
+        self << [target.participants(user), :watch]
       end
 
       # Get project/group users with CUSTOM notification level
-      def add_custom_notifications(action)
+      def add_custom_notifications
         user_ids = []
 
         # Users with a notification setting on group or project
-        user_ids += user_ids_notifiable_on(project, :custom, action)
-        user_ids += user_ids_notifiable_on(project.group, :custom, action)
+        user_ids += user_ids_notifiable_on(project, :custom)
+        user_ids += user_ids_notifiable_on(project.group, :custom)
 
         # Users with global level custom
         user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
         user_ids_with_group_level_global   = user_ids_notifiable_on(project.group, :global)
 
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
-        user_ids += user_ids_with_global_level_custom(global_users_ids, action)
+        user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
         self << [User.find(user_ids), :watch]
       end
@@ -139,31 +197,22 @@ class NotificationRecipientService
         User.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq).to_a
       end
 
-      # Remove users with notification level 'Mentioned'
-      def reject_mention_users
-        recipients.select! do |r|
-          next true if r.type == :mention
-          next true if r.type == :subscription
-          r.notification_level != :mention
-        end
-      end
-
       def add_subscribed_users
         return unless target.respond_to? :subscribers
 
         self << [target.subscribers(project), :subscription]
       end
 
-      def user_ids_notifiable_on(resource, notification_level = nil, action = nil)
+      def user_ids_notifiable_on(resource, notification_level = nil)
         return [] unless resource
 
+        scope = resource.notification_settings
+
         if notification_level
-          settings = resource.notification_settings.where(level: NotificationSetting.levels[notification_level])
-          settings = settings.select { |setting| setting.event_enabled?(action) } if action.present?
-          settings.map(&:user_id)
-        else
-          resource.notification_settings.pluck(:user_id)
+          scope = scope.where(level: NotificationSetting.levels[notification_level])
         end
+
+        scope.pluck(:user_id)
       end
 
       # Build a list of user_ids based on project notification settings
@@ -220,26 +269,6 @@ class NotificationRecipientService
         )
       end
 
-      # Reject users which has certain notification level
-      #
-      # Example:
-      #   reject_users(:watch, project)
-      #
-      def reject_users(level)
-        level = level.to_s
-
-        unless NotificationSetting.levels.keys.include?(level)
-          raise 'Invalid notification level'
-        end
-
-        recipients.reject! do |recipient|
-          user = recipient.user
-
-          setting = NotificationRecipientService.notification_setting_for_user_project(user, project)
-          setting.present? && setting.level == level
-        end
-      end
-
       def reject_unsubscribed_users
         return unless target.respond_to? :subscriptions
 
@@ -294,12 +323,9 @@ class NotificationRecipientService
       def build!
         add_participants(current_user)
         add_project_watchers
-        add_custom_notifications(custom_action)
-        reject_mention_users
+        add_custom_notifications
 
-        # Re-assign is considered as a mention of the new assignee so we add the
-        # new assignee to the list of recipients after we rejected users with
-        # the "on mention" notification level
+        # Re-assign is considered as a mention of the new assignee
         case custom_action
         when :reassign_merge_request
           self << [previous_assignee, :mention]
@@ -310,7 +336,6 @@ class NotificationRecipientService
           self << [target.assignees, :mention]
         end
 
-        reject_muted_users
         add_subscribed_users
 
         if [:new_issue, :new_merge_request].include?(custom_action)
@@ -318,14 +343,10 @@ class NotificationRecipientService
         end
       end
 
-      def filter!
-        reject_unsubscribed_users
-        reject_users_without_access
-
-        reject_user(current_user) if skip_current_user && !current_user.notified_of_own_activity?
+      def acting_user
+        current_user if skip_current_user
       end
 
-      private
       # Build event key to search on custom notification level
       # Check NotificationSetting::EMAIL_EVENTS
       def custom_action
@@ -345,30 +366,23 @@ class NotificationRecipientService
         @action = action
       end
 
+      def acting_user
+        nil
+      end
+
+      def custom_action
+        case action.to_s
+        when 'failed'
+          :failed_pipeline
+        when 'success'
+          :success_pipeline
+        end
+      end
+
       def build!
         return [] unless current_user
 
-        custom_action =
-          case action.to_s
-          when 'failed'
-            :failed_pipeline
-          when 'success'
-            :success_pipeline
-          end
-
-        notification_setting = NotificationRecipientService.notification_setting_for_user_project(current_user, target.project)
-
-        return if notification_setting.mention? || notification_setting.disabled?
-
-        return if notification_setting.custom? && !notification_setting.event_enabled?(custom_action)
-
-        return if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
-
-        self << [current_user, :subscriber]
-      end
-
-      def filter!
-        reject_users_without_access
+        self << [current_user, :watch]
       end
     end
 
@@ -386,12 +400,6 @@ class NotificationRecipientService
 
       def build!
         add_labels_subscribers(labels: labels)
-      end
-
-      def filter!
-        reject_unsubscribed_users
-        reject_users_without_access
-        reject_user(current_user) unless current_user.notified_of_own_activity?
       end
     end
 
@@ -420,30 +428,25 @@ class NotificationRecipientService
       def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
-        self << [note.mentioned_users, :mention] if recipients.empty?
+        self << [note.mentioned_users, :mention]
 
         unless note.for_personal_snippet?
           # Merge project watchers
           add_project_watchers
 
           # Merge project with custom notification
-          add_custom_notifications(:new_note)
+          add_custom_notifications
         end
-
-        # Reject users with Mention notification level, except those mentioned in _this_ note.
-        reject_mention_users
-        self << [note.mentioned_users, :mention]
-
-        reject_muted_users
 
         add_subscribed_users
       end
 
-      def filter!
-        reject_unsubscribed_users
-        reject_users_without_access
+      def custom_action
+        :new_note
+      end
 
-        reject_user(note.author) unless note.author.notified_of_own_activity?
+      def acting_user
+        note.author
       end
     end
   end
