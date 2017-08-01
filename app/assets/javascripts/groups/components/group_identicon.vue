@@ -1,10 +1,12 @@
 <script>
 export default {
+  name: 'group-identicon',
   props: {
-    id: {
+    entityId: {
+      type: Number,
       required: true,
     },
-    name: {
+    entityName: {
       type: String,
       required: true,
     },
@@ -24,14 +26,14 @@ export default {
         '#EEEEEE',
       ];
 
-      const backgroundColor = allowedColors[this.id % 7];
+      const backgroundColor = allowedColors[this.entityId % 7];
 
       return `background-color: ${backgroundColor}; color: #555;`;
     },
     identiconTitle() {
-      return this.name.charAt(0).toUpperCase();
-    }
-  }
+      return this.entityName.charAt(0).toUpperCase();
+    },
+  },
 };
 </script>
 
