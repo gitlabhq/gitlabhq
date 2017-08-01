@@ -1,7 +1,11 @@
 <script>
 import eventHub from '../event_hub';
+import groupIdenticon from './group_identicon.vue';
 
 export default {
+  components: {
+    groupIdenticon,
+  },
   props: {
     group: {
       type: Object,
@@ -93,11 +97,7 @@ export default {
       return Object.keys(this.group.subGroups).length > 0;
     },
     hasAvatar() {
-      if (this.group.avatarUrl) {
-        return this.group.avatarUrl.indexOf('/assets/no_group_avatar') === -1;
-      } else {
-        return false;
-      }
+      return this.group.avatarUrl && this.group.avatarUrl.indexOf('/assets/no_group_avatar') === -1;
     },
   },
 };
@@ -207,8 +207,8 @@ export default {
           />
           <group-identicon
             v-else
-            :id=group.id
-            :name="group.name"
+            :entityId=group.id
+            :entityName="group.name"
           />
         </a>
       </div>
