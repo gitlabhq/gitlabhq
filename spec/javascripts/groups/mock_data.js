@@ -1,5 +1,5 @@
 const group1 = {
-  id: '12',
+  id: 12,
   name: 'level1',
   path: 'level1',
   description: 'foo',
