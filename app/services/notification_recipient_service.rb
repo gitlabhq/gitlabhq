@@ -87,13 +87,12 @@ module NotificationRecipientService
       end
 
       def read_ability
-        @read_ability ||=
-          case target
-          when Issuable
-            :"read_#{target.to_ability_name}"
-          when Ci::Pipeline
-            :read_build # We have build trace in pipeline emails
-          end
+        case target
+        when Issuable
+          :"read_#{target.to_ability_name}"
+        when Ci::Pipeline
+          :read_build # We have build trace in pipeline emails
+        end
       end
 
       def custom_action
@@ -308,7 +307,9 @@ module NotificationRecipientService
       end
 
       def read_ability
-        @read_ability ||= :"read_#{target.class.model_name.name.underscore}"
+        return nil if target.nil?
+
+        :"read_#{target.class.model_name.name.underscore}"
       end
 
       def build!
