@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.3 (2017-07-31)
+
+- Fix Prometheus client PID reuse bug. !13130
+- Improve deploy environment chatops slash command. !13150
+- Fix asynchronous javascript paths when GitLab is installed under a relative URL. !13165
+- Fix LDAP authentication to Git repository or container registry.
+- Fixed new navigation breadcrumb title on help pages.
+- Ensure filesystem metrics test files are deleted.
+- Properly affixes nav bar in job view in microsoft edge.
+
 ## 9.4.2 (2017-07-28)
 
 - Fix job merge request link to a forked source project. !12965
