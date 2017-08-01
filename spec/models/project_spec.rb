@@ -2238,19 +2238,43 @@ describe Project do
   end
 
   describe '#remove_private_deploy_keys' do
-    it 'removes the private deploy keys of a project' do
-      project = create(:empty_project)
+    let!(:project) { create(:empty_project) }
 
-      private_key = create(:deploy_key, public: false)
-      public_key = create(:deploy_key, public: true)
+    context 'for a private deploy key' do
+      let!(:key) { create(:deploy_key, public: false) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
 
-      create(:deploy_keys_project, deploy_key: private_key, project: project)
-      create(:deploy_keys_project, deploy_key: public_key, project: project)
+      context 'when the key is not linked to another project' do
+        it 'removes the key' do
+          project.remove_private_deploy_keys
 
-      project.remove_private_deploy_keys
+          expect(project.deploy_keys).not_to include(key)
+        end
+      end
 
-      expect(project.deploy_keys.where(public: false).any?).to eq(false)
-      expect(project.deploy_keys.where(public: true).any?).to eq(true)
+      context 'when the key is linked to another project' do
+        before do
+          another_project = create(:empty_project)
+          create(:deploy_keys_project, deploy_key: key, project: another_project)
+        end
+
+        it 'does not remove the key' do
+          project.remove_private_deploy_keys
+
+          expect(project.deploy_keys).to include(key)
+        end
+      end
+    end
+
+    context 'for a public deploy key' do
+      let!(:key) { create(:deploy_key, public: true) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
+
+      it 'does not remove the key' do
+        project.remove_private_deploy_keys
+
+        expect(project.deploy_keys).to include(key)
+      end
     end
   end
 end
