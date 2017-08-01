@@ -329,13 +329,6 @@ import AuditLogs from './audit_logs';
           }).bindEvents();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
-<<<<<<< HEAD
-        case 'projects:commits:show':
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
-          break;
-=======
->>>>>>> upstream/master
         case 'projects:activity':
           new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
@@ -344,6 +337,7 @@ import AuditLogs from './audit_logs';
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
           new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
           break;
         case 'projects:edit':
           new UsersSelect();

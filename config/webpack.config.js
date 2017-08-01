@@ -78,11 +78,8 @@ var config = {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
-<<<<<<< HEAD
-=======
     ui_development_kit:   './ui_development_kit.js',
     users:                './users/index.js',
->>>>>>> upstream/master
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
