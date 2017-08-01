@@ -71,7 +71,7 @@ module Gitlab
           result.select { |group| group.metrics.any? }
         end
 
-        def common_query_context(environment, timeframe_start: 8.hours.ago.to_f, timeframe_end: Time.now.to_f)
+        def common_query_context(environment, timeframe_start:, timeframe_end:)
           {
             timeframe_start: timeframe_start,
             timeframe_end: timeframe_end,
