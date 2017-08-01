@@ -19,7 +19,8 @@
   }
 }
 
-.project-refs-form, .project-refs-target-form {
+.project-refs-form,
+.project-refs-target-form {
   display: inline-block;
 
   &.disabled {
@@ -101,6 +102,7 @@
           animation: swipeRightDissapear ease-in 0.1s;
           animation-iteration-count: 1;
           transform-origin: 0% 50%;
+
           a {
             width: 0;
           }
@@ -166,9 +168,10 @@
       .binary-unknown {
         text-align: center;
         padding-top: 100px;
-        background: #FAFAFA;
+        background: $gray-light;
         height: 100%;
         font-size: 17px;
+
         span {
           display: block;
         }
