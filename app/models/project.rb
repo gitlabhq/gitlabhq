@@ -47,7 +47,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  after_create :ensure_dir_exist
+  after_create :ensure_storage_path_exist
   after_create :create_project_feature, unless: :project_feature
   after_save :update_project_statistics, if: :namespace_id_changed?
 
@@ -72,7 +72,7 @@ class Project < ActiveRecord::Base
 
   # Legacy Storage specific hooks
 
-  after_save :ensure_dir_exist, if: :namespace_id_changed?
+  after_save :ensure_storage_path_exist, if: :namespace_id_changed?
 
   acts_as_taggable
 
