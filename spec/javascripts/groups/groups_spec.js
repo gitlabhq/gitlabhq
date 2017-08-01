@@ -2,7 +2,6 @@ import Vue from 'vue';
 import eventHub from '~/groups/event_hub';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
-import groupIdenticonComponent from '~/groups/components/group_identicon.vue';
 import groupsComponent from '~/groups/components/groups.vue';
 import GroupsStore from '~/groups/stores/groups_store';
 import { groupsData } from './mock_data';
@@ -15,7 +14,6 @@ describe('Groups Component', () => {
 
   beforeEach((done) => {
     Vue.component('group-folder', groupFolderComponent);
-    Vue.component('group-identicon', groupIdenticonComponent);
     Vue.component('group-item', groupItemComponent);
 
     store = new GroupsStore();
