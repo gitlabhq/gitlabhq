@@ -105,7 +105,7 @@ describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let(:project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
     let(:issue_a) { create(:issue, project: project) }
     let(:issue_b) { create(:issue, project: project) }
 

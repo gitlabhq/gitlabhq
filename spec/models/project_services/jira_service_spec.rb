@@ -190,7 +190,7 @@ describe JiraService do
   describe '#test_settings' do
     let(:jira_service) do
       described_class.new(
-        project: create(:project),
+        project: create(:empty_project),
         url: 'http://jira.example.com',
         username: 'jira_username',
         password: 'jira_password'

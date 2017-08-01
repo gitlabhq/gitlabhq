@@ -167,10 +167,10 @@ describe Projects::NotesController do
     end
 
     context 'when creating a commit comment from an MR fork' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       let(:fork_project) do
-        create(:project).tap do |fork|
+        create(:project, :repository).tap do |fork|
           create(:forked_project_link, forked_to_project: fork, forked_from_project: project)
         end
       end

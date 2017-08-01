@@ -5,7 +5,7 @@ describe FileUploader do
 
   describe '.absolute_path' do
     it 'returns the correct absolute path by building it dynamically' do
-      project = build_stubbed(:project)
+      project = build_stubbed(:empty_project)
       upload = double(model: project, path: 'secret/foo.jpg')
 
       dynamic_segment = project.path_with_namespace

@@ -261,27 +261,27 @@ describe Project do
 
     describe 'path validation' do
       it 'allows paths reserved on the root namespace' do
-        project = build(:project, path: 'api')
+        project = build(:empty_project, path: 'api')
 
         expect(project).to be_valid
       end
 
       it 'rejects paths reserved on another level' do
-        project = build(:project, path: 'tree')
+        project = build(:empty_project, path: 'tree')
 
         expect(project).not_to be_valid
       end
 
       it 'rejects nested paths' do
         parent = create(:group, :nested, path: 'environments')
-        project = build(:project, path: 'folders', namespace: parent)
+        project = build(:empty_project, path: 'folders', namespace: parent)
 
         expect(project).not_to be_valid
       end
 
       it 'allows a reserved group name' do
         parent = create(:group)
-        project = build(:project, path: 'avatar', namespace: parent)
+        project = build(:empty_project, path: 'avatar', namespace: parent)
 
         expect(project).to be_valid
       end
@@ -2045,7 +2045,7 @@ describe Project do
   end
 
   describe '#route_map_for' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       <<-MAP.strip_heredoc
       - source: /source/(.*)/
@@ -2082,7 +2082,7 @@ describe Project do
   end
 
   describe '#public_path_for_source_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
         - source: /source/(.*)/
@@ -2196,7 +2196,7 @@ describe Project do
   end
 
   describe '#pipeline_status' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     it 'builds a pipeline status' do
       expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
@@ -2207,7 +2207,7 @@ describe Project do
   end
 
   describe '#append_or_update_attribute' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\

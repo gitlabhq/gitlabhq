@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe API::Todos do
-  let(:project_1) { create(:project) }
+  let(:project_1) { create(:project, :repository) }
   let(:project_2) { create(:empty_project) }
   let(:author_1) { create(:user) }
   let(:author_2) { create(:user) }
