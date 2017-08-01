@@ -81,7 +81,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
     end
 
-    context 'when node have group restrictions' do
+    context 'when node have namespace restrictions' do
       let(:geo_node) { create(:geo_node, :current) }
       let(:group_1) { create(:group) }
       let(:group_2) { create(:group) }
@@ -94,14 +94,14 @@ describe Gitlab::Geo::LogCursor::Daemon do
         allow(subject).to receive(:exit?).and_return(false, true)
       end
 
-      it 'replays events for projects that belong to selected groups to replicate' do
-        geo_node.update_attribute(:groups, [group_1])
+      it 'replays events for projects that belong to selected namespaces to replicate' do
+        geo_node.update_attribute(:namespaces, [group_1])
 
         expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
       end
 
-      it 'does not replay events for projects that do not belong to selected groups to replicate' do
-        geo_node.update_attribute(:groups, [group_2])
+      it 'does not replay events for projects that do not belong to selected namespaces to replicate' do
+        geo_node.update_attribute(:namespaces, [group_2])
 
         expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
       end
@@ -109,14 +109,14 @@ describe Gitlab::Geo::LogCursor::Daemon do
       context 'when performing a full scan' do
         subject { described_class.new(full_scan: true) }
 
-        it 'creates registries for missing projects that belong to selected groups' do
-          geo_node.update_attribute(:groups, [group_1])
+        it 'creates registries for missing projects that belong to selected namespaces' do
+          geo_node.update_attribute(:namespaces, [group_1])
 
           expect { subject.run! }.to change(Geo::ProjectRegistry, :count).by(1)
         end
 
-        it 'does not create registries for missing projects that do not belong to selected groups' do
-          geo_node.update_attribute(:groups, [group_2])
+        it 'does not create registries for missing projects that do not belong to selected namespaces' do
+          geo_node.update_attribute(:namespaces, [group_2])
 
           expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
         end

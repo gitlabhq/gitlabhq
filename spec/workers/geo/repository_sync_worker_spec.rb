@@ -64,18 +64,18 @@ describe Geo::RepositorySyncWorker do
       subject.perform
     end
 
-    context 'when node have group restrictions' do
+    context 'when node have namespace restrictions' do
       before do
-        secondary.update_attribute(:groups, [group])
+        secondary.update_attribute(:namespaces, [group])
       end
 
-      it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected groups to replicate' do
+      it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected namespaces to replicate' do
         expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
 
         subject.perform
       end
 
-      it 'does not perform Geo::ProjectSyncWorker for synced projects updated recently that do not belong to selected groups to replicate' do
+      it 'does not perform Geo::ProjectSyncWorker for synced projects updated recently that do not belong to selected namespaces to replicate' do
         create(:geo_project_registry, :synced, :repository_dirty, project: project_1)
         create(:geo_project_registry, :synced, :repository_dirty, project: project_2)
 

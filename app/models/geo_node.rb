@@ -5,8 +5,8 @@ class GeoNode < ActiveRecord::Base
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
   belongs_to :system_hook, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
-  has_many :geo_node_group_links
-  has_many :groups, through: :geo_node_group_links
+  has_many :geo_node_namespace_links
+  has_many :namespaces, through: :geo_node_namespace_links
 
   default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },
@@ -109,9 +109,9 @@ class GeoNode < ActiveRecord::Base
   end
 
   def project_ids
-    return unless groups.any?
+    return unless namespaces.any?
 
-    groups.flat_map { |group| group.all_projects.pluck(:id) }.uniq
+    namespaces.flat_map { |namespace| namespace.all_projects.pluck(:id) }.uniq
   end
 
   private

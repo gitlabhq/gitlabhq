@@ -15,8 +15,8 @@ describe GeoNode, type: :model do
     it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
     it { is_expected.to belong_to(:oauth_application).dependent(:destroy) }
 
-    it { is_expected.to have_many(:geo_node_group_links) }
-    it { is_expected.to have_many(:groups).through(:geo_node_group_links) }
+    it { is_expected.to have_many(:geo_node_namespace_links) }
+    it { is_expected.to have_many(:namespaces).through(:geo_node_namespace_links) }
   end
 
   context 'default values' do
@@ -333,7 +333,7 @@ describe GeoNode, type: :model do
         project_2 = create(:empty_project, group: nested_group_1)
         project_3 = create(:empty_project, group: group_2)
 
-        node.update_attribute(:groups, [group_1, group_2, nested_group_1])
+        node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
 
         expect(node.project_ids).to match_array([project_1.id, project_2.id, project_3.id])
       end

@@ -75,7 +75,7 @@ describe Geo::FileDownloadDispatchWorker do
       end
     end
 
-    context 'when node have group restrictions' do
+    context 'when node have namespace restrictions' do
       let(:group_1)    { create(:group) }
       let!(:project_1) { create(:empty_project, group: group_1) }
       let!(:project_2) { create(:empty_project) }
@@ -84,10 +84,10 @@ describe Geo::FileDownloadDispatchWorker do
         allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
         allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
 
-        secondary.update_attribute(:groups, [group_1])
+        secondary.update_attribute(:namespaces, [group_1])
       end
 
-      it 'does not perform GeoFileDownloadWorker for LFS object that do not belong to selected groups to replicate' do
+      it 'does not perform GeoFileDownloadWorker for LFS object that do not belong to selected namespaces to replicate' do
         create(:lfs_objects_project, project: project_1)
         create(:lfs_objects_project, project: project_2)
 
@@ -96,7 +96,7 @@ describe Geo::FileDownloadDispatchWorker do
         subject.perform
       end
 
-      it 'does not perform GeoFileDownloadWorker for upload objects that do not belong to selected groups to replicate' do
+      it 'does not perform GeoFileDownloadWorker for upload objects that do not belong to selected namespaces to replicate' do
         avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
         create(:upload, model: group_1, path: avatar)
         create(:upload, model: create(:group), path: avatar)

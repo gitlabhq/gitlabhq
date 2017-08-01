@@ -22,7 +22,7 @@ module Geo
       relation =
         if restricted_project_ids
           uploads_table   = Upload.arel_table
-          group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.group_ids))
+          group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
           project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
           other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
 

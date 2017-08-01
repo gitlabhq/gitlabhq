@@ -90,7 +90,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:groups, [group])
+      geo_node.update_attribute(:namespaces, [group])
       create(:geo_file_registry, :avatar, file_id: upload_1.id)
       create(:geo_file_registry, :avatar, file_id: upload_2.id)
 
@@ -119,7 +119,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:groups, [group])
+      geo_node.update_attribute(:namespaces, [group])
       create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id)
 
       expect(subject.lfs_objects_synced_in_percentage).to be_within(0.0001).of(50)
@@ -137,7 +137,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right number of failed repos with group restrictions' do
-      geo_node.update_attribute(:groups, [group])
+      geo_node.update_attribute(:namespaces, [group])
 
       expect(subject.repositories_failed_count).to eq(1)
     end
@@ -155,7 +155,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:groups, [group])
+      geo_node.update_attribute(:namespaces, [group])
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.repositories_synced_in_percentage).to be_within(0.0001).of(50)
