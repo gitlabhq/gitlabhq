@@ -47,7 +47,14 @@ RSpec.describe Geo::EventLog, type: :model do
       expect(subject.project_id).to be_nil
     end
 
-    it 'returns event#project_id when an event is present' do
+    it 'returns nil when an event does not respond to project_id' do
+      repositories_changed_event = build(:geo_repositories_changed_event)
+      subject.repositories_changed_event = repositories_changed_event
+
+      expect(subject.project_id).to be_nil
+    end
+
+    it 'returns event#project_id when an event respond to project_id' do
       repository_updated_event = build(:geo_repository_updated_event)
       subject.repository_updated_event = repository_updated_event
 

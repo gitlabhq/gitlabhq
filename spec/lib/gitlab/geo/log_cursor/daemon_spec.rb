@@ -81,6 +81,33 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
     end
 
+    context 'when replaying a repositories changed event' do
+      let(:geo_node) { create(:geo_node) }
+      let(:repositories_changed_event) { create(:geo_repositories_changed_event, geo_node: geo_node) }
+      let(:event_log) { create(:geo_event_log, repositories_changed_event: repositories_changed_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+
+      before do
+        allow(subject).to receive(:exit?).and_return(false, true)
+      end
+
+      it 'schedules a GeoRepositoryDestroyWorker when event node is the current node' do
+        allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
+
+        expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(1.hour, geo_node.id)
+
+        subject.run!
+      end
+
+      it 'does not schedule a GeoRepositoryDestroyWorker when event node is not the current node' do
+        allow(Gitlab::Geo).to receive(:current_node).and_return(build(:geo_node))
+
+        expect(Geo::RepositoriesCleanUpWorker).not_to receive(:perform_in)
+
+        subject.run!
+      end
+    end
+
     context 'when node have namespace restrictions' do
       let(:geo_node) { create(:geo_node, :current) }
       let(:group_1) { create(:group) }
