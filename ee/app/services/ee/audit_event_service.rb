@@ -82,6 +82,20 @@ module EE
       self
     end
 
+    def for_changes
+      @details =
+          {
+              change: @details[:as] || @details[:column],
+              from: @details[:from],
+              to: @details[:to],
+              author_name: @author.name,
+              target_id: @entity.id,
+              target_type: @entity.class,
+              target_details: @entity.name
+          }
+      self
+    end
+
     def security_event
       if admin_audit_log_enabled?
         add_security_event_admin_details!

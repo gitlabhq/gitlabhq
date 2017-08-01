@@ -203,7 +203,6 @@ describe Gitlab::LDAP::Access do
 
     it 'updates email address' do
       expect(access).to receive(:update_email).once
-      expect(AuditEvents.count).to eq(1)
 
       subject
     end

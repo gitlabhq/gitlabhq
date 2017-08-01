@@ -38,7 +38,7 @@ module EE
       end
 
       def audit_event(options)
-        AuditEventService.new(@current_user, model, options).
+        ::AuditEventService.new(@current_user, model, options).
           for_changes.security_event
       end
     end

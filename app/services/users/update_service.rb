@@ -17,8 +17,8 @@ module Users
       user_exists = @user.persisted?
 
       if @user.save(validate: validate)
-        audit_changes :email, as: 'email address', column: :notification_email
-        audit_changes :encrypted_password, as: 'password', skip_changes: true
+        audit_changes(:email, as: 'email address', column: :notification_email)
+        audit_changes(:encrypted_password, as: 'password', skip_changes: true)
 
         notify_new_user(@user, nil) unless user_exists
 
