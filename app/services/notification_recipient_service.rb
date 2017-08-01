@@ -3,7 +3,7 @@
 #
 module NotificationRecipientService
   def self.notifiable_users(users, *args)
-    users.map { |u| NotificationRecipient.new(u, *args) }.select(&:notifiable?).map(&:user)
+    users.compact.map { |u| NotificationRecipient.new(u, *args) }.select(&:notifiable?).map(&:user)
   end
 
   def self.notifiable?(user, *args)
