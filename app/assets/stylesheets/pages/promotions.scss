@@ -1,6 +1,6 @@
 .user-callout.promotion-callout {
   margin: 20px 0 0;
-  
+
   .bordered-box {
     padding: 20px;
     border-color: $border-color;
@@ -11,6 +11,7 @@
       .dismiss-icon {
         color: $gray-darkest;
       }
+
       &:hover {
         .dismiss-icon {
           color: $text-color;
@@ -21,5 +22,5 @@
     .svg-container {
       margin-right: 15px;
     }
-  }  
+  }
 }
