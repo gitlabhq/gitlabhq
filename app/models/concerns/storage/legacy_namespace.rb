@@ -7,7 +7,7 @@ module Storage
         raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
       end
 
-      # Move the namespace directory in all storages paths used by member projects
+      # Move the namespace directory in all storage paths used by member projects
       repository_storage_paths.each do |repository_storage_path|
         # Ensure old directory exists before moving it
         gitlab_shell.add_namespace(repository_storage_path, full_path_was)
@@ -49,12 +49,6 @@ module Storage
 
     private
 
-    def send_update_instructions
-      projects.each do |project|
-        project.send_move_instructions("#{full_path_was}/#{project.path}")
-      end
-    end
-
     def old_repository_storage_paths
       @old_repository_storage_paths ||= repository_storage_paths
     end
@@ -76,8 +70,7 @@ module Storage
         new_path = "#{full_path}+#{id}+deleted"
 
         if gitlab_shell.mv_namespace(repository_storage_path, full_path, new_path)
-          message = "Namespace directory \"#{full_path}\" moved to \"#{new_path}\""
-          Gitlab::AppLogger.info message
+          Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
           # Remove namespace directroy async with delay so
           # GitLab has time to remove all projects first
