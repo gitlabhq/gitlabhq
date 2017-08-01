@@ -117,7 +117,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${el.getBoundingClientRect().top}px, 0px)`);
+      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top)}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
