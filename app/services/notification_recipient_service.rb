@@ -48,8 +48,8 @@ module NotificationRecipientService
         @recipients ||= []
       end
 
-      def <<(arg)
-        users, type = arg
+      def <<(pair)
+        users, type = pair
 
         if users.is_a?(ActiveRecord::Relation)
           users = users.includes(:notification_settings)
