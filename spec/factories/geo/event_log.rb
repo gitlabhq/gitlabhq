@@ -37,4 +37,8 @@ FactoryGirl.define do
     old_path { project.path }
     new_path { project.path }
   end
+
+  factory :geo_repositories_changed_event, class: Geo::RepositoriesChangedEvent do
+    geo_node
+  end
 end

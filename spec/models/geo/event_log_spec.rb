@@ -5,6 +5,7 @@ RSpec.describe Geo::EventLog, type: :model do
     it { is_expected.to belong_to(:repository_updated_event).class_name('Geo::RepositoryUpdatedEvent').with_foreign_key('repository_updated_event_id') }
     it { is_expected.to belong_to(:repository_deleted_event).class_name('Geo::RepositoryDeletedEvent').with_foreign_key('repository_deleted_event_id') }
     it { is_expected.to belong_to(:repository_renamed_event).class_name('Geo::RepositoryRenamedEvent').with_foreign_key('repository_renamed_event_id') }
+    it { is_expected.to belong_to(:repositories_changed_event).class_name('Geo::RepositoriesChangedEvent').with_foreign_key('repositories_changed_event_id') }
   end
 
   describe '#event' do
@@ -31,6 +32,13 @@ RSpec.describe Geo::EventLog, type: :model do
       subject.repository_renamed_event = repository_renamed_event
 
       expect(subject.event).to eq repository_renamed_event
+    end
+
+    it 'returns repositories_changed_event when set' do
+      repositories_changed_event = build(:geo_repositories_changed_event)
+      subject.repositories_changed_event = repositories_changed_event
+
+      expect(subject.event).to eq repositories_changed_event
     end
   end
 
