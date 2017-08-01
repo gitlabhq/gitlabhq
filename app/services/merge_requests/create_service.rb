@@ -17,9 +17,15 @@ module MergeRequests
       create(merge_request)
     end
 
+    def before_create(merge_request)
+      user = current_user
+      merge_request.run_after_commit do
+        NewMergeRequestWorker.perform_async(merge_request.id, user.id)
+      end
+    end
+
     def after_create(issuable)
       event_service.open_mr(issuable, current_user)
-      notification_service.new_merge_request(issuable, current_user)
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
     end
