@@ -368,6 +368,10 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
+        case 'projects:edit':
+          new UsersSelect();
+          new UserCallout();
+          break;
         case 'projects:imports:show':
           new ProjectImport();
           break;
