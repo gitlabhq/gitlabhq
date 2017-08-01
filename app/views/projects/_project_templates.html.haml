@@ -1,13 +1,22 @@
 
 .project-templates-buttons.import-buttons{ data: { toggle: "buttons" }}
-  %div.btn.btn-default.active
+  %div.btn.blank-option.active
     %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "blank", checked: "true" }
-    = icon('file-o')
+    = icon('file-o', class: 'btn-template-icon')
     Blank
   - Gitlab::ProjectTemplate.all.each do |template|
-    -# The title should be the value posted to the controller, a pretty name to print would be
-    -# template.name
     %div.btn
       %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: template.name }
-      = image_tag(template.logo_path)
+      = custom_icon(template.logo)
       = template.title
+
+  -# TODO: Remove this once the templates are generated on the backend.
+  %div.btn
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "node" }
+    = custom_icon("node_express")
+    Node Express
+
+  %div.btn
+    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "java" }
+    = custom_icon("java_spring")
+    Java Spring

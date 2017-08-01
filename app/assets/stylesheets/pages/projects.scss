@@ -474,6 +474,41 @@ a.deploy-project-label {
       margin-right: 10px;
     }
 
+    .blank-option {
+      min-width: 70px;
+    }
+
+    .btn-template-icon {
+      height: 24px;
+      width: inherit;
+      display: block;
+      margin: 2px auto 5px;
+      font-size: 24px;
+    }
+
+    @media (max-width: $screen-md-max) {
+      .btn-template-icon {
+        display: inline-block;
+        height: 20px;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    .icon-rails path {
+      fill: #C00;
+    }
+
+    .icon-node-express path {
+      fill: #353535;
+    }
+
+    .icon-java-spring path {
+      fill: #70AD51;
+    }
+
+
+
     > div {
       margin-bottom: 10px;
       padding-left: 0;
@@ -482,25 +517,6 @@ a.deploy-project-label {
 }
 
 .project-template {
-  .project-templates-buttons {
-    i,
-    img {
-      display: block;
-      height: 24px;
-      font-size: 24px;
-      margin: 4px auto;
-    }
-
-    @media (max-width: $screen-md-max) {
-      i,
-      img {
-        display: inline-block;
-        height: 20px;
-        font-size: 14px;
-        margin: 0;
-      }
-    }
-  }
 
   &:after {
     content: "OR";

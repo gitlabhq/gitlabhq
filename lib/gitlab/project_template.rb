@@ -6,9 +6,7 @@ module Gitlab
       @name, @title = name, title
     end
 
-    def logo_path
-      "project_templates/#{name}.png"
-    end
+    alias_method :logo, :name
 
     def file
       archive_path.open

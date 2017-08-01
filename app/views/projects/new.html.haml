@@ -20,7 +20,7 @@
         .row
           .col-lg-6.col-sm-12.new-project-first-column
             .project-template
-              .form_group.clearfix
+              .form-group
                 = f.label :template_project, class: 'label-light' do
                   Create from template
                   = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: "What's included in a template?" }, title: "What's included in a template?", class: 'has-tooltip', data: { placement: 'top'}
