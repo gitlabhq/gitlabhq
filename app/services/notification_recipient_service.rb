@@ -308,11 +308,7 @@ module NotificationRecipientService
       end
 
       def read_ability
-        @read_ability ||=
-          case target
-          when Commit then nil
-          else :"read_#{target.class.model_name.name.underscore}"
-          end
+        @read_ability ||= :"read_#{target.class.model_name.name.underscore}"
       end
 
       def subject
