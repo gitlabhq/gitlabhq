@@ -31,13 +31,13 @@ describe Gitlab::ProjectTemplate do
   describe 'instance methods' do
     subject { described_class.new('phoenix', 'Phoenix Framework') }
 
-    it { is_expected.to respond_to(:logo_path, :file, :template_archive) }
+    it { is_expected.to respond_to(:logo_path, :file, :archive_path) }
   end
 
   describe 'validate all templates' do
     described_class.all.each do |template|
       it "#{template.name} has a valid archive" do
-        archive = template.template_archive
+        archive = template.archive_path
         logo = Rails.root.join("app/assets/images/#{template.logo_path}")
 
         expect(File.exist?(archive)).to be(true)

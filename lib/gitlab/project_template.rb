@@ -11,11 +11,15 @@ module Gitlab
     end
 
     def file
-      template_archive.open
+      archive_path.open
     end
 
-    def template_archive
+    def archive_path
       Rails.root.join("vendor/project_templates/#{name}.tar.gz")
+    end
+
+    def clone_url
+      "https://gitlab.com/gitlab-org/project-templates/#{name}.git"
     end
 
     def ==(other)
@@ -33,6 +37,10 @@ module Gitlab
 
       def find(name)
         all.find { |template| template.name == name.to_s }
+      end
+
+      def archive_directory
+        Rails.root.join("vendor_directory/project_templates")
       end
     end
   end
