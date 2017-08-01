@@ -226,10 +226,10 @@ $new-sidebar-width: 220px;
           &::before {
             content: "";
             position: absolute;
-            top: -20px;
-            bottom: -20px;
+            top: -30px;
+            bottom: -30px;
             left: 0;
-            right: -20px;
+            right: -30px;
             z-index: -1;
           }
 

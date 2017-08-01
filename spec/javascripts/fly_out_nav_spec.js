@@ -1,7 +1,5 @@
 import {
   calculateTop,
-  setMouseOutTimeout,
-  getHideTimeoutInterval,
   hideSubLevelItems,
   showSubLevelItems,
 } from '~/fly_out_nav';
@@ -38,26 +36,6 @@ describe('Fly out sidebar navigation', () => {
       expect(
         calculateTop(boundingRect, 100),
       ).toBe(window.innerHeight - 50);
-    });
-  });
-
-  describe('setMouseOutTimeout', () => {
-    it('sets hideTimeoutInterval to 150 when inside sub items', () => {
-      el.innerHTML = '<div class="sidebar-sub-level-items"><div class="js-test"></div></div>';
-
-      setMouseOutTimeout(el.querySelector('.js-test'));
-
-      expect(
-        getHideTimeoutInterval(),
-      ).toBe(150);
-    });
-
-    it('resets hideTimeoutInterval when not inside sub items', () => {
-      setMouseOutTimeout(el);
-
-      expect(
-        getHideTimeoutInterval(),
-      ).toBe(0);
     });
   });
 
@@ -142,16 +120,17 @@ describe('Fly out sidebar navigation', () => {
 
     it('sets is-above when element is above', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
-      subItems.style.height = '5000px';
+      subItems.style.height = `${window.innerHeight + el.offsetHeight}px`;
+      subItems.style.position = 'absolute';
       el.style.position = 'relative';
-      el.style.top = '1000px';
+      el.style.top = `${window.innerHeight - el.offsetHeight}px`;
 
-      spyOn(el.classList, 'add');
+      spyOn(subItems.classList, 'add');
 
       showSubLevelItems(el);
 
       expect(
-        el.classList.add,
+        subItems.classList.add,
       ).toHaveBeenCalledWith('is-above');
     });
   });
