@@ -88,6 +88,7 @@ module API
         variable = user_group.variables.find_by(key: params[:key])
         not_found!('GroupVariable') unless variable
 
+        status 204
         variable.destroy
       end
     end
