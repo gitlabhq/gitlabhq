@@ -44,6 +44,7 @@ module NotificationRecipientService
         raise 'abstract'
       end
 
+      # rubocop:disable Rails/Delegate
       def project
         target.project
       end
