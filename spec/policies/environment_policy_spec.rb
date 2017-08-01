@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe EnvironmentPolicy do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:environment) do
     create(:environment, :with_review_app, project: project)
@@ -14,7 +14,7 @@ describe EnvironmentPolicy do
 
   describe '#rules' do
     context 'when user does not have access to the project' do
-      let(:project) { create(:project, :private) }
+      let(:project) { create(:project, :private, :repository) }
 
       it 'does not include ability to stop environment' do
         expect(policy).to be_disallowed :stop_environment
@@ -22,7 +22,7 @@ describe EnvironmentPolicy do
     end
 
     context 'when anonymous user has access to the project' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
 
       it 'does not include ability to stop environment' do
         expect(policy).to be_disallowed :stop_environment
@@ -30,7 +30,7 @@ describe EnvironmentPolicy do
     end
 
     context 'when team member has access to the project' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
 
       before do
         project.add_developer(user)

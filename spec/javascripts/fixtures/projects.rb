@@ -5,7 +5,7 @@ describe ProjectsController, '(JavaScript fixtures)', type: :controller do
 
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project) { create(:project, namespace: namespace, path: 'builds-project') }
+  let(:project) { create(:empty_project, namespace: namespace, path: 'builds-project') }
 
   render_views
 

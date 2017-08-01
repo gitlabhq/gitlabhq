@@ -13,7 +13,7 @@ describe 'Request Profiler' do
     end
 
     it 'creates a profile of the request' do
-      project = create(:project, namespace: user.namespace)
+      project = create(:empty_project, namespace: user.namespace)
       time    = Time.now
       path    = "/#{project.full_path}"
 

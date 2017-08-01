@@ -3,7 +3,14 @@ require "spec_helper"
 shared_examples "migrating a deleted user's associated records to the ghost user" do |record_class, fields|
   record_class_name = record_class.to_s.titleize.downcase
 
-  let(:project) { create(:project) }
+  let(:project) do
+    case record_class
+    when MergeRequest
+      create(:project, :repository)
+    else
+      create(:empty_project)
+    end
+  end
 
   before do
     project.add_developer(user)
