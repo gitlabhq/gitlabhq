@@ -232,7 +232,6 @@ class ProjectsController < Projects::ApplicationController
       find_commits = find_refs.include? 'commits'
     end
 
-    branches = []
     options = {}
 
     if find_branches
