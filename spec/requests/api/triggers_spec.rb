@@ -191,11 +191,14 @@ describe API::Triggers do
                 variables: { 'KEY' => 'VALUE' } }
             end
 
-            it 'forbids to create a pipeline' do
-              subject
+            it 'creates a new pipeline with a variable' do
+              expect { subject }.to change(Ci::Pipeline, :count)
+                                .and change(Ci::PipelineVariable, :count)
 
-              expect(response).to have_http_status(400)
-              expect(json_response['message']).to eq('400 Variables not supported')
+              expect(response).to have_http_status(201)
+              expect(Ci::Pipeline.last.source).to eq('pipeline')
+              expect(Ci::Pipeline.last.triggered_by_pipeline).not_to be_nil
+              expect(Ci::Pipeline.last.variables.map { |v| { v.key => v.value } }.last).to eq(params[:variables])
             end
           end
         end

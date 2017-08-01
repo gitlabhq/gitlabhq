@@ -6,8 +6,8 @@ describe Projects::DestroyService do
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let!(:project_id) { project.id }
   let!(:project_name) { project.name }
-  let!(:project_path) { project.path_with_namespace }
-  let!(:wiki_path) { project.path_with_namespace + '.wiki' }
+  let!(:project_path) { project.disk_path }
+  let!(:wiki_path) { project.disk_path + '.wiki' }
   let!(:storage_name) { project.repository_storage }
   let!(:storage_path) { project.repository_storage_path }
 

@@ -49,7 +49,7 @@ module Geo
         message: message,
         error: error,
         project_id: project.id,
-        project_path: project.path_with_namespace)
+        project_path: project.full_path)
     end
   end
 end

@@ -353,6 +353,13 @@ module Gitlab
         rugged.merge_base(from, to)
       end
 
+      # Gitaly note: JV: check gitlab-ee before removing this method.
+      def rugged_is_ancestor?(ancestor_id, descendant_id)
+        return false if ancestor_id.nil? || descendant_id.nil?
+
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def is_ancestor?(from, to)
         gitaly_commit_client.is_ancestor(from, to)

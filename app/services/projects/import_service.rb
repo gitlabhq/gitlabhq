@@ -11,7 +11,7 @@ module Projects
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}")
+      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
     end
 
     private
@@ -51,7 +51,7 @@ module Projects
     end
 
     def clone_repository
-      gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
+      gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
     end
 
     def fetch_repository

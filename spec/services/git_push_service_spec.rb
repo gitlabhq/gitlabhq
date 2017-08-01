@@ -497,7 +497,7 @@ describe GitPushService do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
         let(:comment_body) do
           {
-            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/commit/#{closing_commit.id}]."
           }.to_json
         end
 

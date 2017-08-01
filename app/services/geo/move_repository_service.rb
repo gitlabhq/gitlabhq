@@ -16,7 +16,7 @@ module Geo
       project.expire_caches_before_rename(old_path_with_namespace)
 
       # Make sure target directory exists (used when transfering repositories)
-      project.ensure_dir_exist
+      project.ensure_storage_path_exist
 
       if gitlab_shell.mv_repository(project.repository_storage_path,
                                     old_path_with_namespace, new_path_with_namespace)

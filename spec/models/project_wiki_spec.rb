@@ -15,19 +15,27 @@ describe ProjectWiki do
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
-      expect(subject.path_with_namespace).to eq(project.path_with_namespace + ".wiki")
+      expect(subject.path_with_namespace).to eq(project.full_path + '.wiki')
+    end
+
+    it 'returns the same value as #full_path' do
+      expect(subject.path_with_namespace).to eq(subject.full_path)
     end
   end
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
+<<<<<<< HEAD
       expect(subject.web_url).to match("https?://[^\/]+/#{project.path_with_namespace}/wikis/home")
+=======
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/wikis/home")
+>>>>>>> upstream/master
     end
   end
 
   describe "#url_to_repo" do
     it "returns the correct ssh url to the repo" do
-      expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.path_with_namespace))
+      expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.full_path))
     end
   end
 
@@ -41,7 +49,7 @@ describe ProjectWiki do
     let(:project) { create :empty_project }
 
     it 'returns the full http url to the repo' do
-      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
+      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.full_path}.git"
 
       expect(project_wiki.http_url_to_repo).to eq(expected_url)
       expect(project_wiki.http_url_to_repo).not_to include('@')
@@ -51,14 +59,14 @@ describe ProjectWiki do
   describe "#kerberos_url_to_repo" do
     it 'returns valid kerberos url for this repo' do
       gitlab_kerberos_url = Gitlab.config.build_gitlab_kerberos_url
-      repo_kerberos_url = "#{gitlab_kerberos_url}/#{subject.path_with_namespace}.git"
+      repo_kerberos_url = "#{gitlab_kerberos_url}/#{subject.full_path}.git"
       expect(subject.kerberos_url_to_repo).to eq(repo_kerberos_url)
     end
   end
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.path_with_namespace}/wikis"
+      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.full_path}/wikis"
 
       expect(subject.wiki_base_path).to eq(wiki_base_path)
     end
@@ -85,7 +93,7 @@ describe ProjectWiki do
         allow_any_instance_of(Gitlab::Shell).to receive(:add_repository) do
           create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
         end
-        allow(project).to receive(:path_with_namespace).and_return("non-existant")
+        allow(project).to receive(:full_path).and_return("non-existant")
       end
 
       describe '#empty?' do
@@ -277,7 +285,7 @@ describe ProjectWiki do
   describe '#create_repo!' do
     it 'creates a repository' do
       expect(subject).to receive(:init_repo)
-        .with(subject.path_with_namespace)
+        .with(subject.full_path)
         .and_return(true)
 
       expect(subject.repository).to receive(:after_create)

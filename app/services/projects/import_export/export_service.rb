@@ -2,7 +2,7 @@ module Projects
   module ImportExport
     class ExportService < BaseService
       def execute(_options = {})
-        @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
+        @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.disk_path, 'work'))
         save_all
       end
 

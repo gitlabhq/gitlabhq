@@ -96,8 +96,8 @@ feature 'Create New Merge Request', js: true do
 
       visit project_new_merge_request_path(project, merge_request: { target_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.path_with_namespace
-      expect(page).to have_content project.path_with_namespace
+      expect(page).not_to have_content private_project.full_path
+      expect(page).to have_content project.full_path
     end
   end
 
@@ -107,8 +107,8 @@ feature 'Create New Merge Request', js: true do
 
       visit project_new_merge_request_path(project, merge_request: { source_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.path_with_namespace
-      expect(page).to have_content project.path_with_namespace
+      expect(page).not_to have_content private_project.full_path
+      expect(page).to have_content project.full_path
     end
   end
 

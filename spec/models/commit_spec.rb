@@ -161,7 +161,7 @@ eos
     end
 
     it 'detects issues that this commit is marked as closing' do
-      ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
+      ext_ref = "#{other_project.full_path}##{other_issue.iid}"
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",

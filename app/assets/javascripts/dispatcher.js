@@ -8,6 +8,8 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global CommitsList */
+/* global NewCommitForm */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
@@ -25,10 +27,13 @@
 /* global Compare */
 /* global CompareAutocomplete */
 /* global PathLocks */
+/* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
+/* global ProjectImport */
 /* global Labels */
 /* global Shortcuts */
+/* global ShortcutsFindFile */
 /* global Sidebar */
 /* global WeightSelect */
 /* global AdminEmailSelect */
@@ -226,6 +231,10 @@ import AuditLogs from './audit_logs';
         case 'projects:compare:show':
           new gl.Diff();
           break;
+        case 'projects:branches:new':
+        case 'projects:branches:create':
+          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
+          break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
           new DeleteModal();
@@ -312,21 +321,35 @@ import AuditLogs from './audit_logs';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
+<<<<<<< HEAD
         case 'projects:commits:show':
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
+=======
+>>>>>>> upstream/master
         case 'projects:activity':
+          new gl.Activities();
+          shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:commits:show':
+          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
+          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:edit':
           new UsersSelect();
+          break;
+        case 'projects:imports:show':
+          new ProjectImport();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -397,6 +420,7 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
+          new NewCommitForm($('.js-create-dir-form'));
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
             PathLocks.init(
@@ -410,6 +434,13 @@ import AuditLogs from './audit_logs';
           });
           break;
         case 'projects:find_file:show':
+          const findElement = document.querySelector('.js-file-finder');
+          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
+            url: findElement.dataset.fileFindUrl,
+            treeUrl: findElement.dataset.findTreeUrl,
+            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+          });
+          new ShortcutsFindFile(projectFindFile);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
