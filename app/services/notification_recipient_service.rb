@@ -20,13 +20,35 @@ class NotificationRecipientService
     @project = project
   end
 
+  class Recipient
+    attr_reader :user, :type
+    def initialize(builder, user, type)
+      @builder = builder
+      @user = user
+      @type = type
+    end
+
+    def notification_setting
+      @notification_setting ||=
+        NotificationRecipientService.notification_setting_for_user_project(user, @builder.project)
+    end
+
+    def notification_level
+      notification_setting&.level&.to_sym
+    end
+  end
+
   module Builder
     class Base
       def initialize(*)
         raise 'abstract'
       end
 
-      def build
+      def build!
+        raise 'abstract'
+      end
+
+      def filter!
         raise 'abstract'
       end
 
@@ -38,13 +60,22 @@ class NotificationRecipientService
         @recipients ||= []
       end
 
-      def to_a
-        return recipients if @already_built
-        @already_built = true
-        build
-        recipients.uniq!
-        recipients.freeze
-        recipients
+      def <<(arg)
+        users, type = arg
+        users = Array(users)
+        users.compact!
+        recipients.concat(users.map { |u| Recipient.new(self, u, type) })
+      end
+
+      def recipient_users
+        @recipient_users ||=
+          begin
+            build!
+            filter!
+            users = recipients.map(&:user)
+            users.uniq!
+            users.freeze
+          end
       end
 
       # Remove users with disabled notifications from array
@@ -53,12 +84,22 @@ class NotificationRecipientService
         reject_users(:disabled)
       end
 
+      def read_ability
+        @read_ability ||=
+          case target
+          when Issuable
+            :"read_#{target.to_ability_name}"
+          when Ci::Pipeline
+            :read_build # We have build trace in pipeline emails
+          end
+      end
+
       protected
 
       def add_participants(user)
         return unless target.respond_to?(:participants)
 
-        recipients.concat(target.participants(user))
+        self << [target.participants(user), :participating]
       end
 
       # Get project/group users with CUSTOM notification level
@@ -76,12 +117,11 @@ class NotificationRecipientService
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, action)
 
-        recipients.concat(User.find(user_ids))
+        self << [User.find(user_ids), :watch]
       end
 
       def add_project_watchers
-        recipients.concat(project_watchers)
-        recipients.compact!
+        self << [project_watchers, :watch]
       end
 
       # Get project users with WATCH notification level
@@ -101,13 +141,17 @@ class NotificationRecipientService
 
       # Remove users with notification level 'Mentioned'
       def reject_mention_users
-        reject_users(:mention)
+        recipients.select! do |r|
+          next true if r.type == :mention
+          next true if r.type == :subscription
+          r.notification_level != :mention
+        end
       end
 
       def add_subscribed_users
         return unless target.respond_to? :subscribers
 
-        recipients.concat(target.subscribers(project))
+        self << [target.subscribers(project), :subscription]
       end
 
       def user_ids_notifiable_on(resource, notification_level = nil, action = nil)
@@ -188,10 +232,9 @@ class NotificationRecipientService
           raise 'Invalid notification level'
         end
 
-        recipients.compact!
-        recipients.uniq!
+        recipients.reject! do |recipient|
+          user = recipient.user
 
-        recipients.reject! do |user|
           setting = NotificationRecipientService.notification_setting_for_user_project(user, project)
           setting.present? && setting.level == level
         end
@@ -200,34 +243,34 @@ class NotificationRecipientService
       def reject_unsubscribed_users
         return unless target.respond_to? :subscriptions
 
-        recipients.reject! do |user|
+        recipients.reject! do |recipient|
+          user = recipient.user
           subscription = target.subscriptions.find_by_user_id(user.id)
           subscription && !subscription.subscribed
         end
       end
 
       def reject_users_without_access
-        recipients.select! { |u| u.can?(:receive_notifications) }
+        recipients.select! { |r| r.user.can?(:receive_notifications) }
 
-        ability = case target
-                  when Issuable
-                    :"read_#{target.to_ability_name}"
-                  when Ci::Pipeline
-                    :read_build # We have build trace in pipeline emails
-                  end
+        return unless read_ability
 
-        return unless ability
-
-        recipients.select! do |user|
-          user.can?(ability, target)
+        DeclarativePolicy.subject_scope do
+          recipients.select! do |recipient|
+            recipient.user.can?(read_ability, target)
+          end
         end
+      end
+
+      def reject_user(user)
+        recipients.reject! { |r| r.user == user }
       end
 
       def add_labels_subscribers(labels: nil)
         return unless target.respond_to? :labels
 
         (labels || target.labels).each do |label|
-          recipients.concat(label.subscribers(project))
+          self << [label.subscribers(project), :subscription]
         end
       end
     end
@@ -248,7 +291,7 @@ class NotificationRecipientService
         @skip_current_user = skip_current_user
       end
 
-      def build
+      def build!
         add_participants(current_user)
         add_project_watchers
         add_custom_notifications(custom_action)
@@ -259,12 +302,12 @@ class NotificationRecipientService
         # the "on mention" notification level
         case custom_action
         when :reassign_merge_request
-          recipients << previous_assignee if previous_assignee
-          recipients << target.assignee
+          self << [previous_assignee, :mention]
+          self << [target.assignee, :mention]
         when :reassign_issue
           previous_assignees = Array(previous_assignee)
-          recipients.concat(previous_assignees)
-          recipients.concat(target.assignees)
+          self << [previous_assignees, :mention]
+          self << [target.assignees, :mention]
         end
 
         reject_muted_users
@@ -273,13 +316,16 @@ class NotificationRecipientService
         if [:new_issue, :new_merge_request].include?(custom_action)
           add_labels_subscribers
         end
+      end
 
+      def filter!
         reject_unsubscribed_users
         reject_users_without_access
 
-        recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
+        reject_user(current_user) if skip_current_user && !current_user.notified_of_own_activity?
       end
 
+      private
       # Build event key to search on custom notification level
       # Check NotificationSetting::EMAIL_EVENTS
       def custom_action
@@ -299,7 +345,7 @@ class NotificationRecipientService
         @action = action
       end
 
-      def build
+      def build!
         return [] unless current_user
 
         custom_action =
@@ -318,7 +364,10 @@ class NotificationRecipientService
 
         return if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
 
-        recipients << current_user
+        self << [current_user, :subscriber]
+      end
+
+      def filter!
         reject_users_without_access
       end
     end
@@ -335,11 +384,14 @@ class NotificationRecipientService
         @labels = labels
       end
 
-      def build
+      def build!
         add_labels_subscribers(labels: labels)
+      end
+
+      def filter!
         reject_unsubscribed_users
         reject_users_without_access
-        recipients.delete(current_user) unless current_user.notified_of_own_activity?
+        reject_user(current_user) unless current_user.notified_of_own_activity?
       end
     end
 
@@ -353,18 +405,22 @@ class NotificationRecipientService
         @target = note.noteable
       end
 
-      def build
-        ability, subject = if note.for_personal_snippet?
-                             [:read_personal_snippet, note.noteable]
-                           else
-                             [:read_project, note.project]
-                           end
+      def read_ability
+        @read_ability ||=
+          case target
+          when Commit then nil
+          else :"read_#{target.class.model_name.name.underscore}"
+          end
+      end
 
-        mentioned_users = note.mentioned_users.select { |user| user.can?(ability, subject) }
+      def subject
+        note.for_personal_snippet? ? note.noteable : note.project
+      end
 
+      def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
-        recipients.concat(mentioned_users) if recipients.empty?
+        self << [note.mentioned_users, :mention] if recipients.empty?
 
         unless note.for_personal_snippet?
           # Merge project watchers
@@ -376,32 +432,35 @@ class NotificationRecipientService
 
         # Reject users with Mention notification level, except those mentioned in _this_ note.
         reject_mention_users
-        recipients.concat(mentioned_users)
+        self << [note.mentioned_users, :mention]
 
         reject_muted_users
 
         add_subscribed_users
+      end
+
+      def filter!
         reject_unsubscribed_users
         reject_users_without_access
 
-        recipients.delete(note.author) unless note.author.notified_of_own_activity?
+        reject_user(note.author) unless note.author.notified_of_own_activity?
       end
     end
   end
 
   def build_recipients(*a)
-    Builder::Default.new(@project, *a).to_a
+    Builder::Default.new(@project, *a).recipient_users
   end
 
   def build_pipeline_recipients(*a)
-    Builder::Pipeline.new(@project, *a).to_a
+    Builder::Pipeline.new(@project, *a).recipient_users
   end
 
   def build_relabeled_recipients(*a)
-    Builder::Relabeled.new(@project, *a).to_a
+    Builder::Relabeled.new(@project, *a).recipient_users
   end
 
   def build_new_note_recipients(*a)
-    Builder::NewNote.new(@project, *a).to_a
+    Builder::NewNote.new(@project, *a).recipient_users
   end
 end
