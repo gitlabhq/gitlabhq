@@ -260,7 +260,8 @@ describe Admin::GeoNodesController, :postgresql do
           lfs_objects_count: 256,
           lfs_objects_synced_count: 123,
           repositories_count: 10,
-          repositories_synced_count: 5
+          repositories_synced_count: 5,
+          repositories_failed_count: 0
         )
       end
 
