@@ -1,23 +1,25 @@
 import Vue from 'vue';
 import repoCommitSection from '~/repo/repo_commit_section.vue';
 import RepoStore from '~/repo/repo_store';
+import RepoHelper from '~/repo/repo_helper';
 import Api from '~/api';
 
 describe('RepoCommitSection', () => {
   const openedFiles = [{
     id: 0,
     changed: true,
-    url: 'url0',
+    url: 'master/url0',
     newContent: 'a',
   }, {
     id: 1,
     changed: true,
-    url: 'url1',
+    url: 'master/url1',
     newContent: 'b',
   }, {
     id: 2,
     changed: false,
   }];
+  const branch = 'master';
 
   function createComponent() {
     const RepoCommitSection = Vue.extend(repoCommitSection);
@@ -28,14 +30,11 @@ describe('RepoCommitSection', () => {
   it('renders a commit section', () => {
     RepoStore.isCommitable = true;
     RepoStore.openedFiles = openedFiles;
+    spyOn(RepoHelper, 'getBranch').and.returnValue(branch);
 
     const vm = createComponent();
     const changedFiles = [...vm.$el.querySelectorAll('.changed-files > li')];
-    const branchDropdownItems = [...vm.$el.querySelectorAll('.branch-dropdown .dropdown-menu > li')];
     const commitMessage = vm.$el.querySelector('#commit-message');
-    const targetBranch = vm.$el.querySelector('#target-branch');
-    const newMergeRequest = vm.$el.querySelector('.new-merge-request');
-    const newMergeRequestCheckbox = newMergeRequest.querySelector('input');
     const submitCommit = vm.$el.querySelector('.submit-commit');
 
     expect(vm.$el.querySelector(':scope > form')).toBeTruthy();
@@ -43,25 +42,14 @@ describe('RepoCommitSection', () => {
     expect(changedFiles.length).toEqual(2);
 
     changedFiles.forEach((changedFile, i) => {
-      expect(changedFile.textContent).toEqual(openedFiles[i].url);
+      expect(changedFile.textContent).toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[i].url, branch));
     });
 
     expect(commitMessage.tagName).toEqual('TEXTAREA');
     expect(commitMessage.name).toEqual('commit-message');
-    expect(branchDropdownItems[0].textContent).toEqual('Target branch');
-    expect(branchDropdownItems[1].textContent).toEqual('Create my own branch');
-    expect(targetBranch.tagName).toEqual('INPUT');
-    expect(targetBranch.name).toEqual('target-branch');
-    expect(targetBranch.type).toEqual('text');
-    expect(newMergeRequest.textContent).toMatch('Start a new merge request with these changes');
-    expect(newMergeRequestCheckbox.type).toEqual('checkbox');
-    expect(newMergeRequestCheckbox.id).toEqual('checkboxes-0');
-    expect(newMergeRequestCheckbox.name).toEqual('checkboxes');
-    expect(newMergeRequestCheckbox.value).toEqual('1');
-    expect(newMergeRequestCheckbox.checked).toBeFalsy();
     expect(submitCommit.type).toEqual('submit');
     expect(submitCommit.disabled).toBeTruthy();
-    expect(vm.$el.querySelector('.commit-summary').textContent).toEqual('Commit 2 Files');
+    expect(vm.$el.querySelector('.commit-summary').textContent).toEqual('Commit 2 files');
   });
 
   it('does not render if not isCommitable', () => {
