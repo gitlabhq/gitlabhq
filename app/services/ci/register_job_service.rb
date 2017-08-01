@@ -20,6 +20,8 @@ module Ci
           builds_for_specific_runner
         end
 
+      builds = select_builds_by_ref_status(builds)
+
       valid = true
 
       builds.find do |build|
@@ -80,6 +82,14 @@ module Ci
 
     def shared_runner_build_limits_feature_enabled?
       ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
+    end
+
+    def select_builds_by_ref_status(builds)
+      if runner.protected?
+        builds.select { |build| build.project.protected_for?(build.ref) }
+      else
+        builds
+      end
     end
   end
 end
