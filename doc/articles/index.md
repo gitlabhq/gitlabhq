@@ -12,7 +12,7 @@ where they were originally published.
 
 ## Authentication
 
-Learn how to explore GitLab's supported [authentications methods](../topics/authentication/index.md):
+Explore GitLab's supported [authentications methods](../topics/authentication/index.md):
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
@@ -34,6 +34,7 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [Automated Debian Package Build with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/) | Tutorial | 2016/10/12 |
 | [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/) | Tutorial | 2016/08/11 |
 | [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/) | Technical overview | 2016/06/09 |
+| [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/) | Technical overview | 2016/05/23 |
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017/05/15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016/03/10 |
 
@@ -84,7 +85,7 @@ Install, upgrade, integrate, migrate to GitLab:
 
 ## Software development
 
-Learn how to explore the best of GitLab's software development's capabilities:
+Explore the best of GitLab's software development's capabilities:
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
@@ -109,4 +110,3 @@ Learn how to explore the best of GitLab's software development's capabilities:
 | [Why we are not leaving the cloud](https://about.gitlab.com/2017/03/02/why-we-are-not-leaving-the-cloud/) | Concepts | 2017/03/02 |
 | [Why We Chose Vue.js](https://about.gitlab.com/2016/10/20/why-we-chose-vue/) | Concepts | 2016/10/20 |
 | [Markdown Kramdown Tips & Tricks](https://about.gitlab.com/2016/07/19/markdown-kramdown-tips-and-tricks/) | Technical overview | 2016/07/19 |
-
