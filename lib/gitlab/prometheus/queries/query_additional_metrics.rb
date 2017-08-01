@@ -71,8 +71,10 @@ module Gitlab
           result.select { |group| group.metrics.any? }
         end
 
-        def common_query_context(environment)
+        def common_query_context(environment, timeframe_start: 8.hours.ago.to_f, timeframe_end: Time.now.to_f)
           {
+            timeframe_start: timeframe_start,
+            timeframe_end: timeframe_end,
             ci_environment_slug: environment.slug,
             kube_namespace: environment.project.kubernetes_service&.actual_namespace || '',
             environment_filter: %{container_name!="POD",environment="#{environment.slug}"}

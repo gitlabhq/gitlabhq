@@ -6,14 +6,13 @@ module Gitlab
 
         def query(deployment_id)
           Deployment.find_by(id: deployment_id).try do |deployment|
-            query_context = common_query_context(deployment.environment).merge(
-              {
+            query_metrics(
+              common_query_context(
+                deployment.environment,
                 timeframe_start: (deployment.created_at - 30.minutes).to_f,
                 timeframe_end: (deployment.created_at + 30.minutes).to_f
-              }
+              )
             )
-
-            query_metrics(query_context)
           end
         end
       end
