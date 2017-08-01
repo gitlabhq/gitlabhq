@@ -165,7 +165,7 @@ class Notify < BaseMailer
 
     headers['X-GitLab-Project'] = @project.name
     headers['X-GitLab-Project-Id'] = @project.id
-    headers['X-GitLab-Project-Path'] = @project.path_with_namespace
+    headers['X-GitLab-Project-Path'] = @project.full_path
   end
 
   def add_unsubscription_headers_and_links

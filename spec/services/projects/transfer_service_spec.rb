@@ -59,7 +59,7 @@ describe Projects::TransferService do
     end
 
     def project_path(project)
-      File.join(project.repository_storage_path, "#{project.path_with_namespace}.git")
+      File.join(project.repository_storage_path, "#{project.disk_path}.git")
     end
 
     def current_path

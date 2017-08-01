@@ -306,6 +306,7 @@ describe Project do
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+    it { is_expected.to respond_to(:full_path) }
   end
 
   describe 'delegation' do
@@ -460,7 +461,7 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
@@ -1155,6 +1156,33 @@ describe Project do
     end
   end
 
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
+    end
+  end
+
   describe '.search' do
     let(:project) { create(:empty_project, description: 'kitten mittens') }
 
@@ -1341,7 +1369,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
+          .with(project.repository_storage_path, project.disk_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1351,7 +1379,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
+          .with(project.repository_storage_path, project.disk_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1384,7 +1412,7 @@ describe Project do
         .and_return(false)
 
       allow(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.path_with_namespace)
+        .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1408,7 +1436,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.path_with_namespace)
+        .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
       project.ensure_repository
@@ -1572,7 +1600,7 @@ describe Project do
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .with(project.repository_storage_path, project.disk_path, project.import_url)
         .and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
@@ -1710,7 +1738,7 @@ describe Project do
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async)
           .with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.full_path)
+              forked_from_project.disk_path, project.namespace.full_path)
 
         project.add_import_job
       end
