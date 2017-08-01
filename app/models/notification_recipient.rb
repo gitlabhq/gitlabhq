@@ -76,10 +76,13 @@ class NotificationRecipient
   end
 
   def has_access?
-    return false unless user.can?(:receive_notifications)
-    return true unless @read_ability
-
     DeclarativePolicy.subject_scope do
+      return false unless user.can?(:receive_notifications)
+      return false if @project && !user.can?(:read_project, @project)
+
+      return true unless @read_ability
+      return true unless DeclarativePolicy.has_policy?(@target)
+
       user.can?(@read_ability, @target)
     end
   end

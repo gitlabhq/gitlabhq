@@ -28,7 +28,12 @@ module DeclarativePolicy
 
       subject = find_delegate(subject)
 
-      class_for_class(subject.class)
+      class_for_class(subject.class) \
+        or raise "no policy for #{subject.class.name}"
+    end
+
+    def has_policy?(subject)
+      !class_for_class(subject.class).nil?
     end
 
     private
@@ -51,9 +56,7 @@ module DeclarativePolicy
         end
       end
 
-      policy_class = subject_class.instance_variable_get(CLASS_CACHE_IVAR)
-      raise "no policy for #{subject.class.name}" if policy_class.nil?
-      policy_class
+      subject_class.instance_variable_get(CLASS_CACHE_IVAR)
     end
 
     def compute_class_for_class(subject_class)
@@ -71,6 +74,8 @@ module DeclarativePolicy
           nil
         end
       end
+
+      nil
     end
 
     def find_delegate(subject)
