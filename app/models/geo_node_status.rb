@@ -28,12 +28,7 @@ class GeoNodeStatus
   end
 
   def repositories_synced_count
-    @repositories_synced_count ||=
-      if restricted_project_ids
-        Geo::ProjectRegistry.synced.where(project_id: restricted_project_ids).count
-      else
-        Geo::ProjectRegistry.synced.count
-      end
+    @repositories_synced_count ||= project_registries.synced.count
   end
 
   def repositories_synced_count=(value)
@@ -45,12 +40,7 @@ class GeoNodeStatus
   end
 
   def repositories_failed_count
-    @repositories_failed_count ||=
-      if restricted_project_ids
-        Geo::ProjectRegistry.failed.where(project_id: restricted_project_ids).count
-      else
-        Geo::ProjectRegistry.failed.count
-      end
+    @repositories_failed_count ||= project_registries.failed.count
   end
 
   def repositories_failed_count=(value)
@@ -138,6 +128,15 @@ class GeoNodeStatus
         LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
       else
         LfsObject.all
+      end
+  end
+
+  def project_registries
+    @project_registries ||=
+      if restricted_project_ids
+        Geo::ProjectRegistry.where(project_id: restricted_project_ids)
+      else
+        Geo::ProjectRegistry.all
       end
   end
 
