@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectUpdateRepositoryStorageWorker do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   subject { described_class.new }
 

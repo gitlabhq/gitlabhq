@@ -17,7 +17,7 @@ describe Project do
   end
 
   describe '#push_rule' do
-    let(:project) { create(:project, push_rule: create(:push_rule)) }
+    let(:project) { create(:empty_project, push_rule: create(:push_rule)) }
 
     subject(:push_rule) { project.push_rule(true) }
 
@@ -63,7 +63,7 @@ describe Project do
   describe '#execute_hooks' do
     it "triggers project and group hooks" do
       group = create :group, name: 'gitlab'
-      project = create(:project, name: 'gitlabhq', namespace: group)
+      project = create(:empty_project, name: 'gitlabhq', namespace: group)
       project_hook = create(:project_hook, push_events: true, project: project)
       group_hook = create(:group_hook, push_events: true, group: group)
 
@@ -78,7 +78,7 @@ describe Project do
   end
 
   describe '#allowed_to_share_with_group?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     it "returns true" do
       expect(project.allowed_to_share_with_group?).to be_truthy
@@ -92,7 +92,7 @@ describe Project do
 
   describe '#feature_available?' do
     let(:namespace) { build_stubbed(:namespace) }
-    let(:project) { build_stubbed(:project, namespace: namespace) }
+    let(:project) { build_stubbed(:empty_project, namespace: namespace) }
     let(:user) { build_stubbed(:user) }
 
     subject { project.feature_available?(feature, user) }
@@ -647,7 +647,7 @@ describe Project do
     ].each do |spec|
       context spec.inspect do
         let(:spec) { spec }
-        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+        let(:project) { build(:empty_project, approvals_before_merge: spec[:database]) }
 
         subject { project.approvals_before_merge }
 
@@ -669,7 +669,7 @@ describe Project do
     ].each do |spec|
       context spec.inspect do
         let(:spec) { spec }
-        let(:project) { build(:project, reset_approvals_on_push: spec[:database]) }
+        let(:project) { build(:empty_project, reset_approvals_on_push: spec[:database]) }
 
         subject { project.reset_approvals_on_push? }
 
@@ -691,7 +691,7 @@ describe Project do
     ].each do |spec|
       context spec.inspect do
         let(:spec) { spec }
-        let(:project) { build(:project, approvals_before_merge: spec[:database]) }
+        let(:project) { build(:empty_project, approvals_before_merge: spec[:database]) }
 
         subject { project.approvals_before_merge }
 
@@ -785,7 +785,7 @@ describe Project do
 
   describe '#disabled_services' do
     let(:namespace) { create(:group, :private) }
-    let(:project) { create(:project, :private, namespace: namespace) }
+    let(:project) { create(:empty_project, :private, namespace: namespace) }
     let(:disabled_services) { %w(jenkins jenkins_deprecated) }
 
     context 'without a license key' do

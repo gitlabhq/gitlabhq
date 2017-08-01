@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Admin::Emails", :js do
   let!(:current_user) { create(:admin) }
   let!(:group) { create(:group) }
-  let!(:project) { create(:project, namespace: group) }
+  let!(:project) { create(:empty_project, namespace: group) }
 
   describe "GET /admin/email" do
     before do

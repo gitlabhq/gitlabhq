@@ -1422,8 +1422,8 @@ describe Repository do
 
     describe "class method find_commits_by_message_with_elastic" do
       it "returns commits" do
-        project = create :project
-        project1 = create :project
+        project = create :project, :repository
+        project1 = create :project, :repository
 
         project.repository.index_commits
         project1.repository.index_commits
@@ -1438,7 +1438,7 @@ describe Repository do
 
     describe "find_commits_by_message_with_elastic" do
       it "returns commits" do
-        project = create :project
+        project = create :project, :repository
 
         project.repository.index_commits
 

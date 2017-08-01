@@ -27,7 +27,7 @@ describe RepositoryUpdateMirrorWorker do
 
     context 'with another worker already running' do
       it 'raises UpdateAlreadyInProgressError' do
-        mirror = create(:project, :mirror, :import_started)
+        mirror = create(:project, :repository, :mirror, :import_started)
 
         expect do
           subject.perform(mirror.id)
@@ -37,7 +37,7 @@ describe RepositoryUpdateMirrorWorker do
 
     context 'with unexpected error' do
       it 'marks mirror as failed' do
-        mirror = create(:project, :mirror, :import_scheduled)
+        mirror = create(:project, :repository, :mirror, :import_scheduled)
 
         allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_raise(RuntimeError)
 
@@ -49,7 +49,7 @@ describe RepositoryUpdateMirrorWorker do
     end
 
     context 'threshold_reached?' do
-      let(:mirror) { create(:project, :mirror, :import_scheduled) }
+      let(:mirror) { create(:project, :repository, :mirror, :import_scheduled) }
 
       before do
         expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)

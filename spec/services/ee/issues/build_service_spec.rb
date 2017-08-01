@@ -11,7 +11,7 @@ describe Issues::BuildService do # rubocop:disable RSpec/FilePath
   context 'with an issue template' do
     describe '#execute' do
       it 'fills in the template in the description' do
-        project = build(:project, issues_template: 'Work hard, play hard!')
+        project = build(:empty_project, issues_template: 'Work hard, play hard!')
         service = described_class.new(project, user)
 
         issue = service.execute

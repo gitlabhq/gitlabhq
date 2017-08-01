@@ -15,7 +15,7 @@ describe GitPushService do
   end
 
   describe 'with remote mirrors' do
-    let(:project)  { create(:project, :remote_mirror) }
+    let(:project)  { create(:project, :repository, :remote_mirror) }
 
     subject do
       described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)

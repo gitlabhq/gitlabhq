@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateMirrorService do
-  let(:project) { create(:project, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
+  let(:project) { create(:project, :repository, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
 
   describe "#execute" do
     context 'unlicensed' do
@@ -124,7 +124,7 @@ describe Projects::UpdateMirrorService do
     end
 
     describe "when is no mirror" do
-      let(:project) { build_stubbed(:project) }
+      let(:project) { build_stubbed(:empty_project) }
 
       it "success" do
         expect(project.mirror?).to eq(false)
