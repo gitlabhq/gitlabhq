@@ -112,6 +112,23 @@ describe WebHookService do
         end
       end
 
+      context 'with unsafe response body' do
+        before do
+          WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: "\xBB")
+          service_instance.execute
+        end
+
+        it 'log successful execution' do
+          expect(hook_log.trigger).to eq('push_hooks')
+          expect(hook_log.url).to eq(project_hook.url)
+          expect(hook_log.request_headers).to eq(headers)
+          expect(hook_log.response_body).to eq('')
+          expect(hook_log.response_status).to eq('200')
+          expect(hook_log.execution_duration).to be > 0
+          expect(hook_log.internal_error_message).to be_nil
+        end
+      end
+
       context 'should not log ServiceHooks' do
         let(:service_hook) { create(:service_hook) }
         let(:service_instance) { described_class.new(service_hook, data, 'service_hook') }
