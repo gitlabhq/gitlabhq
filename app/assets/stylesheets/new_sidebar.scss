@@ -292,7 +292,8 @@ $new-sidebar-width: 220px;
     }
 
     &:not(.active):hover > a,
-    > a:hover {
+    > a:hover,
+    &.is-over > a {
       background-color: $white-light;
     }
   }
