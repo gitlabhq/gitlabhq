@@ -124,6 +124,12 @@ class Namespace < ActiveRecord::Base
     all_projects.any?(&:has_container_registry_tags?)
   end
 
+  def send_update_instructions
+    projects.each do |project|
+      project.send_move_instructions("#{full_path_was}/#{project.path}")
+    end
+  end
+
   def kind
     type == 'Group' ? 'group' : 'user'
   end
