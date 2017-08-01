@@ -51,6 +51,7 @@ module Gitlab
               query[:query] %= context
               client_query(query[:query], time: context[:timeframe_end])
             end
+
           query[:result] = result&.map(&:deep_symbolize_keys)
           query
         end

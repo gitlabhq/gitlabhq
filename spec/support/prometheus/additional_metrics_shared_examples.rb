@@ -23,13 +23,13 @@ RSpec.shared_examples 'additional metrics query' do
     subject! { described_class.new(client) }
 
     shared_examples 'query context containing environment slug and filter' do
-      it 'query context contains ci_environment_slug' do
+      it 'contains ci_environment_slug' do
         expect(subject).to receive(:query_metrics).with(hash_including(ci_environment_slug: environment.slug))
 
         subject.query(*query_params)
       end
 
-      it 'query context contains environment filter' do
+      it 'contains environment filter' do
         expect(subject).to receive(:query_metrics).with(
           hash_including(
             environment_filter: "container_name!=\"POD\",environment=\"#{environment.slug}\""
