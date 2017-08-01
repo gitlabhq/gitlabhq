@@ -20,18 +20,15 @@
     .dropdown-content
       %ul
         - diff_files.each do |diff_file|
-          - file_hash = hexdigest(diff_file.file_path)
-          - added_lines = diff_file.added_lines
-          - removed_lines = diff_file.removed_lines
           %li
-            %a{ href: "##{file_hash}", title: diff_file.new_path }
+            %a{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
               = icon("#{diff_file_changed_icon(diff_file)} fw", class: "#{diff_file_changed_icon_color(diff_file)} append-right-5")
               %span.diff-file-changes-path= diff_file.new_path
               .pull-right
                 %span.cgreen<
-                  +#{added_lines}
+                  +#{diff_file.added_lines}
                 %span.cred<
-                  \-#{removed_lines}
+                  \-#{diff_file.removed_lines}
         %li.dropdown-menu-empty-link.hidden
           %a{ href: "#" }
             No files found.
