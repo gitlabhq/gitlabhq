@@ -11,7 +11,8 @@ tasks = [
   %w[bundle exec rake brakeman],
   %w[bundle exec license_finder],
   %w[yarn run eslint],
-  %w[bundle exec rubocop --require rubocop-rspec]
+  %w[bundle exec rubocop --require rubocop-rspec],
+  %w[scripts/lint-conflicts.sh]
 ]
 
 failed_tasks = tasks.reduce({}) do |failures, task|
