@@ -25,6 +25,6 @@
 .form-group
   = form.label :namespace_ids, 'Namespaces to replicate', class: 'control-label'
   .col-sm-10
-    = form.select :namespace_ids, namespaces_options(geo_node.namespace_ids), { include_hidden: false }, multiple: true, class: 'select2 select-wide', data: { field: 'group_ids' }
+    = form.select :namespace_ids, namespaces_options(geo_node.namespace_ids), { include_hidden: true }, multiple: true, class: 'select2 select-wide', data: { field: 'group_ids' }
     .help-block
       Choose which namespaces you wish to replicate to this secondary node. Leave blank to replicate all.
