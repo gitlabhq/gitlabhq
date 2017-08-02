@@ -163,7 +163,6 @@ window.Build = (function () {
 
   Build.prototype.initSidebar = function () {
     this.$sidebar = $('.js-build-sidebar');
-    this.$sidebar.niceScroll();
   };
 
   Build.prototype.getBuildTrace = function () {
