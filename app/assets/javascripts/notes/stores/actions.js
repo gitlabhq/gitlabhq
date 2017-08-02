@@ -1,5 +1,6 @@
 /* global Flash */
-
+import Visibility from 'visibilityjs';
+import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';
 import * as constants from '../constants';
@@ -131,31 +132,58 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
     });
 };
 
-export const poll = ({ commit, state, getters }) => service
-  .poll(state.notesData.notesPath, state.lastFetchedAt)
-  .then(res => res.json())
-  .then((res) => {
-    if (res.notes.length) {
-      const { notesById } = getters;
+const pollSuccessCallBack = (resp, commit, state, getters) => {
+  if (resp.notes.length) {
+    const { notesById } = getters;
 
-      res.notes.forEach((note) => {
-        if (notesById[note.id]) {
-          commit(types.UPDATE_NOTE, note);
-        } else if (note.type === constants.DISCUSSION_NOTE) {
-          const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
+    resp.notes.forEach((note) => {
+      if (notesById[note.id]) {
+        commit(types.UPDATE_NOTE, note);
+      } else if (note.type === constants.DISCUSSION_NOTE) {
+        const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
 
-          if (discussion) {
-            commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
-          } else {
-            commit(types.ADD_NEW_NOTE, note);
-          }
+        if (discussion) {
+          commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
-      });
-    }
-    return res;
+      } else {
+        commit(types.ADD_NEW_NOTE, note);
+      }
+    });
+  }
+
+  commit(types.SET_LAST_FETCHED_AT, resp.lastFetchedAt);
+
+  return resp;
+};
+
+export const poll = ({ commit, state, getters }) => {
+  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
+
+  const eTagPoll = new Poll({
+    resource: service,
+    method: 'poll',
+    data: requestData,
+    successCallback: resp => resp.json()
+      .then(data => pollSuccessCallBack(data, commit, state, getters)),
+    errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
   });
+
+  if (!Visibility.hidden()) {
+    eTagPoll.makeRequest();
+  } else {
+    this.service.poll(requestData);
+  }
+
+  Visibility.change(() => {
+    if (!Visibility.hidden()) {
+      eTagPoll.restart();
+    } else {
+      eTagPoll.stop();
+    }
+  });
+};
 
 export const toggleAward = ({ commit, getters, dispatch }, data) => {
   const { endpoint, awardName, noteId, skipMutalityCheck } = data;

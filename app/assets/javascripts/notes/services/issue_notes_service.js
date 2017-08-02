@@ -19,7 +19,8 @@ export default {
   createNewNote(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },
-  poll(endpoint, lastFetchedAt) {
+  poll(data = {}) {
+    const { endpoint, lastFetchedAt } = data;
     const options = {
       headers: {
         'X-Last-Fetched-At': lastFetchedAt,

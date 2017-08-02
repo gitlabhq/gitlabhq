@@ -88,26 +88,12 @@
               this.checkLocationHash();
             });
           })
-          .catch((error) => {
-            console.log(error)
-            Flash('Something went wrong while fetching issue comments. Please try again.')
-            });
+          .catch((error) => Flash('Something went wrong while fetching issue comments. Please try again.'));
       },
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
-        // FIXME: @fatihacet Implement real polling mechanism
-        // TODO: FILIPA: DEAL WITH THIS
-        setInterval(() => {
-          this.poll()
-            .then((res) => {
-              this.setLastFetchedAt(res.lastFetchedAt);
-            })
-            .catch((error) =>{
-              console.log(error)
-              Flash('Something went wrong while fetching latest comments.')
-            } );
-        }, 15000);
+        this.poll();
       },
       bindEventHubListeners() {
         this.$el.parentElement.addEventListener('toggleAward', (event) => {
