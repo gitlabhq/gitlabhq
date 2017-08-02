@@ -1,7 +1,11 @@
 <script>
 import eventHub from '../event_hub';
+import groupIdenticon from './group_identicon.vue';
 
 export default {
+  components: {
+    groupIdenticon,
+  },
   props: {
     group: {
       type: Object,
@@ -91,6 +95,9 @@ export default {
     },
     hasGroups() {
       return Object.keys(this.group.subGroups).length > 0;
+    },
+    hasAvatar() {
+      return this.group.avatarUrl && this.group.avatarUrl.indexOf('/assets/no_group_avatar') === -1;
     },
   },
 };
@@ -194,8 +201,14 @@ export default {
         <a
           :href="group.groupPath">
           <img
+            v-if="hasAvatar"
             class="avatar s40"
             :src="group.avatarUrl"
+          />
+          <group-identicon
+            v-else
+            :entity-id=group.id
+            :entity-name="group.name"
           />
         </a>
       </div>
