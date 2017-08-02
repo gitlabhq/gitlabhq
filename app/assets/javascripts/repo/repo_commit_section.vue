@@ -77,7 +77,7 @@ export default RepoCommitSection;
       </div>
       <!-- Button Drop Down
       -->
-      <div class="form-group">
+      <div class="form-group target-branch">
         <label class="col-md-4 control-label" for="target-branch">Target branch</label>
         <div class="col-md-4">
           <span class="help-block">{{targetBranch}}</span>
