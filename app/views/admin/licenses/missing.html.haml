@@ -3,6 +3,8 @@
 %h3.page-title
   Your License
   = render "upload_buy_license"
+- if params[:trial_key].present?
+  = render "upload_trial_license"
 
 %hr
 
