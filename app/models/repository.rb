@@ -944,7 +944,7 @@ class Repository
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
       else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+        rugged_is_ancestor?(ancestor_id, descendant_id)
       end
     end
   end
