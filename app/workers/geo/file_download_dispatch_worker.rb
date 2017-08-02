@@ -19,40 +19,23 @@ module Geo
     def find_object_ids(restricted_project_ids)
       downloaded_ids = find_downloaded_ids([:attachment, :avatar, :file])
 
-      relation =
-        if restricted_project_ids
-          uploads_table   = Upload.arel_table
-          group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
-          project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
-          other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
-
-          Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-        else
-          Upload.all
-        end
-
-      relation.where.not(id: downloaded_ids)
-              .order(created_at: :desc)
-              .limit(db_retrieve_batch_size)
-              .pluck(:id, :uploader)
-              .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
+      current_node.uploads
+                  .where.not(id: downloaded_ids)
+                  .order(created_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id, :uploader)
+                  .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
     end
 
     def find_lfs_object_ids(restricted_project_ids)
       downloaded_ids = find_downloaded_ids([:lfs])
 
-      relation =
-        if restricted_project_ids
-          LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
-        else
-          LfsObject.all
-        end
-
-      relation.where.not(id: downloaded_ids)
-              .order(created_at: :desc)
-              .limit(db_retrieve_batch_size)
-              .pluck(:id)
-              .map { |id| [id, :lfs] }
+      current_node.lfs_objects
+                  .where.not(id: downloaded_ids)
+                  .order(created_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id)
+                  .map { |id| [id, :lfs] }
     end
 
     def find_downloaded_ids(file_types)

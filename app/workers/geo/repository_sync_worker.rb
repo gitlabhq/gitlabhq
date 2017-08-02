@@ -16,39 +16,26 @@ module Geo
     end
 
     def load_pending_resources
-      restricted_project_ids = Gitlab::Geo.current_node.project_ids
-      project_ids_not_synced = find_project_ids_not_synced(restricted_project_ids)
-      project_ids_updated_recently = find_project_ids_updated_recently(restricted_project_ids)
+      project_ids_not_synced = find_project_ids_not_synced
+      project_ids_updated_recently = find_project_ids_updated_recently
 
       interleave(project_ids_not_synced, project_ids_updated_recently)
     end
 
-    def find_project_ids_not_synced(restricted_project_ids)
-      relation =
-        if restricted_project_ids
-          Project.where(id: restricted_project_ids)
-        else
-          Project.all
-        end
-
-      relation.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
-              .order(last_repository_updated_at: :desc)
-              .limit(db_retrieve_batch_size)
-              .pluck(:id)
+    def find_project_ids_not_synced
+      current_node.projects
+                  .where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
+                  .order(last_repository_updated_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id)
     end
 
-    def find_project_ids_updated_recently(restricted_project_ids)
-      relation =
-        if restricted_project_ids
-          Geo::ProjectRegistry.where(project_id: restricted_project_ids)
-        else
-          Geo::ProjectRegistry.all
-        end
-
-      relation.dirty
-              .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
-              .limit(db_retrieve_batch_size)
-              .pluck(:project_id)
+    def find_project_ids_updated_recently
+      current_node.project_registries
+                  .dirty
+                  .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:project_id)
     end
   end
 end

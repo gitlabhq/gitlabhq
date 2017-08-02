@@ -54,7 +54,7 @@ class GeoNodeStatus
     @lfs_objects_synced_count ||= begin
       relation = Geo::FileRegistry.where(file_type: :lfs)
 
-      if restricted_project_ids
+      if Gitlab::Geo.current_node.project_ids
         relation = relation.where(file_id: lfs_objects.pluck(:id))
       end
 
@@ -104,49 +104,18 @@ class GeoNodeStatus
   end
 
   def attachments
-    @attachments ||=
-      if restricted_project_ids
-        uploads_table   = Upload.arel_table
-        group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
-        project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
-        other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
-
-        Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-      else
-        Upload.all
-      end
+    @attachments ||= Gitlab::Geo.current_node.uploads
   end
 
   def lfs_objects
-    @lfs_objects ||=
-      if restricted_project_ids
-        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
-      else
-        LfsObject.all
-      end
+    @lfs_objects ||= Gitlab::Geo.current_node.lfs_objects
   end
 
   def project_registries
-    @project_registries ||=
-      if restricted_project_ids
-        Geo::ProjectRegistry.where(project_id: restricted_project_ids)
-      else
-        Geo::ProjectRegistry.all
-      end
+    @project_registries ||= Gitlab::Geo.current_node.project_registries
   end
 
   def repositories
-    @repositories ||=
-      if restricted_project_ids
-        Project.where(id: restricted_project_ids)
-      else
-        Project.all
-      end
-  end
-
-  def restricted_project_ids
-    return @restricted_project_ids if defined?(@restricted_project_ids)
-
-    @restricted_project_ids = Gitlab::Geo.current_node.project_ids
+    @repositories ||= Gitlab::Geo.current_node.projects
   end
 end
