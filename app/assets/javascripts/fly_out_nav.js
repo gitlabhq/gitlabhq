@@ -7,32 +7,32 @@ export const calculateTop = (boundingRect, outerHeight) => {
 };
 
 export const showSubLevelItems = (el) => {
-  const $subitems = el.querySelector('.sidebar-sub-level-items');
+  const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!$subitems) return;
+  if (!subItems) return;
 
-  $subitems.style.display = 'block';
+  subItems.style.display = 'block';
   el.classList.add('is-over');
 
   const boundingRect = el.getBoundingClientRect();
-  const top = calculateTop(boundingRect, $subitems.offsetHeight);
+  const top = calculateTop(boundingRect, subItems.offsetHeight);
   const isAbove = top < boundingRect.top;
 
-  $subitems.style.transform = `translate3d(0, ${Math.floor(top)}px, 0)`;
+  subItems.style.transform = `translate3d(0, ${Math.floor(top)}px, 0)`;
 
   if (isAbove) {
-    $subitems.classList.add('is-above');
+    subItems.classList.add('is-above');
   }
 };
 
 export const hideSubLevelItems = (el) => {
-  const $subitems = el.querySelector('.sidebar-sub-level-items');
+  const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!$subitems) return;
+  if (!subItems) return;
 
   el.classList.remove('is-over');
-  $subitems.style.display = 'none';
-  $subitems.classList.remove('is-above');
+  subItems.style.display = 'none';
+  subItems.classList.remove('is-above');
 };
 
 export default () => {
