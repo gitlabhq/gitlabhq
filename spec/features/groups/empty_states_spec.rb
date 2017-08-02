@@ -9,7 +9,7 @@ feature 'Groups Merge Requests Empty States' do
   end
 
   context 'group has a project' do
-    let(:project) { create(:empty_project, namespace: group) }
+    let(:project) { create(:project, namespace: group) }
 
     before do
       project.add_master(user)

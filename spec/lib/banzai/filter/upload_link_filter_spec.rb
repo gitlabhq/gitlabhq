@@ -29,7 +29,7 @@ describe Banzai::Filter::UploadLinkFilter do
     %(<div><a href="#{path}">#{path}</a></div>)
   end
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   shared_examples :preserve_unchanged do
     it 'does not modify any relative URL in anchor' do

@@ -163,7 +163,7 @@ describe ProtectedBranch do
     end
 
     context "new project" do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       it 'returns false when default_protected_branch is unprotected' do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)

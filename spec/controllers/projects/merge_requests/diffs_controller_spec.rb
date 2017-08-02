@@ -145,7 +145,7 @@ describe Projects::MergeRequests::DiffsController do
     end
 
     context 'when the merge request belongs to a different project' do
-      let(:other_project) { create(:empty_project) }
+      let(:other_project) { create(:project) }
 
       before do
         other_project.team << [user, :master]

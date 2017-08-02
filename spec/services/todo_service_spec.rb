@@ -10,7 +10,7 @@ describe TodoService do
   let(:john_doe) { create(:user) }
   let(:skipped) { create(:user) }
   let(:skip_users) { [skipped] }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
@@ -103,7 +103,7 @@ describe TodoService do
 
       context 'when a private group is mentioned' do
         let(:group)   { create(:group, :private) }
-        let(:project) { create(:empty_project, :private, group: group) }
+        let(:project) { create(:project, :private, group: group) }
         let(:issue)   { create(:issue, author: author, project: project, description: group.to_reference) }
 
         before do

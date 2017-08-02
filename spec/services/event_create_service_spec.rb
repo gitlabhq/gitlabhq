@@ -114,7 +114,7 @@ describe EventCreateService do
   end
 
   describe '#push', :clean_gitlab_redis_shared_state do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
 
     it 'creates a new event' do
@@ -128,7 +128,7 @@ describe EventCreateService do
 
   describe 'Project' do
     let(:user) { create :user }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     describe '#join_project' do
       subject { service.join_project(project, user) }

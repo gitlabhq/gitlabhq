@@ -5,7 +5,7 @@ describe AccessRequestsFinder do
   let(:access_requester) { create(:user) }
 
   let(:project) do
-    create(:empty_project, :public, :access_requestable) do |project|
+    create(:project, :public, :access_requestable) do |project|
       project.request_access(access_requester)
     end
   end

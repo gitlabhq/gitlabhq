@@ -5,7 +5,7 @@ describe API::Events do
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
   let(:other_user) { create(:user, username: 'otheruser') }
-  let(:private_project) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
 
@@ -60,7 +60,7 @@ describe API::Events do
       end
 
       context 'when there are multiple events from different projects' do
-        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:second_note) { create(:note_on_issue, project: create(:project)) }
 
         before do
           second_note.project.add_user(user, :developer)
@@ -106,7 +106,7 @@ describe API::Events do
       end
 
       it 'returns 200 status for a public project' do
-        public_project = create(:empty_project, :public)
+        public_project = create(:project, :public)
 
         get api("/projects/#{public_project.id}/events")
 

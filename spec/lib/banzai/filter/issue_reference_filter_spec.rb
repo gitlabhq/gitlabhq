@@ -7,7 +7,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     IssuesHelper
   end
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue)  { create(:issue, project: project) }
 
   it 'requires project context' do
@@ -125,7 +125,7 @@ describe Banzai::Filter::IssueReferenceFilter do
   context 'cross-project / cross-namespace complete reference' do
     it_behaves_like 'a reference containing an element node'
 
-    let(:project2)  { create(:empty_project, :public) }
+    let(:project2)  { create(:project, :public) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
@@ -168,8 +168,8 @@ describe Banzai::Filter::IssueReferenceFilter do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
@@ -212,8 +212,8 @@ describe Banzai::Filter::IssueReferenceFilter do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.path}##{issue.iid}" }
 
@@ -256,7 +256,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { helper.url_for_issue(issue.iid, project2) + "#note_123" }
 
@@ -277,7 +277,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { issue.to_reference(project) }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
@@ -299,7 +299,7 @@ describe Banzai::Filter::IssueReferenceFilter do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{helper.url_for_issue(issue.iid, project2) + "#note_123"}" }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }

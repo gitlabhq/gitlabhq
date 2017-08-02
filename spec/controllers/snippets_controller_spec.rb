@@ -273,7 +273,7 @@ describe SnippetsController do
   end
 
   describe 'PUT #update' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:snippet) { create :personal_snippet, author: user, project: project, visibility_level: visibility_level }
 
     def update_snippet(snippet_params = {}, additional_params = {})

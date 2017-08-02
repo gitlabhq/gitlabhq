@@ -47,7 +47,7 @@ describe SearchHelper do
       end
 
       it "includes the user's projects" do
-        project = create(:empty_project, namespace: create(:namespace, owner: user))
+        project = create(:project, namespace: create(:namespace, owner: user))
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
