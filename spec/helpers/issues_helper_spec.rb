@@ -8,7 +8,7 @@ describe IssuesHelper do
   describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { polymorphic_path([@project.namespace, project, issue]) }
+    let(:int_expected) { polymorphic_path([@project.namespace, @project, issue]) }
 
     it "returns internal path if used internal tracker" do
       @project = project
@@ -20,6 +20,12 @@ describe IssuesHelper do
       @project = ext_project
 
       expect(url_for_issue(issue.iid)).to match(ext_expected)
+    end
+
+    it "returns path to internal issue when internal option passed" do
+      @project = ext_project
+
+      expect(url_for_issue(issue.iid, ext_project, internal: true)).to match(int_expected)
     end
 
     it "returns empty string if project nil" do
@@ -137,7 +143,7 @@ describe IssuesHelper do
       let(:merge_request) { create(:merge_request) }
 
       it "links just the merge request" do
-        expected_path = namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+        expected_path = project_merge_request_path(merge_request.project, merge_request)
 
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
       end

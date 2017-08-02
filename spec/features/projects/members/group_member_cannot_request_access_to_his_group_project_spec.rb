@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group member cannot request access to his group project', feature: true do
+feature 'Projects > Members > Group member cannot request access to his group project' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:empty_project, namespace: group) }
 
   scenario 'owner does not see the request access button' do
     group.add_owner(user)
@@ -41,7 +41,7 @@ feature 'Projects > Members > Group member cannot request access to his group pr
   end
 
   def login_and_visit_project_page(user)
-    gitlab_sign_in(user)
-    visit namespace_project_path(project.namespace, project)
+    sign_in(user)
+    visit project_path(project)
   end
 end

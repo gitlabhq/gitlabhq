@@ -1,12 +1,20 @@
-# GitLab Community Edition
+# GitLab Documentation
 
-[GitLab](https://about.gitlab.com/) is a Git-based fully featured platform
-for software development.
+Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
+platform for software development!
 
-**GitLab Community Edition (CE)** is an opensource product, self-hosted, free to use.
-All [GitLab products](https://about.gitlab.com/products/) contain the features
-available in GitLab CE. Premium features are available in
-[GitLab Enterprise Edition (EE)](https://about.gitlab.com/gitlab-ee/).
+We offer four different products for you and your company:
+
+- **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
+self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
+- **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
+self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
+- **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
+
+> **GitLab EE** contains all features available in **GitLab CE**,
+plus premium features available in each version: **Enterprise Edition Starter**
+(**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
+**EES** is also available in **EEP**.
 
 ----
 
@@ -28,27 +36,29 @@ Shortcuts to GitLab's most visited docs:
 
 ### User account
 
-- [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
-- [Profile settings](profile/README.md): Manage your profile settings, two factor authentication and more.
+- [User documentation](user/index.md): Learn how to use GitLab and explore its features
+- [User account](user/profile/index.md): Manage your account
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
+  - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 
 ### Projects and groups
 
-- [Create a project](gitlab-basics/create-project.md)
-- [Fork a project](gitlab-basics/fork-project.md)
-- [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
-- [Groups](workflow/groups.md): Organize your projects in groups.
-  - [Create a group](gitlab-basics/create-group.md)
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+- [Projects](user/project/index.md):
+  - [Create a project](gitlab-basics/create-project.md)
+  - [Fork a project](gitlab-basics/fork-project.md)
+  - [Importing and exporting projects between instances](user/project/settings/import_export.md).
+  - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+  - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
+- [Groups](user/group/index.md): Organize your projects in groups.
+  - [Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 
 ### Repository
 
-Manage files and branches from the UI (user interface):
+Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
 - Files
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
@@ -81,6 +91,7 @@ Manage files and branches from the UI (user interface):
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
+- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 
@@ -104,6 +115,7 @@ Manage files and branches from the UI (user interface):
 
 - [Project Services](user/project/integrations/project_services.md): Integrate a project with external services, such as CI and chat.
 - [GitLab Integration](integration/README.md): Integrate with multiple third-party services with GitLab to allow external issue trackers and external authentication.
+- [Trello Power-Up](integration/trello_power_up.md): Integrate with GitLab's Trello Power-Up
 
 ----
 
@@ -125,7 +137,7 @@ have access to GitLab administration tools and settings.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 
-### GitLab admins' superpowers
+### Features
 
 - [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
 - [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
@@ -155,6 +167,7 @@ have access to GitLab administration tools and settings.
 - [Operations](administration/operations.md): Keeping GitLab up and running.
 - [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
 - [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ### Customization
 
@@ -167,6 +180,7 @@ have access to GitLab administration tools and settings.
 
 ### Admin tools
 
+- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
 - [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
     - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.

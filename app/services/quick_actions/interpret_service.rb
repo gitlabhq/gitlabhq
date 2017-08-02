@@ -4,6 +4,9 @@ module QuickActions
 
     attr_reader :issuable
 
+    SHRUG = '¯\\＿(ツ)＿/¯'.freeze
+    TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
+
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
@@ -14,6 +17,7 @@ module QuickActions
 
       content, commands = extractor.extract_commands(content, context)
       extract_updates(commands, context)
+
       [content, @updates]
     end
 
@@ -92,9 +96,12 @@ module QuickActions
 
     desc 'Assign'
     explanation do |users|
-      "Assigns #{users.first.to_reference}." if users.any?
+      users = issuable.allows_multiple_assignees? ? users : users.take(1)
+      "Assigns #{users.map(&:to_reference).to_sentence}."
     end
-    params '@user'
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : '@user'
+    end
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -104,28 +111,43 @@ module QuickActions
     command :assign do |users|
       next if users.empty?
 
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = [users.last.id]
-      else
-        @updates[:assignee_id] = users.last.id
-      end
+      @updates[:assignee_ids] =
+        if issuable.allows_multiple_assignees?
+          issuable.assignees.pluck(:id) + users.map(&:id)
+        else
+          [users.last.id]
+        end
     end
 
-    desc 'Remove assignee'
+    desc do
+      if issuable.allows_multiple_assignees?
+        'Remove all or specific assignee(s)'
+      else
+        'Remove assignee'
+      end
+    end
     explanation do
-      "Removes assignee #{issuable.assignees.first.to_reference}."
+      "Removes #{'assignee'.pluralize(issuable.assignees.size)} #{issuable.assignees.map(&:to_reference).to_sentence}."
+    end
+    params do
+      issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
     end
     condition do
       issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign do
-      if issuable.is_a?(Issue)
-        @updates[:assignee_ids] = []
-      else
-        @updates[:assignee_id] = nil
-      end
+    parse_params do |unassign_param|
+      # When multiple users are assigned, all will be unassigned if multiple assignees are no longer allowed
+      extract_users(unassign_param) if issuable.allows_multiple_assignees?
+    end
+    command :unassign do |users = nil|
+      @updates[:assignee_ids] =
+        if users&.any?
+          issuable.assignees.pluck(:id) - users.map(&:id)
+        else
+          []
+        end
     end
 
     desc 'Set milestone'
@@ -405,6 +427,18 @@ module QuickActions
       @updates[:spend_time] = { duration: :reset, user: current_user }
     end
 
+    desc "Append the comment with #{SHRUG}"
+    params '<Comment>'
+    substitution :shrug do |comment|
+      "#{comment} #{SHRUG}"
+    end
+
+    desc "Append the comment with #{TABLEFLIP}"
+    params '<Comment>'
+    substitution :tableflip do |comment|
+      "#{comment} #{TABLEFLIP}"
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
@@ -450,6 +484,24 @@ module QuickActions
         @updates[:remove_label_ids] =
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
+      end
+    end
+
+    desc 'Mark this issue as a duplicate of another issue'
+    explanation do |duplicate_reference|
+      "Marks this issue as a duplicate of #{duplicate_reference}."
+    end
+    params '#issue'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :duplicate do |duplicate_param|
+      canonical_issue = extract_references(duplicate_param, :issue).first
+
+      if canonical_issue.present?
+        @updates[:canonical_issue_id] = canonical_issue.id
       end
     end
 

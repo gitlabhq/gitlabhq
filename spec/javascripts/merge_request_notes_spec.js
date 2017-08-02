@@ -15,7 +15,7 @@ describe('Merge request notes', () => {
   gl.utils = gl.utils || {};
 
   const discussionTabFixture = 'merge_requests/diff_comment.html.raw';
-  const changesTabJsonFixture = 'merge_requests/changes_tab_with_comments.json';
+  const changesTabJsonFixture = 'merge_request_diffs/inline_changes_tab_with_comments.json';
   preloadFixtures(discussionTabFixture, changesTabJsonFixture);
 
   describe('Discussion tab with diff comments', () => {

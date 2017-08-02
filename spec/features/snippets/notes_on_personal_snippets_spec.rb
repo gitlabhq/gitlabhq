@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Comments on personal snippets', :js, feature: true do
+describe 'Comments on personal snippets', :js do
   include NoteInteractionHelpers
 
   let!(:user)    { create(:user) }
@@ -14,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    gitlab_sign_in user
+    sign_in user
     visit snippet_path(snippet)
   end
 
@@ -33,6 +33,7 @@ describe 'Comments on personal snippets', :js, feature: true do
         expect(page).to have_selector('.note-emoji-button')
       end
 
+      find('body').click # close dropdown
       open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do

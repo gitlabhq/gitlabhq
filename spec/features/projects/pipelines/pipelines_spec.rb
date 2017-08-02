@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-describe 'Pipelines', :feature, :js do
+describe 'Pipelines', :js do
   let(:project) { create(:empty_project) }
 
   context 'when user is logged in' do
     let(:user) { create(:user) }
 
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
       project.team << [user, :developer]
     end
 
     describe 'GET /:project/pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       let!(:pipeline) do
         create(
@@ -51,7 +51,7 @@ describe 'Pipelines', :feature, :js do
 
       context 'header tabs' do
         before do
-          visit namespace_project_pipelines_path(project.namespace, project)
+          visit project_pipelines_path(project)
           wait_for_requests
         end
 
@@ -369,14 +369,14 @@ describe 'Pipelines', :feature, :js do
         end
 
         it 'should render pagination' do
-          visit namespace_project_pipelines_path(project.namespace, project)
+          visit project_pipelines_path(project)
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
         it 'should render second page of pipelines' do
-          visit namespace_project_pipelines_path(project.namespace, project, page: '2')
+          visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
@@ -385,7 +385,7 @@ describe 'Pipelines', :feature, :js do
     end
 
     describe 'GET /:project/pipelines/show' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       let(:pipeline) do
         create(:ci_empty_pipeline,
@@ -405,7 +405,7 @@ describe 'Pipelines', :feature, :js do
 
         create(:generic_commit_status, pipeline: pipeline, stage: 'external', name: 'jenkins', stage_idx: 3)
 
-        visit namespace_project_pipeline_path(project.namespace, project, pipeline)
+        visit project_pipeline_path(project, pipeline)
         wait_for_requests
       end
 
@@ -437,10 +437,10 @@ describe 'Pipelines', :feature, :js do
     end
 
     describe 'POST /:project/pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
-        visit new_namespace_project_pipeline_path(project.namespace, project)
+        visit new_project_pipeline_path(project)
       end
 
       context 'for valid commit', js: true do
@@ -476,10 +476,10 @@ describe 'Pipelines', :feature, :js do
     end
 
     describe 'Create pipelines' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
-        visit new_namespace_project_pipeline_path(project.namespace, project)
+        visit new_project_pipeline_path(project)
       end
 
       describe 'new pipeline page' do
@@ -508,25 +508,25 @@ describe 'Pipelines', :feature, :js do
 
   context 'when user is not logged in' do
     before do
-      visit namespace_project_pipelines_path(project.namespace, project)
+      visit project_pipelines_path(project)
     end
 
     context 'when project is public' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
 
       it { expect(page).to have_content 'Build with confidence' }
       it { expect(page).to have_http_status(:success) }
     end
 
     context 'when project is private' do
-      let(:project) { create(:project, :private) }
+      let(:project) { create(:project, :private, :repository) }
 
       it { expect(page).to have_content 'You need to sign in' }
     end
   end
 
   def visit_project_pipelines(**query)
-    visit namespace_project_pipelines_path(project.namespace, project, query)
+    visit project_pipelines_path(project, query)
     wait_for_requests
   end
 end

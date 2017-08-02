@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::DestroyService, services: true do
+describe Users::DestroyService do
   describe "Deletes a user and all their personal projects" do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }

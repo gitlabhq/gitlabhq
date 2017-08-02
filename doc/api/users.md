@@ -146,6 +146,12 @@ GET /users?extern_uid=1234567&provider=github
 
 You can search for users who are external with: `/users?external=true`
 
+You can search users by creation date time range with:
+
+```
+GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
+```
+
 ## Single user
 
 Get a single user.
@@ -235,26 +241,26 @@ POST /users
 
 Parameters:
 
-- `email` (required)            - Email
-- `password` (optional)         - Password
-- `reset_password` (optional)   - Send user password reset link - true or false(default)
-- `username` (required)         - Username
-- `name` (required)             - Name
-- `skype` (optional)            - Skype ID
-- `linkedin` (optional)         - LinkedIn
-- `twitter` (optional)          - Twitter account
-- `website_url` (optional)      - Website URL
-- `organization` (optional)     - Organization name
-- `projects_limit` (optional)   - Number of projects user can create
-- `extern_uid` (optional)       - External UID
-- `provider` (optional)         - External provider name
-- `bio` (optional)              - User's biography
-- `location` (optional)         - User's location
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
-- `confirm` (optional)          - Require confirmation - true (default) or false
-- `external` (optional)         - Flags the user as external - true or false(default)
-- `avatar` (optional)           - Image file for user's avatar
+- `email` (required)             - Email
+- `password` (optional)          - Password
+- `reset_password` (optional)    - Send user password reset link - true or false(default)
+- `username` (required)          - Username
+- `name` (required)              - Name
+- `skype` (optional)             - Skype ID
+- `linkedin` (optional)          - LinkedIn
+- `twitter` (optional)           - Twitter account
+- `website_url` (optional)       - Website URL
+- `organization` (optional)      - Organization name
+- `projects_limit` (optional)    - Number of projects user can create
+- `extern_uid` (optional)        - External UID
+- `provider` (optional)          - External provider name
+- `bio` (optional)               - User's biography
+- `location` (optional)          - User's location
+- `admin` (optional)             - User is admin - true or false (default)
+- `can_create_group` (optional)  - User can create groups - true or false
+- `skip_confirmation` (optional) - Skip confirmation - true or false (default)
+- `external` (optional)          - Flags the user as external - true or false(default)
+- `avatar` (optional)            - Image file for user's avatar
 
 ## User modification
 
@@ -358,7 +364,7 @@ GET /user
 
 Parameters:
 
-- `sudo` (required) - the ID of a user
+- `sudo` (optional) - the ID of a user to make the call in their place
 
 ```
 GET /user

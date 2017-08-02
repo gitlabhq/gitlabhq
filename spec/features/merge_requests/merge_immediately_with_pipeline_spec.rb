@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge immediately', :feature, :js do
+feature 'Merge immediately', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   let!(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,
@@ -28,8 +28,8 @@ feature 'Merge immediately', :feature, :js do
     end
 
     before do
-      gitlab_sign_in user
-      visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+      sign_in user
+      visit project_merge_request_path(merge_request.project, merge_request)
     end
 
     it 'enables merge immediately' do

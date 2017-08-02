@@ -59,16 +59,16 @@ describe ApplicationHelper do
   describe 'project_icon' do
     it 'returns an url for the avatar' do
       project = create(:empty_project, avatar: File.open(uploaded_image_temp_path))
-      avatar_url = "/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
-        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
 
       allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/system/project/avatar/#{project.id}/banana_sample.gif"
+      avatar_url = "#{gitlab_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
-        .to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
 
     it 'gives uploaded icon when present' do
@@ -76,8 +76,9 @@ describe ApplicationHelper do
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
 
-      avatar_url = "#{gitlab_host}#{namespace_project_avatar_path(project.namespace, project)}"
-      expect(helper.project_icon(project.full_path).to_s).to match(image_tag(avatar_url))
+      avatar_url = "#{gitlab_host}#{project_avatar_path(project)}"
+      expect(helper.project_icon(project.full_path).to_s)
+        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
   end
 
@@ -88,7 +89,7 @@ describe ApplicationHelper do
       context 'when there is a matching user' do
         it 'returns a relative URL for the avatar' do
           expect(helper.avatar_icon(user.email).to_s)
-            .to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+            .to eq("/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
         end
 
         context 'when an asset_host is set in the config' do
@@ -100,14 +101,14 @@ describe ApplicationHelper do
 
           it 'returns an absolute URL on that asset host' do
             expect(helper.avatar_icon(user.email, only_path: false).to_s)
-              .to eq("#{asset_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+              .to eq("#{asset_host}/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
           end
         end
 
         context 'when only_path is set to false' do
           it 'returns an absolute URL for the avatar' do
             expect(helper.avatar_icon(user.email, only_path: false).to_s)
-              .to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+              .to eq("#{gitlab_host}/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
           end
         end
 
@@ -120,7 +121,7 @@ describe ApplicationHelper do
 
           it 'returns a relative URL with the correct prefix' do
             expect(helper.avatar_icon(user.email).to_s)
-              .to eq("/gitlab/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+              .to eq("/gitlab/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
           end
         end
       end
@@ -138,14 +139,14 @@ describe ApplicationHelper do
       context 'when only_path is true' do
         it 'returns a relative URL for the avatar' do
           expect(helper.avatar_icon(user, only_path: true).to_s)
-            .to eq("/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+            .to eq("/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
         end
       end
 
       context 'when only_path is false' do
         it 'returns an absolute URL for the avatar' do
           expect(helper.avatar_icon(user, only_path: false).to_s)
-            .to eq("#{gitlab_host}/uploads/system/user/avatar/#{user.id}/banana_sample.gif")
+            .to eq("#{gitlab_host}/uploads/-/system/user/avatar/#{user.id}/banana_sample.gif")
         end
       end
     end
@@ -292,7 +293,7 @@ describe ApplicationHelper do
       let(:alternate_url) { 'http://company.example.com/getting-help' }
 
       before do
-        allow(current_application_settings).to receive(:help_page_support_url) { alternate_url }
+        stub_application_setting(help_page_support_url: alternate_url)
       end
 
       it 'returns the alternate support url' do

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Issue filtering by Labels', feature: true, js: true do
+feature 'Merge Request filtering by Labels', js: true do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let!(:user)   { create(:user) }
   let!(:label)  { create(:label, project: project) }
 
@@ -26,9 +26,9 @@ feature 'Issue filtering by Labels', feature: true, js: true do
     mr3.labels << feature
 
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
   end
 
   context 'filter by label bug' do

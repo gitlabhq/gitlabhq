@@ -6,7 +6,7 @@ describe 'User Callouts', js: true do
   let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
     project.team << [user, :master]
   end
 

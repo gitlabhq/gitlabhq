@@ -1,3 +1,4 @@
+- @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 = render 'shared/snippets/header'
@@ -9,4 +10,4 @@
   .row-content-block.top-block.content-component-block
     = render 'award_emoji/awards_block', awardable: @snippet, inline: true
 
-  #notes= render "shared/notes/notes_with_form", :autocomplete => true
+  #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => true

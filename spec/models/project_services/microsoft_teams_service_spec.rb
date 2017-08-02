@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MicrosoftTeamsService, models: true do
+describe MicrosoftTeamsService do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
@@ -112,7 +112,7 @@ describe MicrosoftTeamsService, models: true do
       let(:wiki_page_sample_data) do
         service = WikiPages::CreateService.new(project, user, opts)
         wiki_page = service.execute
-        service.hook_data(wiki_page, 'create')
+        Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create')
       end
 
       it "calls Microsoft Teams API" do

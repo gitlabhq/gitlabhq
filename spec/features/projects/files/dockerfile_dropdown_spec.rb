@@ -1,15 +1,15 @@
 require 'spec_helper'
 require 'fileutils'
 
-feature 'User wants to add a Dockerfile file', feature: true do
+feature 'User wants to add a Dockerfile file' do
   before do
     user = create(:user)
-    project = create(:project)
+    project = create(:project, :repository)
     project.team << [user, :master]
 
-    gitlab_sign_in user
+    sign_in user
 
-    visit namespace_project_new_blob_path(project.namespace, project, 'master', file_name: 'Dockerfile')
+    visit project_new_blob_path(project, 'master', file_name: 'Dockerfile')
   end
 
   scenario 'user can see Dockerfile dropdown' do

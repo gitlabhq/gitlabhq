@@ -43,7 +43,7 @@ describe Gitlab::Ci::Config::Entry::Service do
 
   context 'when configuration is a hash' do
     let(:config) do
-      { name: 'postgresql:9.5', alias: 'db', command: 'cmd', entrypoint: '/bin/sh' }
+      { name: 'postgresql:9.5', alias: 'db', command: %w(cmd run), entrypoint: %w(/bin/sh run) }
     end
 
     describe '#valid?' do
@@ -72,13 +72,13 @@ describe Gitlab::Ci::Config::Entry::Service do
 
     describe '#command' do
       it "returns service's command" do
-        expect(entry.command).to eq 'cmd'
+        expect(entry.command).to eq %w(cmd run)
       end
     end
 
     describe '#entrypoint' do
       it "returns service's entrypoint" do
-        expect(entry.entrypoint).to eq '/bin/sh'
+        expect(entry.entrypoint).to eq %w(/bin/sh run)
       end
     end
   end

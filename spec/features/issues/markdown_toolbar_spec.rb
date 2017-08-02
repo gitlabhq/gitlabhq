@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Issue markdown toolbar', feature: true, js: true do
-  let(:project) { create(:project, :public) }
+feature 'Issue markdown toolbar', js: true do
+  let(:project) { create(:empty_project, :public) }
   let(:issue)   { create(:issue, project: project) }
-  let(:user)   { create(:user) }
+  let(:user)    { create(:user) }
 
   before do
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   it "doesn't include first new line when adding bold" do

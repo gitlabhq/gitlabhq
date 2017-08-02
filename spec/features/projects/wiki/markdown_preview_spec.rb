@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User previews markdown changes', feature: true, js: true do
+feature 'Projects > Wiki > User previews markdown changes', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:empty_project, namespace: user.namespace) }
   let(:wiki_content) do
     <<-HEREDOC
 [regular link](regular)
@@ -16,9 +16,9 @@ feature 'Projects > Wiki > User previews markdown changes', feature: true, js: t
     project.team << [user, :master]
     WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
     find('.shortcuts-wiki').click
   end
 

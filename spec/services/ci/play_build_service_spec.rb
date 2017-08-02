@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::PlayBuildService, '#execute', :services do
+describe Ci::PlayBuildService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }

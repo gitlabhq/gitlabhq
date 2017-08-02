@@ -1,13 +1,10 @@
 require 'spec_helper'
 
-describe Milestone, models: true do
+describe Milestone do
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
     end
-
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_presence_of(:project) }
 
     describe 'start_date' do
       it 'adds an error when start_date is greated then due_date' do
@@ -37,17 +34,42 @@ describe Milestone, models: true do
     end
   end
 
-  describe "unique milestone title per project" do
-    it "does not accept the same title in a project twice" do
-      new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
-      expect(new_milestone).not_to be_valid
+  describe "unique milestone title" do
+    context "per project" do
+      it "does not accept the same title in a project twice" do
+        new_milestone = described_class.new(project: milestone.project, title: milestone.title)
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "accepts the same title in another project" do
+        project = create(:empty_project)
+        new_milestone = described_class.new(project: project, title: milestone.title)
+
+        expect(new_milestone).to be_valid
+      end
     end
 
-    it "accepts the same title in another project" do
-      project = build(:empty_project)
-      new_milestone = Milestone.new(project: project, title: milestone.title)
+    context "per group" do
+      let(:group) { create(:group) }
+      let(:milestone) { create(:milestone, group: group) }
 
-      expect(new_milestone).to be_valid
+      before do
+        project.update(group: group)
+      end
+
+      it "does not accept the same title in a group twice" do
+        new_milestone = described_class.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
+
+      it "does not accept the same title of a child project milestone" do
+        create(:milestone, project: group.projects.first)
+
+        new_milestone = described_class.new(group: group, title: milestone.title)
+
+        expect(new_milestone).not_to be_valid
+      end
     end
   end
 
@@ -192,7 +214,7 @@ describe Milestone, models: true do
 
     # The call to `#try` is because this returns a relation with a Postgres DB,
     # and an array of IDs with a MySQL DB.
-    let(:milestone_ids) { Milestone.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
+    let(:milestone_ids) { described_class.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
 
     it 'returns the next upcoming open milestone ID for each project' do
       expect(milestone_ids).to contain_exactly(current_milestone_project_1.id, current_milestone_project_2.id)

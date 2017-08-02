@@ -124,6 +124,36 @@ describe API::V3::Projects do
         end
       end
 
+      context 'and using archived' do
+        let!(:archived_project) { create(:empty_project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived project' do
+          get v3_api('/projects?archived=true', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(archived_project.id)
+        end
+
+        it 'returns non-archived project' do
+          get v3_api('/projects?archived=false', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(project.id)
+        end
+
+        it 'returns all project' do
+          get v3_api('/projects', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+        end
+      end
+
       context 'and using sorting' do
         before do
           project2
@@ -690,7 +720,7 @@ describe API::V3::Projects do
         dot_user = create(:user, username: 'dot.user')
         project = create(:empty_project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
-        get v3_api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+        get v3_api("/projects/#{CGI.escape(project.full_path)}", dot_user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end
@@ -704,7 +734,8 @@ describe API::V3::Projects do
           'name' => user.namespace.name,
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
-          'full_path' => user.namespace.full_path
+          'full_path' => user.namespace.full_path,
+          'parent_id' => nil
         })
       end
 

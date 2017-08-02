@@ -69,7 +69,7 @@ module API
           end
 
           params :filter_params do
-            optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+            optional :archived, type: Boolean, default: nil, desc: 'Limit by archived status'
             optional :visibility, type: String, values: %w[public internal private],
                                   desc: 'Limit by visibility'
             optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'

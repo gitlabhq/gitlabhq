@@ -15,7 +15,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
-  describe '.find' do
+  shared_examples 'finding blobs' do
     context 'file in subdir' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb") }
 
@@ -101,7 +101,17 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
-  describe '.raw' do
+  describe '.find' do
+    context 'when project_raw_show Gitaly feature is enabled' do
+      it_behaves_like 'finding blobs'
+    end
+
+    context 'when project_raw_show Gitaly feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding blobs'
+    end
+  end
+
+  shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.id).to eq(SeedRepo::RubyBlob::ID) }
     it { expect(raw_blob.data[0..10]).to eq("require \'fi") }
@@ -123,6 +133,16 @@ describe Gitlab::Git::Blob, seed_helper: true do
         blob.load_all_data!(repository)
         expect(blob.loaded_size).to eq(blob_size)
       end
+    end
+  end
+
+  describe '.raw' do
+    context 'when the blob_raw Gitaly feature is enabled' do
+      it_behaves_like 'finding blobs by ID'
+    end
+
+    context 'when the blob_raw Gitaly feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding blobs by ID'
     end
   end
 

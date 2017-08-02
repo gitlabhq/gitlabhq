@@ -3,7 +3,7 @@
 
 import eventHub from '../event_hub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tooltipMixin from '../../vue_shared/mixins/tooltip';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -28,12 +28,12 @@ export default {
       required: false,
     },
   },
+  directives: {
+    tooltip,
+  },
   components: {
     loadingIcon,
   },
-  mixins: [
-    tooltipMixin,
-  ],
   data() {
     return {
       isLoading: false,
@@ -58,7 +58,6 @@ export default {
     makeRequest() {
       this.isLoading = true;
 
-      $(this.$refs.tooltip).tooltip('destroy');
       eventHub.$emit('postAction', this.endpoint);
     },
   },
@@ -67,6 +66,7 @@ export default {
 
 <template>
   <button
+    v-tooltip
     type="button"
     @click="onClick"
     :class="buttonClass"
@@ -74,7 +74,6 @@ export default {
     :aria-label="title"
     data-container="body"
     data-placement="top"
-    ref="tooltip"
     :disabled="isLoading">
     <i
       :class="iconClass"

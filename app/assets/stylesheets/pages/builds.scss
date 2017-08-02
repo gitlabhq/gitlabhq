@@ -6,26 +6,26 @@
 @keyframes blinking-dots {
   0% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   25% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 
   75% {
     background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,1);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 1);
   }
 
   100% {
     background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light,0.2),
-                24px 0 0 0 rgba($white-light,0.2);
+    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
+                24px 0 0 0 rgba($white-light, 0.2);
   }
 }
 
@@ -37,65 +37,78 @@
 }
 
 .build-page {
-  .sticky {
-    position: absolute;
-    left: 0;
-    right: 0;
+  .build-trace-container {
+    position: relative;
   }
 
-  .build-trace-container {
-    position: absolute;
-    top: 225px;
-    left: 15px;
-    bottom: 10px;
+  .build-trace {
     background: $black;
     color: $gray-darkest;
-    font-family: $monospace_font;
+    white-space: pre;
+    overflow-x: auto;
     font-size: 12px;
+    border-radius: 0;
+    border: none;
 
-    &.sidebar-expanded {
-      right: 305px;
+    .bash {
+      display: block;
+    }
+  }
+
+  .top-bar {
+    height: 35px;
+    display: flex;
+    justify-content: flex-end;
+    background: $gray-light;
+    border: 1px solid $border-color;
+    color: $gl-text-color;
+    position: sticky;
+    position: -webkit-sticky;
+    top: $header-height;
+
+    &.affix {
+      top: $header-height;
     }
 
-    &.sidebar-collapsed {
+    // with sidebar
+    &.affix.sidebar-expanded {
+      right: 306px;
+      left: 16px;
+    }
+
+    // without sidebar
+    &.affix.sidebar-collapsed {
       right: 16px;
+      left: 16px;
     }
 
-    code {
-      background: $black;
-      color: $gray-darkest;
-    }
-
-    .top-bar {
+    &.affix-top {
+      position: absolute;
+      right: 0;
+      left: 0;
       top: 0;
-      height: 35px;
-      display: flex;
-      justify-content: flex-end;
-      background: $gray-light;
-      border: 1px solid $border-color;
-      color: $gl-text-color;
+    }
 
-      .truncated-info {
-        margin: 0 auto;
-        align-self: center;
+    .truncated-info {
+      margin: 0 auto;
+      align-self: center;
 
-        .truncated-info-size {
-          margin: 0 5px;
-        }
+      .truncated-info-size {
+        margin: 0 5px;
+      }
 
-        .raw-link {
-          color: $gl-text-color;
-          margin-left: 5px;
-          text-decoration: underline;
-        }
+      .raw-link {
+        color: $gl-text-color;
+        margin-left: 5px;
+        text-decoration: underline;
       }
     }
 
     .controllers {
       display: flex;
-      align-self: center;
       font-size: 15px;
-      margin-bottom: 4px;
+      justify-content: center;
+      align-items: center;
 
       svg {
         height: 15px;
@@ -103,17 +116,9 @@
         fill: $gl-text-color;
       }
 
-      .controllers-buttons,
-      .btn-scroll {
-        color: $gl-text-color;
-        height: 15px;
-        vertical-align: middle;
-        padding: 0;
-        width: 12px;
-      }
-
       .controllers-buttons {
-        margin: 1px 10px;
+        color: $gl-text-color;
+        margin: 0 10px;
       }
 
       .btn-scroll.animate {
@@ -143,16 +148,6 @@
     }
   }
 
-  .bash {
-    top: 35px;
-    left: 10px;
-    bottom: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px 20px 20px 5px;
-    white-space: pre;
-  }
-
   .environment-information {
     border: 1px solid $border-color;
     padding: 8px $gl-padding 12px;
@@ -174,6 +169,16 @@
     margin: auto auto 12px 2px;
     border-radius: 50%;
     animation: blinking-dots 1s linear infinite;
+  }
+}
+
+.with-performance-bar .build-page {
+  .top-bar {
+    top: $header-height + $performance-bar-height;
+
+    &.affix {
+      top: $header-height + $performance-bar-height;
+    }
   }
 }
 
@@ -248,6 +253,10 @@
     .btn-group-justified {
       margin-top: 5px;
     }
+  }
+
+  .block-last {
+    padding: 16px 0;
   }
 
   .trigger-build-variable {
@@ -399,6 +408,7 @@
 
 .build-light-text {
   color: $gl-text-color-secondary;
+  word-wrap: break-word;
 }
 
 .build-gutter-toggle {

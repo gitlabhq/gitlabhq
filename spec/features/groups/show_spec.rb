@@ -1,13 +1,16 @@
 require 'spec_helper'
 
-feature 'Group show page', feature: true do
+feature 'Group show page' do
   let(:group) { create(:group) }
   let(:path) { group_path(group) }
 
   context 'when signed in' do
+    let(:user) do
+      create(:group_member, :developer, user: create(:user), group: group ).user
+    end
+
     before do
-      user = create(:group_member, :developer, user: create(:user), group: group ).user
-      gitlab_sign_in(user)
+      sign_in(user)
       visit path
     end
 

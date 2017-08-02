@@ -1,11 +1,17 @@
 require 'spec_helper'
 
-describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
+describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :truncate do
   let(:migration) { FakeRenameReservedPathMigrationV1.new }
   let(:subject) { described_class.new(['the-path'], migration) }
+  let(:project) do
+    create(:empty_project,
+           path: 'the-path',
+           namespace: create(:namespace, path: 'known-parent' ))
+  end
 
   before do
     allow(migration).to receive(:say)
+    TestEnv.clean_test_path
   end
 
   describe '#projects_for_paths' do
@@ -47,12 +53,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
   end
 
   describe '#rename_project' do
-    let(:project) do
-      create(:empty_project,
-             path: 'the-path',
-             namespace: create(:namespace, path: 'known-parent' ))
-    end
-
     it 'renames path & route for the project' do
       expect(subject).to receive(:rename_path_for_routable)
                            .with(project)
@@ -63,27 +63,42 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
       expect(project.reload.path).to eq('the-path0')
     end
 
+    it 'tracks the rename' do
+      expect(subject).to receive(:track_rename)
+                           .with('project', 'known-parent/the-path', 'known-parent/the-path0')
+
+      subject.rename_project(project)
+    end
+
+    it 'renames the folders for the project' do
+      expect(subject).to receive(:move_project_folders).with(project, 'known-parent/the-path', 'known-parent/the-path0')
+
+      subject.rename_project(project)
+    end
+  end
+
+  describe '#move_project_folders' do
     it 'moves the wiki & the repo' do
       expect(subject).to receive(:move_repository)
                            .with(project, 'known-parent/the-path.wiki', 'known-parent/the-path0.wiki')
       expect(subject).to receive(:move_repository)
                            .with(project, 'known-parent/the-path', 'known-parent/the-path0')
 
-      subject.rename_project(project)
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
 
     it 'moves uploads' do
       expect(subject).to receive(:move_uploads)
                            .with('known-parent/the-path', 'known-parent/the-path0')
 
-      subject.rename_project(project)
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
 
     it 'moves pages' do
       expect(subject).to receive(:move_pages)
                            .with('known-parent/the-path', 'known-parent/the-path0')
 
-      subject.rename_project(project)
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
   end
 
@@ -97,6 +112,49 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects do
       subject.move_repository(project, 'known-parent/the-path', 'known-parent/new-repo')
 
       expect(File.directory?(expected_path)).to be(true)
+    end
+  end
+
+  describe '#revert_renames', redis: true do
+    it 'renames the routes back to the previous values' do
+      subject.rename_project(project)
+
+      expect(subject).to receive(:perform_rename)
+                           .with(
+                             kind_of(Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Project),
+                             'known-parent/the-path0',
+                             'known-parent/the-path'
+                           ).and_call_original
+
+      subject.revert_renames
+
+      expect(project.reload.path).to eq('the-path')
+      expect(project.route.path).to eq('known-parent/the-path')
+    end
+
+    it 'moves the repositories back to their original place' do
+      project.create_repository
+      subject.rename_project(project)
+
+      expected_path = File.join(TestEnv.repos_path, 'known-parent', 'the-path.git')
+
+      expect(subject).to receive(:move_project_folders)
+                           .with(
+                             kind_of(Gitlab::Database::RenameReservedPathsMigration::V1::MigrationClasses::Project),
+                             'known-parent/the-path0',
+                             'known-parent/the-path'
+                           ).and_call_original
+
+      subject.revert_renames
+
+      expect(File.directory?(expected_path)).to be_truthy
+    end
+
+    it "doesn't break when the project was renamed" do
+      subject.rename_project(project)
+      project.update_attributes!(path: 'renamed-afterwards')
+
+      expect { subject.revert_renames }.not_to raise_error
     end
   end
 end

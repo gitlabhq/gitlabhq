@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Discussion Comments Merge Request', :feature, :js do
+describe 'Discussion Comments Merge Request', :js do
   include RepoHelpers
 
   let(:user) { create(:user) }
@@ -9,9 +9,9 @@ describe 'Discussion Comments Merge Request', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+    visit project_commit_path(project, sample_commit.id)
   end
 
   it_behaves_like 'discussion comments', 'commit'

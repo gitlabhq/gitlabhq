@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Project edit', feature: true, js: true do
+feature 'Project edit', js: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   context 'feature visibility' do
@@ -20,7 +20,7 @@ feature 'Project edit', feature: true, js: true do
       end
 
       context 'given project with merge_requests_disabled access level' do
-        let(:project) { create(:project, :merge_requests_disabled) }
+        let(:project) { create(:empty_project, :merge_requests_disabled) }
 
         it 'hides merge requests section' do
           expect(page).to have_selector('.merge-requests-feature', visible: false)
@@ -36,7 +36,7 @@ feature 'Project edit', feature: true, js: true do
       end
 
       context 'given project with builds_disabled access level' do
-        let(:project) { create(:project, :builds_disabled) }
+        let(:project) { create(:empty_project, :builds_disabled) }
 
         it 'hides builds select section' do
           expect(page).to have_selector('.builds-feature', visible: false)

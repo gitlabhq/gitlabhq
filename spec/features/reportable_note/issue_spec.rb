@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Reportable note on issue', :feature, :js do
+describe 'Reportable note on issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
@@ -8,9 +8,9 @@ describe 'Reportable note on issue', :feature, :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   it_behaves_like 'reportable note'

@@ -17,6 +17,16 @@ class NotificationService
     end
   end
 
+  # Always notify the user about gpg key added
+  #
+  # This is a security email so it will be sent even if the user user disabled
+  # notifications
+  def new_gpg_key(gpg_key)
+    if gpg_key.user
+      mailer.new_gpg_key_email(gpg_key.id).deliver_later
+    end
+  end
+
   # Always notify user about email added to profile
   def new_email(email)
     if email.user

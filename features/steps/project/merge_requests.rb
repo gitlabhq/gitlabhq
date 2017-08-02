@@ -65,7 +65,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should not see "master" branch' do
-    expect(find('.merge-request-info')).not_to have_content "master"
+    expect(find('.issuable-info')).not_to have_content "master"
   end
 
   step 'I should see "feature_conflict" branch' do
@@ -256,7 +256,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I switch to the merge request\'s comments tab' do
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
   end
 
   step 'I click on the commit in the merge request' do

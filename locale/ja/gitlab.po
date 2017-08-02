@@ -1,0 +1,1203 @@
+# Arthur Charron <arthur.charron@hotmail.fr>, 2017. #zanata
+# Huang Tao <htve@outlook.com>, 2017. #zanata
+# Kohei Ota <inductor@kela.jp>, 2017. #zanata
+# Taisuke Inoue <taisuke.inoue.jp@gmail.com>, 2017. #zanata
+# Takuya Noguchi <takninnovationresearch@gmail.com>, 2017. #zanata
+# YANO  Tethurou <tetuyano+zana@gmail.com>, 2017. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: gitlab 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: YANO  TETTER <tetuyano+zana@gmail.com>\n"
+"PO-Revision-Date: 2017-07-19 09:45-0400\n"
+"Last-Translator: YANO  Tethurou <tetuyano+zana@gmail.com>\n"
+"Language: ja\n"
+"X-Generator: Zanata 3.9.6\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "パフォーマンス低下を避けるため %s 個のコミットを省略しました。"
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d個のコミット"
+
+msgid "%{commit_author_link} committed %{commit_timeago}"
+msgstr "%{commit_author_link}は%{commit_timeago}前、コミットしました。"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 個のパイプライン"
+msgstr[1] "%d 個のパイプライン"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "CIについてのグラフ"
+
+msgid "About auto deploy"
+msgstr "自動デプロイについて"
+
+msgid "Active"
+msgstr "有効"
+
+msgid "Activity"
+msgstr "アクティビティー"
+
+msgid "Add Changelog"
+msgstr "変更履歴を追加"
+
+msgid "Add Contribution guide"
+msgstr "貢献者向けガイドを追加"
+
+msgid "Add License"
+msgstr "ライセンスを追加"
+
+msgid "Add an SSH key to your profile to pull or push via SSH."
+msgstr "SSHでプルやプッシュする場合は、プロフィールにSSH鍵を追加してください。"
+
+msgid "Add new directory"
+msgstr "新規ディレクトリを追加"
+
+msgid "Archived project! Repository is read-only"
+msgstr "アーカイブ済みプロジェクト！（レポジトリーは読み取り専用です）"
+
+msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr "このパイプラインスケジュールを削除しますか？"
+
+msgid "Attach a file by drag &amp; drop or %{upload_link}"
+msgstr "ドラッグ＆ドロップまたは %{upload_link} でファイルを添付"
+
+msgid "Branch"
+msgid_plural "Branches"
+msgstr[0] "ブランチ"
+
+msgid ""
+"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
+"choose a GitLab CI Yaml template and commit your changes. "
+"%{link_to_autodeploy_doc}"
+msgstr ""
+"<strong>%{branch_name}</strong> ブランチが作成されました。自動デプロイを設定するには、GitLab CI Yaml "
+"テンプレートを選択して、変更をコミットしてください。 %{link_to_autodeploy_doc}"
+
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "ブランチを検索"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "ブランチを切替"
+
+msgid "Branches"
+msgstr "ブランチ"
+
+msgid "Browse Directory"
+msgstr "ディレクトリを表示"
+
+msgid "Browse File"
+msgstr "ファイルを表示"
+
+msgid "Browse Files"
+msgstr "ファイルを表示"
+
+msgid "Browse files"
+msgstr "ファイルを表示"
+
+msgid "ByAuthor|by"
+msgstr "作者"
+
+msgid "CI configuration"
+msgstr "CI 設定"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+msgid "ChangeTypeActionLabel|Pick into branch"
+msgstr "ピック先ブランチ:"
+
+msgid "ChangeTypeActionLabel|Revert in branch"
+msgstr "リバート先ブランチ:"
+
+msgid "ChangeTypeAction|Cherry-pick"
+msgstr "チェリーピック"
+
+msgid "ChangeTypeAction|Revert"
+msgstr "リバート"
+
+msgid "Changelog"
+msgstr "変更履歴"
+
+msgid "Charts"
+msgstr "チャート"
+
+msgid "Cherry-pick this commit"
+msgstr "このコミットをチェリーピック"
+
+msgid "Cherry-pick this merge request"
+msgstr "このマージリクエストをチェリーピック"
+
+msgid "CiStatusLabel|canceled"
+msgstr "キャンセル"
+
+msgid "CiStatusLabel|created"
+msgstr "作成済み"
+
+msgid "CiStatusLabel|failed"
+msgstr "失敗"
+
+msgid "CiStatusLabel|manual action"
+msgstr "手動実行"
+
+msgid "CiStatusLabel|passed"
+msgstr "成功"
+
+msgid "CiStatusLabel|passed with warnings"
+msgstr "成功（警告あり）"
+
+msgid "CiStatusLabel|pending"
+msgstr "開始待ち"
+
+msgid "CiStatusLabel|skipped"
+msgstr "スキップ済み"
+
+msgid "CiStatusLabel|waiting for manual action"
+msgstr "手動実行待ち"
+
+msgid "CiStatusText|blocked"
+msgstr "ブロック"
+
+msgid "CiStatusText|canceled"
+msgstr "キャンセル"
+
+msgid "CiStatusText|created"
+msgstr "作成済み"
+
+msgid "CiStatusText|failed"
+msgstr "失敗"
+
+msgid "CiStatusText|manual"
+msgstr "手動"
+
+msgid "CiStatusText|passed"
+msgstr "成功"
+
+msgid "CiStatusText|pending"
+msgstr "実行待ち"
+
+msgid "CiStatusText|skipped"
+msgstr "スキップ済み"
+
+msgid "CiStatus|running"
+msgstr "実行中"
+
+msgid "Commit"
+msgid_plural "Commits"
+msgstr[0] "コミット"
+
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "直近30コミットの所要時間(分)"
+
+msgid "Commit message"
+msgstr "コミットメッセージ"
+
+msgid "CommitBoxTitle|Commit"
+msgstr "コミット"
+
+msgid "CommitMessage|Add %{file_name}"
+msgstr "%{file_name} を追加"
+
+msgid "Commits"
+msgstr "コミット"
+
+msgid "Commits feed"
+msgstr "コミットフィード"
+
+msgid "Commits|History"
+msgstr "履歴"
+
+msgid "Committed by"
+msgstr "コミット担当者: "
+
+msgid "Compare"
+msgstr "比較"
+
+msgid "Contribution guide"
+msgstr "貢献者向けガイド"
+
+msgid "Contributors"
+msgstr "貢献者"
+
+msgid "Copy URL to clipboard"
+msgstr "クリップボードにURLをコピー"
+
+msgid "Copy commit SHA to clipboard"
+msgstr "コミットのSHAをクリップボードにコピー"
+
+msgid "Create New Directory"
+msgstr "新規ディレクトリを作成"
+
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr "%{protocol} でプッシュやプルするためのあなた個人用アクセストークンを作成"
+
+msgid "Create directory"
+msgstr "ディレクトリを作成"
+
+msgid "Create empty bare repository"
+msgstr "空のbareレポジトリーを作成"
+
+msgid "Create merge request"
+msgstr "マージリクエストを作成"
+
+msgid "Create new..."
+msgstr "新規作成"
+
+msgid "CreateNewFork|Fork"
+msgstr "フォーク"
+
+msgid "CreateTag|Tag"
+msgstr "タグ"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "個人用アクセストークンを作成"
+
+msgid "Cron Timezone"
+msgstr "Cron のタイムゾーン"
+
+msgid "Cron syntax"
+msgstr "Cron の構文"
+
+msgid "Custom notification events"
+msgstr "カスタム通知設定"
+
+msgid ""
+"Custom notification levels are the same as participating levels. With custom "
+"notification levels you will also receive notifications for select events. "
+"To find out more, check out %{notification_link}."
+msgstr ""
+"\"カスタム\" の通知レベルの基本は \"参加\" "
+"と同じです。また、カスタム通知に設定することで選択したカスタムイベントの通知を受け取ることもできます。もっと詳しく知りたい場合は "
+"%{notification_link} を見てください。"
+
+msgid "Cycle Analytics"
+msgstr "サイクル分析"
+
+msgid ""
+"Cycle Analytics gives an overview of how much time it takes to go from idea "
+"to production in your project."
+msgstr ""
+"サイクル分析により、あなたのプロジェクトがアイディアの段階からプロダクション環境にリリースされるまでどれぐらい時間がかかったか俯瞰することができます。"
+
+msgid "CycleAnalyticsStage|Code"
+msgstr "コード"
+
+msgid "CycleAnalyticsStage|Issue"
+msgstr "課題"
+
+msgid "CycleAnalyticsStage|Plan"
+msgstr "計画"
+
+msgid "CycleAnalyticsStage|Production"
+msgstr "プロダクション"
+
+msgid "CycleAnalyticsStage|Review"
+msgstr "レビュー"
+
+msgid "CycleAnalyticsStage|Staging"
+msgstr "ステージング"
+
+msgid "CycleAnalyticsStage|Test"
+msgstr "テスト"
+
+msgid "Define a custom pattern with cron syntax"
+msgstr "Cron 構文でカスタムなパターンを指定する"
+
+msgid "Delete"
+msgstr "削除"
+
+msgid "Deploy"
+msgid_plural "Deploys"
+msgstr[0] "デプロイ"
+
+msgid "Description"
+msgstr "説明"
+
+msgid "Directory name"
+msgstr "ディレクトリ名"
+
+msgid "Don't show again"
+msgstr "次回から表示しない"
+
+msgid "Download"
+msgstr "ダウンロード"
+
+msgid "Download tar"
+msgstr "tar形式でダウンロード"
+
+msgid "Download tar.bz2"
+msgstr "tar.bz2形式でダウンロード"
+
+msgid "Download tar.gz"
+msgstr "tar.gz形式でダウンロード"
+
+msgid "Download zip"
+msgstr "zip形式でダウンロード"
+
+msgid "DownloadArtifacts|Download"
+msgstr "ダウンロード"
+
+msgid "DownloadCommit|Email Patches"
+msgstr "パッチをメールで送信"
+
+msgid "DownloadCommit|Plain Diff"
+msgstr "プレーン差分"
+
+msgid "DownloadSource|Download"
+msgstr "ダウンロード"
+
+msgid "Edit"
+msgstr "編集"
+
+msgid "Edit Pipeline Schedule %{id}"
+msgstr "パイプラインスケジュール %{id} を編集"
+
+msgid "Every day (at 4:00am)"
+msgstr "毎日 (午前4:00)"
+
+msgid "Every month (on the 1st at 4:00am)"
+msgstr "毎月 (1日の午前4:00)"
+
+msgid "Every week (Sundays at 4:00am)"
+msgstr "毎週 (日曜日の午前4:00)"
+
+msgid "Failed to change the owner"
+msgstr "オーナーを変更できませんでした"
+
+msgid "Failed to remove the pipeline schedule"
+msgstr "パイプラインスケジュールを削除できませんでした"
+
+msgid "Files"
+msgstr "ファイル"
+
+msgid "Filter by commit message"
+msgstr "コミットメッセージで絞り込み"
+
+msgid "Find by path"
+msgstr "パスで検索"
+
+msgid "Find file"
+msgstr "ファイルを検索"
+
+msgid "FirstPushedBy|First"
+msgstr "初回"
+
+msgid "FirstPushedBy|pushed by"
+msgstr "プッシュした人"
+
+msgid "Fork"
+msgid_plural "Forks"
+msgstr[0] "フォーク"
+
+msgid "ForkedFromProjectPath|Forked from"
+msgstr "フォーク元"
+
+msgid "From issue creation until deploy to production"
+msgstr "課題が登録されてからプロダクションにデプロイされるまで"
+
+msgid "From merge request merge until deploy to production"
+msgstr "マージリクエストがマージされてからプロダクションにデプロイされるまで"
+
+msgid "Go to your fork"
+msgstr "自分のフォークへ移動"
+
+msgid "GoToYourFork|Fork"
+msgstr "フォーク"
+
+msgid "Home"
+msgstr "ホーム"
+
+msgid "Housekeeping successfully started"
+msgstr "ハウスキーピングは正常に起動しました。"
+
+msgid "Import repository"
+msgstr "レポジトリーをインポート"
+
+msgid "Interval Pattern"
+msgstr "間隔のパターン"
+
+msgid "Introducing Cycle Analytics"
+msgstr "サイクル分析のご紹介"
+
+msgid "Jobs for last month"
+msgstr "先月のジョブ"
+
+msgid "Jobs for last week"
+msgstr "先週のジョブ"
+
+msgid "Jobs for last year"
+msgstr "昨年のジョブ"
+
+msgid "LFSStatus|Disabled"
+msgstr "無効"
+
+msgid "LFSStatus|Enabled"
+msgstr "有効"
+
+msgid "Last %d day"
+msgid_plural "Last %d days"
+msgstr[0] "過去%d日間"
+
+msgid "Last Pipeline"
+msgstr "最新パイプライン"
+
+msgid "Last Update"
+msgstr "最新アップデート"
+
+msgid "Last commit"
+msgstr "最新コミット"
+
+msgid "Learn more in the"
+msgstr "詳しく見る："
+
+msgid "Learn more in the|pipeline schedules documentation"
+msgstr "詳しくはパイプラインスケジュールのドキュメントを参照"
+
+msgid "Leave group"
+msgstr "グループを離脱"
+
+msgid "Leave project"
+msgstr "プロジェクトを離脱"
+
+msgid "Limited to showing %d event at most"
+msgid_plural "Limited to showing %d events at most"
+msgstr[0] "イベント表示数を最大 %d 個に制限"
+
+msgid "Median"
+msgstr "中央値"
+
+msgid "MissingSSHKeyWarningLink|add an SSH key"
+msgstr "SSH 鍵を追加"
+
+msgid "New Issue"
+msgid_plural "New Issues"
+msgstr[0] "新規課題"
+
+msgid "New Pipeline Schedule"
+msgstr "新規パイプラインスケジュール"
+
+msgid "New branch"
+msgstr "新規ブランチ"
+
+msgid "New directory"
+msgstr "新規ディレクトリ"
+
+msgid "New file"
+msgstr "新規ファイル"
+
+msgid "New issue"
+msgstr "新規課題"
+
+msgid "New merge request"
+msgstr "新規マージリクエスト"
+
+msgid "New schedule"
+msgstr "新規スケジュール"
+
+msgid "New snippet"
+msgstr "新規スニペット"
+
+msgid "New tag"
+msgstr "新規タグ"
+
+msgid "No repository"
+msgstr "レポジトリーはありません"
+
+msgid "No schedules"
+msgstr "スケジュールなし"
+
+msgid "Not available"
+msgstr "利用できません"
+
+msgid "Not enough data"
+msgstr "データ不足"
+
+msgid "Notification events"
+msgstr "イベント通知"
+
+msgid "NotificationEvent|Close issue"
+msgstr "課題をクローズ"
+
+msgid "NotificationEvent|Close merge request"
+msgstr "マージリクエストをクローズ"
+
+msgid "NotificationEvent|Failed pipeline"
+msgstr "パイプラインに失敗"
+
+msgid "NotificationEvent|Merge merge request"
+msgstr "マージリクエストをマージ"
+
+msgid "NotificationEvent|New issue"
+msgstr "新規課題"
+
+msgid "NotificationEvent|New merge request"
+msgstr "新規マージリクエスト"
+
+msgid "NotificationEvent|New note"
+msgstr "新規ノート"
+
+msgid "NotificationEvent|Reassign issue"
+msgstr "課題の担当者を変更"
+
+msgid "NotificationEvent|Reassign merge request"
+msgstr "マージリクエスト担当者を変更"
+
+msgid "NotificationEvent|Reopen issue"
+msgstr "課題を再オープン"
+
+msgid "NotificationEvent|Successful pipeline"
+msgstr "パイプライン成功"
+
+msgid "NotificationLevel|Custom"
+msgstr "カスタム"
+
+msgid "NotificationLevel|Disabled"
+msgstr "無効"
+
+msgid "NotificationLevel|Global"
+msgstr "全体設定"
+
+msgid "NotificationLevel|On mention"
+msgstr "メンション時"
+
+msgid "NotificationLevel|Participate"
+msgstr "参加"
+
+msgid "NotificationLevel|Watch"
+msgstr "すべて通知"
+
+msgid "OfSearchInADropdown|Filter"
+msgstr "フィルター"
+
+msgid "OpenedNDaysAgo|Opened"
+msgstr "オープンされたのは"
+
+msgid "Options"
+msgstr "オプション"
+
+msgid "Owner"
+msgstr "オーナー"
+
+msgid "Pipeline"
+msgstr "パイプライン"
+
+msgid "Pipeline Health"
+msgstr "パイプラインの進捗状況"
+
+msgid "Pipeline Schedule"
+msgstr "パイプラインスケジュール"
+
+msgid "Pipeline Schedules"
+msgstr "パイプラインスケジュール"
+
+msgid "PipelineCharts|Failed:"
+msgstr "失敗:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "全体統計"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "成功比率:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "成功:"
+
+msgid "PipelineCharts|Total:"
+msgstr "合計:"
+
+msgid "PipelineSchedules|Activated"
+msgstr "アクティブ"
+
+msgid "PipelineSchedules|Active"
+msgstr "アクティブ"
+
+msgid "PipelineSchedules|All"
+msgstr "全件"
+
+msgid "PipelineSchedules|Inactive"
+msgstr "無効"
+
+msgid "PipelineSchedules|Input variable key"
+msgstr "変数の名前を入力"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "変数の値を入力"
+
+msgid "PipelineSchedules|Next Run"
+msgstr "次の実行"
+
+msgid "PipelineSchedules|None"
+msgstr "なし"
+
+msgid "PipelineSchedules|Provide a short description for this pipeline"
+msgstr "このパイプラインについて簡単に記述してください。"
+
+msgid "PipelineSchedules|Remove variable row"
+msgstr "変数を削除"
+
+msgid "PipelineSchedules|Take ownership"
+msgstr "権限を取得する"
+
+msgid "PipelineSchedules|Target"
+msgstr "ターゲット"
+
+msgid "PipelineSchedules|Variables"
+msgstr "変数"
+
+msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr "カスタム"
+
+msgid "Pipelines"
+msgstr "パイプライン"
+
+msgid "Pipelines charts"
+msgstr "パイプラインチャート"
+
+msgid "Pipeline|all"
+msgstr "全件"
+
+msgid "Pipeline|success"
+msgstr "成功"
+
+msgid "Pipeline|with stage"
+msgstr "ステージあり"
+
+msgid "Pipeline|with stages"
+msgstr "ステージあり"
+
+msgid "Project '%{project_name}' queued for deletion."
+msgstr "'%{project_name}' プロジェクトは削除処理待ちです。"
+
+msgid "Project '%{project_name}' was successfully created."
+msgstr "'%{project_name}' プロジェクトは正常に作成されました。"
+
+msgid "Project '%{project_name}' was successfully updated."
+msgstr "'%{project_name}' プロジェクトは正常に更新されました。"
+
+msgid "Project '%{project_name}' will be deleted."
+msgstr "'%{project_name}' プロジェクトは削除されます。"
+
+msgid "Project access must be granted explicitly to each user."
+msgstr "ユーザーごとにプロジェクトアクセスの権限を指定しなければなりません。"
+
+msgid "Project export could not be deleted."
+msgstr "プロジェクトのエクスポートを削除できませんでした。"
+
+msgid "Project export has been deleted."
+msgstr "プロジェクトのエクスポートを削除しました。"
+
+msgid ""
+"Project export link has expired. Please generate a new export from your "
+"project settings."
+msgstr "プロジェクトのエクスポートリンクは期限切れになりました。プロジェクト設定にて新しくエクスポートリンクを作成してください。"
+
+msgid "Project export started. A download link will be sent by email."
+msgstr "プロジェクトのエクスポートを開始しました。ダウンロードのリンクはメールで送信します"
+
+msgid "Project home"
+msgstr "プロジェクトホーム"
+
+msgid "ProjectFeature|Disabled"
+msgstr "無効"
+
+msgid "ProjectFeature|Everyone with access"
+msgstr "アクセス権限を持っている人"
+
+msgid "ProjectFeature|Only team members"
+msgstr "チームメンバーのみ"
+
+msgid "ProjectFileTree|Name"
+msgstr "名前"
+
+msgid "ProjectLastActivity|Never"
+msgstr "記録なし"
+
+msgid "ProjectLifecycle|Stage"
+msgstr "ステージ"
+
+msgid "ProjectNetworkGraph|Graph"
+msgstr "ネットワークグラフ"
+
+msgid "Read more"
+msgstr "続きを読む"
+
+msgid "Readme"
+msgstr "Readme"
+
+msgid "RefSwitcher|Branches"
+msgstr "ブランチ"
+
+msgid "RefSwitcher|Tags"
+msgstr "タグ"
+
+msgid "Related Commits"
+msgstr "関連するコミット"
+
+msgid "Related Deployed Jobs"
+msgstr "関連するデプロイ済ジョブ"
+
+msgid "Related Issues"
+msgstr "関連する課題"
+
+msgid "Related Jobs"
+msgstr "関連するジョブ"
+
+msgid "Related Merge Requests"
+msgstr "関連するマージリクエスト"
+
+msgid "Related Merged Requests"
+msgstr "関連するマージリクエスト"
+
+msgid "Remind later"
+msgstr "後で通知"
+
+msgid "Remove project"
+msgstr "プロジェクトを削除"
+
+msgid "Request Access"
+msgstr "アクセス権限をリクエストする"
+
+msgid "Revert this commit"
+msgstr "このコミットをリバート"
+
+msgid "Revert this merge request"
+msgstr "このマージリクエストをリバート"
+
+msgid "Save pipeline schedule"
+msgstr "パイプラインスケジュールを保存"
+
+msgid "Schedule a new pipeline"
+msgstr "新しいパイプラインのスケジュールを作成"
+
+msgid "Scheduling Pipelines"
+msgstr "パイプラインスケジューリング"
+
+msgid "Search branches and tags"
+msgstr "ブランチまたはタグを検索"
+
+msgid "Select Archive Format"
+msgstr "アーカイブのフォーマットを選択"
+
+msgid "Select a timezone"
+msgstr "タイムゾーンを選択"
+
+msgid "Select target branch"
+msgstr "ターゲットブランチを選択"
+
+msgid "Set a password on your account to pull or push via %{protocol}."
+msgstr "%{protocol} プロコトル経由でプル、プッシュするためにアカウントのパスワードを設定。"
+
+msgid "Set up CI"
+msgstr "CI を設定"
+
+msgid "Set up Koding"
+msgstr "Koding を設定"
+
+msgid "Set up auto deploy"
+msgstr "自動デプロイを設定"
+
+msgid "SetPasswordToCloneLink|set a password"
+msgstr "パスワードを設定"
+
+msgid "Showing %d event"
+msgid_plural "Showing %d events"
+msgstr[0] "%d のイベントを表示中"
+
+msgid "Source code"
+msgstr "ソースコード"
+
+msgid "StarProject|Star"
+msgstr "スターを付ける"
+
+msgid "Start a %{new_merge_request} with these changes"
+msgstr "この変更で %{new_merge_request} を作成する"
+
+msgid "Switch branch/tag"
+msgstr "ブランチ・タグ切り替え"
+
+msgid "Tag"
+msgid_plural "Tags"
+msgstr[0] "タグ"
+
+msgid "Tags"
+msgstr "タグ"
+
+msgid "Target Branch"
+msgstr "ターゲットブランチ"
+
+msgid ""
+"The coding stage shows the time from the first commit to creating the merge "
+"request. The data will automatically be added here once you create your "
+"first merge request."
+msgstr ""
+"コーディングステージでは、最初のコミットからマージリクエストが作成されるまでの時間が表示されます。このデータは最初のマージリクエストが作成されたときに自動的に追加されます。"
+
+msgid "The collection of events added to the data gathered for that stage."
+msgstr "このステージで計測データに追加されたイベントリスト"
+
+msgid "The fork relationship has been removed."
+msgstr "フォークのリレーションが削除されました。"
+
+msgid ""
+"The issue stage shows the time it takes from creating an issue to assigning "
+"the issue to a milestone, or add the issue to a list on your Issue Board. "
+"Begin creating issues to see data for this stage."
+msgstr ""
+"課題ステージでは、課題が登録されてからマイルストーンに割り当てられるか、課題ボードのリストに追加されるまでの時間が表示されます。このリストに表示するには課題を最初に作成してください。"
+
+msgid "The phase of the development lifecycle."
+msgstr "開発ライフサイクルの段階"
+
+msgid ""
+"The pipelines schedule runs pipelines in the future, repeatedly, for "
+"specific branches or tags. Those scheduled pipelines will inherit limited "
+"project access based on their associated user."
+msgstr ""
+"パイプラインスケジュールは指定のブランチまたはタグに対して自動的にパイプラインを実行します。計画済みパイプラインはそれらの紐付けられたユーザーのプロジェクトと同じ権限を継承します。"
+
+msgid ""
+"The planning stage shows the time from the previous step to pushing your "
+"first commit. This time will be added automatically once you push your first "
+"commit."
+msgstr ""
+"計画ステージでは、課題ステージに登録されてからプッシュされた最初のコミット時刻までの時間が表示されます。最初のコミットがプッシュされときに自動的に追加されます。"
+
+msgid ""
+"The production stage shows the total time it takes between creating an issue "
+"and deploying the code to production. The data will be automatically added "
+"once you have completed the full idea to production cycle."
+msgstr ""
+"プロダクションステージでは、課題が作成されてからプロダクションへデプロイされるまでの時間が表示されます。アイディアの時点からプロダクションまでの全ステージが完了したときに自動的に追加されます。"
+
+msgid "The project can be accessed by any logged in user."
+msgstr "プロジェクトは、ログインユーザーであれば誰でもアクセスできます。"
+
+msgid "The project can be accessed without any authentication."
+msgstr "プロジェクトは、ログインなしに誰でもアクセスできます。"
+
+msgid "The repository for this project does not exist."
+msgstr "このプロジェクトにレポジトリーはありません。"
+
+msgid ""
+"The review stage shows the time from creating the merge request to merging "
+"it. The data will automatically be added after you merge your first merge "
+"request."
+msgstr ""
+"レビューステージとは、マージリクエストを作成してからマージするまでの時間です。このデータは最初のマージリクエストがマージされたときに自動的に追加されます。"
+
+msgid ""
+"The staging stage shows the time between merging the MR and deploying code "
+"to the production environment. The data will be automatically added once you "
+"deploy to production for the first time."
+msgstr ""
+"ステージングステージでは、マージリクエストがマージされてからコードがプロダクション環境にデプロイされるまでの時間が表示されます。このデータは最初にプロダクションにデプロイしたときに自動的に追加されます。"
+
+msgid ""
+"The testing stage shows the time GitLab CI takes to run every pipeline for "
+"the related merge request. The data will automatically be added after your "
+"first pipeline finishes running."
+msgstr ""
+"テスティングステージでは、GitLab CI "
+"が関連するマージリクエストの各パイプラインを実行する時間が表示されます。このデータは最初のパイプラインが完了したときに自動的に追加されます。"
+
+msgid "The time taken by each data entry gathered by that stage."
+msgstr "このステージに収集されたデータ毎の時間"
+
+msgid ""
+"The value lying at the midpoint of a series of observed values. E.g., "
+"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
+" 6."
+msgstr ""
+"得られた一連のデータを小さい順に並べたときに中央に位置する値。例えば、3, 5, 9の中央値は5。3, 5, 7, 8の中央値は (5+7)/2 = "
+"6。"
+
+msgid ""
+"This means you can not push code until you create an empty repository or "
+"import existing one."
+msgstr "空レポジトリーを作成または既存レポジトリーをインポートをしなければ、コードのプッシュはできません。"
+
+msgid "Time before an issue gets scheduled"
+msgstr "課題が計画されるまでの時間"
+
+msgid "Time before an issue starts implementation"
+msgstr "課題の実装が開始されるまでの時間"
+
+msgid "Time between merge request creation and merge/close"
+msgstr "マージリクエストが作成されてからマージまたはクローズされるまでの時間"
+
+msgid "Time until first merge request"
+msgstr "最初のマージリクエストまでの時間"
+
+msgid "Timeago|%s days ago"
+msgstr "%s日前"
+
+msgid "Timeago|%s days remaining"
+msgstr "残り %s日間"
+
+msgid "Timeago|%s hours remaining"
+msgstr "残り %s時間"
+
+msgid "Timeago|%s minutes ago"
+msgstr "%s分前"
+
+msgid "Timeago|%s minutes remaining"
+msgstr "残り %s分間"
+
+msgid "Timeago|%s months ago"
+msgstr "%sヶ月前"
+
+msgid "Timeago|%s months remaining"
+msgstr "残り %sヶ月"
+
+msgid "Timeago|%s seconds remaining"
+msgstr "残り %s 秒"
+
+msgid "Timeago|%s weeks ago"
+msgstr "%s週間前"
+
+msgid "Timeago|%s weeks remaining"
+msgstr "残り %s週間"
+
+msgid "Timeago|%s years ago"
+msgstr "%s年前"
+
+msgid "Timeago|%s years remaining"
+msgstr "残り %s年間"
+
+msgid "Timeago|1 day remaining"
+msgstr "残り 1日間"
+
+msgid "Timeago|1 hour remaining"
+msgstr "残り 1時間"
+
+msgid "Timeago|1 minute remaining"
+msgstr "残り 1分間"
+
+msgid "Timeago|1 month remaining"
+msgstr "残り 1ヶ月"
+
+msgid "Timeago|1 week remaining"
+msgstr "残り 1週間"
+
+msgid "Timeago|1 year remaining"
+msgstr "残り 1年間"
+
+msgid "Timeago|Past due"
+msgstr "期限オーバー"
+
+msgid "Timeago|a day ago"
+msgstr "1日前"
+
+msgid "Timeago|a month ago"
+msgstr "1ヶ月前"
+
+msgid "Timeago|a week ago"
+msgstr "1週間前"
+
+msgid "Timeago|a while"
+msgstr "しばらく前"
+
+msgid "Timeago|a year ago"
+msgstr "1年前"
+
+msgid "Timeago|about %s hours ago"
+msgstr "約%s時間前"
+
+msgid "Timeago|about a minute ago"
+msgstr "約1分間前"
+
+msgid "Timeago|about an hour ago"
+msgstr "約1時間前"
+
+msgid "Timeago|in %s days"
+msgstr "%s日間以内"
+
+msgid "Timeago|in %s hours"
+msgstr "%s時間以内"
+
+msgid "Timeago|in %s minutes"
+msgstr "%s分間以内"
+
+msgid "Timeago|in %s months"
+msgstr "%sヶ月以内"
+
+msgid "Timeago|in %s seconds"
+msgstr "%s秒以内"
+
+msgid "Timeago|in %s weeks"
+msgstr "%s週間以内"
+
+msgid "Timeago|in %s years"
+msgstr "%s年間以内"
+
+msgid "Timeago|in 1 day"
+msgstr "1日以内"
+
+msgid "Timeago|in 1 hour"
+msgstr "1時間以内"
+
+msgid "Timeago|in 1 minute"
+msgstr "1分以内"
+
+msgid "Timeago|in 1 month"
+msgstr "1ヶ月以内"
+
+msgid "Timeago|in 1 week"
+msgstr "1週間以内"
+
+msgid "Timeago|in 1 year"
+msgstr "1年以内"
+
+msgid "Timeago|less than a minute ago"
+msgstr "1分未満"
+
+msgid "Time|hr"
+msgid_plural "Time|hrs"
+msgstr[0] "時間"
+
+msgid "Time|min"
+msgid_plural "Time|mins"
+msgstr[0] "分"
+
+msgid "Time|s"
+msgstr "秒"
+
+msgid "Total Time"
+msgstr "合計時間"
+
+msgid "Total test time for all commits/merges"
+msgstr "すべてのコミット/マージの合計テスト時間"
+
+msgid "Unstar"
+msgstr "スターを外す"
+
+msgid "Upload New File"
+msgstr "新規ファイルをアップロード"
+
+msgid "Upload file"
+msgstr "ファイルをアップロード"
+
+msgid "UploadLink|click to upload"
+msgstr "クリックしてアップロード"
+
+msgid "Use your global notification setting"
+msgstr "全体通知設定を利用"
+
+msgid "View open merge request"
+msgstr "オープンなマージリクエストを表示"
+
+msgid "VisibilityLevel|Internal"
+msgstr "内部"
+
+msgid "VisibilityLevel|Private"
+msgstr "プライベート"
+
+msgid "VisibilityLevel|Public"
+msgstr "パブリック"
+
+msgid "Want to see the data? Please ask an administrator for access."
+msgstr "このデータを参照したいですか？アクセスするには管理者に問い合わせてください。"
+
+msgid "We don't have enough data to show this stage."
+msgstr "データ不足のため、このステージの表示はできません。"
+
+msgid "Withdraw Access Request"
+msgstr "アクセスリクエストを取り消す"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "%{group_name} グループを削除しようとしています。\n"
+"削除されたグループは絶対に元に戻せません！\n"
+"本当によろしいですか？"
+
+msgid ""
+"You are going to remove %{project_name_with_namespace}.\n"
+"Removed project CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"%{project_name_with_namespace} プロジェクトを削除しようとしています。\n"
+"削除されたプロジェクトは絶対に元には戻せません！\n"
+"本当によろしいですか？"
+
+msgid ""
+"You are going to remove the fork relationship to source project "
+"%{forked_from_project}. Are you ABSOLUTELY sure?"
+msgstr "元のプロジェクト (%{forked_from_project}) とのリレーションを削除しようとしています。本当によろしいですか？"
+
+msgid ""
+"You are going to transfer %{project_name_with_namespace} to another owner. "
+"Are you ABSOLUTELY sure?"
+msgstr "%{project_name_with_namespace} プロジェクトを別のオーナーに移譲しようとしています。本当によろしいですか？"
+
+msgid "You can only add files when you are on a branch"
+msgstr "ファイルを追加するには、どこかのブランチにいなければいけません"
+
+msgid "You have reached your project limit"
+msgstr "プロジェクト数の上限に達しています"
+
+msgid "You must sign in to star a project"
+msgstr "プロジェクトにスターをつけたい場合はログインしてください"
+
+msgid "You need permission."
+msgstr "権限が必要です"
+
+msgid "You will not get any notifications via email"
+msgstr "通知メールを送信しません"
+
+msgid "You will only receive notifications for the events you choose"
+msgstr "選択したイベントのみ通知します"
+
+msgid ""
+"You will only receive notifications for threads you have participated in"
+msgstr "参加したスレッドのみ通知します"
+
+msgid "You will receive notifications for any activity"
+msgstr "全てのアクティビティーを通知します"
+
+msgid ""
+"You will receive notifications only for comments in which you were "
+"@mentioned"
+msgstr "あなたが @mentioned でコメントされた時のみ通知します"
+
+msgid ""
+"You won't be able to pull or push project code via %{protocol} until you "
+"%{set_password_link} on your account"
+msgstr ""
+"%{set_password_link} でアカウントのパスワードがセットされていないので、プロジェクトに %{protocol} "
+"でソースコードをプッシュ、プルできません"
+
+msgid ""
+"You won't be able to pull or push project code via SSH until you "
+"%{add_ssh_key_link} to your profile"
+msgstr "%{add_ssh_key_link} をプロファイルに追加していないので、プロジェクトにソースコードをプッシュ、プルできません"
+
+msgid "Your name"
+msgstr "名前"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "日"
+
+msgid "new merge request"
+msgstr "新規マージリクエスト"
+
+msgid "notification emails"
+msgstr "メール通知"
+
+msgid "parent"
+msgid_plural "parents"
+msgstr[0] "親"

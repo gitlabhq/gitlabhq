@@ -5,6 +5,14 @@ class SessionsController < Devise::SessionsController
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
 
+  # Explicitly call protect from forgery before anything else. Otherwise the
+  # CSFR-token might be cleared before authentication is done. This was the case
+  # when LDAP was enabled and the `OmniauthCallbacksController` is loaded
+  #
+  # *Note:* `prepend: true` is the default for rails4, but this will be changed
+  # to `prepend: false` in rails5.
+  protect_from_forgery prepend: true, with: :exception
+
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
     if: :two_factor_enabled?, only: [:create]
@@ -15,12 +23,7 @@ class SessionsController < Devise::SessionsController
 
   def new
     set_minimum_password_length
-    @ldap_servers =
-      if Gitlab.config.ldap.enabled
-        Gitlab::LDAP::Config.servers
-      else
-        []
-      end
+    @ldap_servers = Gitlab::LDAP::Config.available_servers
 
     super
   end
@@ -48,7 +51,7 @@ class SessionsController < Devise::SessionsController
   private
 
   def login_counter
-    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins, 'User sign in count')
+    @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,
@@ -58,12 +61,13 @@ class SessionsController < Devise::SessionsController
 
     user = User.admins.last
 
-    return unless user && user.require_password?
+    return unless user && user.require_password_creation?
 
-    token = user.generate_reset_token
-    user.save
+    Users::UpdateService.new(user).execute do |user|
+      @token = user.generate_reset_token
+    end
 
-    redirect_to edit_user_password_path(reset_password_token: token),
+    redirect_to edit_user_password_path(reset_password_token: @token),
       notice: "Please create a password for your new account."
   end
 

@@ -10,9 +10,21 @@ describe API::Helpers do
   let(:key) { create(:key, user: user) }
 
   let(:params) { {} }
-  let(:env) { { 'REQUEST_METHOD' => 'GET' } }
-  let(:request) { Rack::Request.new(env) }
+  let(:csrf_token) { SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH) }
+  let(:env) do
+    {
+      'rack.input' => '',
+      'rack.session' => {
+        _csrf_token: csrf_token
+      },
+      'REQUEST_METHOD' => 'GET'
+    }
+  end
   let(:header) { }
+
+  before do
+    allow_any_instance_of(self.class).to receive(:options).and_return({})
+  end
 
   def set_env(user_or_token, identifier)
     clear_env
@@ -54,7 +66,7 @@ describe API::Helpers do
   describe ".current_user" do
     subject { current_user }
 
-    describe "Warden authentication" do
+    describe "Warden authentication", :allow_forgery_protection do
       before do
         doorkeeper_guard_returns false
       end
@@ -95,7 +107,17 @@ describe API::Helpers do
             env['REQUEST_METHOD'] = 'PUT'
           end
 
-          it { is_expected.to be_nil }
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
 
         context "POST request" do
@@ -103,7 +125,17 @@ describe API::Helpers do
             env['REQUEST_METHOD'] = 'POST'
           end
 
-          it { is_expected.to be_nil }
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
 
         context "DELETE request" do
@@ -111,7 +143,17 @@ describe API::Helpers do
             env['REQUEST_METHOD'] = 'DELETE'
           end
 
-          it { is_expected.to be_nil }
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
       end
     end
@@ -167,7 +209,6 @@ describe API::Helpers do
       it "returns nil for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_access_with_scope('write_user')
 
         expect(current_user).to be_nil
       end

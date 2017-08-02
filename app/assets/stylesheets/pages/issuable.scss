@@ -11,7 +11,9 @@
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed {
+  .files-changed,
+  .limited-header-width,
+  .limited-width-notes {
     @extend .fixed-width-container;
   }
 
@@ -198,7 +200,6 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-  padding: 0 20px;
   z-index: 200;
   overflow: hidden;
 
@@ -208,6 +209,10 @@
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+  }
+
+  &.affix-top .issuable-sidebar {
+    height: 100%;
   }
 
   &.right-sidebar-expanded {
@@ -222,8 +227,18 @@
       }
     }
 
+    .issuable-sidebar {
+      padding: 0 20px;
+    }
+
     .issuable-sidebar-header {
       padding-top: 10px;
+    }
+
+    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+      .issuable-sidebar-header {
+        display: none;
+      }
     }
 
     .assign-yourself .btn-link {
@@ -245,6 +260,10 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+    }
+
+    .title .gutter-toggle {
+      margin-top: 0;
     }
 
     .assignee .avatar {
@@ -331,13 +350,9 @@
         display: none;
       }
 
-      .avatar:hover,
-      .avatar-counter:hover {
-        border-color: $issuable-sidebar-color;
-      }
-
       .avatar-counter:hover {
         color: $issuable-sidebar-color;
+        border-color: $issuable-sidebar-color;
       }
 
       .btn-clipboard {
@@ -427,6 +442,14 @@
 
   .open .dropdown-menu {
     width: 100%;
+  }
+}
+
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
 }
 
@@ -585,7 +608,38 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+        margin-right: 10px;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1 0 auto;
+
+        .controls {
+          margin-bottom: 2px;
+          line-height: 20px;
+          padding: 0;
+        }
+
+        .issue-updated-at {
+          line-height: 20px;
+        }
+      }
+
+      @media(max-width: $screen-xs-max) {
+        .issuable-meta {
+          .controls li {
+            margin-right: 0;
+          }
+        }
+      }
     }
 
     .issue-check {
@@ -595,6 +649,30 @@
 
       .selected_issue {
         vertical-align: text-top;
+      }
+    }
+
+    .issuable-milestone,
+    .issuable-info,
+    .task-status,
+    .issuable-updated-at {
+      font-weight: normal;
+      color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
+    }
+
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issuable-due-date,
+      .project-ref-path {
+        display: none;
       }
     }
   }
@@ -727,5 +805,28 @@
         display: none;
       }
     }
+  }
+}
+
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
   }
 }

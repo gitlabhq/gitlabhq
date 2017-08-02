@@ -22,7 +22,9 @@
     .form-group
       = f.label :restricted_visibility_levels, class: 'control-label col-sm-2'
       .col-sm-10
-        - restricted_level_checkboxes('restricted-visibility-help').each do |level|
+        - checkbox_name = 'application_setting[restricted_visibility_levels][]'
+        = hidden_field_tag(checkbox_name)
+        - restricted_level_checkboxes('restricted-visibility-help', checkbox_name).each do |level|
           .checkbox
             = level
         %span.help-block#restricted-visibility-help
@@ -143,9 +145,9 @@
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
-          = f.label :signin_enabled do
-            = f.check_box :signin_enabled
-            Sign-in enabled
+          = f.label :password_authentication_enabled do
+            = f.check_box :password_authentication_enabled
+            Password authentication enabled
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
         = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'control-label col-sm-2'
@@ -313,7 +315,9 @@
   %fieldset
     %legend Metrics - Prometheus
     %p
-      Enable a Prometheus metrics endpoint at `#{metrics_path}` to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
+      Enable a Prometheus metrics endpoint at
+      %code= metrics_path
+      to expose a variety of statistics on the health and performance of GitLab. Additional information on authenticating and connecting to the metrics endpoint is available
       = link_to 'here', admin_health_check_path
       \. This setting requires a
       = link_to 'restart', help_page_path('administration/restart_gitlab')
@@ -325,10 +329,29 @@
           = f.label :prometheus_metrics_enabled do
             = f.check_box :prometheus_metrics_enabled
             Enable Prometheus Metrics
-            - unless Gitlab::Metrics.metrics_folder_present?
-              .help-block
-                %strong.cred WARNING:
-                Environment variable `prometheus_multiproc_dir` does not exist or is not pointing to a valid directory.
+          - unless Gitlab::Metrics.metrics_folder_present?
+            .help-block
+              %strong.cred WARNING:
+              Environment variable
+              %code prometheus_multiproc_dir
+              does not exist or is not pointing to a valid directory.
+              = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+
+  %fieldset
+    %legend Profiling - Performance Bar
+    %p
+      Enable the Performance Bar for a given group.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :performance_bar_enabled do
+            = f.check_box :performance_bar_enabled
+            Enable the Performance Bar
+    .form-group
+      = f.label :performance_bar_allowed_group_id, 'Allowed group', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :performance_bar_allowed_group_id, class: 'form-control', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
 
   %fieldset
     %legend Background Jobs

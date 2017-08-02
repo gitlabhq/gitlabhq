@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::TransferService, services: true do
+describe Projects::TransferService do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
@@ -30,19 +30,25 @@ describe Projects::TransferService, services: true do
       transfer_project(project, user, group)
     end
 
-    it 'executes system hooks' do
-      expect_any_instance_of(Projects::TransferService).to receive(:execute_system_hooks)
+    it 'expires full_path cache' do
+      expect(project).to receive(:expires_full_path_cache)
 
       transfer_project(project, user, group)
+    end
+
+    it 'executes system hooks' do
+      transfer_project(project, user, group) do |service|
+        expect(service).to receive(:execute_system_hooks)
+      end
     end
   end
 
   context 'when transfer fails' do
     let!(:original_path) { project_path(project) }
 
-    def attempt_project_transfer
+    def attempt_project_transfer(&block)
       expect do
-        transfer_project(project, user, group)
+        transfer_project(project, user, group, &block)
       end.to raise_error(ActiveRecord::ActiveRecordError)
     end
 
@@ -74,9 +80,9 @@ describe Projects::TransferService, services: true do
     end
 
     it "doesn't run system hooks" do
-      expect_any_instance_of(Projects::TransferService).not_to receive(:execute_system_hooks)
-
-      attempt_project_transfer
+      attempt_project_transfer do |service|
+        expect(service).not_to receive(:execute_system_hooks)
+      end
     end
   end
 
@@ -114,7 +120,11 @@ describe Projects::TransferService, services: true do
   end
 
   def transfer_project(project, user, new_namespace)
-    Projects::TransferService.new(project, user).execute(new_namespace)
+    service = Projects::TransferService.new(project, user)
+
+    yield(service) if block_given?
+
+    service.execute(new_namespace)
   end
 
   context 'visibility level' do

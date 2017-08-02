@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-feature 'Admin Groups', feature: true do
+feature 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
   let(:user) { create :user }
   let!(:group) { create :group }
-  let!(:current_user) { gitlab_sign_in :admin }
+  let!(:current_user) { create(:admin) }
 
   before do
+    sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end
 

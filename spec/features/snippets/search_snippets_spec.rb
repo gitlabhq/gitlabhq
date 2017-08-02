@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Search Snippets', feature: true do
+feature 'Search Snippets' do
   scenario 'User searches for snippets by title' do
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
     private_snippet = create(:personal_snippet, :private, title: 'Middle and End')
 
-    gitlab_sign_in private_snippet.author
+    sign_in private_snippet.author
     visit dashboard_snippets_path
 
     page.within '.search' do
@@ -41,7 +41,7 @@ feature 'Search Snippets', feature: true do
            CONTENT
           )
 
-    gitlab_sign_in create(:user)
+    sign_in create(:user)
     visit dashboard_snippets_path
 
     page.within '.search' do

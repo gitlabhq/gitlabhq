@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-feature 'Project group links', :feature, :js do
+feature 'Project group links', :js do
   include Select2Helper
 
   let(:master) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let!(:group) { create(:group) }
 
   background do
     project.add_master(master)
-    gitlab_sign_in(master)
+    sign_in(master)
   end
 
   context 'setting an expiration date for a group link' do
     before do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
 
       click_on 'share-with-group-tab'
 
@@ -35,7 +35,7 @@ feature 'Project group links', :feature, :js do
   context 'nested group project' do
     let!(:nested_group) { create(:group, parent: group) }
     let!(:another_group) { create(:group) }
-    let!(:project) { create(:project, namespace: nested_group) }
+    let!(:project) { create(:empty_project, namespace: nested_group) }
 
     background do
       group.add_master(master)
@@ -43,7 +43,7 @@ feature 'Project group links', :feature, :js do
     end
 
     it 'does not show ancestors', :nested_groups do
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
 
       click_on 'share-with-group-tab'
       click_link 'Search for a group'
@@ -61,7 +61,7 @@ feature 'Project group links', :feature, :js do
       group.add_owner(master)
       group_two.add_owner(master)
 
-      visit namespace_project_settings_members_path(project.namespace, project)
+      visit project_settings_members_path(project)
       execute_script 'GroupsSelect.PER_PAGE = 1;'
       open_select2 '#link_group_id'
     end

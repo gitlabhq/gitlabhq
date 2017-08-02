@@ -1,4 +1,6 @@
 module LoginHelpers
+  include DeviseHelpers
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -15,14 +17,16 @@ module LoginHelpers
   #   user = create(:user)
   #   gitlab_sign_in(user)
   def gitlab_sign_in(user_or_role, **kwargs)
-    @user =
+    user =
       if user_or_role.is_a?(User)
         user_or_role
       else
         create(user_or_role)
       end
 
-    gitlab_sign_in_with(@user, **kwargs)
+    gitlab_sign_in_with(user, **kwargs)
+
+    user
   end
 
   def gitlab_sign_in_via(provider, user, uid)
@@ -35,13 +39,8 @@ module LoginHelpers
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
-    # check the sign_in button
-    expect(page).to have_button('Sign in')
-  end
 
-  # Logout without JavaScript driver
-  def gitlab_sign_out_direct
-    page.driver.submit :delete, '/users/sign_out', {}
+    expect(page).to have_button('Sign in')
   end
 
   private
@@ -58,8 +57,16 @@ module LoginHelpers
     check 'user_remember_me' if remember
 
     click_button "Sign in"
+  end
 
-    Thread.current[:current_user] = user
+  def login_via(provider, user, uid, remember_me: false)
+    mock_auth_hash(provider, uid, user.email)
+    visit new_user_session_path
+    expect(page).to have_content('Sign in with')
+
+    check 'remember_me' if remember_me
+
+    click_link "oauth-login-#{provider}"
   end
 
   def mock_auth_hash(provider, uid, email)
@@ -88,5 +95,27 @@ module LoginHelpers
       }
     })
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
+  end
+
+  def mock_saml_config
+    OpenStruct.new(name: 'saml', label: 'saml', args: {
+      assertion_consumer_service_url: 'https://localhost:3443/users/auth/saml/callback',
+      idp_cert_fingerprint: '26:43:2C:47:AF:F0:6B:D0:07:9C:AD:A3:74:FE:5D:94:5F:4E:9E:52',
+      idp_sso_target_url: 'https://idp.example.com/sso/saml',
+      issuer: 'https://localhost:3443/',
+      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+    })
+  end
+
+  def stub_omniauth_saml_config(messages)
+    set_devise_mapping(context: Rails.application)
+    Rails.application.routes.disable_clear_and_finalize = true
+    Rails.application.routes.draw do
+      post '/users/auth/saml' => 'omniauth_callbacks#saml'
+    end
+    allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: mock_saml_config)
+    stub_omniauth_setting(messages)
+    allow_any_instance_of(Object).to receive(:user_saml_omniauth_authorize_path).and_return('/users/auth/saml')
+    allow_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
   end
 end

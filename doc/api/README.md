@@ -17,6 +17,7 @@ following locations:
 - [Deploy Keys](deploy_keys.md)
 - [Environments](environments.md)
 - [Events](events.md)
+- [Feature flags](features.md)
 - [Gitignores templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)
@@ -28,7 +29,8 @@ following locations:
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Merge Requests](merge_requests.md)
-- [Milestones](milestones.md)
+- [Project milestones](milestones.md)
+- [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
@@ -338,7 +340,18 @@ URL-encoded.
 For example, `/` is represented by `%2F`:
 
 ```
-/api/v4/projects/diaspora%2Fdiaspora
+GET /api/v4/projects/diaspora%2Fdiaspora
+```
+
+## Branches & tags name encoding
+
+If your branch or tag contains a `/`, make sure the branch/tag name is
+URL-encoded.
+
+For example, `/` is represented by `%2F`:
+
+```
+GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
 ## `id` vs `iid`

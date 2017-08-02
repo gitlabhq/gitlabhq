@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Database::MigrationHelpers, lib: true do
+describe Gitlab::Database::MigrationHelpers do
   let(:model) do
     ActiveRecord::Migration.new.extend(
-      Gitlab::Database::MigrationHelpers
+      described_class
     )
   end
 
@@ -174,12 +174,22 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
-        it 'creates a concurrent foreign key' do
+        it 'creates a concurrent foreign key and validates it' do
           expect(model).to receive(:disable_statement_timeout)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'appends a valid ON DELETE statement' do
+          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+
+          model.add_concurrent_foreign_key(:projects, :users,
+                                           column: :user_id,
+                                           on_delete: :nullify)
         end
       end
     end
@@ -262,39 +272,53 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
   end
 
   describe '#update_column_in_batches' do
-    before do
-      create_list(:empty_project, 5)
-    end
+    context 'when running outside of a transaction' do
+      before do
+        expect(model).to receive(:transaction_open?).and_return(false)
 
-    it 'updates all the rows in a table' do
-      model.update_column_in_batches(:projects, :import_error, 'foo')
+        create_list(:empty_project, 5)
+      end
 
-      expect(Project.where(import_error: 'foo').count).to eq(5)
-    end
+      it 'updates all the rows in a table' do
+        model.update_column_in_batches(:projects, :import_error, 'foo')
 
-    it 'updates boolean values correctly' do
-      model.update_column_in_batches(:projects, :archived, true)
+        expect(Project.where(import_error: 'foo').count).to eq(5)
+      end
 
-      expect(Project.where(archived: true).count).to eq(5)
-    end
+      it 'updates boolean values correctly' do
+        model.update_column_in_batches(:projects, :archived, true)
 
-    context 'when a block is supplied' do
-      it 'yields an Arel table and query object to the supplied block' do
-        first_id = Project.first.id
+        expect(Project.where(archived: true).count).to eq(5)
+      end
 
-        model.update_column_in_batches(:projects, :archived, true) do |t, query|
-          query.where(t[:id].eq(first_id))
+      context 'when a block is supplied' do
+        it 'yields an Arel table and query object to the supplied block' do
+          first_id = Project.first.id
+
+          model.update_column_in_batches(:projects, :archived, true) do |t, query|
+            query.where(t[:id].eq(first_id))
+          end
+
+          expect(Project.where(archived: true).count).to eq(1)
         end
+      end
 
-        expect(Project.where(archived: true).count).to eq(1)
+      context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
+        it 'updates the value as a SQL expression' do
+          model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+
+          expect(Project.sum(:star_count)).to eq(2 * Project.count)
+        end
       end
     end
 
-    context 'when the value is Arel.sql (Arel::Nodes::SqlLiteral)' do
-      it 'updates the value as a SQL expression' do
-        model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+    context 'when running inside the transaction' do
+      it 'raises RuntimeError' do
+        expect(model).to receive(:transaction_open?).and_return(true)
 
-        expect(Project.sum(:star_count)).to eq(2 * Project.count)
+        expect do
+          model.update_column_in_batches(:projects, :star_count, Arel.sql('1+1'))
+        end.to raise_error(RuntimeError)
       end
     end
   end
@@ -303,7 +327,9 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     context 'outside of a transaction' do
       context 'when a column limit is not set' do
         before do
-          expect(model).to receive(:transaction_open?).and_return(false)
+          expect(model).to receive(:transaction_open?)
+            .and_return(false)
+            .at_least(:once)
 
           expect(model).to receive(:transaction).and_yield
 
@@ -810,7 +836,11 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       let!(:user) { create(:user, name: 'Kathy Alice Aliceson') }
 
       it 'replaces the correct part of the string' do
-        model.update_column_in_batches(:users, :name, model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve'))
+        allow(model).to receive(:transaction_open?).and_return(false)
+        query = model.replace_sql(Arel::Table.new(:users)[:name], 'Alice', 'Eve')
+
+        model.update_column_in_batches(:users, :name, query)
+
         expect(user.reload.name).to eq('Kathy Eve Aliceson')
       end
     end

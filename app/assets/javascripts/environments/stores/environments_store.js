@@ -35,14 +35,18 @@ export default class EnvironmentsStore {
    */
   storeEnvironments(environments = []) {
     const filteredEnvironments = environments.map((env) => {
+      const oldEnvironmentState = this.state.environments
+        .find(element => element.id === env.latest.id) || {};
+
       let filtered = {};
 
       if (env.size > 1) {
         filtered = Object.assign({}, env, {
           isFolder: true,
+          isLoadingFolderContent: oldEnvironmentState.isLoading || false,
           folderName: env.name,
-          isOpen: false,
-          children: [],
+          isOpen: oldEnvironmentState.isOpen || false,
+          children: oldEnvironmentState.children || [],
         });
       }
 
@@ -98,7 +102,7 @@ export default class EnvironmentsStore {
     * @return {Array}
     */
   toggleFolder(folder) {
-    return this.updateFolder(folder, 'isOpen', !folder.isOpen);
+    return this.updateEnvironmentProp(folder, 'isOpen', !folder.isOpen);
   }
 
   /**
@@ -125,23 +129,23 @@ export default class EnvironmentsStore {
       return updated;
     });
 
-    return this.updateFolder(folder, 'children', updatedEnvironments);
+    return this.updateEnvironmentProp(folder, 'children', updatedEnvironments);
   }
 
   /**
-   * Given a folder a prop and a new value updates the correct folder.
+   * Given a environment,  a prop and a new value updates the correct environment.
    *
-   * @param  {Object} folder
+   * @param  {Object} environment
    * @param  {String} prop
    * @param  {String|Boolean|Object|Array} newValue
    * @return {Array}
    */
-  updateFolder(folder, prop, newValue) {
+  updateEnvironmentProp(environment, prop, newValue) {
     const environments = this.state.environments;
 
     const updatedEnvironments = environments.map((env) => {
       const updateEnv = Object.assign({}, env);
-      if (env.isFolder && env.id === folder.id) {
+      if (env.id === environment.id) {
         updateEnv[prop] = newValue;
       }
 
@@ -149,8 +153,6 @@ export default class EnvironmentsStore {
     });
 
     this.state.environments = updatedEnvironments;
-
-    return updatedEnvironments;
   }
 
   getOpenFolders() {

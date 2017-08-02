@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuickActions::InterpretService, services: true do
+describe QuickActions::InterpretService do
   let(:project) { create(:empty_project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
@@ -9,13 +9,13 @@ describe QuickActions::InterpretService, services: true do
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
+  let(:service) { described_class.new(project, developer) }
 
   before do
     project.team << [developer, :developer]
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -261,6 +261,31 @@ describe QuickActions::InterpretService, services: true do
       end
     end
 
+    shared_examples 'duplicate command' do
+      it 'fetches issue and populates canonical_issue_id if content contains /duplicate issue_reference' do
+        issue_duplicate # populate the issue
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
+      end
+    end
+
+    shared_examples 'shrug command' do
+      it 'appends ¯\_(ツ)_/¯ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::SHRUG)
+      end
+    end
+
+    shared_examples 'tableflip command' do
+      it 'appends (╯°□°)╯︵ ┻━┻ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::TABLEFLIP)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -359,18 +384,18 @@ describe QuickActions::InterpretService, services: true do
       let(:content) { "/assign @#{developer.username}" }
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, issue)
 
-          expect(updates).to eq(assignee_ids: [developer.id])
+          expect(updates[:assignee_ids]).to match_array([developer.id])
         end
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -383,7 +408,7 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Issue' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, issue)
 
           expect(updates[:assignee_ids]).to match_array([developer.id])
@@ -391,10 +416,10 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Merge Request' do
-        it 'fetches assignee and populates assignee_id if content contains /assign' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: developer.id)
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
     end
@@ -422,11 +447,11 @@ describe QuickActions::InterpretService, services: true do
       end
 
       context 'Merge Request' do
-        it 'populates assignee_id: nil if content contains /unassign' do
-          merge_request.update(assignee_id: developer.id)
+        it 'populates assignee_ids: [] if content contains /unassign' do
+          merge_request.update(assignee_ids: [developer.id])
           _, updates = service.execute(content, merge_request)
 
-          expect(updates).to eq(assignee_id: nil)
+          expect(updates).to eq(assignee_ids: [])
         end
       end
     end
@@ -644,6 +669,41 @@ describe QuickActions::InterpretService, services: true do
       let(:issuable) { issue }
     end
 
+    context '/duplicate command' do
+      it_behaves_like 'duplicate command' do
+        let(:issue_duplicate) { create(:issue, project: project) }
+        let(:content) { "/duplicate #{issue_duplicate.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate' }
+        let(:issuable) { issue }
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'duplicate command' do
+          let(:other_project) { create(:empty_project, :public) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/duplicate imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:empty_project, :private) }
+          let(:issue_duplicate) { create(:issue, project: other_project) }
+
+          let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+    end
+
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
@@ -693,6 +753,11 @@ describe QuickActions::InterpretService, services: true do
         let(:content) { '/remove_due_date' }
         let(:issuable) { issue }
       end
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/duplicate #{issue.to_reference}' }
+        let(:issuable) { issue }
+      end
     end
 
     context '/award command' do
@@ -723,6 +788,30 @@ describe QuickActions::InterpretService, services: true do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
         end
+      end
+    end
+
+    context '/shrug command' do
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug people are people' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug' }
+        let(:issuable) { issue }
+      end
+    end
+
+    context '/tableflip command' do
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip curse your sudden but enviable betrayal' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip' }
+        let(:issuable) { issue }
       end
     end
 

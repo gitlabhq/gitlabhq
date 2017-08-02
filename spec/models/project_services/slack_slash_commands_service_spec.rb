@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlackSlashCommandsService, :models do
+describe SlackSlashCommandsService do
   it_behaves_like "chat slash commands service"
 
   describe '#trigger' do

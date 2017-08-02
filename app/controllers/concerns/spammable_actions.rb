@@ -9,9 +9,9 @@ module SpammableActions
 
   def mark_as_spam
     if SpamService.new(spammable).mark_as_spam!
-      redirect_to spammable, notice: "#{spammable.spammable_entity_type.titlecase} was submitted to Akismet successfully."
+      redirect_to spammable_path, notice: "#{spammable.spammable_entity_type.titlecase} was submitted to Akismet successfully."
     else
-      redirect_to spammable, alert: 'Error with Akismet. Please check the logs for more info.'
+      redirect_to spammable_path, alert: 'Error with Akismet. Please check the logs for more info.'
     end
   end
 
@@ -25,7 +25,7 @@ module SpammableActions
 
   def recaptcha_check_with_fallback(&fallback)
     if spammable.valid?
-      redirect_to spammable
+      redirect_to spammable_path
     elsif render_recaptcha?
       ensure_spam_config_loaded!
 
@@ -53,6 +53,10 @@ module SpammableActions
   end
 
   def spammable
+    raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+  end
+
+  def spammable_path
     raise NotImplementedError, "#{self.class} does not implement #{__method__}"
   end
 

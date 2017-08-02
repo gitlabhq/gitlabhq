@@ -94,8 +94,8 @@ gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
 
   startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
 
-  if (selectedSplit.length > 1 && (!wrap || (blockTag != null))) {
-    if (blockTag != null) {
+  if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
+    if (blockTag != null && blockTag !== '') {
       insertText = this.blockTagText(text, textArea, blockTag, selected);
     } else {
       insertText = selectedSplit.map(function(val) {

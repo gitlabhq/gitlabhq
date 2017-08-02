@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group', feature: true do
+RSpec.describe 'Dashboard Group' do
   before do
-    gitlab_sign_in(:user)
+    sign_in(create(:user))
   end
 
   it 'creates new group', js: true do

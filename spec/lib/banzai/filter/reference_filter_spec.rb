@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::ReferenceFilter, lib: true do
+describe Banzai::Filter::ReferenceFilter do
   let(:project) { build(:project) }
 
   describe '#each_node' do

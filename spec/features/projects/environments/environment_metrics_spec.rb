@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environment > Metrics', :feature do
+feature 'Environment > Metrics' do
   include PrometheusHelpers
 
   given(:user) { create(:user) }
@@ -15,7 +15,7 @@ feature 'Environment > Metrics', :feature do
     create(:deployment, environment: environment, deployable: build)
     stub_all_prometheus_requests(environment.slug)
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit_environment(environment)
   end
 
@@ -27,13 +27,11 @@ feature 'Environment > Metrics', :feature do
     scenario 'shows metrics' do
       click_link('See metrics')
 
-      expect(page).to have_css('svg.prometheus-graph')
+      expect(page).to have_css('div#prometheus-graphs')
     end
   end
 
   def visit_environment(environment)
-    visit namespace_project_environment_path(environment.project.namespace,
-                                             environment.project,
-                                             environment)
+    visit project_environment_path(environment.project, environment)
   end
 end

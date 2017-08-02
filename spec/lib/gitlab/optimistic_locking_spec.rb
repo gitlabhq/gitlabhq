@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OptimisticLocking, lib: true do
+describe Gitlab::OptimisticLocking do
   let!(:pipeline) { create(:ci_pipeline) }
   let!(:pipeline2) { Ci::Pipeline.find(pipeline.id) }
 

@@ -1,12 +1,12 @@
 class MetricsController < ActionController::Base
-  include RequiresHealthToken
+  include RequiresWhitelistedMonitoringClient
 
   protect_from_forgery with: :exception
 
   before_action :validate_prometheus_metrics
 
   def index
-    render text: metrics_service.metrics_text, content_type: 'text/plain; verssion=0.0.4'
+    render text: metrics_service.metrics_text, content_type: 'text/plain; version=0.0.4'
   end
 
   private

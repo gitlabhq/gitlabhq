@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Explore Groups page', :js, :feature do
+describe 'Explore Groups page', :js do
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }
@@ -10,7 +10,7 @@ describe 'Explore Groups page', :js, :feature do
   before do
     group.add_owner(user)
 
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit explore_groups_path
   end

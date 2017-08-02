@@ -60,6 +60,6 @@
             = link_to note.attachment.url, target: '_blank' do
               = icon('paperclip')
               = note.attachment_identifier
-              = link_to delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note),
+              = link_to delete_attachment_project_note_path(note.project, note),
                 title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')

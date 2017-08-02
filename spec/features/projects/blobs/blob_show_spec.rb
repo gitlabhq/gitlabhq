@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'File blob', :js, feature: true do
-  let(:project) { create(:project, :public) }
+feature 'File blob', :js do
+  let(:project) { create(:project, :public, :repository) }
 
   def visit_blob(path, anchor: nil, ref: 'master')
-    visit namespace_project_blob_path(project.namespace, project, File.join(ref, path), anchor: anchor)
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
 
     wait_for_requests
   end

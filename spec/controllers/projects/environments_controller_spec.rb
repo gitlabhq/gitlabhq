@@ -58,11 +58,9 @@ describe Projects::EnvironmentsController do
           expect(json_response['stopped_count']).to eq 1
         end
 
-        it 'does not set the polling interval header' do
-          # TODO, this is a temporary fix, see follow up issue:
-          # https://gitlab.com/gitlab-org/gitlab-ee/issues/2677
+        it 'sets the polling interval header' do
           expect(response).to have_http_status(:ok)
-          expect(response.headers['Poll-Interval']).to be_nil
+          expect(response.headers['Poll-Interval']).to eq("3000")
         end
       end
 
@@ -184,7 +182,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              namespace_project_job_url(project.namespace, project, action) })
+              project_job_url(project, action) })
       end
     end
 
@@ -198,7 +196,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              namespace_project_environment_url(project.namespace, project, environment) })
+              project_environment_url(project, environment) })
       end
     end
   end
@@ -313,6 +311,48 @@ describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(json_response['success']).to be(true)
         expect(json_response['metrics']).to eq({})
+        expect(json_response['last_update']).to eq(42)
+      end
+    end
+  end
+
+  describe 'GET #additional_metrics' do
+    before do
+      allow(controller).to receive(:environment).and_return(environment)
+    end
+
+    context 'when environment has no metrics' do
+      before do
+        expect(environment).to receive(:additional_metrics).and_return(nil)
+      end
+
+      context 'when requesting metrics as JSON' do
+        it 'returns a metrics JSON document' do
+          get :additional_metrics, environment_params(format: :json)
+
+          expect(response).to have_http_status(204)
+          expect(json_response).to eq({})
+        end
+      end
+    end
+
+    context 'when environment has some metrics' do
+      before do
+        expect(environment)
+          .to receive(:additional_metrics)
+                .and_return({
+                              success: true,
+                              data: {},
+                              last_update: 42
+                            })
+      end
+
+      it 'returns a metrics JSON document' do
+        get :additional_metrics, environment_params(format: :json)
+
+        expect(response).to be_ok
+        expect(json_response['success']).to be(true)
+        expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
       end
     end

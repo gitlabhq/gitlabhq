@@ -76,9 +76,13 @@ module Gitlab
 
       step(
         "Generating the patch against origin/master in #{patch_path}",
-        %W[git diff --binary origin/master > #{patch_path}]
+        %w[git diff --binary origin/master...HEAD]
       ) do |output, status|
-        throw(:halt_check, :ko) unless status.zero? && File.exist?(patch_path)
+        throw(:halt_check, :ko) unless status.zero?
+
+        File.write(patch_path, output)
+
+        throw(:halt_check, :ko) unless File.exist?(patch_path)
       end
     end
 
@@ -130,7 +134,15 @@ module Gitlab
       step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
-        %W[git apply --check --3way #{patch_path}]
+        # Don't use --check here because it can result in a 0-exit status even
+        # though the patch doesn't apply cleanly, e.g.:
+        #   > git apply --check --3way foo.patch
+        #   error: patch failed: lib/gitlab/ee_compat_check.rb:74
+        #   Falling back to three-way merge...
+        #   Applied patch to 'lib/gitlab/ee_compat_check.rb' with conflicts.
+        #   > echo $?
+        #   0
+        %W[git apply --3way #{patch_path}]
       ) do |output, status|
         puts output
         unless status.zero?
@@ -145,6 +157,7 @@ module Gitlab
           status = 0 if failed_files.empty?
         end
 
+        command(%w[git reset --hard])
         status
       end
     end
@@ -224,6 +237,10 @@ module Gitlab
       branch_name.parameterize << '.patch'
     end
 
+    def patch_url
+      "https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/#{ENV['CI_JOB_ID']}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
+    end
+
     def step(desc, cmd = nil)
       puts "\n=> #{desc}\n"
 
@@ -290,14 +307,11 @@ module Gitlab
 
         2. Apply your branch's patch to EE
 
-          # In the CE repo
-          $ git fetch origin master
-          $ git diff --binary origin/master > #{ce_branch}.patch
-
           # In the EE repo
           $ git fetch origin master
           $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git apply --3way path/to/#{ce_branch}.patch
+          $ wget #{patch_url}
+          $ git apply --3way #{ce_patch_name}
 
           At this point you might have conflicts such as:
 
@@ -311,7 +325,7 @@ module Gitlab
           If the patch couldn't be applied cleanly, use the following command:
 
           # In the EE repo
-          $ git apply --reject path/to/#{ce_branch}.patch
+          $ git apply --reject #{ce_patch_name}
 
           This option makes git apply the parts of the patch that are applicable,
           and leave the rejected hunks in corresponding `.rej` files.
@@ -324,7 +338,7 @@ module Gitlab
           # In the EE repo
           $ git push origin #{ee_branch_prefix}
 
-        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ee and
         cross-link it with the CE merge request.
 
         Once this is done, you can retry this failed build, and it should pass.

@@ -93,10 +93,11 @@ module Projects
       end
 
       # Requires UnZip at least 6.00 Info-ZIP.
+      # -qq be (very) quiet
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      unless system(*%W(unzip -n #{artifacts} #{site_path} -d #{temp_path}))
+      unless system(*%W(unzip -qq -n #{artifacts} #{site_path} -d #{temp_path}))
         raise 'pages failed to extract'
       end
     end
@@ -129,7 +130,11 @@ module Projects
     end
 
     def max_size
-      current_application_settings.max_pages_size.megabytes || MAX_SIZE
+      max_pages_size = current_application_settings.max_pages_size.megabytes
+
+      return MAX_SIZE if max_pages_size.zero?
+
+      [max_pages_size, MAX_SIZE].min
     end
 
     def tmp_path

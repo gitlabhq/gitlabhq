@@ -1,15 +1,13 @@
 require 'rails_helper'
 
-describe 'New/edit merge request', feature: true, js: true do
-  include GitlabRoutingHelper
-
-  let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:fork_project) { create(:project, forked_from_project: project) }
-  let!(:user)      { create(:user)}
-  let!(:user2)      { create(:user)}
-  let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
-  let!(:label2)    { create(:label, project: project) }
+describe 'New/edit merge request', :js do
+  let!(:project)     { create(:project, :public, :repository) }
+  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+  let!(:user)        { create(:user) }
+  let!(:user2)       { create(:user) }
+  let!(:milestone)   { create(:milestone, project: project) }
+  let!(:label)       { create(:label, project: project) }
+  let!(:label2)      { create(:label, project: project) }
 
   before do
     project.team << [user, :master]
@@ -18,13 +16,12 @@ describe 'New/edit merge request', feature: true, js: true do
 
   context 'owned projects' do
     before do
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
-          project.namespace,
+        visit project_new_merge_request_path(
           project,
           merge_request: {
             source_project_id: project.id,
@@ -114,7 +111,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'updates merge request' do
@@ -177,13 +174,12 @@ describe 'New/edit merge request', feature: true, js: true do
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
-          fork_project.namespace,
+        visit project_new_merge_request_path(
           fork_project,
           merge_request: {
             source_project_id: fork_project.id,
@@ -251,7 +247,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'should update merge request' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Workhorse, lib: true do
+describe Gitlab::Workhorse do
   let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
@@ -63,13 +63,13 @@ describe Gitlab::Workhorse, lib: true do
     end
 
     context 'without ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+      subject { described_class.terminal_websocket(terminal) }
 
       it { is_expected.to eq(workhorse) }
     end
 
     context 'with ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+      subject { described_class.terminal_websocket(terminal(ca_pem: "foo")) }
 
       it { is_expected.to eq(workhorse(ca_pem: "foo")) }
     end
@@ -216,7 +216,6 @@ describe Gitlab::Workhorse, lib: true do
 
       it 'includes a Repository param' do
         repo_param = { Repository: {
-          path: '', # deprecated field; grpc automatically creates it anyway
           storage_name: 'default',
           relative_path: project.full_path + '.git'
         } }
@@ -238,7 +237,8 @@ describe Gitlab::Workhorse, lib: true do
 
         context 'when action is not enabled by feature flag' do
           it 'does not include Gitaly params in the returned value' do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(false)
+            status_opt_out = Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag, status: status_opt_out).and_return(false)
 
             expect(subject).not_to include(gitaly_params)
           end
@@ -277,7 +277,7 @@ describe Gitlab::Workhorse, lib: true do
       end
 
       it 'set and notify' do
-        expect_any_instance_of(Redis).to receive(:publish)
+        expect_any_instance_of(::Redis).to receive(:publish)
           .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
 
         subject
@@ -311,10 +311,48 @@ describe Gitlab::Workhorse, lib: true do
         end
 
         it 'does not notify' do
-          expect_any_instance_of(Redis).not_to receive(:publish)
+          expect_any_instance_of(::Redis).not_to receive(:publish)
 
           subject
         end
+      end
+    end
+  end
+
+  describe '.send_git_blob' do
+    include FakeBlobHelpers
+
+    let(:blob) { fake_blob }
+
+    subject { described_class.send_git_blob(repository, blob) }
+
+    context 'when Gitaly workhorse_raw_show feature is enabled' do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq({
+          'GitalyServer' => {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          },
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }.deep_stringify_keys)
+      end
+    end
+
+    context 'when Gitaly workhorse_raw_show feature is disabled', skip_gitaly_mock: true do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-blob')
+        expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
       end
     end
   end

@@ -1,4 +1,0 @@
----
-title: Replace 'create.feature' spinach test with an rspec analog
-merge_request: 12343
-author: @blackst0ne

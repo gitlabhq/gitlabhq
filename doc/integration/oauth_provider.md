@@ -63,6 +63,9 @@ it from the admin area.
 
 ![OAuth admin_applications](img/oauth_provider_admin_application.png)
 
+You're also able to mark an application as _trusted_ when creating it through the admin area. By doing that,
+the user authorization step is automatically skipped for this application.
+
 ---
 
 ## Authorized applications

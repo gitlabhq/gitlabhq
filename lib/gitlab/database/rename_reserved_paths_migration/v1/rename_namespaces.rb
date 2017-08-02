@@ -26,11 +26,34 @@ module Gitlab
           def rename_namespace(namespace)
             old_full_path, new_full_path = rename_path_for_routable(namespace)
 
+            track_rename('namespace', old_full_path, new_full_path)
+
+            rename_namespace_dependencies(namespace, old_full_path, new_full_path)
+          end
+
+          def rename_namespace_dependencies(namespace, old_full_path, new_full_path)
             move_repositories(namespace, old_full_path, new_full_path)
             move_uploads(old_full_path, new_full_path)
             move_pages(old_full_path, new_full_path)
             rename_user(old_full_path, new_full_path) if namespace.kind == 'user'
             remove_cached_html_for_projects(projects_for_namespace(namespace).map(&:id))
+          end
+
+          def revert_renames
+            reverts_for_type('namespace') do |path_before_rename, current_path|
+              matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
+              namespace = MigrationClasses::Namespace.joins(:route)
+                            .where(matches_path).first&.becomes(MigrationClasses::Namespace)
+
+              if namespace
+                perform_rename(namespace, current_path, path_before_rename)
+
+                rename_namespace_dependencies(namespace, current_path, path_before_rename)
+              else
+                say "Couldn't rename namespace from #{current_path} back to #{path_before_rename}, "\
+                    "namespace was renamed, or no longer exists at the expected path"
+              end
+            end
           end
 
           def rename_user(old_username, new_username)

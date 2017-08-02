@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::IssueParser, lib: true do
+describe Banzai::ReferenceParser::IssueParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:empty_project, :public) }
@@ -37,16 +37,6 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
     context 'when the link does not have a data-issue attribute' do
       it 'returns an empty Array' do
         expect(subject.nodes_visible_to_user(user, [link])).to eq([])
-      end
-    end
-
-    context 'when the project uses an external issue tracker' do
-      it 'returns all nodes' do
-        link = double(:link)
-
-        expect(project).to receive(:external_issue_tracker).and_return(true)
-
-        expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
       end
     end
   end

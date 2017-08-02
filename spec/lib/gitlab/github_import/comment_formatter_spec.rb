@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::CommentFormatter, lib: true do
+describe Gitlab::GithubImport::CommentFormatter do
   let(:client) { double }
   let(:project) { create(:empty_project) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }

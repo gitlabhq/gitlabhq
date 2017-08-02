@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Boards::Issues::ListService, services: true do
+describe Boards::Issues::ListService do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:project) { create(:empty_project) }
@@ -20,7 +20,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project) }
+    let!(:reopened_issue1) { create(:issue, :opened, project: project) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, labels: [development]) }
@@ -67,7 +67,7 @@ describe Boards::Issues::ListService, services: true do
 
         issues = described_class.new(project, user, params).execute
 
-        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue3, closed_issue1]
+        expect(issues).to eq [closed_issue4, closed_issue2, closed_issue5, closed_issue3, closed_issue1]
       end
 
       it 'returns opened issues that have label list applied when listing issues from a label list' do

@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', js: true do
   include DragTo
 
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
@@ -12,12 +13,12 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   context 'no lists' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
       expect(page).to have_selector('.board', count: 3)
     end
@@ -81,7 +82,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
 
       wait_for_requests
 
@@ -158,7 +159,7 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
       page.within(find('.board:nth-child(2)')) do
@@ -507,7 +508,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -519,8 +520,8 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'signed out user' do
     before do
-      gitlab_sign_out
-      visit namespace_project_board_path(project.namespace, project, board)
+      sign_out(:user)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -542,9 +543,9 @@ describe 'Issue Boards', feature: true, js: true do
 
     before do
       project.team << [user_guest, :guest]
-      gitlab_sign_out
-      gitlab_sign_in(user_guest)
-      visit namespace_project_board_path(project.namespace, project, board)
+      sign_out(:user)
+      sign_in(user_guest)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 

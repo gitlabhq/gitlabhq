@@ -7,6 +7,14 @@ module Issues
       issue_data
     end
 
+    def reopen_service
+      Issues::ReopenService
+    end
+
+    def close_service
+      Issues::CloseService
+    end
+
     private
 
     def create_assignee_note(issue, old_assignees)

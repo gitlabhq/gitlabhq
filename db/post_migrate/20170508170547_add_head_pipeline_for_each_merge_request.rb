@@ -3,6 +3,8 @@ class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     disable_statement_timeout
 

@@ -69,7 +69,7 @@ so keep in mind that you need at least 4GB available before running GitLab. With
 less memory GitLab will give strange errors during the reconfigure run and 500
 errors during usage.
 
-- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
+- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the [unicorn worker section below](#unicorn-workers) for more advice.
 - 2GB RAM + 2GB swap supports up to 100 users but it will be very slow
 - **4GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
 - 8GB RAM supports up to 1,000 users
@@ -94,16 +94,17 @@ installation (e.g. the number of users, projects, etc).
 
 We currently support the following databases:
 
-- PostgreSQL
-- MySQL/MariaDB
+- PostgreSQL (highly recommended)
+- MySQL/MariaDB (strongly discouraged, not all GitLab features are supported, no support for [MySQL/MariaDB GTID](https://mariadb.com/kb/en/mariadb/gtid/))
 
-We **highly recommend** the use of PostgreSQL instead of MySQL/MariaDB as not all
-features of GitLab may work with MySQL/MariaDB:
+We highly recommend the use of PostgreSQL instead of MySQL/MariaDB as not all
+features of GitLab work with MySQL/MariaDB:
 
 1. MySQL support for subgroups was [dropped with GitLab 9.3][post].
    See [issue #30472][30472] for more information.
 1. GitLab Geo does [not support MySQL](https://docs.gitlab.com/ee/gitlab-geo/database.html#mysql-replication).
 1. [Zero downtime migrations][zero] do not work with MySQL
+1. We expect this list to grow over time.
 
 Existing users using GitLab with MySQL/MariaDB are advised to
 [migrate to PostgreSQL](../update/mysql_to_postgresql.md) instead.

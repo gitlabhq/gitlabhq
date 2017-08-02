@@ -16,11 +16,10 @@
 */
 
 import defaultAvatarUrl from 'images/no_avatar.png';
-import TooltipMixin from '../../mixins/tooltip';
+import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  mixins: [TooltipMixin],
   props: {
     imgSrc: {
       type: String,
@@ -53,6 +52,9 @@ export default {
       default: 'top',
     },
   },
+  directives: {
+    tooltip,
+  },
   computed: {
     tooltipContainer() {
       return this.tooltipText ? 'body' : null;
@@ -72,6 +74,7 @@ export default {
 
 <template>
   <img
+    v-tooltip
     class="avatar"
     :class="[avatarSizeClass, cssClasses]"
     :src="imageSource"
@@ -81,6 +84,5 @@ export default {
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"
-    ref="tooltip"
   />
 </template>

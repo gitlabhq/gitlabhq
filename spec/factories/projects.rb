@@ -171,10 +171,6 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project,
-        bare_repo: TestEnv.factory_repo_path_bare,
-        refs: TestEnv::BRANCH_SHA)
-
       if evaluator.create_template
         args = evaluator.create_template
 
@@ -220,7 +216,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )

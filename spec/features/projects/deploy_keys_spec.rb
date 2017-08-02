@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Project deploy keys', :js, :feature do
+describe 'Project deploy keys', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 
   before do
     project.team << [user, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'removing key' do
@@ -15,7 +15,7 @@ describe 'Project deploy keys', :js, :feature do
     end
 
     it 'removes association between project and deploy key' do
-      visit namespace_project_settings_repository_path(project.namespace, project)
+      visit project_settings_repository_path(project)
 
       page.within(find('.deploy-keys')) do
         expect(page).to have_selector('.deploy-keys li', count: 1)

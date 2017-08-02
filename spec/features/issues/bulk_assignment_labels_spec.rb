@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Issues > Labels bulk assignment', feature: true do
+feature 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
-  let!(:project)  { create(:project) }
+  let!(:project)  { create(:empty_project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
   let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
   let!(:bug)      { create(:label, project: project, title: 'bug') }
@@ -13,7 +13,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
     before do
       project.team << [user, :master]
 
-      gitlab_sign_in user
+      sign_in user
     end
 
     context 'sidebar' do
@@ -346,9 +346,9 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   context 'as a guest' do
     before do
-      gitlab_sign_in user
+      sign_in user
 
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     end
 
     context 'cannot bulk assign labels' do
@@ -410,7 +410,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
   end
 
   def enable_bulk_update
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
     click_button 'Edit Issues'
   end
 

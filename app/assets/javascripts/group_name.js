@@ -1,16 +1,19 @@
-
+import Cookies from 'js-cookie';
 import _ from 'underscore';
 
 export default class GroupName {
   constructor() {
-    this.titleContainer = document.querySelector('.title-container');
-    this.title = document.querySelector('.title');
-    this.titleWidth = this.title.offsetWidth;
-    this.groupTitle = document.querySelector('.group-title');
-    this.groups = document.querySelectorAll('.group-path');
-    this.toggle = null;
-    this.isHidden = false;
-    this.init();
+    this.titleContainer = document.querySelector('.js-title-container');
+    this.title = this.titleContainer.querySelector('.title');
+
+    if (this.title) {
+      this.titleWidth = this.title.offsetWidth;
+      this.groupTitle = this.titleContainer.querySelector('.group-title');
+      this.groups = this.titleContainer.querySelectorAll('.group-path');
+      this.toggle = null;
+      this.isHidden = false;
+      this.init();
+    }
   }
 
   init() {
@@ -33,11 +36,20 @@ export default class GroupName {
 
   createToggle() {
     this.toggle = document.createElement('button');
+    this.toggle.setAttribute('type', 'button');
     this.toggle.className = 'text-expander group-name-toggle';
     this.toggle.setAttribute('aria-label', 'Toggle full path');
-    this.toggle.innerHTML = '...';
+    if (Cookies.get('new_nav') === 'true') {
+      this.toggle.innerHTML = '<i class="fa fa-ellipsis-h" aria-hidden="true"></i>';
+    } else {
+      this.toggle.innerHTML = '...';
+    }
     this.toggle.addEventListener('click', this.toggleGroups.bind(this));
-    this.titleContainer.insertBefore(this.toggle, this.title);
+    if (Cookies.get('new_nav') === 'true') {
+      this.title.insertBefore(this.toggle, this.groupTitle);
+    } else {
+      this.titleContainer.insertBefore(this.toggle, this.title);
+    }
     this.toggleGroups();
   }
 

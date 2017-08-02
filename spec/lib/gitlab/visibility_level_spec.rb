@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::VisibilityLevel, lib: true do
+describe Gitlab::VisibilityLevel do
   describe '.level_value' do
     it 'converts "public" to integer value' do
       expect(described_class.level_value('public')).to eq(Gitlab::VisibilityLevel::PUBLIC)
@@ -21,7 +21,7 @@ describe Gitlab::VisibilityLevel, lib: true do
 
   describe '.levels_for_user' do
     it 'returns all levels for an admin' do
-      user = double(:user, admin?: true)
+      user = build(:user, :admin)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::PRIVATE,
@@ -30,7 +30,7 @@ describe Gitlab::VisibilityLevel, lib: true do
     end
 
     it 'returns INTERNAL and PUBLIC for internal users' do
-      user = double(:user, admin?: false, external?: false)
+      user = build(:user)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::INTERNAL,
@@ -38,7 +38,7 @@ describe Gitlab::VisibilityLevel, lib: true do
     end
 
     it 'returns PUBLIC for external users' do
-      user = double(:user, admin?: false, external?: true)
+      user = build(:user, :external)
 
       expect(described_class.levels_for_user(user))
         .to eq([Gitlab::VisibilityLevel::PUBLIC])

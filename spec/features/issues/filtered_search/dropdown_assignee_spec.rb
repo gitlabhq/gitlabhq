@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', :feature, :js do
+describe 'Dropdown assignee', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }
@@ -23,10 +23,10 @@ describe 'Dropdown assignee', :feature, :js do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    gitlab_sign_in(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do

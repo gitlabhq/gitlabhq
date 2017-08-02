@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'toggler_behavior', js: true, feature: true do
+feature 'toggler_behavior', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, author: user) }
   let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
   let(:fragment_id) { "#note_#{note.id}" }
 
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
     project = merge_request.source_project
     page.current_window.resize_to(1000, 300)
-    visit "#{namespace_project_merge_request_path(project.namespace, project, merge_request)}#{fragment_id}"
+    visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"
   end
 
   describe 'scroll position' do

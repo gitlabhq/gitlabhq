@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Merge requests > User posts notes', :js do
   include NoteInteractionHelpers
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
   end
@@ -13,8 +13,8 @@ describe 'Merge requests > User posts notes', :js do
   end
 
   before do
-    gitlab_sign_in :admin
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(create(:admin))
+    visit project_merge_request_path(project, merge_request)
   end
 
   subject { page }

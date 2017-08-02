@@ -46,4 +46,28 @@ describe Gitlab::Kubernetes do
       expect(filter_by_label(items, app: 'foo')).to eq(matching_items)
     end
   end
+
+  describe '#to_kubeconfig' do
+    subject do
+      to_kubeconfig(
+        url: 'https://kube.domain.com',
+        namespace: 'NAMESPACE',
+        token: 'TOKEN',
+        ca_pem: ca_pem)
+    end
+
+    context 'when CA PEM is provided' do
+      let(:ca_pem) { 'PEM' }
+      let(:path) { expand_fixture_path('config/kubeconfig.yml') }
+
+      it { is_expected.to eq(YAML.load_file(path)) }
+    end
+
+    context 'when CA PEM is not provided' do
+      let(:ca_pem) { nil }
+      let(:path) { expand_fixture_path('config/kubeconfig-without-ca.yml') }
+
+      it { is_expected.to eq(YAML.load_file(path)) }
+    end
+  end
 end

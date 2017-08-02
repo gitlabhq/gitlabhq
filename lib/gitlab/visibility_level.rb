@@ -28,7 +28,7 @@ module Gitlab
       def levels_for_user(user = nil)
         return [PUBLIC] unless user
 
-        if user.admin?
+        if user.full_private_access?
           [PRIVATE, INTERNAL, PUBLIC]
         elsif user.external?
           [PUBLIC]
@@ -89,12 +89,12 @@ module Gitlab
       end
 
       def level_name(level)
-        level_name = 'Unknown'
+        level_name = N_('VisibilityLevel|Unknown')
         options.each do |name, lvl|
           level_name = name if lvl == level.to_i
         end
 
-        level_name
+        s_(level_name)
       end
 
       def level_value(level)

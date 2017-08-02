@@ -108,7 +108,8 @@ export default {
         </div>
         <mr-widget-memory-usage
           v-if="deployment.metrics_url"
-          :metricsUrl="deployment.metrics_url"
+          :metrics-url="deployment.metrics_url"
+          :metrics-monitoring-url="deployment.metrics_monitoring_url"
         />
       </div>
     </div>

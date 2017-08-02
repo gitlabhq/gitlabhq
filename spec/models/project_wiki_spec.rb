@@ -1,11 +1,11 @@
 require "spec_helper"
 
-describe ProjectWiki, models: true do
+describe ProjectWiki do
   let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
-  let(:project_wiki) { ProjectWiki.new(project, user) }
+  let(:project_wiki) { described_class.new(project, user) }
 
   subject { project_wiki }
 
@@ -275,6 +275,24 @@ describe ProjectWiki, models: true do
       expect(subject.repository).to receive(:after_create)
 
       expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+    end
+  end
+
+  describe '#ensure_repository' do
+    it 'creates the repository if it not exist' do
+      allow(subject).to receive(:repository_exists?).and_return(false)
+
+      expect(subject).to receive(:create_repo!)
+
+      subject.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(subject).to receive(:repository_exists?).and_return(true)
+
+      expect(subject).not_to receive(:create_repo!)
+
+      subject.ensure_repository
     end
   end
 

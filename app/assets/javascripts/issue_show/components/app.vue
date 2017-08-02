@@ -202,16 +202,7 @@ export default {
     this.poll = new Poll({
       resource: this.service,
       method: 'getData',
-      successCallback: (res) => {
-        const data = res.json();
-        const shouldUpdate = this.store.stateShouldUpdate(data);
-
-        this.store.updateState(data);
-
-        if (this.showForm && (shouldUpdate.title || shouldUpdate.description)) {
-          this.store.formState.lockedWarningVisible = true;
-        }
-      },
+      successCallback: res => res.json().then(data => this.store.updateState(data)),
       errorCallback(err) {
         throw new Error(err);
       },

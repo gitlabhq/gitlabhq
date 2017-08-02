@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Search::SnippetService, services: true do
+describe Search::SnippetService do
   let(:author) { create(:author) }
   let(:project) { create(:empty_project) }
 

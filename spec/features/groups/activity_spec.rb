@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Group activity page', feature: true do
+feature 'Group activity page' do
+  let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
   let(:group) { create(:group) }
   let(:path) { activity_group_path(group) }
 
   context 'when signed in' do
     before do
-      user = create(:group_member, :developer, user: create(:user), group: group ).user
-      gitlab_sign_in(user)
+      sign_in(user)
       visit path
     end
 

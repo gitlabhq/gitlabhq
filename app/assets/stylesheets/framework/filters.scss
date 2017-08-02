@@ -70,6 +70,13 @@
 
   .input-token {
     max-width: 200px;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      color: inherit;
+    }
   }
 
   .input-token:only-child,
@@ -153,6 +160,16 @@
 
   .value-container {
     box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
+  }
+}
+
+.droplab-dropdown li.filtered-search-token {
+  padding: 0;
+
+  &:hover,
+  &:focus {
+    background-color: inherit;
+    color: inherit;
   }
 }
 
@@ -258,7 +275,7 @@
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 215px;
+  max-height: 225px;
   max-width: 280px;
   overflow: auto;
 
@@ -351,7 +368,7 @@
     margin-right: 0.3em;
   }
 
-  & > .value {
+  > .value {
     font-weight: 600;
   }
 }
@@ -365,10 +382,6 @@
   }
 }
 
-.dropdown-menu .filter-dropdown-item {
-  padding: 0;
-}
-
 @media (max-width: $screen-xs-max) {
   .issues-details-filters {
     padding: 0 0 10px;
@@ -380,7 +393,8 @@
 @media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
-    .dropdown {
+    .dropdown,
+    .dropdown-menu {
       width: 100%;
     }
 
@@ -400,13 +414,16 @@
   background-color: $dropdown-hover-color;
   color: $white-light;
   text-decoration: none;
+  outline: 0;
 
   .avatar {
     border-color: $white-light;
   }
 }
 
-.filter-dropdown-item {
+.droplab-dropdown .dropdown-menu .filter-dropdown-item {
+  padding: 0;
+
   .btn {
     border: none;
     width: 100%;
@@ -418,6 +435,7 @@
 
     .fa {
       width: 15px;
+      line-height: $line-height-base;
     }
 
     .dropdown-label-box {
@@ -440,17 +458,14 @@
   }
 
   .dropdown-user {
-    display: -webkit-flex;
     display: flex;
   }
 
   .dropdown-user-details {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
 
-    &> span {
+    > span {
       white-space: normal;
       word-break: break-all;
     }

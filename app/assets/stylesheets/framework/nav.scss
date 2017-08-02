@@ -45,8 +45,7 @@
   li {
     display: flex;
 
-    a,
-    .btn-link {
+    a {
       padding: $gl-btn-padding;
       padding-bottom: 11px;
       font-size: 14px;
@@ -68,29 +67,7 @@
       }
     }
 
-    .btn-link {
-      padding-top: 16px;
-      padding-left: 15px;
-      padding-right: 15px;
-      border-left: none;
-      border-right: none;
-      border-top: none;
-      border-radius: 0;
-
-      &:hover,
-      &:active,
-      &:focus {
-        background-color: transparent;
-      }
-
-      &:active {
-        outline: 0;
-        box-shadow: none;
-      }
-    }
-
-    &.active a,
-    &.active .btn-link {
+    &.active a {
       border-bottom: 2px solid $link-underline-blue;
       color: $black;
       font-weight: 600;
@@ -205,20 +182,18 @@
       }
     }
 
+    &.nav-controls-new-nav {
+      > .dropdown {
+        margin-right: 0;
+      }
+    }
+
     > .btn-grouped {
       float: none;
     }
 
     .icon-label {
       display: none;
-    }
-
-    .btn,
-    .dropdown,
-    .dropdown-toggle,
-    input,
-    form {
-      height: 35px;
     }
 
     input {
@@ -348,7 +323,7 @@
       position: absolute;
       top: 7px;
       right: 15px;
-      z-index: 2;
+      z-index: 300;
 
       li.active {
         font-weight: bold;
@@ -370,6 +345,10 @@
       }
     }
   }
+}
+
+.with-performance-bar .layout-nav {
+  margin-top: $header-height + $performance-bar-height;
 }
 
 .scrolling-tabs-container {
@@ -461,6 +440,22 @@
 
       &.affix {
         top: $header-height;
+      }
+    }
+  }
+}
+
+.with-performance-bar .page-with-layout-nav {
+  .right-sidebar {
+    top: ($header-height + 1) * 2 + $performance-bar-height;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3 + $performance-bar-height;
+
+      &.affix {
+        top: $header-height + $performance-bar-height;
       }
     }
   }

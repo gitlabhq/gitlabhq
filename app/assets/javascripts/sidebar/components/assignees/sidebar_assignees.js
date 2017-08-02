@@ -64,6 +64,7 @@ export default {
   },
   beforeMount() {
     this.field = this.$el.dataset.field;
+    this.signedIn = typeof this.$el.dataset.signedIn !== 'undefined';
   },
   template: `
     <div>
@@ -71,6 +72,7 @@ export default {
         :number-of-assignees="store.assignees.length"
         :loading="loading || store.isFetching.assignees"
         :editable="store.editable"
+        :show-toggle="!signedIn"
       />
       <assignees
         v-if="!store.isFetching.assignees"

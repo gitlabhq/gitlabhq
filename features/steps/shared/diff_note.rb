@@ -232,7 +232,7 @@ module SharedDiffNote
   end
 
   def click_parallel_diff_line(code, line_type)
-    find(".line_content.parallel.#{line_type}[data-line-code='#{code}']").trigger 'mouseover'
+    find(".line_holder.parallel .diff-line-num[id='#{code}']").trigger 'mouseover'
     find(".line_holder.parallel button[data-line-code='#{code}']").click
   end
 end

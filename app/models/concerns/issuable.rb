@@ -30,7 +30,8 @@ module Issuable
     belongs_to :updated_by, class_name: "User"
     belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
-    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do
+
+    has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy do # rubocop:disable Cop/ActiveRecordDependent
       def authors_loaded?
         # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:author).loaded? }
@@ -42,9 +43,9 @@ module Issuable
       end
     end
 
-    has_many :label_links, as: :target, dependent: :destroy
+    has_many :label_links, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :labels, through: :label_links
-    has_many :todos, as: :target, dependent: :destroy
+    has_many :todos, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :metrics
 
@@ -70,9 +71,8 @@ module Issuable
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :of_milestones, ->(ids) { where(milestone_id: ids) }
     scope :with_milestone, ->(title) { left_joins_milestones.where(milestones: { title: title }) }
-    scope :opened, -> { with_state(:opened, :reopened) }
+    scope :opened, -> { with_state(:opened) }
     scope :only_opened, -> { with_state(:opened) }
-    scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
@@ -101,6 +101,14 @@ module Issuable
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
       title_changed? || description_changed?
+    end
+
+    def allows_multiple_assignees?
+      false
+    end
+
+    def has_multiple_assignees?
+      assignees.count > 1
     end
   end
 
@@ -225,7 +233,7 @@ module Issuable
   end
 
   def open?
-    opened? || reopened?
+    opened?
   end
 
   def user_notes_count

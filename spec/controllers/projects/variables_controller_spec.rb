@@ -15,13 +15,13 @@ describe Projects::VariablesController do
         post :create, namespace_id: project.namespace.to_param, project_id: project,
                       variable: { key: "one", value: "two" }
 
-        expect(flash[:notice]).to include 'Variables were successfully updated.'
-        expect(response).to redirect_to(namespace_project_settings_ci_cd_path(project.namespace, project))
+        expect(flash[:notice]).to include 'Variable was successfully created.'
+        expect(response).to redirect_to(project_settings_ci_cd_path(project))
       end
     end
 
     context 'variable is invalid' do
-      it 'shows an alert flash message' do
+      it 'renders show' do
         post :create, namespace_id: project.namespace.to_param, project_id: project,
                       variable: { key: "..one", value: "two" }
 
@@ -35,7 +35,6 @@ describe Projects::VariablesController do
 
     context 'updating a variable with valid characters' do
       before do
-        variable.project_id = project.id
         project.variables << variable
       end
 
@@ -44,7 +43,7 @@ describe Projects::VariablesController do
                       id: variable.id, variable: { key: variable.key, value: 'two' }
 
         expect(flash[:notice]).to include 'Variable was successfully updated.'
-        expect(response).to redirect_to(namespace_project_variables_path(project.namespace, project))
+        expect(response).to redirect_to(project_variables_path(project))
       end
 
       it 'renders the action #show if the variable key is invalid' do

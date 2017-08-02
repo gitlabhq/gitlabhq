@@ -21,7 +21,10 @@ module Projects
       end
 
       def define_secret_variables
-        @variable = Ci::Variable.new
+        @variable = Ci::Variable.new(project: project)
+          .present(current_user: current_user)
+        @variables = project.variables.order_key_asc
+          .map { |variable| variable.present(current_user: current_user) }
       end
 
       def define_triggers_variables
@@ -32,7 +35,7 @@ module Projects
       def define_badges_variables
         @ref = params[:ref] || @project.default_branch || 'master'
 
-        @badges = [Gitlab::Badge::Build::Status,
+        @badges = [Gitlab::Badge::Pipeline::Status,
                    Gitlab::Badge::Coverage::Report]
 
         @badges.map! do |badge|

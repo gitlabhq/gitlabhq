@@ -1,16 +1,16 @@
 <script>
-  import tooltipMixin from '../../mixins/tooltip';
+  import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
 
   export default {
-    mixins: [
-      tooltipMixin,
-    ],
     props: {
       previewMarkdown: {
         type: Boolean,
         required: true,
       },
+    },
+    directives: {
+      tooltip,
     },
     components: {
       toolbarButton,
@@ -94,13 +94,13 @@
         </div>
         <div class="toolbar-group">
           <button
+            v-tooltip
             aria-label="Go full screen"
             class="toolbar-btn js-zen-enter"
             data-container="body"
             tabindex="-1"
             title="Go full screen"
-            type="button"
-            ref="tooltip">
+            type="button">
             <i
               aria-hidden="true"
               class="fa fa-arrows-alt fa-fw">

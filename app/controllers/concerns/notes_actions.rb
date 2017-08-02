@@ -4,6 +4,7 @@ module NotesActions
 
   included do
     before_action :authorize_admin_note!, only: [:update, :destroy]
+    before_action :note_project, only: [:create]
   end
 
   def index
@@ -28,7 +29,8 @@ module NotesActions
       merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
       in_reply_to_discussion_id: params[:in_reply_to_discussion_id]
     )
-    @note = Notes::CreateService.new(project, current_user, create_params).execute
+
+    @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
     if @note.is_a?(Note)
       Banzai::NoteRenderer.render([@note], @project, current_user)
@@ -176,5 +178,23 @@ module NotesActions
 
   def notes_finder
     @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
+  end
+
+  def note_project
+    return @note_project if defined?(@note_project)
+    return nil unless project
+
+    note_project_id = params[:note_project_id]
+
+    @note_project =
+      if note_project_id.present?
+        Project.find(note_project_id)
+      else
+        project
+      end
+
+    return access_denied! unless can?(current_user, :create_note, @note_project)
+
+    @note_project
   end
 end

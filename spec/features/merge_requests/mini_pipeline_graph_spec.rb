@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph', :js, :feature do
+feature 'Mini Pipeline Graph', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }
 
   let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
@@ -11,12 +11,12 @@ feature 'Mini Pipeline Graph', :js, :feature do
   before do
     build.run
 
-    gitlab_sign_in(user)
+    sign_in(user)
     visit_merge_request
   end
 
   def visit_merge_request(format = :html)
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request, format: format)
+    visit project_merge_request_path(project, merge_request, format: format)
   end
 
   it 'should display a mini pipeline graph' do
@@ -111,7 +111,7 @@ feature 'Mini Pipeline Graph', :js, :feature do
         build_item.click
         find('.build-page')
 
-        expect(current_path).to eql(namespace_project_job_path(project.namespace, project, build))
+        expect(current_path).to eql(project_job_path(project, build))
       end
 
       it 'should show tooltip when hovered' do

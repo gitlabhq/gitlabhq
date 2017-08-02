@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Gitlab::PathRegex, lib: true do
+describe Gitlab::PathRegex do
   # Pass in a full path to remove the format segment:
   # `/ci/lint(.:format)` -> `/ci/lint`
   def without_format(path)
@@ -36,9 +36,12 @@ describe Gitlab::PathRegex, lib: true do
       described_class::PROJECT_WILDCARD_ROUTES.include?(path.split('/').first)
   end
 
-  def failure_message(missing_words, constant_name, migration_helper)
+  def failure_message(constant_name, migration_helper, missing_words: [], additional_words: [])
     missing_words = Array(missing_words)
-    <<-MSG
+    additional_words = Array(additional_words)
+    message = ""
+    if missing_words.any?
+      message += <<-MISSING
       Found new routes that could cause conflicts with existing namespaced routes
       for groups or projects.
 
@@ -51,7 +54,18 @@ describe Gitlab::PathRegex, lib: true do
 
       Make sure to make a note of the renamed records in the release blog post.
 
-    MSG
+      MISSING
+    end
+
+    if additional_words.any?
+      message += <<-ADDITIONAL
+      Why are <#{additional_words.join(', ')}> in `#{constant_name}`?
+      If they are really required, update these specs to reflect that.
+
+      ADDITIONAL
+    end
+
+    message
   end
 
   let(:all_routes) do
@@ -68,9 +82,23 @@ describe Gitlab::PathRegex, lib: true do
   let(:routes_not_starting_in_wildcard) { routes_without_format.select { |p| p !~ %r{^/[:*]} } }
 
   let(:top_level_words) do
-    routes_not_starting_in_wildcard.map do |route|
+    words = routes_not_starting_in_wildcard.map do |route|
       route.split('/')[1]
     end.compact.uniq
+
+    words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)
+  end
+
+  let(:ee_top_level_words) do
+    ['unsubscribes']
+  end
+
+  let(:files_in_public) do
+    git = Gitlab.config.git.bin_path
+    `cd #{Rails.root} && #{git} ls-files public`
+      .split("\n")
+      .map { |entry| entry.gsub('public/', '') }
+      .uniq
   end
 
   # All routes that start with a namespaced path, that have 1 or more
@@ -115,18 +143,29 @@ describe Gitlab::PathRegex, lib: true do
   let(:paths_after_group_id) do
     group_routes.map do |route|
       route.gsub(STARTING_WITH_GROUP, '').split('/').first
-    end.uniq
+    end.uniq + ee_paths_after_group_id
+  end
+
+  let(:ee_paths_after_group_id) do
+    %w(analytics
+       ldap
+       ldap_group_links
+       notification_setting
+       audit_events
+       pipeline_quota hooks)
   end
 
   describe 'TOP_LEVEL_ROUTES' do
     it 'includes all the top level namespaces' do
       failure_block = lambda do
         missing_words = top_level_words - described_class::TOP_LEVEL_ROUTES
-        failure_message(missing_words, 'TOP_LEVEL_ROUTES', 'rename_root_paths')
+        additional_words = described_class::TOP_LEVEL_ROUTES - top_level_words
+        failure_message('TOP_LEVEL_ROUTES', 'rename_root_paths',
+                        missing_words: missing_words, additional_words: additional_words)
       end
 
       expect(described_class::TOP_LEVEL_ROUTES)
-        .to include(*top_level_words), failure_block
+        .to contain_exactly(*top_level_words), failure_block
     end
   end
 
@@ -134,11 +173,13 @@ describe Gitlab::PathRegex, lib: true do
     it "don't contain a second wildcard" do
       failure_block = lambda do
         missing_words = paths_after_group_id - described_class::GROUP_ROUTES
-        failure_message(missing_words, 'GROUP_ROUTES', 'rename_child_paths')
+        additional_words = described_class::GROUP_ROUTES - paths_after_group_id
+        failure_message('GROUP_ROUTES', 'rename_child_paths',
+                        missing_words: missing_words, additional_words: additional_words)
       end
 
       expect(described_class::GROUP_ROUTES)
-        .to include(*paths_after_group_id), failure_block
+        .to contain_exactly(*paths_after_group_id), failure_block
     end
   end
 
@@ -147,7 +188,7 @@ describe Gitlab::PathRegex, lib: true do
       aggregate_failures do
         all_wildcard_paths.each do |path|
           expect(wildcards_include?(path))
-            .to be(true), failure_message(path, 'PROJECT_WILDCARD_ROUTES', 'rename_wildcard_paths')
+            .to be(true), failure_message('PROJECT_WILDCARD_ROUTES', 'rename_wildcard_paths', missing_words: path)
         end
       end
     end

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Admin cohorts page', feature: true do
+feature 'Admin cohorts page' do
   before do
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   scenario 'See users count per month' do

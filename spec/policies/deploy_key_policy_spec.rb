@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe DeployKeyPolicy, models: true do
-  subject { described_class.abilities(current_user, deploy_key).to_set }
+describe DeployKeyPolicy do
+  subject { described_class.new(current_user, deploy_key) }
 
   describe 'updating a deploy_key' do
     context 'when a regular user' do
@@ -16,7 +16,7 @@ describe DeployKeyPolicy, models: true do
           project.deploy_keys << deploy_key
         end
 
-        it { is_expected.to include(:update_deploy_key) }
+        it { is_expected.to be_allowed(:update_deploy_key) }
       end
 
       context 'tries to update private deploy key attached to other project' do
@@ -27,13 +27,13 @@ describe DeployKeyPolicy, models: true do
           other_project.deploy_keys << deploy_key
         end
 
-        it { is_expected.not_to include(:update_deploy_key) }
+        it { is_expected.to be_disallowed(:update_deploy_key) }
       end
 
       context 'tries to update public deploy key' do
         let(:deploy_key) { create(:another_deploy_key, public: true) }
 
-        it { is_expected.not_to include(:update_deploy_key) }
+        it { is_expected.to be_disallowed(:update_deploy_key) }
       end
     end
 
@@ -43,13 +43,13 @@ describe DeployKeyPolicy, models: true do
       context ' tries to update private deploy key' do
         let(:deploy_key) { create(:deploy_key, public: false) }
 
-        it { is_expected.to include(:update_deploy_key) }
+        it { is_expected.to be_allowed(:update_deploy_key) }
       end
 
       context 'when an admin user tries to update public deploy key' do
         let(:deploy_key) { create(:another_deploy_key, public: true) }
 
-        it { is_expected.to include(:update_deploy_key) }
+        it { is_expected.to be_allowed(:update_deploy_key) }
       end
     end
   end

@@ -195,7 +195,6 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 - Use `context` to test branching logic.
 - Use multi-line `do...end` blocks for `before` and `after`, even when it would
   fit on a single line.
-- Don't `describe` symbols (see [Gotchas](gotchas.md#dont-describe-symbols)).
 - Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - Prefer `not_to` to `to_not` (_this is enforced by RuboCop_).
@@ -479,6 +478,11 @@ slowest test files and try to improve them.
   run the suite against MySQL for tags, `master`, and any branch that includes
   `mysql` in the name.
 - On EE, the test suite always runs both PostgreSQL and MySQL.
+- Rails logging to `log/test.log` is disabled by default in CI [for
+  performance reasons][logging]. To override this setting, provide the
+  `RAILS_ENABLE_TEST_LOG` environment variable.
+
+[logging]: https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4
 
 ## Spinach (feature) tests
 

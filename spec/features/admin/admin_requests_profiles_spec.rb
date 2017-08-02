@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'Admin::RequestsProfilesController', feature: true do
+describe 'Admin::RequestsProfilesController' do
   before do
     FileUtils.mkdir_p(Gitlab::RequestProfiler::PROFILES_DIR)
-    gitlab_sign_in(:admin)
+    sign_in(create(:admin))
   end
 
   after do

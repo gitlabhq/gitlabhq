@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request versions', js: true, feature: true do
+feature 'Merge Request versions', js: true do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
   let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
@@ -8,8 +8,8 @@ feature 'Merge Request versions', js: true, feature: true do
   let!(:merge_request_diff3) { merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
 
   before do
-    gitlab_sign_in :admin
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(create(:admin))
+    visit diffs_project_merge_request_path(project, merge_request)
   end
 
   it 'show the latest version of the diff' do
@@ -96,8 +96,7 @@ feature 'Merge Request versions', js: true, feature: true do
     end
 
     it 'has a path with comparison context' do
-      expect(page).to have_current_path diffs_namespace_project_merge_request_path(
-        project.namespace,
+      expect(page).to have_current_path diffs_project_merge_request_path(
         project,
         merge_request.iid,
         diff_id: merge_request_diff3.id,

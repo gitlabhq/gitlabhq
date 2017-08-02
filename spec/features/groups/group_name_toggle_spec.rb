@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group name toggle', feature: true, js: true do
+feature 'Group name toggle', js: true do
   let(:group) { create(:group) }
   let(:nested_group_1) { create(:group, parent: group) }
   let(:nested_group_2) { create(:group, parent: nested_group_1) }
@@ -9,7 +9,7 @@ feature 'Group name toggle', feature: true, js: true do
   SMALL_SCREEN = 300
 
   before do
-    gitlab_sign_in :user
+    sign_in(create(:user))
   end
 
   it 'is not present if enough horizontal space' do

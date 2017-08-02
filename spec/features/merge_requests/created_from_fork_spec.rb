@@ -2,8 +2,8 @@ require 'spec_helper'
 
 feature 'Merge request created from fork' do
   given(:user) { create(:user) }
-  given(:project) { create(:project, :public) }
-  given(:fork_project) { create(:project, :public) }
+  given(:project) { create(:project, :public, :repository) }
+  given(:fork_project) { create(:project, :public, :repository) }
 
   given!(:merge_request) do
     create(:forked_project_link, forked_to_project: fork_project,
@@ -16,13 +16,40 @@ feature 'Merge request created from fork' do
 
   background do
     fork_project.team << [user, :master]
-    gitlab_sign_in user
+    sign_in user
   end
 
   scenario 'user can access merge request' do
     visit_merge_request(merge_request)
 
     expect(page).to have_content 'Test merge request'
+  end
+
+  context 'when a commit comment exists on the merge request' do
+    given(:comment) { 'A commit comment' }
+    given(:reply) { 'A reply comment' }
+
+    background do
+      create(:note_on_commit, note: comment,
+                              project: fork_project,
+                              commit_id: merge_request.commit_shas.first)
+    end
+
+    scenario 'user can reply to the comment', js: true do
+      visit_merge_request(merge_request)
+
+      expect(page).to have_content(comment)
+
+      page.within('.discussion-notes') do
+        find('.btn-text-field').click
+        find('#note_note').send_keys(reply)
+        find('.comment-btn').click
+      end
+
+      wait_for_requests
+
+      expect(page).to have_content(reply)
+    end
   end
 
   context 'source project is deleted' do
@@ -64,7 +91,6 @@ feature 'Merge request created from fork' do
   end
 
   def visit_merge_request(mr)
-    visit namespace_project_merge_request_path(project.namespace,
-                                               project, mr)
+    visit project_merge_request_path(project, mr)
   end
 end

@@ -12,7 +12,9 @@ describe('Dropdown User', () => {
       spyOn(gl.DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
       spyOn(gl.DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
-      dropdownUser = new gl.DropdownUser(null, null, null, gl.FilteredSearchTokenKeys);
+      dropdownUser = new gl.DropdownUser({
+        tokenKeys: gl.FilteredSearchTokenKeys,
+      });
     });
 
     it('should not return the double quote found in value', () => {
@@ -64,6 +66,43 @@ describe('Dropdown User', () => {
 
     afterEach(() => {
       window.gon = {};
+    });
+  });
+
+  describe('hideCurrentUser', () => {
+    const fixtureTemplate = 'issues/issue_list.html.raw';
+    preloadFixtures(fixtureTemplate);
+
+    let dropdown;
+    let authorFilterDropdownElement;
+
+    beforeEach(() => {
+      loadFixtures(fixtureTemplate);
+      authorFilterDropdownElement = document.querySelector('#js-dropdown-author');
+      const dummyInput = document.createElement('div');
+      dropdown = new gl.DropdownUser({
+        dropdown: authorFilterDropdownElement,
+        input: dummyInput,
+      });
+    });
+
+    const findCurrentUserElement = () => authorFilterDropdownElement.querySelector('.js-current-user');
+
+    it('hides the current user from dropdown', () => {
+      const currentUserElement = findCurrentUserElement();
+      expect(currentUserElement).not.toBe(null);
+
+      dropdown.hideCurrentUser();
+
+      expect(currentUserElement.classList).toContain('hidden');
+    });
+
+    it('does nothing if no user is logged in', () => {
+      const currentUserElement = findCurrentUserElement();
+      currentUserElement.parentNode.removeChild(currentUserElement);
+      expect(findCurrentUserElement()).toBe(null);
+
+      dropdown.hideCurrentUser();
     });
   });
 });

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestDiff, models: true do
+describe MergeRequestDiff do
   describe 'create new record' do
     subject { create(:merge_request).merge_request_diff }
 
@@ -98,23 +98,32 @@ describe MergeRequestDiff, models: true do
     end
 
     it 'saves empty state' do
-      allow_any_instance_of(MergeRequestDiff).to receive(:commits)
+      allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
         .and_return([])
 
       mr_diff = create(:merge_request).merge_request_diff
 
       expect(mr_diff.empty?).to be_truthy
     end
+
+    it 'saves binary diffs correctly' do
+      path = 'files/images/icn-time-tracking.pdf'
+      mr_diff = create(:merge_request, source_branch: 'add-pdf-text-binary', target_branch: 'master').merge_request_diff
+      diff_file = mr_diff.merge_request_diff_files.find_by(new_path: path)
+
+      expect(diff_file).to be_binary
+      expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [path]).to_a.first.diff)
+    end
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     it 'returns all commits SHA using serialized commits' do
       subject.st_commits = [
         { id: 'sha1' },
         { id: 'sha2' }
       ]
 
-      expect(subject.commits_sha).to eq(%w(sha1 sha2))
+      expect(subject.commit_shas).to eq(%w(sha1 sha2))
     end
   end
 

@@ -1,10 +1,11 @@
 class Namespace < ActiveRecord::Base
-  acts_as_paranoid
+  acts_as_paranoid without_default_scope: true
 
   include CacheMarkdownField
   include Sortable
   include Gitlab::ShellAdapter
   include Gitlab::CurrentSettings
+  include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
 
@@ -15,13 +16,13 @@ class Namespace < ActiveRecord::Base
 
   cache_markdown_field :description, pipeline: :description
 
-  has_many :projects, dependent: :destroy
+  has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
   belongs_to :owner, class_name: "User"
 
   belongs_to :parent, class_name: "Namespace"
   has_many :children, class_name: "Namespace", foreign_key: :parent_id
-  has_one :chat_team, dependent: :destroy
+  has_one :chat_team, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name,
@@ -103,6 +104,10 @@ class Namespace < ActiveRecord::Base
       uniquify = Uniquify.new
       uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
+  end
+
+  def visibility_level_field
+    :visibility_level
   end
 
   def to_param
@@ -217,6 +222,12 @@ class Namespace < ActiveRecord::Base
 
   def has_parent?
     parent.present?
+  end
+
+  def soft_delete_without_removing_associations
+    # We can't use paranoia's `#destroy` since this will hard-delete projects.
+    # Project uses `pending_delete` instead of the acts_as_paranoia gem.
+    self.deleted_at = Time.now
   end
 
   private

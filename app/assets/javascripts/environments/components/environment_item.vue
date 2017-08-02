@@ -403,6 +403,14 @@ export default {
       return '';
     },
 
+    displayEnvironmentActions() {
+      return this.hasManualActions ||
+             this.externalURL ||
+             this.monitoringUrl ||
+             this.hasStopAction ||
+             this.canRetry;
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -490,9 +498,9 @@ export default {
     <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
-        class="build-link"
+        class="build-link flex-truncate-parent"
         :href="buildPath">
-        {{buildName}}
+        <span class="flex-truncate-child">{{buildName}}</span>
       </a>
     </div>
 
@@ -535,9 +543,12 @@ export default {
       </span>
     </div>
 
-    <div class="table-section section-30 table-button-footer" role="gridcell">
+    <div
+      v-if="!model.isFolder && displayEnvironmentActions"
+      class="table-section section-30 table-button-footer"
+      role="gridcell">
+
       <div
-        v-if="!model.isFolder"
         class="btn-group table-action-buttons"
         role="group">
 

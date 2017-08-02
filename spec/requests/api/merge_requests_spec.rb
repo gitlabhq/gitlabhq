@@ -16,10 +16,108 @@ describe API::MergeRequests do
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
+  let!(:label2) { create(:label, title: 'a-test', color: '#FFFFFF', project: project) }
   let!(:label_link) { create(:label_link, label: label, target: merge_request) }
+  let!(:label_link2) { create(:label_link, label: label2, target: merge_request) }
+  let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request) }
+  let!(:upvote) { create(:award_emoji, :upvote, awardable: merge_request) }
 
   before do
     project.team << [user, :reporter]
+  end
+
+  describe 'GET /merge_requests' do
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api('/merge_requests')
+
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when authenticated' do
+      let!(:project2) { create(:empty_project, :public, namespace: user.namespace) }
+      let!(:merge_request2) { create(:merge_request, :simple, author: user, assignee: user, source_project: project2, target_project: project2) }
+      let(:user2) { create(:user) }
+
+      it 'returns an array of all merge requests' do
+        get api('/merge_requests', user), scope: :all
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+          .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request2.id)
+      end
+
+      it 'does not return unauthorized merge requests' do
+        private_project = create(:empty_project, :private)
+        merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), scope: :all
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |mr| mr['id'] })
+          .not_to include(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests created by current user if no scope is given' do
+        merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user2)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests authored by the given user' do
+        merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), author_id: user2.id, scope: :all
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests assigned to the given user' do
+        merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user), assignee_id: user2.id, scope: :all
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests assigned to me' do
+        merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user2), scope: 'assigned-to-me'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests created by me' do
+        merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
+        get api('/merge_requests', user2), scope: 'created-by-me'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(merge_request3.id)
+      end
+    end
   end
 
   describe "GET /projects/:id/merge_requests" do
@@ -32,6 +130,18 @@ describe API::MergeRequests do
     end
 
     context "when authenticated" do
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.count
+
+        create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+
+        expect do
+          get api("/projects/#{project.id}/merge_requests", user)
+        end.not_to exceed_query_limit(control_count)
+      end
+
       it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests", user)
 
@@ -44,10 +154,29 @@ describe API::MergeRequests do
         expect(json_response.last['sha']).to eq(merge_request.diff_head_sha)
         expect(json_response.last['merge_commit_sha']).to be_nil
         expect(json_response.last['merge_commit_sha']).to eq(merge_request.merge_commit_sha)
+        expect(json_response.last['downvotes']).to eq(1)
+        expect(json_response.last['upvotes']).to eq(1)
+        expect(json_response.last['labels']).to eq([label2.title, label.title])
         expect(json_response.first['title']).to eq(merge_request_merged.title)
         expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
         expect(json_response.first['merge_commit_sha']).not_to be_nil
         expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
+      end
+
+      it "returns an array of all merge_requests using simple mode" do
+        get api("/projects/#{project.id}/merge_requests?view=simple", user)
+
+        expect(response).to have_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(3)
+        expect(json_response.last['iid']).to eq(merge_request.iid)
+        expect(json_response.last['title']).to eq(merge_request.title)
+        expect(json_response.last).to have_key('web_url')
+        expect(json_response.first['iid']).to eq(merge_request_merged.iid)
+        expect(json_response.first['title']).to eq(merge_request_merged.title)
+        expect(json_response.first).to have_key('web_url')
       end
 
       it "returns an array of all merge_requests" do
@@ -145,7 +274,7 @@ describe API::MergeRequests do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-        expect(json_response.first['labels']).to eq([label.title])
+        expect(json_response.first['labels']).to eq([label2.title, label.title])
       end
 
       it 'returns an array of labeled merge requests where all labels match' do
@@ -236,8 +365,8 @@ describe API::MergeRequests do
       expect(json_response['author']).to be_a Hash
       expect(json_response['target_branch']).to eq(merge_request.target_branch)
       expect(json_response['source_branch']).to eq(merge_request.source_branch)
-      expect(json_response['upvotes']).to eq(0)
-      expect(json_response['downvotes']).to eq(0)
+      expect(json_response['upvotes']).to eq(1)
+      expect(json_response['downvotes']).to eq(1)
       expect(json_response['source_project_id']).to eq(merge_request.source_project.id)
       expect(json_response['target_project_id']).to eq(merge_request.target_project.id)
       expect(json_response['work_in_progress']).to be_falsy
@@ -759,18 +888,24 @@ describe API::MergeRequests do
 
     it 'handles external issues' do
       jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
-      issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
-      merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
-      merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
+      ext_issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
+      issue = create(:issue, project: jira_project)
+      description = "Closes #{ext_issue.to_reference(jira_project)}\ncloses #{issue.to_reference}"
+      merge_request = create(:merge_request,
+        :simple, author: user, assignee: user, source_project: jira_project, description: description)
 
       get api("/projects/#{jira_project.id}/merge_requests/#{merge_request.iid}/closes_issues", user)
 
       expect(response).to have_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(1)
+      expect(json_response.length).to eq(2)
+      expect(json_response.second['title']).to eq(ext_issue.title)
+      expect(json_response.second['id']).to eq(ext_issue.id)
+      expect(json_response.second['confidential']).to be_nil
       expect(json_response.first['title']).to eq(issue.title)
       expect(json_response.first['id']).to eq(issue.id)
+      expect(json_response.first['confidential']).not_to be_nil
     end
 
     it 'returns 403 if the user has no access to the merge request' do

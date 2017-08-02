@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe EventCreateService, services: true do
+describe EventCreateService do
   include UserActivitiesHelpers
 
-  let(:service) { EventCreateService.new }
+  let(:service) { described_class.new }
 
   describe 'Issues' do
     describe '#open_issue' do
@@ -113,7 +113,7 @@ describe EventCreateService, services: true do
     end
   end
 
-  describe '#push', :redis do
+  describe '#push', :clean_gitlab_redis_shared_state do
     let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
 

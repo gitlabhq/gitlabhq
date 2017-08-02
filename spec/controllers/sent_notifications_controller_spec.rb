@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SentNotificationsController, type: :controller do
+describe SentNotificationsController do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:sent_notification) { create(:sent_notification, project: project, noteable: issue, recipient: user) }
@@ -23,7 +23,7 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the login page' do
@@ -83,12 +83,12 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the issue page' do
           expect(response)
-            .to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+            .to redirect_to(project_issue_path(project, issue))
         end
       end
 
@@ -109,12 +109,12 @@ describe SentNotificationsController, type: :controller do
         end
 
         it 'sets the flash message' do
-          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+          expect(controller).to set_flash[:notice].to(/unsubscribed/)
         end
 
         it 'redirects to the merge request page' do
           expect(response)
-            .to redirect_to(namespace_project_merge_request_path(project.namespace, project, merge_request))
+            .to redirect_to(project_merge_request_path(project, merge_request))
         end
       end
     end

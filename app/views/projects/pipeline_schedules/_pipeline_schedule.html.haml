@@ -4,12 +4,12 @@
       = pipeline_schedule.description
     %td.branch-name-cell
       = icon('code-fork')
-      - if pipeline_schedule.ref
+      - if pipeline_schedule.ref.present?
         = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td
       - if pipeline_schedule.last_pipeline
         .status-icon-container{ class: "ci-status-icon-#{pipeline_schedule.last_pipeline.status}" }
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline_schedule.last_pipeline.id) do
+          = link_to project_pipeline_path(@project, pipeline_schedule.last_pipeline.id) do
             = ci_icon_for_status(pipeline_schedule.last_pipeline.status)
             %span ##{pipeline_schedule.last_pipeline.id}
       - else
@@ -26,7 +26,7 @@
           = pipeline_schedule.owner&.name
     %td
       .pull-right.btn-group
-        - if can?(current_user, :update_pipeline_schedule, @project) && !pipeline_schedule.owned_by?(current_user)
+        - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
             = s_('PipelineSchedules|Take ownership')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssueReferenceFilter, lib: true do
+describe Banzai::Filter::IssueReferenceFilter do
   include FilterSpecHelper
 
   def helper
@@ -38,13 +38,6 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:reference) { "##{issue.iid}" }
-
-    it 'ignores valid references when using non-default tracker' do
-      allow(project).to receive(:default_issues_tracker?).and_return(false)
-
-      exp = act = "Issue #{reference}"
-      expect(reference_filter(act).to_html).to eq exp
-    end
 
     it 'links to a valid reference' do
       doc = reference_filter("Fixed #{reference}")
@@ -338,24 +331,6 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
         expect(filter.issues_per_project)
           .to eq({ project => { issue.iid => issue } })
-      end
-    end
-
-    context 'using an external issue tracker' do
-      it 'returns a Hash containing the issues per project' do
-        doc = Nokogiri::HTML.fragment('')
-        filter = described_class.new(doc, project: project)
-
-        expect(project).to receive(:default_issues_tracker?).and_return(false)
-
-        expect(filter).to receive(:projects_per_reference)
-          .and_return({ project.path_with_namespace => project })
-
-        expect(filter).to receive(:references_per_project)
-          .and_return({ project.path_with_namespace => Set.new([1]) })
-
-        expect(filter.issues_per_project[project][1])
-          .to be_an_instance_of(ExternalIssue)
       end
     end
   end

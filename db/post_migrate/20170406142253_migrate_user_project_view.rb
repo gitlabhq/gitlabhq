@@ -7,6 +7,8 @@ class MigrateUserProjectView < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     update_column_in_batches(:users, :project_view, 2) do |table, query|
       query.where(table[:project_view].eq(0))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issue, models: true do
+describe Issue do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to have_many(:assignees) }

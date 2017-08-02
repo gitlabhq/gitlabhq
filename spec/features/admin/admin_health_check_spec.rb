@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature "Admin Health Check", feature: true do
+feature "Admin Health Check" do
   include StubENV
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    gitlab_sign_in :admin
+    sign_in(create(:admin))
   end
 
   describe '#show' do

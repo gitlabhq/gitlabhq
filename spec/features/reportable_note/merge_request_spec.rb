@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe 'Reportable note on merge request', :feature, :js do
+describe 'Reportable note on merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
   end
 
   context 'a normal note' do

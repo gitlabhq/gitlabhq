@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RepoRestorer, services: true do
+describe Gitlab::ImportExport::RepoRestorer do
   describe 'bundle a project Git repo' do
     let(:user) { create(:user) }
-    let!(:project_with_repo) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
+    let!(:project_with_repo) { create(:project, name: 'test-repo-restorer', path: 'test-repo-restorer') }
     let!(:project) { create(:empty_project) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
@@ -34,7 +34,7 @@ describe Gitlab::ImportExport::RepoRestorer, services: true do
     it 'has the webhooks' do
       restorer.restore
 
-      expect(Gitlab::Git::Hook.new('post-receive', project.repository.path_to_repo)).to exist
+      expect(Gitlab::Git::Hook.new('post-receive', project)).to exist
     end
   end
 end

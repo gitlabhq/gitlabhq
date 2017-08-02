@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
+describe Gitlab::ImportExport::ProjectTreeRestorer do
   describe 'restore project tree' do
     before(:context) do
       @user = create(:user)
@@ -93,6 +93,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
       it 'has the correct data for merge request diff files' do
         expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
+      end
+
+      it 'has the correct data for merge request diff commits in serialised and table formats' do
+        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
+        expect(MergeRequestDiffCommit.count).to eq(6)
       end
 
       it 'has the correct time for merge request st_commits' do

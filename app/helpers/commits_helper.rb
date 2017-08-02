@@ -30,7 +30,7 @@ module CommitsHelper
     crumbs = content_tag(:li) do
       link_to(
         @project.path,
-        namespace_project_commits_path(@project.namespace, @project, @ref)
+        project_commits_path(@project, @ref)
       )
     end
 
@@ -42,8 +42,7 @@ module CommitsHelper
           # The text is just the individual part, but the link needs all the parts before it
           link_to(
             part,
-            namespace_project_commits_path(
-              @project.namespace,
+            project_commits_path(
               @project,
               tree_join(@ref, parts[0..i].join('/'))
             )
@@ -85,21 +84,21 @@ module CommitsHelper
 
     if @path.blank?
       return link_to(
-        "Browse Files",
-        namespace_project_tree_path(project.namespace, project, commit),
+        _("Browse Files"),
+        project_tree_path(project, commit),
         class: "btn btn-default"
       )
     elsif @repo.blob_at(commit.id, @path)
       return link_to(
-        "Browse File",
-        namespace_project_blob_path(project.namespace, project,
+        _("Browse File"),
+        project_blob_path(project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     elsif @path.present?
       return link_to(
-        "Browse Directory",
-        namespace_project_tree_path(project.namespace, project,
+        _("Browse Directory"),
+        project_tree_path(project,
                                     tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
@@ -112,6 +111,10 @@ module CommitsHelper
 
   def cherry_pick_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
     commit_action_link('cherry-pick', commit, continue_to_path, btn_class: btn_class, has_tooltip: has_tooltip)
+  end
+
+  def commit_signature_badge_classes(additional_classes)
+    %w(btn status-box gpg-status-box) + Array(additional_classes)
   end
 
   protected
@@ -165,7 +168,7 @@ module CommitsHelper
         notice: "#{edit_in_new_fork_notice} Try to #{action} this commit again.",
         notice_now: edit_in_new_fork_notice_now
       }
-      fork_path = namespace_project_forks_path(@project.namespace, @project,
+      fork_path = project_forks_path(@project,
         namespace_key: current_user.namespace.id,
         continue: continue_params)
 
@@ -175,7 +178,7 @@ module CommitsHelper
 
   def view_file_button(commit_sha, diff_new_path, project)
     link_to(
-      namespace_project_blob_path(project.namespace, project,
+      project_blob_path(project,
                                   tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file'
     ) do

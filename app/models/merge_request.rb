@@ -5,6 +5,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include IgnorableColumn
+  include CreatedAtFilterable
 
   ignore_column :position
 
@@ -12,25 +13,24 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_many :merge_request_diffs, dependent: :destroy
+  has_many :merge_request_diffs
   has_one :merge_request_diff,
-    -> { order('merge_request_diffs.id DESC') }
+    -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues,
+    class_name: 'MergeRequestsClosingIssues',
+    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   belongs_to :assignee, class_name: "User"
 
-  serialize :merge_params, Hash # rubocop:disable Cop/ActiverecordSerialize
+  serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
-
-  delegate :commits, :real_size, :commits_sha, :commits_count,
-    to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -42,23 +42,23 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:opened] => :closed
     end
 
     event :mark_as_merged do
-      transition [:reopened, :opened, :locked] => :merged
+      transition [:opened, :locked] => :merged
     end
 
     event :reopen do
-      transition closed: :reopened
+      transition closed: :opened
     end
 
     event :lock_mr do
-      transition [:reopened, :opened] => :locked
+      transition [:opened] => :locked
     end
 
     event :unlock_mr do
-      transition locked: :reopened
+      transition locked: :opened
     end
 
     after_transition any => :locked do |merge_request, transition|
@@ -72,7 +72,6 @@ class MergeRequest < ActiveRecord::Base
     end
 
     state :opened
-    state :reopened
     state :closed
     state :merged
     state :locked
@@ -197,9 +196,17 @@ class MergeRequest < ActiveRecord::Base
     }
   end
 
-  # This method is needed for compatibility with issues to not mess view and other code
+  # These method are needed for compatibility with issues to not mess view and other code
   def assignees
     Array(assignee)
+  end
+
+  def assignee_ids
+    Array(assignee_id)
+  end
+
+  def assignee_ids=(ids)
+    write_attribute(:assignee_id, ids.last)
   end
 
   def assignee_or_author?(user)
@@ -211,6 +218,36 @@ class MergeRequest < ActiveRecord::Base
     reference = "#{self.class.reference_prefix}#{iid}"
 
     "#{project.to_reference(from, full: full)}#{reference}"
+  end
+
+  def commits
+    if persisted?
+      merge_request_diff.commits
+    elsif compare_commits
+      compare_commits.reverse
+    else
+      []
+    end
+  end
+
+  def commits_count
+    if persisted?
+      merge_request_diff.commits_count
+    elsif compare_commits
+      compare_commits.size
+    else
+      0
+    end
+  end
+
+  def commit_shas
+    if persisted?
+      merge_request_diff.commit_shas
+    elsif compare_commits
+      compare_commits.reverse.map(&:sha)
+    else
+      []
+    end
   end
 
   def first_commit
@@ -235,9 +272,7 @@ class MergeRequest < ActiveRecord::Base
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
-    return real_size if merge_request_diff
-
-    diffs.real_size
+    merge_request_diff&.real_size || diffs.real_size
   end
 
   def diff_base_commit
@@ -332,7 +367,7 @@ class MergeRequest < ActiveRecord::Base
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
-    if opened? || reopened?
+    if opened?
       similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
@@ -508,7 +543,7 @@ class MergeRequest < ActiveRecord::Base
   def related_notes
     # Fetch comments only from last 100 commits
     commits_for_notes_limit = 100
-    commit_ids = commits.last(commits_for_notes_limit).map(&:id)
+    commit_ids = commit_shas.take(commits_for_notes_limit)
 
     Note.where(
       "(project_id = :target_project_id AND noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR" +
@@ -560,7 +595,7 @@ class MergeRequest < ActiveRecord::Base
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
   def cache_merge_request_closes_issues!(current_user)
-    return if project.has_external_issue_tracker?
+    return unless project.issues_enabled?
 
     transaction do
       self.merge_requests_closing_issues.delete_all
@@ -771,6 +806,7 @@ class MergeRequest < ActiveRecord::Base
       "refs/heads/#{source_branch}",
       ref_path
     )
+    update_column(:ref_fetched, true)
   end
 
   def ref_path
@@ -778,7 +814,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ref_fetched?
-    project.repository.ref_exists?(ref_path)
+    super ||
+      begin
+        computed_value = project.repository.ref_exists?(ref_path)
+        update_column(:ref_fetched, true) if computed_value
+
+        computed_value
+      end
   end
 
   def ensure_ref_fetched
@@ -824,15 +866,18 @@ class MergeRequest < ActiveRecord::Base
     return Ci::Pipeline.none unless source_project
 
     @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commits_sha, ref: source_branch)
+      .where(sha: all_commit_shas, ref: source_branch)
       .order(id: :desc)
   end
 
   # Note that this could also return SHA from now dangling commits
   #
-  def all_commits_sha
+  def all_commit_shas
     if persisted?
-      merge_request_diffs.flat_map(&:commits_sha).uniq
+      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).pluck('DISTINCT(sha)')
+      serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
+
+      (column_shas + serialised_shas).uniq
     elsif compare_commits
       compare_commits.to_a.reverse.map(&:id)
     else

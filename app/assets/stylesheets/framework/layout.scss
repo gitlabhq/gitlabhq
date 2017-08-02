@@ -53,7 +53,7 @@ body {
   }
 
   &.limit-container-width-sm {
-    max-width: 790px;
+    max-width: $limited-layout-width-sm;
   }
 }
 
@@ -119,4 +119,8 @@ of the body element here, we negate cascading side effects but allow momentum sc
 .page-gutter,
 .page-with-sidebar {
   -webkit-overflow-scrolling: auto;
+}
+
+.with-performance-bar .page-with-sidebar {
+  margin-top: $header-height + $performance-bar-height;
 }

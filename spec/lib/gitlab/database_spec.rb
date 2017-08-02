@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Database, lib: true do
+describe Gitlab::Database do
   before do
     stub_const('MigrationTest', Class.new { include Gitlab::Database })
   end
@@ -175,6 +175,10 @@ describe Gitlab::Database, lib: true do
       end
 
       described_class.bulk_insert('test', rows)
+    end
+
+    it 'handles non-UTF-8 data' do
+      expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
     end
   end
 

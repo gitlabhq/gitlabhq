@@ -1,41 +1,39 @@
 require 'rails_helper'
 
-feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js: true do
+feature 'Create Branch/Merge Request Dropdown on issue page', js: true do
   let(:user) { create(:user) }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
 
   context 'for team members' do
     before do
       project.team << [user, :developer]
-      gitlab_sign_in(user)
+      sign_in(user)
     end
 
     it 'allows creating a merge request from the issue page' do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
 
       select_dropdown_option('create-mr')
+      
+      expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+      expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
-      wait_for_requests
+      visit project_issue_path(project, issue)
 
       expect(page).to have_content("created branch 1-cherry-coloured-funk")
       expect(page).to have_content("mentioned in merge request !1")
-
-      visit namespace_project_merge_request_path(project.namespace, project, MergeRequest.first)
-
-      expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-      expect(current_path).to eq(namespace_project_merge_request_path(project.namespace, project, MergeRequest.first))
     end
 
     it 'allows creating a branch from the issue page' do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
 
       select_dropdown_option('create-branch')
 
       wait_for_requests
 
       expect(page).to have_selector('.dropdown-toggle-text ', text: '1-cherry-coloured-funk')
-      expect(current_path).to eq namespace_project_tree_path(project.namespace, project, '1-cherry-coloured-funk')
+      expect(current_path).to eq project_tree_path(project, '1-cherry-coloured-funk')
     end
 
     context "when there is a referenced merge request" do
@@ -52,7 +50,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
       before do
         referenced_mr.cache_merge_request_closes_issues!(user)
 
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'disables the create branch button' do
@@ -66,7 +64,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
       it 'disables the create branch button' do
         issue = create(:issue, :confidential, project: project)
 
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
 
         expect(page).not_to have_css('.create-mr-dropdown-wrap')
       end
@@ -75,7 +73,7 @@ feature 'Create Branch/Merge Request Dropdown on issue page', feature: true, js:
 
   context 'for visitors' do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
     end
 
     it 'shows no buttons' do

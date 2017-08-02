@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::IssuableSorter, lib: true do
+describe Gitlab::IssuableSorter do
   let(:namespace1) { build(:namespace, id: 1) }
   let(:project1) { build(:project, id: 1, namespace: namespace1) }
 

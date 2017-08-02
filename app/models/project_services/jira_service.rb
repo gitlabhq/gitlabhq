@@ -1,12 +1,10 @@
 class JiraService < IssueTrackerService
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
-  validates :project_key, presence: true, if: :activated?
 
-  prop_accessor :username, :password, :url, :api_url, :project_key,
-                :jira_issue_transition_id, :title, :description
+  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
 
@@ -18,7 +16,7 @@ class JiraService < IssueTrackerService
   end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-  def reference_pattern
+  def self.reference_pattern(only_long: true)
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
@@ -54,10 +52,6 @@ class JiraService < IssueTrackerService
     @client ||= JIRA::Client.new(options)
   end
 
-  def jira_project
-    @jira_project ||= jira_request { client.Project.find(project_key) }
-  end
-
   def help
     "You need to configure JIRA before enabling this service. For more details
     read the
@@ -88,16 +82,10 @@ class JiraService < IssueTrackerService
     [
       { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
       { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
-      { type: 'text', name: 'project_key', placeholder: 'Project Key', required: true },
       { type: 'text', name: 'username', placeholder: '', required: true },
       { type: 'password', name: 'password', placeholder: '', required: true },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '' }
+      { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID', placeholder: '' }
     ]
-  end
-
-  # URLs to redirect from Gitlab issues pages to jira issue tracker
-  def project_url
-    "#{url}/issues/?jql=project=#{project_key}"
   end
 
   def issues_url
@@ -152,8 +140,8 @@ class JiraService < IssueTrackerService
         url: resource_url(user_path(author))
       },
       project: {
-        name: self.project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, self.project))
+        name: project.path_with_namespace,
+        url: resource_url(namespace_project_path(project.namespace, project)) # rubocop:disable Cop/ProjectPathHelper
       },
       entity: {
         name: noteable_type.humanize.downcase,
@@ -172,7 +160,10 @@ class JiraService < IssueTrackerService
 
   def test(_)
     result = test_settings
-    { success: result.present?, result: result }
+    success = result.present?
+    result = @error if @error && !success
+
+    { success: success, result: result }
   end
 
   # JIRA does not need test data.
@@ -184,7 +175,7 @@ class JiraService < IssueTrackerService
   def test_settings
     return unless client_url.present?
     # Test settings by getting the project
-    jira_request { jira_project.present? }
+    jira_request { client.ServerInfo.all.attrs }
   end
 
   private
@@ -300,7 +291,8 @@ class JiraService < IssueTrackerService
     yield
 
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{e.message}"
+    @error = e.message
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{@error}"
     nil
   end
 
