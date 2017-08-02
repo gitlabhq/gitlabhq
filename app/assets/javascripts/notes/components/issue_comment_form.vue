@@ -22,6 +22,7 @@
         endpoint: getIssueData.create_note_path,
         author: getUserData,
         canUpdateIssue: getIssueData.current_user.can_update,
+        isSubmitting: false,
       };
     },
     components: {
@@ -59,6 +60,9 @@
           'js-note-target-reopen': !this.isIssueOpen,
         };
       },
+      canSubmit() {
+        return !this.note.length || this.isSubmitting;
+      }
     },
     methods: {
       ...mapActions([
@@ -83,8 +87,11 @@
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
 
+          this.isSubmitting = true;
+
           this.saveNote(noteData)
             .then((res) => {
+              this.isSubmitting = false;
               if (res.errors) {
                 if (res.errors.commands_only) {
                   this.discard();
@@ -96,6 +103,7 @@
               }
             })
             .catch(() => {
+              this.isSubmitting = false;
               this.discard(false);
             });
         }
@@ -196,13 +204,13 @@
                 <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click="handleSave()"
-                    :disabled="!note.length"
+                    :disabled="canSubmit"
                     class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="button">
                     {{commentButtonTitle}}
                   </button>
                   <button
-                    :disabled="!note.length"
+                    :disabled="canSubmit"
                     name="button"
                     type="button"
                     class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
