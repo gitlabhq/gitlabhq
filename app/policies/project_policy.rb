@@ -101,6 +101,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { owner | reporter }.policy do
+    enable :build_read_project
     enable :build_download_code
     enable :build_read_container_image
   end

@@ -58,9 +58,12 @@ module API
     def find_project!(id)
       project = find_project(id)
 
-      if ci_job_token && !current_user.authorized_projects.exists?(project)
-        not_found!('Project')
-      elsif can?(current_user, :read_project, project)
+      # CI job token authentication:
+      # this method grants limited privileged for admin users
+      # admin users can only access project if they are direct member
+      ability = job_token_authentication? ? :build_read_project : :read_project
+
+      if can?(current_user, ability, project)
         project
       else
         not_found!('Project')
@@ -84,11 +87,13 @@ module API
     end
 
     def find_group!(id)
+      # CI job token authentication:
+      # currently we do not allow any group access for CI job token
+      not_found!('Group') if job_token_authentication?
+
       group = find_group(id)
 
-      if ci_job_token
-        not_found!('Group')
-      elsif can?(current_user, :read_group, group)
+      if can?(current_user, ability, group)
         group
       else
         not_found!('Group')
@@ -352,10 +357,9 @@ module API
 
     def private_token
       params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
-    end
 
-    def ci_job_token
-      params[APIGuard::CI_JOB_TOKEN_PARAM] || env[APIGuard::CI_JOB_TOKEN_HEADER]
+    def job_token_authentication?
+      initial_current_user && initial_current_user == find_user_by_job_token
     end
 
     def warden
@@ -372,12 +376,11 @@ module API
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
-
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
         @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
         @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
         @initial_current_user ||= find_user_from_warden
-        @initial_current_user ||= find_user_by_ci_token
+        @initial_current_user ||= find_user_by_job_token
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
           @initial_current_user = nil
