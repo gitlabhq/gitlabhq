@@ -3,7 +3,11 @@ require 'spec_helper'
 feature 'Editing file blob', js: true do
   include TreeHelper
 
+<<<<<<< HEAD
   let(:project) { create(:project, :public) }
+=======
+  let(:project) { create(:project, :public, :repository) }
+>>>>>>> upstream/master
   let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }
   let(:branch) { 'master' }
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }

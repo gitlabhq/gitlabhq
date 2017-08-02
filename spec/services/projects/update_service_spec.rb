@@ -137,7 +137,7 @@ describe Projects::UpdateService, '#execute' do
   describe 'repository_storage' do
     let(:admin_user) { create(:user, admin: true) }
     let(:user) { create(:user) }
-    let(:project) { create(:project, repository_storage: 'a') }
+    let(:project) { create(:project, :repository, repository_storage: 'a') }
     let(:opts) { { repository_storage: 'b' } }
 
     before do

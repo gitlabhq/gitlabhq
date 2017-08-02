@@ -40,7 +40,7 @@ describe Users::DestroyService do
     end
 
     context "a deleted user's issues" do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       before do
         project.add_developer(user)
@@ -66,7 +66,7 @@ describe Users::DestroyService do
     end
 
     context "a deleted user's merge_requests" do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         project.add_developer(user)

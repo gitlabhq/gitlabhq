@@ -2,8 +2,8 @@ require 'spec_helper'
 
 feature 'Dashboard Projects' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, name: 'awesome stuff') }
-  let(:project2) { create(:project, :public, name: 'Community project') }
+  let(:project) { create(:project, :repository, name: 'awesome stuff') }
+  let(:project2) { create(:empty_project, :public, name: 'Community project') }
 
   before do
     project.team << [user, :developer]

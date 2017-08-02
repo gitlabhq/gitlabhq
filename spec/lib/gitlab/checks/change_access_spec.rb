@@ -173,7 +173,7 @@ describe Gitlab::Checks::ChangeAccess do
         it { is_expected.to be_truthy }
       end
 
-      let(:project) { create(:project, :public, push_rule: push_rule) }
+      let(:project) { create(:project, :public, :repository, push_rule: push_rule) }
 
       before do
         allow(project.repository).to receive(:new_commits).and_return(

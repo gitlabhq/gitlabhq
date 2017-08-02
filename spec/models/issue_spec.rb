@@ -745,7 +745,7 @@ describe Issue do
   end
 
   describe '#check_for_spam' do
-    let(:project) { create :project, visibility_level: visibility_level }
+    let(:project) { create :empty_project, visibility_level: visibility_level }
     let(:issue) { create :issue, project: project }
 
     subject do

@@ -354,7 +354,7 @@ feature 'Jobs' do
 
     context 'job project is over shared runners limit' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
-      let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+      let(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
 
       it 'displays a warning message' do
         visit project_job_path(project, job)

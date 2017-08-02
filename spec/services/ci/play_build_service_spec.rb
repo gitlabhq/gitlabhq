@@ -33,7 +33,7 @@ describe Ci::PlayBuildService, '#execute' do
   end
 
   context 'when project has repository' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it 'allows user with developer role to play a build' do
       project.add_developer(user)

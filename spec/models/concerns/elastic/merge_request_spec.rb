@@ -12,7 +12,7 @@ describe MergeRequest, elastic: true do
   end
 
   it "searches merge requests" do
-    project = create :project
+    project = create :project, :repository
 
     Sidekiq::Testing.inline! do
       create :merge_request, title: 'bla-bla term1', source_project: project

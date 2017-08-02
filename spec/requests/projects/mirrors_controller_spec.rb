@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::MirrorsController do
   let(:project) do
-    create(:project,
+    create(:project, :repository,
            mirror: true,
            mirror_user: user,
            import_url: 'http://user:pass@test.url')

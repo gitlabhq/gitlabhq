@@ -10,7 +10,7 @@ describe API::V3::Triggers do
   let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
 
   describe 'POST /projects/:project_id/trigger' do
-    let!(:project2) { create(:project) }
+    let!(:project2) { create(:empty_project) }
     let(:options) do
       {
         token: trigger_token

@@ -9,7 +9,7 @@ describe ProjectGroupLink do
   describe "Validation" do
     let(:parent_group) { create(:group) }
     let(:group) { create(:group, parent: parent_group) }
-    let(:project) { create(:project, group: group) }
+    let(:project) { create(:empty_project, group: group) }
     let!(:project_group_link) { create(:project_group_link, project: project) }
 
     it { is_expected.to validate_presence_of(:project_id) }

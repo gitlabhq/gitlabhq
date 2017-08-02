@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Projects > Members > Member is removed from project' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
 
   background do
     project.team << [user, :master]

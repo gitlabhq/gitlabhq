@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::MirrorsController do
   describe 'setting up a remote mirror' do
     context 'when the current project is a mirror' do
-      let(:project) { create(:project, :mirror) }
+      let(:project) { create(:project, :repository, :mirror) }
 
       before do
         sign_in(project.owner)
@@ -36,7 +36,7 @@ describe Projects::MirrorsController do
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do
-        project = create(:project)
+        project = create(:project, :repository)
         sign_in(project.owner)
 
         expect do
@@ -46,7 +46,7 @@ describe Projects::MirrorsController do
     end
 
     context 'when the current project has a remote mirror' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:remote_mirror) { project.remote_mirrors.create!(enabled: 1, url: 'http://local.dev') }
 
       before do
@@ -95,7 +95,7 @@ describe Projects::MirrorsController do
     end
 
     context 'when project does not have a mirror' do
-      let(:project) { create(:project) }
+      let(:project) { create(:empty_project) }
 
       it 'allows to create a mirror' do
         expect_any_instance_of(EE::Project).to receive(:force_import_job!)
@@ -107,7 +107,7 @@ describe Projects::MirrorsController do
     end
 
     context 'when project has a mirror' do
-      let(:project) { create(:project, :mirror, :import_finished) }
+      let(:project) { create(:empty_project, :mirror, :import_finished) }
 
       it 'is able to disable the mirror' do
         expect { do_put(project, mirror: false) }.to change { Project.mirror.count }.to(0)
@@ -119,7 +119,7 @@ describe Projects::MirrorsController do
     it 'forces update' do
       expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
-      project = create(:project, :mirror)
+      project = create(:empty_project, :mirror)
       sign_in(project.owner)
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }

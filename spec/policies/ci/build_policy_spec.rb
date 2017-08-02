@@ -97,7 +97,7 @@ describe Ci::BuildPolicy do
     end
 
     describe 'rules for protected ref' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
 
       before do

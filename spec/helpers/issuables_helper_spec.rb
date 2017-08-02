@@ -180,7 +180,7 @@ describe IssuablesHelper do
     context 'when show_full_reference falsey' do
       context 'when @group present' do
         it 'display issuable reference to @group' do
-          project = build_stubbed(:project)
+          project = build_stubbed(:empty_project)
 
           assign(:show_full_reference, nil)
           assign(:group, project.namespace)
@@ -193,7 +193,7 @@ describe IssuablesHelper do
 
       context 'when @project present' do
         it 'display issuable reference to @project' do
-          project = build_stubbed(:project)
+          project = build_stubbed(:empty_project)
 
           assign(:show_full_reference, nil)
           assign(:group, nil)

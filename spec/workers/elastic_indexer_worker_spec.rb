@@ -174,7 +174,7 @@ describe ElasticIndexerWorker, elastic: true do
       project, issue, milestone, note, merge_request = nil
 
       Sidekiq::Testing.disable! do
-        project = create :project
+        project = create :project, :repository
         subject.perform("index", "Project", project.id)
 
         issue = create :issue, project: project
