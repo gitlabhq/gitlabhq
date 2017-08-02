@@ -181,6 +181,8 @@
         .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
           enabled: "#{@project.service_desk_enabled}",
           incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
+    - elsif show_promotions? && show_callout?('promote_service_desk_dismissed')
+      = render 'shared/promotions/promote_servicedesk'          
 
   = render 'export', project: @project
 

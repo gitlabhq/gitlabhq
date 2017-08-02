@@ -15,9 +15,12 @@
         %a{ href: 'https://docs.gitlab.com/ee/user/project/service_desk.html', target: '_blank' } Read more
       - if current_user.admin?
         - if Gitlab.com?
-          = link_to 'Upgrade your plan', 'https://about.gitlab.com/gitlab-com/', class: 'btn btn-primary'
+          = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'
         - else
-          = link_to 'Start GtiLab Enterprise Edition trial', new_trial_url, class: 'btn btn-primary'
+          = link_to 'Start GitLab Enterprise Edition trial', new_trial_url, class: 'btn btn-primary'
       - else
         %p
-          Contact your Administrator to upgrade your plan.
+          - if Gitlab.com?
+            Contact your Administrator to upgrade your plan.
+          - else
+            Contact your Administrator to upgrade your license.          

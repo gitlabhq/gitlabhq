@@ -75,7 +75,13 @@ module LicenseHelper
     uri.to_s
   end
 
-  def show_promotions
+  # Temporary URL for promotions - later `group_billings_path(group)` or `profile_billings_path`
+  def upgrade_plan_url
+    'https://about.gitlab.com/gitlab-com/'
+  end
+
+  # Temporary Switch
+  def show_promotions?
     true
   end
 
