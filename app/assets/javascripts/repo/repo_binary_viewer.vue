@@ -31,7 +31,7 @@ const RepoBinaryViewer = {
     },
 
     getBinaryType() {
-      if (this.binaryTypes.hasOwnProperty(this.activeFile.extension)) {
+      if (Object.hasOwnProperty.call(this.binaryTypes, this.activeFile.extension)) {
         return this.activeFile.extension;
       }
       return 'unknown';

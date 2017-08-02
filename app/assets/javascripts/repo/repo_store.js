@@ -59,10 +59,9 @@ const RepoStore = {
   readOnly: true,
 
   resetBinaryTypes() {
-    let s = '';
-    for (s in RepoStore.binaryTypes) {
-      RepoStore.binaryTypes[s] = false;
-    }
+    Object.keys(RepoStore.binaryTypes).forEach((key) => {
+      RepoStore.binaryTypes[key] = false;
+    });
   },
 
   // mutations

@@ -37,14 +37,12 @@ function addEventsForNonVueEls() {
     Store.targetBranch = $('.project-refs-target-form input[name="ref"]').val();
   });
 
-  window.onbeforeunload = function (e) {
+  window.onbeforeunload = function confirmUnload(e) {
     const hasChanged = Store.openedFiles
       .some(file => file.changed);
-    if (!hasChanged) return;
-    e = e || window.event;
-    if (e) {
-      e.returnValue = 'Are you sure you want to lose unsaved changes?';
-    }
+    if (!hasChanged) return undefined;
+    const event = e || window.event;
+    if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
     // For Safari
     return 'Are you sure you want to lose unsaved changes?';
   };
