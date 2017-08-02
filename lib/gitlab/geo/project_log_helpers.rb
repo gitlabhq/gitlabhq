@@ -8,7 +8,7 @@ module Gitlab
 
       def log_error(message, error)
         data = base_log_data(message)
-        data[:error] = error
+        data[:error] = error.to_s
         Gitlab::Geo::Logger.error(data)
       end
 
