@@ -194,10 +194,7 @@ const RepoHelper = {
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     })
-    .catch(() => {
-      // RepoHelper.setLoading(false, loadingData);
-      RepoHelper.loadingError();
-    });
+    .catch(RepoHelper.loadingError);
   },
 
   toFA(icon) {
@@ -286,7 +283,8 @@ const RepoHelper = {
     }
   },
 
-  loadingError() {
+  loadingError(e) {
+    console.log(e)
     Flash('Unable to load the file at this time.');
   },
 };
