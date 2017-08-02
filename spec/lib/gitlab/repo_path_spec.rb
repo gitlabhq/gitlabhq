@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ::Gitlab::RepoPath do
   describe '.parse' do
-    set(:project) { create(:project) }
+    set(:project) { create(:project, :repository) }
 
     context 'a repository storage path' do
       it 'parses a full repository path' do

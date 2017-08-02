@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GeoRepositoryCreateWorker do
   let(:user) { create :user }
-  let(:project) { create :project }
+  let(:project) { create :project, :repository }
   let(:perform!) { subject.perform(project.id) }
 
   before do

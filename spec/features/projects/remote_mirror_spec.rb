@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Project remote mirror', feature: true do
-  let(:project) { create(:project, :remote_mirror) }
+  let(:project) { create(:project, :repository, :remote_mirror) }
   let(:remote_mirror) { project.remote_mirrors.first }
   let(:user) { create(:user) }
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,

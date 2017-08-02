@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Path Locks', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:tree_path) { project_tree_path(project, project.repository.root_ref) }
 
   before do

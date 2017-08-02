@@ -126,7 +126,7 @@ describe Project do
     context '#with_wiki_enabled' do
       it 'returns a project' do
         project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
-        project1 = create(:project, wiki_access_level: ProjectFeature::DISABLED)
+        project1 = create(:empty_project, wiki_access_level: ProjectFeature::DISABLED)
 
         expect(described_class.with_wiki_enabled).to include(project)
         expect(described_class.with_wiki_enabled).not_to include(project1)
@@ -201,7 +201,7 @@ describe Project do
 
     context '#mark_stuck_remote_mirrors_as_failed!' do
       it 'fails stuck remote mirrors' do
-        project = create(:project, :remote_mirror)
+        project = create(:project, :remote_mirror, :repository)
 
         project.remote_mirrors.first.update_attributes(
           update_status: :started,
@@ -215,7 +215,7 @@ describe Project do
     end
 
     context 'mirror' do
-      subject { build(:project, mirror: true) }
+      subject { build(:empty_project, mirror: true) }
 
       it { is_expected.to validate_presence_of(:import_url) }
       it { is_expected.to validate_presence_of(:mirror_user) }
@@ -299,27 +299,27 @@ describe Project do
 
     describe 'path validation' do
       it 'allows paths reserved on the root namespace' do
-        project = build(:project, path: 'api')
+        project = build(:empty_project, path: 'api')
 
         expect(project).to be_valid
       end
 
       it 'rejects paths reserved on another level' do
-        project = build(:project, path: 'tree')
+        project = build(:empty_project, path: 'tree')
 
         expect(project).not_to be_valid
       end
 
       it 'rejects nested paths' do
         parent = create(:group, :nested, path: 'environments')
-        project = build(:project, path: 'folders', namespace: parent)
+        project = build(:empty_project, path: 'folders', namespace: parent)
 
         expect(project).not_to be_valid
       end
 
       it 'allows a reserved group name' do
         parent = create(:group)
-        project = build(:project, path: 'avatar', namespace: parent)
+        project = build(:empty_project, path: 'avatar', namespace: parent)
 
         expect(project).to be_valid
       end
@@ -1627,7 +1627,7 @@ describe Project do
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
-        project = create(:project, :mirror, import_url: 'http://user:pass@test.com')
+        project = create(:empty_project, :mirror, import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1637,7 +1637,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns the sanitized URL' do
-        project = create(:project, import_status: 'started', import_url: 'http://user:pass@test.com')
+        project = create(:empty_project, import_status: 'started', import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1878,7 +1878,7 @@ describe Project do
       end
 
       context 'elasticsearch indexing enabled' do
-        let(:project) { create(:project, :import_started, import_type: :github) }
+        let(:project) { create(:empty_project, :import_started, import_type: :github) }
 
         before do
           stub_application_setting(elasticsearch_indexing: true)
@@ -1988,7 +1988,7 @@ describe Project do
     context 'when mirror is expected to run soon' do
       it 'returns true' do
         timestamp = Time.now
-        project = create(:project, :mirror, :import_finished)
+        project = create(:project, :mirror, :import_finished, :repository)
 
         project.mirror_last_update_at = timestamp - 3.minutes
         project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
@@ -1999,7 +1999,7 @@ describe Project do
 
     context 'when mirror was scheduled' do
       it 'returns true' do
-        project = create(:project, :mirror, :import_scheduled)
+        project = create(:project, :mirror, :import_scheduled, :repository)
 
         expect(project.scheduled_mirror?).to be true
       end
@@ -2017,7 +2017,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns false' do
-        project = create(:project, :import_started)
+        project = create(:empty_project, :import_started)
 
         expect(project.updating_mirror?).to be false
       end
@@ -2025,7 +2025,7 @@ describe Project do
 
     context 'when mirror is in progress' do
       it 'returns true' do
-        project = create(:project, :mirror, :import_started)
+        project = create(:project, :mirror, :import_started, :repository)
 
         expect(project.updating_mirror?).to be true
       end
@@ -2035,7 +2035,7 @@ describe Project do
   describe '#force_import_job!' do
     it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
       timestamp = Time.now
-      project = create(:project, :mirror)
+      project = create(:empty_project, :mirror)
 
       project.mirror_data.update_attributes(next_execution_timestamp: timestamp - 3.minutes)
 
@@ -2062,7 +2062,7 @@ describe Project do
 
       context 'without mirror' do
         it 'returns nil' do
-          project = create(:project)
+          project = create(:empty_project)
 
           expect(project.add_import_job).to be_nil
         end
@@ -2080,7 +2080,7 @@ describe Project do
 
       context 'with mirror' do
         it 'schedules RepositoryUpdateMirrorWorker' do
-          project = create(:project, :mirror)
+          project = create(:project, :mirror, :repository)
 
           expect(RepositoryUpdateMirrorWorker).to receive(:perform_async).with(project.id)
 
@@ -2188,8 +2188,8 @@ describe Project do
     end
 
     context 'with valid paths' do
-      let!(:project1) { create(:project) }
-      let!(:project2) { create(:project) }
+      let!(:project1) { create(:empty_project) }
+      let!(:project2) { create(:empty_project) }
 
       it 'returns the projects matching the paths' do
         projects = described_class.where_full_path_in([project1.full_path,
@@ -2222,8 +2222,8 @@ describe Project do
   end
 
   describe '#change_repository_storage' do
-    let(:project) { create(:project, repository_storage: 'a') }
-    let(:read_only_project) { create(:project, repository_storage: 'a', repository_read_only: true) }
+    let(:project) { create(:project, :repository, repository_storage: 'a') }
+    let(:read_only_project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true) }
 
     before do
       FileUtils.mkdir('tmp/tests/storage_a')
@@ -2336,7 +2336,7 @@ describe Project do
   end
 
   describe '#repository_and_lfs_size' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:size) { 50 }
 
     before do
@@ -2355,7 +2355,7 @@ describe Project do
       group = create :group
       group1 = create :group
 
-      project = create :project
+      project = create :empty_project
 
       project.approver_group_ids = "#{group.id}, #{group1.id}"
       project.save!
@@ -2506,7 +2506,7 @@ describe Project do
 
   describe '#create_mirror_data' do
     it 'it is called after save' do
-      project = create(:project)
+      project = create(:empty_project)
 
       expect(project).to receive(:create_mirror_data)
 
@@ -2526,7 +2526,7 @@ describe Project do
   end
 
   describe '#route_map_for' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       <<-MAP.strip_heredoc
       - source: /source/(.*)/
@@ -2563,7 +2563,7 @@ describe Project do
   end
 
   describe '#public_path_for_source_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
         - source: /source/(.*)/
@@ -2677,7 +2677,7 @@ describe Project do
   end
 
   describe '#pipeline_status' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     it 'builds a pipeline status' do
       expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
@@ -2688,7 +2688,7 @@ describe Project do
   end
 
   describe '#append_or_update_attribute' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\

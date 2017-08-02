@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Elastic::ProjectSearchResults do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:query) { 'hello world' }
 
   before do
@@ -34,8 +34,8 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
   describe "search" do
     it "returns correct amounts" do
-      project = create :project, :public
-      project1 = create :project, :public
+      project = create :project, :public, :repository
+      project1 = create :project, :public, :repository
 
       project.repository.index_blobs
       project.repository.index_commits
@@ -81,7 +81,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
   end
 
   describe "search for commits in non-default branch" do
-    let(:project) { create(:project, :public, visibility) }
+    let(:project) { create(:project, :public, :repository, visibility) }
     let(:visibility) { :repository_enabled }
     let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 

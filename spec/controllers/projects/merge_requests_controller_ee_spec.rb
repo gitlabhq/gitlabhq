@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project)       { create(:project) }
+  let(:project)       { create(:project, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:user)          { project.owner }
   let(:viewer)        { user }
@@ -326,7 +326,7 @@ describe Projects::MergeRequestsController do
     end
 
     context 'approvals pending' do
-      let(:project) { create(:project, approvals_before_merge: 1) }
+      let(:project) { create(:project, :repository, approvals_before_merge: 1) }
 
       it 'returns 200' do
         expect_rebase_worker_for(viewer)
@@ -338,7 +338,7 @@ describe Projects::MergeRequestsController do
     end
 
     context 'with a forked project' do
-      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
       let(:fork_owner) { fork_project.owner }
 
       before do

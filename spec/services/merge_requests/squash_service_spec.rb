@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::SquashService do
   let(:service) { described_class.new(project, user, {}) }
   let(:user) { project.owner }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:merge_request_with_one_commit) do
     create(:merge_request,

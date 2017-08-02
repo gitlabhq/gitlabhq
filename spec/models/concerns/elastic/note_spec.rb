@@ -65,7 +65,7 @@ describe Note, elastic: true do
   end
 
   it "does not create ElasticIndexerWorker job for system messages" do
-    project = create :project
+    project = create :project, :repository
     issue = create :issue, project: project
 
     # Only issue should be updated

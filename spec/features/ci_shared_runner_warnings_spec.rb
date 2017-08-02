@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'CI shared runner limits' do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+  let!(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
   let(:group) { create(:group) }
 
   before do

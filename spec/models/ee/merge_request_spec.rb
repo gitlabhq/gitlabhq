@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequest do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
@@ -19,7 +19,7 @@ describe MergeRequest do
     end
 
     context 'project allows rebase' do
-      let(:project) { create(:project, merge_requests_rebase_enabled: true) }
+      let(:project) { create(:project, :repository, merge_requests_rebase_enabled: true) }
 
       it 'returns false when the project feature is unavailable' do
         expect(merge_request.target_project).to receive(:feature_available?).with(:merge_request_rebase).at_least(:once).and_return(false)

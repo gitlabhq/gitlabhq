@@ -8,7 +8,7 @@ describe Gitlab::Elastic::Indexer do
     stub_application_setting(elasticsearch_url: ['http://localhost:9200'])
   end
 
-  let(:project)  { create(:project) }
+  let(:project)  { create(:project, :repository) }
   let(:from_sha) { Gitlab::Git::BLANK_SHA }
   let(:to_sha)   { project.commit.try(:sha) }
   let(:indexer)  { described_class.new(project)  }
@@ -40,7 +40,7 @@ describe Gitlab::Elastic::Indexer do
   end
 
   context 'test project' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it 'runs the indexing command' do
       expect_popen.with(

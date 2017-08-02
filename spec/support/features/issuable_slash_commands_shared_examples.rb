@@ -5,7 +5,14 @@ shared_examples 'issuable record that supports quick actions in its description 
   include QuickActionsHelpers
 
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) do
+    case issuable_type
+    when :merge_request
+      create(:project, :public, :repository)
+    when :issue
+      create(:empty_project, :public)
+    end
+  end
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
   let!(:label_bug) { create(:label, project: project, title: 'bug') }
   let!(:label_feature) { create(:label, project: project, title: 'feature') }
