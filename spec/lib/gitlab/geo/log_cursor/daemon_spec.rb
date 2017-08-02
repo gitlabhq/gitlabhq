@@ -94,7 +94,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
       it 'schedules a GeoRepositoryDestroyWorker when event node is the current node' do
         allow(Gitlab::Geo).to receive(:current_node).and_return(geo_node)
 
-        expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(1.hour, geo_node.id)
+        expect(Geo::RepositoriesCleanUpWorker).to receive(:perform_in).with(within(5.minutes).of(1.hour), geo_node.id)
 
         subject.run!
       end
