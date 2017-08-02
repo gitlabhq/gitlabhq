@@ -1,19 +1,26 @@
+/* global bp */
 import {
   calculateTop,
   hideSubLevelItems,
   showSubLevelItems,
+  canShowSubItems,
 } from '~/fly_out_nav';
 
 describe('Fly out sidebar navigation', () => {
   let el;
+  let breakpointSize = 'lg';
+
   beforeEach(() => {
     el = document.createElement('div');
     el.style.position = 'relative';
     document.body.appendChild(el);
+
+    spyOn(bp, 'getBreakpointSize').and.callFake(() => breakpointSize);
   });
 
   afterEach(() => {
     el.remove();
+    breakpointSize = 'lg';
   });
 
   describe('calculateTop', () => {
@@ -51,6 +58,16 @@ describe('Fly out sidebar navigation', () => {
       expect(
         el.querySelector('.sidebar-sub-level-items').style.display,
       ).toBe('none');
+    });
+
+    it('does not hude subitems on mobile', () => {
+      breakpointSize = 'sm';
+
+      hideSubLevelItems(el);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).not.toBe('none');
     });
 
     it('removes is-over class', () => {
@@ -103,7 +120,17 @@ describe('Fly out sidebar navigation', () => {
       ).toHaveBeenCalledWith('is-over');
     });
 
-    it('shows sub-items', () => {
+    it('does not show sub-items on mobile', () => {
+      breakpointSize = 'sm';
+
+      showSubLevelItems(el);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).not.toBe('block');
+    });
+
+    it('does not shows sub-items', () => {
       showSubLevelItems(el);
 
       expect(
@@ -132,6 +159,22 @@ describe('Fly out sidebar navigation', () => {
       expect(
         subItems.classList.add,
       ).toHaveBeenCalledWith('is-above');
+    });
+  });
+
+  describe('canShowSubItems', () => {
+    it('returns true if on desktop size', () => {
+      expect(
+        canShowSubItems(),
+      ).toBeTruthy();
+    });
+
+    it('returns false if on mobile size', () => {
+      breakpointSize = 'sm';
+
+      expect(
+        canShowSubItems(),
+      ).toBeFalsy();
     });
   });
 });

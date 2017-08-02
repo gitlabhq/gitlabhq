@@ -1,3 +1,8 @@
+/* global bp */
+import './breakpoints';
+
+export const canShowSubItems = () => bp.getBreakpointSize() === 'md' || bp.getBreakpointSize() === 'lg';
+
 export const calculateTop = (boundingRect, outerHeight) => {
   const windowHeight = window.innerHeight;
   const bottomOverflow = windowHeight - (boundingRect.top + outerHeight);
@@ -9,7 +14,7 @@ export const calculateTop = (boundingRect, outerHeight) => {
 export const showSubLevelItems = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!subItems) return;
+  if (!subItems || !canShowSubItems()) return;
 
   subItems.style.display = 'block';
   el.classList.add('is-over');
@@ -28,7 +33,7 @@ export const showSubLevelItems = (el) => {
 export const hideSubLevelItems = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!subItems) return;
+  if (!subItems || !canShowSubItems()) return;
 
   el.classList.remove('is-over');
   subItems.style.display = 'none';
