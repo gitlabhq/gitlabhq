@@ -48,8 +48,8 @@ module API
     end
 
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }
-    before { Gitlab::I18n.locale = current_user&.preferred_language }
 
+    # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
