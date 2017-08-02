@@ -23,5 +23,27 @@ describe Gitlab::Git::Storage::ForkedStorageCheck, skip_database_cleaner: true d
 
       expect(described_class.storage_available?(existing_path, 0.5)).to be_falsey
     end
+
+    describe 'when using paths with spaces' do
+      let(:test_dir) { Rails.root.join('tmp', 'tests', 'storage_check') }
+      let(:path_with_spaces) { File.join(test_dir, 'path with spaces') }
+
+      around do |example|
+        FileUtils.mkdir_p(path_with_spaces)
+        example.run
+        FileUtils.rm_r(test_dir)
+      end
+
+      it 'works for paths with spaces' do
+        expect(described_class.storage_available?(path_with_spaces)).to be_truthy
+      end
+
+      it 'works for a realpath with spaces' do
+        symlink_location = File.join(test_dir, 'a symlink')
+        FileUtils.ln_s(path_with_spaces, symlink_location)
+
+        expect(described_class.storage_available?(symlink_location)).to be_truthy
+      end
+    end
   end
 end

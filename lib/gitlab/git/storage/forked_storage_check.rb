@@ -51,7 +51,7 @@ module Gitlab
         end
 
         def test_script(path)
-          "testpath=\"$(realpath #{Shellwords.escape(path)})\" && stat $testpath"
+          "testpath=$(realpath #{Shellwords.escape(path)}) && stat \"$testpath\""
         end
       end
     end
