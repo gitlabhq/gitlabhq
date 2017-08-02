@@ -63,8 +63,8 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
-    Gitlab::Application.load_tasks
-
+    Rake.application.rake_require 'tasks/gitlab/helpers'
+    Rake::Task.define_task :environment
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -128,6 +128,7 @@ module TestEnv
     gitlab_shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
+    Rake.application.rake_require 'tasks/gitlab/shell'
     unless !gitlab_shell_needs_update || Rake.application.invoke_task('gitlab:shell:install')
       FileUtils.rm_rf(gitlab_shell_dir)
       raise "Can't install gitlab-shell"
@@ -140,6 +141,7 @@ module TestEnv
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
+    Rake.application.rake_require 'tasks/gitlab/gitaly'
     unless !gitaly_needs_update || Rake.application.invoke_task("gitlab:gitaly:install[#{gitaly_dir}]")
       FileUtils.rm_rf(gitaly_dir)
       raise "Can't install gitaly"
