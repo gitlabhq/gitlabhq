@@ -1,31 +1,12 @@
-/* global monaco */
 import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '../vue_shared/translate';
-import RepoSidebar from './components/repo_sidebar.vue';
 import EditButton from './repo_edit_button';
 import Service from './services/repo_service';
 import Store from './stores/repo_store';
-import RepoCommitSection from './components/repo_commit_section.vue';
-import RepoTabs from './components/repo_tabs.vue';
-import RepoFileButtons from './components/repo_file_buttons.vue';
-import RepoBinaryViewer from './components/repo_binary_viewer.vue';
-import RepoEditor from './components/repo_editor.vue';
-import monacoLoader from './monaco_loader';
-import RepoMixin from './mixins/repo_mixin';
-import PopupDialog from '../vue_shared/components/popup_dialog.vue';
+import { initRepoViewModel } from './view_models/repo_view_model';
 
 Vue.use(Translate);
-
-function repoEditorLoader() {
-  return new Promise((resolve) => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      Store.monaco = monaco;
-
-      resolve(RepoEditor);
-    });
-  });
-}
 
 function initDropdowns() {
   $('.project-refs-target-form').hide();
@@ -48,65 +29,25 @@ function addEventsForNonVueEls() {
   };
 }
 
+function setInitialStore(data) {
+  Store.service = Service;
+  Store.service.url = data.url;
+  Store.service.refsUrl = data.refsUrl;
+  Store.projectId = data.projectId;
+  Store.projectName = data.projectName;
+  Store.projectUrl = data.projectUrl;
+  Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
+  Store.checkIsCommitable();
+}
+
 function initRepo() {
   const repo = document.getElementById('repo');
 
-  Store.service = Service;
-  Store.service.url = repo.dataset.url;
-  Store.service.refsUrl = repo.dataset.refsUrl;
-  Store.projectId = repo.dataset.projectId;
-  Store.projectName = repo.dataset.projectName;
-  Store.projectUrl = repo.dataset.projectUrl;
-  Store.currentBranch = $('button.dropdown-menu-toggle').attr('data-ref');
-  Store.checkIsCommitable();
+  setInitialStore(repo.dataset);
   addEventsForNonVueEls();
   initDropdowns();
 
-  this.vm = new Vue({
-    el: repo,
-    data: () => Store,
-    template: `
-      <div class="tree-content-holder">
-        <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
-          <repo-tabs/>
-          <repo-file-buttons/>
-          <repo-editor/>
-          <repo-binary-viewer/>
-        </div>
-        <repo-commit-section/>
-        <popup-dialog
-          :primary-button-label="__('Discard changes')"
-          :open="dialog.open"
-          kind="warning"
-          :title="__('Are you sure?')"
-          :body="__('Are you sure you want to discard your changes?')"
-          @toggle="dialogToggled"
-          @submit="dialogSubmitted"
-        />
-      </div>
-    `,
-    mixins: [RepoMixin],
-    components: {
-      'repo-sidebar': RepoSidebar,
-      'repo-tabs': RepoTabs,
-      'repo-file-buttons': RepoFileButtons,
-      'repo-binary-viewer': RepoBinaryViewer,
-      'repo-editor': repoEditorLoader,
-      'repo-commit-section': RepoCommitSection,
-      'popup-dialog': PopupDialog,
-    },
-
-    methods: {
-      dialogToggled(toggle) {
-        this.dialog.open = toggle;
-      },
-
-      dialogSubmitted(status) {
-        this.dialog.open = false;
-        this.dialog.status = status;
-      },
-    },
-  });
+  initRepoViewModel(repo);
 
   const editButton = document.getElementById('editable-mode');
   Store.editButton = new EditButton(editButton);
