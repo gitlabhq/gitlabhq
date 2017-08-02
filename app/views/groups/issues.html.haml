@@ -4,6 +4,11 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@group.name} issues")
 
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'filtered_search'
+  = webpack_bundle_tag 'issues'
+
 - if show_new_nav? && group_issues_exists
   - content_for :breadcrumbs_extra do
     = link_to params.merge(rss_url_options), class: 'btn btn-default append-right-10' do
@@ -20,7 +25,7 @@
           Subscribe
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue"
 
-  = render 'shared/issuable/filter', type: :issues
+  = render 'shared/issuable/search_bar', type: :issues
 
   .row-content-block.second-block
     Only issues from the
