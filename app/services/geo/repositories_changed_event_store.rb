@@ -14,13 +14,11 @@ module Geo
       Geo::RepositoriesChangedEvent.new(geo_node: geo_node)
     end
 
-    def log_error(message, error)
-      Gitlab::Geo::Logger.error(
-        class: self.class.name,
-        message: message,
-        error: error,
+    def log_params
+      {
         geo_node_id: geo_node.id,
-        geo_node_url: geo_node.url)
+        geo_node_url: geo_node.url
+      }
     end
   end
 end
