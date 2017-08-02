@@ -86,7 +86,7 @@
 
         this.isReplying = false;
       },
-      saveReply({ note }) {
+      saveReply(note) {
         const replyData = {
           endpoint: this.newNotePath,
           flashContainer: this.$el,
@@ -94,7 +94,7 @@
             in_reply_to_discussion_id: this.note.reply_id,
             target_type: 'issue',
             target_id: this.discussion.noteable_id,
-            note: { note },
+            note: { note: note },
             full_data: true,
           },
         };

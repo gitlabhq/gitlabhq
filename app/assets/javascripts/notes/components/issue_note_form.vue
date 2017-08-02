@@ -49,7 +49,7 @@
     },
     methods: {
       handleUpdate() {
-        this.$emit('handleFormUpdate', note);
+        this.$emit('handleFormUpdate', this.note);
       },
       editMyLastNote() {
         if (this.note === '') {

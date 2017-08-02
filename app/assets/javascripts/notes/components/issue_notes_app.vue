@@ -61,7 +61,8 @@
         setNotesData: 'setNotesData',
         setIssueData: 'setIssueData',
         setUserData: 'setUserData',
-        setLastFetchedAt: 'setLastFetchedAt'
+        setLastFetchedAt: 'setLastFetchedAt',
+        setTargetNoteHash: 'setTargetNoteHash',
       }),
       getComponentName(note) {
         if (note.isPlaceholderNote) {
@@ -84,7 +85,7 @@
             this.isLoading = false;
 
             // Scroll to note if we have hash fragment in the page URL
-            Vue.nextTick(() => {
+            this.$nextTick(() => {
               this.checkLocationHash();
             });
           })
