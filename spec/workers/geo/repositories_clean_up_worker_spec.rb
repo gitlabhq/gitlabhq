@@ -7,6 +7,10 @@ describe Geo::RepositoriesCleanUpWorker do
   let!(:project_2) { create(:empty_project) }
 
   describe '#perform' do
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
+    end
+
     context 'when node has namespace restrictions' do
       it 'performs GeoRepositoryDestroyWorker for each project that do not belong to selected namespaces to replicate' do
         geo_node.update_attribute(:namespaces, [group])
@@ -21,6 +25,16 @@ describe Geo::RepositoriesCleanUpWorker do
 
     context 'when does not node have namespace restrictions' do
       it 'does not perform GeoRepositoryDestroyWorker' do
+        expect(GeoRepositoryDestroyWorker).not_to receive(:perform_async)
+
+        subject.perform(geo_node.id)
+      end
+    end
+
+    context 'when cannnot obtain a lease' do
+      it 'does not perform GeoRepositoryDestroyWorker' do
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { false }
+
         expect(GeoRepositoryDestroyWorker).not_to receive(:perform_async)
 
         subject.perform(geo_node.id)
