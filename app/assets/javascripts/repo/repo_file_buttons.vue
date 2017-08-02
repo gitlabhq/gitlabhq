@@ -51,7 +51,6 @@ export default RepoFileButtons;
     <a :href="blameFileURL" class="btn btn-default blame">Blame</a>
     <a :href="historyFileURL" class="btn btn-default history">History</a>
     <a href="#" class="btn btn-default permalink">Permalink</a>
-    <a href="#" class="btn btn-default lock">Lock</a>
   </div>
 
   <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>
