@@ -24,7 +24,6 @@ const RepoEditor = {
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
       this.monacoInstance.setModel(newModel);
-      this.monacoInstance.layout();
     }).catch(Helper.loadingError);
   },
 
@@ -33,7 +32,7 @@ const RepoEditor = {
       if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
         this.$el.style.display = 'none';
       } else {
-        this.$el.style.display = '';
+        this.$el.style.display = 'inline-block';
       }
     },
 
