@@ -496,7 +496,7 @@ module API
 
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
-      expose :target_id, :target_type, :author_id
+      expose :target_id, :target_iid, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
