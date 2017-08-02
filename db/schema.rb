@@ -1208,6 +1208,8 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
     t.text "delete_error"
+    t.uuid "uuid"
+    t.integer "storage_version", limit: 2, default: 0, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1224,6 +1226,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
+  add_index "projects", ["uuid"], name: "index_projects_on_uuid", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|

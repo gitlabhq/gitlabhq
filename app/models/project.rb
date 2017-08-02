@@ -17,7 +17,6 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
-  include Storage::LegacyProject
 
   extend Gitlab::ConfigHelper
 
@@ -1423,6 +1422,14 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  def load_storage
+    if self.storage_version > 1
+      self.class.include Storage::UUIDProject
+    else
+      self.class.include Storage::LegacyProject
+    end
+  end
 
   # set last_activity_at to the same as created_at
   def set_last_activity_at
