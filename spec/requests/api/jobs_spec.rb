@@ -191,7 +191,20 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id/artifacts' do
-    context 'normal authenticatin' do
+    shared_examples 'downloads artifact' do
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+      end
+
+      it 'returns specific job artifacts' do
+        expect(response).to have_http_status(200)
+        expect(response.headers).to include(download_headers)
+        expect(response.body).to match_file(job.artifacts_file.file.file)
+      end
+    end
+
+    context 'normal authentication' do
       before do
         stub_artifacts_object_storage
         job
@@ -203,16 +216,7 @@ describe API::Jobs do
           let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
           context 'authorized user' do
-            let(:download_headers) do
-              { 'Content-Transfer-Encoding' => 'binary',
-                'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-            end
-
-            it 'returns specific job artifacts' do
-              expect(response).to have_http_status(200)
-              expect(response.headers).to include(download_headers)
-              expect(response.body).to match_file(job.artifacts_file.file.file)
-            end
+            it_behaves_like 'downloads artifact'
           end
 
           context 'unauthorized user' do
@@ -238,22 +242,25 @@ describe API::Jobs do
       end
     end
 
-    context 'authorized by ci_job_token' do
-      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: user) }
-
-      let(:download_headers) do
-        { 'Content-Transfer-Encoding' => 'binary',
-          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
-      end
+    context 'authorized by job_token' do
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
       before do
-        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), ci_job_token: job.token
+        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), job_token: job.token
+      end
+      
+      context 'user is developer' do
+        let(:api_user) { user }
+      
+        it_behaves_like 'downloads artifact'
       end
 
-      it 'returns specific job artifacts' do
-        expect(response).to have_http_status(200)
-        expect(response.headers).to include(download_headers)
-        expect(response.body).to match_file(job.artifacts_file.file.file)
+      context 'user is admin, but not member' do
+        let(:api_user) { create(:admin) }
+      
+        it 'does not allow to see that artfiact is present' do
+          expect(response).to have_http_status(404)
+        end
       end
     end
   end
@@ -363,6 +370,29 @@ describe API::Jobs do
         end
 
         it_behaves_like 'a valid file'
+      end
+
+      context 'when using job_token to authenticate' do
+        before do
+          pipeline.reload
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
+        end
+
+        context 'when user is reporter' do
+          it_behaves_like 'a valid file'
+        end
+
+        context 'when user is admin, but not member' do
+          let(:api_user) { create(:admin) }
+          let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+          it 'does not allow to see that artfiact is present' do
+            expect(response).to have_http_status(404)
+          end
+        end
       end
     end
   end

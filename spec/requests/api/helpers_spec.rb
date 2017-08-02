@@ -34,11 +34,13 @@ describe API::Helpers do
 
   def clear_env
     env.delete(API::APIGuard::PRIVATE_TOKEN_HEADER)
+    env.delete(API::APIGuard::JOB_TOKEN_HEADER)
     env.delete(API::Helpers::SUDO_HEADER)
   end
 
   def clear_param
     params.delete(API::APIGuard::PRIVATE_TOKEN_PARAM)
+    params.delete(API::APIGuard::JOB_TOKEN_PARAM)
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
@@ -196,6 +198,38 @@ describe API::Helpers do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect(current_user).to be_nil
+      end
+    end
+
+    describe "when authenticating using a job token" do
+      let(:job) { create(:ci_build) }
+  
+      it "returns nil for an invalid token" do
+        env[API::APIGuard::JOB_TOKEN_HEADER] = 'invalid token'
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+
+        expect(current_user).to be_nil
+      end
+
+      it "returns nil for a user without access" do
+        env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+
+        expect(current_user).to be_nil
+      end
+
+      it "returns nil for a user with access, but route not allowed to be authenticated" do
+        env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
+
+        expect(current_user).to be_nil
+      end
+
+      it "authenticates as user when route is allowed" do
+        env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+        route_setting(:authentication) = { job_token_allowed: true }
+
+        expect(current_user).to eq(user)
       end
     end
 
