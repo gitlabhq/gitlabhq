@@ -21,7 +21,7 @@ $new-sidebar-width: 220px;
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: 100%;
+    height: calc(100% - #{$header-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
