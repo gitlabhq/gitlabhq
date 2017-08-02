@@ -1,7 +1,6 @@
 <script>
   /* global Flash */
-  import { mapActions, mapMutations } from 'vuex';
-  import { TOGGLE_DISCUSSION } from '../stores/mutation_types';
+  import { mapActions } from 'vuex';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -51,10 +50,8 @@
     methods: {
       ...mapActions([
         'saveNote',
+        'toggleDiscussion'
       ]),
-      ...mapMutations({
-        toggleDiscussion: TOGGLE_DISCUSSION,
-      }),
       componentName(note) {
         if (note.isPlaceholderNote) {
           if (note.placeholderType === SYSTEM_NOTE) {
@@ -68,7 +65,7 @@
       componentData(note) {
         return note.isPlaceholderNote ? note.notes[0] : note;
       },
-      toggleDiscussion() {
+      toggleDiscussionHandler() {
         this.toggleDiscussion({ discussionId: this.note.id });
       },
       showReplyForm() {
@@ -128,7 +125,7 @@
               :created-at="discussion.created_at"
               :note-id="discussion.id"
               :include-toggle="true"
-              :toggle-handler="toggleDiscussion"
+              :toggle-handler="toggleDiscussionHandler"
               action-text="started a discussion"
               />
             <issue-note-edited-text

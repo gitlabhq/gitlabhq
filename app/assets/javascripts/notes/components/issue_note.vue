@@ -82,7 +82,7 @@
             full_data: true,
             target_type: 'issue',
             target_id: this.note.noteable_id,
-            note,
+            note: { note: note },
           },
         };
 

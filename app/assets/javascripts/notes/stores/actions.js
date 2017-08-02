@@ -14,6 +14,7 @@ export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, dat
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
 export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITAL_NOTES, data);
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
 export const fetchNotes = ({ commit }, path) => service
   .fetchNotes(path)
