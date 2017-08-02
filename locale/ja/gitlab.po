@@ -29,7 +29,7 @@ msgid_plural "%d commits"
 msgstr[0] "%d個のコミット"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
-msgstr "%{commit_author_link}は%{commit_timeago}前、コミットしました。"
+msgstr "%{commit_timeago}に%{commit_author_link}がコミットしました。"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
