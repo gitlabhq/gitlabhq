@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::PathLocksFinder do
-  let(:project) { create :empty_project }
+  let(:project) { create :project }
   let(:user) { create :user }
   let(:finder) { described_class.new(project) }
 

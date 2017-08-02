@@ -19,7 +19,7 @@ describe RepositoryImportWorker do
     end
 
     context 'when project is a mirror' do
-      let(:project) { create(:empty_project, :mirror, :import_scheduled) }
+      let(:project) { create(:project, :mirror, :import_scheduled) }
 
       it 'adds mirror in front of the mirror scheduler queue' do
         expect_any_instance_of(Projects::ImportService).to receive(:execute)

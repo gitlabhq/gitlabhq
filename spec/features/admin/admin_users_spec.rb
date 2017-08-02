@@ -213,7 +213,7 @@ describe "Admin::Users" do
 
       context 'with projects with shared runners enabled' do
         before do
-          create(:empty_project, namespace: user.namespace, shared_runners_enabled: true)
+          create(:project, namespace: user.namespace, shared_runners_enabled: true)
         end
 
         it 'shows quota' do
@@ -227,7 +227,7 @@ describe "Admin::Users" do
 
       context 'without projects with shared runners enabled' do
         before do
-          create(:empty_project, namespace: user.namespace, shared_runners_enabled: false)
+          create(:project, namespace: user.namespace, shared_runners_enabled: false)
         end
 
         it 'does not show quota' do
@@ -304,7 +304,7 @@ describe "Admin::Users" do
     end
 
     describe 'Update shared runners quota' do
-      let!(:project) { create(:empty_project, namespace: user.namespace, shared_runners_enabled: true) }
+      let!(:project) { create(:project, namespace: user.namespace, shared_runners_enabled: true) }
 
       before do
         fill_in "user_namespace_attributes_shared_runners_minutes_limit", with: "500"

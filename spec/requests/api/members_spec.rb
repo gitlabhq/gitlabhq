@@ -185,7 +185,7 @@ describe API::Members do
     context 'project in a group' do
       it 'returns a 405 method not allowed error when group membership lock is enabled' do
         group_with_membership_locked = create(:group, membership_lock: true)
-        project = create(:empty_project, group: group_with_membership_locked)
+        project = create(:project, group: group_with_membership_locked)
         project.group.add_owner(master)
 
         post api("/projects/#{project.id}/members", master),

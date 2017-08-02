@@ -17,7 +17,7 @@ describe Gitlab::Elastic::Indexer do
   let(:popen_failure) { [['error'], 1] }
 
   context 'empty project' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'updates the index status without running the indexing command' do
       expect_popen.never

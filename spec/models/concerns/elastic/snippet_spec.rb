@@ -13,7 +13,7 @@ describe Snippet, elastic: true do
 
   context 'searching snippets by code' do
     let!(:author) { create(:user) }
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     let!(:public_snippet)   { create(:snippet, :public, content: 'password: XXX') }
     let!(:internal_snippet) { create(:snippet, :internal, content: 'password: XXX') }

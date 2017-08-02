@@ -3,7 +3,7 @@ require 'spec_helper'
 describe UpdateBuildMinutesService do
   context '#perform' do
     let(:namespace) { create(:namespace, shared_runners_minutes_limit: 100) }
-    let(:project) { create(:empty_project, namespace: namespace) }
+    let(:project) { create(:project, namespace: namespace) }
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:build) do
       create(:ci_build, :success,

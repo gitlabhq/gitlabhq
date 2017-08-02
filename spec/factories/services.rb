@@ -49,7 +49,7 @@ FactoryGirl.define do
   end
 
   factory :gitlab_slack_application_service do
-    project factory: :empty_project
+    project
     type 'GitlabSlackApplicationService'
   end
 end

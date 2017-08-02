@@ -9,7 +9,7 @@ FactoryGirl.define do
     end
 
     trait :forked_to_empty_project do
-      association :forked_to_project, factory: [:project, :repository]
+      association :forked_to_project, factory: :project
     end
   end
 end

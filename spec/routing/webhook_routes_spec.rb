@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "routes to the proper webhooks controller", type: :routing do
   context 'with a project context' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:project_hook) { create(:project_hook) }
 
     it "routes the test action" do

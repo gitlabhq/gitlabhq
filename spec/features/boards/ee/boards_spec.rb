@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'issue boards', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let!(:board) { create(:board, project: project) }
 
   before do

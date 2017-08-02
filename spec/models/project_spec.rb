@@ -126,7 +126,7 @@ describe Project do
     context '#with_wiki_enabled' do
       it 'returns a project' do
         project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
-        project1 = create(:empty_project, wiki_access_level: ProjectFeature::DISABLED)
+        project1 = create(:project, wiki_access_level: ProjectFeature::DISABLED)
 
         expect(described_class.with_wiki_enabled).to include(project)
         expect(described_class.with_wiki_enabled).not_to include(project1)
@@ -201,7 +201,7 @@ describe Project do
 
     context '#mark_stuck_remote_mirrors_as_failed!' do
       it 'fails stuck remote mirrors' do
-        project = create(:project, :remote_mirror, :repository)
+        project = create(:project, :repository, :remote_mirror)
 
         project.remote_mirrors.first.update_attributes(
           update_status: :started,
@@ -215,7 +215,7 @@ describe Project do
     end
 
     context 'mirror' do
-      subject { build(:empty_project, mirror: true) }
+      subject { build(:project, mirror: true) }
 
       it { is_expected.to validate_presence_of(:import_url) }
       it { is_expected.to validate_presence_of(:mirror_user) }
@@ -266,13 +266,13 @@ describe Project do
     end
 
     it 'creates mirror data when enabled' do
-      project2 = create(:empty_project, :mirror, mirror: false)
+      project2 = create(:project, :mirror, mirror: false)
 
       expect { project2.update_attributes(mirror: true) }.to change { ProjectMirrorData.count }.from(0).to(1)
     end
 
     it 'destroys mirror data when disabled' do
-      project2 = create(:empty_project, :mirror)
+      project2 = create(:project, :mirror)
 
       expect { project2.update_attributes(mirror: false) }.to change { ProjectMirrorData.count }.from(1).to(0)
     end
@@ -490,7 +490,7 @@ describe Project do
   end
 
   describe "#kerberos_url_to_repo" do
-    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:project) { create(:project, path: "somewhere") }
 
     it 'returns valid kerberos url for this repo' do
       expect(project.kerberos_url_to_repo).to eq("#{Gitlab.config.build_gitlab_kerberos_url}/#{project.namespace.path}/somewhere.git")
@@ -678,7 +678,7 @@ describe Project do
   end
 
   describe 'repository size restrictions' do
-    let(:project) { build(:empty_project) }
+    let(:project) { build(:project) }
 
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
@@ -728,7 +728,7 @@ describe Project do
 
     describe '#above_size_limit?' do
       let(:project) do
-        create(:empty_project,
+        create(:project,
                statistics: build(:project_statistics))
       end
 
@@ -754,7 +754,7 @@ describe Project do
 
   describe '#repository_size_limit column' do
     it 'support values up to 8 exabytes' do
-      project = create(:empty_project)
+      project = create(:project)
       project.update_column(:repository_size_limit, 8.exabytes - 1)
 
       project.reload
@@ -844,7 +844,7 @@ describe Project do
   end
 
   describe '#cache_has_external_wiki' do
-    let(:project) { create(:empty_project, has_external_wiki: nil) }
+    let(:project) { create(:project, has_external_wiki: nil) }
 
     it 'stores true if there is any external_wikis' do
       services = double(:service, external_wikis: [ExternalWikiService.new])
@@ -1627,7 +1627,7 @@ describe Project do
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
-        project = create(:empty_project, :mirror, import_url: 'http://user:pass@test.com')
+        project = create(:project, :mirror, import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1637,7 +1637,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns the sanitized URL' do
-        project = create(:empty_project, import_status: 'started', import_url: 'http://user:pass@test.com')
+        project = create(:project, import_status: 'started', import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1819,7 +1819,7 @@ describe Project do
     end
 
     context 'with a mirrored project' do
-      let(:project) { create(:empty_project, :mirror) }
+      let(:project) { create(:project, :mirror) }
 
       it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
         allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
@@ -1869,7 +1869,7 @@ describe Project do
         end
 
         it 'does not index the repository' do
-          project = create(:empty_project, :import_started, import_type: :github)
+          project = create(:project, :import_started, import_type: :github)
 
           expect(ElasticCommitIndexerWorker).not_to receive(:perform_async)
 
@@ -1878,7 +1878,7 @@ describe Project do
       end
 
       context 'elasticsearch indexing enabled' do
-        let(:project) { create(:empty_project, :import_started, import_type: :github) }
+        let(:project) { create(:project, :import_started, import_type: :github) }
 
         before do
           stub_application_setting(elasticsearch_indexing: true)
@@ -2009,7 +2009,7 @@ describe Project do
   describe  '#updating_mirror?' do
     context 'when repository is empty' do
       it 'returns false' do
-        project = create(:empty_project, :mirror, :import_started)
+        project = create(:project, :mirror, :import_started)
 
         expect(project.updating_mirror?).to be false
       end
@@ -2017,7 +2017,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns false' do
-        project = create(:empty_project, :import_started)
+        project = create(:project, :import_started)
 
         expect(project.updating_mirror?).to be false
       end
@@ -2035,7 +2035,7 @@ describe Project do
   describe '#force_import_job!' do
     it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
       timestamp = Time.now
-      project = create(:empty_project, :mirror)
+      project = create(:project, :mirror)
 
       project.mirror_data.update_attributes(next_execution_timestamp: timestamp - 3.minutes)
 
@@ -2062,7 +2062,7 @@ describe Project do
 
       context 'without mirror' do
         it 'returns nil' do
-          project = create(:empty_project)
+          project = create(:project)
 
           expect(project.add_import_job).to be_nil
         end
@@ -2070,7 +2070,7 @@ describe Project do
 
       context 'without repository' do
         it 'schedules RepositoryImportWorker' do
-          project = create(:empty_project, import_url: generate(:url))
+          project = create(:project, import_url: generate(:url))
 
           expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
@@ -2188,8 +2188,8 @@ describe Project do
     end
 
     context 'with valid paths' do
-      let!(:project1) { create(:empty_project) }
-      let!(:project2) { create(:empty_project) }
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
 
       it 'returns the projects matching the paths' do
         projects = described_class.where_full_path_in([project1.full_path,
@@ -2208,7 +2208,7 @@ describe Project do
   end
 
   describe '#find_path_lock' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:path_lock) { create :path_lock, project: project }
     let(:path) { path_lock.path }
 
@@ -2349,13 +2349,13 @@ describe Project do
   end
 
   describe '#approver_group_ids=' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'create approver_groups' do
       group = create :group
       group1 = create :group
 
-      project = create :empty_project
+      project = create :project
 
       project.approver_group_ids = "#{group.id}, #{group1.id}"
       project.save!
@@ -2506,7 +2506,7 @@ describe Project do
 
   describe '#create_mirror_data' do
     it 'it is called after save' do
-      project = create(:empty_project)
+      project = create(:project)
 
       expect(project).to receive(:create_mirror_data)
 

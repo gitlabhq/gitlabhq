@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Geo::RepositorySyncWorker do
   let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
-  let!(:project_1) { create(:empty_project) }
-  let!(:project_2) { create(:empty_project) }
+  let!(:project_1) { create(:project) }
+  let!(:project_2) { create(:project) }
 
   subject { described_class.new }
 

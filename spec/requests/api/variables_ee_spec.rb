@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::Variables do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   describe 'POST /projects/:id/variables' do
     context 'with variable environment scope available' do

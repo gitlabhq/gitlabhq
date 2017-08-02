@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ElasticBatchProjectIndexerWorker do
   subject(:worker) { described_class.new }
-  let(:projects) { create_list(:empty_project, 2) }
+  let(:projects) { create_list(:project, 2) }
 
   describe '#perform' do
     it 'runs the indexer for projects in the batch range' do

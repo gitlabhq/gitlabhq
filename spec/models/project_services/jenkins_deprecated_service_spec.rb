@@ -62,7 +62,7 @@ eos
     end
 
     describe 'multiproject enabled' do
-      let!(:project) { create(:empty_project) }
+      let!(:project) { create(:project) }
       before do
         @service = JenkinsDeprecatedService.new
         allow(@service).to receive_messages(
@@ -123,7 +123,7 @@ eos
   describe '#execute' do
     let(:user) { create(:user, username: 'username') }
     let(:namespace) { create(:group, :private) }
-    let(:project) { create(:empty_project, :private, name: 'project', namespace: namespace) }
+    let(:project) { create(:project, :private, name: 'project', namespace: namespace) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
     let(:jenkins_service) { described_class.create(active: true, project: project) }
     let!(:service_hook) { create(:service_hook, service: jenkins_service) }

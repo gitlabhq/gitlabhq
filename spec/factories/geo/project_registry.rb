@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :geo_project_registry, class: Geo::ProjectRegistry do
-    project factory: :empty_project
+    project
     last_repository_synced_at nil
     last_repository_successful_sync_at nil
     last_wiki_synced_at nil

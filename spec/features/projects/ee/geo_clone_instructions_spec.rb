@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Geo clone instructions', :js do
   include Devise::Test::IntegrationHelpers
 
-  let(:project) { create(:empty_project, :empty_repo) }
+  let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 
   background do

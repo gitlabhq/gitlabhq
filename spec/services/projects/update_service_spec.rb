@@ -171,7 +171,7 @@ describe Projects::UpdateService, '#execute' do
 
   context 'repository_size_limit assignment as Bytes' do
     let(:admin_user) { create(:user, admin: true) }
-    let(:project) { create(:empty_project, repository_size_limit: 0) }
+    let(:project) { create(:project, repository_size_limit: 0) }
 
     context 'when param present' do
       let(:opts) { { repository_size_limit: '100' } }

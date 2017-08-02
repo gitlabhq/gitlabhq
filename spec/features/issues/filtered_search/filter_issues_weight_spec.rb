@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Filter issues weight', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let(:js_dropdown_weight) { '#js-dropdown-weight' }
 

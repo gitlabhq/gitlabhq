@@ -572,7 +572,7 @@ describe MergeRequest do
   end
 
   describe "#number_of_potential_approvers" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:author) { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: project, author: author) }
 
@@ -651,7 +651,7 @@ describe MergeRequest do
 
   describe "#overall_approver_groups" do
     it 'returns a merge request group approver' do
-      project = create :empty_project
+      project = create :project
       create :approver_group, target: project
 
       merge_request = create :merge_request, target_project: project, source_project: project
@@ -661,7 +661,7 @@ describe MergeRequest do
     end
 
     it 'returns a project group approver' do
-      project = create :empty_project
+      project = create :project
       approver_group1 = create :approver_group, target: project
 
       merge_request = create :merge_request, target_project: project, source_project: project
@@ -670,7 +670,7 @@ describe MergeRequest do
     end
 
     it 'returns a merge request approver if there is no project group approver' do
-      project = create :empty_project
+      project = create :project
 
       merge_request = create :merge_request, target_project: project, source_project: project
       approver_group1 = create :approver_group, target: merge_request
@@ -686,7 +686,7 @@ describe MergeRequest do
       user2 = create :user
       create :user
 
-      project = create :empty_project
+      project = create :project
       group = create :group
       group.add_master user
       create :approver_group, target: project, group: group
@@ -1520,7 +1520,7 @@ describe MergeRequest do
   end
 
   describe 'approvals' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, author: author) }
     let(:author) { create(:user) }
     let(:approver) { create(:user) }

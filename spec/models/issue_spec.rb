@@ -331,8 +331,8 @@ describe Issue do
 
   describe '#related_issues' do
     let(:user) { create(:user) }
-    let(:authorized_project) { create(:empty_project) }
-    let(:unauthorized_project) { create(:empty_project) }
+    let(:authorized_project) { create(:project) }
+    let(:unauthorized_project) { create(:project) }
 
     let(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let(:authorized_issue_b) { create(:issue, project: authorized_project) }

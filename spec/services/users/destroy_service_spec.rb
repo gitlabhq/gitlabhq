@@ -177,7 +177,7 @@ describe Users::DestroyService do
       end
 
       it 'updates the mirror_user to one of the group owners' do
-        project = create(:empty_project, namespace_id: group.id, creator: group_owner, mirror_user: mirror_user)
+        project = create(:project, namespace_id: group.id, creator: group_owner, mirror_user: mirror_user)
         service.execute(mirror_user)
 
         expect(project.reload.mirror_user).to eq group_owner

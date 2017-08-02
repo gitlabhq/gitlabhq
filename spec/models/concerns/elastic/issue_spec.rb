@@ -11,7 +11,7 @@ describe Issue, elastic: true do
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
-  let(:project) { create :empty_project }
+  let(:project) { create :project }
 
   it "searches issues" do
     Sidekiq::Testing.inline! do

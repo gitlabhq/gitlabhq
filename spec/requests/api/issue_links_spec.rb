@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::IssueLinks do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
 
   before do
@@ -60,7 +60,7 @@ describe API::IssueLinks do
 
       context 'given target issue not found' do
         it 'returns 404' do
-          target_project = create(:empty_project, :public)
+          target_project = create(:project, :public)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
                target_project_id: target_project.id, target_issue_iid: 999
@@ -72,7 +72,7 @@ describe API::IssueLinks do
 
       context 'when user does not have write access to given issue' do
         it 'returns 404' do
-          unauthorized_project = create(:empty_project)
+          unauthorized_project = create(:project)
           target_issue = create(:issue, project: unauthorized_project)
           unauthorized_project.add_guest(user)
 
@@ -86,7 +86,7 @@ describe API::IssueLinks do
 
       context 'when trying to relate to a confidential issue' do
         it 'returns 404' do
-          project = create(:empty_project, :public)
+          project = create(:project, :public)
           target_issue = create(:issue, :confidential, project: project)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
@@ -99,7 +99,7 @@ describe API::IssueLinks do
 
       context 'when trying to relate to a private project issue' do
         it 'returns 404' do
-          project = create(:empty_project, :private)
+          project = create(:project, :private)
           target_issue = create(:issue, project: project)
 
           post api("/projects/#{project.id}/issues/#{issue.iid}/links", user),
@@ -150,7 +150,7 @@ describe API::IssueLinks do
     context 'when authenticated' do
       context 'when user does not have write access to given issue link' do
         it 'returns 404' do
-          unauthorized_project = create(:empty_project)
+          unauthorized_project = create(:project)
           target_issue = create(:issue, project: unauthorized_project)
           issue_link = create(:issue_link, source: issue, target: target_issue)
           unauthorized_project.add_guest(user)
@@ -173,7 +173,7 @@ describe API::IssueLinks do
 
       context 'when trying to delete a link with a private project issue' do
         it 'returns 404' do
-          project = create(:empty_project, :private)
+          project = create(:project, :private)
           target_issue = create(:issue, project: project)
           issue_link = create(:issue_link, source: issue, target: target_issue)
 

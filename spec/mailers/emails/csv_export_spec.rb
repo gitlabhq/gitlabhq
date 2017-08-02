@@ -7,7 +7,7 @@ describe Emails::CsvExport do
 
   describe 'csv export email' do
     let(:user) { create(:user) }
-    let(:empty_project) { create(:empty_project, path: 'myproject') }
+    let(:empty_project) { create(:project, path: 'myproject') }
     let(:export_status) { { truncated: false, rows_expected: 3, rows_written: 3 } }
     subject { Notify.issues_csv_email(user, empty_project, "dummy content", export_status) }
     let(:attachment) { subject.attachments.first }
