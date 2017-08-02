@@ -1,12 +1,8 @@
 import $ from 'jquery';
-import Vue from 'vue';
-import Translate from '../vue_shared/translate';
-import EditButton from './repo_edit_button';
 import Service from './services/repo_service';
 import Store from './stores/repo_store';
 import { initRepoViewModel } from './view_models/repo_view_model';
-
-Vue.use(Translate);
+import { initRepoEditButtonViewModel } from './view_models/repo_edit_button_view_model';
 
 function initDropdowns() {
   $('.project-refs-target-form').hide();
@@ -42,15 +38,14 @@ function setInitialStore(data) {
 
 function initRepo() {
   const repo = document.getElementById('repo');
+  const editButton = document.getElementById('editable-mode');
 
   setInitialStore(repo.dataset);
   addEventsForNonVueEls();
   initDropdowns();
 
   initRepoViewModel(repo);
-
-  const editButton = document.getElementById('editable-mode');
-  Store.editButton = new EditButton(editButton);
+  initRepoEditButtonViewModel(editButton);
 }
 
 $(initRepo);

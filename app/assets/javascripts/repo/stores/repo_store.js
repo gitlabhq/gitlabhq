@@ -8,7 +8,6 @@ const RepoStore = {
   service: '',
   editor: '',
   sidebar: '',
-  editButton: '',
   editMode: false,
   isTree: false,
   isRoot: false,

@@ -8,6 +8,9 @@ import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import Store from '../stores/repo_store';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
+import Translate from '../../vue_shared/translate';
+
+Vue.use(Translate);
 
 const Repo = {
   el: undefined,
