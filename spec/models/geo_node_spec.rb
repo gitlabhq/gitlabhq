@@ -318,14 +318,14 @@ describe GeoNode, type: :model do
   end
 
   describe '#project_ids' do
-    context 'without group restriction' do
+    context 'without namespace restriction' do
       it 'returns nil' do
         expect(node.project_ids).to be_nil
       end
     end
 
-    context 'with group restrictions' do
-      it 'returns an array with unique project ids that belong to the groups' do
+    context 'with namespace restrictions' do
+      it 'returns an array with unique project ids that belong to the namespaces' do
         group_1 = create(:group)
         group_2 = create(:group)
         nested_group_1 = create(:group, parent: group_1)

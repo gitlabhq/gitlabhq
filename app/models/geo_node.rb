@@ -109,9 +109,9 @@ class GeoNode < ActiveRecord::Base
   end
 
   def project_ids
-    return unless namespaces.any?
-
-    namespaces.flat_map { |namespace| namespace.all_projects.pluck(:id) }.uniq
+    namespaces.flat_map { |namespace| namespace.all_projects.select(:id).pluck(:id) }
+              .uniq
+              .presence
   end
 
   private
