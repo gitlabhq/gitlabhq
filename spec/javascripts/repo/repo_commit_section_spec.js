@@ -120,8 +120,10 @@ describe('RepoCommitSection', () => {
         expect(actions[1].action).toEqual('update');
         expect(actions[0].content).toEqual(openedFiles[0].newContent);
         expect(actions[1].content).toEqual(openedFiles[1].newContent);
-        expect(actions[0].file_path).toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[0].url, branch));
-        expect(actions[1].file_path).toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[1].url, branch));
+        expect(actions[0].file_path)
+          .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[0].url, branch));
+        expect(actions[1].file_path)
+          .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[1].url, branch));
 
         done();
       });
