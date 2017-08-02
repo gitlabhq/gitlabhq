@@ -46,6 +46,7 @@ describe API::Settings, 'Settings' do
           help_page_text: 'custom help text',
           help_page_hide_commercial_content: true,
           help_page_support_url: 'http://example.com/help'
+
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['signin_enabled']).to be_falsey

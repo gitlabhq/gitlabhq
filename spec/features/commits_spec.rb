@@ -77,7 +77,7 @@ describe 'Commits' do
           end
         end
 
-        describe 'Commit builds', :feature, :js do
+        describe 'Commit builds', :js do
           before do
             visit ci_status_path(pipeline)
           end
@@ -152,7 +152,7 @@ describe 'Commits' do
           visit ci_status_path(pipeline)
         end
 
-        it 'Renders header', :feature, :js do
+        it 'Renders header', :js do
           expect(page).to have_content pipeline.sha[0..7]
           expect(page).to have_content pipeline.git_commit_message
           expect(page).to have_content pipeline.user.name
@@ -165,7 +165,7 @@ describe 'Commits' do
         end
       end
 
-      context 'when accessing internal project with disallowed access', :feature, :js do
+      context 'when accessing internal project with disallowed access', :js do
         before do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,

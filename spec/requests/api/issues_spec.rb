@@ -1228,7 +1228,7 @@ describe API::Issues do
       put api("/projects/#{project.id}/issues/#{closed_issue.iid}", user), state_event: 'reopen'
 
       expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq 'reopened'
+      expect(json_response['state']).to eq 'opened'
     end
 
     context 'when an admin or owner makes the request' do

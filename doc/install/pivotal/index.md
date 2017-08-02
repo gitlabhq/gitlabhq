@@ -11,13 +11,27 @@ Enterprise admins want their development toolkit to be more customizable, more
 integrated, and more secure. With Pivotal Cloud Foundry, GitLab is installed and
 scales easily in a highly available environment.
 
-The upgrades are pain-free and well tested. All it takes is upload the new tile 
+The upgrades are pain-free and well tested. All it takes is upload the new tile
 and click a button to begin the upgrade process.
 
 ## Use cases
 
 - You want a highly available deployment with minimal effort. Scale horizontally
   as your user base grows.
+
+## Features
+
+The GitLab Pivotal Tile is based on [Enterprise Edition Premium] and includes nearly all of its features. The features in EEP but _not_ supported on the Tile are:
+
+* PostgreSQL
+* Pages
+* Geo
+* Registry
+* Mattermost
+* Subgroups
+* Elasticsearch
+* Service Desk
+* OAuth & Kerberos Authentication
 
 ## Installing GitLab with Pivotal
 

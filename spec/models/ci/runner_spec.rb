@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Runner, models: true do
+describe Ci::Runner do
   describe 'validation' do
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -50,7 +50,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '.online' do
-    subject { Ci::Runner.online }
+    subject { described_class.online }
 
     before do
       @runner1 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.year.ago)
@@ -352,13 +352,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give shared runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -366,13 +366,13 @@ describe Ci::Runner, models: true do
 
     context 'with unlocked runner' do
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does give a specific runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to contain_exactly(runner) }
       end
@@ -384,13 +384,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give a locked runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end

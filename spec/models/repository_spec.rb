@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -956,21 +956,25 @@ describe Repository, models: true do
     end
   end
 
-  describe '#exists?' do
+  shared_examples 'repo exists check' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to eq(true)
     end
 
-    it 'returns false when a repository does not exist' do
-      allow(repository).to receive(:refs_directory_exists?).and_return(false)
+    it 'returns false if no full path can be constructed' do
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
+  end
 
-    it 'returns false when there is no namespace' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+  describe '#exists?' do
+    context 'when repository_exists is disabled' do
+      it_behaves_like 'repo exists check'
+    end
 
-      expect(repository.exists?).to eq(false)
+    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1856,7 +1860,7 @@ describe Repository, models: true do
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
-        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.push_remote_branches('remote_name', ['branch'])
     end
@@ -1865,7 +1869,7 @@ describe Repository, models: true do
   describe '#delete_remote_branches' do
     it 'delete branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
-        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.delete_remote_branches('remote_name', ['branch'])
     end
@@ -1884,7 +1888,7 @@ describe Repository, models: true do
       masterrev = repository.find_branch('master').dereferenced_target.id
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags)
-        .with(repository.storage_path, repository.path_with_namespace, 'upstream')
+        .with(repository.storage_path, repository.disk_path, 'upstream')
         .and_return({ 'v0.0.1' => masterrev })
 
       tags = repository.remote_tags('upstream')

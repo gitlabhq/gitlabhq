@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Environment, models: true do
+describe Environment do
   set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 

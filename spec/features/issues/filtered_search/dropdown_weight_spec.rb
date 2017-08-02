@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown weight', js: true, feature: true do
+describe 'Dropdown weight', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }

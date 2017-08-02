@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge When Pipeline Succeeds', :feature, :js do
+feature 'Merge When Pipeline Succeeds', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project,

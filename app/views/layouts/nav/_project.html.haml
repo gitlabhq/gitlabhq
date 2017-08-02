@@ -64,7 +64,7 @@
             Members
 
     - if project_nav_tab? :settings
-      = nav_link(path: %w[projects#edit members#show integrations#show services#edit repository#show ci_cd#show pages#show]) do
+      = nav_link(path: %w[projects#edit members#show integrations#show services#edit repository#show ci_cd#show pages#show audit_events#index]) do
         = link_to edit_project_path(@project), title: 'Settings', class: 'shortcuts-tree' do
           %span
             Settings

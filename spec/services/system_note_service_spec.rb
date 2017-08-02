@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SystemNoteService, services: true do
+describe SystemNoteService do
   include Gitlab::Routing
 
   let(:project)  { create(:empty_project) }
@@ -674,7 +674,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.path_with_namespace
+        expect(subject.note).to include new_project.full_path
       end
     end
 
@@ -880,7 +880,7 @@ describe SystemNoteService, services: true do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
 

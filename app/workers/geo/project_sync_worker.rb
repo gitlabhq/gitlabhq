@@ -16,8 +16,13 @@ module Geo
 
       Geo::RepositorySyncService.new(project).execute if sync_repository?(registry, scheduled_time)
       Geo::WikiSyncService.new(project).execute if sync_wiki?(registry, scheduled_time)
-    rescue ActiveRecord::RecordNotFound
-      logger.error("Couldn't find project with ID=#{project_id}, skipping syncing")
+    rescue ActiveRecord::RecordNotFound => e
+      Gitlab::Geo::Logger.error(
+        class: self.class.name,
+        message: "Couldn't find project, skipping syncing",
+        project_id: project_id,
+        error: e
+      )
     end
 
     private

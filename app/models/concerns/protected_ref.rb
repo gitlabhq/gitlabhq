@@ -31,8 +31,8 @@ module ProtectedRef
       end
     end
 
-    def protected_ref_accessible_to?(ref, user, action:)
-      access_levels_for_ref(ref, action: action).any? do |access_level|
+    def protected_ref_accessible_to?(ref, user, action:, protected_refs: nil)
+      access_levels_for_ref(ref, action: action, protected_refs: protected_refs).any? do |access_level|
         access_level.check_access(user)
       end
     end
@@ -43,8 +43,9 @@ module ProtectedRef
       end
     end
 
-    def access_levels_for_ref(ref, action:)
-      self.matching(ref).map(&:"#{action}_access_levels").flatten
+    def access_levels_for_ref(ref, action:, protected_refs: nil)
+      self.matching(ref, protected_refs: protected_refs)
+        .map(&:"#{action}_access_levels").flatten
     end
 
     def matching(ref_name, protected_refs: nil)

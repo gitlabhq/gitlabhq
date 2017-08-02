@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "Internal Project Access", feature: true  do
+describe "Internal Project Access"  do
   include AccessMatchers
 
-  set(:project) { create(:project, :internal) }
+  set(:project) { create(:project, :internal, :repository) }
 
   describe "Project should be internal" do
     describe '#internal?' do

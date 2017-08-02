@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.3 (2017-07-31)
+
+- Fix Prometheus client PID reuse bug. !13130
+- Improve deploy environment chatops slash command. !13150
+- Fix asynchronous javascript paths when GitLab is installed under a relative URL. !13165
+- Fix LDAP authentication to Git repository or container registry.
+- Fixed new navigation breadcrumb title on help pages.
+- Ensure filesystem metrics test files are deleted.
+- Properly affixes nav bar in job view in microsoft edge.
+
+## 9.4.2 (2017-07-28)
+
+- Fix job merge request link to a forked source project. !12965
+- Improve redirect route query performance. !13062
+- Allow admin to read_users_list even if it's restricted. !13066
+- Fixes 500 error caused by pending delete projects in admin dashboard. !13067
+- Add instrumentation to MarkupHelper#link_to_gfm. !13069
+- Pending delete projects should not show in deploy keys. !13088
+- Fix sizing of custom header logo in new navigation.
+- Fix crash on /help/ui.
+- Fix creating merge request diffs when diff contains bytes that are invalid in UTF-8.
+- fix vertical alignment of New Project button.
+- Add LDAP SSL certificate verification option.
+- Fix vertical alignment in firefox and safari for pipeline mini graph.
+
 ## 9.4.1 (2017-07-25)
 
 - Fix pipeline_schedules pages throwing error 500 (when ref is empty). !12983
@@ -136,13 +161,8 @@ entry.
 - Bump Faraday and dependent OAuth2 gem version to support no_proxy variable.
 - Renders 404 if given project is not readable by the user on Todos dashboard.
 - Render CI statuses with warnings in orange.
-<<<<<<< HEAD
-- Add wells to admin dashboard overview to fix spacing problems.
-- Document the Delete Merged Branches functionality.
-=======
 - Document the Delete Merged Branches functionality.
 - Add wells to admin dashboard overview to fix spacing problems.
->>>>>>> ce-com/master
 - Removes hover style for nodes that are either links or buttons in the pipeline graph.
 - more visual contrast in pagination widget.
 - Deprecate Healthcheck Access Token in favor of IP whitelist.

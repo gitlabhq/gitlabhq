@@ -5,7 +5,8 @@ import sidebarAssignees from './components/assignees/sidebar_assignees';
 import Mediator from './sidebar_mediator';
 
 function domContentLoaded() {
-  const mediator = new Mediator(gl.sidebarOptions);
+  const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
+  const mediator = new Mediator(sidebarOptions);
   mediator.fetch();
 
   const sidebarAssigneesEl = document.querySelector('#js-vue-sidebar-assignees');

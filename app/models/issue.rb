@@ -73,15 +73,14 @@ class Issue < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:opened] => :closed
     end
 
     event :reopen do
-      transition closed: :reopened
+      transition closed: :opened
     end
 
     state :opened
-    state :reopened
     state :closed
 
     before_transition any => :closed do |issue|

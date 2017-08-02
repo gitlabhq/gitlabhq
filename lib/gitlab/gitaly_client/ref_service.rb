@@ -10,6 +10,19 @@ module Gitlab
         @storage = repository.storage
       end
 
+      def branches
+        request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            gitaly_commit = GitalyClient::Commit.new(@repository, branch.target)
+            target_commit = Gitlab::Git::Commit.decorate(gitaly_commit)
+            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
+          end
+        end
+      end
+
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request)

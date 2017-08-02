@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Ref switcher', feature: true, js: true do
+feature 'Ref switcher', js: true do
   let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
 
   before do
     project.team << [user, :master]

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Geo::RepositorySyncService, services: true do
+RSpec.describe Geo::RepositorySyncService do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let(:lease) { double(try_obtain: true) }
 
@@ -11,7 +11,7 @@ RSpec.describe Geo::RepositorySyncService, services: true do
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
     let(:repository) { project.repository }
-    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.git" }
+    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.full_path}.git" }
 
     before do
       allow(Gitlab::ExclusiveLease).to receive(:new)
@@ -94,7 +94,7 @@ RSpec.describe Geo::RepositorySyncService, services: true do
 
       context 'when repository sync fail' do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
-        let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.git" }
+        let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.full_path}.git" }
 
         before do
           allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }

@@ -6,21 +6,27 @@ import Cookies from 'js-cookie';
 (function() {
   this.Project = (function() {
     function Project() {
-      $('ul.clone-options-dropdown a').click(function() {
-        var url;
-        if ($(this).hasClass('active')) {
-          return;
-        }
-        $('.active').not($(this)).removeClass('active');
-        $(this).toggleClass('active');
-        url = $("#project_clone").val();
-        $('#project_clone').val(url);
+      const $cloneOptions = $('ul.clone-options-dropdown');
+      const $projectCloneField = $('#project_clone');
+      const $cloneBtnText = $('a.clone-dropdown-btn span');
+
+      $('a', $cloneOptions).on('click', (e) => {
+        const $this = $(e.currentTarget);
+        const url = $this.attr('href');
+
+        e.preventDefault();
+
+        $('.active', $cloneOptions).not($this).removeClass('active');
+        $this.toggleClass('active');
+        $projectCloneField.val(url);
+        $cloneBtnText.text($this.text());
+
+        $('#modal-geo-info').data({
+          cloneUrlSecondary: $this.attr('href'),
+          cloneUrlPrimary: $this.data('primaryUrl') || ''
+        });
+
         return $('.clone').text(url);
-      // Git protocol switcher
-      // Remove the active class for all buttons (ssh, http, kerberos if shown)
-      // Add the active class for the clicked button
-      // Update the input field
-      // Update the command line instructions
       });
       // Ref switcher
       this.initRefSwitcher();

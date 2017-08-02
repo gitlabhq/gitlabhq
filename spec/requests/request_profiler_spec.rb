@@ -15,7 +15,7 @@ describe 'Request Profiler' do
     it 'creates a profile of the request' do
       project = create(:project, namespace: user.namespace)
       time    = Time.now
-      path    = "/#{project.path_with_namespace}"
+      path    = "/#{project.full_path}"
 
       Timecop.freeze(time) do
         get path, nil, 'X-Profile-Token' => Gitlab::RequestProfiler.profile_token

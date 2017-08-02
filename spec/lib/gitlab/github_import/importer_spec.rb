@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::Importer, lib: true do
+describe Gitlab::GithubImport::Importer do
   shared_examples 'Gitlab::GithubImport::Importer#execute' do
     let(:expected_not_called) { [] }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::CommitReferenceFilter, lib: true do
+describe Banzai::Filter::CommitReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -98,18 +98,18 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.css('a').first.text).to eql("#{project2.path_with_namespace}@#{commit.short_id}")
+      expect(doc.css('a').first.text).to eql("#{project2.full_path}@#{commit.short_id}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
-      expect(doc.text).to eql("See (#{project2.path_with_namespace}@#{commit.short_id}.)")
+      expect(doc.text).to eql("See (#{project2.full_path}@#{commit.short_id}.)")
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
@@ -124,7 +124,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")
@@ -150,7 +150,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit.short_id}" }
+    let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
 
     it 'link has valid text' do
       doc = reference_filter("See (#{reference}.)")

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Request access', feature: true do
+feature 'Groups > Members > Request access' do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
-  let!(:project) { create(:project, :private, namespace: group) }
+  let!(:project) { create(:empty_project, :private, namespace: group) }
 
   background do
     group.add_owner(owner)

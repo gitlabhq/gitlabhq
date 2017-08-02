@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NamespacePolicy, models: true do
+describe NamespacePolicy do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:auditor) { create(:user, :auditor) }

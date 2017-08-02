@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
+describe Banzai::Filter::MergeRequestReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:empty_project, :public) }
@@ -102,7 +102,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
   context 'cross-project / cross-namespace complete reference' do
     let(:project2)          { create(:empty_project, :public) }
     let(:merge)             { create(:merge_request, source_project: project2) }
-    let(:reference)         { "#{project2.path_with_namespace}!#{merge.iid}" }
+    let(:reference)         { "#{project2.full_path}!#{merge.iid}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -135,7 +135,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, :public, namespace: namespace) }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let!(:merge)    { create(:merge_request, source_project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}!#{merge.iid}" }
+    let(:reference) { "#{project2.full_path}!#{merge.iid}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

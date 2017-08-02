@@ -1,7 +1,8 @@
 class RefSelectDropdown {
   constructor($dropdownButton, availableRefs) {
+    const availableRefsValue = availableRefs || JSON.parse(document.getElementById('availableRefs').innerHTML);
     $dropdownButton.glDropdown({
-      data: availableRefs,
+      data: availableRefsValue,
       filterable: true,
       filterByText: true,
       remote: false,

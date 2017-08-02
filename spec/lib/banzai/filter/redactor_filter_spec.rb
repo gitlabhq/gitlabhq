@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RedactorFilter, lib: true do
+describe Banzai::Filter::RedactorFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssueReferenceFilter, lib: true do
+describe Banzai::Filter::IssueReferenceFilter do
   include FilterSpecHelper
 
   def helper
@@ -127,7 +127,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     let(:project2)  { create(:empty_project, :public) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
+    let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -148,13 +148,13 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.text).to eql("#{project2.path_with_namespace}##{issue.iid}")
+      expect(doc.css('a').first.text).to eql("#{project2.full_path}##{issue.iid}")
     end
 
     it 'has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.text).to eq("Fixed (#{project2.path_with_namespace}##{issue.iid}.)")
+      expect(doc.text).to eq("Fixed (#{project2.full_path}##{issue.iid}.)")
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -171,7 +171,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, :public, namespace: namespace) }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
+    let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
       expect_any_instance_of(described_class).to receive(:find_object)
@@ -324,10 +324,10 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
         filter = described_class.new(doc, project: project)
 
         expect(filter).to receive(:projects_per_reference)
-          .and_return({ project.path_with_namespace => project })
+          .and_return({ project.full_path => project })
 
         expect(filter).to receive(:references_per_project)
-          .and_return({ project.path_with_namespace => Set.new([issue.iid]) })
+          .and_return({ project.full_path => Set.new([issue.iid]) })
 
         expect(filter.issues_per_project)
           .to eq({ project => { issue.iid => issue } })

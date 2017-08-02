@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectPolicy, models: true do
+describe ProjectPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:dev) { create(:user) }
@@ -142,7 +142,7 @@ describe ProjectPolicy, models: true do
   context 'when a project has pending invites, and the current user is anonymous' do
     let(:group) { create(:group, :public) }
     let(:project) { create(:empty_project, :public, namespace: group) }
-    let(:user_permissions) { [:read_issue_link, :create_project, :create_issue, :create_note, :upload_file] }
+    let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
     let(:anonymous_permissions) { guest_permissions - user_permissions }
 
     subject { described_class.new(nil, project) }

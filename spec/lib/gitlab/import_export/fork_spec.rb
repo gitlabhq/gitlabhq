@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe 'forked project import', services: true do
+describe 'forked project import' do
   let(:user) { create(:user) }
   let!(:project_with_repo) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
   let!(:project) { create(:empty_project, name: 'test-repo-restorer-no-repo', path: 'test-repo-restorer-no-repo') }
   let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
+  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
   let(:forked_from_project) { create(:project) }
   let(:fork_link) { create(:forked_project_link, forked_from_project: project_with_repo) }
   let(:repo_saver) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }

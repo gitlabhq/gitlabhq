@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Path Locks', feature: true, js: true do
+feature 'Path Locks', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:tree_path) { project_tree_path(project, project.repository.root_ref) }

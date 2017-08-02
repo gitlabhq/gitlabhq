@@ -6,7 +6,7 @@ describe API::Internal do
   let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 
-  describe "GET /internal/check", no_db: true do
+  describe "GET /internal/check" do
     it do
       get api("/internal/check"), secret_token: secret_token
 
@@ -349,7 +349,7 @@ describe API::Internal do
 
         context 'project as /namespace/project' do
           it do
-            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+            pull(key, project_with_repo_path('/' + project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -360,7 +360,7 @@ describe API::Internal do
 
         context 'project as namespace/project' do
           it do
-            pull(key, project_with_repo_path(project.path_with_namespace))
+            pull(key, project_with_repo_path(project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy

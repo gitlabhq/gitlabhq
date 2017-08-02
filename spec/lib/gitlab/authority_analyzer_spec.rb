@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::AuthorityAnalyzer, lib: true do
+describe Gitlab::AuthorityAnalyzer do
   describe '#calculate' do
     let(:project) { create(:project) }
     let(:author) { create(:user) }
@@ -19,7 +19,7 @@ describe Gitlab::AuthorityAnalyzer, lib: true do
       ]
     end
 
-    let(:approvers) { Gitlab::AuthorityAnalyzer.new(merge_request, author).calculate(number_of_approvers) }
+    let(:approvers) { described_class.new(merge_request, author).calculate(number_of_approvers) }
 
     before do
       merge_request.compare = double(:compare, raw_diffs: files)

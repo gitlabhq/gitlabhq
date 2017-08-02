@@ -1,4 +1,4 @@
-.page-content-header
+.page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .header-main-content
     %strong
       #{ s_('CommitBoxTitle|Commit') }
@@ -78,6 +78,3 @@
           = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
       in
       = time_interval_in_words last_pipeline.duration
-
-:javascript
-  $(".commit-info.branches").load("#{branches_project_commit_path(@project, @commit.id)}");

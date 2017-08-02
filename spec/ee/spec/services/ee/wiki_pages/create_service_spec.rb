@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WikiPages::CreateService, services: true do
+describe WikiPages::CreateService do
   let(:project) { create(:empty_project) }
   let(:user)    { create(:user) }
 

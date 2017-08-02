@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', feature: true, js: true do
+feature 'Import/Export - project import integration test', js: true do
   include Select2Helper
 
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
@@ -46,7 +46,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     end
 
     scenario 'invalid project' do
-      project = create(:project, namespace: namespace)
+      project = create(:empty_project, namespace: namespace)
 
       visit new_project_path
 
@@ -62,7 +62,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     end
 
     scenario 'project with no name' do
-      create(:project, namespace: namespace)
+      create(:empty_project, namespace: namespace)
 
       visit new_project_path
 

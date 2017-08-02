@@ -4,6 +4,8 @@
 import Cookies from 'js-cookie';
 import UsersSelect from './users_select';
 
+const PARTICIPANTS_ROW_COUNT = 7;
+
 (function() {
   this.IssuableContext = (function() {
     function IssuableContext(currentUser) {
@@ -50,11 +52,9 @@ import UsersSelect from './users_select';
     }
 
     IssuableContext.prototype.initParticipants = function() {
-      var _this;
-      _this = this;
       $(document).on("click", ".js-participants-more", this.toggleHiddenParticipants);
       return $(".js-participants-author").each(function(i) {
-        if (i >= _this.PARTICIPANTS_ROW_COUNT) {
+        if (i >= PARTICIPANTS_ROW_COUNT) {
           return $(this).addClass("js-participants-hidden").hide();
         }
       });

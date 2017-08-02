@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Boards::DestroyService, services: true do
+describe Boards::DestroyService do
   describe '#execute' do
     let(:project) { create(:empty_project) }
     let!(:board)  { create(:board, project: project) }

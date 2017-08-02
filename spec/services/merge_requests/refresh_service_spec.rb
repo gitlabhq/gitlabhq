@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe MergeRequests::RefreshService, services: true do
+describe MergeRequests::RefreshService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:service) { MergeRequests::RefreshService }
+  let(:service) { described_class }
 
   describe '#execute' do
     before do
@@ -86,7 +86,7 @@ describe MergeRequests::RefreshService, services: true do
       let(:refresh_service) { service.new(@project, @user) }
 
       before do
-        @merge_request.update(state: :reopened)
+        @merge_request.update(state: :opened)
 
         allow(refresh_service).to receive(:execute_hooks)
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')

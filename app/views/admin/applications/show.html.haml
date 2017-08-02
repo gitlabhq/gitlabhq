@@ -23,6 +23,12 @@
           %div
             %span.monospace= uri
 
+    %tr
+      %td
+        Trusted
+      %td
+        = @application.trusted? ? 'Y' : 'N'
+
     = render "shared/tokens/scopes_list", token: @application
 
 .form-actions

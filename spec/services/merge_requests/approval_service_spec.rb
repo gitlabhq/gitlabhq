@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MergeRequests::ApprovalService, services: true do
+describe MergeRequests::ApprovalService do
   describe '#execute' do
     let(:user)          { create(:user) }
     let(:merge_request) { create(:merge_request) }

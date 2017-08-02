@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GeoRepositorySyncWorker do
+describe Geo::RepositorySyncWorker do
   let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
   let!(:project_1) { create(:empty_project) }
@@ -11,6 +11,7 @@ describe GeoRepositorySyncWorker do
   describe '#perform' do
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
     end
 
     it 'performs Geo::ProjectSyncWorker for each project' do
@@ -46,8 +47,8 @@ describe GeoRepositorySyncWorker do
       subject.perform
     end
 
-    it 'does not perform Geo::ProjectSyncWorker when primary node does not exists' do
-      allow(Gitlab::Geo).to receive(:primary_node) { nil }
+    it 'does not perform Geo::ProjectSyncWorker when not running on a secondary' do
+      allow(Gitlab::Geo).to receive(:secondary?) { false }
 
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_in)
 

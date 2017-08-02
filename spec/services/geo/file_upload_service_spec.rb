@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::FileUploadService, services: true do
+describe Geo::FileUploadService do
   let!(:node) { create(:geo_node, :current) }
 
   describe '#execute' do

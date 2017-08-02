@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Project members list', feature: true do
+feature 'Project members list' do
   include Select2Helper
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:empty_project, namespace: group) }
 
   background do
     sign_in(user1)

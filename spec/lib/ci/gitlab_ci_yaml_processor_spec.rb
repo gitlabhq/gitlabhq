@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Ci
-  describe GitlabCiYamlProcessor, :lib do
+  describe GitlabCiYamlProcessor do
     subject { described_class.new(config, path) }
     let(:path) { 'path' }
 

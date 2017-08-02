@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'CI shared runner settings', feature: true do
+feature 'CI shared runner settings' do
   include StubENV
 
   let(:admin) { create(:admin) }

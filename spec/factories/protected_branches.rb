@@ -3,56 +3,80 @@ FactoryGirl.define do
     name
     project
 
-    after(:build) do |protected_branch|
-      protected_branch.push_access_levels.new(access_level: Gitlab::Access::MASTER)
-      protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MASTER)
-    end
-
     transient do
+      # EE
       authorize_user_to_push nil
       authorize_user_to_merge nil
-
       authorize_group_to_push nil
       authorize_group_to_merge nil
-    end
 
-    trait :remove_default_access_levels do
-      after(:build) do |protected_branch|
-        protected_branch.push_access_levels = []
-        protected_branch.merge_access_levels = []
-      end
+      default_push_level true
+      default_merge_level true
+      default_access_level true
     end
 
     trait :developers_can_push do
-      after(:create) do |protected_branch|
-        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::DEVELOPER)
+      transient do
+        default_push_level false
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
     trait :developers_can_merge do
-      after(:create) do |protected_branch|
-        protected_branch.merge_access_levels.create!(access_level: Gitlab::Access::DEVELOPER)
+      transient do
+        default_merge_level false
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
     trait :no_one_can_push do
-      after(:create) do |protected_branch|
-        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::NO_ACCESS)
+      transient do
+        default_push_level false
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::NO_ACCESS)
       end
     end
 
     trait :masters_can_push do
-      after(:create) do |protected_branch|
-        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::MASTER)
+      transient do
+        default_push_level false
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MASTER)
       end
     end
 
-    after(:create) do |protected_branch, evaluator|
-      protected_branch.push_access_levels.create!(user: evaluator.authorize_user_to_push) if evaluator.authorize_user_to_push
-      protected_branch.merge_access_levels.create!(user: evaluator.authorize_user_to_merge) if evaluator.authorize_user_to_merge
+    after(:build) do |protected_branch, evaluator|
+      # EE
+      if user = evaluator.authorize_user_to_push
+        protected_branch.push_access_levels.new(user: user)
+      end
+      if user = evaluator.authorize_user_to_merge
+        protected_branch.merge_access_levels.new(user: user)
+      end
+      if group = evaluator.authorize_group_to_push
+        protected_branch.push_access_levels.new(group: group)
+      end
+      if group = evaluator.authorize_group_to_merge
+        protected_branch.merge_access_levels.new(group: group)
+      end
+      next unless protected_branch.merge_access_levels.empty?
 
-      protected_branch.push_access_levels.create!(group: evaluator.authorize_group_to_push) if evaluator.authorize_group_to_push
-      protected_branch.merge_access_levels.create!(group: evaluator.authorize_group_to_merge) if evaluator.authorize_group_to_merge
+      if evaluator.default_access_level && evaluator.default_push_level
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MASTER)
+      end
+      if evaluator.default_access_level && evaluator.default_merge_level
+        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MASTER)
+      end
     end
   end
 end

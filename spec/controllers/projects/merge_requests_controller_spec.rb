@@ -440,7 +440,7 @@ describe Projects::MergeRequestsController do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
         expect(response).to have_http_status(302)
-        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
+        expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
@@ -610,7 +610,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'links to the environment on that project' do
-        expect(json_response.first['url']).to match /#{forked.path_with_namespace}/
+        expect(json_response.first['url']).to match /#{forked.full_path}/
       end
     end
   end

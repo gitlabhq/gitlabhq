@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitPushService, services: true do
+describe GitPushService do
   include RepoHelpers
 
   let(:user)     { create(:user) }
@@ -271,7 +271,6 @@ describe GitPushService, services: true do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         create(:protected_branch, :no_one_can_push, :developers_can_merge,
-               :remove_default_access_levels,
                project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -497,7 +496,7 @@ describe GitPushService, services: true do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
         let(:comment_body) do
           {
-            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/commit/#{closing_commit.id}]."
           }.to_json
         end
 

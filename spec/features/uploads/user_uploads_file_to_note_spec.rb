@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User uploads file to note', feature: true do
+feature 'User uploads file to note' do
   include DropzoneHelper
 
   let(:user) { create(:user) }

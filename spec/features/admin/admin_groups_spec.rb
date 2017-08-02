@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin Groups', feature: true do
+feature 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }

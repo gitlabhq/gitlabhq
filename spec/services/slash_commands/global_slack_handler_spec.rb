@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SlashCommands::GlobalSlackHandler, service: true do
+describe SlashCommands::GlobalSlackHandler do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:verification_token) { '123' }
@@ -37,10 +37,10 @@ describe SlashCommands::GlobalSlackHandler, service: true do
       enable_slack_application(project)
 
       slack_integration = create(:slack_integration, service: project.gitlab_slack_application_service)
-      slack_integration.update(alias: project.path_with_namespace)
+      slack_integration.update(alias: project.full_path)
 
       handler_with_valid_token(
-        text: "#{project.path_with_namespace} issue new title",
+        text: "#{project.full_path} issue new title",
         team_id: slack_integration.team_id
       ).trigger
     end
@@ -66,10 +66,10 @@ describe SlashCommands::GlobalSlackHandler, service: true do
       enable_slack_application(project)
 
       slack_integration = create(:slack_integration, service: project.gitlab_slack_application_service)
-      slack_integration.update(alias: project.path_with_namespace)
+      slack_integration.update(alias: project.full_path)
 
       handler_with_valid_token(
-        text: "#{project.path_with_namespace} issue new title",
+        text: "#{project.full_path} issue new title",
         team_id: slack_integration.team_id
       ).trigger
     end

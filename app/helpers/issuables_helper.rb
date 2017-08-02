@@ -362,4 +362,14 @@ module IssuablesHelper
       params[:format] = :json if issuable.is_a?(Issue)
     end
   end
+
+  def issuable_sidebar_options(issuable, can_edit_issuable)
+    {
+      endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      editable: can_edit_issuable,
+      currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
+      rootPath: root_path,
+      fullPath: @project.full_path
+    }
+  end
 end

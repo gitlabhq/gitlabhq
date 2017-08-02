@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to delegate_method(:shared_runners_minutes).to(:statistics) }
     it { is_expected.to delegate_method(:shared_runners_seconds).to(:statistics) }
@@ -752,18 +752,10 @@ describe Project, models: true do
       it 'logs the Geo::RepositoryRenamedEvent' do
         stub_container_registry_config(enabled: false)
 
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-          .and_return(true)
-
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-          .and_return(true)
+        allow(gitlab_shell).to receive(:mv_repository).twice.and_return(true)
 
         expect(Geo::RepositoryRenamedEventStore).to receive(:new)
-          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .with(instance_of(described_class), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
           .and_call_original
 
         expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)

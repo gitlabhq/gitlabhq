@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Slack application', feature: true do
+feature 'Slack application' do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:role) { :developer }

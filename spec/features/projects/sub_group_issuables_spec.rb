@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Subgroup Issuables', :feature, :js, :nested_groups do
+describe 'Subgroup Issuables', :js, :nested_groups do
   let!(:group)    { create(:group, name: 'group') }
   let!(:subgroup) { create(:group, parent: group, name: 'subgroup') }
   let!(:project)  { create(:empty_project, namespace: subgroup, name: 'project') }

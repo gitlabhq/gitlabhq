@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Artifact file', :js, feature: true do
-  let(:project) { create(:project, :public) }
-  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.sha, ref: 'master') }
+feature 'Artifact file', :js do
+  let(:project) { create(:empty_project, :public) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
 
   def visit_file(path)

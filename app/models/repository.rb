@@ -8,7 +8,7 @@ class Repository
   include RepositoryMirroring
   prepend EE::Repository
 
-  attr_accessor :path_with_namespace, :project
+  attr_accessor :full_path, :disk_path, :project
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -59,13 +59,14 @@ class Repository
     end
   end
 
-  def initialize(path_with_namespace, project)
-    @path_with_namespace = path_with_namespace
+  def initialize(full_path, project, disk_path: nil)
+    @full_path = full_path
+    @disk_path = disk_path || full_path
     @project = project
   end
 
   def raw_repository
-    return nil unless path_with_namespace
+    return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
@@ -73,7 +74,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, disk_path + '.git')
     )
   end
 
@@ -478,8 +479,17 @@ class Repository
   end
   cache_method :root_ref
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    refs_directory_exists?
+    return false unless full_path
+
+    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+      if enabled
+        raw_repository.exists?
+      else
+        refs_directory_exists?
+      end
+    end
   end
   cache_method :exists?
 
@@ -1074,7 +1084,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1175,13 +1185,12 @@ class Repository
   end
 
   def refs_directory_exists?
-    return false unless path_with_namespace
-
     File.exist?(File.join(path_to_repo, 'refs'))
   end
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
+    # TODO: should we use UUIDs here? We could move repositories without clearing this cache
+    @cache ||= RepositoryCache.new(full_path, @project.id)
   end
 
   def tags_sorted_by_committed_date
@@ -1204,7 +1213,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
   def create_commit(params = {})
@@ -1218,6 +1227,6 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
   end
 end

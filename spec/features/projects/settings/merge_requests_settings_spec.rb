@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project settings > Merge Requests', feature: true, js: true do
+feature 'Project settings > Merge Requests', :js do
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
 

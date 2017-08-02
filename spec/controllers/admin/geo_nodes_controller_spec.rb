@@ -187,7 +187,7 @@ describe Admin::GeoNodesController, :postgresql do
         end
 
         it 'displays a flash message' do
-          expect(controller).to set_flash.now[:alert].to("Primary node can't be disabled.")
+          expect(controller).to set_flash[:alert].to("Primary node can't be disabled.")
         end
 
         it 'redirects to the geo nodes page' do
@@ -208,7 +208,7 @@ describe Admin::GeoNodesController, :postgresql do
           end
 
           it 'displays a flash message' do
-            expect(controller).to set_flash.now[:notice].to('Node http://example.com/ was successfully disabled.')
+            expect(controller).to set_flash[:notice].to('Node http://example.com/ was successfully disabled.')
           end
 
           it 'redirects to the geo nodes page' do
@@ -227,7 +227,7 @@ describe Admin::GeoNodesController, :postgresql do
           end
 
           it 'displays a flash message' do
-            expect(controller).to set_flash.now[:alert].to('There was a problem disabling node http://example.com/.')
+            expect(controller).to set_flash[:alert].to('There was a problem disabling node http://example.com/.')
           end
 
           it 'redirects to the geo nodes page' do

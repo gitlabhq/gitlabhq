@@ -759,6 +759,10 @@
   }
 }
 
+.with-performance-bar .merge-request-tabs-holder {
+  top: $header-height + $performance-bar-height;
+}
+
 .merge-request-tabs {
   display: flex;
   margin-bottom: 0;

@@ -45,23 +45,23 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:opened] => :closed
     end
 
     event :mark_as_merged do
-      transition [:reopened, :opened, :locked] => :merged
+      transition [:opened, :locked] => :merged
     end
 
     event :reopen do
-      transition closed: :reopened
+      transition closed: :opened
     end
 
     event :lock_mr do
-      transition [:reopened, :opened] => :locked
+      transition [:opened] => :locked
     end
 
     event :unlock_mr do
-      transition locked: :reopened
+      transition locked: :opened
     end
 
     after_transition any => :locked do |merge_request, transition|
@@ -75,7 +75,6 @@ class MergeRequest < ActiveRecord::Base
     end
 
     state :opened
-    state :reopened
     state :closed
     state :merged
     state :locked
@@ -372,7 +371,7 @@ class MergeRequest < ActiveRecord::Base
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
-    if opened? || reopened?
+    if opened?
       similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
       if similar_mrs.any?
@@ -652,7 +651,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_path
     if target_project
-      target_project.path_with_namespace
+      target_project.full_path
     else
       "(removed)"
     end
@@ -660,7 +659,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_path
     if source_project
-      source_project.path_with_namespace
+      source_project.full_path
     else
       "(removed)"
     end
