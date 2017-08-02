@@ -9,6 +9,10 @@ const Store = gl.issueBoards.BoardsStore;
 export default {
   name: 'BoardList',
   props: {
+    groupId: {
+      type: Number,
+      required: false,
+    },
     disabled: {
       type: Boolean,
       required: true,
@@ -167,6 +171,7 @@ export default {
       </div>
       <transition name="slide-down">
         <board-new-issue
+          :groupId="groupId"
           :list="list"
           v-if="list.type !== 'closed' && showIssueForm"/>
       </transition>

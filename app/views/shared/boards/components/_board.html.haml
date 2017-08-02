@@ -6,10 +6,16 @@
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded && list.position === -1, \"fa-caret-left\": !list.isExpanded && list.position !== -1 }",
           "aria-hidden": "true" }
-        %span.has-tooltip{ ":title" => '(list.label ? list.label.description : "")',
+        %span.board-title-text.has-tooltip{ ":title" => '(list.label ? list.label.description : "")',
           data: { container: "body", placement: "bottom" } }
           {{ list.title }}
-        .issue-count-badge.pull-right.clearfix{ "v-if" => 'list.type !== "blank"' }
+        - if can?(current_user, :admin_list, current_board_parent)
+          %board-delete{ "inline-template" => true,
+            ":list" => "list",
+            "v-if" => "!list.preset && list.id" }
+            %button.board-delete.has-tooltip.btn.btn-transparent.link-highlight{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+              = icon("trash")
+        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank"' }
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_list, current_board_parent)
@@ -20,12 +26,6 @@
               "title" => "New issue",
               data: { placement: "top", container: "body" } }
               = icon("plus", class: "js-no-trigger-collapse")
-        - if can?(current_user, :admin_list, current_board_parent)
-          %board-delete{ "inline-template" => true,
-            ":list" => "list",
-            "v-if" => "!list.preset && list.id" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
-              = icon("trash")
     %board-list{ "v-if" => 'list.type !== "blank"',
       ":list" => "list",
       ":issues" => "list.issues",
@@ -33,6 +33,7 @@
       ":disabled" => "disabled",
       ":issue-link-base" => "issueLinkBase",
       ":root-path" => "rootPath",
+      ":groupId" => (current_board_parent.id if @group),
       "ref" => "board-list" }
     - if can?(current_user, :admin_list, current_board_parent)
       %board-blank-state{ "v-if" => 'list.id == "blank"' }
