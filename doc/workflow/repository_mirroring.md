@@ -26,9 +26,9 @@ the mirror is already being updated or 5 minutes still haven't passed since its 
 
 A few things/limitations to consider:
 
-- The repository must be accessible over `http://`, `https://` or `git://`.
+- The repository must be accessible over `http://`, `https://`, `ssh://` or `git://`.
 - If your HTTP repository is not publicly accessible, add authentication
-  information to the URL, like: `https://username:password@gitlab.company.com/group/project.git`.
+  information to the URL, like: `https://username@gitlab.company.com/group/project.git`.
   In some cases, you might need to use a personal access token instead of a
   password, e.g., you want to mirror to GitHub and have 2FA enabled.
 - The import will time out after 15 minutes. For repositories that take longer
@@ -83,6 +83,97 @@ become diverged from upstream, and GitLab will no longer automatically update
 this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
+
+### SSH authentication
+
+> [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.15
+
+If you're mirroring over SSH (i.e., an `ssh://` URL), you can authenticate using
+password-based authentication, just as over HTTPS, but you can also use public
+key authentication. This is often more secure than password authentication,
+especially when the source repository supports [Deploy Keys][deploy-key].
+
+To get started, navigate to **Settings ➔ Repository ➔ Pull from a remote repository**,
+enable mirroring (if not already enabled) and enter an `ssh://` URL.
+
+> **NOTE**: SCP-style URLs, e.g., `git@example.com:group/project.git`, are not
+supported at this time.
+
+Entering the URL adds two features to the page - `Fingerprints` and
+`SSH public key authentication`:
+
+![Pull settings for SSH](repository_mirroring/repository_mirroring_pull_settings_for_ssh.png)
+
+SSH authentication is mutual. You have to prove to the server that you're
+allowed to access the repository, but the server also has to prove to *you* that
+it's who it claims to be. You provide your credentials as a password or public
+key. The server that the source repository resides on provides its credentials
+as a "host key", the fingerprint of which needs to be verified manually.
+
+Press the `Detect host keys` button. GitLab will fetch the host keys from the
+server, and display the fingerprints to you:
+
+![Detect SSH host keys](repository_mirroring/repository_mirroring_detect_host_keys.png)
+
+You now need to verify that the fingerprints are those you expect. GitLab.com
+and other code hosting sites publish their fingerprints in the open for you
+to check:
+
+* [AWS CodeCommit](http://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
+* [Bitbucket](https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints)
+* [GitHub](https://help.github.com/articles/github-s-ssh-key-fingerprints/)
+* [GitLab.com](https://about.gitlab.com/gitlab-com/settings/#ssh-host-keys-fingerprints)
+* [Launchpad](https://help.launchpad.net/SSHFingerprints)
+* [Savannah](http://savannah.gnu.org/maintenance/SshAccess/)
+* [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
+
+Other providers will vary. If you're running on-premises GitLab, or otherwise
+have access to the source server, you can securely gather the key fingerprints:
+
+```
+$ cat /etc/ssh/ssh_host*pub | ssh-keygen -E md5 -l -f -
+256 MD5:f4:28:9f:23:99:15:21:1b:bf:ed:1f:8e:a0:76:b2:9d root@example.com (ECDSA)
+256 MD5:e6:eb:45:8a:3c:59:35:5f:e9:5b:80:12:be:7e:22:73 root@example.com (ED25519)
+2048 MD5:3f:72:be:3d:62:03:5c:62:83:e8:6e:14:34:3a:85:1d root@example.com (RSA)
+```
+
+(You may need to exclude `-E md5` for some older versions of SSH).
+
+If you're an SSH expert and already have a `known_hosts` file you'd like to use
+unaltered, then you can skip these steps. Just press the "Show advanced" button
+and paste in the file contents:
+
+![Advanced SSH host key management](repository_mirroring/repository_mirroring_pull_advanced_host_keys.png)
+
+Once you've **carefully verified** that all the fingerprints match your trusted
+source, you can press `Save changes`. This will record the host keys, along with
+the person who verified them (you!) and the date:
+
+![SSH host keys submitted](repository_mirroring/repository_mirroring_ssh_host_keys_verified.png)
+
+When pulling changes from the source repository, GitLab will now check that at
+least one of the stored host keys matches before connecting. This can prevent
+malicious code from being injected into your mirror, or your password being
+stolen!
+
+To use SSH public key authentication, you'll also need to choose that option
+from the authentication methods dropdown. GitLab will generate a 4096-bit RSA
+key and display the public component of that key to you:
+
+![SSH public key authentication](repository_mirroring/repository_mirroring_ssh_public_key_authentication.png)
+
+You then need to add the public SSH key to the source repository configuration.
+If the source is hosted on GitLab, you should add it as a [Deploy Key][deploy-key].
+Other sources may require you to add the key to your user's `authorized_keys`
+file - just paste the entire `ssh-rsa AAA.... user@host` block into the file on
+its own line and save it.
+
+Once the public key is set up on the source repository, press `Save changes` and your
+mirror will be begin working.
+
+If you need to change the key at any time, you can press the `Regenerate key`
+button to do so. You'll have to update the source repository with the new key
+to keep the mirror running.
 
 ## How it works
 
@@ -139,5 +230,7 @@ to resolve this issue.
 
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
+[ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [perms]: ../user/permissions.md
 [hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
+[deploy-key]: ../ssh/README.md#deploy-keys
