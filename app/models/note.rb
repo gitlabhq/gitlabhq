@@ -26,7 +26,6 @@ class Note < ActiveRecord::Base
   end
 
   ignore_column :original_discussion_id
-  ignore_column :special_role
 
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
@@ -155,6 +154,10 @@ class Note < ActiveRecord::Base
         .group(:noteable_id)
         .where(noteable_type: type, noteable_id: ids)
     end
+
+    def has_special_role?(role, note)
+      note.special_role == role
+    end
   end
 
   def cross_reference?
@@ -221,14 +224,19 @@ class Note < ActiveRecord::Base
   end
 
   def special_role=(role)
-    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.values.include? role
+    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.values.include?(role)
+
     @special_role = role
   end
 
   def has_special_role?(role)
-    return @special_role == role
+    self.class.has_special_role?(role, self)
   end
 
+  def specialize!(role)
+    self.special_role = role if !block_given? || yield(self)
+  end
+ 
   def editable?
     !system?
   end

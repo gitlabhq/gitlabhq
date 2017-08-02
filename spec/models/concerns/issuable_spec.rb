@@ -492,15 +492,14 @@ describe Issuable do
 
     let(:contributor) { create(:user) }
     let(:first_time_contributor) { create(:user) }
-    let!(:access_users) { [owner, master, reporter] }
 
     before do
       group.add_owner(owner)
-      project.team << [master, :master]
-      project.team << [reporter, :reporter]
-      project.team << [guest, :guest]
-      project.team << [contributor, :guest]
-      project.team << [first_time_contributor, :guest]
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(guest)
+      project.add_guest(contributor)
+      project.add_guest(first_time_contributor)
     end
     
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
@@ -510,27 +509,30 @@ describe Issuable do
     context "for merge requests" do
       it "is false for MASTER" do
         mr = create(:merge_request, author: master, target_project: project, source_project: project)
-        expect(mr.first_contribution?).to be_falsey
+
+        expect(mr).not_to be_first_contribution
       end
 
       it "is false for OWNER" do
         mr = create(:merge_request, author: owner, target_project: project, source_project: project)
-        expect(mr.first_contribution?).to be_falsey
+        
+        expect(mr).not_to be_first_contribution
       end
 
       it "is false for REPORTER" do
         mr = create(:merge_request, author: reporter, target_project: project, source_project: project)
-        expect(mr.first_contribution?).to be_falsey
+        
+        expect(mr).not_to be_first_contribution
       end
 
       it "is true when you don't have any merged MR" do
-        expect(open_mr.first_contribution?).to be_truthy
-        expect(merged_mr.first_contribution?).to be_falsey
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr).not_to be_first_contribution
       end
 
-      it "handle multiple projects separately" do
-        expect(open_mr.first_contribution?).to be_truthy
-        expect(merged_mr_other_project.first_contribution?).to be_falsey
+      it "handles multiple projects separately" do
+        expect(open_mr).to be_first_contribution
+        expect(merged_mr_other_project).not_to be_first_contribution
       end
     end
 
@@ -541,15 +543,15 @@ describe Issuable do
 
       it "is true when you don't have any merged MR" do
         expect(merged_mr).to be
-        expect(first_time_contributor_issue.first_contribution?).to be_truthy
-        expect(contributor_issue.first_contribution?).to be_falsey
+        expect(first_time_contributor_issue).to be_first_contribution
+        expect(contributor_issue).not_to be_first_contribution
       end
 
-      it "handle multiple projects separately" do
+      it "handles multiple projects separately" do
         expect(merged_mr).to be
         expect(merged_mr_other_project).to be
-        expect(first_time_contributor_issue.first_contribution?).to be_truthy
-        expect(first_time_contributor_issue_other_project.first_contribution?).to be_falsey
+        expect(first_time_contributor_issue).to be_first_contribution
+        expect(first_time_contributor_issue_other_project).not_to be_first_contribution
       end
     end
   end

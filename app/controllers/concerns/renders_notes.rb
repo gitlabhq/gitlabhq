@@ -1,5 +1,5 @@
 module RendersNotes
-  def prepare_notes_for_rendering(notes, noteable=nil)
+  def prepare_notes_for_rendering(notes, noteable = nil)
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
     preload_first_time_contribution_for_authors(noteable, notes) if noteable.is_a?(Issuable)
@@ -23,7 +23,10 @@ module RendersNotes
 
   def preload_first_time_contribution_for_authors(issuable, notes)
     return unless issuable.first_contribution?
+
     same_author = lambda {|n| n.author_id == issuable.author_id}
-    notes.select(&same_author).each {|note| note.special_role = :first_time_contributor}
+    notes.each do |note|
+      note.specialize!(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR, &same_author)
+    end
   end
 end

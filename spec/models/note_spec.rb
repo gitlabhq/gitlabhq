@@ -696,4 +696,25 @@ describe Note do
       note.destroy!
     end
   end
+
+  describe '#specialize!' do
+    let(:note) { build(:note) }
+    let(:role) { Note::SpecialRole::FIRST_TIME_CONTRIBUTOR }
+
+    it 'should set special role without a block' do
+      expect { note.specialize!(role) }.to change { note.special_role }.from(nil).to(role)
+    end
+
+    it 'should set special role with a truthy block' do
+      tautology = -> (*) { true }
+      
+      expect { note.specialize!(role, &tautology) }.to change { note.special_role }.from(nil).to(role)
+    end
+
+    it 'should not set special role with a falsey block' do
+      contradiction = -> (*) { false }
+
+      expect { note.specialize!(role, &contradiction) }.not_to change { note.special_role }
+    end
+  end
 end
