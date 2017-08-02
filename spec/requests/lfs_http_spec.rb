@@ -600,7 +600,7 @@ describe 'Git LFS API and storage' do
 
       context 'when user is not authenticated' do
         describe 'is accessing public project' do
-          let(:project) { create(:project, :public) }
+          let(:project) { create(:empty_project, :public) }
 
           let(:update_lfs_permissions) do
             project.lfs_objects << lfs_object
@@ -642,7 +642,7 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'upload' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:empty_project, :public) }
       let(:body) do
         {
           'operation' => 'upload',
@@ -1019,7 +1019,7 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'to a forked project' do
-      let(:upstream_project) { create(:project, :public) }
+      let(:upstream_project) { create(:empty_project, :public) }
       let(:project_owner) { create(:user) }
       let(:project) { fork_project(upstream_project, project_owner) }
 

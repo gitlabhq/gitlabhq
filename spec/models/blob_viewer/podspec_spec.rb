@@ -3,7 +3,7 @@ require 'spec_helper'
 describe BlobViewer::Podspec do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:empty_project) }
   let(:data) do
     <<-SPEC.strip_heredoc
       Pod::Spec.new do |spec|

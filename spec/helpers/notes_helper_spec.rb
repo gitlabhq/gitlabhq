@@ -40,7 +40,7 @@ describe NotesHelper do
   end
 
   describe '#discussion_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'for a merge request discusion' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }

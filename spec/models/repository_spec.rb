@@ -300,7 +300,7 @@ describe Repository do
     end
 
     context "when committing to another project" do
-      let(:forked_project) { create(:project) }
+      let(:forked_project) { create(:project, :repository) }
 
       it "creates a fork and commit to the forked project" do
         expect do

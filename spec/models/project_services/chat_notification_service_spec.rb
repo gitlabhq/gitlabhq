@@ -20,7 +20,7 @@ describe ChatNotificationService do
 
     context 'with repository' do
       it 'returns true' do
-        subject.project = create(:project)
+        subject.project = create(:project, :repository)
 
         expect(subject.can_test?).to be true
       end

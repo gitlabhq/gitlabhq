@@ -196,7 +196,7 @@ describe ProjectsController do
 
     context "redirection from http://someproject.git" do
       it 'redirects to project page (format.html)' do
-        project = create(:project, :public)
+        project = create(:empty_project, :public)
 
         get :show, namespace_id: project.namespace, id: project, format: :git
 
@@ -254,7 +254,7 @@ describe ProjectsController do
   describe '#transfer' do
     render_views
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:admin) { create(:admin) }
     let(:new_namespace) { create(:namespace) }
 
@@ -311,8 +311,8 @@ describe ProjectsController do
     end
 
     context "when the project is forked" do
-      let(:project)      { create(:project) }
-      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:project)      { create(:project, :repository) }
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
       let(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
@@ -390,7 +390,7 @@ describe ProjectsController do
       end
 
       context 'with forked project' do
-        let(:project_fork) { create(:project, namespace: user.namespace) }
+        let(:project_fork) { create(:project, :repository, namespace: user.namespace) }
 
         before do
           create(:forked_project_link, forked_to_project: project_fork)
@@ -408,7 +408,7 @@ describe ProjectsController do
       end
 
       context 'when project not forked' do
-        let(:unforked_project) { create(:project, namespace: user.namespace) }
+        let(:unforked_project) { create(:empty_project, namespace: user.namespace) }
 
         it 'does nothing if project was not forked' do
           delete(:remove_fork,
@@ -430,7 +430,7 @@ describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:public_project) { create(:project, :public) }
+    let(:public_project) { create(:project, :public, :repository) }
 
     it "gets a list of branches and tags" do
       get :refs, namespace_id: public_project.namespace, id: public_project

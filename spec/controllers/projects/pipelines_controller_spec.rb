@@ -61,7 +61,7 @@ describe Projects::PipelinesController do
         create_build('post deploy', 3, 'pages 0')
       end
 
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end

@@ -8,8 +8,8 @@ describe Admin::DashboardController do
       it 'does not retrieve projects that are pending deletion' do
         sign_in(create(:admin))
 
-        project = create(:project)
-        pending_delete_project = create(:project, pending_delete: true)
+        project = create(:empty_project)
+        pending_delete_project = create(:empty_project, pending_delete: true)
 
         get :index
 

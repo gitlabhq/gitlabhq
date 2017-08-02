@@ -104,7 +104,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
 
   describe '#move_repository' do
     let(:known_parent) { create(:namespace, path: 'known-parent') }
-    let(:project) { create(:project, path: 'the-path', namespace: known_parent) }
+    let(:project) { create(:project, :repository, path: 'the-path', namespace: known_parent) }
 
     it 'moves the repository for a project' do
       expected_path = File.join(TestEnv.repos_path, 'known-parent', 'new-repo.git')
