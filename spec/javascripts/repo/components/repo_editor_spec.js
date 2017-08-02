@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import repoEditor from '~/repo/repo_editor.vue';
-import RepoStore from '~/repo/repo_store';
+import repoEditor from '~/repo/components/repo_editor.vue';
+import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoEditor', () => {
   function createComponent() {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import RepoService from '~/repo/repo_service';
+import RepoService from '~/repo/services/repo_service';
 
 describe('RepoService', () => {
   it('has default json format param', () => {

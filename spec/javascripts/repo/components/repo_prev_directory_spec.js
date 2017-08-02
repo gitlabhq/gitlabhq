@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoPrevDirectory from '~/repo/repo_prev_directory.vue';
+import repoPrevDirectory from '~/repo/components/repo_prev_directory.vue';
 
 describe('RepoPrevDirectory', () => {
   function createComponent(propsData) {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Store from './repo_store';
+import Store from '../stores/repo_store';
 
 const RepoService = {
   url: '',

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoFile from '~/repo/repo_file.vue';
+import repoFile from '~/repo/components/repo_file.vue';
 
 describe('RepoFile', () => {
   const updated = 'updated';

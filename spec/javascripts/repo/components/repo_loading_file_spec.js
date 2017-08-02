@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoLoadingFile from '~/repo/repo_loading_file.vue';
+import repoLoadingFile from '~/repo/components/repo_loading_file.vue';
 
 describe('RepoLoadingFile', () => {
   function createComponent(propsData) {

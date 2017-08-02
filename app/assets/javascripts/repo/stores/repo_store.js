@@ -1,5 +1,5 @@
 /* global Flash */
-import RepoHelper from './repo_helper';
+import RepoHelper from '../helpers/repo_helper';
 
 const RepoStore = {
   ideEl: {},

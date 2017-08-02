@@ -2,17 +2,17 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Translate from '../vue_shared/translate';
-import RepoSidebar from './repo_sidebar.vue';
+import RepoSidebar from './components/repo_sidebar.vue';
 import EditButton from './repo_edit_button';
-import Service from './repo_service';
-import Store from './repo_store';
-import RepoCommitSection from './repo_commit_section.vue';
-import RepoTabs from './repo_tabs.vue';
-import RepoFileButtons from './repo_file_buttons.vue';
-import RepoBinaryViewer from './repo_binary_viewer.vue';
-import RepoEditor from './repo_editor.vue';
+import Service from './services/repo_service';
+import Store from './stores/repo_store';
+import RepoCommitSection from './components/repo_commit_section.vue';
+import RepoTabs from './components/repo_tabs.vue';
+import RepoFileButtons from './components/repo_file_buttons.vue';
+import RepoBinaryViewer from './components/repo_binary_viewer.vue';
+import RepoEditor from './components/repo_editor.vue';
 import monacoLoader from './monaco_loader';
-import RepoMixin from './repo_mixin';
+import RepoMixin from './mixins/repo_mixin';
 import PopupDialog from '../vue_shared/components/popup_dialog.vue';
 
 Vue.use(Translate);

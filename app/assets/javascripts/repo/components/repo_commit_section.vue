@@ -1,9 +1,9 @@
 <script>
 /* global Flash */
-import Store from './repo_store';
-import Api from '../api';
-import RepoMixin from './repo_mixin';
-import Helper from './repo_helper';
+import Store from '../stores/repo_store';
+import Api from '../../api';
+import RepoMixin from '../mixins/repo_mixin';
+import Helper from '../helpers/repo_helper';
 
 const RepoCommitSection = {
   data: () => Store,

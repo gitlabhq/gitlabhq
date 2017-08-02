@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Store from '~/repo/repo_store';
-import repoBinaryViewer from '~/repo/repo_binary_viewer.vue';
+import Store from '~/repo/stores/repo_store';
+import repoBinaryViewer from '~/repo/components/repo_binary_viewer.vue';
 
 describe('RepoBinaryViewer', () => {
   function createComponent() {

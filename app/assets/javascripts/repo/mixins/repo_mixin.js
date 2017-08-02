@@ -1,4 +1,4 @@
-import Store from './repo_store';
+import Store from '../stores/repo_store';
 
 const RepoMixin = {
   computed: {

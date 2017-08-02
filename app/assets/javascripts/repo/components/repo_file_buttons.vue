@@ -1,7 +1,7 @@
 <script>
-import Store from './repo_store';
-import Helper from './repo_helper';
-import RepoMixin from './repo_mixin';
+import Store from '../stores/repo_store';
+import Helper from '../helpers/repo_helper';
+import RepoMixin from '../mixins/repo_mixin';
 
 const RepoFileButtons = {
   data: () => Store,

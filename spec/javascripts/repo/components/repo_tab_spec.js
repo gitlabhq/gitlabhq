@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoTab from '~/repo/repo_tab.vue';
+import repoTab from '~/repo/components/repo_tab.vue';
 
 describe('RepoTab', () => {
   function createComponent(propsData) {

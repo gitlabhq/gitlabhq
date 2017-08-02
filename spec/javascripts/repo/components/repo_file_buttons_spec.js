@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import repoFileButtons from '~/repo/repo_file_buttons.vue';
-import RepoStore from '~/repo/repo_store';
+import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
+import RepoStore from '~/repo/stores/repo_store';
 
 describe('RepoFileButtons', () => {
   function createComponent() {

@@ -1,6 +1,6 @@
 <script>
-import Store from './repo_store';
-import RepoHelper from './repo_helper';
+import Store from '../stores/repo_store';
+import RepoHelper from '../helpers/repo_helper';
 
 const RepoBinaryViewer = {
   data: () => Store,

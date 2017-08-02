@@ -1,5 +1,5 @@
 <script>
-import RepoStore from './repo_store';
+import RepoStore from '../stores/repo_store';
 
 const RepoTab = {
   props: {

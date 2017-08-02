@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import RepoStore from '~/repo/repo_store';
-import repoTabs from '~/repo/repo_tabs.vue';
+import RepoStore from '~/repo/stores/repo_store';
+import repoTabs from '~/repo/components/repo_tabs.vue';
 
 describe('RepoTabs', () => {
   const openedFiles = [{

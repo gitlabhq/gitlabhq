@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import repoFileOptions from '~/repo/repo_file_options.vue';
+import repoFileOptions from '~/repo/components/repo_file_options.vue';
 
 describe('RepoFileOptions', () => {
   const projectName = 'projectName';

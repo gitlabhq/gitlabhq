@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import RepoStore from '~/repo/repo_store';
-import repoSidebar from '~/repo/repo_sidebar.vue';
+import RepoStore from '~/repo/stores/repo_store';
+import repoSidebar from '~/repo/components/repo_sidebar.vue';
 
 describe('RepoSidebar', () => {
   function createComponent() {

@@ -1,5 +1,5 @@
 <script>
-import TimeAgoMixin from '../vue_shared/mixins/timeago';
+import TimeAgoMixin from '../../vue_shared/mixins/timeago';
 
 const RepoFile = {
   mixins: [TimeAgoMixin],

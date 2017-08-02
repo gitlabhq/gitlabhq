@@ -1,7 +1,7 @@
 <script>
 /* global monaco */
-import Store from './repo_store';
-import Helper from './repo_helper';
+import Store from '../stores/repo_store';
+import Helper from '../helpers/repo_helper';
 
 const RepoEditor = {
   data: () => Store,

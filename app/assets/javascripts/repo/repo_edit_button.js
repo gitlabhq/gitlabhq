@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Store from './repo_store';
-import RepoMixin from './repo_mixin';
+import Store from './stores/repo_store';
+import RepoMixin from './mixins/repo_mixin';
 import { __ } from '../locale';
 
 export default class RepoEditButton {

@@ -1,8 +1,8 @@
 <script>
 import Vue from 'vue';
-import Store from './repo_store';
+import Store from '../stores/repo_store';
 import RepoTab from './repo_tab.vue';
-import RepoMixin from './repo_mixin';
+import RepoMixin from '../mixins/repo_mixin';
 
 const RepoTabs = {
   mixins: [RepoMixin],

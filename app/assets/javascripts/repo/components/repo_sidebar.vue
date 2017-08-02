@@ -1,12 +1,12 @@
 <script>
-import Service from './repo_service';
-import Helper from './repo_helper';
-import Store from './repo_store';
+import Service from '../services/repo_service';
+import Helper from '../helpers/repo_helper';
+import Store from '../stores/repo_store';
 import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFileOptions from './repo_file_options.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
-import RepoMixin from './repo_mixin';
+import RepoMixin from '../mixins/repo_mixin';
 
 const RepoSidebar = {
   mixins: [RepoMixin],
