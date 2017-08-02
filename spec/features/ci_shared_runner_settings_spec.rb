@@ -5,7 +5,7 @@ feature 'CI shared runner settings' do
 
   let(:admin) { create(:admin) }
   let(:group) { create(:group, :with_build_minutes) }
-  let!(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+  let!(:project) { create(:empty_project, namespace: group, shared_runners_enabled: true) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

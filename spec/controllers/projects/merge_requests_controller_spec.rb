@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
@@ -191,7 +191,7 @@ describe Projects::MergeRequestsController do
     end
 
     context 'there is no source project' do
-      let(:project)       { create(:project) }
+      let(:project)       { create(:project, :repository) }
       let(:fork_project)  { create(:forked_project_with_submodules) }
       let(:merge_request) { create(:merge_request, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
@@ -430,7 +430,7 @@ describe Projects::MergeRequestsController do
     context "when the user is owner" do
       let(:owner)     { create(:user) }
       let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:project, namespace: namespace) }
+      let(:project)   { create(:project, :repository, namespace: namespace) }
 
       before do
         sign_in owner
@@ -588,7 +588,7 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { create(:project) }
+      let!(:forked)       { create(:project, :repository) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
       let(:admin)         { create(:admin) }

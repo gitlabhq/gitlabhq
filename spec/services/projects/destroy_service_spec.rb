@@ -65,7 +65,7 @@ describe Projects::DestroyService do
 
     context 'when has remote mirrors' do
       let!(:project) do
-        create(:project, namespace: user.namespace).tap do |project|
+        create(:project, :repository, namespace: user.namespace).tap do |project|
           project.remote_mirrors.create(url: 'http://test.com')
         end
       end

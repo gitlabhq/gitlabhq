@@ -18,7 +18,7 @@ describe SearchHelper do
     end
 
     it "returns parsed result" do
-      project = create :project
+      project = create :project, :repository
 
       project.repository.index_blobs
 

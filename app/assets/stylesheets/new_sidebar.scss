@@ -143,10 +143,19 @@ $new-sidebar-width: 220px;
     white-space: nowrap;
 
     a {
-      display: block;
+      display: flex;
+      align-items: center;
       padding: 12px 16px;
       color: $inactive-color;
     }
+
+    svg {
+      fill: $inactive-color;
+    }
+  }
+
+  .nav-item-name {
+    flex: 1;
   }
 
   li.active {
@@ -156,10 +165,24 @@ $new-sidebar-width: 220px;
       color: $active-color;
       font-weight: 700;
     }
+
+    svg {
+      fill: $active-color;
+    }
   }
 
   @media (max-width: $screen-xs-max) {
     left: (-$new-sidebar-width);
+  }
+
+  .nav-icon-container {
+    display: flex;
+    margin-right: 8px;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
   }
 }
 
@@ -173,7 +196,7 @@ $new-sidebar-width: 220px;
 
   > li {
     a {
-      padding: 8px 16px 8px 24px;
+      padding: 8px 16px 8px 50px;
 
       &:hover,
       &:focus {
@@ -261,6 +284,7 @@ $new-sidebar-width: 220px;
           }
 
           a {
+            padding: 8px 16px;
             color: $gl-text-color;
 
             &:hover,
@@ -273,7 +297,6 @@ $new-sidebar-width: 220px;
     }
 
     .badge {
-      float: right;
       background-color: $inactive-badge-background;
       color: $inactive-color;
     }

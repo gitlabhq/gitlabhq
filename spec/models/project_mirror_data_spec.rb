@@ -28,7 +28,7 @@ describe ProjectMirrorData, type: :model do
   end
 
   describe '#reset_retry_count!' do
-    let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
+    let(:mirror_data) { create(:empty_project, :mirror, :import_finished).mirror_data }
 
     it 'resets retry_count to 0' do
       mirror_data.retry_count = 3
@@ -38,7 +38,7 @@ describe ProjectMirrorData, type: :model do
   end
 
   describe '#increment_retry_count!' do
-    let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
+    let(:mirror_data) { create(:empty_project, :mirror, :import_finished).mirror_data }
 
     it 'increments retry_count' do
       expect { mirror_data.increment_retry_count! }.to change { mirror_data.retry_count }.from(0).to(1)
@@ -46,7 +46,7 @@ describe ProjectMirrorData, type: :model do
   end
 
   describe '#set_next_execution_timestamp!' do
-    let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
+    let(:mirror_data) { create(:empty_project, :mirror, :import_finished).mirror_data }
     let!(:timestamp) { Time.now }
     let!(:jitter) { 2.seconds }
     let(:interval) { 2.minutes }

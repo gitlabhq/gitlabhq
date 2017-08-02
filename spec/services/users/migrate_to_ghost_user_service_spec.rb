@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Users::MigrateToGhostUserService do
   let!(:user)      { create(:user) }
-  let!(:project)   { create(:project) }
+  let!(:project)   { create(:project, :repository) }
   let(:service)    { described_class.new(user) }
 
   context "migrating a user's associated records to the ghost user" do

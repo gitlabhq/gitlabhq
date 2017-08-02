@@ -78,7 +78,7 @@ describe Projects::IssuesController do
   end
 
   describe 'issue weights' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:user) { create(:user) }
     let(:issue) { create(:issue, project: project, weight: 5) }
     let(:issue2) { create(:issue, project: project, weight: 1) }

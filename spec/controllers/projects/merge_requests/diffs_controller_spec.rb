@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MergeRequests::DiffsController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
@@ -36,7 +36,7 @@ describe Projects::MergeRequests::DiffsController do
       context 'with forked projects with submodules' do
         render_views
 
-        let(:project) { create(:project) }
+        let(:project) { create(:project, :repository) }
         let(:fork_project) { create(:forked_project_with_submodules) }
         let(:merge_request) { create(:merge_request_with_diffs, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
