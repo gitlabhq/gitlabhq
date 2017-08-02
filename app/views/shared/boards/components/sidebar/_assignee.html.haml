@@ -2,13 +2,13 @@
   %template{ "v-if" => "issue.assignees" }
     %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
       ":loading" => "loadingAssignees",
-      ":editable" => "issue.canEdit" }
+      ":editable" => can_admin_issue }
     %assignees.value{ "root-path" => "#{root_url}",
       ":users" => "issue.assignees",
-      ":editable" => "issue.canEdit",
+      ":editable" => can_admin_issue,
       "@assign-self" => "assignSelf" }
 
-  %template{ "v-if" => "issue.canEdit" }
+  - if can_admin_issue
     .selectbox.hide-collapsed
       %input.js-vue{ type: "hidden",
         name: "issue[assignee_ids][]",

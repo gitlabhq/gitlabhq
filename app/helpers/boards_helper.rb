@@ -54,6 +54,14 @@ module BoardsHelper
     @current_board_parent ||= @project || @group
   end
 
+  def can_admin_issue
+    if @project
+      can?(current_user, :admin_issue, @project)
+    elsif @group
+      can?(current_user, :admin_board, @group)
+    end
+  end
+
   def board_list_data
     {
       toggle: "dropdown",
@@ -74,6 +82,7 @@ module BoardsHelper
       first_user: current_user&.username,
       current_user: 'true',
       project_id: @project&.try(:id),
+      group_id: @group&.try(:id),
       null_user: 'true',
       multi_select: 'true',
       'dropdown-header': dropdown_options[:data][:'dropdown-header'],

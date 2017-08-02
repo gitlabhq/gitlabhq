@@ -1,7 +1,7 @@
 .block.milestone
   .title
     Milestone
-    - if can?(current_user, :admin_issue, @project)
+    - if can_admin_issue
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
@@ -9,17 +9,17 @@
       None
     %span.bold.has-tooltip{ "v-if" => "issue.milestone" }
       {{ issue.milestone.title }}
-  - if can?(current_user, :admin_issue, @project)
+  - if can_admin_issue
     .selectbox
       %input{ type: "hidden",
         ":value" => "issue.milestone.id",
         name: "issue[milestone_id]",
         "v-if" => "issue.milestone" }
       .dropdown
-        %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", project_id: @project.id, milestones: project_milestones_path(@project, :json), ability_name: "issue", use_id: "true", default_no: "true" },
+        %button.dropdown-menu-toggle.js-milestone-select.js-issue-board-sidebar{ type: "button", data: { toggle: "dropdown", show_no: "true", field_name: "issue[milestone_id]", milestones: milestones_filter_path(:json), ability_name: "issue", use_id: "true", default_no: "true" },
           ":data-selected" => "milestoneTitle",
           ":data-issuable-id" => "issue.id",
-          ":data-issue-update" => "'#{project_issues_path(@project)}/' + issue.id + '.json'" }
+          ":data-issue-update" => "'#{milestones_label_path}/' + issue.id + '.json'" }
           Milestone
           = icon("chevron-down")
         .dropdown-menu.dropdown-select.dropdown-menu-selectable

@@ -19,7 +19,6 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
     this.updateUrl = obj.update_url;
-    this.canEdit = true; //obj.can_edit;
     this.project_id = obj.project_id;
 
     if (obj.milestone) {

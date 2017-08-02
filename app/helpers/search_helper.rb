@@ -143,7 +143,8 @@ module SearchHelper
       id: "filtered-search-#{type}",
       placeholder: 'Search or filter results...',
       data: {
-        'project-id' => (@group || @project).id,
+        'project-id' => @project&.try(:id),
+        'group-id' => @group&.try(:id),
         'username-params' => @users.to_json(only: [:id, :username]),
         'base-endpoint' => base_endpoint
       }
