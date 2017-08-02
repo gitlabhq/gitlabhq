@@ -18,7 +18,3 @@
     = webpack_bundle_tag 'notes'
 
 = render "layouts/init_auto_complete"
-
-:javascript
-  window.gl.issueData = #{serialize_issuable(@issue)};
-  window.gl.currentUserData = #{UserSerializer.new.represent(current_user).to_json};

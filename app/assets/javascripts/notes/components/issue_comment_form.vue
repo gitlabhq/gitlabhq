@@ -34,6 +34,7 @@
       ...mapGetters([
         'getCurrentUserLastNote',
         'getUserData',
+        'getIssueData',
       ]),
       isLoggedIn() {
         return this.getUserData === null ? false : true;
@@ -78,7 +79,7 @@
               full_data: true,
               note: {
                 noteable_type: 'Issue',
-                noteable_id: window.gl.issueData.id,
+                noteable_id: this.getIssueData.id,
                 note: this.note,
               },
             },
@@ -116,7 +117,6 @@
             this.issueState = constants.REOPENED;
           }
 
-          gl.issueData.state = this.issueState;
           this.isIssueOpen = !this.isIssueOpen;
 
           // This is out of scope for the Notes Vue component.
