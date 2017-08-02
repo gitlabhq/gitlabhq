@@ -207,8 +207,8 @@ export default {
           />
           <group-identicon
             v-else
-            :entityId=group.id
-            :entityName="group.name"
+            :entity-id=group.id
+            :entity-name="group.name"
           />
         </a>
       </div>
