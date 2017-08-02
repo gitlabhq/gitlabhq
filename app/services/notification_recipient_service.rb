@@ -14,10 +14,6 @@ module NotificationRecipientService
     Builder::Default.new(*a).recipient_users
   end
 
-  def self.build_relabeled_recipients(*a)
-    Builder::Relabeled.new(*a).recipient_users
-  end
-
   def self.build_new_note_recipients(*a)
     Builder::NewNote.new(*a).recipient_users
   end
@@ -243,21 +239,6 @@ module NotificationRecipientService
       # Check NotificationSetting::EMAIL_EVENTS
       def custom_action
         @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
-      end
-    end
-
-    class Relabeled < Base
-      attr_reader :target
-      attr_reader :current_user
-      attr_reader :labels
-      def initialize(target, current_user, labels:)
-        @target = target
-        @current_user = current_user
-        @labels = labels
-      end
-
-      def build!
-        add_labels_subscribers(labels: labels)
       end
     end
 
