@@ -1993,7 +1993,7 @@ ActiveRecord::Schema.define(version: 20170803130232) do
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
-  add_foreign_key "geo_node_namespace_links", "namespaces", name: "fk_41ff5fb854", on_delete: :cascade
+  add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
   add_foreign_key "geo_repositories_changed_events", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
