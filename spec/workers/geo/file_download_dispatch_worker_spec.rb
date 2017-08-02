@@ -75,7 +75,7 @@ describe Geo::FileDownloadDispatchWorker do
       end
     end
 
-    context 'when node have namespace restrictions' do
+    context 'when node has namespace restrictions' do
       let(:group_1)    { create(:group) }
       let!(:project_1) { create(:empty_project, group: group_1) }
       let!(:project_2) { create(:empty_project) }

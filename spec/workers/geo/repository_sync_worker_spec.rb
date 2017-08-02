@@ -64,7 +64,7 @@ describe Geo::RepositorySyncWorker do
       subject.perform
     end
 
-    context 'when node have namespace restrictions' do
+    context 'when node has namespace restrictions' do
       before do
         secondary.update_attribute(:namespaces, [group])
       end

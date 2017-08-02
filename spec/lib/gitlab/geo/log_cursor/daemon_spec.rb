@@ -108,7 +108,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
       end
     end
 
-    context 'when node have namespace restrictions' do
+    context 'when node has namespace restrictions' do
       let(:geo_node) { create(:geo_node, :current) }
       let(:group_1) { create(:group) }
       let(:group_2) { create(:group) }

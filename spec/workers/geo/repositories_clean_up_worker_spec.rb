@@ -7,7 +7,7 @@ describe Geo::RepositoriesCleanUpWorker do
   let!(:project_2) { create(:empty_project) }
 
   describe '#perform' do
-    context 'when node have namespace restrictions' do
+    context 'when node has namespace restrictions' do
       it 'performs GeoRepositoryDestroyWorker for each project that do not belong to selected namespaces to replicate' do
         geo_node.update_attribute(:namespaces, [group])
 
