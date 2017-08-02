@@ -42,6 +42,8 @@
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   color: $almost-black;
+  display: flex;
+  height: 600px;
 
   header {
     background: $gray-light;
@@ -49,8 +51,9 @@
   }
 
   .panel-right {
-    display: inline-block;
+    display: flex;
     width: 80%;
+    flex-direction: column;
 
     .monaco-editor.vs {
       .line-numbers {
@@ -143,7 +146,7 @@
     }
 
     #ide {
-      height: 75vh;
+      flex: 1;
     }
 
     #repo-file-buttons {
@@ -206,12 +209,15 @@
 
   #sidebar {
 
+    table {
+      margin-bottom: 0;
+    }
+
     &.sidebar-mini {
       display: inline-block;
       vertical-align: top;
       width: 20%;
       border-right: 1px solid $white-normal;
-      height: 100vh;
       overflow: auto;
     }
 
