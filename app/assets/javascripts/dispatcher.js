@@ -57,6 +57,7 @@ import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
+import GeoNodeForm from './geo/geo_node_form';
 import GeoNodes from './geo_nodes';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -611,6 +612,7 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));
+              new GeoNodeForm($('.js-geo-node-form'));
               break;
           }
           break;
