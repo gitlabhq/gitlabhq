@@ -5,7 +5,7 @@ describe CleanUploadSymlinks do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "move_uploads_test") }
   let(:uploads_dir) { File.join(test_dir, "public", "uploads") }
-  let(:new_uploads_dir) { File.join(uploads_dir, "system") }
+  let(:new_uploads_dir) { File.join(uploads_dir, "-", "system") }
   let(:original_path) { File.join(new_uploads_dir, 'user') }
   let(:symlink_path) { File.join(uploads_dir, 'user') }
 

@@ -5,7 +5,7 @@ describe MovePersonalSnippetsFiles do
   let(:migration) { described_class.new }
   let(:test_dir) { File.join(Rails.root, "tmp", "tests", "move_snippet_files_test") }
   let(:uploads_dir) { File.join(test_dir, 'uploads') }
-  let(:new_uploads_dir) { File.join(uploads_dir, 'system') }
+  let(:new_uploads_dir) { File.join(uploads_dir, '-', 'system') }
 
   before do
     allow(CarrierWave).to receive(:root).and_return(test_dir)
