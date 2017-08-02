@@ -59,18 +59,5 @@ module Storage
       Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.full_path)
       Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.full_path)
     end
-
-    def create_repository(force: false)
-      # Forked import is handled asynchronously
-      return if forked? && !force
-
-      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
-        repository.after_create
-        true
-      else
-        errors.add(:base, 'Failed to create repository via gitlab-shell')
-        false
-      end
-    end
   end
 end

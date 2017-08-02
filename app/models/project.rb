@@ -993,6 +993,19 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_repository(force: false)
+    # Forked import is handled asynchronously
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
+    end
+  end
+
   def hook_attrs(backward: true)
     attrs = {
       name: name,
