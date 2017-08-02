@@ -139,6 +139,8 @@ import GpgBadges from './gpg_badges';
           .init();
       }
 
+      const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
+
       switch (page) {
         case 'profiles:preferences:show':
           initExperimentalFlags();
@@ -155,7 +157,7 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+          if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
@@ -183,10 +185,16 @@ import GpgBadges from './gpg_badges';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:issues':
         case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
+          break;
+        case 'groups:issues':
+          if (filteredSearchEnabled) {
+            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            filteredSearchManager.setup();
+          }
+          new ProjectSelect();
           break;
         case 'dashboard:todos:index':
           new Todos();
