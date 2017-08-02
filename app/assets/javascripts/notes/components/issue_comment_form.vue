@@ -30,7 +30,7 @@
       issueNoteSignedOutWidget,
     },
     computed: {
-       ...mapGetters([
+      ...mapGetters([
         'getCurrentUserLastNote',
       ]),
       isLoggedIn() {
@@ -62,7 +62,7 @@
     },
     methods: {
       ...mapActions([
-        'saveNote'
+        'saveNote',
       ]),
       handleSave(withIssueAction) {
         if (this.note.length) {
@@ -89,7 +89,7 @@
                 if (res.errors.commands_only) {
                   this.discard();
                 } else {
-                  return Flash('Something went wrong while adding your comment. Please try again.');
+                  Flash('Something went wrong while adding your comment. Please try again.');
                 }
               } else {
                 this.discard();
@@ -104,7 +104,7 @@
           if (this.isIssueOpen) {
             this.issueState = constants.CLOSED;
           } else {
-            this.issueState =constants.REOPENED;
+            this.issueState = constants.REOPENED;
           }
 
           gl.issueData.state = this.issueState;
@@ -149,7 +149,7 @@
 
     destroyed() {
       eventHub.$off('issueStateChanged');
-    }
+    },
   };
 </script>
 
@@ -182,7 +182,6 @@
                   id="note-body"
                   name="note[note]"
                   class="note-textarea js-gfm-input markdown-area"
-                  data-supports-slash-commands="true"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   v-model="note"

@@ -59,26 +59,26 @@ export default {
   },
 
   [types.SET_NOTES_DATA](state, data) {
-    state.notesData = data;
+    Object.assign(state, { notesData: data });
   },
 
   [types.SET_ISSUE_DATA](state, data) {
-    state.issueData = data;
+    Object.assign(state, { issueData: data });
   },
 
   [types.SET_USER_DATA](state, data) {
-    state.userData = data;
+    Object.assign(state, { userData: data });
   },
-  [types.SET_INITAL_NOTES](state, notes) {
-    state.notes = notes;
+  [types.SET_INITAL_NOTES](state, notesData) {
+    Object.assign(state, { notes: notesData });
   },
 
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
-    state.lastFetchedAt = fetchedAt;
+    Object.assign(state, { lastFetchedAt: fetchedAt });
   },
 
   [types.SET_TARGET_NOTE_HASH](state, hash) {
-    state.targetNoteHash = hash;
+    Object.assign(state, { targetNoteHash: hash });
   },
 
   [types.SHOW_PLACEHOLDER_NOTE](state, data) {

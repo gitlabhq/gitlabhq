@@ -50,7 +50,7 @@
     methods: {
       ...mapActions([
         'saveNote',
-        'toggleDiscussion'
+        'toggleDiscussion',
       ]),
       componentName(note) {
         if (note.isPlaceholderNote) {
@@ -83,7 +83,7 @@
 
         this.isReplying = false;
       },
-      saveReply(note) {
+      saveReply(noteText) {
         const replyData = {
           endpoint: this.newNotePath,
           flashContainer: this.$el,
@@ -91,7 +91,7 @@
             in_reply_to_discussion_id: this.note.reply_id,
             target_type: 'issue',
             target_id: this.discussion.noteable_id,
-            note: { note: note },
+            note: { note: noteText },
             full_data: true,
           },
         };
@@ -162,6 +162,7 @@
                     v-if="isReplying"
                     saveButtonTitle="Comment"
                     :discussion="note"
+                    :is-editing="false"
                     @handleFormUpdate="saveReply"
                     @cancelFormEdition="cancelReplyForm"
                     ref="noteForm"

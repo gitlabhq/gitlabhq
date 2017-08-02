@@ -73,6 +73,7 @@
       ref="noteForm"
       @handleFormUpdate="handleFormUpdate"
       @cancelFormEdition="formCancelHandler"
+      :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
       />

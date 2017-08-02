@@ -8,7 +8,7 @@ export const getIssueData = state => state.issueData;
 export const getIssueDataByProp = state => prop => state.issueData[prop];
 
 export const getUserData = state => state.userData;
-export const getUserDataByProp = state => prop => state.notesData[prop];
+export const getUserDataByProp = state => prop => state.userData[prop];
 
 export const notesById = state => state.notes.reduce((acc, note) => {
   note.notes.every(n => Object.assign(acc, { [n.id]: n }));

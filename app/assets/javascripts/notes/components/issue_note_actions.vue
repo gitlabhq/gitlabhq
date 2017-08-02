@@ -1,4 +1,5 @@
 <script>
+  import { mapGetters } from 'vuex';
   import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
@@ -53,13 +54,15 @@
         emojiSmiling,
         emojiSmile,
         emojiSmiley,
-        currentUserId: window.gon.current_user_id,
       };
     },
     components: {
       loadingIcon,
     },
     computed: {
+      ...mapGetters([
+        'getUserDataByProp',
+      ]),
       shouldShowActionsDropdown() {
         return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
       },
@@ -67,8 +70,11 @@
         return this.currentUserId;
       },
       isAuthoredByCurrentUser() {
-        return this.authorId === this.currentUserId
+        return this.authorId === this.currentUserId;
       },
+      currentUserId() {
+        return this.getUserDataByProp('id');
+      }
     },
   };
 </script>

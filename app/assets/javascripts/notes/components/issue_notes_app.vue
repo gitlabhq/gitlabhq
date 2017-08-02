@@ -1,10 +1,9 @@
 <script>
   /* global Flash */
 
-  import Vue from 'vue';
-  import { mapGetters, mapActions, mapMutations } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   import store from '../stores/';
-  import * as constants from '../constants'
+  import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';

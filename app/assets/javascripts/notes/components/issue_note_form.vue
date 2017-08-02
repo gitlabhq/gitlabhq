@@ -22,17 +22,16 @@
       discussion: {
         type: Object,
         required: false,
-      }
+      },
+      isEditing: {
+        type: Boolean,
+        required: true,
+      },
     },
     data() {
-      const { getIssueData, getNotesData } =  this.$store.getters;
-
       return {
         initialNote: this.noteBody,
         note: this.noteBody,
-        markdownPreviewUrl: getIssueData.preview_note_path,
-        markdownDocsUrl: getNotesData.markdownDocs,
-        quickActionsDocsUrl: getNotesData.quickActionsDocs,
         conflictWhileEditing: false,
       };
     },
@@ -42,10 +41,25 @@
     computed: {
       ...mapGetters([
         'getDiscussionLastNote',
+        'getIssueDataByProp',
+        'getNotesDataByProp',
+        'getUserDataByProp',
       ]),
       noteHash() {
         return `#note_${this.noteId}`;
       },
+      markdownPreviewUrl() {
+        return this.getIssueDataByProp('preview_note_path');
+      },
+      markdownDocsUrl() {
+        return this.getNotesDataByProp('markdownDocs');
+      },
+      quickActionsDocsUrl() {
+        return this.getNotesDataByProp('quickActionsDocs');
+      },
+      currentUserId() {
+        return this.getUserDataByProp('id');
+      }
     },
     methods: {
       handleUpdate() {
@@ -53,7 +67,7 @@
       },
       editMyLastNote() {
         if (this.note === '') {
-          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion, window.gon.current_user_id);
+          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion, this.currentUserId);
 
           if (lastNoteInDiscussion) {
             eventHub.$emit('enterEditMode', {
@@ -105,8 +119,7 @@
           id="note-body"
           name="note[note]"
           class="note-textarea js-gfm-input js-autosize markdown-area"
-          data-supports-slash-commands="true"
-          data-supports-quick-actions="true"
+          :data-supports-quick-actions="!isEditing"
           aria-label="Description"
           v-model="note"
           ref="textarea"
