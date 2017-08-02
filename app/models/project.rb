@@ -44,31 +44,23 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  after_create :ensure_storage_path_exist
-  after_create :create_project_feature, unless: :project_feature
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
+
   after_save :update_project_statistics, if: :namespace_id_changed?
-
-  # set last_activity_at to the same as created_at
+  after_create :create_project_feature, unless: :project_feature
   after_create :set_last_activity_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
   after_create :set_last_repository_updated_at
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
-  end
+  after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
   after_destroy -> { run_after_commit { remove_pages } }
 
-  # update visibility_level of forks
-  after_update :update_forks_visibility_level
-
   after_validation :check_pending_delete
 
-  # Legacy Storage specific hooks
-
+  # Storage specific hooks
+  after_initialize :load_storage
+  after_create :ensure_storage_path_exist
   after_save :ensure_storage_path_exist, if: :namespace_id_changed?
 
   acts_as_taggable
@@ -237,9 +229,6 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
-
-  add_authentication_token_field :runners_token
-  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -1086,6 +1075,7 @@ class Project < ActiveRecord::Base
     !!repository.exists?
   end
 
+  # update visibility_level of forks
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
 
@@ -1420,6 +1410,15 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  # set last_activity_at to the same as created_at
+  def set_last_activity_at
+    update_column(:last_activity_at, self.created_at)
+  end
+
+  def set_last_repository_updated_at
+    update_column(:last_repository_updated_at, self.created_at)
+  end
 
   def cross_namespace_reference?(from)
     case from
