@@ -1,7 +1,7 @@
 module EE
   module GeoHelper
     def node_selected_namespaces_to_replicate(node)
-      node.namespaces.sort_by(&:human_name).map(&:human_name).join(', ')
+      node.namespaces.map(&:human_name).sort.join(', ')
     end
 
     def node_status_icon(node)
