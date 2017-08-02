@@ -30,7 +30,7 @@ describe Gitlab::SidekiqCluster::CLI do
           expect(cli).to receive(:trap_signals)
           expect(cli).to receive(:start_loop)
 
-          cli.run(%w(-n "foo,bar\ foo,bar"))
+          cli.run(['-n', 'foo,bar foo,bar'])
         end
       end
     end
