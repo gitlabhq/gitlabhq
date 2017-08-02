@@ -4,13 +4,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 13:32+0200\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-11 05:13-0400\n"
-"Last-Translator: SAS <Stepanov.sa@bashkortostan.ru>\n"
 "Language-Team: Russian (https://translate.zanata.org/project/view/GitLab)\n"
+"PO-Revision-Date: 2017-08-01 09:15-0400\n"
+"Last-Translator: Андрей П. <fenixnow33@gmail.com>\n"
 "Language: ru\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -32,20 +32,20 @@ msgstr[2] ""
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] "%d коммит"
-msgstr[1] "%d коммит(а|ов)"
-msgstr[2] "%d коммит(а|ов)"
+msgstr[1] "%d коммитов"
+msgstr[2] "%d коммитов"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
-msgstr "%{commit_author_link} закоммичено %{commit_timeago}"
+msgstr "%{commit_author_link} коммичено %{commit_timeago}"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "1 конвейер"
+msgstr[1] "%d конвейеры"
+msgstr[2] "%d конвейеры"
 
 msgid "A collection of graphs regarding Continuous Integration"
-msgstr ""
+msgstr "Графики относительно непрерывной интеграции"
 
 msgid "About auto deploy"
 msgstr "Автоматическое развертывание"
@@ -57,10 +57,10 @@ msgid "Activity"
 msgstr "Активность"
 
 msgid "Add Changelog"
-msgstr "Добавить в журнал изменений"
+msgstr "Добавить журнал изменений"
 
 msgid "Add Contribution guide"
-msgstr "Добавить руководство для контрибьютеров"
+msgstr "Добавить руководство"
 
 msgid "Add License"
 msgstr "Добавить лицензию"
@@ -71,7 +71,7 @@ msgstr ""
 "SSH."
 
 msgid "Add new directory"
-msgstr "Добавить новую директорию"
+msgstr "Добавить каталог"
 
 msgid "Archived project! Repository is read-only"
 msgstr "Архивный проект! Репозиторий доступен только для чтения"
@@ -98,16 +98,16 @@ msgstr ""
 "%{link_to_autodeploy_doc}"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
-msgstr "BranchSwitcherPlaceholder|Поиск веток"
+msgstr "Поиск веток"
 
 msgid "BranchSwitcherTitle|Switch branch"
-msgstr "BranchSwitcherTitle|Переключить ветку"
+msgstr "Переключить ветку"
 
 msgid "Branches"
 msgstr "Ветки"
 
 msgid "Browse Directory"
-msgstr "Просмотр директории"
+msgstr "Обзор"
 
 msgid "Browse File"
 msgstr "Просмотр файла"
@@ -119,7 +119,7 @@ msgid "Browse files"
 msgstr "Просмотр файлов"
 
 msgid "ByAuthor|by"
-msgstr "ByAuthor|по автору"
+msgstr "по автору"
 
 msgid "CI configuration"
 msgstr "Настройка CI"
@@ -128,22 +128,22 @@ msgid "Cancel"
 msgstr "Отмена"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
-msgstr "ChangeTypeActionLabel|Выбрать в ветке"
+msgstr "Выбрать в ветке"
 
 msgid "ChangeTypeActionLabel|Revert in branch"
-msgstr "ChangeTypeActionLabel|Отменить в ветке"
+msgstr "Отменить в ветке"
 
 msgid "ChangeTypeAction|Cherry-pick"
-msgstr "ChangeTypeAction|Подобрать"
+msgstr "Подобрать"
 
 msgid "ChangeTypeAction|Revert"
-msgstr "ChangeTypeAction|Отменить"
+msgstr "Отменить"
 
 msgid "Changelog"
 msgstr "Журнал изменений"
 
 msgid "Charts"
-msgstr "Графики"
+msgstr "Диаграммы"
 
 msgid "Cherry-pick this commit"
 msgstr "Подобрать в этом коммите"
@@ -152,58 +152,58 @@ msgid "Cherry-pick this merge request"
 msgstr "Побрать в этом запросе на слияние"
 
 msgid "CiStatusLabel|canceled"
-msgstr "CiStatusLabel|отменено"
+msgstr "отменено"
 
 msgid "CiStatusLabel|created"
-msgstr "CiStatusLabel|создано"
+msgstr "создано"
 
 msgid "CiStatusLabel|failed"
-msgstr "CiStatusLabel|неудачно"
+msgstr "неудачно"
 
 msgid "CiStatusLabel|manual action"
-msgstr "CiStatusLabel|ручное действие"
+msgstr "ручное действие"
 
 msgid "CiStatusLabel|passed"
-msgstr "CiStatusLabel|пройдено"
+msgstr "пройдено"
 
 msgid "CiStatusLabel|passed with warnings"
-msgstr "CiStatusLabel|пройдено с предупреждениями"
+msgstr "пройдено с предупреждениями"
 
 msgid "CiStatusLabel|pending"
-msgstr "CiStatusLabel|в ожидании"
+msgstr "в ожидании"
 
 msgid "CiStatusLabel|skipped"
-msgstr "CiStatusLabel|пропущено"
+msgstr "пропущено"
 
 msgid "CiStatusLabel|waiting for manual action"
-msgstr "CiStatusLabel|ожидание ручных действий"
+msgstr "ожидание ручных действий"
 
 msgid "CiStatusText|blocked"
-msgstr "CiStatusText|блокировано"
+msgstr "блокировано"
 
 msgid "CiStatusText|canceled"
-msgstr "CiStatusText|отменено"
+msgstr "отменено"
 
 msgid "CiStatusText|created"
-msgstr "CiStatusText|создано"
+msgstr "создано"
 
 msgid "CiStatusText|failed"
-msgstr "CiStatusText|неудачно"
+msgstr "неудачно"
 
 msgid "CiStatusText|manual"
-msgstr "CiStatusText|ручное"
+msgstr "ручное"
 
 msgid "CiStatusText|passed"
-msgstr "CiStatusText|пройдено"
+msgstr "пройдено"
 
 msgid "CiStatusText|pending"
-msgstr "CiStatusText|в ожидании"
+msgstr "в ожидании"
 
 msgid "CiStatusText|skipped"
-msgstr "CiStatusText|пропущено"
+msgstr "пропущено"
 
 msgid "CiStatus|running"
-msgstr "CiStatus|выполняется"
+msgstr "выполняется"
 
 msgid "Commit"
 msgid_plural "Commits"
@@ -212,13 +212,13 @@ msgstr[1] "Коммиты"
 msgstr[2] "Коммиты"
 
 msgid "Commit duration in minutes for last 30 commits"
-msgstr ""
+msgstr "Продолжительность последних 30 фиксаций(коммитов) в минутах"
 
 msgid "Commit message"
 msgstr "Описание коммита"
 
 msgid "CommitBoxTitle|Commit"
-msgstr "CommitBoxTitle|Коммит"
+msgstr "Коммит"
 
 msgid "CommitMessage|Add %{file_name}"
 msgstr "CommitMessage|Добавить %{file_name}"
@@ -227,22 +227,22 @@ msgid "Commits"
 msgstr "Коммиты"
 
 msgid "Commits feed"
-msgstr ""
+msgstr "Фиксировать подачу"
 
 msgid "Commits|History"
-msgstr "Commits|История"
+msgstr "История"
 
 msgid "Committed by"
-msgstr "Коммит"
+msgstr "Фиксировано"
 
 msgid "Compare"
-msgstr "Сравнение"
+msgstr "Сравнить"
 
 msgid "Contribution guide"
-msgstr "Руководство контрибьютора"
+msgstr "Руководство участника"
 
 msgid "Contributors"
-msgstr "Контрибьюторы"
+msgstr "Участники"
 
 msgid "Copy URL to clipboard"
 msgstr "Копировать URL в буфер обмена"
@@ -251,18 +251,20 @@ msgid "Copy commit SHA to clipboard"
 msgstr "Копировать SHA коммита в буфер обмена"
 
 msgid "Create New Directory"
-msgstr "Создать новую директорию"
+msgstr "Создать директорию"
 
 msgid ""
 "Create a personal access token on your account to pull or push via "
 "%{protocol}."
 msgstr ""
+"Создать личный токен на аккаунте для получения или отправки через "
+"%{protocol}."
 
 msgid "Create directory"
 msgstr "Создать директорию"
 
 msgid "Create empty bare repository"
-msgstr "Создать пустой пустой репозиторий"
+msgstr "Создать пустой репозиторий"
 
 msgid "Create merge request"
 msgstr "Создать запрос на объединение"
@@ -271,13 +273,13 @@ msgid "Create new..."
 msgstr "Новый"
 
 msgid "CreateNewFork|Fork"
-msgstr "CreateNewFork|Форк"
+msgstr "Форк"
 
 msgid "CreateTag|Tag"
-msgstr "CreateTag|Тэг"
+msgstr "Тег"
 
 msgid "CreateTokenToCloneLink|create a personal access token"
-msgstr ""
+msgstr "создать персональный токен доступа"
 
 msgid "Cron Timezone"
 msgstr "Временная зона Cron"
@@ -299,33 +301,35 @@ msgstr ""
 "посмотрите %{notification_link}."
 
 msgid "Cycle Analytics"
-msgstr "Аналитика цикла разработки"
+msgstr "Аналитический цикл"
 
 msgid ""
 "Cycle Analytics gives an overview of how much time it takes to go from idea "
 "to production in your project."
 msgstr ""
+"Аналитический цикл дает представление о том, сколько времени требуется, "
+"чтобы перейти от идеи к производству в проекте."
 
 msgid "CycleAnalyticsStage|Code"
-msgstr "CycleAnalyticsStage|Код"
+msgstr "Написание кода"
 
 msgid "CycleAnalyticsStage|Issue"
-msgstr "CycleAnalyticsStage|Обращение"
+msgstr "Обращение"
 
 msgid "CycleAnalyticsStage|Plan"
-msgstr ""
+msgstr "Планирование"
 
 msgid "CycleAnalyticsStage|Production"
-msgstr ""
+msgstr "Производство"
 
 msgid "CycleAnalyticsStage|Review"
-msgstr "CycleAnalyticsStage|Ревьюв"
+msgstr "Контроль"
 
 msgid "CycleAnalyticsStage|Staging"
-msgstr ""
+msgstr "Постановка"
 
 msgid "CycleAnalyticsStage|Test"
-msgstr ""
+msgstr "Тестирование"
 
 msgid "Define a custom pattern with cron syntax"
 msgstr "Определить настраиваемый шаблон с синтаксисом cron"
@@ -335,45 +339,45 @@ msgstr "Удалить"
 
 msgid "Deploy"
 msgid_plural "Deploys"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Разместить"
+msgstr[1] "Размещение"
+msgstr[2] "Размещение"
 
 msgid "Description"
 msgstr "Описание"
 
 msgid "Directory name"
-msgstr "Наименование директории"
+msgstr "Каталог"
 
 msgid "Don't show again"
 msgstr "Не показывать снова"
 
 msgid "Download"
-msgstr "Загрузить"
+msgstr "Скачать"
 
 msgid "Download tar"
-msgstr "Загрузить tar"
+msgstr "Скачать tar"
 
 msgid "Download tar.bz2"
-msgstr "Загрузить tar.bz2"
+msgstr "Скачать tar.bz2"
 
 msgid "Download tar.gz"
-msgstr "Загрузить tar.gz"
+msgstr "Скачать tar.gz"
 
 msgid "Download zip"
-msgstr "Загрузить zip"
+msgstr "Скачать zip"
 
 msgid "DownloadArtifacts|Download"
-msgstr "DownloadArtifacts|Загрузка"
+msgstr "Скачать"
 
 msgid "DownloadCommit|Email Patches"
-msgstr "DownloadCommit|Email-патчи"
+msgstr "Email-патчи"
 
 msgid "DownloadCommit|Plain Diff"
-msgstr "DownloadCommit|Plain Diff"
+msgstr "Простой Diff"
 
 msgid "DownloadSource|Download"
-msgstr "DownloadSource|Загрузка"
+msgstr "Скачать"
 
 msgid "Edit"
 msgstr "Редактировать"
@@ -409,10 +413,10 @@ msgid "Find file"
 msgstr "Найти файл"
 
 msgid "FirstPushedBy|First"
-msgstr ""
+msgstr "Первый"
 
 msgid "FirstPushedBy|pushed by"
-msgstr ""
+msgstr "протолкнул"
 
 msgid "Fork"
 msgid_plural "Forks"
@@ -421,22 +425,22 @@ msgstr[1] "Форки"
 msgstr[2] "Форки"
 
 msgid "ForkedFromProjectPath|Forked from"
-msgstr "ForkedFromProjectPath|Форк от "
+msgstr "Форк от "
 
 msgid "From issue creation until deploy to production"
-msgstr ""
+msgstr "От создания проблемы до развертывания в рабочей среде"
 
 msgid "From merge request merge until deploy to production"
-msgstr ""
+msgstr "От запроса на слияние до развертывания в рабочей среде"
 
 msgid "Go to your fork"
 msgstr "Перейти к вашему форку"
 
 msgid "GoToYourFork|Fork"
-msgstr "GoToYourFork|Форк"
+msgstr "Форк"
 
 msgid "Home"
-msgstr "Домашняя"
+msgstr "Главная"
 
 msgid "Housekeeping successfully started"
 msgstr "Очистка успешно запущена"
@@ -448,28 +452,28 @@ msgid "Interval Pattern"
 msgstr "Шаблон интервала"
 
 msgid "Introducing Cycle Analytics"
-msgstr ""
+msgstr "Внедрение Цикла Аналитики"
 
 msgid "Jobs for last month"
-msgstr ""
+msgstr "Работы за прошлый месяц"
 
 msgid "Jobs for last week"
-msgstr ""
+msgstr "Работы за прошлую неделю"
 
 msgid "Jobs for last year"
-msgstr ""
+msgstr "Работы за прошлый год"
 
 msgid "LFSStatus|Disabled"
-msgstr "LFSStatus|Отключено"
+msgstr "Отключено"
 
 msgid "LFSStatus|Enabled"
-msgstr "LFSStatus|Включено"
+msgstr "Включено"
 
 msgid "Last %d day"
 msgid_plural "Last %d days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Последний %d день"
+msgstr[1] "Последние %d дни"
+msgstr[2] "Последние %d дни"
 
 msgid "Last Pipeline"
 msgstr "Последний конвейер"
@@ -494,21 +498,21 @@ msgstr "Покинуть проект"
 
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Ограничение %d события"
+msgstr[1] "Ограничение %d событий"
+msgstr[2] "Ограничение %d событий"
 
 msgid "Median"
-msgstr "Медиана"
+msgstr "Среднее"
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr "MissingSSHKeyWarningLink|добавить ключ SSH"
+msgstr "добавить ключ SSH"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] "Новое обращение"
-msgstr[1] "Новые обращения"
-msgstr[2] "Новые обращения"
+msgstr[0] "Обращение"
+msgstr[1] "Обращения"
+msgstr[2] "Обращения"
 
 msgid "New Pipeline Schedule"
 msgstr "Новое расписание конвейера"
@@ -535,7 +539,7 @@ msgid "New snippet"
 msgstr "Новый сниппет"
 
 msgid "New tag"
-msgstr "Новый тэг"
+msgstr "Новый тег"
 
 msgid "No repository"
 msgstr "Нет репозитория"
@@ -544,70 +548,70 @@ msgid "No schedules"
 msgstr "Нет расписания"
 
 msgid "Not available"
-msgstr ""
+msgstr "Недоступно"
 
 msgid "Not enough data"
-msgstr ""
+msgstr "Нет данных"
 
 msgid "Notification events"
 msgstr "Уведомления о событиях"
 
 msgid "NotificationEvent|Close issue"
-msgstr "NotificationEvent|Обращение закрыто"
+msgstr "Обращение закрыто"
 
 msgid "NotificationEvent|Close merge request"
 msgstr "Запрос на объединение закрыт"
 
 msgid "NotificationEvent|Failed pipeline"
-msgstr "NotificationEvent|Неудача в конвейере"
+msgstr "Неудача в конвейере"
 
 msgid "NotificationEvent|Merge merge request"
-msgstr "NotificationEvent|Объединить запрос на слияние"
+msgstr "Объединить запрос на слияние"
 
 msgid "NotificationEvent|New issue"
-msgstr "NotificationEvent|Новое обращение"
+msgstr "Новое обращение"
 
 msgid "NotificationEvent|New merge request"
-msgstr "NotificationEvent|Новый запрос на слияние"
+msgstr "Новый запрос на слияние"
 
 msgid "NotificationEvent|New note"
-msgstr "NotificationEvent|Новая заметка"
+msgstr "Новая заметка"
 
 msgid "NotificationEvent|Reassign issue"
-msgstr "NotificationEvent|Переназначить обращение"
+msgstr "Переназначить обращение"
 
 msgid "NotificationEvent|Reassign merge request"
-msgstr "NotificationEvent|Переназначить запрос на слияние"
+msgstr "Переназначить запрос на слияние"
 
 msgid "NotificationEvent|Reopen issue"
-msgstr "NotificationEvent|Переоткрыть обращение"
+msgstr "Переоткрыть обращение"
 
 msgid "NotificationEvent|Successful pipeline"
-msgstr "NotificationEvent|Успешно в конвейере"
+msgstr "Успешно в конвейере"
 
 msgid "NotificationLevel|Custom"
-msgstr "NotificationLevel|Настраиваемый"
+msgstr "Настраиваемый"
 
 msgid "NotificationLevel|Disabled"
-msgstr "NotificationLevel|Отключено"
+msgstr "Отключено"
 
 msgid "NotificationLevel|Global"
-msgstr "NotificationLevel|Глобальный"
+msgstr "Глобальный"
 
 msgid "NotificationLevel|On mention"
-msgstr "NotificationLevel|С упоминанием"
+msgstr "С упоминанием"
 
 msgid "NotificationLevel|Participate"
-msgstr "NotificationLevel|По участию"
+msgstr "По участию"
 
 msgid "NotificationLevel|Watch"
-msgstr "NotificationLevel|Отслеживать"
+msgstr "Отслеживать"
 
 msgid "OfSearchInADropdown|Filter"
-msgstr "OfSearchInADropdown|Фильтр"
+msgstr "Фильтр"
 
 msgid "OpenedNDaysAgo|Opened"
-msgstr "OpenedNDaysAgo|Открыто"
+msgstr "Открыто"
 
 msgid "Options"
 msgstr "Настройки"
@@ -619,7 +623,7 @@ msgid "Pipeline"
 msgstr "Конвейер"
 
 msgid "Pipeline Health"
-msgstr ""
+msgstr "Жизненный цикл конвейера"
 
 msgid "Pipeline Schedule"
 msgstr "Расписание конвейера"
@@ -628,67 +632,79 @@ msgid "Pipeline Schedules"
 msgstr "Расписания конвейеров"
 
 msgid "PipelineCharts|Failed:"
-msgstr ""
+msgstr "Неудача:"
 
 msgid "PipelineCharts|Overall statistics"
-msgstr ""
+msgstr "Статистика"
 
 msgid "PipelineCharts|Success ratio:"
-msgstr ""
+msgstr "Коэффициент успеха:"
 
 msgid "PipelineCharts|Successful:"
-msgstr ""
+msgstr "Успех:"
 
 msgid "PipelineCharts|Total:"
-msgstr ""
+msgstr "Всего:"
 
 msgid "PipelineSchedules|Activated"
-msgstr "PipelineSchedules|Активировано"
+msgstr "Активировано"
 
 msgid "PipelineSchedules|Active"
-msgstr "PipelineSchedules|Активно"
+msgstr "Активно"
 
 msgid "PipelineSchedules|All"
-msgstr "PipelineSchedules|Все"
+msgstr "Все"
 
 msgid "PipelineSchedules|Inactive"
-msgstr "PipelineSchedules|Неактивно"
+msgstr "Неактивно"
+
+msgid "PipelineSchedules|Input variable key"
+msgstr "Ввод ключевой переменной"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "Вставить значение"
 
 msgid "PipelineSchedules|Next Run"
-msgstr "PipelineSchedules|Следующий запуск"
+msgstr "Следующий запуск"
 
 msgid "PipelineSchedules|None"
-msgstr "PipelineSchedules|None"
+msgstr "Отсутствует"
 
 msgid "PipelineSchedules|Provide a short description for this pipeline"
-msgstr "PipelineSchedules|Предоставьте краткое описание этого конвейера"
+msgstr "Предоставьте краткое описание этого конвейера"
+
+msgid "PipelineSchedules|Remove variable row"
+msgstr "Удалить значение"
 
 msgid "PipelineSchedules|Take ownership"
-msgstr "PipelineSchedules|Стать владельцем"
+msgstr "Стать владельцем"
 
 msgid "PipelineSchedules|Target"
-msgstr "PipelineSchedules|Цель"
+msgstr "Цель"
+
+msgid "PipelineSchedules|Variables"
+msgstr "Переменные"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
-msgstr "PipelineSheduleIntervalPattern|Настраиваемый"
+msgstr "Настраиваемый"
 
 msgid "Pipelines"
-msgstr ""
+msgstr "Конвейер"
 
 msgid "Pipelines charts"
-msgstr ""
+msgstr "Диаграмма конвейера"
 
 msgid "Pipeline|all"
-msgstr ""
+msgstr "все"
 
 msgid "Pipeline|success"
-msgstr ""
+msgstr "успех"
 
 msgid "Pipeline|with stage"
-msgstr "Pipeline|со стадией"
+msgstr "со стадией"
 
 msgid "Pipeline|with stages"
-msgstr "Pipeline|со стадиями"
+msgstr "со стадиями"
 
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "Проект '%{project_name}' добавлен в очередь на удаление."
@@ -727,49 +743,49 @@ msgid "Project home"
 msgstr "Домашняя страница проекта"
 
 msgid "ProjectFeature|Disabled"
-msgstr "ProjectFeature|Отключено"
+msgstr "Отключено"
 
 msgid "ProjectFeature|Everyone with access"
-msgstr "ProjectFeature|Все с доступом"
+msgstr "Все с доступом"
 
 msgid "ProjectFeature|Only team members"
-msgstr "ProjectFeature|Только члены команды"
+msgstr "Только члены команды"
 
 msgid "ProjectFileTree|Name"
-msgstr "ProjectFileTree|Имя"
+msgstr "Наименование"
 
 msgid "ProjectLastActivity|Never"
-msgstr "ProjectLastActivity|Никогда"
+msgstr "Никогда"
 
 msgid "ProjectLifecycle|Stage"
-msgstr ""
+msgstr "Этап"
 
 msgid "ProjectNetworkGraph|Graph"
-msgstr "ProjectNetworkGraph|Граф"
+msgstr "Граф"
 
 msgid "Read more"
-msgstr ""
+msgstr "Подробнее"
 
 msgid "Readme"
 msgstr "Readme"
 
 msgid "RefSwitcher|Branches"
-msgstr "RefSwitcher|Ветки"
+msgstr "Ветки"
 
 msgid "RefSwitcher|Tags"
-msgstr "RefSwitcher|Тэги"
+msgstr "Теги"
 
 msgid "Related Commits"
-msgstr ""
+msgstr "Связанные коммиты"
 
 msgid "Related Deployed Jobs"
-msgstr ""
+msgstr "Связанные задачи выгрузки"
 
 msgid "Related Issues"
-msgstr ""
+msgstr "Связанные вопросы"
 
 msgid "Related Jobs"
-msgstr ""
+msgstr "Связанные задачи"
 
 msgid "Related Merge Requests"
 msgstr "Связанные запросы на слияние"
@@ -802,7 +818,7 @@ msgid "Scheduling Pipelines"
 msgstr "Планирование конвейеров"
 
 msgid "Search branches and tags"
-msgstr "Найти ветки и тэги"
+msgstr "Найти ветки и теги"
 
 msgid "Select Archive Format"
 msgstr "Выбрать формат архива"
@@ -828,34 +844,34 @@ msgid "Set up auto deploy"
 msgstr "Настройка автоматического развертывания"
 
 msgid "SetPasswordToCloneLink|set a password"
-msgstr "SetPasswordToCloneLink|установить пароль"
+msgstr "установить пароль"
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Показано %d событие"
+msgstr[1] "Показано %d событий"
+msgstr[2] "Показано %d событий"
 
 msgid "Source code"
 msgstr "Исходный код"
 
 msgid "StarProject|Star"
-msgstr "StarProject|Отметить"
+msgstr "Отметить"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "Начать %{new_merge_request} с этих изменений"
 
 msgid "Switch branch/tag"
-msgstr "Переключить ветка/тэг"
+msgstr "Переключить ветка/тег"
 
 msgid "Tag"
 msgid_plural "Tags"
-msgstr[0] "Тэг"
-msgstr[1] "Тэги"
-msgstr[2] "Тэги"
+msgstr[0] "Тег"
+msgstr[1] "теги"
+msgstr[2] "Теги"
 
 msgid "Tags"
-msgstr "Тэги"
+msgstr "Теги"
 
 msgid "Target Branch"
 msgstr "Целевая ветка"
@@ -865,9 +881,12 @@ msgid ""
 "request. The data will automatically be added here once you create your "
 "first merge request."
 msgstr ""
+"На этапе написания кода показывает время первого коммита до создания запроса "
+"на слияние. Данные автоматически добавятся после того, как вы создать свой "
+"первый запрос на слияние."
 
 msgid "The collection of events added to the data gathered for that stage."
-msgstr ""
+msgstr "Коллекция событий добавленных в данные собранные для этого этапа."
 
 msgid "The fork relationship has been removed."
 msgstr "Связь форка удалена."
@@ -890,7 +909,7 @@ msgid ""
 "project access based on their associated user."
 msgstr ""
 "Расписание конвейеров запускает в будущем неоднократно конвейеры, для "
-"определенных ветвей или тэгов. Запланированные конвейеры наследуют "
+"определенных ветвей или тегов. Запланированные конвейеры наследуют "
 "ограничения на доступ к проекту на основе связанного с ними пользователя."
 
 msgid ""
@@ -898,12 +917,18 @@ msgid ""
 "first commit. This time will be added automatically once you push your first "
 "commit."
 msgstr ""
+"На этапе планирования показывает время от предыдущего шага до проталкивания "
+"первого коммита. Добавляется автоматически, как только проталкиваете свой "
+"первый коммит."
 
 msgid ""
 "The production stage shows the total time it takes between creating an issue "
 "and deploying the code to production. The data will be automatically added "
 "once you have completed the full idea to production cycle."
 msgstr ""
+"Производственный этап показывает общее время между созданием задачи и "
+"развертывание кода в производственной среде. Данные будут автоматически "
+"добавлены после полного завершения идеи производственного цикла."
 
 msgid "The project can be accessed by any logged in user."
 msgstr "Доступ к проекту возможен любым зарегистрированным пользователем."
@@ -919,27 +944,38 @@ msgid ""
 "it. The data will automatically be added after you merge your first merge "
 "request."
 msgstr ""
+"Этап обзора показывает время от создания запроса слияния до его выполнения. "
+"Данные будут автоматически добавлены после завершения первого запроса на "
+"слияние."
 
 msgid ""
 "The staging stage shows the time between merging the MR and deploying code "
 "to the production environment. The data will be automatically added once you "
 "deploy to production for the first time."
 msgstr ""
+"Этап постановки показывает время между слиянием \"MR\" и развертыванием кода "
+"в производственной среде. Данные будут автоматически добавлены после "
+"развертывания в производстве первый раз."
 
 msgid ""
 "The testing stage shows the time GitLab CI takes to run every pipeline for "
 "the related merge request. The data will automatically be added after your "
 "first pipeline finishes running."
 msgstr ""
+"Этап тестирования показывает время, которое GitLab CI занимает для запуска "
+"каждого конвейера для соответствующего запроса на слияние. Данные будут "
+"автоматически добавлены после завершения работы вашего первого конвейера."
 
 msgid "The time taken by each data entry gathered by that stage."
-msgstr ""
+msgstr "Время, затраченное каждым элементом, собранным на этом этапе."
 
 msgid ""
 "The value lying at the midpoint of a series of observed values. E.g., "
 "between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
 " 6."
 msgstr ""
+"Среднее значение в ряду. Пример: между 3, 5, 9, среднее 5, между 3, 5, 7, 8, "
+"среднее (5+7)/2 = 6."
 
 msgid ""
 "This means you can not push code until you create an empty repository or "
@@ -949,139 +985,139 @@ msgstr ""
 "репозиторий или не импортируете существующий."
 
 msgid "Time before an issue gets scheduled"
-msgstr ""
+msgstr " Время до начала попадания проблемы в планировщик"
 
 msgid "Time before an issue starts implementation"
-msgstr ""
+msgstr "Время до начала работы над проблемой"
 
 msgid "Time between merge request creation and merge/close"
 msgstr "Время между созданием запроса слияния и слиянием / закрытием"
 
 msgid "Time until first merge request"
-msgstr ""
+msgstr "Время до первого запроса  на слияние"
 
 msgid "Timeago|%s days ago"
-msgstr "Timeago|%s дн(я|ей) назад"
+msgstr "%s день назад"
 
 msgid "Timeago|%s days remaining"
-msgstr "Timeago|Осталось %s дн(я|ей)"
+msgstr "Осталось %s день"
 
 msgid "Timeago|%s hours remaining"
-msgstr "Timeago|Осталось %s часов"
+msgstr "Осталось %s часов"
 
 msgid "Timeago|%s minutes ago"
-msgstr "Timeago|%s минут назад"
+msgstr "%s минут назад"
 
 msgid "Timeago|%s minutes remaining"
-msgstr "Timeago|Осталось %s минут(а|ы)"
+msgstr "Осталось %s минут"
 
 msgid "Timeago|%s months ago"
-msgstr "Timeago|%s минут(а|ы) назад"
+msgstr "%s минут назад"
 
 msgid "Timeago|%s months remaining"
-msgstr "Timeago|Осталось %s месяцев(а)"
+msgstr "Осталось %s месяц"
 
 msgid "Timeago|%s seconds remaining"
-msgstr "Timeago|Осталось %s секунд(ы)"
+msgstr "Осталось %s секунд(ы)"
 
 msgid "Timeago|%s weeks ago"
-msgstr "Timeago|%s недель(и) назад"
+msgstr "%s недели назад"
 
 msgid "Timeago|%s weeks remaining"
-msgstr "Timeago|Осталось %s недель(и)"
+msgstr "Осталось %s недели"
 
 msgid "Timeago|%s years ago"
-msgstr "Timeago|%s лет/года назад"
+msgstr "%s год назад"
 
 msgid "Timeago|%s years remaining"
-msgstr "Timeago|Осталось %s лет/года"
+msgstr "Осталось %s год"
 
 msgid "Timeago|1 day remaining"
-msgstr "Timeago|Остался день"
+msgstr "Остался день"
 
 msgid "Timeago|1 hour remaining"
-msgstr "Timeago|Остался час"
+msgstr "Остался час"
 
 msgid "Timeago|1 minute remaining"
-msgstr "Timeago|Осталась одна минута"
+msgstr "Осталась одна минута"
 
 msgid "Timeago|1 month remaining"
-msgstr "Timeago|Остался месяц"
+msgstr "Остался месяц"
 
 msgid "Timeago|1 week remaining"
-msgstr "Timeago|Осталась неделя"
+msgstr "Осталась неделя"
 
 msgid "Timeago|1 year remaining"
-msgstr "Timeago|Остался год"
+msgstr "Остался год"
 
 msgid "Timeago|Past due"
-msgstr "Timeago|Просрочено"
+msgstr "Просрочено"
 
 msgid "Timeago|a day ago"
-msgstr "Timeago|день назад"
+msgstr "день назад"
 
 msgid "Timeago|a month ago"
-msgstr "Timeago|месяц назад"
+msgstr "месяц назад"
 
 msgid "Timeago|a week ago"
-msgstr "Timeago|неделю назад"
+msgstr "неделю назад"
 
 msgid "Timeago|a while"
-msgstr "Timeago|какое-то время"
+msgstr "какое-то время"
 
 msgid "Timeago|a year ago"
-msgstr "Timeago|год назад"
+msgstr "год назад"
 
 msgid "Timeago|about %s hours ago"
-msgstr "Timeago|около %s часов назад"
+msgstr "около %s часов назад"
 
 msgid "Timeago|about a minute ago"
-msgstr "Timeago|около минуты назад"
+msgstr "около минуты назад"
 
 msgid "Timeago|about an hour ago"
-msgstr "Timeago|около часа назад"
+msgstr "около часа назад"
 
 msgid "Timeago|in %s days"
-msgstr "Timeago|через %s дня(ей)"
+msgstr "через %s день"
 
 msgid "Timeago|in %s hours"
-msgstr "Timeago|через %s часа(ов)"
+msgstr "через %s час"
 
 msgid "Timeago|in %s minutes"
-msgstr "Timeago|через %s минут(ы)"
+msgstr "через %s минут"
 
 msgid "Timeago|in %s months"
-msgstr "Timeago|через %s месяц(а|ев)"
+msgstr "через %s месяц"
 
 msgid "Timeago|in %s seconds"
-msgstr "Timeago|через %s секунд(ы)"
+msgstr "через %s секунд(ы)"
 
 msgid "Timeago|in %s weeks"
-msgstr "Timeago|через %s недели"
+msgstr "через %s недели"
 
 msgid "Timeago|in %s years"
-msgstr "Timeago|через %s лет/года"
+msgstr "через %s год"
 
 msgid "Timeago|in 1 day"
-msgstr "Timeago|через день"
+msgstr "через день"
 
 msgid "Timeago|in 1 hour"
-msgstr "Timeago|через час"
+msgstr "через час"
 
 msgid "Timeago|in 1 minute"
-msgstr "Timeago|через минуту"
+msgstr "через минуту"
 
 msgid "Timeago|in 1 month"
-msgstr "Timeago|через месяц"
+msgstr "через месяц"
 
 msgid "Timeago|in 1 week"
-msgstr "Timeago|через неделю"
+msgstr "через неделю"
 
 msgid "Timeago|in 1 year"
-msgstr "Timeago|через год"
+msgstr "через год"
 
 msgid "Timeago|less than a minute ago"
-msgstr "Timeago|менее чем минуту назад"
+msgstr "менее чем минуту назад"
 
 msgid "Time|hr"
 msgid_plural "Time|hrs"
@@ -1102,19 +1138,19 @@ msgid "Total Time"
 msgstr "Общее время"
 
 msgid "Total test time for all commits/merges"
-msgstr ""
+msgstr "Общее время тестирования фиксаций/слияний"
 
 msgid "Unstar"
 msgstr "Снять отметку"
 
 msgid "Upload New File"
-msgstr "Выгрузить новый файл"
+msgstr "Загрузить новый файл"
 
 msgid "Upload file"
-msgstr "Выгрузить файл"
+msgstr "Загрузить файл"
 
 msgid "UploadLink|click to upload"
-msgstr "UploadLink|кликните для выгрузки"
+msgstr "кликните для загрузки"
 
 msgid "Use your global notification setting"
 msgstr "Используются глобальный настройки уведомлений"
@@ -1123,22 +1159,31 @@ msgid "View open merge request"
 msgstr "Просмотреть открытый запрос на слияние"
 
 msgid "VisibilityLevel|Internal"
-msgstr "VisibilityLevel|Ограниченный"
+msgstr "Ограниченный"
 
 msgid "VisibilityLevel|Private"
-msgstr "VisibilityLevel|Приватный"
+msgstr "Приватный"
 
 msgid "VisibilityLevel|Public"
-msgstr "VisibilityLevel|Публичный"
+msgstr "Публичный"
 
 msgid "Want to see the data? Please ask an administrator for access."
-msgstr ""
+msgstr "Хотите увидеть данные? Обратитесь к администратору за доступом."
 
 msgid "We don't have enough data to show this stage."
-msgstr ""
+msgstr "Информация по этапу отсутствует."
 
 msgid "Withdraw Access Request"
 msgstr "Отменить запрос доступа"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Вы собираетесь удалить %{group_name}.\n"
+"Удаленные группы НЕ МОГУТ быть восстановлены!\n"
+"Вы АБСОЛЮТНО уверены?"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
