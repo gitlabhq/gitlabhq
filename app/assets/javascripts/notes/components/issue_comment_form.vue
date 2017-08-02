@@ -33,9 +33,10 @@
     computed: {
       ...mapGetters([
         'getCurrentUserLastNote',
+        'getUserData',
       ]),
       isLoggedIn() {
-        return window.gon.current_user_id;
+        return this.getUserData === null ? false : true;
       },
       commentButtonTitle() {
         return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';

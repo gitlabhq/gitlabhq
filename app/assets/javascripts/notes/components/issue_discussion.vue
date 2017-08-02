@@ -1,6 +1,6 @@
 <script>
   /* global Flash */
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -21,7 +21,6 @@
     },
     data() {
       return {
-        newNotePath: window.gl.issueData.create_note_path,
         isReplying: false,
       };
     },
@@ -37,6 +36,9 @@
       placeholderSystemNote,
     },
     computed: {
+      ...mapGetters([
+        'getIssueData',
+      ]),
       discussion() {
         return this.note.notes[0];
       },
@@ -44,8 +46,11 @@
         return this.discussion.author;
       },
       canReply() {
-        return window.gl.issueData.current_user.can_create_note;
+        return this.getIssueData.current_user.can_create_note;
       },
+      newNotePath() {
+        return this.getIssueData.create_note_path;
+      }
     },
     methods: {
       ...mapActions([

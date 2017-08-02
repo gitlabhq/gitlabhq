@@ -26,7 +26,8 @@
       },
       userData: {
         type: Object,
-        required: true,
+        required: false,
+        default: {}
       },
     },
     store,

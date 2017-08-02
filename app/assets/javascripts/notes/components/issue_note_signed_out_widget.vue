@@ -1,14 +1,20 @@
 <script>
+  import { mapGetters } from 'vuex';
+
   export default {
     name: 'singInLinksNotes',
-    data() {
-      const { newSessionPath, registerPath } = this.$store.getters.notesData;
+    computed: {
+      ...mapGetters([
+        'getNotesDataByProp'
+      ]),
+      registerLink() {
+       return this.getNotesDataByProp('registerPath')
 
-      return {
-        signInLink: newSessionPath,
-        registerLink: registerPath,
-      };
-    },
+      },
+      signInLink(){
+        return this.getNotesDataByProp('newSessionPath');
+      }
+    }
   };
 </script>
 
