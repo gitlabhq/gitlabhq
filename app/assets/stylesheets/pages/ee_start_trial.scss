@@ -1,4 +1,4 @@
-/* EE Trial Banner Styles */
+/* EE Trial Specific Stylesheet */
 
 /* Main Nav Overrides */
 .navbar-gitlab.has-trial-banner {
@@ -54,6 +54,42 @@
       position: absolute;
       top: 15px;
       right: 5px;
+    }
+  }
+}
+
+/* Trial License Install Modal */
+.modal-upload-trial-license {
+  .modal-body-contents {
+    .trial-activated-graphic {
+      display: flex;
+      justify-content: center;
+
+      svg {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    .confirmation-title,
+    .confirmation-desc {
+      text-align: center;
+    }
+
+    .confirmation-desc {
+      max-width: 80%;
+      margin: auto;
+    }
+
+    .confirmation-desc {
+      color: $gl-text-color-secondary;
+    }
+
+    .trial-license-preview {
+      max-height: 300px;
+      word-wrap: break-word;
+      word-break: break-all;
+      overflow-y: auto;
     }
   }
 }
