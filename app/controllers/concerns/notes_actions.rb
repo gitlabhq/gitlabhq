@@ -3,6 +3,7 @@ module NotesActions
   extend ActiveSupport::Concern
 
   included do
+    before_action :set_polling_interval_header, only: [:index]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
   end
@@ -173,6 +174,12 @@ module NotesActions
       # DiffNote
       :position
     )
+  end
+
+  def set_polling_interval_header
+    return unless noteable.is_a?(Issue)
+
+    Gitlab::PollingInterval.set_header(response, interval: 3_000)
   end
 
   def noteable
