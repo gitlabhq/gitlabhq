@@ -80,9 +80,8 @@ module LicenseHelper
     'https://about.gitlab.com/gitlab-com/'
   end
 
-  # Temporary Switch
   def show_promotions?
-    true
+     !License.current || (License.current&.trial? && license.expired?)
   end
 
   extend self
