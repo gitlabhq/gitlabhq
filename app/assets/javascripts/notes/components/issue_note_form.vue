@@ -33,6 +33,7 @@
         initialNote: this.noteBody,
         note: this.noteBody,
         conflictWhileEditing: false,
+        isSubmitting: false,
       };
     },
     components: {
@@ -59,10 +60,14 @@
       },
       currentUserId() {
         return this.getUserDataByProp('id');
-      }
+      },
+      isDisabled() {
+        return !this.note.length || this.isSubmitting;
+      },
     },
     methods: {
       handleUpdate() {
+        this.isSubmitting = true;
         this.$emit('handleFormUpdate', this.note);
       },
       editMyLastNote() {
@@ -79,7 +84,7 @@
       cancelHandler(shouldConfirm = false) {
         // Sends information about confirm message and if the textarea has changed
         this.$emit('cancelFormEdition', shouldConfirm, this.initialNote !== this.note);
-      }
+      },
     },
     mounted() {
       this.$refs.textarea.focus();
@@ -133,7 +138,8 @@
       <div class="note-form-actions clearfix">
         <button
           type="button"
-           @click="handleUpdate"
+          @click="handleUpdate"
+          :disabled="isDisabled"
           class="btn btn-nr btn-save">
           {{saveButtonTitle}}
         </button>
