@@ -26,9 +26,7 @@ module Geo
     end
 
     def project_id
-      return nil unless event.respond_to?(:project_id)
-
-      event.project_id
+      event.try(:project_id)
     end
   end
 end
