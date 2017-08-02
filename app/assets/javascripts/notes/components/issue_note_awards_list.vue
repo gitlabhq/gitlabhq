@@ -52,7 +52,12 @@
       // We need to do this otherwise we will render the same emoji over and over again.
       groupedAwards() {
         const awards = this.awards.reduce((acc, award) => {
-          Object.assign(acc, {[award.name]: [award]});
+          if (acc.hasOwnProperty(award.name)) {
+            acc[award.name].push(award);
+          } else {
+            Object.assign(acc, {[award.name]: [award]});
+          }
+
           return acc;
         }, {});
 
@@ -67,6 +72,7 @@
           orderedAwards.thumbsdown = thumbsdown;
           delete awards.thumbsdown;
         }
+
         return  Object.assign({}, orderedAwards, awards);
       },
       isAuthoredByMe() {
@@ -75,7 +81,7 @@
     },
     methods: {
       ...mapActions([
-        'toggleAward',
+        'toggleAwardRequest',
       ]),
       getAwardHTML(name) {
         return Emoji.glEmojiTag(name);
@@ -147,7 +153,7 @@
           awardName: awardName === "100" ? 100: awardName,
         };
 
-        this.toggleAward(data)
+        this.toggleAwardRequest(data)
           .catch(() => Flash('Something went wrong on our end.'));
       },
     },

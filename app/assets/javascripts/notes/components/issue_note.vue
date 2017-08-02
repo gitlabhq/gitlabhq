@@ -119,6 +119,7 @@
     class="note timeline-entry"
     :id="noteAnchorId"
     :class="classNameBindings"
+    :data-award-url="note.toggle_award_path"
     :note-id="note.id">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">

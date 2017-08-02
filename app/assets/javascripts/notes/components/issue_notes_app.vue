@@ -99,10 +99,8 @@
       bindEventHubListeners() {
         this.$el.parentElement.addEventListener('toggleAward', (event) => {
           const { awardName, noteId } = event.detail;
-          const endpoint = this.notesById[noteId].toggle_award_path;
+          this.actionToggleAward({ awardName, noteId })
 
-          this.actionToggleAward({ endpoint, awardName, noteId })
-            .catch((error) => Flash('Something went wrong on our end.'));
         });
 
         // JQuery is needed here because it is a custom event being dispatched with jQuery.

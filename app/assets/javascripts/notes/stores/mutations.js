@@ -102,16 +102,13 @@ export default {
   [types.TOGGLE_AWARD](state, data) {
     const { awardName, note } = data;
     const { id, name, username } = state.userData;
-    let index = -1;
 
-    note.award_emoji.forEach((a, i) => {
-      if (a.name === awardName && a.user.id === id) {
-        index = i;
-      }
-    });
+    const hasEmojiAwardedByCurrentUser = note.award_emoji
+      .filter(emoji => emoji.name === data.awardName && emoji.user.id === id);
 
-    if (index > -1) { // If current user has awarded this emoji, remove it.
-      note.award_emoji.splice(index, 1);
+    if (hasEmojiAwardedByCurrentUser.length) {
+      // If current user has awarded this emoji, remove it.
+      note.award_emoji.splice(note.award_emoji.indexOf(hasEmojiAwardedByCurrentUser[0]), 1);
     } else {
       note.award_emoji.push({
         name: awardName,

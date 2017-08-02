@@ -174,7 +174,7 @@ export const poll = ({ commit, state, getters }) => {
   if (!Visibility.hidden()) {
     eTagPoll.makeRequest();
   } else {
-    this.service.poll(requestData);
+    service.poll(requestData);
   }
 
   Visibility.change(() => {
@@ -186,38 +186,17 @@ export const poll = ({ commit, state, getters }) => {
   });
 };
 
-export const toggleAward = ({ commit, getters, dispatch }, data) => {
-  const { endpoint, awardName, noteId, skipMutalityCheck } = data;
-  const note = getters.notesById[noteId];
+export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, noteId }) => {
+  commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
+};
 
+export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
+  const { endpoint, awardName } = data;
   return service
     .toggleAward(endpoint, { name: awardName })
     .then(res => res.json())
     .then(() => {
-      commit(types.TOGGLE_AWARD, { awardName, note });
-
-      if (!skipMutalityCheck &&
-        (awardName === constants.EMOJI_THUMBSUP || awardName === constants.EMOJI_THUMBSDOWN)) {
-        const counterAward = awardName === constants.EMOJI_THUMBSUP ?
-          constants.EMOJI_THUMBSDOWN :
-          constants.EMOJI_THUMBSUP;
-
-        const targetNote = getters.notesById[noteId];
-        let noteHasAwardByCurrentUser = false;
-
-        targetNote.award_emoji.forEach((a) => {
-          if (a.name === counterAward && a.user.id === window.gon.current_user_id) {
-            noteHasAwardByCurrentUser = true;
-          }
-        });
-
-        if (noteHasAwardByCurrentUser) {
-          Object.assign(data, { awardName: counterAward });
-          Object.assign(data, { skipMutalityCheck: true });
-
-          dispatch(types.TOGGLE_AWARD, data);
-        }
-      }
+      dispatch('toggleAward', data);
     });
 };
 
