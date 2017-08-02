@@ -283,8 +283,7 @@ const RepoHelper = {
     }
   },
 
-  loadingError(e) {
-    console.log(e)
+  loadingError() {
     Flash('Unable to load the file at this time.');
   },
 };

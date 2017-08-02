@@ -9,7 +9,7 @@ describe('RepoFileButtons', () => {
     return new RepoFileButtons().$mount();
   }
 
-  it('renders Raw, Blame, History, Permalink, Lock and Preview toggle', () => {
+  it('renders Raw, Blame, History, Permalink and Preview toggle', () => {
     const activeFile = {
       extension: 'md',
       url: 'url',
@@ -34,7 +34,6 @@ describe('RepoFileButtons', () => {
     expect(history.href).toMatch(`/${activeFile.url}`);
     expect(history.textContent).toEqual('History');
     expect(vm.$el.querySelector('.permalink').textContent).toEqual('Permalink');
-    expect(vm.$el.querySelector('.lock').textContent).toEqual('Lock');
     expect(vm.$el.querySelector('.preview').textContent).toEqual(activeFileLabel);
   });
 

@@ -61,7 +61,7 @@ export default RepoCommitSection;
         <label class="col-md-4 control-label staged-files">Staged files ({{changedFiles.length}})</label>
         <div class="col-md-4">
           <ul class="list-unstyled changed-files">
-            <li v-for="file in branchPaths">
+            <li v-for="file in branchPaths" :key="file.id">
               <span class="help-block">{{file}}</span>
             </li>
           </ul>
@@ -77,7 +77,7 @@ export default RepoCommitSection;
       </div>
       <!-- Button Drop Down
       -->
-      <div class="form-group">
+      <div class="form-group target-branch">
         <label class="col-md-4 control-label" for="target-branch">Target branch</label>
         <div class="col-md-4">
           <span class="help-block">{{targetBranch}}</span>

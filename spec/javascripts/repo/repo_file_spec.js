@@ -33,6 +33,7 @@ describe('RepoFile', () => {
       activeFile,
     });
     const name = vm.$el.querySelector('.repo-file-name');
+    const fileIcon = vm.$el.querySelector('.file-icon');
 
     expect(vm.$el.classList.contains('active')).toBeTruthy();
     expect(vm.$el.querySelector(`.${file.icon}`).style.marginLeft).toEqual('100px');
@@ -41,6 +42,8 @@ describe('RepoFile', () => {
     expect(name.textContent).toEqual(file.name);
     expect(vm.$el.querySelector('.commit-message').textContent).toBe(file.lastCommitMessage);
     expect(vm.$el.querySelector('.commit-update').textContent).toBe(updated);
+    expect(fileIcon.classList.contains(file.icon)).toBeTruthy();
+    expect(fileIcon.style.marginLeft).toEqual(`${file.level * 10}px`);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
@@ -54,6 +57,22 @@ describe('RepoFile', () => {
     });
 
     expect(vm.$el.innerHTML).toBeTruthy();
+    expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
+  });
+
+  it('renders a spinner if the file is loading', () => {
+    file.loading = true;
+    const vm = createComponent({
+      file,
+      activeFile,
+      loading: {
+        tree: true,
+      },
+      hasFiles: true,
+    });
+
+    expect(vm.$el.innerHTML).toBeTruthy();
+    expect(vm.$el.querySelector('.fa-spin.fa-spinner').style.marginLeft).toEqual(`${file.level * 10}px`);
   });
 
   it('does not render if loading tree', () => {
