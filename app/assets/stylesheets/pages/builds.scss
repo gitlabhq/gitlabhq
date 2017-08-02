@@ -235,6 +235,7 @@
 
   .blocks-container {
     padding: 0 $gl-padding;
+    width: 289px;
   }
 
   .block {
@@ -334,6 +335,7 @@
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
+    width: 289px;
     overflow: auto;
 
     svg {
