@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Pipeline do
-  include EmailHelpers
-
+describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -1247,8 +1245,6 @@ describe Ci::Pipeline do
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
-
-      reset_delivered_emails!
 
       perform_enqueued_jobs do
         pipeline.enqueue
