@@ -46,7 +46,8 @@ module Geo
     def log_error(message, error)
       Gitlab::Geo::Logger.error({
         class: self.class.name,
-        message: message, error: error
+        message: message,
+        error: error
       }.merge(log_params))
     end
 
