@@ -9,21 +9,57 @@ describe GitGarbageCollectWorker do
   subject { described_class.new }
 
   describe "#perform" do
-    it "flushes ref caches when the task is 'gc'" do
-      expect(subject).to receive(:command).with(:gc).and_return([:the, :command])
-      expect(Gitlab::Popen).to receive(:popen).
-        with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
+    shared_examples 'flushing ref caches' do |gitaly|
+      it "flushes ref caches when the task if 'gc'" do
+        expect(subject).to receive(:command).with(:gc).and_return([:the, :command])
 
-      expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
-      expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
-      expect_any_instance_of(Repository).to receive(:branch_count).and_call_original
-      expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
+        if gitaly
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
+            .and_return(nil)
+        else
+          expect(Gitlab::Popen).to receive(:popen)
+            .with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
+        end
 
-      subject.perform(project.id)
+        expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
+        expect_any_instance_of(Repository).to receive(:branch_count).and_call_original
+        expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
+
+        subject.perform(project.id)
+      end
+    end
+
+    context "with Gitaly turned on" do
+      it_should_behave_like 'flushing ref caches', true
+    end
+
+    context "with Gitaly turned off", skip_gitaly_mock: true do
+      it_should_behave_like 'flushing ref caches', false
+    end
+
+    context "repack_full" do
+      it "calls Gitaly" do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:repack_full)
+          .and_return(nil)
+
+        subject.perform(project.id, :full_repack)
+      end
+    end
+
+    context "repack_incremental" do
+      it "calls Gitaly" do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:repack_incremental)
+          .and_return(nil)
+
+        subject.perform(project.id, :incremental_repack)
+      end
     end
 
     shared_examples 'gc tasks' do
-      before { allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled) }
+      before do
+        allow(subject).to receive(:bitmaps_enabled?).and_return(bitmaps_enabled)
+      end
 
       it 'incremental repack adds a new packfile' do
         create_objects(project)

@@ -1,8 +1,8 @@
 /* global Flash */
 
-import 'vendor/task_list';
+import 'deckar01-task_list';
 
-class TaskList {
+export default class TaskList {
   constructor(options = {}) {
     this.selector = options.selector;
     this.dataType = options.dataType;
@@ -48,6 +48,3 @@ class TaskList {
     });
   }
 }
-
-window.gl = window.gl || {};
-window.gl.TaskList = TaskList;

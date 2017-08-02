@@ -2,8 +2,12 @@ import '~/extensions/array';
 import '~/filtered_search/dropdown_utils';
 import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown_manager';
+import FilteredSearchSpecHelper from '../helpers/filtered_search_spec_helper';
 
 describe('Dropdown Utils', () => {
+  const issueListFixture = 'issues/issue_list.html.raw';
+  preloadFixtures(issueListFixture);
+
   describe('getEscapedText', () => {
     it('should return same word when it has no space', () => {
       const escaped = gl.DropdownUtils.getEscapedText('textWithoutSpace');
@@ -312,6 +316,31 @@ describe('Dropdown Utils', () => {
         expect(left).toBe(0);
         expect(right).toBe(30);
       });
+    });
+  });
+
+  describe('getSearchQuery', () => {
+    let authorToken;
+
+    beforeEach(() => {
+      loadFixtures(issueListFixture);
+
+      authorToken = FilteredSearchSpecHelper.createFilterVisualToken('author', '@user');
+      const searchTermToken = FilteredSearchSpecHelper.createSearchVisualToken('search term');
+
+      const tokensContainer = document.querySelector('.tokens-container');
+      tokensContainer.appendChild(searchTermToken);
+      tokensContainer.appendChild(authorToken);
+    });
+
+    it('uses original value if present', () => {
+      const originalValue = 'original dance';
+      const valueContainer = authorToken.querySelector('.value-container');
+      valueContainer.dataset.originalValue = originalValue;
+
+      const searchQuery = gl.DropdownUtils.getSearchQuery();
+
+      expect(searchQuery).toBe(' search term author:original dance');
     });
   });
 });

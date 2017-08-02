@@ -1,12 +1,10 @@
 class JiraService < IssueTrackerService
-  include Gitlab::Routing.url_helpers
+  include Gitlab::Routing
 
   validates :url, url: true, presence: true, if: :activated?
   validates :api_url, url: true, allow_blank: true
-  validates :project_key, presence: true, if: :activated?
 
-  prop_accessor :username, :password, :url, :api_url, :project_key,
-                :jira_issue_transition_id, :title, :description
+  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
   before_update :reset_password
 
@@ -18,7 +16,7 @@ class JiraService < IssueTrackerService
   end
 
   # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1
-  def reference_pattern
+  def self.reference_pattern(only_long: true)
     @reference_pattern ||= %r{(?<issue>\b([A-Z][A-Z0-9_]+-)\d+)}
   end
 
@@ -54,10 +52,6 @@ class JiraService < IssueTrackerService
     @client ||= JIRA::Client.new(options)
   end
 
-  def jira_project
-    @jira_project ||= jira_request { client.Project.find(project_key) }
-  end
-
   def help
     "You need to configure JIRA before enabling this service. For more details
     read the
@@ -86,18 +80,12 @@ class JiraService < IssueTrackerService
 
   def fields
     [
-      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com' },
+      { type: 'text', name: 'url', title: 'Web URL', placeholder: 'https://jira.example.com', required: true },
       { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
-      { type: 'text', name: 'project_key', placeholder: 'Project Key' },
-      { type: 'text', name: 'username', placeholder: '' },
-      { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'jira_issue_transition_id', placeholder: '' }
+      { type: 'text', name: 'username', placeholder: '', required: true },
+      { type: 'password', name: 'password', placeholder: '', required: true },
+      { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID', placeholder: '' }
     ]
-  end
-
-  # URLs to redirect from Gitlab issues pages to jira issue tracker
-  def project_url
-    "#{url}/issues/?jql=project=#{project_key}"
   end
 
   def issues_url
@@ -152,8 +140,8 @@ class JiraService < IssueTrackerService
         url: resource_url(user_path(author))
       },
       project: {
-        name: self.project.path_with_namespace,
-        url: resource_url(namespace_project_path(project.namespace, self.project))
+        name: project.full_path,
+        url: resource_url(namespace_project_path(project.namespace, project)) # rubocop:disable Cop/ProjectPathHelper
       },
       entity: {
         name: noteable_type.humanize.downcase,
@@ -172,11 +160,10 @@ class JiraService < IssueTrackerService
 
   def test(_)
     result = test_settings
-    { success: result.present?, result: result }
-  end
+    success = result.present?
+    result = @error if @error && !success
 
-  def can_test?
-    username.present? && password.present?
+    { success: success, result: result }
   end
 
   # JIRA does not need test data.
@@ -188,7 +175,7 @@ class JiraService < IssueTrackerService
   def test_settings
     return unless client_url.present?
     # Test settings by getting the project
-    jira_request { jira_project.present? }
+    jira_request { client.ServerInfo.all.attrs }
   end
 
   private
@@ -239,15 +226,24 @@ class JiraService < IssueTrackerService
     return unless client_url.present?
 
     jira_request do
-      if issue.comments.build.save!(body: message)
-        remote_link = issue.remotelink.build
+      remote_link = find_remote_link(issue, remote_link_props[:object][:url])
+      if remote_link
         remote_link.save!(remote_link_props)
-        result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
+      elsif issue.comments.build.save!(body: message)
+        new_remote_link = issue.remotelink.build
+        new_remote_link.save!(remote_link_props)
       end
 
+      result_message = "#{self.class.name} SUCCESS: Successfully posted to #{client_url}."
       Rails.logger.info(result_message)
       result_message
     end
+  end
+
+  def find_remote_link(issue, url)
+    links = jira_request { issue.remotelink.all }
+
+    links.find { |link| link.object["url"] == url }
   end
 
   def build_remote_link_props(url:, title:, resolved: false)
@@ -295,7 +291,8 @@ class JiraService < IssueTrackerService
     yield
 
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
-    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{e.message}"
+    @error = e.message
+    Rails.logger.info "#{self.class.name} Send message ERROR: #{client_url} - #{@error}"
     nil
   end
 

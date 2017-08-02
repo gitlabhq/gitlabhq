@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe 'Issue Boards shortcut', feature: true, js: true do
+describe 'Issue Boards shortcut', js: true do
   let(:project) { create(:empty_project) }
 
   before do
     create(:board, project: project)
 
-    login_as :admin
+    sign_in(create(:admin))
 
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   it 'takes user to issue board index' do

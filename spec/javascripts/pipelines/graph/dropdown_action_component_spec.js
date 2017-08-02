@@ -4,7 +4,7 @@ import dropdownActionComponent from '~/pipelines/components/graph/dropdown_actio
 describe('action component', () => {
   let component;
 
-  beforeEach(() => {
+  beforeEach((done) => {
     const DropdownActionComponent = Vue.extend(dropdownActionComponent);
     component = new DropdownActionComponent({
       propsData: {
@@ -14,6 +14,8 @@ describe('action component', () => {
         actionIcon: 'icon_action_cancel',
       },
     }).$mount();
+
+    Vue.nextTick(done);
   });
 
   it('should render a link', () => {

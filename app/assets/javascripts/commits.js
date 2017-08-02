@@ -7,6 +7,8 @@ window.CommitsList = (function() {
   CommitsList.timer = null;
 
   CommitsList.init = function(limit) {
+    this.$contentList = $('.content_list');
+
     $("body").on("click", ".day-commits-table li.commit", function(e) {
       if (e.target.nodeName !== "A") {
         location.href = $(this).attr("url");
@@ -14,9 +16,9 @@ window.CommitsList = (function() {
         return false;
       }
     });
-    Pager.init(limit, false, false, function() {
-      gl.utils.localTimeAgo($('.js-timeago'));
-    });
+
+    Pager.init(limit, false, false, this.processCommits);
+
     this.content = $("#commits-list");
     this.searchField = $("#commits-search");
     this.lastSearch = this.searchField.val();
@@ -60,6 +62,35 @@ window.CommitsList = (function() {
       },
       dataType: "json"
     });
+  };
+
+  // Prepare loaded data.
+  CommitsList.processCommits = (data) => {
+    let processedData = data;
+    const $processedData = $(processedData);
+    const $commitsHeadersLast = CommitsList.$contentList.find('li.js-commit-header').last();
+    const lastShownDay = $commitsHeadersLast.data('day');
+    const $loadedCommitsHeadersFirst = $processedData.filter('li.js-commit-header').first();
+    const loadedShownDayFirst = $loadedCommitsHeadersFirst.data('day');
+    let commitsCount;
+
+    // If commits headers show the same date,
+    // remove the last header and change the previous one.
+    if (lastShownDay === loadedShownDayFirst) {
+      // Last shown commits count under the last commits header.
+      commitsCount = $commitsHeadersLast.nextUntil('li.js-commit-header').find('li.commit').length;
+
+      // Remove duplicate of commits header.
+      processedData = $processedData.not(`li.js-commit-header[data-day="${loadedShownDayFirst}"]`);
+
+      // Update commits count in the previous commits header.
+      commitsCount += Number($(processedData).nextUntil('li.js-commit-header').first().find('li.commit').length);
+      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${gl.text.pluralize('commit', commitsCount)}`);
+    }
+
+    gl.utils.localTimeAgo($processedData.find('.js-timeago'));
+
+    return processedData;
   };
 
   return CommitsList;

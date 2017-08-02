@@ -64,7 +64,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
 
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
@@ -143,20 +143,19 @@ Then install the Bundler Gem:
 
 ## 3. Go
 
-Since GitLab 8.0, Git HTTP requests are handled by gitlab-workhorse (formerly
-gitlab-git-http-server). This is a small daemon written in Go. To install
-gitlab-workhorse we need a Go compiler. The instructions below assume you
-use 64-bit Linux. You can find downloads for other platforms at the [Go download
+Since GitLab 8.0, GitLab has several daemons written in Go. To install
+GitLab we need a Go compiler. The instructions below assume you use 64-bit
+Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
 
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
-    echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
+    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.5.3.linux-amd64.tar.gz
+    rm go1.8.3.linux-amd64.tar.gz
 
 ## 4. Node
 
@@ -166,7 +165,7 @@ In many distros the versions provided by the official package  repositories
 are out of date, so we'll need to install through the following commands:
 
     # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | bash -
+    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
     # install yarn
@@ -295,9 +294,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-2-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-4-stable gitlab
 
-**Note:** You can change `9-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -421,6 +420,12 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 **Note:** Make sure your hostname can be resolved on the machine itself by either a proper DNS record or an additional line in /etc/hosts ("127.0.0.1  hostname"). This might be necessary for example if you set up GitLab behind a reverse proxy. If the hostname cannot be resolved, the final installation check will fail with "Check GitLab API access: FAILED. code: 401" and pushing commits will be rejected with "[remote rejected] master -> master (hook declined)".
 
+**Note:** GitLab Shell application startup time can be greatly reduced by disabling RubyGems. This can be done in several manners:
+
+* Export `RUBYOPT=--disable-gems` environment variable for the processes
+* Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommened for system-wide Ruby.
+* Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707)
+
 ### Install gitlab-workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
@@ -470,10 +475,6 @@ Make GitLab start on boot:
 
 ### Install Gitaly
 
-As of GitLab 9.1 Gitaly is an **optional** component. Its
-configuration is still changing regularly. It is OK to wait
-with setting up Gitaly until you upgrade to GitLab 9.2 or later.
-
     # Fetch Gitaly source with Git and compile with Go
     sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
 
@@ -490,16 +491,6 @@ Next, make sure gitaly configured:
     # If you are using non-default settings you need to update config.toml
     cd /home/git/gitaly
     sudo -u git -H editor config.toml
-
-    # Enable Gitaly in the init script
-    echo 'gitaly_enabled=true' | sudo tee -a /etc/default/gitlab
-
-Next, edit `/home/git/gitlab/config/gitlab.yml` and make sure `enabled: true` in
-the `gitaly:` section is uncommented.
-
-    # <- gitlab.yml indentation starts here
-      gitaly:
-        enabled: true
 
 For more information about configuring Gitaly see
 [doc/administration/gitaly](../administration/gitaly).
@@ -518,6 +509,10 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

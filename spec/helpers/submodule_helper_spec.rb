@@ -52,6 +52,14 @@ describe SubmoduleHelper do
         stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-ce.git'].join(''))
         expect(submodule_links(submodule_item)).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
       end
+
+      it 'works with subgroups' do
+        allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
+        allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
+        allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
+        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-ce.git'].join(''))
+        expect(submodule_links(submodule_item)).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-ce'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-ce', 'hash')])
+      end
     end
 
     context 'submodule on github.com' do
@@ -159,6 +167,11 @@ describe SubmoduleHelper do
 
       it 'one level down' do
         result = relative_self_links('../test.git', commit_id)
+        expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
+      end
+
+      it 'with trailing whitespace' do
+        result = relative_self_links('../test.git ', commit_id)
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
       end
 

@@ -1,5 +1,6 @@
 <script>
   import animateMixin from '../mixins/animate';
+  import TaskList from '../../task_list';
 
   export default {
     mixins: [animateMixin],
@@ -16,20 +17,16 @@
         type: String,
         required: true,
       },
-      updatedAt: {
-        type: String,
-        required: true,
-      },
       taskStatus: {
         type: String,
-        required: true,
+        required: false,
+        default: '',
       },
     },
     data() {
       return {
         preAnimation: false,
         pulseAnimation: false,
-        timeAgoEl: $('.js-issue-edited-ago'),
       };
     },
     watch: {
@@ -37,17 +34,28 @@
         this.animateChange();
 
         this.$nextTick(() => {
-          const toolTipTime = gl.utils.formatDate(this.updatedAt);
-
-          this.timeAgoEl.attr('datetime', this.updatedAt)
-            .attr('title', toolTipTime)
-            .tooltip('fixTitle');
-
           this.renderGFM();
         });
       },
       taskStatus() {
-        const taskRegexMatches = this.taskStatus.match(/(\d+) of (\d+)/);
+        this.updateTaskStatusText();
+      },
+    },
+    methods: {
+      renderGFM() {
+        $(this.$refs['gfm-content']).renderGFM();
+
+        if (this.canUpdate) {
+          // eslint-disable-next-line no-new
+          new TaskList({
+            dataType: 'issue',
+            fieldName: 'description',
+            selector: '.detail-page-description',
+          });
+        }
+      },
+      updateTaskStatusText() {
+        const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
         const $issuableHeader = $('.issuable-meta');
         const $tasks = $('#task_status', $issuableHeader);
         const $tasksShort = $('#task_status_short', $issuableHeader);
@@ -61,28 +69,16 @@
         }
       },
     },
-    methods: {
-      renderGFM() {
-        $(this.$refs['gfm-entry-content']).renderGFM();
-
-        if (this.canUpdate) {
-          // eslint-disable-next-line no-new
-          new gl.TaskList({
-            dataType: 'issue',
-            fieldName: 'description',
-            selector: '.detail-page-description',
-          });
-        }
-      },
-    },
     mounted() {
       this.renderGFM();
+      this.updateTaskStatusText();
     },
   };
 </script>
 
 <template>
   <div
+    v-if="descriptionHtml"
     class="description"
     :class="{
       'js-task-list-container': canUpdate

@@ -1,7 +1,9 @@
 shared_context 'unique ips sign in limit' do
   include StubENV
   before(:each) do
-    Gitlab::Redis.with(&:flushall)
+    Gitlab::Redis::Cache.with(&:flushall)
+    Gitlab::Redis::Queues.with(&:flushall)
+    Gitlab::Redis::SharedState.with(&:flushall)
   end
 
   before do
@@ -31,7 +33,9 @@ end
 
 shared_examples 'user login operation with unique ip limit' do
   include_context 'unique ips sign in limit' do
-    before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
+    before do
+      current_application_settings.update!(unique_ips_limit_per_user: 1)
+    end
 
     it 'allows user authenticating from the same ip' do
       expect { operation_from_ip('ip') }.not_to raise_error
@@ -47,7 +51,9 @@ end
 
 shared_examples 'user login request with unique ip limit' do |success_status = 200|
   include_context 'unique ips sign in limit' do
-    before { current_application_settings.update!(unique_ips_limit_per_user: 1) }
+    before do
+      current_application_settings.update!(unique_ips_limit_per_user: 1)
+    end
 
     it 'allows user authenticating from the same ip' do
       expect(request_from_ip('ip')).to have_http_status(success_status)

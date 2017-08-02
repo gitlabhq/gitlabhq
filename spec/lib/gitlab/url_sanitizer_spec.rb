@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlSanitizer, lib: true do
+describe Gitlab::UrlSanitizer do
   let(:credentials) { { user: 'blah', password: 'password' } }
   let(:url_sanitizer) do
     described_class.new("https://github.com/me/project.git", credentials: credentials)
@@ -62,11 +62,6 @@ describe Gitlab::UrlSanitizer, lib: true do
     end
   end
 
-  describe '.http_credentials_for_user' do
-    it { expect(described_class.http_credentials_for_user(user)).to eq({ user: 'john.doe' }) }
-    it { expect(described_class.http_credentials_for_user('foo')).to eq({}) }
-  end
-
   describe '#sanitized_url' do
     it { expect(url_sanitizer.sanitized_url).to eq("https://github.com/me/project.git") }
   end
@@ -76,7 +71,7 @@ describe Gitlab::UrlSanitizer, lib: true do
 
     context 'when user is given to #initialize' do
       let(:url_sanitizer) do
-        described_class.new("https://github.com/me/project.git", credentials: described_class.http_credentials_for_user(user))
+        described_class.new("https://github.com/me/project.git", credentials: { user: user.username })
       end
 
       it { expect(url_sanitizer.credentials).to eq({ user: 'john.doe' }) }
@@ -94,7 +89,7 @@ describe Gitlab::UrlSanitizer, lib: true do
 
     context 'when user is given to #initialize' do
       let(:url_sanitizer) do
-        described_class.new("https://github.com/me/project.git", credentials: described_class.http_credentials_for_user(user))
+        described_class.new("https://github.com/me/project.git", credentials: { user: user.username })
       end
 
       it { expect(url_sanitizer.full_url).to eq("https://john.doe@github.com/me/project.git") }

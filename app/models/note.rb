@@ -13,6 +13,7 @@ class Note < ActiveRecord::Base
   include AfterCommitQueue
   include ResolvableNote
   include IgnorableColumn
+  include Editable
 
   ignore_column :original_discussion_id
 
@@ -31,7 +32,7 @@ class Note < ActiveRecord::Base
   # Banzai::ObjectRenderer
   attr_accessor :user_visible_reference_count
 
-  # Attribute used to store the attributes that have ben changed by slash commands.
+  # Attribute used to store the attributes that have ben changed by quick actions.
   attr_accessor :commands_changes
 
   default_value_for :system, false
@@ -40,13 +41,13 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true, touch: true
+  belongs_to :noteable, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
 
-  has_many :todos, dependent: :destroy
-  has_many :events, as: :target, dependent: :destroy
+  has_many :todos, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one :system_note_metadata
 
   delegate :gfm_reference, :local_reference, to: :noteable
@@ -110,7 +111,7 @@ class Note < ActiveRecord::Base
     end
 
     def discussions(context_noteable = nil)
-      Discussion.build_collection(fresh, context_noteable)
+      Discussion.build_collection(all.includes(:noteable).fresh, context_noteable)
     end
 
     def find_discussion(discussion_id)
@@ -136,9 +137,9 @@ class Note < ActiveRecord::Base
     end
 
     def count_for_collection(ids, type)
-      user.select('noteable_id', 'COUNT(*) as count').
-        group(:noteable_id).
-        where(noteable_type: type, noteable_id: ids)
+      user.select('noteable_id', 'COUNT(*) as count')
+        .group(:noteable_id)
+        .where(noteable_type: type, noteable_id: ids)
     end
   end
 
@@ -189,7 +190,7 @@ class Note < ActiveRecord::Base
   # override to return commits, which are not active record
   def noteable
     if for_commit?
-      project.commit(commit_id)
+      @commit ||= project.commit(commit_id)
     else
       super
     end
@@ -329,8 +330,7 @@ class Note < ActiveRecord::Base
   def expire_etag_cache
     return unless for_issue?
 
-    key = Gitlab::Routing.url_helpers.namespace_project_noteable_notes_path(
-      noteable.project.namespace,
+    key = Gitlab::Routing.url_helpers.project_noteable_notes_path(
       noteable.project,
       target_type: noteable_type.underscore,
       target_id: noteable.id

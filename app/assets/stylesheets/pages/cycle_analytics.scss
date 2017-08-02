@@ -4,7 +4,7 @@
   position: relative;
 
   .landing {
-    margin-top: 10px;
+    margin-top: 0;
 
     .inner-content {
       white-space: normal;
@@ -24,9 +24,9 @@
 
   .col-headers {
     ul {
+      @include clearfix;
       margin: 0;
       padding: 0;
-      @include clearfix;
     }
 
     li {
@@ -110,6 +110,10 @@
 
   .js-ca-dropdown {
     top: $gl-padding-top;
+
+    .dropdown-menu-align-right {
+      margin-top: 2px;
+    }
   }
 
   .content-list {
@@ -189,8 +193,8 @@
     }
 
     li {
-      list-style-type: none;
       @include clearfix;
+      list-style-type: none;
     }
 
     .stage-nav-item {
@@ -281,11 +285,11 @@
   }
 
   .stage-event-item {
+    @include clearfix;
     list-style-type: none;
     padding: 0 0 $gl-padding;
     margin: 0 $gl-padding $gl-padding;
     border-bottom: 1px solid $gray-darker;
-    @include clearfix;
 
     &:last-child {
       border-bottom: none;
@@ -307,9 +311,9 @@
       &.issue-title,
       &.commit-title,
       &.merge-merquest-title {
+        @include text-overflow();
         max-width: 100%;
         display: block;
-        @include text-overflow();
 
         a {
           color: $gl-text-color;
@@ -440,6 +444,24 @@
       width: 78px;
       display: inline-block;
       margin-bottom: 20px;
+    }
+  }
+
+  // TODO: fallback to global style
+  .dropdown-menu {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
     }
   }
 }

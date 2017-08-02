@@ -42,6 +42,7 @@ describe API::Variables do
 
         expect(response).to have_http_status(200)
         expect(json_response['value']).to eq(variable.value)
+        expect(json_response['protected']).to eq(variable.protected?)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
@@ -72,12 +73,24 @@ describe API::Variables do
     context 'authorized user with proper permissions' do
       it 'creates variable' do
         expect do
+          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
+        end.to change{project.variables.count}.by(1)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['key']).to eq('TEST_VARIABLE_2')
+        expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['protected']).to be_truthy
+      end
+
+      it 'creates variable with optional attributes' do
+        expect do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
         end.to change{project.variables.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['protected']).to be_falsey
       end
 
       it 'does not allow to duplicate variable key' do
@@ -112,13 +125,14 @@ describe API::Variables do
         initial_variable = project.variables.first
         value_before = initial_variable.value
 
-        put api("/projects/#{project.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP'
+        put api("/projects/#{project.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP', protected: true
 
         updated_variable = project.variables.first
 
         expect(response).to have_http_status(200)
         expect(value_before).to eq(variable.value)
         expect(updated_variable.value).to eq('VALUE_1_UP')
+        expect(updated_variable).to be_protected
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

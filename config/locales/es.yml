@@ -61,6 +61,43 @@ es:
     - :month
     - :year
   datetime:
+    # used in a custom scope that has been created to fix https://gitlab.com/gitlab-org/gitlab-ce/issues/32747
+    time_ago_in_words:
+      half_a_minute: "hace medio minuto"
+      less_than_x_seconds:
+        one:   "hace menos de 1 segundo"
+        other: "hace menos de %{count} segundos"
+      x_seconds:
+        one:   "hace 1 segundo"
+        other: "hace %{count} segundos"
+      less_than_x_minutes:
+        one:   "hace menos de un minuto"
+        other: "hace menos de %{count} minutos"
+      x_minutes:
+        one:   "hace 1 minuto"
+        other: "hace %{count} minutos"
+      about_x_hours:
+        one:   "hace alrededor de 1 hora"
+        other: "hace alrededor de %{count} horas"
+      x_days:
+        one:   "hace un día"
+        other: "hace %{count} días"
+      about_x_months:
+        one:   "hace alrededor de 1 mes"
+        other: "hace alrededor de %{count} meses"
+      x_months:
+        one:   "hace 1 mes"
+        other: "hace %{count} meses"
+      about_x_years:
+        one:   "hace alrededor de 1 año"
+        other: "hace alrededor de %{count} años"
+      over_x_years:
+        one:   "hace más de 1 año"
+        other: "hace %{count} años"
+      almost_x_years:
+        one:   "hace casi 1 año"
+        other: "hace casi %{count} años"
+    # Used in distance_of_time_in_words(), distance_of_time_in_words_to_now(), time_ago_in_words()
     distance_in_words:
       about_x_hours:
         one: alrededor de 1 hora
@@ -214,4 +251,5 @@ es:
       default: "%A, %d de %B de %Y %H:%M:%S %z"
       long: "%d de %B de %Y %H:%M"
       short: "%d de %b %H:%M"
+      timeago_tooltip: "%d de %B de %Y %H:%M"
     pm: pm

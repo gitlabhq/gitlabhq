@@ -185,7 +185,7 @@ import '~/lib/utils/url_utility';
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
 
-      it('should focus on input when opening for the second time', () => {
+      it('should focus on input when opening for the second time after transition', () => {
         remoteCallback();
         this.dropdownContainerElement.trigger({
           type: 'keyup',
@@ -193,6 +193,7 @@ import '~/lib/utils/url_utility';
           keyCode: ARROW_KEYS.ESC
         });
         this.dropdownButtonElement.click();
+        this.dropdownContainerElement.trigger('transitionend');
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
     });
@@ -201,6 +202,7 @@ import '~/lib/utils/url_utility';
       it('should focus input when passing array data to drop down', () => {
         initDropDown.call(this, false, true);
         this.dropdownButtonElement.click();
+        this.dropdownContainerElement.trigger('transitionend');
         expect($(document.activeElement)).toEqual($(SEARCH_INPUT_SELECTOR));
       });
     });

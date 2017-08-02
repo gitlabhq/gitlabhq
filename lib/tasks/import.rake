@@ -37,7 +37,7 @@ class GithubImport
   end
 
   def import!
-    @project.import_start
+    @project.force_import_start
 
     timings = Benchmark.measure do
       Github::Import.new(@project, @options).execute

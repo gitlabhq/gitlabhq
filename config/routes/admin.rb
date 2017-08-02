@@ -48,7 +48,7 @@ namespace :admin do
     end
   end
 
-  resources :deploy_keys, only: [:index, :new, :create, :destroy]
+  resources :deploy_keys, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do
@@ -71,6 +71,8 @@ namespace :admin do
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
+
+  get 'conversational_development_index' => 'conversational_development_index#show'
 
   resources :projects, only: [:index]
 
@@ -118,7 +120,7 @@ namespace :admin do
 
   resources :cohorts, only: :index
 
-  resources :builds, only: :index do
+  resources :jobs, only: :index do
     collection do
       post :cancel_all
     end

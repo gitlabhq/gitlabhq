@@ -96,7 +96,7 @@
       overflow: visible;
     }
 
-    & > span {
+    > span {
       padding-right: 4px;
     }
 
@@ -125,7 +125,7 @@
 
     .dropdown-menu {
       margin-top: 11px;
-      z-index: 200;
+      z-index: 300;
     }
 
     .ci-action-icon-wrapper {
@@ -419,7 +419,7 @@
 
   .commit {
     margin: 0;
-    padding: 10px 0;
+    padding: 10px;
     list-style: none;
 
     &:hover {
@@ -520,17 +520,13 @@
       position: absolute;
       border-top: 2px solid $border-color;
       height: 1px;
-      top: 8px;
+      top: 9px;
       width: 8px;
       left: 0;
     }
 
     &:last-child {
       margin-bottom: 0;
-
-      &::before {
-        top: 14px;
-      }
     }
   }
 
@@ -539,7 +535,7 @@
     width: 2px;
     background: $border-color;
     position: absolute;
-    top: -5px;
+    top: -9px;
   }
 }
 
@@ -735,11 +731,11 @@
 
 .merge-request-tabs-holder {
   top: $header-height;
-  z-index: 100;
+  z-index: 200;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
-  @media(min-width: $screen-sm-min) {
+  @media (min-width: $screen-sm-min) {
     position: sticky;
     position: -webkit-sticky;
   }
@@ -763,6 +759,10 @@
   }
 }
 
+.with-performance-bar .merge-request-tabs-holder {
+  top: $header-height + $performance-bar-height;
+}
+
 .merge-request-tabs {
   display: flex;
   margin-bottom: 0;
@@ -774,6 +774,12 @@
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
+
+    .inner-page-scroll-tabs {
+      background-color: $white-light;
+      margin-left: -$gl-padding;
+      padding-left: $gl-padding;
+    }
   }
 }
 

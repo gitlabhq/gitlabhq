@@ -93,8 +93,8 @@ class DroneCiService < CiService
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: 'Drone CI project specific token' },
-      { type: 'text', name: 'drone_url', placeholder: 'http://drone.example.com' },
+      { type: 'text', name: 'token', placeholder: 'Drone CI project specific token', required: true },
+      { type: 'text', name: 'drone_url', placeholder: 'http://drone.example.com', required: true },
       { type: 'checkbox', name: 'enable_ssl_verification', title: "Enable SSL verification" }
     ]
   end
@@ -114,7 +114,7 @@ class DroneCiService < CiService
   end
 
   def merge_request_valid?(data)
-    %w(opened reopened).include?(data[:object_attributes][:state]) &&
+    data[:object_attributes][:state] == 'opened' &&
       data[:object_attributes][:merge_status] == 'unchecked'
   end
 end

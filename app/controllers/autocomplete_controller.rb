@@ -5,10 +5,10 @@ class AutocompleteController < ApplicationController
 
   def users
     @users ||= User.none
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
+    @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.page(params[:page]).per(params[:per_page])
 
     if params[:todo_filter].present? && current_user
@@ -21,7 +21,7 @@ class AutocompleteController < ApplicationController
         @users = [current_user, *@users].uniq
       end
 
-      if params[:author_id].present?
+      if params[:author_id].present? && current_user
         author = User.find_by_id(params[:author_id])
         @users = [author, *@users].uniq if author
       end

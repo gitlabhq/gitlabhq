@@ -5,6 +5,8 @@ export default class MergeRequestStore {
 
   constructor(data) {
     this.sha = data.diff_head_sha;
+    this.gitlabLogo = data.gitlabLogo;
+
     this.setData(data);
   }
 
@@ -46,6 +48,7 @@ export default class MergeRequestStore {
     this.sourceBranchLink = data.source_branch_with_namespace_link;
     this.mergeError = data.merge_error;
     this.targetBranchPath = data.target_branch_commits_path;
+    this.targetBranchTreePath = data.target_branch_tree_path;
     this.conflictResolutionPath = data.conflict_resolution_path;
     this.cancelAutoMergePath = data.cancel_merge_when_pipeline_succeeds_path;
     this.removeWIPPath = data.remove_wip_path;
@@ -62,7 +65,7 @@ export default class MergeRequestStore {
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
-    this.isOpen = data.state === 'opened' || data.state === 'reopened' || false;
+    this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
     this.canRemoveSourceBranch = currentUser.can_remove_source_branch || false;
     this.canMerge = !!data.merge_path;

@@ -1,6 +1,7 @@
-- supports_slash_commands = note_supports_slash_commands?(@note)
-- if supports_slash_commands
-  - preview_url = preview_markdown_path(@project, slash_commands_target_type: @note.noteable_type, slash_commands_target_id: @note.noteable_id)
+- supports_autocomplete = local_assigns.fetch(:supports_autocomplete, true)
+- supports_quick_actions = note_supports_quick_actions?(@note)
+- if supports_quick_actions
+  - preview_url = preview_markdown_path(@project, quick_actions_target_type: @note.noteable_type, quick_actions_target_id: @note.noteable_id)
 - else
   - preview_url = preview_markdown_path(@project)
 
@@ -9,6 +10,7 @@
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
   = hidden_field_tag :in_reply_to_discussion_id
+  = hidden_field_tag :note_project_id
 
   = note_target_fields(@note)
   = f.hidden_field :noteable_type
@@ -27,8 +29,9 @@
       attr: :note,
       classes: 'note-textarea js-note-text',
       placeholder: "Write a comment or drag your files here...",
-      supports_slash_commands: supports_slash_commands
-    = render 'shared/notes/hints', supports_slash_commands: supports_slash_commands
+      supports_quick_actions: supports_quick_actions,
+      supports_autocomplete: supports_autocomplete
+    = render 'shared/notes/hints', supports_quick_actions: supports_quick_actions
     .error-alert
 
   .note-form-actions.clearfix

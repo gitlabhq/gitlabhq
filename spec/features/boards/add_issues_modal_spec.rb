@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards add issue modal', :feature, :js do
+describe 'Issue Boards add issue modal', :js do
   let(:project) { create(:empty_project, :public) }
   let(:board) { create(:board, project: project) }
   let(:user) { create(:user) }
@@ -14,14 +14,14 @@ describe 'Issue Boards add issue modal', :feature, :js do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 
   it 'resets filtered search state' do
-    visit namespace_project_board_path(project.namespace, project, board, search: 'testing')
+    visit project_board_path(project, board, search: 'testing')
 
     wait_for_requests
 
@@ -231,7 +231,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(first('.board')) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page).to have_selector('.card')
         end
       end
@@ -247,7 +247,7 @@ describe 'Issue Boards add issue modal', :feature, :js do
           click_button 'Add 1 issue'
         end
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(find('.board:nth-child(3)')) do
           expect(page).to have_selector('.card')
         end
       end

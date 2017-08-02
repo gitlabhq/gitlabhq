@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe WikiPages::CreateService, services: true do
+describe WikiPages::CreateService do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
+
   let(:opts) do
     {
       title: 'Title',
@@ -10,27 +11,28 @@ describe WikiPages::CreateService, services: true do
       format: 'markdown'
     }
   end
-  let(:service) { described_class.new(project, user, opts) }
+
+  subject(:service) { described_class.new(project, user, opts) }
+
+  before do
+    project.add_developer(user)
+  end
 
   describe '#execute' do
-    context "valid params" do
-      before do
-        allow(service).to receive(:execute_hooks)
-        project.add_master(user)
-      end
+    it 'creates wiki page with valid attributes' do
+      page = service.execute
 
-      subject { service.execute }
+      expect(page).to be_valid
+      expect(page.title).to eq(opts[:title])
+      expect(page.content).to eq(opts[:content])
+      expect(page.format).to eq(opts[:format].to_sym)
+    end
 
-      it 'creates a valid wiki page' do
-        is_expected.to be_valid
-        expect(subject.title).to eq(opts[:title])
-        expect(subject.content).to eq(opts[:content])
-        expect(subject.format).to eq(opts[:format].to_sym)
-      end
+    it 'executes webhooks' do
+      expect(service).to receive(:execute_hooks).once
+        .with(instance_of(WikiPage), 'create')
 
-      it 'executes webhooks' do
-        expect(service).to have_received(:execute_hooks).once.with(subject, 'create')
-      end
+      service.execute
     end
   end
 end

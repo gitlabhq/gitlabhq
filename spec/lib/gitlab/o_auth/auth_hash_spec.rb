@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::OAuth::AuthHash, lib: true do
+describe Gitlab::OAuth::AuthHash do
   let(:auth_hash) do
-    Gitlab::OAuth::AuthHash.new(
+    described_class.new(
       OmniAuth::AuthHash.new(
         provider: provider_ascii,
         uid: uid_ascii,
@@ -55,7 +55,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'email not provided' do
-    before { info_hash.delete(:email) }
+    before do
+      info_hash.delete(:email)
+    end
 
     it 'generates a temp email' do
       expect( auth_hash.email).to start_with('temp-email-for-oauth')
@@ -63,7 +65,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'username not provided' do
-    before { info_hash.delete(:nickname) }
+    before do
+      info_hash.delete(:nickname)
+    end
 
     it 'takes the first part of the email as username' do
       expect(auth_hash.username).to eql 'onur.kucuk_ABC-123'
@@ -71,7 +75,9 @@ describe Gitlab::OAuth::AuthHash, lib: true do
   end
 
   context 'name not provided' do
-    before { info_hash.delete(:name) }
+    before do
+      info_hash.delete(:name)
+    end
 
     it 'concats first and lastname as the name' do
       expect(auth_hash.name).to eql name_utf8

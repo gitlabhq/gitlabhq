@@ -2,12 +2,12 @@ require "spec_helper"
 
 describe "Compare", js: true do
   let(:user)    { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.team << [user, :master]
-    login_as user
-    visit namespace_project_compare_index_path(project.namespace, project, from: "master", to: "master")
+    sign_in user
+    visit project_compare_index_path(project, from: "master", to: "master")
   end
 
   describe "branches" do
@@ -24,6 +24,7 @@ describe "Compare", js: true do
       expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("binary-encoding")
 
       click_button "Compare"
+
       expect(page).to have_content "Commits"
     end
 

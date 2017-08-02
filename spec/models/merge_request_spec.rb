@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequest, models: true do
+describe MergeRequest do
   include RepoHelpers
 
   subject { create(:merge_request) }
@@ -10,7 +10,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:source_project).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
     it { is_expected.to belong_to(:assignee) }
-    it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
+    it { is_expected.to have_many(:merge_request_diffs) }
   end
 
   describe 'modules' do
@@ -92,16 +92,32 @@ describe MergeRequest, models: true do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(nil)
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => nil })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => nil })
     end
 
     it 'includes the assignee name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignee).and_return(double(name: 'Douwe'))
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+    end
+  end
+
+  describe '#assignee_ids' do
+    it 'returns an array of the assigned user id' do
+      subject.assignee_id = 123
+
+      expect(subject.assignee_ids).to eq([123])
+    end
+  end
+
+  describe '#assignee_ids=' do
+    it 'sets assignee_id to the last id in the array' do
+      subject.assignee_ids = [123, 456]
+
+      expect(subject.assignee_id).to eq(456)
     end
   end
 
@@ -139,13 +155,53 @@ describe MergeRequest, models: true do
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
     end
 
-    it 'does not cache issues from external trackers' do
-      subject.project.update_attribute(:has_external_issue_tracker, true)
-      issue  = ExternalIssue.new('JIRA-123', subject.project)
-      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
-      allow(subject).to receive(:commits).and_return([commit])
+    context 'when both internal and external issue trackers are enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.save!
+      end
 
-      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      it 'does not cache issues from external trackers' do
+        issue  = ExternalIssue.new('JIRA-123', subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      end
+
+      it 'caches an internal issue' do
+        issue  = create(:issue, project: subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .to change(subject.merge_requests_closing_issues, :count).by(1)
+      end
+    end
+
+    context 'when only external issue tracker enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.issues_enabled = false
+        subject.project.save!
+      end
+
+      it 'does not cache issues from external trackers' do
+        issue  = ExternalIssue.new('JIRA-123', subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+      end
+
+      it 'does not cache an internal issue' do
+        issue  = create(:issue, project: subject.project)
+        commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+        allow(subject).to receive(:commits).and_return([commit])
+
+        expect { subject.cache_merge_request_closes_issues!(subject.author) }
+          .not_to change(subject.merge_requests_closing_issues, :count)
+      end
     end
   end
 
@@ -194,7 +250,7 @@ describe MergeRequest, models: true do
     end
 
     it 'returns a String reference with the full path' do
-      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+      expect(merge_request.to_reference(full: true)).to eq(project.full_path + '!1')
     end
   end
 
@@ -238,10 +294,10 @@ describe MergeRequest, models: true do
     end
 
     context 'when there are no MR diffs' do
-      it 'delegates to the compare object, setting no_collapse: true' do
+      it 'delegates to the compare object, setting expanded: true' do
         merge_request.compare = double(:compare)
 
-        expect(merge_request.compare).to receive(:diffs).with(options.merge(no_collapse: true))
+        expect(merge_request.compare).to receive(:diffs).with(options.merge(expanded: true))
 
         merge_request.diffs(options)
       end
@@ -361,8 +417,8 @@ describe MergeRequest, models: true do
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       closed = subject.closes_issues
 
@@ -388,8 +444,8 @@ describe MergeRequest, models: true do
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -537,8 +593,8 @@ describe MergeRequest, models: true do
       subject.project.team << [subject.author, :developer]
       subject.description = "This issue Closes #{issue.to_reference}"
 
-      allow(subject.project).to receive(:default_branch).
-        and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch)
+        .and_return(subject.target_branch)
 
       expect(subject.merge_commit_message)
         .to match("Closes #{issue.to_reference}")
@@ -663,18 +719,18 @@ describe MergeRequest, models: true do
       end
 
       it 'caches the output' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          once.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .once
+          .and_return(2)
 
         subject.diverged_commits_count
         subject.diverged_commits_count
       end
 
       it 'invalidates the cache when the source sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:source_branch_sha).and_return('123abc')
@@ -682,9 +738,9 @@ describe MergeRequest, models: true do
       end
 
       it 'invalidates the cache when the target sha changes' do
-        expect(subject).to receive(:compute_diverged_commits_count).
-          twice.
-          and_return(2)
+        expect(subject).to receive(:compute_diverged_commits_count)
+          .twice
+          .and_return(2)
 
         subject.diverged_commits_count
         allow(subject).to receive(:target_branch_sha).and_return('123abc')
@@ -704,14 +760,14 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
-  describe '#commits_sha' do
+  describe '#commit_shas' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_sha).
-        and_return(['sha1'])
+      allow(subject.merge_request_diff).to receive(:commit_shas)
+        .and_return(['sha1'])
     end
 
     it 'delegates to merge request diff' do
-      expect(subject.commits_sha).to eq ['sha1']
+      expect(subject.commit_shas).to eq ['sha1']
     end
   end
 
@@ -736,7 +792,7 @@ describe MergeRequest, models: true do
   describe '#all_pipelines' do
     shared_examples 'returning pipelines with proper ordering' do
       let!(:all_pipelines) do
-        subject.all_commits_sha.map do |sha|
+        subject.all_commit_shas.map do |sha|
           create(:ci_empty_pipeline,
                  project: subject.source_project,
                  sha: sha,
@@ -778,16 +834,16 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#all_commits_sha' do
+  describe '#all_commit_shas' do
     context 'when merge request is persisted' do
-      let(:all_commits_sha) do
+      let(:all_commit_shas) do
         subject.merge_request_diffs.flat_map(&:commits).map(&:sha).uniq
       end
 
       shared_examples 'returning all SHA' do
         it 'returns all SHA from all merge_request_diffs' do
           expect(subject.merge_request_diffs.size).to eq(2)
-          expect(subject.all_commits_sha).to eq(all_commits_sha)
+          expect(subject.all_commit_shas).to match_array(all_commit_shas)
         end
       end
 
@@ -818,7 +874,7 @@ describe MergeRequest, models: true do
         end
 
         it 'returns commits from compare commits temporary data' do
-          expect(subject.all_commits_sha).to eq [commit, commit]
+          expect(subject.all_commit_shas).to eq [commit, commit]
         end
       end
 
@@ -826,7 +882,7 @@ describe MergeRequest, models: true do
         subject { build(:merge_request) }
 
         it 'returns array with diff head sha element only' do
-          expect(subject.all_commits_sha).to eq [subject.diff_head_sha]
+          expect(subject.all_commit_shas).to eq [subject.diff_head_sha]
         end
       end
     end
@@ -892,7 +948,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'becomes unmergeable' do
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('cannot_be_merged')
@@ -944,7 +1002,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when not open' do
-      before { subject.close }
+      before do
+        subject.close
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -952,7 +1012,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when working in progress' do
-      before { subject.title = 'WIP MR' }
+      before do
+        subject.title = 'WIP MR'
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -960,7 +1022,9 @@ describe MergeRequest, models: true do
     end
 
     context 'when broken' do
-      before { allow(subject).to receive(:broken?) { true } }
+      before do
+        allow(subject).to receive(:broken?) { true }
+      end
 
       it 'returns false' do
         expect(subject.mergeable_state?).to be_falsey
@@ -1178,7 +1242,7 @@ describe MergeRequest, models: true do
   end
 
   describe "#reload_diff" do
-    let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
+    let(:discussion) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject).to_discussion }
 
     let(:commit) { subject.project.commit(sample_commit.id) }
 
@@ -1197,7 +1261,7 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
 
-    it "updates diff note positions" do
+    it "updates diff discussion positions" do
       old_diff_refs = subject.diff_refs
 
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
@@ -1211,15 +1275,15 @@ describe MergeRequest, models: true do
         subject.merge_request_diff(true)
       end
 
-      expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+      expect(Discussions::UpdateDiffPositionService).to receive(:new).with(
         subject.project,
         subject.author,
         old_diff_refs: old_diff_refs,
         new_diff_refs: commit.diff_refs,
-        paths: note.position.paths
+        paths: discussion.position.paths
       ).and_call_original
 
-      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
+      expect_any_instance_of(Discussions::UpdateDiffPositionService).to receive(:execute).with(discussion).and_call_original
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff(subject.author)
@@ -1389,7 +1453,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#mergeable_with_slash_command?' do
+  describe '#mergeable_with_quick_action?' do
     def create_pipeline(status)
       pipeline = create(:ci_pipeline_with_one_job,
         project: project,
@@ -1413,21 +1477,21 @@ describe MergeRequest, models: true do
 
     context 'when autocomplete_precheck is set to true' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, autocomplete_precheck: true)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, autocomplete_precheck: true)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, autocomplete_precheck: true)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, autocomplete_precheck: true)).to be_falsey
       end
     end
 
     context 'when autocomplete_precheck is set to false' do
       it 'is mergeable by developer' do
-        expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+        expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
       end
 
       it 'is not mergeable by normal user' do
-        expect(merge_request.mergeable_with_slash_command?(user, last_diff_sha: mr_sha)).to be_falsey
+        expect(merge_request.mergeable_with_quick_action?(user, last_diff_sha: mr_sha)).to be_falsey
       end
 
       context 'closed MR'  do
@@ -1436,7 +1500,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1446,19 +1510,19 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
       context 'sha differs from the MR diff_head_sha'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: 'some other sha')).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: 'some other sha')).to be_falsey
         end
       end
 
       context 'sha is not provided'  do
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer)).to be_falsey
         end
       end
 
@@ -1468,7 +1532,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
 
@@ -1478,7 +1542,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is not mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_falsey
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_falsey
         end
       end
 
@@ -1488,7 +1552,7 @@ describe MergeRequest, models: true do
         end
 
         it 'is mergeable' do
-          expect(merge_request.mergeable_with_slash_command?(developer, last_diff_sha: mr_sha)).to be_truthy
+          expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
     end
@@ -1496,8 +1560,8 @@ describe MergeRequest, models: true do
 
   describe '#has_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(2)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(2)
     end
 
     it 'returns true when merge request diff has commits' do
@@ -1507,8 +1571,8 @@ describe MergeRequest, models: true do
 
   describe '#has_no_commits?' do
     before do
-      allow(subject.merge_request_diff).to receive(:commits_count).
-        and_return(0)
+      allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(0)
     end
 
     it 'returns true when merge request diff has 0 commits' do
@@ -1564,6 +1628,42 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.version_params_for(diff_refs)).to be_nil
       end
+    end
+  end
+
+  describe '#fetch_ref' do
+    it 'sets "ref_fetched" flag to true' do
+      subject.update!(ref_fetched: nil)
+
+      subject.fetch_ref
+
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+  end
+
+  describe '#ref_fetched?' do
+    it 'does not perform git operation when value is cached' do
+      subject.ref_fetched = true
+
+      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
+      expect(subject.ref_fetched?).to be_truthy
+    end
+
+    it 'caches the value when ref exists but value is not cached' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(true)
+
+      expect(subject.ref_fetched?).to be_truthy
+      expect(subject.reload.ref_fetched).to be_truthy
+    end
+
+    it 'returns false when ref does not exist' do
+      subject.update!(ref_fetched: nil)
+      allow_any_instance_of(Repository).to receive(:ref_exists?)
+        .and_return(false)
+
+      expect(subject.ref_fetched?).to be_falsey
     end
   end
 end

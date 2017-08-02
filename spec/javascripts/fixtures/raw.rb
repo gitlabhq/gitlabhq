@@ -21,4 +21,10 @@ describe 'Raw files', '(JavaScript fixtures)', type: :controller do
 
     store_frontend_fixture(blob.data, example.description)
   end
+
+  it 'blob/notebook/math.json' do |example|
+    blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
+
+    store_frontend_fixture(blob.data, example.description)
+  end
 end

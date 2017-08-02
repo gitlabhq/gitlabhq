@@ -1,56 +1,56 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:services) }
-    it { is_expected.to have_many(:events).dependent(:destroy) }
-    it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
-    it { is_expected.to have_many(:issues).dependent(:destroy) }
-    it { is_expected.to have_many(:milestones).dependent(:destroy) }
-    it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:events) }
+    it { is_expected.to have_many(:merge_requests) }
+    it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_many(:milestones) }
+    it { is_expected.to have_many(:project_members).dependent(:delete_all) }
     it { is_expected.to have_many(:users).through(:project_members) }
-    it { is_expected.to have_many(:requesters).dependent(:destroy) }
-    it { is_expected.to have_many(:notes).dependent(:destroy) }
-    it { is_expected.to have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
-    it { is_expected.to have_many(:deploy_keys_projects).dependent(:destroy) }
+    it { is_expected.to have_many(:requesters).dependent(:delete_all) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:snippets).class_name('ProjectSnippet') }
+    it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:deploy_keys) }
-    it { is_expected.to have_many(:hooks).dependent(:destroy) }
-    it { is_expected.to have_many(:protected_branches).dependent(:destroy) }
-    it { is_expected.to have_one(:forked_project_link).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_service).dependent(:destroy) }
-    it { is_expected.to have_one(:microsoft_teams_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pushover_service).dependent(:destroy) }
-    it { is_expected.to have_one(:asana_service).dependent(:destroy) }
-    it { is_expected.to have_many(:boards).dependent(:destroy) }
-    it { is_expected.to have_one(:campfire_service).dependent(:destroy) }
-    it { is_expected.to have_one(:drone_ci_service).dependent(:destroy) }
-    it { is_expected.to have_one(:emails_on_push_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pipelines_email_service).dependent(:destroy) }
-    it { is_expected.to have_one(:irker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:pivotaltracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:hipchat_service).dependent(:destroy) }
-    it { is_expected.to have_one(:flowdock_service).dependent(:destroy) }
-    it { is_expected.to have_one(:assembla_service).dependent(:destroy) }
-    it { is_expected.to have_one(:slack_slash_commands_service).dependent(:destroy) }
-    it { is_expected.to have_one(:mattermost_slash_commands_service).dependent(:destroy) }
-    it { is_expected.to have_one(:gemnasium_service).dependent(:destroy) }
-    it { is_expected.to have_one(:buildkite_service).dependent(:destroy) }
-    it { is_expected.to have_one(:bamboo_service).dependent(:destroy) }
-    it { is_expected.to have_one(:teamcity_service).dependent(:destroy) }
-    it { is_expected.to have_one(:jira_service).dependent(:destroy) }
-    it { is_expected.to have_one(:redmine_service).dependent(:destroy) }
-    it { is_expected.to have_one(:custom_issue_tracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:bugzilla_service).dependent(:destroy) }
-    it { is_expected.to have_one(:gitlab_issue_tracker_service).dependent(:destroy) }
-    it { is_expected.to have_one(:external_wiki_service).dependent(:destroy) }
-    it { is_expected.to have_one(:project_feature).dependent(:destroy) }
-    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics').dependent(:delete) }
-    it { is_expected.to have_one(:import_data).class_name('ProjectImportData').dependent(:destroy) }
+    it { is_expected.to have_many(:hooks) }
+    it { is_expected.to have_many(:protected_branches) }
+    it { is_expected.to have_one(:forked_project_link) }
+    it { is_expected.to have_one(:slack_service) }
+    it { is_expected.to have_one(:microsoft_teams_service) }
+    it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:pushover_service) }
+    it { is_expected.to have_one(:asana_service) }
+    it { is_expected.to have_many(:boards) }
+    it { is_expected.to have_one(:campfire_service) }
+    it { is_expected.to have_one(:drone_ci_service) }
+    it { is_expected.to have_one(:emails_on_push_service) }
+    it { is_expected.to have_one(:pipelines_email_service) }
+    it { is_expected.to have_one(:irker_service) }
+    it { is_expected.to have_one(:pivotaltracker_service) }
+    it { is_expected.to have_one(:hipchat_service) }
+    it { is_expected.to have_one(:flowdock_service) }
+    it { is_expected.to have_one(:assembla_service) }
+    it { is_expected.to have_one(:slack_slash_commands_service) }
+    it { is_expected.to have_one(:mattermost_slash_commands_service) }
+    it { is_expected.to have_one(:gemnasium_service) }
+    it { is_expected.to have_one(:buildkite_service) }
+    it { is_expected.to have_one(:bamboo_service) }
+    it { is_expected.to have_one(:teamcity_service) }
+    it { is_expected.to have_one(:jira_service) }
+    it { is_expected.to have_one(:redmine_service) }
+    it { is_expected.to have_one(:custom_issue_tracker_service) }
+    it { is_expected.to have_one(:bugzilla_service) }
+    it { is_expected.to have_one(:gitlab_issue_tracker_service) }
+    it { is_expected.to have_one(:external_wiki_service) }
+    it { is_expected.to have_one(:project_feature) }
+    it { is_expected.to have_one(:statistics).class_name('ProjectStatistics') }
+    it { is_expected.to have_one(:import_data).class_name('ProjectImportData') }
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_many(:commit_statuses) }
@@ -62,22 +62,22 @@ describe Project, models: true do
     it { is_expected.to have_many(:variables) }
     it { is_expected.to have_many(:triggers) }
     it { is_expected.to have_many(:pages_domains) }
-    it { is_expected.to have_many(:labels).class_name('ProjectLabel').dependent(:destroy) }
-    it { is_expected.to have_many(:users_star_projects).dependent(:destroy) }
-    it { is_expected.to have_many(:environments).dependent(:destroy) }
-    it { is_expected.to have_many(:deployments).dependent(:destroy) }
-    it { is_expected.to have_many(:todos).dependent(:destroy) }
-    it { is_expected.to have_many(:releases).dependent(:destroy) }
-    it { is_expected.to have_many(:lfs_objects_projects).dependent(:destroy) }
-    it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
-    it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+    it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
+    it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:environments) }
+    it { is_expected.to have_many(:deployments) }
+    it { is_expected.to have_many(:todos) }
+    it { is_expected.to have_many(:releases) }
+    it { is_expected.to have_many(:lfs_objects_projects) }
+    it { is_expected.to have_many(:project_group_links) }
+    it { is_expected.to have_many(:notification_settings).dependent(:delete_all) }
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
-    it { is_expected.to have_many(:pipeline_schedules).dependent(:destroy) }
+    it { is_expected.to have_many(:pipeline_schedules) }
 
     context 'after initialized' do
       it "has a project_feature" do
-        expect(Project.new.project_feature).to be_present
+        expect(described_class.new.project_feature).to be_present
       end
     end
 
@@ -142,6 +142,10 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
 
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
+
+    it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
+    it { is_expected.to allow_value('').for(:ci_config_path) }
+    it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
 
     it { is_expected.to validate_presence_of(:creator) }
 
@@ -284,15 +288,6 @@ describe Project, models: true do
     end
   end
 
-  describe 'default_scope' do
-    it 'excludes projects pending deletion from the results' do
-      project = create(:empty_project)
-      create(:empty_project, pending_delete: true)
-
-      expect(Project.all).to eq [project]
-    end
-  end
-
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
@@ -311,13 +306,18 @@ describe Project, models: true do
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+    it { is_expected.to respond_to(:full_path) }
   end
 
   describe 'delegation' do
-    it { is_expected.to delegate_method(:add_guest).to(:team) }
-    it { is_expected.to delegate_method(:add_reporter).to(:team) }
-    it { is_expected.to delegate_method(:add_developer).to(:team) }
-    it { is_expected.to delegate_method(:add_master).to(:team) }
+    [:add_guest, :add_reporter, :add_developer, :add_master, :add_user, :add_users].each do |method|
+      it { is_expected.to delegate_method(method).to(:team) }
+    end
+
+    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
+    it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
+    it { is_expected.to delegate_method(:count).to(:forks).with_prefix(true) }
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference' do
@@ -439,7 +439,7 @@ describe Project, models: true do
   end
 
   it 'returns valid url to repo' do
-    project = Project.new(path: 'somewhere')
+    project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
@@ -461,7 +461,7 @@ describe Project, models: true do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
@@ -534,15 +534,48 @@ describe Project, models: true do
     end
 
     context 'with external issues tracker' do
+      let!(:internal_issue) { create(:issue, project: project) }
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow(project).to receive(:external_issue_tracker).and_return(true)
       end
 
-      it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234', user)
-        expect(issue).to be_kind_of(ExternalIssue)
-        expect(issue.iid).to eq 'FOO-1234'
-        expect(issue.project).to eq project
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+      context 'when internal issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        it 'returns always an External issues' do
+          issue = project.get_issue(internal_issue.iid, user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq(internal_issue.iid.to_s)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
       end
     end
   end
@@ -812,7 +845,7 @@ describe Project, models: true do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:empty_project, :with_avatar) }
-      let(:avatar_path) { "/uploads/project/avatar/#{project.id}/dk.png" }
+      let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
@@ -832,13 +865,13 @@ describe Project, models: true do
 
       let(:avatar_path) { "/#{project.full_path}/avatar" }
 
-      it { should eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
+      it { is_expected.to eq "http://#{Gitlab.config.gitlab.host}#{avatar_path}" }
     end
 
     context 'when git repo is empty' do
       let(:project) { create(:empty_project) }
 
-      it { should eq nil }
+      it { is_expected.to eq nil }
     end
   end
 
@@ -885,7 +918,7 @@ describe Project, models: true do
   end
 
   describe '.with_shared_runners' do
-    subject { Project.with_shared_runners }
+    subject { described_class.with_shared_runners }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:empty_project, shared_runners_enabled: true) }
@@ -904,16 +937,16 @@ describe Project, models: true do
     end
   end
 
-  describe '.cached_count', caching: true do
+  describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:empty_project, :public, group: group) }
     let!(:project2) { create(:empty_project, :public, group: group) }
 
     it 'returns total project count' do
-      expect(Project).to receive(:count).once.and_call_original
+      expect(described_class).to receive(:count).once.and_call_original
 
       3.times do
-        expect(Project.cached_count).to eq(2)
+        expect(described_class.cached_count).to eq(2)
       end
     end
   end
@@ -945,6 +978,20 @@ describe Project, models: true do
       end
 
       expect(described_class.trending.to_a).to eq([project1, project2])
+    end
+  end
+
+  describe '.starred_by' do
+    it 'returns only projects starred by the given user' do
+      user1 = create(:user)
+      user2 = create(:user)
+      project1 = create(:empty_project)
+      project2 = create(:empty_project)
+      create(:empty_project)
+      user1.toggle_star(project1)
+      user2.toggle_star(project2)
+
+      expect(described_class.starred_by(user1)).to contain_exactly(project1)
     end
   end
 
@@ -991,13 +1038,17 @@ describe Project, models: true do
     subject { project.shared_runners_enabled }
 
     context 'are enabled' do
-      before { stub_application_setting(shared_runners_enabled: true) }
+      before do
+        stub_application_setting(shared_runners_enabled: true)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context 'are disabled' do
-      before { stub_application_setting(shared_runners_enabled: false) }
+      before do
+        stub_application_setting(shared_runners_enabled: false)
+      end
 
       it { is_expected.to be_falsey }
     end
@@ -1093,13 +1144,42 @@ describe Project, models: true do
     subject { project.pages_deployed? }
 
     context 'if public folder does exist' do
-      before { allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true) }
+      before do
+        allow(Dir).to receive(:exist?).with(project.public_pages_path).and_return(true)
+      end
 
       it { is_expected.to be_truthy }
     end
 
     context "if public folder doesn't exist" do
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
     end
   end
 
@@ -1159,6 +1239,16 @@ describe Project, models: true do
 
       expect(relation.search(project.namespace.name)).to eq([project])
     end
+
+    describe 'with pending_delete project' do
+      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+
+      it 'shows pending deletion project' do
+        search_result = described_class.search(pending_delete_project.name)
+
+        expect(search_result).to eq([pending_delete_project])
+      end
+    end
   end
 
   describe '#rename_repo' do
@@ -1175,25 +1265,27 @@ describe Project, models: true do
     it 'renames a repository' do
       stub_container_registry_config(enabled: false)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
+        .and_return(true)
 
-      expect(gitlab_shell).to receive(:mv_repository).
-        ordered.
-        with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki").
-        and_return(true)
+      expect(gitlab_shell).to receive(:mv_repository)
+        .ordered
+        .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
+        .and_return(true)
 
-      expect_any_instance_of(SystemHooksService).
-        to receive(:execute_hooks_for).
-        with(project, :rename)
+      expect_any_instance_of(SystemHooksService)
+        .to receive(:execute_hooks_for)
+        .with(project, :rename)
 
-      expect_any_instance_of(Gitlab::UploadsTransfer).
-        to receive(:rename_project).
-        with('foo', project.path, project.namespace.full_path)
+      expect_any_instance_of(Gitlab::UploadsTransfer)
+        .to receive(:rename_project)
+        .with('foo', project.path, project.namespace.full_path)
 
       expect(project).to receive(:expire_caches_before_rename)
+
+      expect(project).to receive(:expires_full_path_cache)
 
       project.rename_repo
     end
@@ -1209,7 +1301,7 @@ describe Project, models: true do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(Exception) }
+      it { expect{subject}.to raise_error(StandardError) }
     end
   end
 
@@ -1219,13 +1311,13 @@ describe Project, models: true do
     let(:wiki)    { double(:wiki, exists?: true) }
 
     it 'expires the caches of the repository and wiki' do
-      allow(Repository).to receive(:new).
-        with('foo', project).
-        and_return(repo)
+      allow(Repository).to receive(:new)
+        .with('foo', project)
+        .and_return(repo)
 
-      allow(Repository).to receive(:new).
-        with('foo.wiki', project).
-        and_return(wiki)
+      allow(Repository).to receive(:new)
+        .with('foo.wiki', project)
+        .and_return(wiki)
 
       expect(repo).to receive(:before_delete)
       expect(wiki).to receive(:before_delete)
@@ -1276,9 +1368,9 @@ describe Project, models: true do
 
     context 'using a regular repository' do
       it 'creates the repository' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(true)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.disk_path)
+          .and_return(true)
 
         expect(project.repository).to receive(:after_create)
 
@@ -1286,9 +1378,9 @@ describe Project, models: true do
       end
 
       it 'adds an error if the repository could not be created' do
-        expect(shell).to receive(:add_repository).
-          with(project.repository_storage_path, project.path_with_namespace).
-          and_return(false)
+        expect(shell).to receive(:add_repository)
+          .with(project.repository_storage_path, project.disk_path)
+          .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
 
@@ -1304,6 +1396,50 @@ describe Project, models: true do
 
         project.create_repository
       end
+    end
+  end
+
+  describe '#ensure_repository' do
+    let(:project) { create(:project, :repository) }
+    let(:shell) { Gitlab::Shell.new }
+
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(shell)
+    end
+
+    it 'creates the repository if it not exist' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      allow(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.disk_path)
+        .and_return(true)
+
+      expect(project).to receive(:create_repository).with(force: true)
+
+      project.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(project).to receive(:repository_exists?)
+        .and_return(true)
+
+      expect(project).not_to receive(:create_repository)
+
+      project.ensure_repository
+    end
+
+    it 'creates the repository if it is a fork' do
+      expect(project).to receive(:forked?).and_return(true)
+
+      allow(project).to receive(:repository_exists?)
+        .and_return(false)
+
+      expect(shell).to receive(:add_repository)
+        .with(project.repository_storage_path, project.disk_path)
+        .and_return(true)
+
+      project.ensure_repository
     end
   end
 
@@ -1351,7 +1487,9 @@ describe Project, models: true do
 
     subject { project.container_registry_url }
 
-    before { stub_container_registry_config(**registry_settings) }
+    before do
+      stub_container_registry_config(**registry_settings)
+    end
 
     context 'for enabled registry' do
       let(:registry_settings) do
@@ -1375,7 +1513,9 @@ describe Project, models: true do
     let(:project) { create(:empty_project) }
 
     context 'when container registry is enabled' do
-      before { stub_container_registry_config(enabled: true) }
+      before do
+        stub_container_registry_config(enabled: true)
+      end
 
       context 'when tags are present for multi-level registries' do
         before do
@@ -1413,7 +1553,9 @@ describe Project, models: true do
     end
 
     context 'when container registry is disabled' do
-      before { stub_container_registry_config(enabled: false) }
+      before do
+        stub_container_registry_config(enabled: false)
+      end
 
       it 'should not have image tags' do
         expect(project).not_to have_container_registry_tags
@@ -1431,16 +1573,35 @@ describe Project, models: true do
     end
   end
 
-  describe 'Project import job' do
+  describe '#ci_config_path=' do
     let(:project) { create(:empty_project) }
-    let(:mirror) { false }
+
+    it 'sets nil' do
+      project.update!(ci_config_path: nil)
+
+      expect(project.ci_config_path).to be_nil
+    end
+
+    it 'sets a string' do
+      project.update!(ci_config_path: 'foo/.gitlab_ci.yml')
+
+      expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
+    end
+
+    it 'sets a string but removes all leading slashes and null characters' do
+      project.update!(ci_config_path: "///f\0oo/\0/.gitlab_ci.yml")
+
+      expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
+    end
+  end
+
+  describe 'Project import job' do
+    let(:project) { create(:empty_project, import_url: generate(:url)) }
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .with(project.repository_storage_path, project.disk_path, project.import_url)
         .and_return(true)
-
-      allow(project).to receive(:repository_exists?).and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
         .and_call_original
@@ -1449,10 +1610,43 @@ describe Project, models: true do
     it 'imports a project' do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
-      project.import_start
-      project.add_import_job
+      project.import_schedule
 
       expect(project.reload.import_status).to eq('finished')
+    end
+  end
+
+  describe 'project import state transitions' do
+    context 'state transition: [:started] => [:finished]' do
+      let(:housekeeping_service) { spy }
+
+      before do
+        allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'performs housekeeping when an import of a fresh project is completed' do
+        project = create(:project_empty_repo, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project repository does not exist' do
+        project = create(:empty_project, :import_started, import_type: :github)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
+
+      it 'does not perform housekeeping when project does not have a valid import type' do
+        project = create(:empty_project, :import_started, import_type: nil)
+
+        project.import_finish
+
+        expect(housekeeping_service).not_to have_received(:execute)
+      end
     end
   end
 
@@ -1537,23 +1731,23 @@ describe Project, models: true do
 
   describe '#add_import_job' do
     context 'forked' do
-      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async).
-          with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.full_path)
+        expect(RepositoryForkWorker).to receive(:perform_async)
+          .with(project.id, forked_from_project.repository_storage_path,
+              forked_from_project.disk_path, project.namespace.full_path)
 
         project.add_import_job
       end
     end
 
     context 'not forked' do
-      let(:project) { create(:empty_project) }
-
       it 'schedules a RepositoryImportWorker job' do
+        project = create(:empty_project, import_url: generate(:url))
+
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
         project.add_import_job
@@ -1735,6 +1929,90 @@ describe Project, models: true do
     end
   end
 
+  describe '#secret_variables_for' do
+    let(:project) { create(:empty_project) }
+
+    let!(:secret_variable) do
+      create(:ci_variable, value: 'secret', project: project)
+    end
+
+    let!(:protected_variable) do
+      create(:ci_variable, :protected, value: 'protected', project: project)
+    end
+
+    subject { project.secret_variables_for(ref: 'ref') }
+
+    before do
+      stub_application_setting(
+        default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    end
+
+    shared_examples 'ref is protected' do
+      it 'contains all the variables' do
+        is_expected.to contain_exactly(secret_variable, protected_variable)
+      end
+    end
+
+    context 'when the ref is not protected' do
+      it 'contains only the secret variables' do
+        is_expected.to contain_exactly(secret_variable)
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it_behaves_like 'ref is protected'
+    end
+  end
+
+  describe '#protected_for?' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.protected_for?('ref') }
+
+    context 'when the ref is not protected' do
+      before do
+        stub_application_setting(
+          default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+      end
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when the ref is a protected branch' do
+      before do
+        create(:protected_branch, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when the ref is a protected tag' do
+      before do
+        create(:protected_tag, name: 'ref', project: project)
+      end
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+  end
+
   describe '#update_project_statistics' do
     let(:project) { create(:empty_project) }
 
@@ -1762,7 +2040,7 @@ describe Project, models: true do
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do
-      expect(Project.inside_path(path)).to eq([project1])
+      expect(described_class.inside_path(path)).to eq([project1])
     end
   end
 
@@ -1851,7 +2129,9 @@ describe Project, models: true do
   describe '#parent_changed?' do
     let(:project) { create(:empty_project) }
 
-    before { project.namespace_id = 7 }
+    before do
+      project.namespace_id = 7
+    end
 
     it { expect(project.parent_changed?).to be_truthy }
   end
@@ -1909,19 +2189,9 @@ describe Project, models: true do
   describe '#http_url_to_repo' do
     let(:project) { create :empty_project }
 
-    context 'when no user is given' do
-      it 'returns the url to the repo without a username' do
-        expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
-        expect(project.http_url_to_repo).not_to include('@')
-      end
-    end
-
-    context 'when user is given' do
-      it 'returns the url to the repo with the username' do
-        user = build_stubbed(:user)
-
-        expect(project.http_url_to_repo(user)).to start_with("http://#{user.username}@")
-      end
+    it 'returns the url to the repo without a username' do
+      expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
+      expect(project.http_url_to_repo).not_to include('@')
     end
   end
 
@@ -1943,15 +2213,15 @@ describe Project, models: true do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
                       ' Validate fork Source project is not a fork of the target project'
 
-      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }.
-        to raise_error(ActiveRecord::RecordNotSaved, error_message)
+      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
+        .to raise_error(ActiveRecord::RecordNotSaved, error_message)
     end
 
     it 'updates the project succesfully' do
       merge_request = create(:merge_request, target_project: project, source_project: project)
 
-      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }.
-        not_to raise_error
+      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
+        .not_to raise_error
     end
   end
 
@@ -1960,6 +2230,79 @@ describe Project, models: true do
       project = create(:empty_project, created_at: 2.hours.ago)
 
       expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
+    end
+  end
+
+  describe '.public_or_visible_to_user' do
+    let!(:user) { create(:user) }
+
+    let!(:private_project) do
+      create(:empty_project, :private, creator: user, namespace: user.namespace)
+    end
+
+    let!(:public_project) { create(:empty_project, :public) }
+
+    context 'with a user' do
+      let(:projects) do
+        described_class.all.public_or_visible_to_user(user)
+      end
+
+      it 'includes projects the user has access to' do
+        expect(projects).to include(private_project)
+      end
+
+      it 'includes projects the user can see' do
+        expect(projects).to include(public_project)
+      end
+    end
+
+    context 'without a user' do
+      it 'only includes public projects' do
+        projects = described_class.all.public_or_visible_to_user
+
+        expect(projects).to eq([public_project])
+      end
+    end
+  end
+
+  describe '#remove_private_deploy_keys' do
+    let!(:project) { create(:empty_project) }
+
+    context 'for a private deploy key' do
+      let!(:key) { create(:deploy_key, public: false) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
+
+      context 'when the key is not linked to another project' do
+        it 'removes the key' do
+          project.remove_private_deploy_keys
+
+          expect(project.deploy_keys).not_to include(key)
+        end
+      end
+
+      context 'when the key is linked to another project' do
+        before do
+          another_project = create(:empty_project)
+          create(:deploy_keys_project, deploy_key: key, project: another_project)
+        end
+
+        it 'does not remove the key' do
+          project.remove_private_deploy_keys
+
+          expect(project.deploy_keys).to include(key)
+        end
+      end
+    end
+
+    context 'for a public deploy key' do
+      let!(:key) { create(:deploy_key, public: true) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
+
+      it 'does not remove the key' do
+        project.remove_private_deploy_keys
+
+        expect(project.deploy_keys).to include(key)
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin disables Git access protocol', feature: true do
+feature 'Admin disables Git access protocol' do
   include StubENV
 
   let(:project) { create(:empty_project, :empty_repo) }
@@ -8,7 +8,7 @@ feature 'Admin disables Git access protocol', feature: true do
 
   background do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as(admin)
+    sign_in(admin)
   end
 
   context 'with HTTP disabled' do
@@ -32,7 +32,7 @@ feature 'Admin disables Git access protocol', feature: true do
     scenario 'shows only HTTP url' do
       visit_project
 
-      expect(page).to have_content("git clone #{project.http_url_to_repo(admin)}")
+      expect(page).to have_content("git clone #{project.http_url_to_repo}")
       expect(page).not_to have_selector('#clone-dropdown')
     end
   end
@@ -51,7 +51,7 @@ feature 'Admin disables Git access protocol', feature: true do
   end
 
   def visit_project
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   def disable_http_protocol

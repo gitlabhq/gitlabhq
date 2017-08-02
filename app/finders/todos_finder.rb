@@ -39,7 +39,7 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && Todo::ACTION_NAMES.has_key?(action_id.to_i)
+    action_id.present? && Todo::ACTION_NAMES.key?(action_id.to_i)
   end
 
   def action_id
@@ -82,6 +82,8 @@ class TodosFinder
 
     if project?
       @project = Project.find(params[:project_id])
+
+      @project = nil if @project.pending_delete?
 
       unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil

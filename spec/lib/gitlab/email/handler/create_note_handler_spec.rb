@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
+describe Gitlab::Email::Handler::CreateNoteHandler do
   include_context :email_shared_context
   it_behaves_like :reply_processing_shared_examples
 
@@ -91,7 +91,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
     end
   end
 
-  context 'when the note contains slash commands' do
+  context 'when the note contains quick actions' do
     let!(:email_raw) { fixture_file("emails/commands_in_reply.eml") }
 
     context 'and current user cannot update noteable' do

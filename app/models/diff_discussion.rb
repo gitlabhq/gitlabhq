@@ -10,6 +10,7 @@ class DiffDiscussion < Discussion
 
   delegate  :position,
             :original_position,
+            :change_position,
 
             to: :first_note
 

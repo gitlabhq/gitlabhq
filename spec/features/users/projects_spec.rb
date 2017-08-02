@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Projects tab on a user profile', :feature, :js do
+describe 'Projects tab on a user profile', :js do
   let(:user) { create(:user) }
   let!(:project) { create(:empty_project, namespace: user.namespace) }
   let!(:project2) { create(:empty_project, namespace: user.namespace) }
@@ -8,7 +8,7 @@ describe 'Projects tab on a user profile', :feature, :js do
   before do
     allow(Project).to receive(:default_per_page).and_return(1)
 
-    login_as(user)
+    sign_in(user)
 
     visit user_path(user)
 

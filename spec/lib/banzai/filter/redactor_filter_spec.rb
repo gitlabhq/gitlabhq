@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RedactorFilter, lib: true do
+describe Banzai::Filter::RedactorFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 
@@ -33,13 +33,15 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     before do
-      allow(Banzai::ReferenceParser).to receive(:[]).
-        with('test').
-        and_return(parser_class)
+      allow(Banzai::ReferenceParser).to receive(:[])
+        .with('test')
+        .and_return(parser_class)
     end
 
     context 'valid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true) }
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(true)
+      end
 
       it 'allows permitted Project references' do
         user = create(:user)
@@ -54,7 +56,9 @@ describe Banzai::Filter::RedactorFilter, lib: true do
     end
 
     context 'invalid projects' do
-      before { allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false) }
+      before do
+        allow_any_instance_of(Banzai::ReferenceParser::BaseParser).to receive(:can_read_reference?).and_return(false)
+      end
 
       it 'removes unpermitted references' do
         user = create(:user)

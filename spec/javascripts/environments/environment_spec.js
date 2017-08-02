@@ -2,6 +2,7 @@ import Vue from 'vue';
 import '~/flash';
 import environmentsComponent from '~/environments/components/environment.vue';
 import { environment, folder } from './mock_data';
+import { headersInterceptor } from '../helpers/vue_resource_helper';
 
 describe('Environment', () => {
   preloadFixtures('static/environments/environments.html.raw');
@@ -25,12 +26,14 @@ describe('Environment', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
+        Vue.http.interceptors.push(headersInterceptor);
       });
 
       afterEach(() => {
         Vue.http.interceptors = _.without(
           Vue.http.interceptors, environmentsEmptyResponseInterceptor,
         );
+        Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
       });
 
       it('should render the empty state', (done) => {
@@ -41,7 +44,7 @@ describe('Environment', () => {
         setTimeout(() => {
           expect(
             component.$el.querySelector('.js-new-environment-button').textContent,
-          ).toContain('New Environment');
+          ).toContain('New environment');
 
           expect(
             component.$el.querySelector('.js-blank-state-title').textContent,
@@ -54,6 +57,10 @@ describe('Environment', () => {
 
     describe('with paginated environments', () => {
       const environmentsResponseInterceptor = (request, next) => {
+        next((response) => {
+          response.headers.set('X-nExt-pAge', '2');
+        });
+
         next(request.respondWith(JSON.stringify({
           environments: [environment],
           stopped_count: 1,
@@ -73,6 +80,7 @@ describe('Environment', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(environmentsResponseInterceptor);
+        Vue.http.interceptors.push(headersInterceptor);
         component = new EnvironmentsComponent({
           el: document.querySelector('#environments-list-view'),
         });
@@ -82,6 +90,7 @@ describe('Environment', () => {
         Vue.http.interceptors = _.without(
           Vue.http.interceptors, environmentsResponseInterceptor,
         );
+        Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
       });
 
       it('should render a table with environments', (done) => {
@@ -271,7 +280,7 @@ describe('Environment', () => {
           // wait for next async request
           setTimeout(() => {
             expect(component.$el.querySelectorAll('.js-child-row').length).toEqual(1);
-            expect(component.$el.querySelector('td.text-center > a.btn').textContent).toContain('Show all');
+            expect(component.$el.querySelector('.text-center > a.btn').textContent).toContain('Show all');
 
             Vue.http.interceptors = _.without(Vue.http.interceptors, folderInterceptor);
             done();

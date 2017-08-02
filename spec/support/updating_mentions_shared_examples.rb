@@ -2,7 +2,9 @@ RSpec.shared_examples 'updating mentions' do |service_class|
   let(:mentioned_user) { create(:user) }
   let(:service_class) { service_class }
 
-  before { project.team << [mentioned_user, :developer] }
+  before do
+    project.team << [mentioned_user, :developer]
+  end
 
   def update_mentionable(opts)
     reset_delivered_emails!
@@ -15,7 +17,9 @@ RSpec.shared_examples 'updating mentions' do |service_class|
   end
 
   context 'in title' do
-    before { update_mentionable(title: mentioned_user.to_reference) }
+    before do
+      update_mentionable(title: mentioned_user.to_reference)
+    end
 
     it 'emails only the newly-mentioned user' do
       should_only_email(mentioned_user)
@@ -23,7 +27,9 @@ RSpec.shared_examples 'updating mentions' do |service_class|
   end
 
   context 'in description' do
-    before { update_mentionable(description: mentioned_user.to_reference) }
+    before do
+      update_mentionable(description: mentioned_user.to_reference)
+    end
 
     it 'emails only the newly-mentioned user' do
       should_only_email(mentioned_user)

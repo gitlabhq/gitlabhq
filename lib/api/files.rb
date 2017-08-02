@@ -10,7 +10,8 @@ module API
           file_content: attrs[:content],
           file_content_encoding: attrs[:encoding],
           author_email: attrs[:author_email],
-          author_name: attrs[:author_name]
+          author_name: attrs[:author_name],
+          last_commit_sha: attrs[:last_commit_id]
         }
       end
 
@@ -24,7 +25,7 @@ module API
         @blob = @repo.blob_at(@commit.sha, params[:file_path])
 
         not_found!('File') unless @blob
-        @blob.load_all_data!(@repo)
+        @blob.load_all_data!
       end
 
       def commit_response(attrs)
@@ -46,6 +47,7 @@ module API
         use :simple_file_params
         requires :content, type: String, desc: 'File content'
         optional :encoding, type: String, values: %w[base64], desc: 'File encoding'
+        optional :last_commit_id, type: String, desc: 'Last known commit id for this file'
       end
     end
 
@@ -111,7 +113,12 @@ module API
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
-        result = ::Files::UpdateService.new(user_project, current_user, commit_params(file_params)).execute
+
+        begin
+          result = ::Files::UpdateService.new(user_project, current_user, commit_params(file_params)).execute
+        rescue ::Files::UpdateService::FileChangedError => e
+          render_api_error!(e.message, 400)
+        end
 
         if result[:status] == :success
           status(200)

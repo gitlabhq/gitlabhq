@@ -216,7 +216,7 @@ module Gitlab
 
       def compare(start_sha, head_sha, straight: false)
         compare = CompareService.new(project, head_sha).execute(project, start_sha, straight: straight)
-        compare.diffs(paths: paths)
+        compare.diffs(paths: paths, expanded: true)
       end
 
       def position(diff_file, old_line, new_line)

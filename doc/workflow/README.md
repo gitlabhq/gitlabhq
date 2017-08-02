@@ -6,7 +6,7 @@
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
-- [Groups](groups.md)
+- [Groups](../user/group/index.md)
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
   - [Confidential issues](../user/project/issues/confidential_issues.md)
@@ -21,7 +21,7 @@
 - [Project users](add-user/add-user.md)
 - [Protected branches](../user/project/protected_branches.md)
 - [Protected tags](../user/project/protected_tags.md)
-- [Slash commands](../user/project/slash_commands.md)
+- [Quick Actions](../user/project/quick_actions.md)
 - [Sharing a project with a group](share_with_group.md)
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Time tracking](time_tracking.md)

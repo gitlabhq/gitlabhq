@@ -1,6 +1,6 @@
 class PreviewMarkdownService < BaseService
   def execute
-    text, commands = explain_slash_commands(params[:text])
+    text, commands = explain_quick_actions(params[:text])
     users = find_user_references(text)
 
     success(
@@ -12,11 +12,11 @@ class PreviewMarkdownService < BaseService
 
   private
 
-  def explain_slash_commands(text)
+  def explain_quick_actions(text)
     return text, [] unless %w(Issue MergeRequest).include?(commands_target_type)
 
-    slash_commands_service = SlashCommands::InterpretService.new(project, current_user)
-    slash_commands_service.explain(text, find_commands_target)
+    quick_actions_service = QuickActions::InterpretService.new(project, current_user)
+    quick_actions_service.explain(text, find_commands_target)
   end
 
   def find_user_references(text)
@@ -36,10 +36,10 @@ class PreviewMarkdownService < BaseService
   end
 
   def commands_target_type
-    params[:slash_commands_target_type]
+    params[:quick_actions_target_type]
   end
 
   def commands_target_id
-    params[:slash_commands_target_id]
+    params[:quick_actions_target_id]
   end
 end

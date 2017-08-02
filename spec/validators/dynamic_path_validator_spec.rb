@@ -3,6 +3,28 @@ require 'spec_helper'
 describe DynamicPathValidator do
   let(:validator) { described_class.new(attributes: [:path]) }
 
+  def expect_handles_invalid_utf8
+    expect { yield('\255invalid') }.to be_falsey
+  end
+
+  describe '.valid_user_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_user_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
+  describe '.valid_group_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_group_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
+  describe '.valid_project_path' do
+    it 'handles invalid utf8' do
+      expect(described_class.valid_project_path?("a\0weird\255path")).to be_falsey
+    end
+  end
+
   describe '#path_valid_for_record?' do
     context 'for project' do
       it 'calls valid_project_path?' do
@@ -61,6 +83,15 @@ describe DynamicPathValidator do
       validator.validate_each(group, :path, 'users')
 
       expect(group.errors[:path]).to include('users is a reserved name')
+    end
+
+    it 'updating to an invalid path is not allowed' do
+      project = create(:empty_project)
+      project.path = 'update'
+
+      validator.validate_each(project, :path, 'update')
+
+      expect(project.errors[:path]).to include('update is a reserved name')
     end
   end
 end

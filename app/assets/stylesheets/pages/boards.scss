@@ -1,3 +1,5 @@
+@import "./issues/issue_count_badge";
+
 [v-cloak] {
   display: none;
 }
@@ -9,7 +11,7 @@
 
 .is-dragging {
   // Important because plugin sets inline CSS
-  opacity: 1!important;
+  opacity: 1 !important;
 
   * {
     -webkit-user-select: none;
@@ -17,8 +19,8 @@
     -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing!important;
-    cursor: grabbing!important;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
   }
 }
 
@@ -96,9 +98,51 @@
   @media (min-width: $screen-sm-min) {
     width: 400px;
   }
+
+  &.is-expandable {
+    .board-header {
+      cursor: pointer;
+    }
+  }
+
+  &.is-collapsed {
+    width: 50px;
+
+    .board-header {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    .board-title {
+      position: initial;
+      padding: 0;
+      border-bottom: 0;
+
+      > span {
+        display: block;
+        transform: rotate(90deg) translate(25px, 0);
+      }
+    }
+
+    .board-title-expandable-toggle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+    }
+
+    .board-list-component,
+    .issue-count-badge {
+      display: none;
+    }
+  }
 }
 
 .board-inner {
+  position: relative;
   height: 100%;
   font-size: $issue-boards-font-size;
   background: $gray-light;
@@ -175,21 +219,53 @@
   }
 }
 
+.slide-down-enter {
+  transform: translateY(-100%);
+}
+
+.slide-down-enter-active {
+  transition: transform $fade-in-duration;
+
+  + .board-list {
+    transform: translateY(-136px);
+    transition: none;
+  }
+}
+
+.slide-down-enter-to {
+  + .board-list {
+    transform: translateY(0);
+    transition: transform $fade-in-duration ease;
+  }
+}
+
+.slide-down-leave {
+  transform: translateY(0);
+}
+
+.slide-down-leave-active {
+  transition: all $fade-in-duration;
+  transform: translateY(-136px);
+
+  + .board-list {
+    transition: transform $fade-in-duration ease;
+    transform: translateY(-136px);
+  }
+}
+
 .board-list-component {
   height: calc(100% - 49px);
+  overflow: hidden;
 }
 
 .board-list {
   height: 100%;
+  width: 100%;
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
   overflow-y: scroll;
   overflow-x: hidden;
-
-  &.is-smaller {
-    height: calc(100% - 136px);
-  }
 }
 
 .board-list-loading {
@@ -351,34 +427,14 @@
 }
 
 .board-new-issue-form {
+  z-index: 1;
   margin: 5px;
 }
 
-.board-issue-count-holder {
-  margin-top: -3px;
+.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
+.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
+  position: absolute;
 
-  .btn {
-    line-height: 12px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-}
-
-.board-issue-count {
-  padding-right: 10px;
-  padding-left: 10px;
-  line-height: 21px;
-  border-radius: $border-radius-base;
-  border: 1px solid $border-color;
-
-  &.has-btn {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-width: 1px 0 1px 1px;
-  }
-}
-
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar {
   &.right-sidebar {
     top: 0;
     bottom: 0;

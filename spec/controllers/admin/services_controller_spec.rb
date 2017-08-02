@@ -3,7 +3,9 @@ require 'spec_helper'
 describe Admin::ServicesController do
   let(:admin) { create(:admin) }
 
-  before { sign_in(admin) }
+  before do
+    sign_in(admin)
+  end
 
   describe 'GET #edit' do
     let!(:project) { create(:empty_project) }

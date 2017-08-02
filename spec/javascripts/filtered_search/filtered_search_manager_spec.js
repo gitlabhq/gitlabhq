@@ -1,6 +1,7 @@
 import * as recentSearchesStoreSrc from '~/filtered_search/stores/recent_searches_store';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesServiceError from '~/filtered_search/services/recent_searches_service_error';
+import RecentSearchesRoot from '~/filtered_search/recent_searches_root';
 import '~/lib/utils/url_utility';
 import '~/lib/utils/common_utils';
 import '~/filtered_search/filtered_search_token_keys';
@@ -47,17 +48,23 @@ describe('Filtered Search Manager', () => {
       </div>
     `);
 
+    spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
+  });
+
+  const initializeManager = () => {
+    /* eslint-disable jasmine/no-unsafe-spy */
     spyOn(gl.FilteredSearchManager.prototype, 'loadSearchParamsFromURL').and.callFake(() => {});
     spyOn(gl.FilteredSearchManager.prototype, 'tokenChange').and.callFake(() => {});
-    spyOn(gl.FilteredSearchDropdownManager.prototype, 'setDropdown').and.callFake(() => {});
     spyOn(gl.FilteredSearchDropdownManager.prototype, 'updateDropdownOffset').and.callFake(() => {});
     spyOn(gl.utils, 'getParameterByName').and.returnValue(null);
     spyOn(gl.FilteredSearchVisualTokens, 'unselectTokens').and.callThrough();
+    /* eslint-enable jasmine/no-unsafe-spy */
 
     input = document.querySelector('.filtered-search');
     tokensContainer = document.querySelector('.tokens-container');
     manager = new gl.FilteredSearchManager();
-  });
+    manager.setup();
+  };
 
   afterEach(() => {
     manager.cleanup();
@@ -65,37 +72,92 @@ describe('Filtered Search Manager', () => {
 
   describe('class constructor', () => {
     const isLocalStorageAvailable = 'isLocalStorageAvailable';
-    let filteredSearchManager;
 
     beforeEach(() => {
       spyOn(RecentSearchesService, 'isAvailable').and.returnValue(isLocalStorageAvailable);
       spyOn(recentSearchesStoreSrc, 'default');
-
-      filteredSearchManager = new gl.FilteredSearchManager();
-
-      return filteredSearchManager;
+      spyOn(RecentSearchesRoot.prototype, 'render');
     });
 
     it('should instantiate RecentSearchesStore with isLocalStorageAvailable', () => {
+      manager = new gl.FilteredSearchManager();
+
       expect(RecentSearchesService.isAvailable).toHaveBeenCalled();
       expect(recentSearchesStoreSrc.default).toHaveBeenCalledWith({
         isLocalStorageAvailable,
         allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
       });
     });
+  });
+
+  describe('setup', () => {
+    beforeEach(() => {
+      manager = new gl.FilteredSearchManager();
+    });
 
     it('should not instantiate Flash if an RecentSearchesServiceError is caught', () => {
       spyOn(RecentSearchesService.prototype, 'fetch').and.callFake(() => Promise.reject(new RecentSearchesServiceError()));
       spyOn(window, 'Flash');
 
-      filteredSearchManager = new gl.FilteredSearchManager();
+      manager.setup();
 
       expect(window.Flash).not.toHaveBeenCalled();
     });
   });
 
+  describe('searchState', () => {
+    beforeEach(() => {
+      spyOn(gl.FilteredSearchManager.prototype, 'search').and.callFake(() => {});
+      initializeManager();
+    });
+
+    it('should blur button', () => {
+      const e = {
+        preventDefault: () => {},
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+      spyOn(e.currentTarget, 'blur').and.callThrough();
+      manager.searchState(e);
+
+      expect(e.currentTarget.blur).toHaveBeenCalled();
+    });
+
+    it('should not call search if there is no state', () => {
+      const e = {
+        preventDefault: () => {},
+        currentTarget: {
+          blur: () => {},
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).not.toHaveBeenCalled();
+    });
+
+    it('should call search when there is state', () => {
+      const e = {
+        preventDefault: () => {},
+        currentTarget: {
+          blur: () => {},
+          dataset: {
+            state: 'opened',
+          },
+        },
+      };
+
+      manager.searchState(e);
+      expect(gl.FilteredSearchManager.prototype.search).toHaveBeenCalledWith('opened');
+    });
+  });
+
   describe('search', () => {
     const defaultParams = '?scope=all&utf8=%E2%9C%93&state=opened';
+
+    beforeEach(() => {
+      initializeManager();
+    });
 
     it('should search with a single word', (done) => {
       input.value = 'searchTerm';
@@ -146,6 +208,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('handleInputPlaceholder', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('should render placeholder when there is no input', () => {
       expect(input.placeholder).toEqual(placeholder);
     });
@@ -172,6 +238,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('checkForBackspace', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     describe('tokens and no input', () => {
       beforeEach(() => {
         tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
@@ -209,6 +279,10 @@ describe('Filtered Search Manager', () => {
   });
 
   describe('removeToken', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('removes token even when it is already selected', () => {
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
@@ -240,6 +314,7 @@ describe('Filtered Search Manager', () => {
 
   describe('removeSelectedTokenKeydown', () => {
     beforeEach(() => {
+      initializeManager();
       tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(
         FilteredSearchSpecHelper.createFilterVisualTokenHTML('milestone', 'none', true),
       );
@@ -293,63 +368,39 @@ describe('Filtered Search Manager', () => {
       spyOn(gl.FilteredSearchVisualTokens, 'removeSelectedToken').and.callThrough();
       spyOn(gl.FilteredSearchManager.prototype, 'handleInputPlaceholder').and.callThrough();
       spyOn(gl.FilteredSearchManager.prototype, 'toggleClearSearchButton').and.callThrough();
-      manager.removeSelectedToken();
+      initializeManager();
     });
 
     it('calls FilteredSearchVisualTokens.removeSelectedToken', () => {
+      manager.removeSelectedToken();
+
       expect(gl.FilteredSearchVisualTokens.removeSelectedToken).toHaveBeenCalled();
     });
 
     it('calls handleInputPlaceholder', () => {
+      manager.removeSelectedToken();
+
       expect(manager.handleInputPlaceholder).toHaveBeenCalled();
     });
 
     it('calls toggleClearSearchButton', () => {
+      manager.removeSelectedToken();
+
       expect(manager.toggleClearSearchButton).toHaveBeenCalled();
     });
 
     it('calls update dropdown offset', () => {
+      manager.removeSelectedToken();
+
       expect(manager.dropdownManager.updateDropdownOffset).toHaveBeenCalled();
     });
   });
 
-  describe('unselects token', () => {
-    beforeEach(() => {
-      tokensContainer.innerHTML = FilteredSearchSpecHelper.createTokensContainerHTML(`
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~bug', true)}
-        ${FilteredSearchSpecHelper.createSearchVisualTokenHTML('search term')}
-        ${FilteredSearchSpecHelper.createFilterVisualTokenHTML('label', '~awesome')}
-      `);
-    });
-
-    it('unselects token when input is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      // Click directly on input attached to document
-      // so that the click event will propagate properly
-      document.querySelector('.filtered-search').click();
-
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-    });
-
-    it('unselects token when document.body is clicked', () => {
-      const selectedToken = tokensContainer.querySelector('.js-visual-token .selected');
-
-      expect(selectedToken.classList.contains('selected')).toEqual(true);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).not.toHaveBeenCalled();
-
-      document.body.click();
-
-      expect(selectedToken.classList.contains('selected')).toEqual(false);
-      expect(gl.FilteredSearchVisualTokens.unselectTokens).toHaveBeenCalled();
-    });
-  });
-
   describe('toggleInputContainerFocus', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
     it('toggles on focus', () => {
       input.focus();
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(true);

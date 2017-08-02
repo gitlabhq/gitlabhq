@@ -83,7 +83,7 @@ module API
         group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
 
         if group.persisted?
-          present group, with: Entities::Group, current_user: current_user
+          present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_api_error!("Failed to save group #{group.errors.messages}", 400)
         end
@@ -101,8 +101,6 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
-        at_least_one_of :name, :path, :description, :visibility,
-                        :lfs_enabled, :request_access_enabled
       end
       put ':id' do
         group = find_group!(params[:id])
@@ -127,6 +125,8 @@ module API
       delete ":id" do
         group = find_group!(params[:id])
         authorize! :admin_group, group
+
+        status 204
         ::Groups::DestroyService.new(group, current_user).execute
       end
 
@@ -151,8 +151,8 @@ module API
       end
       get ":id/projects" do
         group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user).execute
-        projects = filter_projects(projects)
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = reorder_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
         present paginate(projects), with: entity, current_user: current_user
       end

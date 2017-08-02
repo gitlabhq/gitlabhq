@@ -12,6 +12,7 @@ module Gitlab
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
+        update_email
       end
 
       def persisted?
@@ -31,7 +32,7 @@ module Gitlab
 
         block_after_save = needs_blocking?
 
-        gl_user.save!
+        Users::UpdateService.new(gl_user).execute!
 
         gl_user.block if block_after_save
 
@@ -100,12 +101,16 @@ module Gitlab
         # Look for a corresponding person with same uid in any of the configured LDAP providers
         Gitlab::LDAP::Config.providers.each do |provider|
           adapter = Gitlab::LDAP::Adapter.new(provider)
-          @ldap_person = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
-          # The `uid` might actually be a DN. Try it next.
-          @ldap_person ||= Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+          @ldap_person = find_ldap_person(auth_hash, adapter)
           break if @ldap_person
         end
         @ldap_person
+      end
+
+      def find_ldap_person(auth_hash, adapter)
+        by_uid = Gitlab::LDAP::Person.find_by_uid(auth_hash.uid, adapter)
+        # The `uid` might actually be a DN. Try it next.
+        by_uid || Gitlab::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
       end
 
       def ldap_config
@@ -172,6 +177,22 @@ module Gitlab
           password_confirmation:      auth_hash.password,
           password_automatically_set: true
         }
+      end
+
+      def sync_email_from_provider?
+        auth_hash.provider.to_s == Gitlab.config.omniauth.sync_email_from_provider.to_s
+      end
+
+      def update_email
+        if auth_hash.has_email? && sync_email_from_provider?
+          if persisted?
+            gl_user.skip_reconfirmation!
+            gl_user.email = auth_hash.email
+          end
+
+          gl_user.external_email = true
+          gl_user.email_provider = auth_hash.provider
+        end
       end
 
       def log

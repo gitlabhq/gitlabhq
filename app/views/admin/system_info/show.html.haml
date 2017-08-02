@@ -1,6 +1,6 @@
 - @no_container = true
 - page_title "System Info"
-= render 'admin/background_jobs/head'
+= render 'admin/monitoring/head'
 
 %div{ class: container_class }
   .prepend-top-default
@@ -31,3 +31,8 @@
             %h1 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
             %p= disk[:disk_name]
             %p= disk[:mount_path]
+    .col-sm-4
+      .light-well
+        %h4 Uptime
+        .data
+          %h1= time_ago_with_tooltip(Rails.application.config.booted_at)

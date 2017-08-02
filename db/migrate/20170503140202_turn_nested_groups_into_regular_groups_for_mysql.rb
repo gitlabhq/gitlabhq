@@ -87,8 +87,8 @@ class TurnNestedGroupsIntoRegularGroupsForMysql < ActiveRecord::Migration
     while current&.parent_id
       # We're using find_by(id: ...) here to deal with cases where the
       # parent_id may point to a missing row.
-      current = Namespace.unscoped.select([:id, :parent_id]).
-        find_by(id: current.parent_id)
+      current = Namespace.unscoped.select([:id, :parent_id])
+        .find_by(id: current.parent_id)
 
       ancestors << current.id if current
     end
@@ -99,11 +99,11 @@ class TurnNestedGroupsIntoRegularGroupsForMysql < ActiveRecord::Migration
   # Returns a relation containing all the members that have access to any of
   # the current namespace's parent namespaces.
   def all_members_for(namespace)
-    Member.
-      unscoped.
-      select(['user_id', 'MAX(access_level) AS access_level']).
-      where(source_type: 'Namespace', source_id: ancestors_for(namespace)).
-      group(:user_id)
+    Member
+      .unscoped
+      .select(['user_id', 'MAX(access_level) AS access_level'])
+      .where(source_type: 'Namespace', source_id: ancestors_for(namespace))
+      .group(:user_id)
   end
 
   def bulk_insert_members(rows)

@@ -5,10 +5,12 @@ module Projects
 
       def destroy
         if tag.delete
-          redirect_to project_container_registry_path(@project),
+          redirect_to project_container_registry_index_path(@project),
+                      status: 302,
                       notice: 'Registry tag has been removed successfully!'
         else
-          redirect_to project_container_registry_path(@project),
+          redirect_to project_container_registry_index_path(@project),
+                      status: 302,
                       alert: 'Failed to remove registry tag!'
         end
       end

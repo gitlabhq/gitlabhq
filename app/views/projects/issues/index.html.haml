@@ -1,5 +1,5 @@
 - @no_container = true
-- @bulk_edit = can?(current_user, :admin_issue, @project)
+- @can_bulk_update = can?(current_user, :admin_issue, @project)
 
 - page_title "Issues"
 - new_issue_email = @project.new_issue_address(current_user)
@@ -13,26 +13,24 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
+- if show_new_nav?
+  - content_for :breadcrumbs_extra do
+    = render "projects/issues/nav_btns"
+
 - if project_issues(@project).exists?
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
-      .nav-controls
-        = link_to params.merge(rss_url_options), class: 'btn append-right-10 has-tooltip', title: 'Subscribe' do
-          = icon('rss')
-        = link_to new_namespace_project_issue_path(@project.namespace,
-                                                   @project,
-                                                   issue: { assignee_id: issues_finder.assignee.try(:id),
-                                                            milestone_id: issues_finder.milestones.first.try(:id) }),
-                                                   class: "btn btn-new",
-                                                   title: "New issue",
-                                                   id: "new_issue_link" do
-          New issue
+      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
+        = render "projects/issues/nav_btns"
     = render 'shared/issuable/search_bar', type: :issues
+
+    - if @can_bulk_update
+      = render 'shared/issuable/bulk_update_sidebar', type: :issues
 
     .issues-holder
       = render 'issues'
       - if new_issue_email
         = render 'issue_by_email', email: new_issue_email
 - else
-  = render 'shared/empty_states/issues', button_path: new_namespace_project_issue_path(@project.namespace, @project)
+  = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project)

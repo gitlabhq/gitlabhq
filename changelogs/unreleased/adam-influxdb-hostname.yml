@@ -1,4 +1,0 @@
----
-title: Allow GitLab instance to start when InfluxDB hostname cannot be resolved
-merge_request: 11356
-author:

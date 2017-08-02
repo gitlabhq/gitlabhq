@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Boards::Issues::ListService, services: true do
+describe Boards::Issues::ListService do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:project) { create(:empty_project) }
@@ -13,13 +13,14 @@ describe Boards::Issues::ListService, services: true do
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
 
+    let!(:backlog) { create(:backlog_list, board: board) }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }
     let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let!(:closed)  { create(:closed_list, board: board) }
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project) }
+    let!(:reopened_issue1) { create(:issue, :opened, project: project) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, labels: [development]) }
@@ -47,6 +48,14 @@ describe Boards::Issues::ListService, services: true do
     context 'issues are ordered by priority' do
       it 'returns opened issues when list_id is missing' do
         params = { board_id: board.id }
+
+        issues = described_class.new(project, user, params).execute
+
+        expect(issues).to eq [opened_issue2, reopened_issue1, opened_issue1]
+      end
+
+      it 'returns opened issues when listing issues from Backlog' do
+        params = { board_id: board.id, id: backlog.id }
 
         issues = described_class.new(project, user, params).execute
 

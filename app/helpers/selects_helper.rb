@@ -45,6 +45,14 @@ module SelectsHelper
       end
     end
 
+    with_feature_enabled_data_attribute =
+      case opts.delete(:with_feature_enabled)
+      when 'issues'         then 'data-with-issues-enabled'
+      when 'merge_requests' then 'data-with-merge-requests-enabled'
+      end
+
+    opts[with_feature_enabled_data_attribute] = true
+
     hidden_field_tag(id, opts[:selected], opts)
   end
 

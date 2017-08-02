@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::BuildService, services: true do
+describe MergeRequests::BuildService do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }
@@ -19,7 +19,7 @@ describe MergeRequests::BuildService, services: true do
   let(:commits) { nil }
 
   let(:service) do
-    MergeRequests::BuildService.new(project, user,
+    described_class.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
                                     target_branch: target_branch,
@@ -206,7 +206,9 @@ describe MergeRequests::BuildService, services: true do
       context 'branch starts with external issue IID followed by a hyphen' do
         let(:source_branch) { '12345-fix-issue' }
 
-        before { allow(project).to receive(:default_issues_tracker?).and_return(false) }
+        before do
+          allow(project).to receive(:external_issue_tracker).and_return(true)
+        end
 
         it 'sets the title to: Resolves External Issue $issue-iid' do
           expect(merge_request.title).to eq('Resolve External Issue 12345')

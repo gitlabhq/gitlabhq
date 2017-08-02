@@ -216,12 +216,7 @@ module Banzai
         @references_per_project ||= begin
           refs = Hash.new { |hash, key| hash[key] = Set.new }
 
-          regex =
-            if uses_reference_pattern?
-              Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
-            else
-              object_class.link_reference_pattern
-            end
+          regex = Regexp.union(object_class.reference_pattern, object_class.link_reference_pattern)
 
           nodes.each do |node|
             node.to_html.scan(regex) do
@@ -264,7 +259,7 @@ module Banzai
 
             found = []
             projects.each do |project|
-              ref = project.path_with_namespace
+              ref = project.full_path
               get_or_set_cache(cache, ref) { project }
               found << ref
             end
@@ -282,7 +277,7 @@ module Banzai
       end
 
       def current_project_path
-        @current_project_path ||= project.path_with_namespace
+        @current_project_path ||= project.full_path
       end
 
       def current_project_namespace_path
@@ -322,14 +317,6 @@ module Banzai
           cache[key] = value if key.present?
           value
         end
-      end
-
-      # There might be special cases like filters
-      # that should ignore reference pattern
-      # eg: IssueReferenceFilter when using a external issues tracker
-      # In those cases this method should be overridden on the filter subclass
-      def uses_reference_pattern?
-        true
       end
     end
   end

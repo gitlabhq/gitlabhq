@@ -14,4 +14,8 @@ class MockMonitoringService < MonitoringService
   def metrics(environment)
     JSON.parse(File.read(Rails.root + 'spec/fixtures/metrics.json'))
   end
+
+  def can_test?
+    false
+  end
 end

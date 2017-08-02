@@ -18,19 +18,28 @@
       background-image: none;
       background-color: transparent;
       border: none;
-      padding-top: 6px;
-      padding-right: 10px;
+      padding-top: 12px;
+      padding-right: 20px;
+      font-size: 10px;
 
       b {
-        display: inline-block;
-        width: 0;
-        height: 0;
-        margin-left: 2px;
-        vertical-align: middle;
-        border-top: 5px dashed;
-        border-right: 5px solid transparent;
-        border-left: 5px solid transparent;
+        display: none;
+      }
+
+      &::after {
+        content: "\f078";
+        position: absolute;
+        z-index: 1;
+        text-align: center;
+        pointer-events: none;
+        box-sizing: border-box;
         color: $gray-darkest;
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     }
 
@@ -109,10 +118,12 @@
       line-height: 15px;
       background-color: $gray-light;
       background-image: none;
+      padding: 3px 18px 3px 5px;
 
       .select2-search-choice-close {
-        top: 4px;
-        left: 3px;
+        top: 5px;
+        left: initial;
+        right: 3px;
       }
 
       &.select2-search-choice-focus {

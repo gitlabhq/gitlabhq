@@ -13,8 +13,8 @@ describe API::V3::Notes do
   # For testing the cross-reference of a private issue in a public issue
   let(:private_user)    { create(:user) }
   let(:private_project) do
-    create(:empty_project, namespace: private_user.namespace).
-    tap { |p| p.team << [private_user, :master] }
+    create(:empty_project, namespace: private_user.namespace)
+    .tap { |p| p.team << [private_user, :master] }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 

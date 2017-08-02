@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe "Runners" do
-  include GitlabRoutingHelper
-
   let(:user) { create(:user) }
-  before { login_as(user) }
+
+  before do
+    sign_in(user)
+  end
 
   describe "specific runners" do
     before do
@@ -121,13 +122,15 @@ describe "Runners" do
     end
 
     scenario 'user checks default configuration' do
-      visit namespace_project_runner_path(project.namespace, project, runner)
+      visit project_runner_path(project, runner)
 
       expect(page).to have_content 'Can run untagged jobs Yes'
     end
 
     context 'when runner has tags' do
-      before { runner.update_attribute(:tag_list, ['tag']) }
+      before do
+        runner.update_attribute(:tag_list, ['tag'])
+      end
 
       scenario 'user wants to prevent runner from running untagged job' do
         visit runners_path(project)

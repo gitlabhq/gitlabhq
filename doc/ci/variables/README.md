@@ -9,8 +9,9 @@ and a list of **user-defined variables**.
 The variables can be overwritten and they take precedence over each other in
 this order:
 
-1. [Trigger variables][triggers] (take precedence over all)
-1. [Secret variables](#secret-variables)
+1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
+1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
+1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
 1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
@@ -37,12 +38,14 @@ future GitLab releases.**
 |-------------------------------- |--------|--------|-------------|
 | **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
-| **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
+| **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
+| **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
+| **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
 | **CI_JOB_ID**                   | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
@@ -56,9 +59,10 @@ future GitLab releases.**
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built |
+| **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
 | **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
+| **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**           | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
@@ -118,11 +122,11 @@ The YAML-defined variables are also set to all created
 tune them.
 
 Variables can be defined at a global level, but also at a job level. To turn off
-global defined variables in your job, define an empty array:
+global defined variables in your job, define an empty hash:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 You are able to use other variables inside your variable definition (or escape them with `$$`):
@@ -139,23 +143,44 @@ script:
 
 >**Notes:**
 - This feature requires GitLab Runner 0.4.0 or higher.
+- Group-level secret variables added in GitLab 9.4.
 - Be aware that secret variables are not masked, and their values can be shown
   in the job logs if explicitly asked to do so. If your project is public or
   internal, you can set the pipelines private from your project's Pipelines
   settings. Follow the discussion in issue [#13784][ce-13784] for masking the
   secret variables.
 
-GitLab CI allows you to define per-project **secret variables** that are set in
-the build environment. The secret variables are stored out of the repository
-(`.gitlab-ci.yml`) and are securely passed to GitLab Runner making them
-available in the build environment. It's the recommended method to use for
-storing things like passwords, secret keys and credentials.
+GitLab CI allows you to define per-project or per-group **secret variables**
+that are set in the build environment. The secret variables are stored out of
+the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available in the build environment. It's the recommended method to
+use for storing things like passwords, secret keys and credentials.
 
-Secret variables can be added by going to your project's
+Project-level secret variables can be added by going to your project's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+
+Likewise, group-level secret variables can be added by going to your group's
+**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+Any variables of [subgroups] will be inherited recursively.
+
+Once you set them, they will be available for all subsequent pipelines. You can also
+[protect your variables](#protected-secret-variables).
+
+### Protected secret variables
+
+>**Notes:**
+This feature requires GitLab 9.3 or higher.
+
+Secret variables could be protected. Whenever a secret variable is
+protected, it would only be securely passed to pipelines running on the
+[protected branches] or [protected tags]. The other pipelines would not get any
+protected variables.
+
+Protected variables can be added by going to your project's
 **Settings ➔ Pipelines**, then finding the section called
-**Secret Variables**.
+**Secret variables**, and check *Protected*.
 
-Once you set them, they will be available for all subsequent jobs.
+Once you set them, they will be available for all subsequent pipelines.
 
 ## Deployment variables
 
@@ -327,20 +352,45 @@ All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
 In most cases `bash` or `sh` is used to execute the job script.
 
-To access the variables (predefined and user-defined) in a `bash`/`sh` environment,
-prefix the variable name with the dollar sign (`$`):
+To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
 
-```
+| Shell                | Usage           |
+|----------------------|-----------------|
+| bash/sh              | `$variable`     |
+| windows batch        | `%variable%`    |
+| PowerShell           | `$env:variable` |
+
+To access environment variables in bash, prefix the variable name with (`$`):
+
+```yaml
 job_name:
   script:
     - echo $CI_JOB_ID
+```
+
+To access environment variables in **Windows Batch**, surround the variable
+with (`%`):
+
+```yaml
+job_name:
+  script:
+    - echo %CI_JOB_ID%
+```
+
+To access environment variables in a **Windows PowerShell** environment, prefix
+the variable name with (`$env:`):
+
+```yaml
+job_name:
+  script:
+    - echo $env:CI_JOB_ID
 ```
 
 You can also list all environment variables with the `export` command,
 but be aware that this will also expose the values of all the secret variables
 you set, in the job log:
 
-```
+```yaml
 job_name:
   script:
     - export
@@ -382,6 +432,12 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
+[eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
+[envs]: ../environments.md
+[protected branches]: ../../user/project/protected_branches.md
+[protected tags]: ../../user/project/protected_tags.md
 [runner]: https://docs.gitlab.com/runner/
+[shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
+[subgroups]: ../../user/group/subgroups/index.md

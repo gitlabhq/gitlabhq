@@ -10,7 +10,7 @@ class UsersController < ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
 
       format.json do
@@ -73,10 +73,7 @@ class UsersController < ApplicationController
   end
 
   def calendar
-    calendar = contributions_calendar
-    @activity_dates = calendar.activity_dates
-
-    render 'calendar', layout: false
+    render json: contributions_calendar.activity_dates
   end
 
   def calendar_activities
@@ -106,11 +103,11 @@ class UsersController < ApplicationController
 
   def load_events
     # Get user activity feed for projects common for both users
-    @events = user.recent_events.
-      merge(projects_for_current_user).
-      references(:project).
-      with_associations.
-      limit_recent(20, params[:offset])
+    @events = user.recent_events
+      .merge(projects_for_current_user)
+      .references(:project)
+      .with_associations
+      .limit_recent(20, params[:offset])
   end
 
   def load_projects

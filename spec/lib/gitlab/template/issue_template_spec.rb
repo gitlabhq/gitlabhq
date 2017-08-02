@@ -52,7 +52,10 @@ describe Gitlab::Template::IssueTemplate do
 
     context 'when repo is bare or empty' do
       let(:empty_project) { create(:empty_project) }
-      before { empty_project.add_user(user, Gitlab::Access::MASTER) }
+
+      before do
+        empty_project.add_user(user, Gitlab::Access::MASTER)
+      end
 
       it "returns empty array" do
         templates = subject.by_category('', empty_project)
@@ -77,7 +80,9 @@ describe Gitlab::Template::IssueTemplate do
     context "when repo is empty" do
       let(:empty_project) { create(:empty_project) }
 
-      before { empty_project.add_user(user, Gitlab::Access::MASTER) }
+      before do
+        empty_project.add_user(user, Gitlab::Access::MASTER)
+      end
 
       it "raises file not found" do
         issue_template = subject.new('.gitlab/issue_templates/not_existent.md', empty_project)

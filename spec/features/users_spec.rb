@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users', feature: true, js: true do
+feature 'Users', js: true do
   let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
 
   scenario 'GET /users/sign_in creates a new user account' do
@@ -24,7 +24,7 @@ feature 'Users', feature: true, js: true do
     user.reload
     expect(user.reset_password_token).not_to be_nil
 
-    login_with(user)
+    gitlab_sign_in(user)
     expect(current_path).to eq root_path
 
     user.reload
@@ -45,7 +45,9 @@ feature 'Users', feature: true, js: true do
   end
 
   describe 'redirect alias routes' do
-    before { user }
+    before do
+      expect(user).to be_persisted
+    end
 
     scenario '/u/user1 redirects to user page' do
       visit '/u/user1'

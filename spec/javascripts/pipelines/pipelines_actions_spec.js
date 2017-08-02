@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import pipelinesActionsComp from '~/pipelines/components/pipelines_actions';
+import pipelinesActionsComp from '~/pipelines/components/pipelines_actions.vue';
 
 describe('Pipelines Actions dropdown', () => {
   let component;
-  let spy;
   let actions;
   let ActionsComponent;
 
@@ -22,14 +21,9 @@ describe('Pipelines Actions dropdown', () => {
       },
     ];
 
-    spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
-
     component = new ActionsComponent({
       propsData: {
         actions,
-        service: {
-          postAction: spy,
-        },
       },
     }).$mount();
   });
@@ -38,31 +32,6 @@ describe('Pipelines Actions dropdown', () => {
     expect(
       component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actions.length);
-  });
-
-  it('should call the service when an action is clicked', () => {
-    component.$el.querySelector('.js-pipeline-dropdown-manual-actions').click();
-    component.$el.querySelector('.js-pipeline-action-link').click();
-
-    expect(spy).toHaveBeenCalledWith(actions[0].path);
-  });
-
-  it('should hide loading if request fails', () => {
-    spy = jasmine.createSpy('spy').and.returnValue(Promise.reject());
-
-    component = new ActionsComponent({
-      propsData: {
-        actions,
-        service: {
-          postAction: spy,
-        },
-      },
-    }).$mount();
-
-    component.$el.querySelector('.js-pipeline-dropdown-manual-actions').click();
-    component.$el.querySelector('.js-pipeline-action-link').click();
-
-    expect(component.$el.querySelector('.fa-spinner')).toEqual(null);
   });
 
   it('should render a disabled action when it\'s not playable', () => {

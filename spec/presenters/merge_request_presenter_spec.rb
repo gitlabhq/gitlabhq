@@ -132,6 +132,11 @@ describe MergeRequestPresenter do
       it 'does not present related issues links' do
         is_expected.not_to match("#{project.full_path}/issues/#{issue_b.iid}")
       end
+
+      it 'appends status when closing issue is already closed' do
+        issue_a.close
+        is_expected.to match('(closed)')
+      end
     end
 
     describe '#mentioned_issues_links' do
@@ -146,6 +151,11 @@ describe MergeRequestPresenter do
 
       it 'does not present closing issues links' do
         is_expected.not_to match("#{project.full_path}/issues/#{issue_a.iid}")
+      end
+
+      it 'appends status when mentioned issue is already closed' do
+        issue_b.close
+        is_expected.to match('(closed)')
       end
     end
 
@@ -322,7 +332,31 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when target branch does not exists' do
+    context 'when target branch does not exist' do
+      it 'returns nil' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#target_branch_tree_path' do
+    subject do
+      described_class.new(resource, current_user: user)
+        .target_branch_tree_path
+    end
+
+    context 'when target branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.target_project.full_path}/tree/#{resource.target_branch}")
+      end
+    end
+
+    context 'when target branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:target_branch_exists?) { false }
 
@@ -345,12 +379,25 @@ describe MergeRequestPresenter do
       end
     end
 
-    context 'when source branch does not exists' do
+    context 'when source branch does not exist' do
       it 'returns nil' do
         allow(resource).to receive(:source_branch_exists?) { false }
 
         is_expected.to be_nil
       end
+    end
+  end
+
+  describe '#source_branch_with_namespace_link' do
+    subject do
+      described_class.new(resource, current_user: user).source_branch_with_namespace_link
+    end
+
+    it 'returns link' do
+      allow(resource).to receive(:source_branch_exists?) { true }
+
+      is_expected
+        .to eq("<a href=\"/#{resource.source_project.full_path}/tree/#{resource.source_branch}\">#{resource.source_branch}</a>")
     end
   end
 end

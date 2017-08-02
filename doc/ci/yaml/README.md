@@ -297,6 +297,62 @@ cache:
   untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+cache:
+  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  untracked: true
+```
+
+### cache:policy
+
+> Introduced in GitLab 9.4.
+
+The default behaviour of a caching job is to download the files at the start of
+execution, and to re-upload them at the end. This allows any changes made by the
+job to be persisted for future runs, and is known as the `pull-push` cache
+policy.
+
+If you know the job doesn't alter the cached files, you can skip the upload step
+by setting `policy: pull` in the job specification. Typically, this would be
+twinned with an ordinary cache job at an earlier stage to ensure the cache
+is updated from time to time:
+
+```yaml
+stages:
+  - setup
+  - test
+
+prepare:
+  stage: setup
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+  script:
+    - bundle install --deployment
+
+rspec:
+  stage: test
+  cache:
+    key: gems
+    paths:
+      - vendor/bundle
+    policy: pull
+  script:
+    - bundle exec rspec ...
+```
+
+This helps to speed up job execution and reduce load on the cache server,
+especially when you have a large number of cache-using jobs executing in
+parallel.
+
+Additionally, if you have a job that unconditionally recreates the cache without
+reference to its previous contents, you can use `policy: push` in that job to
+skip the download step.
+
 ## Jobs
 
 `.gitlab-ci.yml` allows you to specify an unlimited number of jobs. Each job
@@ -339,6 +395,7 @@ job_name:
 | after_script  | no       | Override a set of commands that are executed after job |
 | environment   | no       | Defines a name of environment to which deployment is done by this job |
 | coverage      | no       | Define code coverage settings for a given job |
+| retry         | no       | Define how many times a job can be auto-retried in case of a failure |
 
 ### script
 
@@ -384,12 +441,25 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords: `branches`, `tags`, and `triggers`.
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
+In addition, `only` and `except` allow the use of special keywords:
+
+| **Value** |  **Description**  |
+| --------- |  ---------------- |
+| `branches`  | When a branch is pushed.  |
+| `tags`      | When a tag is pushed.  |
+| `api`       | When pipeline has been triggered by a second pipelines API (not triggers API).  |
+| `external`  | When using CI services other than GitLab. |
+| `pipelines` | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
+| `pushes`    | Pipeline is triggered by a `git push` by the user. |
+| `schedules` | For [scheduled pipelines][schedules]. |
+| `triggers`  | For pipelines created using a trigger token. |
+| `web`       | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+
 In the example below, `job` will run only for refs that start with `issue-`,
-whereas all branches will be skipped.
+whereas all branches will be skipped:
 
 ```yaml
 job:
@@ -402,7 +472,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger.
+explicitly requested via an API trigger or a [Pipeline Schedule][schedules]:
 
 ```yaml
 job:
@@ -410,6 +480,7 @@ job:
   only:
     - tags
     - triggers
+    - schedules
 ```
 
 The repository path can be used to have jobs executed only for the parent
@@ -434,11 +505,11 @@ but allows you to define job-specific variables.
 
 When the `variables` keyword is used on a job level, it overrides the global YAML
 job variables and predefined ones. To turn off global defined variables
-in your job, define an empty array:
+in your job, define an empty hash:
 
 ```yaml
 job_name:
-  variables: []
+  variables: {}
 ```
 
 Job variables priority is defined in the [variables documentation][variables].
@@ -591,7 +662,7 @@ Optional manual actions have `allow_failure: true` set by default.
 **Manual actions are considered to be write actions, so permissions for
 protected branches are used when user wants to trigger an action. In other
 words, in order to trigger a manual action assigned to a branch that the
-pipeline is running for, user needs to have ability to push to this branch.**
+pipeline is running for, user needs to have ability to merge to this branch.**
 
 ### environment
 
@@ -909,6 +980,16 @@ job:
     untracked: true
 ```
 
+If you use **Windows PowerShell** to run your shell scripts you need to replace
+`$` with `$env:`:
+
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    untracked: true
+```
+
 #### artifacts:when
 
 > Introduced in GitLab 8.9 and GitLab Runner v1.3.0.
@@ -1061,7 +1142,31 @@ A simple example:
 
 ```yaml
 job1:
+  script: rspec
   coverage: '/Code coverage: \d+\.\d+/'
+```
+
+### retry
+
+**Notes:**
+- [Introduced][ce-3442] in GitLab 9.5.
+
+`retry` allows you to configure how many times a job is going to be retried in
+case of a failure.
+
+When a job fails, and has `retry` configured it is going to be processed again
+up to the amount of times specified by the `retry` keyword.
+
+If `retry` is set to 2, and a job succeeds in a second run (first retry), it won't be retried
+again. `retry` value has to be a positive integer, equal or larger than 0, but
+lower or equal to 2 (two retries maximum, three runs in total).
+
+A simple example:
+
+```yaml
+test:
+  script: rspec
+  retry: 2
 ```
 
 ## Git Strategy
@@ -1103,6 +1208,36 @@ rely on files brought into the project workspace from cache or artifacts.
 ```yaml
 variables:
   GIT_STRATEGY: none
+```
+
+## Git Checkout
+
+> Introduced in GitLab Runner 9.3
+
+The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
+`clone` or `fetch` to specify whether a `git checkout` should be run. If not
+specified, it defaults to true. Like `GIT_STRATEGY`, it can be set in either the
+global [`variables`](#variables) section or the [`variables`](#job-variables)
+section for individual jobs.
+
+If set to `false`, the Runner will:
+
+- when doing `fetch` - update the repository and leave working copy on
+  the current revision,
+- when doing `clone` - clone the repository and leave working copy on the
+  default branch.
+
+Having this setting set to `true` will mean that for both `clone` and `fetch`
+strategies the Runner will checkout the working copy to a revision related
+to the CI pipeline:
+
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: false
+script:
+  - git checkout master
+  - git merge $CI_BUILD_REF_NAME
 ```
 
 ## Git Submodule Strategy
@@ -1408,3 +1543,5 @@ CI with various languages.
 [variables]: ../variables/README.md
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
+[ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
+[schedules]: ../../user/project/pipelines/schedules.md

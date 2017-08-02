@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Sub-group project issue boards', :feature, :js do
+describe 'Sub-group project issue boards', :js do
   let(:group) { create(:group) }
   let(:nested_group_1) { create(:group, parent: group) }
   let(:project) { create(:empty_project, group: nested_group_1) }
@@ -13,9 +13,9 @@ describe 'Sub-group project issue boards', :feature, :js do
   before do
     project.add_master(user)
 
-    login_as(user)
+    sign_in(user)
 
-    visit namespace_project_board_path(project.namespace, project, board)
+    visit project_board_path(project, board)
     wait_for_requests
   end
 

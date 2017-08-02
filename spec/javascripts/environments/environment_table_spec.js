@@ -29,6 +29,6 @@ describe('Environment item', () => {
       },
     }).$mount();
 
-    expect(component.$el.tagName).toEqual('TABLE');
+    expect(component.$el.getAttribute('class')).toContain('ci-table');
   });
 });

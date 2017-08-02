@@ -16,6 +16,13 @@ const JumpToDiscussion = Vue.extend({
     };
   },
   computed: {
+    buttonText: function () {
+      if (this.discussionId) {
+        return 'Jump to next unresolved discussion';
+      } else {
+        return 'Jump to first unresolved discussion';
+      }
+    },
     allResolved: function () {
       return this.unresolvedDiscussionCount === 0;
     },

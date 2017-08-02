@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreateChatTeams < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

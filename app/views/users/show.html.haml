@@ -1,8 +1,7 @@
+- @hide_top_links = true
+- @hide_breadcrumbs = true
 - page_title       @user.name
 - page_description @user.bio
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('users')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -100,12 +99,12 @@
             Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && !show_user_callout?
+    - if @user == current_user && show_callout?('user_callout_dismissed')
       = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs
-          .user-calendar{ data: { href: user_calendar_path } }
+          .user-calendar{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path } }
             %h4.center.light
               %i.fa.fa-spinner.fa-spin
           .user-calendar-activities
@@ -129,10 +128,3 @@
 
     .loading-status
       = spinner
-
-:javascript
-  var userProfile;
-
-  userProfile = new gl.User({
-    action: "#{controller.action_name}"
-  });

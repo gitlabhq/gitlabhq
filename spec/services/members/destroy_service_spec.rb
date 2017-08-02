@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::DestroyService, services: true do
+describe Members::DestroyService do
   let(:user) { create(:user) }
   let(:member_user) { create(:user) }
   let(:project) { create(:empty_project, :public) }
@@ -104,8 +104,8 @@ describe Members::DestroyService, services: true do
         let(:params) { { id: project.members.find_by!(user_id: user.id).id } }
 
         it 'destroys the member' do
-          expect { described_class.new(project, user, params).execute }.
-            to change { project.members.count }.by(-1)
+          expect { described_class.new(project, user, params).execute }
+            .to change { project.members.count }.by(-1)
         end
       end
     end

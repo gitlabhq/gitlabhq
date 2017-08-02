@@ -54,6 +54,17 @@ describe StageEntity do
       it 'exposes the group key' do
         expect(subject).to include :groups
       end
+
+      context 'and contains commit status' do
+        before do
+          create(:generic_commit_status, pipeline: pipeline, stage: 'test')
+        end
+
+        it 'contains commit status' do
+          groups = subject[:groups].map { |group| group[:name] }
+          expect(groups).to include('generic')
+        end
+      end
     end
   end
 end

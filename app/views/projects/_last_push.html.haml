@@ -5,7 +5,7 @@
       .event-last-push-text
         %span You pushed to
         %strong
-          = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), class: 'ref-name'
+          = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name'
 
         - if event.project != @project
           %span at
@@ -15,4 +15,4 @@
 
       .pull-right
         = link_to new_mr_path_from_push_event(event), title: "New merge request", class: "btn btn-info btn-sm" do
-          Create merge request
+          #{ _('Create merge request') }

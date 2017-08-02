@@ -14,7 +14,9 @@ describe AccessRequestable do
       let(:group) { create(:group, :public, :access_requestable) }
       let(:user) { create(:user) }
 
-      before { group.request_access(user) }
+      before do
+        group.request_access(user)
+      end
 
       it { expect(group.requesters.exists?(user_id: user)).to be_truthy }
     end
@@ -32,7 +34,9 @@ describe AccessRequestable do
       let(:project) { create(:empty_project, :public, :access_requestable) }
       let(:user) { create(:user) }
 
-      before { project.request_access(user) }
+      before do
+        project.request_access(user)
+      end
 
       it { expect(project.requesters.exists?(user_id: user)).to be_truthy }
     end

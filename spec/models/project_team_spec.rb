@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProjectTeam, models: true do
+describe ProjectTeam do
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
@@ -100,8 +100,8 @@ describe ProjectTeam, models: true do
           group_access: Gitlab::Access::GUEST
         )
 
-        expect(project.team.members).
-          to contain_exactly(group_member.user, project.owner)
+        expect(project.team.members)
+          .to contain_exactly(group_member.user, project.owner)
       end
 
       it 'returns invited members of a group of a specified level' do
@@ -240,7 +240,9 @@ describe ProjectTeam, models: true do
         it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
 
         context 'but share_with_group_lock is true' do
-          before { project.namespace.update(share_with_group_lock: true) }
+          before do
+            project.namespace.update(share_with_group_lock: true)
+          end
 
           it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::NO_ACCESS) }
           it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::NO_ACCESS) }
@@ -327,69 +329,105 @@ describe ProjectTeam, models: true do
     end
   end
 
-  shared_examples_for "#max_member_access_for_users" do |enable_request_store|
-    describe "#max_member_access_for_users" do
-      before do
-        RequestStore.begin! if enable_request_store
-      end
+  shared_examples 'max member access for users' do
+    let(:project) { create(:project) }
+    let(:group) { create(:group) }
+    let(:second_group) { create(:group) }
 
-      after do
-        if enable_request_store
-          RequestStore.end!
-          RequestStore.clear!
-        end
-      end
+    let(:master) { create(:user) }
+    let(:reporter) { create(:user) }
+    let(:guest) { create(:user) }
 
-      it 'returns correct roles for different users' do
-        master = create(:user)
-        reporter = create(:user)
-        promoted_guest = create(:user)
-        guest = create(:user)
-        project = create(:empty_project)
+    let(:promoted_guest) { create(:user) }
 
-        project.add_master(master)
-        project.add_reporter(reporter)
-        project.add_guest(promoted_guest)
-        project.add_guest(guest)
+    let(:group_developer) { create(:user) }
+    let(:second_developer) { create(:user) }
 
-        group = create(:group)
-        group_developer = create(:user)
-        second_developer = create(:user)
-        project.project_group_links.create(
-          group: group,
-          group_access: Gitlab::Access::DEVELOPER)
+    let(:user_without_access) { create(:user) }
+    let(:second_user_without_access) { create(:user) }
 
-        group.add_master(promoted_guest)
-        group.add_developer(group_developer)
-        group.add_developer(second_developer)
+    let(:users) do
+      [master, reporter, promoted_guest, guest, group_developer, second_developer, user_without_access].map(&:id)
+    end
 
-        second_group = create(:group)
-        project.project_group_links.create(
-          group: second_group,
-          group_access: Gitlab::Access::MASTER)
-        second_group.add_master(second_developer)
+    let(:expected) do
+      {
+        master.id => Gitlab::Access::MASTER,
+        reporter.id => Gitlab::Access::REPORTER,
+        promoted_guest.id => Gitlab::Access::DEVELOPER,
+        guest.id => Gitlab::Access::GUEST,
+        group_developer.id => Gitlab::Access::DEVELOPER,
+        second_developer.id => Gitlab::Access::MASTER,
+        user_without_access.id => Gitlab::Access::NO_ACCESS
+      }
+    end
 
-        users = [master, reporter, promoted_guest, guest, group_developer, second_developer].map(&:id)
+    before do
+      project.add_master(master)
+      project.add_reporter(reporter)
+      project.add_guest(promoted_guest)
+      project.add_guest(guest)
 
-        expected = {
-          master.id => Gitlab::Access::MASTER,
-          reporter.id => Gitlab::Access::REPORTER,
-          promoted_guest.id => Gitlab::Access::DEVELOPER,
-          guest.id => Gitlab::Access::GUEST,
-          group_developer.id => Gitlab::Access::DEVELOPER,
-          second_developer.id => Gitlab::Access::MASTER
-        }
+      project.project_group_links.create(
+        group: group,
+        group_access: Gitlab::Access::DEVELOPER
+      )
 
-        expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)
-      end
+      group.add_master(promoted_guest)
+      group.add_developer(group_developer)
+      group.add_developer(second_developer)
+
+      project.project_group_links.create(
+        group: second_group,
+        group_access: Gitlab::Access::MASTER
+      )
+
+      second_group.add_master(second_developer)
+    end
+
+    it 'returns correct roles for different users' do
+      expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)
     end
   end
 
-  describe '#max_member_access_for_users with RequestStore' do
-    it_behaves_like "#max_member_access_for_users", true
-  end
+  describe '#max_member_access_for_user_ids' do
+    context 'with RequestStore enabled', :request_store do
+      include_examples 'max member access for users'
 
-  describe '#max_member_access_for_users without RequestStore' do
-    it_behaves_like "#max_member_access_for_users", false
+      def access_levels(users)
+        project.team.max_member_access_for_user_ids(users)
+      end
+
+      it 'does not perform extra queries when asked for users who have already been found' do
+        access_levels(users)
+
+        expect { access_levels(users) }.not_to exceed_query_limit(0)
+
+        expect(access_levels(users)).to eq(expected)
+      end
+
+      it 'only requests the extra users when uncached users are passed' do
+        new_user = create(:user)
+        second_new_user = create(:user)
+        all_users = users + [new_user.id, second_new_user.id]
+
+        expected_all = expected.merge(new_user.id => Gitlab::Access::NO_ACCESS,
+                                      second_new_user.id => Gitlab::Access::NO_ACCESS)
+
+        access_levels(users)
+
+        queries = ActiveRecord::QueryRecorder.new { access_levels(all_users) }
+
+        expect(queries.count).to eq(1)
+        expect(queries.log_message).to match(/\W#{new_user.id}\W/)
+        expect(queries.log_message).to match(/\W#{second_new_user.id}\W/)
+        expect(queries.log_message).not_to match(/\W#{promoted_guest.id}\W/)
+        expect(access_levels(all_users)).to eq(expected_all)
+      end
+    end
+
+    context 'with RequestStore disabled' do
+      include_examples 'max member access for users'
+    end
   end
 end

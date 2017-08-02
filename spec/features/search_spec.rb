@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Search", feature: true  do
+describe "Search"  do
   include FilteredSearchHelpers
 
   let(:user) { create(:user) }
@@ -9,7 +9,7 @@ describe "Search", feature: true  do
   let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do
-    login_with(user)
+    sign_in(user)
     project.team << [user, :reporter]
     visit search_path
   end
@@ -83,10 +83,12 @@ describe "Search", feature: true  do
       let(:project) { create(:project, :repository) }
       let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
 
-      before { note.update_attributes(commit_id: 12345678) }
+      before do
+        note.update_attributes(commit_id: 12345678)
+      end
 
       it 'finds comment' do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
 
         page.within '.search' do
           fill_in 'search', with: note.note
@@ -109,7 +111,7 @@ describe "Search", feature: true  do
                     project: project)
       # Must visit project dashboard since global search won't search
       # everything (e.g. comments, snippets, etc.)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       page.within '.search' do
         fill_in 'search', with: note.note
@@ -123,7 +125,7 @@ describe "Search", feature: true  do
 
     it 'finds a commit' do
       project = create(:project, :repository) { |p| p.add_reporter(user) }
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       page.within '.search' do
         fill_in 'search', with: 'add'
@@ -137,7 +139,7 @@ describe "Search", feature: true  do
 
     it 'finds a code' do
       project = create(:project, :repository) { |p| p.add_reporter(user) }
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
 
       page.within '.search' do
         fill_in 'search', with: 'application.js'
@@ -152,9 +154,9 @@ describe "Search", feature: true  do
     end
   end
 
-  describe 'Right header search field', feature: true do
+  describe 'Right header search field' do
     it 'allows enter key to search', js: true do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
       fill_in 'search', with: 'gitlab'
       find('#search').native.send_keys(:enter)
 
@@ -165,7 +167,7 @@ describe "Search", feature: true  do
 
     describe 'Search in project page' do
       before do
-        visit namespace_project_path(project.namespace, project)
+        visit project_path(project)
       end
 
       it 'shows top right search form' do
@@ -254,7 +256,7 @@ describe "Search", feature: true  do
 
       click_button 'Search'
 
-      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+      expect(page).to have_current_path(project_commit_path(project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
     end
 
     it 'redirects to single commit regardless of query case' do
@@ -262,7 +264,7 @@ describe "Search", feature: true  do
 
       click_button 'Search'
 
-      expect(page).to have_current_path(namespace_project_commit_path(project.namespace, project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
+      expect(page).to have_current_path(project_commit_path(project, '6d394385cf567f80a8fd85055db1ab4c5295806f'))
     end
 
     it 'holds on /search page when the only commit is found by message' do

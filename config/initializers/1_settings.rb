@@ -145,6 +145,24 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['attributes'] = {} if server['attributes'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+
+    # For backwards compatibility
+    server['encryption'] ||= server['method']
+    server['encryption'] = 'simple_tls' if server['encryption'] == 'ssl'
+    server['encryption'] = 'start_tls' if server['encryption'] == 'tls'
+
+    # Certificates are not verified for backwards compatibility.
+    # This default should be flipped to true in 9.5.
+    if server['verify_certificates'].nil?
+      server['verify_certificates'] = false
+
+      message = <<-MSG.strip_heredoc
+        LDAP SSL certificate verification is disabled for backwards-compatibility.
+        Please add the "verify_certificates" option to gitlab.yml for each LDAP
+        server. Certificate verification will be enabled by default in GitLab 9.5.
+      MSG
+      Rails.logger.warn(message)
+    end
   end
 end
 
@@ -156,6 +174,7 @@ Settings.omniauth['external_providers'] = [] if Settings.omniauth['external_prov
 Settings.omniauth['block_auto_created_users'] = true if Settings.omniauth['block_auto_created_users'].nil?
 Settings.omniauth['auto_link_ldap_user'] = false if Settings.omniauth['auto_link_ldap_user'].nil?
 Settings.omniauth['auto_link_saml_user'] = false if Settings.omniauth['auto_link_saml_user'].nil?
+Settings.omniauth['sync_email_from_provider'] ||= nil
 
 Settings.omniauth['providers'] ||= []
 Settings.omniauth['cas3'] ||= Settingslogic.new({})
@@ -204,7 +223,7 @@ Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_c
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
-Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
+Settings.gitlab['port']       ||= ENV['GITLAB_PORT'] || (Settings.gitlab.https ? 443 : 80)
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol'] ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
@@ -222,7 +241,7 @@ rescue ArgumentError # no user configured
 end
 Settings.gitlab['time_zone'] ||= nil
 Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
-Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
+Settings.gitlab['password_authentication_enabled'] ||= true if Settings.gitlab['password_authentication_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
@@ -440,10 +459,6 @@ Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = Settings.absolute(Settings.backup['path'] || "tmp/backups/")
 Settings.backup['archive_permissions'] ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
-# Convert upload connection settings to use symbol keys, to make Fog happy
-if Settings.backup['upload']['connection']
-  Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
-end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['storage_class'] ||= nil
@@ -482,7 +497,6 @@ Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
 # Gitaly
 #
 Settings['gitaly'] ||= Settingslogic.new({})
-Settings.gitaly['enabled'] ||= false
 
 #
 # Webpack settings
@@ -492,6 +506,13 @@ Settings.webpack['dev_server'] ||= Settingslogic.new({})
 Settings.webpack.dev_server['enabled'] ||= false
 Settings.webpack.dev_server['host']    ||= 'localhost'
 Settings.webpack.dev_server['port']    ||= 3808
+
+#
+# Monitoring settings
+#
+Settings['monitoring'] ||= Settingslogic.new({})
+Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
+Settings.monitoring['unicorn_sampler_interval'] ||= 10
 
 #
 # Testing settings

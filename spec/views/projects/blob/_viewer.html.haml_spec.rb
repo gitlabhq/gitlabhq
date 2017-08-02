@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/blob/_viewer.html.haml', :view do
+describe 'projects/blob/_viewer.html.haml' do
   include FakeBlobHelpers
 
   let(:project) { build(:empty_project) }
@@ -10,8 +10,8 @@ describe 'projects/blob/_viewer.html.haml', :view do
       include BlobViewer::Rich
 
       self.partial_name = 'text'
-      self.overridable_max_size = 1.megabyte
-      self.max_size = 5.megabytes
+      self.collapse_limit = 1.megabyte
+      self.size_limit = 5.megabytes
       self.load_async = true
     end
   end

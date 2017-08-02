@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Editing file blob', feature: true, js: true do
+feature 'Editing file blob', js: true do
   include TreeHelper
 
-  let(:project) { create(:project, :public, :test_repo) }
+  let(:project) { create(:project, :public) }
   let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master') }
   let(:branch) { 'master' }
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
@@ -14,7 +14,7 @@ feature 'Editing file blob', feature: true, js: true do
 
     before do
       project.team << [user, role]
-      login_as(user)
+      sign_in(user)
     end
 
     def edit_and_commit
@@ -26,7 +26,7 @@ feature 'Editing file blob', feature: true, js: true do
 
     context 'from MR diff' do
       before do
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit diffs_project_merge_request_path(project, merge_request)
         edit_and_commit
       end
 
@@ -37,7 +37,7 @@ feature 'Editing file blob', feature: true, js: true do
 
     context 'from blob file path' do
       before do
-        visit namespace_project_blob_path(project.namespace, project, tree_join(branch, file_path))
+        visit project_blob_path(project, tree_join(branch, file_path))
         edit_and_commit
       end
 
@@ -55,15 +55,15 @@ feature 'Editing file blob', feature: true, js: true do
 
         before do
           project.team << [user, :developer]
-          visit namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path))
+          visit project_edit_blob_path(project, tree_join(branch, file_path))
         end
 
         it 'redirects to sign in and returns' do
           expect(page).to have_current_path(new_user_session_path)
 
-          login_as(user)
+          gitlab_sign_in(user)
 
-          expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
+          expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
         end
       end
 
@@ -71,15 +71,15 @@ feature 'Editing file blob', feature: true, js: true do
         let(:user) { create(:user) }
 
         before do
-          visit namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path))
+          visit project_edit_blob_path(project, tree_join(branch, file_path))
         end
 
         it 'redirects to sign in and returns' do
           expect(page).to have_current_path(new_user_session_path)
 
-          login_as(user)
+          gitlab_sign_in(user)
 
-          expect(page).to have_current_path(namespace_project_blob_path(project.namespace, project, tree_join(branch, file_path)))
+          expect(page).to have_current_path(project_blob_path(project, tree_join(branch, file_path)))
         end
       end
     end
@@ -92,27 +92,27 @@ feature 'Editing file blob', feature: true, js: true do
         project.team << [user, :developer]
         project.repository.add_branch(user, protected_branch, 'master')
         create(:protected_branch, project: project, name: protected_branch)
-        login_as(user)
+        sign_in(user)
       end
 
       context 'on some branch' do
         before do
-          visit namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path))
+          visit project_edit_blob_path(project, tree_join(branch, file_path))
         end
 
         it 'shows blob editor with same branch' do
-          expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+          expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
+          expect(find('.js-branch-name').value).to eq(branch)
         end
       end
 
       context 'with protected branch' do
         before do
-          visit namespace_project_edit_blob_path(project.namespace, project, tree_join(protected_branch, file_path))
+          visit project_edit_blob_path(project, tree_join(protected_branch, file_path))
         end
 
         it 'shows blob editor with patch branch' do
-          expect(find('.js-target-branch .dropdown-toggle-text').text).to eq('patch-1')
+          expect(find('.js-branch-name').value).to eq('patch-1')
         end
       end
     end
@@ -122,13 +122,13 @@ feature 'Editing file blob', feature: true, js: true do
 
       before do
         project.team << [user, :master]
-        login_as(user)
-        visit namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path))
+        sign_in(user)
+        visit project_edit_blob_path(project, tree_join(branch, file_path))
       end
 
       it 'shows blob editor with same branch' do
-        expect(page).to have_current_path(namespace_project_edit_blob_path(project.namespace, project, tree_join(branch, file_path)))
-        expect(find('.js-target-branch .dropdown-toggle-text').text).to eq(branch)
+        expect(page).to have_current_path(project_edit_blob_path(project, tree_join(branch, file_path)))
+        expect(find('.js-branch-name').value).to eq(branch)
       end
     end
   end

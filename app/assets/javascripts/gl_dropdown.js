@@ -248,7 +248,7 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput();
+              _this.focusTextInput(true);
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
@@ -468,8 +468,8 @@ GitLabDropdown = (function() {
 
     // Process the data to make sure rendered data
     // matches the correct layout
-    if (this.fullData && hasMultiSelect && this.options.processData) {
-      const inputValue = this.filterInput.val();
+    const inputValue = this.filterInput.val();
+    if (this.fullData && hasMultiSelect && this.options.processData && inputValue.length === 0) {
       this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
     }
 
@@ -728,8 +728,20 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function() {
-    if (this.options.filterable) { this.filterInput.focus(); }
+  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+    if (this.options.filterable) {
+      this.dropdown.one('transitionend', () => {
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
+      });
+
+      if (triggerFocus) {
+        // This triggers after a ajax request
+        // in case of slow requests, the dropdown transition could already be finished
+        this.dropdown.trigger('transitionend');
+      }
+    }
   };
 
   GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
@@ -738,6 +750,12 @@ GitLabDropdown = (function() {
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
+    }
+
+    if (this.options.multiSelect) {
+      Object.keys(selectedObject).forEach((attribute) => {
+        $input.attr(`data-${attribute}`, selectedObject[attribute]);
+      });
     }
 
     if (this.options.inputMeta) {

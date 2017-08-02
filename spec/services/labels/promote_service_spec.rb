@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Labels::PromoteService, services: true do
+describe Labels::PromoteService do
   describe '#execute' do
     let!(:user) { create(:user) }
 
@@ -66,9 +66,9 @@ describe Labels::PromoteService, services: true do
       end
 
       it 'recreates the label as a group label' do
-        expect { service.execute(project_label_1_1) }.
-          to change(project_1.labels, :count).by(-1).
-          and change(group_1.labels, :count).by(1)
+        expect { service.execute(project_label_1_1) }
+          .to change(project_1.labels, :count).by(-1)
+          .and change(group_1.labels, :count).by(1)
         expect(new_label).not_to be_nil
       end
 

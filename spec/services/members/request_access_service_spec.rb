@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Members::RequestAccessService, services: true do
+describe Members::RequestAccessService do
   let(:user) { create(:user) }
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do

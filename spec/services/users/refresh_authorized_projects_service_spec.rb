@@ -8,13 +8,13 @@ describe Users::RefreshAuthorizedProjectsService do
   let(:user) { project.namespace.owner }
   let(:service) { described_class.new(user) }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     it 'refreshes the authorizations using a lease' do
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-        and_return('foo')
+      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+        .and_return('foo')
 
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).
-        with(an_instance_of(String), 'foo')
+      expect(Gitlab::ExclusiveLease).to receive(:cancel)
+        .with(an_instance_of(String), 'foo')
 
       expect(service).to receive(:execute_without_lease)
 
@@ -29,11 +29,11 @@ describe Users::RefreshAuthorizedProjectsService do
 
     it 'updates the authorized projects of the user' do
       project2 = create(:empty_project)
-      to_remove = user.project_authorizations.
-        create!(project: project2, access_level: Gitlab::Access::MASTER)
+      to_remove = user.project_authorizations
+        .create!(project: project2, access_level: Gitlab::Access::MASTER)
 
-      expect(service).to receive(:update_authorizations).
-        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+      expect(service).to receive(:update_authorizations)
+        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute_without_lease
     end
@@ -41,11 +41,11 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'sets the access level of a project to the highest available level' do
       user.project_authorizations.delete_all
 
-      to_remove = user.project_authorizations.
-        create!(project: project, access_level: Gitlab::Access::DEVELOPER)
+      to_remove = user.project_authorizations
+        .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
-      expect(service).to receive(:update_authorizations).
-        with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+      expect(service).to receive(:update_authorizations)
+        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
 
       service.execute_without_lease
     end

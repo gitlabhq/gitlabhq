@@ -1,7 +1,7 @@
-/* global Issuable */
+/* global IssuableIndex */
 
 import '~/lib/utils/url_utility';
-import '~/issuable';
+import '~/issuable_index';
 
 (() => {
   const BASE_URL = '/user/project/issues?scope=all&state=closed';
@@ -24,11 +24,11 @@ import '~/issuable';
 
     beforeEach(() => {
       loadFixtures('static/issuable_filter.html.raw');
-      Issuable.init();
+      IssuableIndex.init();
     });
 
     it('should be defined', () => {
-      expect(window.Issuable).toBeDefined();
+      expect(window.IssuableIndex).toBeDefined();
     });
 
     describe('filtering', () => {
@@ -43,7 +43,7 @@ import '~/issuable';
       it('should contain only the default parameters', () => {
         spyOn(gl.utils, 'visitUrl');
 
-        Issuable.filterResults($filtersForm);
+        IssuableIndex.filterResults($filtersForm);
 
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + DEFAULT_PARAMS);
       });
@@ -52,7 +52,7 @@ import '~/issuable';
         spyOn(gl.utils, 'visitUrl');
 
         updateForm({ search: 'broken' }, $filtersForm);
-        Issuable.filterResults($filtersForm);
+        IssuableIndex.filterResults($filtersForm);
         const params = `${DEFAULT_PARAMS}&search=broken`;
 
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
@@ -64,14 +64,14 @@ import '~/issuable';
         // initial filter
         updateForm({ milestone_title: 'v1.0' }, $filtersForm);
 
-        Issuable.filterResults($filtersForm);
+        IssuableIndex.filterResults($filtersForm);
         let params = `${DEFAULT_PARAMS}&milestone_title=v1.0`;
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
 
         // update filter
         updateForm({ label_name: 'Frontend' }, $filtersForm);
 
-        Issuable.filterResults($filtersForm);
+        IssuableIndex.filterResults($filtersForm);
         params = `${DEFAULT_PARAMS}&milestone_title=v1.0&label_name=Frontend`;
         expect(gl.utils.visitUrl).toHaveBeenCalledWith(BASE_URL + params);
       });

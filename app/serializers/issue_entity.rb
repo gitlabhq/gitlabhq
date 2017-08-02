@@ -1,4 +1,6 @@
 class IssueEntity < IssuableEntity
+  include RequestAwareEntity
+
   expose :branch_name
   expose :confidential
   expose :assignees, using: API::Entities::UserBasic
@@ -7,4 +9,8 @@ class IssueEntity < IssuableEntity
   expose :project_id
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
+
+  expose :web_url do |issue|
+    project_issue_path(issue.project, issue)
+  end
 end

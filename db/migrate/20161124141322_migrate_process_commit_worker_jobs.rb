@@ -6,9 +6,9 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
 
   class Project < ActiveRecord::Base
     def self.find_including_path(id)
-      select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace").
-        joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id').
-        find_by(id: id)
+      select("projects.*, CONCAT(namespaces.path, '/', projects.path) AS path_with_namespace")
+        .joins('INNER JOIN namespaces ON namespaces.id = projects.namespace_id')
+        .find_by(id: id)
     end
 
     def repository_storage_path
@@ -16,6 +16,7 @@ class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
     end
 
     def repository_path
+      # TODO: review if the change from Legacy storage needs to reflect here as well.
       File.join(repository_storage_path, read_attribute(:path_with_namespace) + '.git')
     end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlBlocker, lib: true do
+describe Gitlab::UrlBlocker do
   describe '#blocked_url?' do
     it 'allows imports from configured web host and port' do
       import_url = "http://#{Gitlab.config.gitlab.host}:#{Gitlab.config.gitlab.port}/t.git"

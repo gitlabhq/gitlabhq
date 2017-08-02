@@ -53,17 +53,17 @@ describe ProjectsHelper do
     end
 
     it "returns a valid cach key" do
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-#{project.commit.id}-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-#{project.commit.id}-readme")
     end
 
     it "returns a valid cache key if HEAD does not exist" do
       allow(project).to receive(:commit) { nil }
 
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-nil-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-nil-readme")
     end
   end
 
-  describe "#project_list_cache_key", redis: true do
+  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
     let(:project) { create(:project) }
 
     it "includes the route" do
@@ -112,6 +112,82 @@ describe ProjectsHelper do
       pipeline_status = project.instance_variable_get('@pipeline_status')
 
       expect(pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
+    end
+  end
+
+  describe '#show_no_ssh_key_message?' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user has no keys' do
+      it 'returns true' do
+        expect(helper.show_no_ssh_key_message?).to be_truthy
+      end
+    end
+
+    context 'user has an ssh key' do
+      it 'returns false' do
+        create(:personal_key, user: user)
+
+        expect(helper.show_no_ssh_key_message?).to be_falsey
+      end
+    end
+  end
+
+  describe '#show_no_password_message?' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user has password set' do
+      it 'returns false' do
+        expect(helper.show_no_password_message?).to be_falsey
+      end
+    end
+
+    context 'user requires a password' do
+      let(:user) { create(:user, password_automatically_set: true) }
+
+      it 'returns true' do
+        expect(helper.show_no_password_message?).to be_truthy
+      end
+    end
+
+    context 'user requires a personal access token' do
+      it 'returns true' do
+        stub_application_setting(password_authentication_enabled?: false)
+
+        expect(helper.show_no_password_message?).to be_truthy
+      end
+    end
+  end
+
+  describe '#link_to_set_password' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'user requires a password' do
+      let(:user) { create(:user, password_automatically_set: true) }
+
+      it 'returns link to set a password' do
+        expect(helper.link_to_set_password).to match %r{<a href="#{edit_profile_password_path}">set a password</a>}
+      end
+    end
+
+    context 'user requires a personal access token' do
+      let(:user) { create(:user) }
+
+      it 'returns link to create a personal access token' do
+        stub_application_setting(password_authentication_enabled?: false)
+
+        expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
+      end
     end
   end
 
@@ -250,14 +326,16 @@ describe ProjectsHelper do
     end
 
     context "when project is private" do
-      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      before do
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
 
       it "shows only allowed options" do
         helper.instance_variable_set(:@project, project)
         result = helper.project_feature_access_select(:issues_access_level)
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
       end
     end
 
@@ -272,7 +350,7 @@ describe ProjectsHelper do
 
         expect(result).to include("Disabled")
         expect(result).to include("Only team members")
-        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
         expect(result).to have_selector('option[selected]', text: "Only team members")
       end
     end
@@ -298,6 +376,39 @@ describe ProjectsHelper do
 
     it "includes the Private level" do
       expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
+    end
+  end
+
+  describe '#get_project_nav_tabs' do
+    let(:project) { create(:empty_project) }
+    let(:user)    { create(:user) }
+
+    before do
+      allow(helper).to receive(:can?) { true }
+    end
+
+    subject do
+      helper.send(:get_project_nav_tabs, project, user)
+    end
+
+    context 'when builds feature is enabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(true)
+      end
+
+      it "does include pipelines tab" do
+        is_expected.to include(:pipelines)
+      end
+    end
+
+    context 'when builds feature is disabled' do
+      before do
+        allow(project).to receive(:builds_enabled?).and_return(false)
+      end
+
+      it "do not include pipelines tab" do
+        is_expected.not_to include(:pipelines)
+      end
     end
   end
 end

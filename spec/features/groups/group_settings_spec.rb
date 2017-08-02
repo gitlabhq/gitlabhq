@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Edit group settings', feature: true do
+feature 'Edit group settings' do
   given(:user)  { create(:user) }
   given(:group) { create(:group, path: 'foo') }
 
   background do
     group.add_owner(user)
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'when the group path is changed' do
@@ -18,14 +18,14 @@ feature 'Edit group settings', feature: true do
       update_path(new_group_path)
       visit new_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(new_group_path)
+      expect(find('h1.group-title')).to have_content(group.name)
     end
 
     scenario 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(new_group_path)
+      expect(find('h1.group-title')).to have_content(group.name)
     end
 
     context 'with a subgroup' do
@@ -37,37 +37,42 @@ feature 'Edit group settings', feature: true do
         update_path(new_group_path)
         visit new_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.path)
+        expect(find('h1.group-title')).to have_content(subgroup.name)
       end
 
       scenario 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.path)
+        expect(find('h1.group-title')).to have_content(subgroup.name)
       end
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, group: group, path: 'project') }
+      given!(:project) { create(:empty_project, group: group) }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
-      
-      before(:context) { TestEnv.clean_test_path }
-      after(:example) { TestEnv.clean_test_path }
+
+      before(:context) do
+        TestEnv.clean_test_path
+      end
+
+      after(:example) do
+        TestEnv.clean_test_path
+      end
 
       scenario 'the project is accessible via the new path' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
     end
   end

@@ -43,7 +43,9 @@ describe UsersController do
       end
 
       context 'when logged in' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders show' do
           get :show, username: user.username
@@ -62,7 +64,9 @@ describe UsersController do
       end
 
       context 'when logged in' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders 404' do
           get :show, username: 'nonexistent'
@@ -76,9 +80,9 @@ describe UsersController do
     it 'renders calendar' do
       sign_in(user)
 
-      get :calendar, username: user.username
+      get :calendar, username: user.username, format: :json
 
-      expect(response).to render_template('calendar')
+      expect(response).to have_http_status(200)
     end
 
     context 'forked project' do

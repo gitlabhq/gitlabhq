@@ -1,6 +1,7 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
 
+  before_action :authorize_read_project!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
@@ -15,7 +16,11 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     TodoService.new.mark_todos_as_done_by_ids([params[:id]], current_user)
 
     respond_to do |format|
-      format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
+      format.html do
+        redirect_to dashboard_todos_path,
+                    status: 302,
+                    notice: 'Todo was successfully marked as done.'
+      end
       format.js { head :ok }
       format.json { render json: todos_counts }
     end
@@ -25,7 +30,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     updated_ids = TodoService.new.mark_todos_as_done(@todos, current_user)
 
     respond_to do |format|
-      format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
+      format.html { redirect_to dashboard_todos_path, status: 302, notice: 'All todos were marked as done.' }
       format.js { head :ok }
       format.json { render json: todos_counts.merge(updated_ids: updated_ids) }
     end
@@ -43,12 +48,16 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     render json: todos_counts
   end
 
-  # Used in TodosHelper also
-  def self.todos_count_format(count)
-    count >= 100 ? '99+' : count
-  end
-
   private
+
+  def authorize_read_project!
+    project_id = params[:project_id]
+
+    if project_id.present?
+      project = Project.find(project_id)
+      render_404 unless can?(current_user, :read_project, project)
+    end
+  end
 
   def find_todos
     @todos ||= TodosFinder.new(current_user, params).execute

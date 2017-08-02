@@ -1,5 +1,5 @@
+- diff_file = viewer.diff_file
 - blob = diff_file.blob
-- blob.load_all_data!(diff_file.repository)
 - total_lines = blob.lines.size
 - total_lines -= 1 if total_lines > 0 && blob.lines.last.blank?
 - if diff_view == :parallel

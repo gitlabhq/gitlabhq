@@ -207,7 +207,9 @@ its class in an annotation.
 >**Note:**
 The Ingress alone doesn't expose GitLab externally. You need to have a Ingress controller setup to do that.
 Setting up an Ingress controller can be done by installing the `nginx-ingress` helm chart. But be sure
-to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md)
+to read the [documentation](https://github.com/kubernetes/charts/blob/master/stable/nginx-ingress/README.md). 
+>**Note:**
+If you would like to use the Registry, you will also need to ensure your Ingress supports a [sufficiently large request size](http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size).
 
 #### Preserving Source IPs
 

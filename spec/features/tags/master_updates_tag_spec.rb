@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Master updates tag', feature: true do
+feature 'Master updates tag' do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
 
   before do
     project.team << [user, :master]
-    login_with(user)
-    visit namespace_project_tags_path(project.namespace, project)
+    sign_in(user)
+    visit project_tags_path(project)
   end
 
   context 'from the tags list page' do
@@ -20,9 +20,20 @@ feature 'Master updates tag', feature: true do
       click_button 'Save changes'
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v1.1.0'))
+        project_tag_path(project, 'v1.1.0'))
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
+    end
+
+    scenario 'description has autocomplete', :js do
+      page.within(first('.content-list .controls')) do
+        click_link 'Edit release notes'
+      end
+
+      find('#release_description').native.send_keys('')
+      fill_in 'release_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
     end
   end
 
@@ -34,7 +45,7 @@ feature 'Master updates tag', feature: true do
       click_button 'Save changes'
 
       expect(current_path).to eq(
-        namespace_project_tag_path(project.namespace, project, 'v1.1.0'))
+        project_tag_path(project, 'v1.1.0'))
       expect(page).to have_content 'v1.1.0'
       expect(page).to have_content 'Awesome release notes'
     end

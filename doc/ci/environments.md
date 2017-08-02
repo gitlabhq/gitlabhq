@@ -94,6 +94,12 @@ the name given in `.gitlab-ci.yml` (with any variables expanded), while the
 second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
 etc.
 
+>**Note:**
+Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+`$CI_ENVIRONMENT_URL`. The URL would be expanded from `.gitlab-ci.yml`, or if
+the URL was not defined there, the external URL from the environment would be
+used.
+
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
 - All branches will run the `test` and `build` jobs.
@@ -596,14 +602,12 @@ exist, you should see something like:
 >**Notes:**
 >
 - For the monitor dashboard to appear, you need to:
-  - Have enabled the [Kubernetes integration][kube]
-  - Have your app deployed on Kubernetes
   - Have enabled the [Prometheus integration][prom]
+  - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
 - With GitLab 9.2, all deployments to an environment are shown directly on the
   monitoring dashboard
 
-If your application is deployed on Kubernetes and you have enabled Prometheus
-collecting metrics, you can monitor the performance behavior of your app
+If you have enabled Prometheus for collecting metrics, you can monitor the performance behavior of your app
 through the environments.
 
 Once configured, GitLab will attempt to retrieve performance metrics for any

@@ -282,9 +282,9 @@ which can be avoided if a different driver is used, for example `overlay`.
 
 > **Notes:**
 - This feature requires GitLab 8.8 and GitLab Runner 1.2.
-- Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
-  to pass a personal access token instead of your password in order to login to
-  GitLab's Container Registry.
+- Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
+  to pass a [personal access token][pat] instead of your password in order to
+  login to GitLab's Container Registry.
 
 Once you've built a Docker image, you can push it up to the built-in
 [GitLab Container Registry](../../user/project/container_registry.md). For example,
@@ -409,3 +409,5 @@ Some things you should be aware of when using the Container Registry:
 
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
+[2fa]: ../../user/profile/account/two_factor_authentication.md
+[pat]: ../../user/profile/personal_access_tokens.md

@@ -21,6 +21,9 @@ function GLForm(form, enableGFM = false) {
 GLForm.prototype.destroy = function() {
   // Clean form listeners
   this.clearEventListeners();
+  if (this.autoComplete) {
+    this.autoComplete.destroy();
+  }
   return this.form.data('gl-form', null);
 };
 
@@ -33,7 +36,8 @@ GLForm.prototype.setupForm = function() {
     this.form.addClass('gfm-form');
     // remove notify commit author checkbox for non-commit notes
     gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
-    new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup(this.form.find('.js-gfm-input'), {
+    this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+    this.autoComplete.setup(this.form.find('.js-gfm-input'), {
       emojis: true,
       members: this.enableGFM,
       issues: this.enableGFM,

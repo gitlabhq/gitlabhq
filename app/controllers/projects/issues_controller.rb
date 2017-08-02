@@ -8,13 +8,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action :authenticate_user!, only: [:new]
 
-  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
-  before_action :module_enabled
-  before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
-                               :related_branches, :can_create_branch, :realtime_changes, :create_merge_request]
-
-  # Allow read any issue
-  before_action :authorize_read_issue!, only: [:show, :realtime_changes]
+  before_action :check_issues_available!
+  before_action :issue, except: [:index, :new, :create, :bulk_update]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -55,7 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.atom { render layout: false }
+      format.atom { render layout: 'xml.atom' }
       format.json do
         render json: {
           html: view_to_html_string("projects/issues/_issues"),
@@ -148,10 +143,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
       format.json do
         if @issue.valid?
-          render json: @issue.to_json(methods: [:task_status, :task_status_short],
-                                      include: { milestone: {},
-                                                 assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-                                                 labels: { methods: :text_color } })
+          render json: IssueSerializer.new.represent(@issue)
         else
           render json: { errors: @issue.errors.full_messages }, status: :unprocessable_entity
         end
@@ -202,14 +194,21 @@ class Projects::IssuesController < Projects::ApplicationController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
-    render json: {
+    response = {
       title: view_context.markdown_field(@issue, :title),
       title_text: @issue.title,
       description: view_context.markdown_field(@issue, :description),
       description_text: @issue.description,
-      task_status: @issue.task_status,
-      updated_at: @issue.updated_at
+      task_status: @issue.task_status
     }
+
+    if @issue.is_edited?
+      response[:updated_at] = @issue.updated_at
+      response[:updated_by_name] = @issue.last_edited_by.name
+      response[:updated_by_path] = user_path(@issue.last_edited_by)
+    end
+
+    render json: response
   end
 
   def create_merge_request
@@ -225,32 +224,37 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
+    return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
     @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+
+    return render_404 unless can?(current_user, :read_issue, @issue)
+
+    @issue
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
   alias_method :spammable, :issue
 
-  def authorize_read_issue!
-    return render_404 unless can?(current_user, :read_issue, @issue)
+  def spammable_path
+    project_issue_path(@project, @issue)
   end
 
   def authorize_update_issue!
-    return render_404 unless can?(current_user, :update_issue, @issue)
+    render_404 unless can?(current_user, :update_issue, @issue)
   end
 
   def authorize_admin_issues!
-    return render_404 unless can?(current_user, :admin_issue, @project)
+    render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def authorize_create_merge_request!
-    return render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
+    render_404 unless can?(current_user, :push_code, @project) && @issue.can_be_worked_on?(current_user)
   end
 
-  def module_enabled
-    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
+  def check_issues_available!
+    return render_404 unless @project.feature_available?(:issues, current_user)
   end
 
   def redirect_to_external_issue_tracker
@@ -261,15 +265,27 @@ class Projects::IssuesController < Projects::ApplicationController
     if action_name == 'new'
       redirect_to external.new_issue_path
     else
-      redirect_to external.project_path
+      redirect_to external.issue_tracker_path
     end
   end
 
   def issue_params
-    params.require(:issue).permit(
-      :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: [], assignee_ids: []
-    )
+    params.require(:issue).permit(*issue_params_attributes)
+  end
+
+  def issue_params_attributes
+    %i[
+      title
+      assignee_id
+      position
+      description
+      confidential
+      milestone_id
+      due_date
+      state_event
+      task_num
+      lock_version
+    ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
   def authenticate_user!

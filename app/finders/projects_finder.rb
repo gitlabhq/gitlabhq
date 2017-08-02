@@ -7,6 +7,7 @@
 #   project_ids_relation: int[] - project ids to use
 #   params:
 #     trending: boolean
+#     owned: boolean
 #     non_public: boolean
 #     starred: boolean
 #     sort: string
@@ -27,36 +28,67 @@ class ProjectsFinder < UnionFinder
   end
 
   def execute
-    items = init_collection
-    items = by_ids(items)
-    items = union(items)
-    items = by_personal(items)
-    items = by_visibilty_level(items)
-    items = by_tags(items)
-    items = by_search(items)
-    items = by_archived(items)
-    sort(items)
+    user = params.delete(:user)
+    collection =
+      if user
+        PersonalProjectsFinder.new(user).execute(current_user)
+      else
+        init_collection
+      end
+
+    collection = by_ids(collection)
+    collection = by_personal(collection)
+    collection = by_starred(collection)
+    collection = by_trending(collection)
+    collection = by_visibilty_level(collection)
+    collection = by_tags(collection)
+    collection = by_search(collection)
+    collection = by_archived(collection)
+
+    sort(collection)
   end
 
   private
 
   def init_collection
-    projects = []
-
-    if params[:trending].present?
-      projects << Project.trending
-    elsif params[:starred].present? && current_user
-      projects << current_user.viewable_starred_projects
+    if current_user
+      collection_with_user
     else
-      projects << current_user.authorized_projects if current_user
-      projects << Project.unscoped.public_to_user(current_user) unless params[:non_public].present?
+      collection_without_user
     end
+  end
 
-    projects
+  def collection_with_user
+    if owned_projects?
+      current_user.owned_projects
+    else
+      if private_only?
+        current_user.authorized_projects
+      else
+        Project.public_or_visible_to_user(current_user)
+      end
+    end
+  end
+
+  # Builds a collection for an anonymous user.
+  def collection_without_user
+    if private_only? || owned_projects?
+      Project.none
+    else
+      Project.public_to_user
+    end
+  end
+
+  def owned_projects?
+    params[:owned].present?
+  end
+
+  def private_only?
+    params[:non_public].present?
   end
 
   def by_ids(items)
-    project_ids_relation ? items.map { |item| item.where(id: project_ids_relation) } : items
+    project_ids_relation ? items.where(id: project_ids_relation) : items
   end
 
   def union(items)
@@ -65,6 +97,14 @@ class ProjectsFinder < UnionFinder
 
   def by_personal(items)
     (params[:personal].present? && current_user) ? items.personal(current_user) : items
+  end
+
+  def by_starred(items)
+    (params[:starred].present? && current_user) ? items.starred_by(current_user) : items
+  end
+
+  def by_trending(items)
+    params[:trending].present? ? items.trending : items
   end
 
   def by_visibilty_level(items)

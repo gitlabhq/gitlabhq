@@ -71,7 +71,9 @@ describe EmailsOnPushWorker do
     end
 
     context "when there are no errors in sending" do
-      before { perform }
+      before do
+        perform
+      end
 
       it "sends a mail with the correct subject" do
         expect(email.subject).to include('adds bar folder and branch-test text file')

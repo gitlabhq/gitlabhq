@@ -58,6 +58,7 @@ module API
         requires :title, type: String, desc: 'The title of a snippet'
         requires :file_name, type: String, desc: 'The name of a snippet file'
         requires :content, type: String, desc: 'The content of a snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               default: 'internal',
@@ -85,6 +86,7 @@ module API
         optional :title, type: String, desc: 'The title of a snippet'
         optional :file_name, type: String, desc: 'The name of a snippet file'
         optional :content, type: String, desc: 'The content of a snippet'
+        optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
@@ -121,6 +123,7 @@ module API
 
         authorize! :destroy_personal_snippet, snippet
 
+        status 204
         snippet.destroy
       end
 
@@ -137,6 +140,22 @@ module API
         env['api.format'] = :txt
         content_type 'text/plain'
         present snippet.content
+      end
+
+      desc 'Get the user agent details for a snippet' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a snippet'
+      end
+      get ":id/user_agent_detail" do
+        authenticated_as_admin!
+
+        snippet = Snippet.find_by!(id: params[:id])
+
+        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+
+        present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

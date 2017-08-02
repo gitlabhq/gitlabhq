@@ -63,6 +63,9 @@ const AjaxFilter = {
     return AjaxCache.retrieve(url)
       .then((data) => {
         this._loadData(data, config);
+        if (config.onLoadingFinished) {
+          config.onLoadingFinished(data);
+        }
       })
       .catch(config.onError);
   },

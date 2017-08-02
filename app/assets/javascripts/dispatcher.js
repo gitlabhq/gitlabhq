@@ -1,18 +1,16 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
-/* global UsernameValidator */
-/* global ActiveTabMemoizer */
+/* global ProjectSelect */
 /* global ShortcutsNavigation */
-/* global Build */
-/* global Issuable */
+/* global IssuableIndex */
 /* global ShortcutsIssuable */
-/* global ZenMode */
 /* global Milestone */
 /* global IssuableForm */
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global CommitsList */
+/* global NewBranchForm */
 /* global NotificationsForm */
-/* global TreeView */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
 /* global LineHighlighter */
@@ -22,14 +20,20 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
+/* global NewCommitForm */
+/* global NewBranchForm */
 /* global Project */
 /* global ProjectAvatar */
+/* global MergeRequest */
+/* global Compare */
 /* global CompareAutocomplete */
+/* global ProjectFindFile */
 /* global ProjectNew */
-/* global Star */
 /* global ProjectShow */
+/* global ProjectImport */
 /* global Labels */
 /* global Shortcuts */
+/* global ShortcutsFindFile */
 /* global Sidebar */
 /* global ShortcutsWiki */
 
@@ -46,7 +50,6 @@ import BlobLinePermalinkUpdater from './blob/blob_line_permalink_updater';
 import Landing from './landing';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import UserCallout from './user_callout';
-import { ProtectedTagCreate, ProtectedTagEditList } from './protected_tags';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
@@ -55,6 +58,23 @@ import UsersSelect from './users_select';
 import RefSelectDropdown from './ref_select_dropdown';
 import GfmAutoComplete from './gfm_auto_complete';
 import ShortcutsBlob from './shortcuts_blob';
+import SigninTabsMemoizer from './signin_tabs_memoizer';
+import Star from './star';
+import Todos from './todos';
+import TreeView from './tree';
+import UsagePing from './usage_ping';
+import UsernameValidator from './username_validator';
+import VersionCheckImage from './version_check_image';
+import Wikis from './wikis';
+import ZenMode from './zen_mode';
+import initSettingsPanels from './settings_panels';
+import initExperimentalFlags from './experimental_flags';
+import OAuthRememberMe from './oauth_remember_me';
+import PerformanceBar from './performance_bar';
+import initNotes from './init_notes';
+import initLegacyFilters from './init_legacy_filters';
+import initIssuableSidebar from './init_issuable_sidebar';
+import GpgBadges from './gpg_badges';
 
 (function() {
   var Dispatcher;
@@ -79,7 +99,18 @@ import ShortcutsBlob from './shortcuts_blob';
       path = page.split(':');
       shortcut_handler = null;
 
-      new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources).setup();
+      $('.js-gfm-input').each((i, el) => {
+        const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+        const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
+        gfm.setup($(el), {
+          emojis: true,
+          members: enableGFM,
+          issues: enableGFM,
+          milestones: enableGFM,
+          mergeRequests: enableGFM,
+          labels: enableGFM,
+        });
+      });
 
       function initBlob() {
         new LineHighlighter();
@@ -109,27 +140,28 @@ import ShortcutsBlob from './shortcuts_blob';
       }
 
       switch (page) {
+        case 'profiles:preferences:show':
+          initExperimentalFlags();
+          break;
         case 'sessions:new':
           new UsernameValidator();
-          new ActiveTabMemoizer();
+          new SigninTabsMemoizer();
+          new OAuthRememberMe({ container: $(".omniauth-container") }).bindEvents();
           break;
         case 'projects:boards:show':
         case 'projects:boards:index':
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
-        case 'projects:builds:show':
-          new Build();
-          break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
-            new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
+            filteredSearchManager.setup();
           }
-          Issuable.init();
-          new gl.IssuableBulkActions({
-            prefixId: page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_',
-          });
+          const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
+          IssuableIndex.init(pagePrefix);
+
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
           break;
@@ -137,6 +169,11 @@ import ShortcutsBlob from './shortcuts_blob';
           new Issue();
           shortcut_handler = new ShortcutsIssuable();
           new ZenMode();
+          initIssuableSidebar();
+          initNotes();
+          break;
+        case 'dashboard:milestones:index':
+          new ProjectSelect();
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
@@ -144,12 +181,15 @@ import ShortcutsBlob from './shortcuts_blob';
           new Milestone();
           new Sidebar();
           break;
+        case 'dashboard:issues':
+        case 'dashboard:merge_requests':
         case 'groups:issues':
         case 'groups:merge_requests':
-          new UsersSelect();
+          new ProjectSelect();
+          initLegacyFilters();
           break;
         case 'dashboard:todos:index':
-          new gl.Todos();
+          new Todos();
           break;
         case 'dashboard:projects:index':
         case 'dashboard:projects:starred':
@@ -159,12 +199,8 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'admin:projects:index':
           new ProjectsList();
           break;
-        case 'dashboard:groups:index':
-          new GroupsList();
-          break;
         case 'explore:groups:index':
           new GroupsList();
-
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(
@@ -182,10 +218,14 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'groups:milestones:update':
           new ZenMode();
           new gl.DueDateSelectors();
-          new gl.GLForm($('.milestone-form'));
+          new gl.GLForm($('.milestone-form'), true);
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          break;
+        case 'projects:branches:new':
+        case 'projects:branches:create':
+          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
@@ -194,18 +234,31 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'projects:issues:new':
         case 'projects:issues:edit':
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.issue-form'));
+          new gl.GLForm($('.issue-form'), true);
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
           new gl.IssuableTemplateSelectors();
           break;
-        case 'projects:merge_requests:new':
-        case 'projects:merge_requests:new_diffs':
+        case 'projects:merge_requests:creations:new':
+          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
+          if (mrNewCompareNode) {
+            new Compare({
+              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
+              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
+              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
+            });
+          } else {
+            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
+            new MergeRequest({
+              action: mrNewSubmitNode.dataset.mrSubmitAction,
+            });
+          }
+        case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
           shortcut_handler = new ShortcutsNavigation();
-          new gl.GLForm($('.merge-request-form'));
+          new gl.GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
@@ -214,28 +267,43 @@ import ShortcutsBlob from './shortcuts_blob';
           break;
         case 'projects:tags:new':
           new ZenMode();
-          new gl.GLForm($('.tag-form'));
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new gl.GLForm($('.tag-form'), true);
+          new RefSelectDropdown($('.js-branch-select'));
+          break;
+        case 'projects:snippets:show':
+          initNotes();
+          break;
+        case 'projects:snippets:new':
+        case 'projects:snippets:edit':
+        case 'projects:snippets:create':
+        case 'projects:snippets:update':
+          new gl.GLForm($('.snippet-form'), true);
+          break;
+        case 'snippets:new':
+        case 'snippets:edit':
+        case 'snippets:create':
+        case 'snippets:update':
+          new gl.GLForm($('.snippet-form'), false);
           break;
         case 'projects:releases:edit':
           new ZenMode();
-          new gl.GLForm($('.release-form'));
+          new gl.GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
-          break;
-        case "projects:merge_requests:diffs":
-          new gl.Diff();
-          new ZenMode();
+
+          initIssuableSidebar();
+          initNotes();
+
+          const mrShowNode = document.querySelector('.merge-request');
+          window.mergeRequest = new MergeRequest({
+            action: mrShowNode.dataset.mrAction,
+          });
           break;
         case 'dashboard:activity':
           new gl.Activities();
-          break;
-        case 'dashboard:issues':
-        case 'dashboard:merge_requests':
-          new UsersSelect();
           break;
         case 'projects:commit:show':
           new Commit();
@@ -245,15 +313,24 @@ import ShortcutsBlob from './shortcuts_blob';
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          initNotes();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
+          break;
+        case 'projects:activity':
+          new gl.Activities();
+          shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commits:show':
-        case 'projects:activity':
+          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
+          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -267,6 +344,12 @@ import ShortcutsBlob from './shortcuts_blob';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          break;
+        case 'projects:imports:show':
+          new ProjectImport();
+          break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -298,7 +381,7 @@ import ShortcutsBlob from './shortcuts_blob';
           new gl.Members();
           new UsersSelect();
           break;
-        case 'projects:members:show':
+        case 'projects:project_members:index':
           new gl.MemberExpirationDate('.js-access-expiration-date-groups');
           new GroupsSelect();
           new gl.MemberExpirationDate();
@@ -321,24 +404,24 @@ import ShortcutsBlob from './shortcuts_blob';
           shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
+          new NewCommitForm($('.js-create-dir-form'));
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
+          const findElement = document.querySelector('.js-file-finder');
+          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
+            url: findElement.dataset.fileFindUrl,
+            treeUrl: findElement.dataset.findTreeUrl,
+            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+          });
+          new ShortcutsFindFile(projectFindFile);
           shortcut_handler = true;
-          break;
-        case 'projects:blob:new':
-          gl.TargetBranchDropDown.bootstrap();
-          break;
-        case 'projects:blob:create':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blob:show':
           new BlobViewer();
-          gl.TargetBranchDropDown.bootstrap();
           initBlob();
-          break;
-        case 'projects:blob:edit':
-          gl.TargetBranchDropDown.bootstrap();
           break;
         case 'projects:blame:show':
           initBlob();
@@ -349,10 +432,20 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'projects:labels:edit':
           new Labels();
           break;
+        case 'groups:labels:index':
         case 'projects:labels:index':
           if ($('.prioritized-labels').length) {
             new gl.LabelManager();
           }
+          $('.label-subscription').each((i, el) => {
+            const $el = $(el);
+
+            if ($el.find('.dropdown-group-label').length) {
+              new gl.GroupLabelSubscription($el);
+            } else {
+              new gl.ProjectLabelSubscription($el);
+            }
+          });
           break;
         case 'projects:network:show':
           // Ensure we don't create a particular shortcut handler here. This is
@@ -363,26 +456,25 @@ import ShortcutsBlob from './shortcuts_blob';
           new ProjectFork();
           break;
         case 'projects:artifacts:browse':
+          new ShortcutsNavigation();
           new BuildArtifacts();
           break;
         case 'projects:artifacts:file':
+          new ShortcutsNavigation();
           new BlobViewer();
           break;
         case 'help:index':
-          gl.VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
+          VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
         case 'search:show':
           new Search();
           break;
-        case 'projects:repository:show':
-          // Initialize Protected Branch Settings
-          new gl.ProtectedBranchCreate();
-          new gl.ProtectedBranchEditList();
-          // Initialize Protected Tag Settings
-          new ProtectedTagCreate();
-          new ProtectedTagEditList();
+        case 'projects:settings:repository:show':
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
-        case 'projects:ci_cd:show':
+        case 'projects:settings:ci_cd:show':
+        case 'groups:settings:ci_cd:show':
           new gl.ProjectVariables();
           break;
         case 'ci:lints:create':
@@ -392,12 +484,20 @@ import ShortcutsBlob from './shortcuts_blob';
         case 'users:show':
           new UserCallout();
           break;
+        case 'admin:conversational_development_index:show':
+          new UserCallout();
+          break;
         case 'snippets:show':
           new LineHighlighter();
           new BlobViewer();
+          initNotes();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
+          break;
+        case 'profiles:personal_access_tokens:index':
+        case 'admin:impersonation_tokens:index':
+          new gl.DueDateSelectors();
           break;
       }
       switch (path.first()) {
@@ -416,7 +516,7 @@ import ShortcutsBlob from './shortcuts_blob';
           new Admin();
           switch (path[1]) {
             case 'cohorts':
-              new gl.UsagePing();
+              new UsagePing();
               break;
             case 'groups':
               new UsersSelect();
@@ -468,10 +568,11 @@ import ShortcutsBlob from './shortcuts_blob';
               new NotificationsDropdown();
               break;
             case 'wikis':
-              new gl.Wikis();
+              new Wikis();
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
-              new gl.GLForm($('.wiki-form'));
+              new gl.GLForm($('.wiki-form'), true);
+              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
@@ -495,10 +596,21 @@ import ShortcutsBlob from './shortcuts_blob';
             case 'protected_branches':
               shortcut_handler = new ShortcutsNavigation();
           }
+          break;
+        case 'users':
+          const action = path[1];
+          import(/* webpackChunkName: 'user_profile' */ './users')
+            .then(user => user.default(action))
+            .catch(() => {});
+          break;
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {
         new Shortcuts();
+      }
+
+      if (document.querySelector('#peek')) {
+        new PerformanceBar({ container: '#peek' });
       }
     };
 

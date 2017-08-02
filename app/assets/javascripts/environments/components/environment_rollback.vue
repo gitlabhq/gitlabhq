@@ -43,7 +43,7 @@ export default {
 <template>
   <button
     type="button"
-    class="btn"
+    class="btn hidden-xs hidden-sm"
     @click="onClick"
     :disabled="isLoading">
 

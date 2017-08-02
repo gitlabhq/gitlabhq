@@ -23,7 +23,7 @@ module Gitlab
         end
 
         def self.cached_results_for_projects(projects)
-          result = Gitlab::Redis.with do |redis|
+          result = Gitlab::Redis::Cache.with do |redis|
             redis.multi do
               projects.each do |project|
                 cache_key = cache_key_for_project(project)
@@ -50,8 +50,8 @@ module Gitlab
             ref: pipeline.ref
           }
 
-          new(pipeline.project, pipeline_info: pipeline_info).
-            store_in_cache_if_needed
+          new(pipeline.project, pipeline_info: pipeline_info)
+            .store_in_cache_if_needed
         end
 
         def initialize(project, pipeline_info: {}, loaded_from_cache: nil)
@@ -100,19 +100,19 @@ module Gitlab
         end
 
         def load_from_cache
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::Cache.with do |redis|
             self.sha, self.status, self.ref = redis.hmget(cache_key, :sha, :status, :ref)
           end
         end
 
         def store_in_cache
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::Cache.with do |redis|
             redis.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
           end
         end
 
         def delete_from_cache
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::Cache.with do |redis|
             redis.del(cache_key)
           end
         end
@@ -120,7 +120,7 @@ module Gitlab
         def has_cache?
           return self.loaded unless self.loaded.nil?
 
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::Cache.with do |redis|
             redis.exists(cache_key)
           end
         end

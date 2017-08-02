@@ -1,3 +1,5 @@
+require_relative '../support/test_env'
+
 FactoryGirl.define do
   # Project without repository
   #
@@ -24,6 +26,22 @@ FactoryGirl.define do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
 
+    trait :import_scheduled do
+      import_status :scheduled
+    end
+
+    trait :import_started do
+      import_status :started
+    end
+
+    trait :import_finished do
+      import_status :finished
+    end
+
+    trait :import_failed do
+      import_status :failed
+    end
+
     trait :archived do
       archived true
     end
@@ -46,7 +64,7 @@ FactoryGirl.define do
 
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -54,7 +72,7 @@ FactoryGirl.define do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
 
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'refs'))
       end
     end
 
@@ -100,8 +118,8 @@ FactoryGirl.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.
-        update_attributes!(
+      project.project_feature
+        .update_attributes!(
           wiki_access_level: evaluator.wiki_access_level,
           builds_access_level: builds_access_level,
           snippets_access_level: evaluator.snippets_access_level,
@@ -153,10 +171,6 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project,
-        bare_repo: TestEnv.factory_repo_path_bare,
-        refs: TestEnv::BRANCH_SHA)
-
       if evaluator.create_template
         args = evaluator.create_template
 
@@ -202,7 +216,7 @@ FactoryGirl.define do
         active: true,
         properties: {
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
-          'issues_url' => "http://redmine/#{project.id}/project_name_in_redmine/:id",
+          'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
         }
       )

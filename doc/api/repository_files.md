@@ -61,7 +61,7 @@ POST /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/app%2Fprojectrb%2E?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
+curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fprojectrb%2E?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
 ```
 
 Example response:
@@ -90,7 +90,7 @@ PUT /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
 ```
 
 Example response:
@@ -111,6 +111,7 @@ Parameters:
 - `author_name` (optional) - Specify the commit author's name
 - `content` (required) - New file content
 - `commit_message` (required) - Commit message
+- `last_commit_id` (optional) - Last known file commit id
 
 If the commit fails for any reason we return a 400 error with a non-specific
 error message. Possible causes for a failed commit include:
@@ -128,7 +129,7 @@ DELETE /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
+curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
 ```
 
 Example response:

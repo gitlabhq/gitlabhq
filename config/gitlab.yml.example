@@ -169,7 +169,7 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
@@ -228,7 +228,8 @@ production: &base
   # ==========================
 
   ## LDAP settings
-  # You can inspect a sample of the LDAP users with login access by running:
+  # You can test connections and inspect a sample of the LDAP users with login
+  # access by running:
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
@@ -251,12 +252,44 @@ production: &base
         # Example: 'Paris' or 'Acme, Ltd.'
         label: 'LDAP'
 
+        # Example: 'ldap.mydomain.com'
         host: '_your_ldap_server'
-        port: 389
-        uid: 'sAMAccountName'
-        method: 'plain' # "tls" or "ssl" or "plain"
+        # This port is an example, it is sometimes different but it is always an integer and not a string
+        port: 389 # usually 636 for SSL
+        uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
+
+        # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
+
+        # Encryption method. The "method" key is deprecated in favor of
+        # "encryption".
+        #
+        #   Examples: "start_tls" or "simple_tls" or "plain"
+        #
+        #   Deprecated values: "tls" was replaced with "start_tls" and "ssl" was
+        #   replaced with "simple_tls".
+        #
+        encryption: 'plain'
+
+        # Enables SSL certificate verification if encryption method is
+        # "start_tls" or "simple_tls". (Defaults to false for backward-
+        # compatibility)
+        verify_certificates: false
+
+        # Specifies the path to a file containing a PEM-format CA certificate,
+        # e.g. if you need to use an internal CA.
+        #
+        #   Example: '/etc/ca.pem'
+        #
+        ca_file: ''
+
+        # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
+        # is not appropriate.
+        #
+        #   Example: 'TLSv1_1'
+        #
+        ssl_version: ''
 
         # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
         # a request if the LDAP server becomes unresponsive.
@@ -286,16 +319,19 @@ production: &base
 
         # Base where we can search for users
         #
-        #   Ex. ou=People,dc=gitlab,dc=example
+        #   Ex. 'ou=People,dc=gitlab,dc=example' or 'DC=mydomain,DC=com'
         #
         base: ''
 
         # Filter LDAP users
         #
-        #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+        #   Format: RFC 4515 https://tools.ietf.org/search/rfc4515
         #   Ex. (employeeType=developer)
         #
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+        #
+        #   Example for getting only specific users:
+        #   '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
         #
         user_filter: ''
 
@@ -336,6 +372,10 @@ production: &base
     # Uncomment this to automatically sign in with a specific omniauth provider's without
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
     # auto_sign_in_with_provider: saml
+
+    # Sync user's email address from the specified Omniauth provider every time the user logs
+    # in (default: nil). And consequently make this field read-only.
+    # sync_email_from_provider: cas3
 
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
@@ -379,13 +419,13 @@ production: &base
       #             service_validate_url: '/cas/p3/serviceValidate',
       #             logout_url: '/cas/logout'} }
       # - { name: 'authentiq',
-      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/
+      #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
       #     app_secret: 'YOUR_CLIENT_SECRET',
       #     args: {
       #             scope: 'aq:name email~rs address aq:push'
-      #             # redirect_uri parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
-      #             # redirect_uri: 'YOUR_REDIRECT_URI'
+      #             # callback_url parameter is optional except when 'gitlab.host' in this file is set to 'localhost'
+      #             # callback_url: 'YOUR_CALLBACK_URL'
       #           }
       #   }
       # - { name: 'github',
@@ -446,10 +486,10 @@ production: &base
 
   # Gitaly settings
   gitaly:
-    # This setting controls whether GitLab uses Gitaly (new component
-    # introduced in 9.0). Eventually Gitaly use will become mandatory and
-    # this option will disappear.
-    enabled: false
+    # Default Gitaly authentication token. Can be overriden per storage. Can
+    # be left blank when Gitaly is running locally on a Unix socket, which
+    # is the normal way to deploy Gitaly.
+    token:
 
   #
   # 4. Advanced settings
@@ -465,6 +505,7 @@ production: &base
       default:
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
+        # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
 
   ## Backup settings
   backup:
@@ -535,6 +576,15 @@ production: &base
     #   host: localhost
     #   port: 3808
 
+  ## Monitoring
+  # Built in monitoring settings
+  monitoring:
+    # Time between sampling of unicorn socket metrics, in seconds
+    # unicorn_sampler_interval: 10
+    # IP whitelist to access monitoring endpoints
+    ip_whitelist:
+      - 127.0.0.0/8
+
   #
   # 5. Extra customization
   # ==========================
@@ -590,6 +640,7 @@ test:
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
   gitaly:
     enabled: true
+    token: secret
   backup:
     path: tmp/tests/backups
   gitlab_shell:
@@ -605,6 +656,52 @@ test:
       title: "JIRA"
       url: https://sample_company.atlassian.net
       project_key: PROJECT
+
+  omniauth:
+    enabled: true
+    allow_single_sign_on: true
+    external_providers: []
+
+    providers:
+      - { name: 'cas3',
+          label: 'cas3',
+          args: { url: 'https://sso.example.com',
+                  disable_ssl_verification: false,
+                  login_url: '/cas/login',
+                  service_validate_url: '/cas/p3/serviceValidate',
+                  logout_url: '/cas/logout'} }
+      - { name: 'github',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          url: "https://github.com/",
+          verify_ssl: false,
+          args: { scope: 'user:email' } }
+      - { name: 'bitbucket',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'gitlab',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { scope: 'api' } }
+      - { name: 'google_oauth2',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { access_type: 'offline', approval_prompt: '' } }
+      - { name: 'facebook',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'twitter',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'auth0',
+          args: {
+            client_id: 'YOUR_AUTH0_CLIENT_ID',
+            client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+            namespace: 'YOUR_AUTH0_DOMAIN' } }
+      - { name: 'authentiq',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET',
+          args: { scope: 'aq:name email~rs address aq:push' } }
   ldap:
     enabled: false
     servers:
@@ -613,7 +710,7 @@ test:
         host: 127.0.0.1
         port: 3890
         uid: 'uid'
-        method: 'plain' # "tls" or "ssl" or "plain"
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
         base: 'dc=example,dc=com'
         user_filter: ''
         group_base: 'ou=groups,dc=example,dc=com'

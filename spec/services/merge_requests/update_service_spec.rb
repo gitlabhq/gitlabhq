@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService, services: true do
+describe MergeRequests::UpdateService do
   include EmailHelpers
 
   let(:project) { create(:project, :repository) }
@@ -30,6 +30,13 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      @merge_request
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_merge_request(opts)
       @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
       @merge_request.reload
@@ -48,7 +55,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -71,8 +78,8 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(@merge_request, 'update')
+        expect(service).to have_received(:execute_hooks)
+                               .with(@merge_request, 'update')
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -138,7 +145,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       context 'without pipeline' do
         before do
@@ -188,8 +195,8 @@ describe MergeRequests::UpdateService, services: true do
             head_pipeline_of: merge_request
           )
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
-            and_return(service_mock)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+            .and_return(service_mock)
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 
@@ -198,7 +205,7 @@ describe MergeRequests::UpdateService, services: true do
 
       context 'with a non-authorised user' do
         let(:visitor) { create(:user) }
-        let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
+        let(:service) { described_class.new(project, visitor, opts) }
 
         before do
           merge_request.update_attribute(:merge_error, 'Error')
@@ -289,13 +296,13 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_merge_request({ milestone: create(:milestone) })
-        end
-
         it 'marks pending todos as done' do
+          update_merge_request({ milestone: create(:milestone) })
+
           expect(pending_todo.reload).to be_done
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do
@@ -341,7 +348,7 @@ describe MergeRequests::UpdateService, services: true do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+          @merge_request = described_class.new(project, user, opts).execute(merge_request)
         end
 
         should_email(subscriber)
@@ -349,13 +356,15 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { merge_request.labels << label }
+        before do
+          merge_request.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -366,7 +375,7 @@ describe MergeRequests::UpdateService, services: true do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -377,16 +386,20 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { merge_request }
-      include_examples 'updating mentions', MergeRequests::UpdateService
+      include_examples 'updating mentions', described_class
     end
 
     context 'when MergeRequest has tasks' do
-      before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+      before do
+        update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
+      end
 
       it { expect(@merge_request.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
+        before do
+          update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -394,6 +407,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -409,6 +425,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
     end

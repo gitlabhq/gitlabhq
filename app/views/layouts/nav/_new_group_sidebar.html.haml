@@ -1,0 +1,80 @@
+.nav-sidebar
+  .context-header
+    = link_to group_path(@group), title: @group.name do
+      .avatar-container.s40.group-avatar
+        = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
+      .group-title
+        = @group.name
+    = button_tag class: 'close-nav-button', type: 'button' do
+      %span.sr-only Close sidebar
+      = icon ('times')
+  %ul.sidebar-top-level-items
+    = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
+      = link_to group_path(@group), title: 'About group' do
+        %span
+          About
+
+      %ul.sidebar-sub-level-items
+        = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
+          = link_to group_path(@group), title: 'Group details' do
+            %span
+              Details
+
+        = nav_link(path: 'groups#activity') do
+          = link_to activity_group_path(@group), title: 'Activity' do
+            %span
+              Activity
+
+    = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
+      = link_to issues_group_path(@group), title: 'Issues' do
+        %span
+          - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
+          %span.badge.count= number_with_delimiter(issues.count)
+          Issues
+
+      %ul.sidebar-sub-level-items
+        = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
+          = link_to issues_group_path(@group), title: 'List' do
+            %span
+              List
+
+        = nav_link(path: 'labels#index') do
+          = link_to group_labels_path(@group), title: 'Labels' do
+            %span
+              Labels
+
+        = nav_link(path: 'milestones#index') do
+          = link_to group_milestones_path(@group), title: 'Milestones' do
+            %span
+              Milestones
+
+    = nav_link(path: 'groups#merge_requests') do
+      = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
+        %span
+          - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
+          %span.badge.count= number_with_delimiter(merge_requests.count)
+          Merge Requests
+    = nav_link(path: 'group_members#index') do
+      = link_to group_group_members_path(@group), title: 'Members' do
+        %span
+          Members
+    - if current_user && can?(current_user, :admin_group, @group)
+      = nav_link(path: %w[groups#projects groups#edit ci_cd#show]) do
+        = link_to edit_group_path(@group), title: 'Settings' do
+          %span
+            Settings
+        %ul.sidebar-sub-level-items
+          = nav_link(path: 'groups#edit') do
+            = link_to edit_group_path(@group), title: 'General' do
+              %span
+                General
+
+          = nav_link(path: 'groups#projects') do
+            = link_to projects_group_path(@group), title: 'Projects' do
+              %span
+                Projects
+
+          = nav_link(controller: :ci_cd) do
+            = link_to group_settings_ci_cd_path(@group), title: 'Pipelines' do
+              %span
+                Pipelines

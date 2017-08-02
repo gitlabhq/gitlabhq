@@ -5,8 +5,15 @@ class IssueTrackerService < Service
 
   # Pattern used to extract links from comments
   # Override this method on services that uses different patterns
-  def reference_pattern
-    @reference_pattern ||= %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+  # This pattern does not support cross-project references
+  # The other code assumes that this pattern is a superset of all
+  # overriden patterns. See ReferenceRegexes::EXTERNAL_PATTERN
+  def self.reference_pattern(only_long: false)
+    if only_long
+      %r{(\b[A-Z][A-Z0-9_]+-)(?<issue>\d+)}
+    else
+      %r{(\b[A-Z][A-Z0-9_]+-|#{Issue.reference_prefix})(?<issue>\d+)}
+    end
   end
 
   def default?
@@ -17,7 +24,7 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
+  def issue_tracker_path
     project_url
   end
 
@@ -32,9 +39,9 @@ class IssueTrackerService < Service
   def fields
     [
       { type: 'text', name: 'description', placeholder: description },
-      { type: 'text', name: 'project_url', placeholder: 'Project url' },
-      { type: 'text', name: 'issues_url', placeholder: 'Issue url' },
-      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
+      { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
+      { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true },
+      { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url', required: true }
     ]
   end
 

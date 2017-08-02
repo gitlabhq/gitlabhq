@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-feature 'Admin Groups', feature: true do
+feature 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
   let(:user) { create :user }
   let!(:group) { create :group }
-  let!(:current_user) { login_as :admin }
+  let!(:current_user) { create(:admin) }
 
   before do
+    sign_in(current_user)
     stub_application_setting(default_group_visibility: internal)
   end
 
@@ -24,7 +25,9 @@ feature 'Admin Groups', feature: true do
     it 'creates new group' do
       visit admin_groups_path
 
-      click_link "New group"
+      page.within '#content-body' do
+        click_link "New group"
+      end
       path_component = 'gitlab'
       group_name = 'GitLab group name'
       group_description = 'Description of group for GitLab'

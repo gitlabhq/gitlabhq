@@ -1,14 +1,17 @@
 require 'spec_helper'
 
-describe Ci::RetryPipelineService, '#execute', :services do
+describe Ci::RetryPipelineService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
 
-  context 'when user has ability to modify pipeline' do
+  context 'when user has full ability to modify pipeline' do
     before do
-      project.add_master(user)
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: pipeline.ref, project: project)
     end
 
     context 'when there are already retried jobs present' do
@@ -241,13 +244,9 @@ describe Ci::RetryPipelineService, '#execute', :services do
         create_build('verify', :canceled, 1)
       end
 
-      it 'does not reprocess manual action' do
-        service.execute(pipeline)
-
-        expect(build('test')).to be_pending
-        expect(build('deploy')).to be_failed
-        expect(build('verify')).to be_created
-        expect(pipeline.reload).to be_running
+      it 'raises an error' do
+        expect { service.execute(pipeline) }
+          .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
 
@@ -258,13 +257,9 @@ describe Ci::RetryPipelineService, '#execute', :services do
         create_build('verify', :canceled, 2)
       end
 
-      it 'does not reprocess manual action' do
-        service.execute(pipeline)
-
-        expect(build('test')).to be_pending
-        expect(build('deploy')).to be_failed
-        expect(build('verify')).to be_created
-        expect(pipeline.reload).to be_running
+      it 'raises an error' do
+        expect { service.execute(pipeline) }
+          .to raise_error Gitlab::Access::AccessDeniedError
       end
     end
   end

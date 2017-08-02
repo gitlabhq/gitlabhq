@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobViewer::Base, model: true do
+describe BlobViewer::Base do
   include FakeBlobHelpers
 
   let(:project) { build(:empty_project) }
@@ -11,8 +11,8 @@ describe BlobViewer::Base, model: true do
 
       self.extensions = %w(pdf)
       self.binary = true
-      self.overridable_max_size = 1.megabyte
-      self.max_size = 5.megabytes
+      self.collapse_limit = 1.megabyte
+      self.size_limit = 5.megabytes
     end
   end
 
@@ -69,77 +69,49 @@ describe BlobViewer::Base, model: true do
     end
   end
 
-  describe '#exceeds_overridable_max_size?' do
-    context 'when the blob size is larger than the overridable max size' do
+  describe '#collapsed?' do
+    context 'when the blob size is larger than the collapse limit' do
       let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
 
       it 'returns true' do
-        expect(viewer.exceeds_overridable_max_size?).to be_truthy
+        expect(viewer.collapsed?).to be_truthy
       end
     end
 
-    context 'when the blob size is smaller than the overridable max size' do
+    context 'when the blob size is smaller than the collapse limit' do
       let(:blob) { fake_blob(path: 'file.pdf', size: 10.kilobytes) }
 
       it 'returns false' do
-        expect(viewer.exceeds_overridable_max_size?).to be_falsey
+        expect(viewer.collapsed?).to be_falsey
       end
     end
   end
 
-  describe '#exceeds_max_size?' do
-    context 'when the blob size is larger than the max size' do
+  describe '#too_large?' do
+    context 'when the blob size is larger than the size limit' do
       let(:blob) { fake_blob(path: 'file.pdf', size: 10.megabytes) }
 
       it 'returns true' do
-        expect(viewer.exceeds_max_size?).to be_truthy
+        expect(viewer.too_large?).to be_truthy
       end
     end
 
-    context 'when the blob size is smaller than the max size' do
+    context 'when the blob size is smaller than the size limit' do
       let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
 
       it 'returns false' do
-        expect(viewer.exceeds_max_size?).to be_falsey
-      end
-    end
-  end
-
-  describe '#can_override_max_size?' do
-    context 'when the blob size is larger than the overridable max size' do
-      context 'when the blob size is larger than the max size' do
-        let(:blob) { fake_blob(path: 'file.pdf', size: 10.megabytes) }
-
-        it 'returns false' do
-          expect(viewer.can_override_max_size?).to be_falsey
-        end
-      end
-
-      context 'when the blob size is smaller than the max size' do
-        let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
-
-        it 'returns true' do
-          expect(viewer.can_override_max_size?).to be_truthy
-        end
-      end
-    end
-
-    context 'when the blob size is smaller than the overridable max size' do
-      let(:blob) { fake_blob(path: 'file.pdf', size: 10.kilobytes) }
-
-      it 'returns false' do
-        expect(viewer.can_override_max_size?).to be_falsey
+        expect(viewer.too_large?).to be_falsey
       end
     end
   end
 
   describe '#render_error' do
-    context 'when the max size is overridden' do
+    context 'when the blob is expanded' do
       before do
-        viewer.override_max_size = true
+        blob.expand!
       end
 
-      context 'when the blob size is larger than the max size' do
+      context 'when the blob size is larger than the size limit' do
         let(:blob) { fake_blob(path: 'file.pdf', size: 10.megabytes) }
 
         it 'returns :too_large' do
@@ -147,7 +119,7 @@ describe BlobViewer::Base, model: true do
         end
       end
 
-      context 'when the blob size is smaller than the max size' do
+      context 'when the blob size is smaller than the size limit' do
         let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
 
         it 'returns nil' do
@@ -156,16 +128,16 @@ describe BlobViewer::Base, model: true do
       end
     end
 
-    context 'when the max size is not overridden' do
-      context 'when the blob size is larger than the overridable max size' do
+    context 'when not expanded' do
+      context 'when the blob size is larger than the collapse limit' do
         let(:blob) { fake_blob(path: 'file.pdf', size: 2.megabytes) }
 
-        it 'returns :too_large' do
-          expect(viewer.render_error).to eq(:too_large)
+        it 'returns :collapsed' do
+          expect(viewer.render_error).to eq(:collapsed)
         end
       end
 
-      context 'when the blob size is smaller than the overridable max size' do
+      context 'when the blob size is smaller than the collapse limit' do
         let(:blob) { fake_blob(path: 'file.pdf', size: 10.kilobytes) }
 
         it 'returns nil' do

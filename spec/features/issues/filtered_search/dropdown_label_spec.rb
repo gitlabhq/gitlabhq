@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dropdown label', js: true, feature: true do
+describe 'Dropdown label', js: true do
   include FilteredSearchHelpers
 
   let(:project) { create(:empty_project) }
@@ -34,10 +34,10 @@ describe 'Dropdown label', js: true, feature: true do
 
   before do
     project.add_master(user)
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'keyboard navigation' do

@@ -10,7 +10,8 @@ export default class EnvironmentsService {
     this.folderResults = 3;
   }
 
-  get(scope, page) {
+  get(options = {}) {
+    const { scope, page } = options;
     return this.environments.get({ scope, page });
   }
 

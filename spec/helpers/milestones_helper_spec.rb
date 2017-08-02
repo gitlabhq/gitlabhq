@@ -1,6 +1,42 @@
 require 'spec_helper'
 
 describe MilestonesHelper do
+  describe '#milestones_filter_dropdown_path' do
+    let(:project) { create(:empty_project) }
+    let(:project2) { create(:empty_project) }
+    let(:group) { create(:group) }
+
+    context 'when @project present' do
+      it 'returns project milestones JSON URL' do
+        assign(:project, project)
+
+        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project, :json))
+      end
+    end
+
+    context 'when @target_project present' do
+      it 'returns targeted project milestones JSON URL' do
+        assign(:target_project, project2)
+
+        expect(helper.milestones_filter_dropdown_path).to eq(project_milestones_path(project2, :json))
+      end
+    end
+
+    context 'when @group present' do
+      it 'returns group milestones JSON URL' do
+        assign(:group, group)
+
+        expect(helper.milestones_filter_dropdown_path).to eq(group_milestones_path(group, :json))
+      end
+    end
+
+    context 'when neither of @project/@target_project/@group present' do
+      it 'returns dashboard milestones JSON URL' do
+        expect(helper.milestones_filter_dropdown_path).to eq(dashboard_milestones_path(:json))
+      end
+    end
+  end
+
   describe "#milestone_date_range" do
     def result_for(*args)
       milestone_date_range(build(:milestone, *args))

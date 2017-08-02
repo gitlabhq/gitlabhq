@@ -137,6 +137,13 @@ describe ProjectsFinder do
       it { is_expected.to eq([public_project]) }
     end
 
+    describe 'filter by owned' do
+      let(:params) { { owned: true } }
+      let!(:owned_project) { create(:empty_project, :private, namespace: current_user.namespace) }
+
+      it { is_expected.to eq([owned_project]) }
+    end
+
     describe 'filter by non_public' do
       let(:params) { { non_public: true } }
       before do
@@ -146,13 +153,19 @@ describe ProjectsFinder do
       it { is_expected.to eq([private_project]) }
     end
 
-    describe 'filter by viewable_starred_projects' do
+    describe 'filter by starred' do
       let(:params) { { starred: true } }
       before do
         current_user.toggle_star(public_project)
       end
 
       it { is_expected.to eq([public_project]) }
+
+      it 'returns only projects the user has access to' do
+        current_user.toggle_star(private_project)
+
+        is_expected.to eq([public_project])
+      end
     end
 
     describe 'sorting' do

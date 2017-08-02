@@ -20,8 +20,8 @@ describe 'gitlab:gitaly namespace rake task' do
 
     context 'when an underlying Git command fail' do
       it 'aborts and display a help message' do
-        expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_version).and_raise 'Git error'
+        expect_any_instance_of(Object)
+          .to receive(:checkout_or_clone_version).and_raise 'Git error'
 
         expect { run_rake_task('gitlab:gitaly:install', clone_path) }.to raise_error 'Git error'
       end
@@ -33,14 +33,24 @@ describe 'gitlab:gitaly namespace rake task' do
       end
 
       it 'calls checkout_or_clone_version with the right arguments' do
-        expect_any_instance_of(Object).
-          to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path)
+        expect_any_instance_of(Object)
+          .to receive(:checkout_or_clone_version).with(version: version, repo: repo, target_dir: clone_path)
 
         run_rake_task('gitlab:gitaly:install', clone_path)
       end
     end
 
     describe 'gmake/make' do
+      let(:command_preamble) { %w[/usr/bin/env -u BUNDLE_GEMFILE] }
+
+      before(:all) do
+        @old_env_ci = ENV.delete('CI')
+      end
+
+      after(:all) do
+        ENV['CI'] = @old_env_ci if @old_env_ci
+      end
+
       before do
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original
@@ -49,12 +59,12 @@ describe 'gitlab:gitaly namespace rake task' do
       context 'gmake is available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
-          allow_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['gmake']).and_return(true)
         end
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect_any_instance_of(Object).to receive(:run_command!).with(['gmake']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['gmake']).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
@@ -63,12 +73,12 @@ describe 'gitlab:gitaly namespace rake task' do
       context 'gmake is not available' do
         before do
           expect_any_instance_of(Object).to receive(:checkout_or_clone_version)
-          allow_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
+          allow_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
         end
 
         it 'calls make in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['', 42])
-          expect_any_instance_of(Object).to receive(:run_command!).with(['make']).and_return(true)
+          expect_any_instance_of(Object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
@@ -79,16 +89,24 @@ describe 'gitlab:gitaly namespace rake task' do
   describe 'storage_config' do
     it 'prints storage configuration in a TOML format' do
       config = {
-        'default' => { 'path' => '/path/to/default' },
-        'nfs_01' => { 'path' => '/path/to/nfs_01' }
+        'default' => {
+          'path' => '/path/to/default',
+          'gitaly_address' => 'unix:/path/to/my.socket'
+        },
+        'nfs_01' => {
+          'path' => '/path/to/nfs_01',
+          'gitaly_address' => 'unix:/path/to/my.socket'
+        }
       }
       allow(Gitlab.config.repositories).to receive(:storages).and_return(config)
+      allow(Rails.env).to receive(:test?).and_return(false)
 
       expected_output = ''
       Timecop.freeze do
         expected_output = <<~TOML
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
+          socket_path = "/path/to/my.socket"
           [[storage]]
           name = "default"
           path = "/path/to/default"
@@ -98,8 +116,8 @@ describe 'gitlab:gitaly namespace rake task' do
         TOML
       end
 
-      expect { run_rake_task('gitlab:gitaly:storage_config')}.
-        to output(expected_output).to_stdout
+      expect { run_rake_task('gitlab:gitaly:storage_config')}
+        .to output(expected_output).to_stdout
 
       parsed_output = TOML.parse(expected_output)
       config.each do |name, params|

@@ -166,8 +166,8 @@ For instance this kind of thing:
       = render 'projects/zen', f: form, attr: :description,
                                classes: 'note-textarea',
                                placeholder: "Write a comment or drag your files here...",
-                               supports_slash_commands: !issuable.persisted?
-      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
+                               supports_quick_actions: !issuable.persisted?
+      = render 'projects/notes/hints', supports_quick_actions: !issuable.persisted?
       .clearfix
       .error-alert
 - if issuable.is_a?(Issue)

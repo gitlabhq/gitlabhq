@@ -26,7 +26,7 @@ describe MergeRequestEntity do
     pipeline = build_stubbed(:ci_pipeline)
     allow(resource).to receive(:head_pipeline).and_return(pipeline)
 
-    pipeline_payload = PipelineEntity
+    pipeline_payload = PipelineDetailsEntity
       .represent(pipeline, request: req)
       .as_json
 
@@ -47,7 +47,7 @@ describe MergeRequestEntity do
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
-                               :commits_count)
+                               :target_branch_tree_path, :commits_count)
   end
 
   it 'has email_patches_path' do

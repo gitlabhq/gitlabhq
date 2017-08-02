@@ -18,10 +18,10 @@ module RelativePositioning
     prev_pos = nil
 
     if self.relative_position
-      prev_pos = self.class.
-        in_projects(project.id).
-        where('relative_position < ?', self.relative_position).
-        maximum(:relative_position)
+      prev_pos = self.class
+        .in_projects(project.id)
+        .where('relative_position < ?', self.relative_position)
+        .maximum(:relative_position)
     end
 
     prev_pos
@@ -31,10 +31,10 @@ module RelativePositioning
     next_pos = nil
 
     if self.relative_position
-      next_pos = self.class.
-        in_projects(project.id).
-        where('relative_position > ?', self.relative_position).
-        minimum(:relative_position)
+      next_pos = self.class
+        .in_projects(project.id)
+        .where('relative_position > ?', self.relative_position)
+        .minimum(:relative_position)
     end
 
     next_pos

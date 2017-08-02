@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Merge request issue assignment', js: true, feature: true do
+feature 'Merge request issue assignment', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue1) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project, author: user, description: "fixes #{issue1.to_reference} and #{issue2.to_reference}") }
@@ -13,8 +13,8 @@ feature 'Merge request issue assignment', js: true, feature: true do
   end
 
   def visit_merge_request(current_user = nil)
-    login_as(current_user || user)
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(current_user || user)
+    visit project_merge_request_path(project, merge_request)
   end
 
   context 'logged in as author' do

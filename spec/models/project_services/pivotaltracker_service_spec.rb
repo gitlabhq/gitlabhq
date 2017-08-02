@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PivotaltrackerService, models: true do
+describe PivotaltrackerService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -8,13 +8,17 @@ describe PivotaltrackerService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:token) }
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:token) }
     end
@@ -22,7 +26,7 @@ describe PivotaltrackerService, models: true do
 
   describe 'Execute' do
     let(:service) do
-      PivotaltrackerService.new.tap do |service|
+      described_class.new.tap do |service|
         service.token = 'secret_api_token'
       end
     end

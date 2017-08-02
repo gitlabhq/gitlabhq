@@ -3,6 +3,7 @@
 - value = @service.send(name)
 - type = field[:type]
 - placeholder = field[:placeholder]
+- required = field[:required]
 - choices = field[:choices]
 - default_choice = field[:default_choice]
 - help = field[:help]
@@ -14,14 +15,14 @@
     = form.label name, title, class: "control-label"
   .col-sm-10
     - if type == 'text'
-      = form.text_field name, class: "form-control", placeholder: placeholder
+      = form.text_field name, class: "form-control", placeholder: placeholder, required: required
     - elsif type == 'textarea'
-      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder
+      = form.text_area name, rows: 5, class: "form-control", placeholder: placeholder, required: required
     - elsif type == 'checkbox'
       = form.check_box name
     - elsif type == 'select'
       = form.select name, options_for_select(choices, value ? value : default_choice), {}, { class: "form-control" }
     - elsif type == 'password'
-      = form.password_field name, autocomplete: "new-password", class: "form-control"
+      = form.password_field name, autocomplete: "new-password", class: "form-control", required: value.blank? && :required
     - if help
       %span.help-block= help

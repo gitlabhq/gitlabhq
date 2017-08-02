@@ -5,35 +5,58 @@ describe "Admin Runners" do
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   describe "Runners page" do
-    before do
-      runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
-      pipeline = FactoryGirl.create(:ci_pipeline)
-      FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
-      visit admin_runners_path
-    end
+    let(:pipeline) { create(:ci_pipeline) }
 
-    it 'has all necessary texts' do
-      expect(page).to have_text "To register a new Runner"
-      expect(page).to have_text "Runners with last contact more than a minute ago: 1"
-    end
-
-    describe 'search' do
+    context "when there are runners" do
       before do
-        FactoryGirl.create :ci_runner, description: 'runner-foo'
-        FactoryGirl.create :ci_runner, description: 'runner-bar'
-
-        search_form = find('#runners-search')
-        search_form.fill_in 'search', with: 'runner-foo'
-        search_form.click_button 'Search'
+        runner = FactoryGirl.create(:ci_runner, contacted_at: Time.now)
+        FactoryGirl.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        visit admin_runners_path
       end
 
-      it 'shows correct runner' do
-        expect(page).to have_content("runner-foo")
-        expect(page).not_to have_content("runner-bar")
+      it 'has all necessary texts' do
+        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Runners with last contact more than a minute ago: 1"
+      end
+
+      describe 'search' do
+        before do
+          FactoryGirl.create :ci_runner, description: 'runner-foo'
+          FactoryGirl.create :ci_runner, description: 'runner-bar'
+        end
+
+        it 'shows correct runner when description matches' do
+          search_form = find('#runners-search')
+          search_form.fill_in 'search', with: 'runner-foo'
+          search_form.click_button 'Search'
+
+          expect(page).to have_content("runner-foo")
+          expect(page).not_to have_content("runner-bar")
+        end
+
+        it 'shows no runner when description does not match' do
+          search_form = find('#runners-search')
+          search_form.fill_in 'search', with: 'runner-baz'
+          search_form.click_button 'Search'
+
+          expect(page).to have_text 'No runners found'
+        end
+      end
+    end
+
+    context "when there are no runners" do
+      before do
+        visit admin_runners_path
+      end
+
+      it 'has all necessary texts including no runner message' do
+        expect(page).to have_text "How to setup"
+        expect(page).to have_text "Runners with last contact more than a minute ago: 0"
+        expect(page).to have_text 'No runners found'
       end
     end
   end
@@ -134,15 +157,17 @@ describe "Admin Runners" do
 
   describe 'runners registration token' do
     let!(:token) { current_application_settings.runners_registration_token }
-    before { visit admin_runners_path }
+
+    before do
+      visit admin_runners_path
+    end
 
     it 'has a registration token' do
-      expect(page).to have_content("Registration token is #{token}")
-      expect(page).to have_selector('#runners-token', text: token)
+      expect(page.find('#registration_token')).to have_content(token)
     end
 
     describe 'reload registration token' do
-      let(:page_token) { find('#runners-token').text }
+      let(:page_token) { find('#registration_token').text }
 
       before do
         click_button 'Reset runners registration token'

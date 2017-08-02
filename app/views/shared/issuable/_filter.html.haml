@@ -6,10 +6,6 @@
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
-      - if @bulk_edit
-        .check-all-holder
-          = check_box_tag "check_all_issues", nil, false,
-            class: "check_all_issues left"
       .issues-other-filters
         .filter-item.inline
           - if params[:author_id].present?
@@ -36,46 +32,7 @@
         .pull-right
           = render 'shared/sort_dropdown'
 
-    - if @bulk_edit
-      .issues_bulk_update.hide
-        = form_tag [:bulk_update, @project.namespace.becomes(Namespace), @project, type], method: :post, class: 'bulk-update'  do
-          .filter-item.inline
-            = dropdown_tag("Status", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]", default_label: "Status" } } ) do
-              %ul
-                %li
-                  %a{ href: "#", data: { id: "reopen" } } Open
-                %li
-                  %a{ href: "#", data: {id: "close" } } Closed
-          .filter-item.inline
-            = dropdown_tag("Assignee", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
-              placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: "update[assignee_id]", default_label: "Assignee" } })
-          .filter-item.inline
-            = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'issue-bulk-update-dropdown-toggle js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", default_label: "Milestone", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
-          .filter-item.inline.labels-filter
-            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], dropdown_title: 'Apply a label', show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
-          .filter-item.inline
-            = dropdown_tag("Subscription", options: { toggle_class: "issue-bulk-update-dropdown-toggle js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]", default_label: "Subscription" } } ) do
-              %ul
-                %li
-                  %a{ href: "#", data: { id: "subscribe" } } Subscribe
-                %li
-                  %a{ href: "#", data: { id: "unsubscribe" } } Unsubscribe
-
-          = hidden_field_tag 'update[issuable_ids]', []
-          = hidden_field_tag :state_event, params[:state_event]
-          .filter-item.inline
-            = button_tag "Update #{type.to_s.humanize(capitalize: false)}", class: "btn update_selected_issues btn-save"
   - has_labels = @labels && @labels.any?
   .row-content-block.second-block.filtered-labels{ class: ("hidden" unless has_labels) }
     - if has_labels
       = render 'shared/labels_row', labels: @labels
-
-:javascript
-  new LabelsSelect();
-  new MilestoneSelect();
-  new IssueStatusSelect();
-  new SubscriptionSelect();
-  $('form.filter-form').on('submit', function (event) {
-    event.preventDefault();
-    gl.utils.visitUrl(this.action + '&' + $(this).serialize());
-  });

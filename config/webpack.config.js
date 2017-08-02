@@ -11,11 +11,12 @@ var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeMod
 
 var ROOT_PATH = path.resolve(__dirname, '..');
 var IS_PRODUCTION = process.env.NODE_ENV === 'production';
-var IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') !== -1;
+var IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 var DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 var DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 var DEV_SERVER_LIVERELOAD = process.env.DEV_SERVER_LIVERELOAD !== 'false';
 var WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+var NO_COMPRESSION = process.env.NO_COMPRESSION;
 
 var config = {
   // because sqljs requires fs.
@@ -24,6 +25,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
@@ -37,9 +39,15 @@ var config = {
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
+    graphs_charts:        './graphs/graphs_charts.js',
+    graphs_show:          './graphs/graphs_show.js',
     group:                './group.js',
+    groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
+    integrations:         './integrations',
+    job_details:          './jobs/job_details_bundle.js',
     locale:               './locale/index.js',
     main:                 './main.js',
     merge_conflicts:      './merge_conflicts/merge_conflicts_bundle.js',
@@ -47,11 +55,14 @@ var config = {
     network:              './network/network_bundle.js',
     notebook_viewer:      './blob/notebook_viewer.js',
     pdf_viewer:           './blob/pdf_viewer.js',
-    pipelines:            './pipelines/index.js',
-    balsamiq_viewer:      './blob/balsamiq_viewer.js',
-    pipelines_graph:      './pipelines/graph_bundle.js',
+    pipelines:            './pipelines/pipelines_bundle.js',
+    pipelines_charts:     './pipelines/pipelines_charts.js',
+    pipelines_details:    './pipelines/pipeline_details_bundle.js',
+    pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
-    protected_branches:   './protected_branches/protected_branches_bundle.js',
+    project_new:          './projects/project_new.js',
+    prometheus_metrics:   './prometheus_metrics',
+    protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -61,10 +72,14 @@ var config = {
     stl_viewer:           './blob/stl_viewer.js',
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
-    users:                './users/users_bundle.js',
+    ui_development_kit:   './ui_development_kit.js',
+    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
+    two_factor_auth:      './two_factor_auth.js',
+    performance_bar:      './performance_bar.js',
+    webpack_runtime:      './webpack.js',
   },
 
   output: {
@@ -73,8 +88,6 @@ var config = {
     filename: IS_PRODUCTION ? '[name].[chunkhash].bundle.js' : '[name].bundle.js',
     chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].chunk.js' : '[name].chunk.js',
   },
-
-  devtool: 'cheap-module-source-map',
 
   module: {
     rules: [
@@ -155,12 +168,15 @@ var config = {
         'environments',
         'environments_folder',
         'filtered_search',
+        'groups',
         'issue_show',
+        'job_details',
         'merge_conflicts',
+        'monitoring',
         'notebook_viewer',
         'pdf_viewer',
         'pipelines',
-        'pipelines_graph',
+        'pipelines_details',
         'schedule_form',
         'schedules_index',
         'sidebar',
@@ -176,22 +192,13 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
-        'users',
         'monitoring',
       ],
     }),
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'common', 'runtime'],
-    }),
-
-    // locale common library
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'locale',
-      chunks: [
-        'cycle_analytics',
-      ],
+      names: ['main', 'locale', 'common', 'webpack_runtime'],
     }),
   ],
 
@@ -222,11 +229,18 @@ if (IS_PRODUCTION) {
     }),
     new webpack.DefinePlugin({
       'process.env': { NODE_ENV: JSON.stringify('production') }
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
     })
   );
+
+  // zopfli requires a lot of compute time and is disabled in CI
+  if (!NO_COMPRESSION) {
+    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
+    try {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
+    } catch(err) {
+      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
+    }
+  }
 }
 
 if (IS_DEV_SERVER) {
@@ -236,13 +250,16 @@ if (IS_DEV_SERVER) {
     port: DEV_SERVER_PORT,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
+    hot: DEV_SERVER_LIVERELOAD,
     inline: DEV_SERVER_LIVERELOAD
   };
-  config.output.publicPath = '//' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT + config.output.publicPath;
   config.plugins.push(
     // watch node_modules for changes if we encounter a missing module compile error
     new WatchMissingNodeModulesPlugin(path.join(ROOT_PATH, 'node_modules'))
   );
+  if (DEV_SERVER_LIVERELOAD) {
+    config.plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
 }
 
 if (WEBPACK_REPORT) {

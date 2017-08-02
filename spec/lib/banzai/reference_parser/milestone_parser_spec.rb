@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::MilestoneParser, lib: true do
+describe Banzai::ReferenceParser::MilestoneParser do
   include ReferenceParserHelpers
 
   let(:project) { create(:empty_project, :public) }
@@ -11,7 +11,9 @@ describe Banzai::ReferenceParser::MilestoneParser, lib: true do
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-milestone'] = milestone.id.to_s }
+      before do
+        link['data-milestone'] = milestone.id.to_s
+      end
 
       it_behaves_like "referenced feature visibility", "issues", "merge_requests"
     end

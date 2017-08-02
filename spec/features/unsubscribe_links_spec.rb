@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Unsubscribe links', feature: true do
+describe 'Unsubscribe links' do
   include Warden::Test::Helpers
 
   let(:recipient) { create(:user) }
@@ -24,8 +24,8 @@ describe 'Unsubscribe links', feature: true do
         visit body_link
 
         expect(current_path).to eq unsubscribe_sent_notification_path(SentNotification.last)
-        expect(page).to have_text(%(Unsubscribe from issue #{issue.title} (#{issue.to_reference})))
-        expect(page).to have_text(%(Are you sure you want to unsubscribe from issue #{issue.title} (#{issue.to_reference})?))
+        expect(page).to have_text(%(Unsubscribe from issue))
+        expect(page).to have_text(%(Are you sure you want to unsubscribe from the issue: #{issue.title} (#{issue.to_reference})?))
         expect(issue.subscribed?(recipient, project)).to be_truthy
 
         click_link 'Unsubscribe'
@@ -56,7 +56,9 @@ describe 'Unsubscribe links', feature: true do
   end
 
   context 'when logged in' do
-    before { login_as(recipient) }
+    before do
+      sign_in(recipient)
+    end
 
     it 'unsubscribes from the issue when visiting the link from the email body' do
       visit body_link

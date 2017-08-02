@@ -34,8 +34,8 @@ describe Gitlab::ProjectAuthorizations do
   end
 
   it 'includes the correct projects' do
-    expect(authorizations.pluck(:project_id)).
-      to include(owned_project.id, other_project.id, group_project.id)
+    expect(authorizations.pluck(:project_id))
+      .to include(owned_project.id, other_project.id, group_project.id)
   end
 
   it 'includes the correct access levels' do

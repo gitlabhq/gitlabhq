@@ -30,12 +30,15 @@ export default class FilteredSearchSpecHelper {
     `;
   }
 
+  static createSearchVisualToken(name) {
+    const li = document.createElement('li');
+    li.classList.add('js-visual-token', 'filtered-search-term');
+    li.innerHTML = `<div class="name">${name}</div>`;
+    return li;
+  }
+
   static createSearchVisualTokenHTML(name) {
-    return `
-      <li class="js-visual-token filtered-search-term">
-        <div class="name">${name}</div>
-      </li>
-    `;
+    return FilteredSearchSpecHelper.createSearchVisualToken(name).outerHTML;
   }
 
   static createInputHTML(placeholder = '', value = '') {

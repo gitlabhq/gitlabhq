@@ -32,8 +32,8 @@ describe Files::UpdateService do
       let(:last_commit_sha) { "foo" }
 
       it "returns a hash with the correct error message and a :error status " do
-        expect { subject.execute }.
-          to raise_error(Files::UpdateService::FileChangedError,
+        expect { subject.execute }
+          .to raise_error(Files::UpdateService::FileChangedError,
                          "You are attempting to update a file that has changed since you started editing it.")
       end
     end

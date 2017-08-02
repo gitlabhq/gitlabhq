@@ -17,6 +17,16 @@ class NotificationService
     end
   end
 
+  # Always notify the user about gpg key added
+  #
+  # This is a security email so it will be sent even if the user user disabled
+  # notifications
+  def new_gpg_key(gpg_key)
+    if gpg_key.user
+      mailer.new_gpg_key_email(gpg_key.id).deliver_later
+    end
+  end
+
   # Always notify user about email added to profile
   def new_email(email)
     if email.user
@@ -273,7 +283,7 @@ class NotificationService
   end
 
   def issue_moved(issue, new_issue, current_user)
-    recipients = NotificationRecipientService.new(issue.project).build_recipients(issue, current_user)
+    recipients = NotificationRecipientService.new(issue.project).build_recipients(issue, current_user, action: 'moved')
 
     recipients.map do |recipient|
       email = mailer.issue_moved_email(recipient, issue, new_issue, current_user)

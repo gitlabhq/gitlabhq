@@ -29,15 +29,15 @@ describe PreferencesHelper do
   describe 'user_color_scheme' do
     context 'with a user' do
       it "returns user's scheme's css_class" do
-        allow(helper).to receive(:current_user).
-          and_return(double(color_scheme_id: 3))
+        allow(helper).to receive(:current_user)
+          .and_return(double(color_scheme_id: 3))
 
         expect(helper.user_color_scheme).to eq 'solarized-light'
       end
 
       it 'returns the default when id is invalid' do
-        allow(helper).to receive(:current_user).
-          and_return(double(color_scheme_id: Gitlab::ColorSchemes.count + 5))
+        allow(helper).to receive(:current_user)
+          .and_return(double(color_scheme_id: Gitlab::ColorSchemes.count + 5))
       end
     end
 
@@ -45,8 +45,8 @@ describe PreferencesHelper do
       it 'returns the default theme' do
         stub_user
 
-        expect(helper.user_color_scheme).
-          to eq Gitlab::ColorSchemes.default.css_class
+        expect(helper.user_color_scheme)
+          .to eq Gitlab::ColorSchemes.default.css_class
       end
     end
   end
@@ -55,8 +55,8 @@ describe PreferencesHelper do
     if messages.empty?
       allow(helper).to receive(:current_user).and_return(nil)
     else
-      allow(helper).to receive(:current_user).
-        and_return(double('user', messages))
+      allow(helper).to receive(:current_user)
+        .and_return(double('user', messages))
     end
   end
 

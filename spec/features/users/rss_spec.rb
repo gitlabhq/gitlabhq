@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 feature 'User RSS' do
+  let(:user) { create(:user) }
   let(:path) { user_path(create(:user)) }
 
   context 'when signed in' do
     before do
-      login_as(create(:user))
+      sign_in(user)
       visit path
     end
 

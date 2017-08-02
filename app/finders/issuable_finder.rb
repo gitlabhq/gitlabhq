@@ -11,6 +11,7 @@
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
+#     author_id: integer
 #     assignee_id: integer
 #     search: string
 #     label_name: string
@@ -19,7 +20,10 @@
 #     iids: integer[]
 #
 class IssuableFinder
+  include CreatedAtFilter
+
   NONE = '0'.freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   attr_accessor :current_user, :params
 
@@ -31,6 +35,7 @@ class IssuableFinder
   def execute
     items = init_collection
     items = by_scope(items)
+    items = by_created_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_search(items)
@@ -61,7 +66,7 @@ class IssuableFinder
   # grouping and counting within that query.
   #
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil)
+    count_params = params.merge(state: nil, sort: nil, for_counting: true)
     labels_count = label_names.any? ? label_names.count : 1
     finder = self.class.new(current_user, count_params)
     counts = Hash.new(0)
@@ -76,13 +81,22 @@ class IssuableFinder
     end
 
     counts[:all] = counts.values.sum
-    counts[:opened] += counts[:reopened]
 
     counts
   end
 
   def find_by!(*params)
     execute.find_by!(*params)
+  end
+
+  def state_counter_cache_key
+    cache_key(state_counter_cache_key_components)
+  end
+
+  def clear_caches!
+    state_counter_cache_key_components_permutations.each do |components|
+      Rails.cache.delete(cache_key(components))
+    end
   end
 
   def group
@@ -141,9 +155,17 @@ class IssuableFinder
 
     @milestones =
       if milestones?
-        scope = Milestone.where(project_id: projects)
+        if project?
+          group_id = project.group&.id
+          project_id = project.id
+        end
 
-        scope.where(title: params[:milestone_title])
+        group_id = group.id if group
+
+        search_params =
+          { title: params[:milestone_title], project_ids: project_id, group_ids: group_id }
+
+        MilestonesFinder.new(search_params).execute
       else
         Milestone.none
       end
@@ -325,11 +347,6 @@ class IssuableFinder
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
       else
         items = items.with_milestone(params[:milestone_title])
-        items_projects = projects(items)
-
-        if items_projects
-          items = items.where(milestones: { project_id: items_projects })
-        end
       end
     end
 
@@ -404,5 +421,21 @@ class IssuableFinder
 
   def current_user_related?
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
+  end
+
+  def state_counter_cache_key_components
+    opts = params.with_indifferent_access
+    opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
+    opts.delete_if { |_, value| value.blank? }
+
+    ['issuables_count', klass.to_ability_name, opts.sort]
+  end
+
+  def state_counter_cache_key_components_permutations
+    [state_counter_cache_key_components]
+  end
+
+  def cache_key(components)
+    Digest::SHA1.hexdigest(components.flatten.join('-'))
   end
 end

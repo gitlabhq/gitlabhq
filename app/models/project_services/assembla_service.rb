@@ -18,7 +18,7 @@ class AssemblaService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: '' },
+      { type: 'text', name: 'token', placeholder: '', required: true },
       { type: 'text', name: 'subdomain', placeholder: '' }
     ]
   end

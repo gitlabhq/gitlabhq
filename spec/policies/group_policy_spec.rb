@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupPolicy, models: true do
+describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }
@@ -9,11 +9,12 @@ describe GroupPolicy, models: true do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
+  let(:reporter_permissions) { [:admin_label] }
+
   let(:master_permissions) do
     [
       :create_projects,
-      :admin_milestones,
-      :admin_label
+      :admin_milestones
     ]
   end
 
@@ -35,15 +36,24 @@ describe GroupPolicy, models: true do
     group.add_owner(owner)
   end
 
-  subject { described_class.abilities(current_user, group).to_set }
+  subject { described_class.new(current_user, group) }
+
+  def expect_allowed(*permissions)
+    permissions.each { |p| is_expected.to be_allowed(p) }
+  end
+
+  def expect_disallowed(*permissions)
+    permissions.each { |p| is_expected.not_to be_allowed(p) }
+  end
 
   context 'with no user' do
     let(:current_user) { nil }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -51,9 +61,10 @@ describe GroupPolicy, models: true do
     let(:current_user) { guest }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_disallowed(*reporter_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -61,9 +72,10 @@ describe GroupPolicy, models: true do
     let(:current_user) { reporter }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_allowed(*reporter_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -71,9 +83,10 @@ describe GroupPolicy, models: true do
     let(:current_user) { developer }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.not_to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_allowed(*reporter_permissions)
+      expect_disallowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -81,9 +94,10 @@ describe GroupPolicy, models: true do
     let(:current_user) { master }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.not_to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*master_permissions)
+      expect_disallowed(*owner_permissions)
     end
   end
 
@@ -91,9 +105,10 @@ describe GroupPolicy, models: true do
     let(:current_user) { owner }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*master_permissions)
+      expect_allowed(*owner_permissions)
     end
   end
 
@@ -101,24 +116,38 @@ describe GroupPolicy, models: true do
     let(:current_user) { admin }
 
     it do
-      is_expected.to include(:read_group)
-      is_expected.to include(*master_permissions)
-      is_expected.to include(*owner_permissions)
+      expect_allowed(:read_group)
+      expect_allowed(*reporter_permissions)
+      expect_allowed(*master_permissions)
+      expect_allowed(*owner_permissions)
     end
   end
 
-  describe 'private nested group inherit permissions', :nested_groups do
+  describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
     let(:nested_group) { create(:group, :private, parent: group) }
 
-    subject { described_class.abilities(current_user, nested_group).to_set }
+    before do
+      nested_group.add_guest(guest)
+      nested_group.add_guest(reporter)
+      nested_group.add_guest(developer)
+      nested_group.add_guest(master)
+
+      group.owners.destroy_all
+
+      group.add_guest(owner)
+      nested_group.add_owner(owner)
+    end
+
+    subject { described_class.new(current_user, nested_group) }
 
     context 'with no user' do
       let(:current_user) { nil }
 
       it do
-        is_expected.not_to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_disallowed(:read_group)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -126,9 +155,10 @@ describe GroupPolicy, models: true do
       let(:current_user) { guest }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(:read_group)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -136,9 +166,10 @@ describe GroupPolicy, models: true do
       let(:current_user) { reporter }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(:read_group)
+        expect_allowed(*reporter_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -146,9 +177,10 @@ describe GroupPolicy, models: true do
       let(:current_user) { developer }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.not_to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(:read_group)
+        expect_allowed(*reporter_permissions)
+        expect_disallowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -156,9 +188,10 @@ describe GroupPolicy, models: true do
       let(:current_user) { master }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.to include(*master_permissions)
-        is_expected.not_to include(*owner_permissions)
+        expect_allowed(:read_group)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*master_permissions)
+        expect_disallowed(*owner_permissions)
       end
     end
 
@@ -166,9 +199,10 @@ describe GroupPolicy, models: true do
       let(:current_user) { owner }
 
       it do
-        is_expected.to include(:read_group)
-        is_expected.to include(*master_permissions)
-        is_expected.to include(*owner_permissions)
+        expect_allowed(:read_group)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*master_permissions)
+        expect_allowed(*owner_permissions)
       end
     end
   end

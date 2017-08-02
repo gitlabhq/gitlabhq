@@ -48,15 +48,14 @@ module Projects
 
       save_project_and_import_data(import_data)
 
-      @project.import_start if @project.import?
-
       after_create_actions if @project.persisted?
 
       if @project.errors.empty?
-        @project.add_import_job if @project.import?
+        @project.import_schedule if @project.import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
+
       @project
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "

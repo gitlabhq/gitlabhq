@@ -98,34 +98,30 @@ module Gitlab
       end
     end
 
-    def warn_user_is_not_gitlab
-      unless @warned_user_not_gitlab
-        gitlab_user = Gitlab.config.gitlab.user
-        current_user = run_command(%w(whoami)).chomp
-        unless current_user == gitlab_user
-          puts " Warning ".color(:black).background(:yellow)
-          puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
-          puts "  Things may work\/fail for the wrong reasons."
-          puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
-          puts ""
-        end
-        @warned_user_not_gitlab = true
-      end
+    def gitlab_user
+      Gitlab.config.gitlab.user
     end
 
-    # Tries to configure git itself
-    #
-    # Returns true if all subcommands were successfull (according to their exit code)
-    # Returns false if any or all subcommands failed.
-    def auto_fix_git_config(options)
-      if !@warned_user_not_gitlab
-        command_success = options.map do |name, value|
-          system(*%W(#{Gitlab.config.git.bin_path} config --global #{name} #{value}))
-        end
+    def is_gitlab_user?
+      return @is_gitlab_user unless @is_gitlab_user.nil?
 
-        command_success.all?
-      else
-        false
+      current_user = run_command(%w(whoami)).chomp
+      @is_gitlab_user = current_user == gitlab_user
+    end
+
+    def warn_user_is_not_gitlab
+      return if @warned_user_not_gitlab
+
+      unless is_gitlab_user?
+        current_user = run_command(%w(whoami)).chomp
+
+        puts " Warning ".color(:black).background(:yellow)
+        puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
+        puts "  Things may work\/fail for the wrong reasons."
+        puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
+        puts ""
+
+        @warned_user_not_gitlab = true
       end
     end
 
@@ -157,7 +153,6 @@ module Gitlab
 
       clone_repo(repo, target_dir) unless Dir.exist?(target_dir)
       checkout_version(version, target_dir)
-      reset_to_version(version, target_dir)
     end
 
     def clone_repo(repo, target_dir)
@@ -165,12 +160,8 @@ module Gitlab
     end
 
     def checkout_version(version, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet])
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout --quiet #{version}])
-    end
-
-    def reset_to_version(version, target_dir)
-      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} reset --hard #{version}])
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} fetch --quiet origin #{version}])
+      run_command!(%W[#{Gitlab.config.git.bin_path} -C #{target_dir} checkout -f --quiet FETCH_HEAD --])
     end
   end
 end

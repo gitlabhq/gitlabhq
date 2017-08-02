@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', js: true do
   include DragTo
 
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
@@ -12,14 +13,14 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    login_as(user)
+    sign_in(user)
   end
 
   context 'no lists' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'shows blank state' do
@@ -36,18 +37,18 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.board-blank-state')) do
         click_button("Nevermind, I'll use my own")
       end
-      expect(page).to have_selector('.board', count: 1)
+      expect(page).to have_selector('.board', count: 2)
     end
 
     it 'creates default lists' do
-      lists = ['To Do', 'Doing', 'Closed']
+      lists = ['Backlog', 'To Do', 'Doing', 'Closed']
 
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')
       end
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 3)
+      expect(page).to have_selector('.board', count: 4)
 
       page.all('.board').each_with_index do |list, i|
         expect(list.find('.board-title')).to have_content(lists[i])
@@ -81,33 +82,29 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue9) { create(:labeled_issue, project: project, labels: [planning, testing, bug, accepting], relative_position: 1) }
 
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 3)
-      expect(find('.board:nth-child(1)')).to have_selector('.card')
+      expect(page).to have_selector('.board', count: 4)
       expect(find('.board:nth-child(2)')).to have_selector('.card')
       expect(find('.board:nth-child(3)')).to have_selector('.card')
-    end
-
-    it 'shows lists' do
-      expect(page).to have_selector('.board', count: 3)
+      expect(find('.board:nth-child(4)')).to have_selector('.card')
     end
 
     it 'shows description tooltip on list title' do
-      page.within('.board:nth-child(1)') do
+      page.within('.board:nth-child(2)') do
         expect(find('.board-title span.has-tooltip')[:title]).to eq('Test')
       end
     end
 
     it 'shows issues in lists' do
-      wait_for_board_cards(1, 8)
-      wait_for_board_cards(2, 2)
+      wait_for_board_cards(2, 8)
+      wait_for_board_cards(3, 2)
     end
 
     it 'shows confidential issues with icon' do
-      page.within(find('.board', match: :first)) do
+      page.within(find('.board:nth-child(2)')) do
         expect(page).to have_selector('.confidential-icon', count: 1)
       end
     end
@@ -118,9 +115,9 @@ describe 'Issue Boards', feature: true, js: true do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(1)')).to have_selector('.card', count: 0)
       expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
-      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 1)
+      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
     end
 
     it 'search list' do
@@ -129,32 +126,32 @@ describe 'Issue Boards', feature: true, js: true do
 
       wait_for_requests
 
-      expect(find('.board:nth-child(1)')).to have_selector('.card', count: 1)
-      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
       expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 0)
     end
 
     it 'allows user to delete board' do
-      page.within(find('.board:nth-child(1)')) do
+      page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'removes checkmark in new list dropdown after deleting' do
       click_button 'Add list'
       wait_for_requests
 
-      page.within(find('.board:nth-child(1)')) do
+      page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end
 
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'infinite scrolls list' do
@@ -162,21 +159,21 @@ describe 'Issue Boards', feature: true, js: true do
         create(:labeled_issue, project: project, labels: [planning])
       end
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
-      page.within(find('.board', match: :first)) do
+      page.within(find('.board:nth-child(2)')) do
         expect(page.find('.board-header')).to have_content('58')
         expect(page).to have_selector('.card', count: 20)
         expect(page).to have_content('Showing 20 of 58 issues')
 
-        evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+        evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
-        evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+        evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
         expect(page).to have_selector('.card', count: 58)
@@ -186,83 +183,83 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'closed' do
       it 'shows list of closed issues' do
-        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 1)
         wait_for_requests
       end
 
       it 'moves issue to closed' do
-        drag(list_from_index: 0, list_to_index: 2)
+        drag(list_from_index: 1, list_to_index: 3)
 
-        wait_for_board_cards(1, 7)
-        wait_for_board_cards(2, 2)
+        wait_for_board_cards(2, 7)
         wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 2)
 
-        expect(find('.board:nth-child(1)')).not_to have_content(issue9.title)
-        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 2)
-        expect(find('.board:nth-child(3)')).to have_content(issue9.title)
-        expect(find('.board:nth-child(3)')).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).not_to have_content(issue9.title)
+        expect(find('.board:nth-child(4)')).to have_selector('.card', count: 2)
+        expect(find('.board:nth-child(4)')).to have_content(issue9.title)
+        expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
 
       it 'removes all of the same issue to closed' do
-        drag(list_from_index: 0, list_to_index: 2)
+        drag(list_from_index: 1, list_to_index: 3)
 
-        wait_for_board_cards(1, 7)
-        wait_for_board_cards(2, 2)
+        wait_for_board_cards(2, 7)
         wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 2)
 
-        expect(find('.board:nth-child(1)')).not_to have_content(issue9.title)
-        expect(find('.board:nth-child(3)')).to have_content(issue9.title)
-        expect(find('.board:nth-child(3)')).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).not_to have_content(issue9.title)
+        expect(find('.board:nth-child(4)')).to have_content(issue9.title)
+        expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
     end
 
     context 'lists' do
       it 'changes position of list' do
-        drag(list_from_index: 1, list_to_index: 0, selector: '.board-header')
+        drag(list_from_index: 2, list_to_index: 1, selector: '.board-header')
 
-        wait_for_board_cards(1, 2)
-        wait_for_board_cards(2, 8)
-        wait_for_board_cards(3, 1)
-
-        expect(find('.board:nth-child(1)')).to have_content(development.title)
-        expect(find('.board:nth-child(1)')).to have_content(planning.title)
-      end
-
-      it 'issue moves between lists' do
-        drag(list_from_index: 0, from_index: 1, list_to_index: 1)
-
-        wait_for_board_cards(1, 7)
         wait_for_board_cards(2, 2)
-        wait_for_board_cards(3, 1)
+        wait_for_board_cards(3, 8)
+        wait_for_board_cards(4, 1)
 
-        expect(find('.board:nth-child(2)')).to have_content(issue6.title)
-        expect(find('.board:nth-child(2)').all('.card').last).not_to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
       it 'issue moves between lists' do
-        drag(list_from_index: 1, list_to_index: 0)
+        drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
-        wait_for_board_cards(1, 9)
-        wait_for_board_cards(2, 1)
+        wait_for_board_cards(2, 7)
+        wait_for_board_cards(3, 2)
+        wait_for_board_cards(4, 1)
+
+        expect(find('.board:nth-child(3)')).to have_content(issue6.title)
+        expect(find('.board:nth-child(3)').all('.card').last).not_to have_content(development.title)
+      end
+
+      it 'issue moves between lists' do
+        drag(list_from_index: 2, list_to_index: 1)
+
+        wait_for_board_cards(2, 9)
         wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 1)
 
-        expect(find('.board:nth-child(1)')).to have_content(issue7.title)
-        expect(find('.board:nth-child(1)').all('.card').first).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).to have_content(issue7.title)
+        expect(find('.board:nth-child(2)').all('.card').first).not_to have_content(planning.title)
       end
 
       it 'issue moves from closed' do
-        drag(list_from_index: 2, list_to_index: 1)
+        drag(list_from_index: 2, list_to_index: 3)
 
-        expect(find('.board:nth-child(2)')).to have_content(issue8.title)
+        wait_for_board_cards(2, 8)
+        wait_for_board_cards(3, 1)
+        wait_for_board_cards(4, 2)
 
-        wait_for_board_cards(1, 8)
-        wait_for_board_cards(2, 3)
-        wait_for_board_cards(3, 0)
+        expect(find('.board:nth-child(4)')).to have_content(issue8.title)
       end
 
       context 'issue card' do
         it 'shows assignee' do
-          page.within(find('.board', match: :first)) do
+          page.within(find('.board:nth-child(2)')) do
             expect(page).to have_selector('.avatar', count: 1)
           end
         end
@@ -290,7 +287,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_requests
 
-          expect(page).to have_selector('.board', count: 4)
+          expect(page).to have_selector('.board', count: 5)
         end
 
         it 'creates new list for Backlog label' do
@@ -303,7 +300,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_requests
 
-          expect(page).to have_selector('.board', count: 4)
+          expect(page).to have_selector('.board', count: 5)
         end
 
         it 'creates new list for Closed label' do
@@ -316,7 +313,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           wait_for_requests
 
-          expect(page).to have_selector('.board', count: 4)
+          expect(page).to have_selector('.board', count: 5)
         end
 
         it 'keeps dropdown open after adding new list' do
@@ -348,7 +345,7 @@ describe 'Issue Boards', feature: true, js: true do
           wait_for_requests
           wait_for_requests
 
-          expect(page).to have_selector('.board', count: 4)
+          expect(page).to have_selector('.board', count: 5)
         end
       end
     end
@@ -360,8 +357,8 @@ describe 'Issue Boards', feature: true, js: true do
         submit_filter
 
         wait_for_requests
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
       end
 
       it 'filters by assignee' do
@@ -371,8 +368,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_requests
 
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
       end
 
       it 'filters by milestone' do
@@ -381,9 +378,9 @@ describe 'Issue Boards', feature: true, js: true do
         submit_filter
 
         wait_for_requests
-        wait_for_board_cards(1, 1)
-        wait_for_board_cards(2, 0)
+        wait_for_board_cards(2, 1)
         wait_for_board_cards(3, 0)
+        wait_for_board_cards(4, 0)
       end
 
       it 'filters by label' do
@@ -392,8 +389,8 @@ describe 'Issue Boards', feature: true, js: true do
         submit_filter
 
         wait_for_requests
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
       end
 
       it 'filters by label with space after reload' do
@@ -403,17 +400,17 @@ describe 'Issue Boards', feature: true, js: true do
 
         # Test after reload
         page.evaluate_script 'window.location.reload()'
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
 
         wait_for_requests
 
-        page.within(find('.board', match: :first)) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(find('.board:nth-child(2)')) do
+        page.within(find('.board:nth-child(3)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -424,12 +421,12 @@ describe 'Issue Boards', feature: true, js: true do
         click_filter_link(testing.title)
         submit_filter
 
-        wait_for_board_cards(1, 1)
+        wait_for_board_cards(2, 1)
 
         find('.clear-search').click
         submit_filter
 
-        wait_for_board_cards(1, 8)
+        wait_for_board_cards(2, 8)
       end
 
       it 'infinite scrolls list with label filter' do
@@ -443,17 +440,17 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_requests
 
-        page.within(find('.board', match: :first)) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('51')
           expect(page).to have_selector('.card', count: 20)
           expect(page).to have_content('Showing 20 of 51 issues')
 
-          evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
-          evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+          evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 51)
           expect(page).to have_content('Showing all issues')
@@ -471,12 +468,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_requests
 
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
       end
 
       it 'filters by clicking label button on issue' do
-        page.within(find('.board', match: :first)) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page).to have_selector('.card', count: 8)
           expect(find('.card', match: :first)).to have_content(bug.title)
           click_button(bug.title)
@@ -489,12 +486,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_requests
 
-        wait_for_board_cards(1, 1)
-        wait_for_empty_boards((2..3))
+        wait_for_board_cards(2, 1)
+        wait_for_empty_boards((3..4))
       end
 
       it 'removes label filter by clicking label button on issue' do
-        page.within(find('.board', match: :first)) do
+        page.within(find('.board:nth-child(2)')) do
           page.within(find('.card', match: :first)) do
             click_button(bug.title)
           end
@@ -511,7 +508,7 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'keyboard shortcuts' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -523,8 +520,8 @@ describe 'Issue Boards', feature: true, js: true do
 
   context 'signed out user' do
     before do
-      logout
-      visit namespace_project_board_path(project.namespace, project, board)
+      sign_out(:user)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
@@ -546,9 +543,9 @@ describe 'Issue Boards', feature: true, js: true do
 
     before do
       project.team << [user_guest, :guest]
-      logout
-      login_as(user_guest)
-      visit namespace_project_board_path(project.namespace, project, board)
+      sign_out(:user)
+      sign_in(user_guest)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 

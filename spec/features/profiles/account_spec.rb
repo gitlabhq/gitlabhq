@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Profile > Account', feature: true do
+feature 'Profile > Account' do
   given(:user) { create(:user, username: 'foo') }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'Change username' do
@@ -27,25 +27,30 @@ feature 'Profile > Account', feature: true do
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, namespace: user.namespace, path: 'project') }
+      given!(:project) { create(:empty_project, namespace: user.namespace) }
       given(:new_project_path) { "/#{new_username}/#{project.path}" }
       given(:old_project_path) { "/#{user.username}/#{project.path}" }
 
-      before(:context) { TestEnv.clean_test_path }
-      after(:example) { TestEnv.clean_test_path }
+      before(:context) do
+        TestEnv.clean_test_path
+      end
+
+      after(:example) do
+        TestEnv.clean_test_path
+      end
 
       scenario 'the project is accessible via the new path' do
         update_username(new_username)
         visit new_project_path
         expect(current_path).to eq(new_project_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
 
       scenario 'the old project path redirects to the new path' do
         update_username(new_username)
         visit old_project_path
         expect(current_path).to eq(new_project_path)
-        expect(find('h1.project-title')).to have_content(project.name)
+        expect(find('h1.title')).to have_content(project.path)
       end
     end
   end

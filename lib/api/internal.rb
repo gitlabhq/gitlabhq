@@ -32,31 +32,24 @@ module API
 
         actor.update_last_used_at if actor.is_a?(Key)
 
-        access_checker = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
-        access_status = access_checker
-          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities)
-          .check(params[:action], params[:changes])
+        access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+        access_checker = access_checker_klass
+          .new(actor, project, protocol, authentication_abilities: ssh_authentication_abilities, redirected_path: redirected_path)
 
-        response = { status: access_status.status, message: access_status.message }
-
-        if access_status.status
-          log_user_activity(actor)
-
-          # Project id to pass between components that don't share/don't have
-          # access to the same filesystem mounts
-          response[:gl_repository] = Gitlab::GlRepository.gl_repository(project, wiki?)
-
-          # Return the repository full path so that gitlab-shell has it when
-          # handling ssh commands
-          response[:repository_path] =
-            if wiki?
-              project.wiki.repository.path_to_repo
-            else
-              project.repository.path_to_repo
-            end
+        begin
+          access_checker.check(params[:action], params[:changes])
+        rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
+          return { status: false, message: e.message }
         end
 
-        response
+        log_user_activity(actor)
+
+        {
+          status: true,
+          gl_repository: gl_repository,
+          repository_path: repository_path,
+          gitaly: gitaly_payload(params[:action])
+        }
       end
 
       post "/lfs_authenticate" do
@@ -79,11 +72,16 @@ module API
       end
 
       #
-      # Discover user by ssh key
+      # Discover user by ssh key or user id
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        if params[:key_id]
+          key = Key.find(params[:key_id])
+          user = key.user
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+        end
+        present user, with: Entities::UserSafe
       end
 
       get "/check" do
@@ -94,8 +92,16 @@ module API
         }
       end
 
+      get "/broadcast_messages" do
+        if messages = BroadcastMessage.current
+          present messages, with: Entities::BroadcastMessage
+        else
+          []
+        end
+      end
+
       get "/broadcast_message" do
-        if message = BroadcastMessage.current
+        if message = BroadcastMessage.current&.last
           present message, with: Entities::BroadcastMessage
         else
           {}
@@ -127,8 +133,11 @@ module API
           return { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
-        codes = user.generate_otp_backup_codes!
-        user.save!
+        codes = nil
+
+        ::Users::UpdateService.new(user).execute! do |user|
+          codes = user.generate_otp_backup_codes!
+        end
 
         { success: true, recovery_codes: codes }
       end
@@ -141,7 +150,7 @@ module API
         #
         # begin
         #   repository = wiki? ? project.wiki.repository : project.repository
-        #   Gitlab::GitalyClient::Notifications.new(repository.raw_repository).post_receive
+        #   Gitlab::GitalyClient::NotificationService.new(repository.raw_repository).post_receive
         # rescue GRPC::Unavailable => e
         #   render_api_error!(e, 500)
         # end

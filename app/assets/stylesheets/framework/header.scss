@@ -34,6 +34,8 @@ header {
     top: 0;
     left: 0;
     right: 0;
+    color: $gl-text-color-secondary;
+    border-radius: 0;
 
     @media (max-width: $screen-xs-min) {
       padding: 0 16px;
@@ -59,7 +61,7 @@ header {
       padding: 0;
 
       .nav > li > a {
-        color: $gl-text-color-secondary;
+        color: currentColor;
         font-size: 18px;
         padding: 0;
         margin: (($header-height - 28) / 2) 3px;
@@ -84,7 +86,7 @@ header {
         &:hover,
         &:focus,
         &:active {
-          background-color: $gray-light;
+          background-color: transparent;
           color: $gl-text-color;
 
           svg {
@@ -96,13 +98,19 @@ header {
           font-size: 14px;
         }
 
+        .fa-chevron-down {
+          position: relative;
+          top: -3px;
+          font-size: 10px;
+        }
+
         svg {
           position: relative;
           top: 2px;
           height: 17px;
           // hack to get SVG to line up with FA icons
           width: 23px;
-          fill: $gl-text-color-secondary;
+          fill: currentColor;
         }
       }
 
@@ -120,6 +128,22 @@ header {
         &.active {
           color: $gl-text-color-secondary;
         }
+      }
+    }
+  }
+
+  &.navbar-gitlab-new {
+    .fa-times {
+      display: none;
+    }
+
+    .menu-expanded {
+      .fa-ellipsis-v {
+        display: none;
+      }
+
+      .fa-times {
+        display: block;
       }
     }
   }
@@ -162,6 +186,19 @@ header {
     position: relative;
     min-height: $header-height;
     padding-left: 30px;
+
+    &.menu-expanded {
+      @media (max-width: $screen-xs-max) {
+        .header-logo,
+        .title-container {
+          display: none;
+        }
+
+        .navbar-collapse {
+          display: block;
+        }
+      }
+    }
 
     .dropdown-menu {
       margin-top: -5px;
@@ -225,7 +262,7 @@ header {
       }
 
       a {
-        color: $gl-text-color;
+        color: currentColor;
 
         &:hover {
           text-decoration: underline;
@@ -276,6 +313,29 @@ header {
   .impersonation i {
     color: $red-500;
   }
+
+  // TODO: fallback to global style
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
+}
+
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
 }
 
 .navbar-nav {
@@ -322,7 +382,7 @@ header {
       padding-left: 5px;
 
       .nav > li:not(.hidden-xs) {
-        display: table-cell!important;
+        display: table-cell !important;
         width: 25%;
 
         a {
@@ -346,6 +406,8 @@ header {
     width: auto;
     min-width: 140px;
     margin-top: -5px;
+    color: $gl-text-color;
+    left: auto;
 
     .current-user {
       padding: 5px 18px;

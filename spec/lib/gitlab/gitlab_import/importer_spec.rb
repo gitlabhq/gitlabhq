@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::Importer, lib: true do
+describe Gitlab::GitlabImport::Importer do
   include ImportSpecHelper
 
   describe '#execute' do
@@ -45,8 +45,8 @@ describe Gitlab::GitlabImport::Importer, lib: true do
     def stub_request(path, body)
       url = "https://gitlab.com/api/v3/projects/asd%2Fvim/#{path}?page=1&per_page=100"
 
-      WebMock.stub_request(:get, url).
-        to_return(
+      WebMock.stub_request(:get, url)
+        .to_return(
           headers: { 'Content-Type' => 'application/json' },
           body: body
         )

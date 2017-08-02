@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter, lib: true do
+describe Banzai::Filter::RelativeLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,
@@ -26,7 +26,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   let(:project)        { create(:project, :repository) }
-  let(:project_path)   { project.path_with_namespace }
+  let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
@@ -72,15 +72,15 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
 
   it 'ignores ref if commit is passed' do
     doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
-    expect(doc.at_css('a')['href']).
-      to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
+    expect(doc.at_css('a')['href'])
+      .to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
   end
 
   shared_examples :valid_repository do
     it 'rebuilds absolute URL for a file in the repo' do
       doc = filter(link('/doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'ignores absolute URLs with two leading slashes' do
@@ -90,71 +90,71 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
 
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with leading ./' do
       doc = filter(link('./doc/api/README.md'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up one directory' do
       relative_link = link('../api/README.md')
       doc = filter(relative_link, requested_path: 'doc/update/7.14-to-8.0.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo up multiple directories' do
       relative_link = link('../../../api/README.md')
       doc = filter(relative_link, requested_path: 'doc/foo/bar/baz/README.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repository root' do
       relative_link = link('../README.md')
       doc = filter(relative_link, requested_path: 'doc/some-file.md')
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/README.md"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/README.md"
     end
 
     it 'rebuilds relative URL for a file in the repo with an anchor' do
       doc = filter(link('README.md#section'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/blob/#{ref}/README.md#section"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/blob/#{ref}/README.md#section"
     end
 
     it 'rebuilds relative URL for a directory in the repo' do
       doc = filter(link('doc/api/'))
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/tree/#{ref}/doc/api"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/tree/#{ref}/doc/api"
     end
 
     it 'rebuilds relative URL for an image in the repo' do
       doc = filter(image('files/images/logo-black.png'))
 
-      expect(doc.at_css('img')['src']).
-        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+      expect(doc.at_css('img')['src'])
+        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for link to an image in the repo' do
       doc = filter(link('files/images/logo-black.png'))
 
-      expect(doc.at_css('a')['href']).
-        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
     end
 
     it 'rebuilds relative URL for a video in the repo' do
       doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
 
-      expect(doc.at_css('video')['src']).
-        to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
+      expect(doc.at_css('video')['src'])
+        .to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
     end
 
     it 'does not modify relative URL with an anchor only' do

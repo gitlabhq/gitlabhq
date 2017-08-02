@@ -16,7 +16,7 @@ the configuration options as follows:
 ```yml
   gravatar:
     enabled: true
-    # gravatar URLs: possible placeholders: %{hash} %{size} %{email}
+    # gravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
     plain_url: "http://cdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 
@@ -25,7 +25,7 @@ the configuration options as follows:
 ```yml
   gravatar:
     enabled: true
-    # gravatar URLs: possible placeholders: %{hash} %{size} %{email}
+    # gravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
     ssl_url: "https://seccdn.libravatar.org/avatar/%{hash}?s=%{size}&d=identicon"
 ```
 

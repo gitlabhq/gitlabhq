@@ -2,14 +2,14 @@ require 'rails_helper'
 
 feature 'issue move to another project' do
   let(:user) { create(:user) }
-  let(:old_project) { create(:project) }
+  let(:old_project) { create(:project, :repository) }
   let(:text) { 'Some issue description' }
 
   let(:issue) do
     create(:issue, description: text, project: old_project, author: user)
   end
 
-  background { login_as(user) }
+  background { sign_in(user) }
 
   context 'user does not have permission to move issue' do
     background do
@@ -25,8 +25,8 @@ feature 'issue move to another project' do
 
   context 'user has permission to move issue' do
     let!(:mr) { create(:merge_request, source_project: old_project) }
-    let(:new_project) { create(:project) }
-    let(:new_project_search) { create(:project) }
+    let(:new_project) { create(:empty_project) }
+    let(:new_project_search) { create(:empty_project) }
     let(:text) { "Text with #{mr.to_reference}" }
     let(:cross_reference) { old_project.to_reference(new_project) }
 
@@ -38,20 +38,19 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project', js: true do
-      find('#move_to_project_id', visible: false).set(new_project.id)
+      find('#issuable-move', visible: false).set(new_project.id)
       click_button('Save changes')
-
-      expect(current_url).to include project_path(new_project)
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
       expect(page).to have_content(issue.title)
+      expect(page.current_path).to include project_path(new_project)
     end
 
     scenario 'searching project dropdown', js: true do
       new_project_search.team << [user, :reporter]
 
-      page.within '.js-move-dropdown' do
+      page.within '.detail-page-description' do
         first('.select2-choice').click
       end
 
@@ -64,12 +63,12 @@ feature 'issue move to another project' do
     end
 
     context 'user does not have permission to move the issue to a project', js: true do
-      let!(:private_project) { create(:project, :private) }
-      let(:another_project) { create(:project) }
+      let!(:private_project) { create(:empty_project, :private) }
+      let(:another_project) { create(:empty_project) }
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        click_link 'Select project'
+        click_link 'Move to a different project'
 
         page.within '.select2-results' do
           expect(page).to have_content 'No project'
@@ -96,10 +95,6 @@ feature 'issue move to another project' do
   end
 
   def issue_path(issue)
-    namespace_project_issue_path(issue.project.namespace, issue.project, issue)
-  end
-
-  def project_path(project)
-    namespace_project_path(new_project.namespace, new_project)
+    project_issue_path(issue.project, issue)
   end
 end

@@ -94,8 +94,8 @@ gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
 
   startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
 
-  if (selectedSplit.length > 1 && (!wrap || (blockTag != null))) {
-    if (blockTag != null) {
+  if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
+    if (blockTag != null && blockTag !== '') {
       insertText = this.blockTagText(text, textArea, blockTag, selected);
     } else {
       insertText = selectedSplit.map(function(val) {
@@ -170,7 +170,7 @@ gl.text.init = function(form) {
   });
 };
 gl.text.removeListeners = function(form) {
-  return $('.js-md', form).off();
+  return $('.js-md', form).off('click');
 };
 gl.text.humanize = function(string) {
   return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);

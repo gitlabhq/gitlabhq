@@ -95,7 +95,7 @@ module Gitlab
           labels = import_issue_labels(raw_issue)
 
           assignee_id = nil
-          if raw_issue.has_key?("owner")
+          if raw_issue.key?("owner")
             username = user_map[raw_issue["owner"]["name"]]
 
             if username.start_with?("@")
@@ -144,7 +144,7 @@ module Gitlab
       def import_issue_comments(issue, comments)
         Note.transaction do
           while raw_comment = comments.shift
-            next if raw_comment.has_key?("deletedBy")
+            next if raw_comment.key?("deletedBy")
 
             content     = format_content(raw_comment["content"])
             updates     = format_updates(raw_comment["updates"])
@@ -235,15 +235,15 @@ module Gitlab
       def format_updates(raw_updates)
         updates = []
 
-        if raw_updates.has_key?("status")
+        if raw_updates.key?("status")
           updates << "*Status: #{raw_updates["status"]}*"
         end
 
-        if raw_updates.has_key?("owner")
+        if raw_updates.key?("owner")
           updates << "*Owner: #{user_map[raw_updates["owner"]]}*"
         end
 
-        if raw_updates.has_key?("cc")
+        if raw_updates.key?("cc")
           cc = raw_updates["cc"].map do |l|
             deleted = l.start_with?("-")
             l = l[1..-1] if deleted
@@ -255,7 +255,7 @@ module Gitlab
           updates << "*Cc: #{cc.join(", ")}*"
         end
 
-        if raw_updates.has_key?("labels")
+        if raw_updates.key?("labels")
           labels = raw_updates["labels"].map do |l|
             deleted = l.start_with?("-")
             l = l[1..-1] if deleted
@@ -267,11 +267,11 @@ module Gitlab
           updates << "*Labels: #{labels.join(", ")}*"
         end
 
-        if raw_updates.has_key?("mergedInto")
+        if raw_updates.key?("mergedInto")
           updates << "*Merged into: ##{raw_updates["mergedInto"]}*"
         end
 
-        if raw_updates.has_key?("blockedOn")
+        if raw_updates.key?("blockedOn")
           blocked_ons = raw_updates["blockedOn"].map do |raw_blocked_on|
             format_blocking_updates(raw_blocked_on)
           end
@@ -279,7 +279,7 @@ module Gitlab
           updates << "*Blocked on: #{blocked_ons.join(", ")}*"
         end
 
-        if raw_updates.has_key?("blocking")
+        if raw_updates.key?("blocking")
           blockings = raw_updates["blocking"].map do |raw_blocked_on|
             format_blocking_updates(raw_blocked_on)
           end

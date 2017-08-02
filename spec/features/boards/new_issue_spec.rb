@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards new issue', feature: true, js: true do
+describe 'Issue Boards new issue', js: true do
   let(:project) { create(:empty_project, :public) }
   let(:board)   { create(:board, project: project) }
   let!(:list)   { create(:list, board: board, position: 0) }
@@ -10,27 +10,27 @@ describe 'Issue Boards new issue', feature: true, js: true do
     before do
       project.team << [user, :master]
 
-      login_as(user)
+      sign_in(user)
 
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
 
-      expect(page).to have_selector('.board', count: 2)
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'displays new issue button' do
-      expect(page).to have_selector('.board-issue-count-holder .btn', count: 1)
+      expect(first('.board')).to have_selector('.issue-count-badge-add-button', count: 1)
     end
 
     it 'does not display new issue button in closed list' do
-      page.within('.board:nth-child(2)') do
-        expect(page).not_to have_selector('.board-issue-count-holder .btn')
+      page.within('.board:nth-child(3)') do
+        expect(page).not_to have_selector('.issue-count-badge-add-button')
       end
     end
 
     it 'shows form when clicking button' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
 
         expect(page).to have_selector('.board-new-issue-form')
       end
@@ -38,7 +38,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
     it 'hides form when clicking cancel' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
 
         expect(page).to have_selector('.board-new-issue-form')
 
@@ -50,7 +50,7 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
     it 'creates new issue' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -60,14 +60,14 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
       wait_for_requests
 
-      page.within(first('.board .board-issue-count')) do
+      page.within(first('.board .issue-count-badge-count')) do
         expect(page).to have_content('1')
       end
     end
 
     it 'shows sidebar when creating new issue' do
       page.within(first('.board')) do
-        find('.board-issue-count-holder .btn').click
+        find('.issue-count-badge-add-button').click
       end
 
       page.within(first('.board-new-issue-form')) do
@@ -83,12 +83,12 @@ describe 'Issue Boards new issue', feature: true, js: true do
 
   context 'unauthorized user' do
     before do
-      visit namespace_project_board_path(project.namespace, project, board)
+      visit project_board_path(project, board)
       wait_for_requests
     end
 
     it 'does not display new issue button' do
-      expect(page).to have_selector('.board-issue-count-holder .btn', count: 0)
+      expect(page).to have_selector('.issue-count-badge-add-button', count: 0)
     end
   end
 end

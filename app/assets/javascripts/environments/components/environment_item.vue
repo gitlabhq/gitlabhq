@@ -9,7 +9,7 @@ import StopComponent from './environment_stop.vue';
 import RollbackComponent from './environment_rollback.vue';
 import TerminalButtonComponent from './environment_terminal_button.vue';
 import MonitoringButtonComponent from './environment_monitoring.vue';
-import CommitComponent from '../../vue_shared/components/commit';
+import CommitComponent from '../../vue_shared/components/commit.vue';
 import eventHub from '../event_hub';
 
 /**
@@ -403,6 +403,14 @@ export default {
       return '';
     },
 
+    displayEnvironmentActions() {
+      return this.hasManualActions ||
+             this.externalURL ||
+             this.monitoringUrl ||
+             this.hasStopAction ||
+             this.canRetry;
+    },
+
     /**
      * Constructs folder URL based on the current location and the folder id.
      *
@@ -421,14 +429,21 @@ export default {
 };
 </script>
 <template>
-  <tr :class="{ 'js-child-row': model.isChildren }">
-    <td>
+  <div
+    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }"
+    role="row">
+    <div class="table-section section-10" role="gridcell">
+      <div
+        v-if="!model.isFolder"
+        class="table-mobile-header"
+        role="rowheader">
+        Environment
+      </div>
       <a
         v-if="!model.isFolder"
-        class="environment-name"
-        :class="{ 'prepend-left-default': model.isChildren }"
+        class="environment-name flex-truncate-parent table-mobile-content"
         :href="environmentPath">
-        {{model.name}}
+        <span class="flex-truncate-child">{{model.name}}</span>
       </a>
       <span
         v-else
@@ -461,9 +476,9 @@ export default {
           {{model.size}}
         </span>
       </span>
-    </td>
+    </div>
 
-    <td class="deployment-column">
+    <div class="table-section section-10 deployment-column hidden-xs hidden-sm" role="gridcell">
       <span v-if="shouldRenderDeploymentID">
         {{deploymentInternalId}}
       </span>
@@ -478,21 +493,27 @@ export default {
           :tooltip-text="deploymentUser.username"
         />
       </span>
-    </td>
+    </div>
 
-    <td class="environments-build-cell">
+    <div class="table-section section-15 hidden-xs hidden-sm" role="gridcell">
       <a
         v-if="shouldRenderBuildName"
-        class="build-link"
+        class="build-link flex-truncate-parent"
         :href="buildPath">
-        {{buildName}}
+        <span class="flex-truncate-child">{{buildName}}</span>
       </a>
-    </td>
+    </div>
 
-    <td>
+    <div class="table-section section-25" role="gridcell">
+      <div
+        v-if="!model.isFolder"
+        role="rowheader"
+        class="table-mobile-header">
+        Commit
+      </div>
       <div
         v-if="!model.isFolder && hasLastDeploymentKey"
-        class="js-commit-component">
+        class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
           :commit-ref="commitRef"
@@ -501,25 +522,34 @@ export default {
           :title="commitTitle"
           :author="commitAuthor"/>
       </div>
-      <p
+      <div
         v-if="!model.isFolder && !hasLastDeploymentKey"
-        class="commit-title">
+        class="commit-title table-mobile-content">
         No deployments yet
-      </p>
-    </td>
+      </div>
+    </div>
 
-    <td>
-      <span
-        v-if="!model.isFolder && canShowDate"
-        class="environment-created-date-timeago">
-        {{createdDate}}
-      </span>
-    </td>
-
-    <td class="environments-actions">
+    <div class="table-section section-10" role="gridcell">
       <div
         v-if="!model.isFolder"
-        class="btn-group pull-right"
+        role="rowheader"
+        class="table-mobile-header">
+        Updated
+      </div>
+      <span
+        v-if="!model.isFolder && canShowDate"
+        class="environment-created-date-timeago table-mobile-content">
+        {{createdDate}}
+      </span>
+    </div>
+
+    <div
+      v-if="!model.isFolder && displayEnvironmentActions"
+      class="table-section section-30 table-button-footer"
+      role="gridcell">
+
+      <div
+        class="btn-group table-action-buttons"
         role="group">
 
         <actions-component
@@ -553,6 +583,6 @@ export default {
           :retry-url="retryUrl"
           />
       </div>
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>

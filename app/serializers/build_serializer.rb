@@ -1,5 +1,5 @@
 class BuildSerializer < BaseSerializer
-  entity BuildEntity
+  entity JobEntity
 
   def represent_status(resource)
     data = represent(resource, { only: [:status] })

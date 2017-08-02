@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Label, models: true do
+describe Label do
   describe 'modules' do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Subscribable) }
@@ -59,8 +59,8 @@ describe Label, models: true do
 
   describe '#text_color' do
     it 'uses default color if color is missing' do
-      expect(LabelsHelper).to receive(:text_color_for_bg).with(Label::DEFAULT_COLOR).
-        and_return(spy)
+      expect(LabelsHelper).to receive(:text_color_for_bg).with(Label::DEFAULT_COLOR)
+        .and_return(spy)
 
       label = described_class.new(color: nil)
 

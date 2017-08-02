@@ -1,4 +1,4 @@
 = icon('info-circle fw')
 = succeed '.' do
   To learn more about this project, read
-  = link_to "the wiki", namespace_project_wikis_path(viewer.project.namespace, viewer.project)
+  = link_to "the wiki", get_project_wiki_path(viewer.project)

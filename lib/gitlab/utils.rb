@@ -21,5 +21,13 @@ module Gitlab
 
       nil
     end
+
+    def boolean_to_yes_no(bool)
+      if bool
+        'Yes'
+      else
+        'No'
+      end
+    end
   end
 end

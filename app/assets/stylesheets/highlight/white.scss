@@ -113,7 +113,7 @@ $white-gc-bg: #eaf2f5;
         border-color: $line-removed-dark;
 
         a {
-          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -122,7 +122,7 @@ $white-gc-bg: #eaf2f5;
         border-color: $line-added-dark;
 
         a {
-          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -163,7 +163,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-removed;
 
         &::before {
-          color: scale-color($line-number-old,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {
@@ -175,7 +175,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-added;
 
         &::before {
-          color: scale-color($line-number-new,$red: -30%, $green: -30%, $blue: -30%);
+          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {

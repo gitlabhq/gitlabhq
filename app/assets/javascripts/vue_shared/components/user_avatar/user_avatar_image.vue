@@ -16,11 +16,10 @@
 */
 
 import defaultAvatarUrl from 'images/no_avatar.png';
-import TooltipMixin from '../../mixins/tooltip';
+import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  mixins: [TooltipMixin],
   props: {
     imgSrc: {
       type: String,
@@ -53,6 +52,9 @@ export default {
       default: 'top',
     },
   },
+  directives: {
+    tooltip,
+  },
   computed: {
     tooltipContainer() {
       return this.tooltipText ? 'body' : null;
@@ -60,21 +62,27 @@ export default {
     avatarSizeClass() {
       return `s${this.size}`;
     },
+    // API response sends null when gravatar is disabled and
+    // we provide an empty string when we use it inside user avatar link.
+    // In both cases we should render the defaultAvatarUrl
+    imageSource() {
+      return this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+    },
   },
 };
 </script>
 
 <template>
   <img
+    v-tooltip
     class="avatar"
     :class="[avatarSizeClass, cssClasses]"
-    :src="imgSrc"
+    :src="imageSource"
     :width="size"
     :height="size"
     :alt="imgAlt"
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"
-    ref="tooltip"
   />
 </template>

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffNote, models: true do
+describe DiffNote do
   include RepoHelpers
 
   let(:merge_request) { create(:merge_request) }
@@ -160,12 +160,6 @@ describe DiffNote, models: true do
       context "when noteable is a commit" do
         let(:diff_note) { create(:diff_note_on_commit, project: project, position: position) }
 
-        it "doesn't use the DiffPositionUpdateService" do
-          expect(Notes::DiffPositionUpdateService).not_to receive(:new)
-
-          diff_note
-        end
-
         it "doesn't update the position" do
           diff_note
 
@@ -178,12 +172,6 @@ describe DiffNote, models: true do
         let(:diff_note) { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
 
         context "when the note is active" do
-          it "doesn't use the DiffPositionUpdateService" do
-            expect(Notes::DiffPositionUpdateService).not_to receive(:new)
-
-            diff_note
-          end
-
           it "doesn't update the position" do
             diff_note
 
@@ -197,18 +185,11 @@ describe DiffNote, models: true do
             allow(merge_request).to receive(:diff_refs).and_return(commit.diff_refs)
           end
 
-          it "uses the DiffPositionUpdateService" do
-            service = instance_double("Notes::DiffPositionUpdateService")
-            expect(Notes::DiffPositionUpdateService).to receive(:new).with(
-              project,
-              nil,
-              old_diff_refs: position.diff_refs,
-              new_diff_refs: commit.diff_refs,
-              paths: [path]
-            ).and_return(service)
-            expect(service).to receive(:execute)
-
+          it "updates the position" do
             diff_note
+
+            expect(diff_note.original_position).to eq(position)
+            expect(diff_note.position).not_to eq(position)
           end
         end
       end

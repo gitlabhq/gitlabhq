@@ -105,8 +105,8 @@ merge request.
   considered beta or experimental, put this info in a note, not in the heading.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
-  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`,
-  `@SeanPackham`. This is to ensure that no document with wrong heading is going
+  of the following GitLab members for a review: `@axil`, `@rspeicher`, `@marcia`.
+  This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected
 - Leave exactly one newline after a heading
@@ -388,8 +388,8 @@ the style below as a guide:
 1. Save the file and [restart] GitLab for the changes to take effect.
 
 
-[reconfigure]: path/to/administration/gitlab_restart.md#omnibus-gitlab-reconfigure
-[restart]: path/to/administration/gitlab_restart.md#installations-from-source
+[reconfigure]: path/to/administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: path/to/administration/restart_gitlab.md#installations-from-source
 ````
 
 In this case:

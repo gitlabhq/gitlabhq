@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', feature: true, js: true do
+feature 'Import/Export - project import integration test', js: true do
   include Select2Helper
 
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
@@ -19,7 +19,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     let!(:namespace) { create(:namespace, name: "asd", owner: user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'user imports an exported project successfully' do
@@ -46,14 +46,13 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     end
 
     scenario 'invalid project' do
-      project = create(:project, namespace: namespace)
+      project = create(:empty_project, namespace: namespace)
 
       visit new_project_path
 
       select2(namespace.id, from: '#project_namespace_id')
       fill_in :project_path, with: project.name, visible: true
       click_link 'GitLab export'
-
       attach_file('file', file)
       click_on 'Import project'
 
@@ -63,7 +62,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     end
 
     scenario 'project with no name' do
-      create(:project, namespace: namespace)
+      create(:empty_project, namespace: namespace)
 
       visit new_project_path
 
@@ -77,7 +76,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   context 'when limited to the default user namespace' do
     let(:user) { create(:user) }
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'passes correct namespace ID in the URL' do
@@ -98,6 +97,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   end
 
   def project_hook_exists?(project)
-    Gitlab::Git::Hook.new('post-receive', project.repository.path).exists?
+    Gitlab::Git::Hook.new('post-receive', project).exists?
   end
 end

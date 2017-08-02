@@ -77,7 +77,9 @@ import './shortcuts_navigation';
     ShortcutsIssuable.prototype.editIssue = function() {
       var $editBtn;
       $editBtn = $('.issuable-edit');
-      return gl.utils.visitUrl($editBtn.attr('href'));
+      // Need to click the element as on issues, editing is inline
+      // on merge request, editing is on a different page
+      $editBtn.get(0).click();
     };
 
     ShortcutsIssuable.prototype.openSidebarDropdown = function(name) {

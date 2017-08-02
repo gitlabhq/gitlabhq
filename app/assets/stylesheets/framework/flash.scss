@@ -16,6 +16,22 @@
     @extend .alert;
     @extend .alert-danger;
     margin: 0;
+
+    .flash-text,
+    .flash-action {
+      display: inline-block;
+    }
+
+    a.flash-action {
+      margin-left: 5px;
+      text-decoration: none;
+      font-weight: normal;
+      border-bottom: 1px solid;
+
+      &:hover {
+        border-color: transparent;
+      }
+    }
   }
 
   .flash-notice,

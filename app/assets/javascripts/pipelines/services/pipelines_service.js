@@ -33,8 +33,6 @@ export default class PipelinesService {
 
   /**
    * Post request for all pipelines actions.
-   * Endpoint content type needs to be:
-   * `Content-Type:application/x-www-form-urlencoded`
    *
    * @param  {String} endpoint
    * @return {Promise}

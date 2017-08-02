@@ -48,6 +48,7 @@ Example response:
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
+  "description": "Ruby test snippet",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -73,16 +74,17 @@ POST /snippets
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                |
-| ---------          | ----    | -------- | -----------                |
-| `title`            | String  | yes      | The title of a snippet     |
-| `file_name`        | String  | yes      | The name of a snippet file |
-| `content`          | String  | yes      | The content of a snippet   |
-| `visibility`       | String  | yes      | The snippet's visibility   |
+| Attribute          | Type    | Required | Description                  |
+| ---------          | ----    | -------- | -----------                  |
+| `title`            | String  | yes      | The title of a snippet       |
+| `file_name`        | String  | yes      | The name of a snippet file   |
+| `content`          | String  | yes      | The content of a snippet     |
+| `description`      | String  | no       | The description of a snippet |
+| `visibility`       | String  | no       | The snippet's visibility     |
 
 
 ``` bash
-curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "file_name": "test.txt", "visibility": "internal" }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
+curl --request POST --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets
 ```
 
 Example response:
@@ -92,6 +94,7 @@ Example response:
   "id": 1,
   "title": "This is a snippet",
   "file_name": "test.txt",
+  "description": "Hello World snippet",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -117,13 +120,14 @@ PUT /snippets/:id
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                |
-| ---------          | ----    | -------- | -----------                |
-| `id`               | Integer | yes      | The ID of a snippet        |
-| `title`            | String  | no       | The title of a snippet     |
-| `file_name`        | String  | no       | The name of a snippet file |
-| `content`          | String  | no       | The content of a snippet   |
-| `visibility`       | String  | no       | The snippet's visibility   |
+| Attribute          | Type    | Required | Description                  |
+| ---------          | ----    | -------- | -----------                  |
+| `id`               | Integer | yes      | The ID of a snippet          |
+| `title`            | String  | no       | The title of a snippet       |
+| `file_name`        | String  | no       | The name of a snippet file   |
+| `description`      | String  | no       | The description of a snippet |
+| `content`          | String  | no       | The content of a snippet     |
+| `visibility`       | String  | no       | The snippet's visibility     |
 
 
 ``` bash
@@ -137,6 +141,7 @@ Example response:
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
+  "description": "description of snippet",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -229,3 +234,35 @@ Example response:
     }
 ]
 ```
+
+## Get user agent details
+
+> **Notes:**
+> [Introduced][ce-29508] in GitLab 9.4.
+
+
+Available only for admins.
+
+```
+GET /snippets/:id/user_agent_detail
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | Integer | yes      | The ID of a snippet                  |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
+```
+
+Example response:
+
+```json
+{
+  "user_agent": "AppleWebKit/537.36",
+  "ip_address": "127.0.0.1",
+  "akismet_submitted": false
+}
+```
+
+[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508

@@ -101,7 +101,7 @@ module Gitlab
       end
 
       def user_attributes
-        %W(#{config.uid} cn mail dn)
+        %W(#{config.uid} cn dn) + config.attributes['username'] + config.attributes['email']
       end
     end
   end

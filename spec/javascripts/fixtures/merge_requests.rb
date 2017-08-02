@@ -61,7 +61,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
-      id: merge_request.to_param
+      id: merge_request.to_param,
+      format: :html
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

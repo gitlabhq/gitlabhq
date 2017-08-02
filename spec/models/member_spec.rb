@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Member, models: true do
+describe Member do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
 
   describe "Validation" do
-    subject { Member.new(access_level: Member::GUEST) }
+    subject { described_class.new(access_level: Member::GUEST) }
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
@@ -83,8 +83,8 @@ describe Member, models: true do
       @accepted_invite_member = create(:project_member, :developer,
                                       project: project,
                                       invite_token: '1234',
-                                      invite_email: 'toto2@example.com').
-                                      tap { |u| u.accept_invite!(accepted_invite_user) }
+                                      invite_email: 'toto2@example.com')
+                                      .tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
@@ -265,8 +265,8 @@ describe Member, models: true do
               expect(source.users).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
 
-              expect { described_class.add_user(source, user, :master) }.
-                to raise_error(Gitlab::Access::AccessDeniedError)
+              expect { described_class.add_user(source, user, :master) }
+                .to raise_error(Gitlab::Access::AccessDeniedError)
 
               expect(source.users.reload).not_to include(user)
               expect(source.requesters.reload.exists?(user_id: user)).to be_truthy

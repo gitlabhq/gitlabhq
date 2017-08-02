@@ -1,4 +1,0 @@
----
-title: Replace 'starred_projects.feature' spinach test with an rspec analog
-merge_request: 11752
-author: blackst0ne

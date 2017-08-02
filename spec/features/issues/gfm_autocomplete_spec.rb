@@ -1,17 +1,29 @@
 require 'rails_helper'
 
-feature 'GFM autocomplete', feature: true, js: true do
+feature 'GFM autocomplete', js: true do
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
 
   before do
     project.team << [user, :master]
-    login_as(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    sign_in(user)
+    visit project_issue_path(project, issue)
 
     wait_for_requests
+  end
+
+  it 'updates issue descripton with GFM reference' do
+    find('.issuable-edit').click
+
+    find('#issue-description').native.send_keys("@#{user.name[0...3]}")
+
+    find('.atwho-view .cur').trigger('click')
+
+    click_button 'Save changes'
+
+    expect(find('.description')).to have_content(user.to_reference)
   end
 
   it 'opens autocomplete menu when field starts with text' do
@@ -208,7 +220,7 @@ feature 'GFM autocomplete', feature: true, js: true do
       expect(page).not_to have_selector('.atwho-view')
     end
 
-    it 'triggers autocomplete after selecting a slash command' do
+    it 'triggers autocomplete after selecting a quick action' do
       note = find('#note_note')
       page.within '.timeline-content-form' do
         note.native.send_keys('')

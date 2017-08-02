@@ -1,7 +1,7 @@
 class PagesDomain < ActiveRecord::Base
   belongs_to :project
 
-  validates :domain, hostname: true
+  validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
   validates :certificate, certificate: true, allow_nil: true, allow_blank: true
   validates :key, certificate_key: true, allow_nil: true, allow_blank: true
@@ -98,7 +98,7 @@ class PagesDomain < ActiveRecord::Base
 
   def validate_pages_domain
     return unless domain
-    if domain.downcase.ends_with?(".#{Settings.pages.host}".downcase)
+    if domain.downcase.ends_with?(Settings.pages.host.downcase)
       self.errors.add(:domain, "*.#{Settings.pages.host} is restricted")
     end
   end

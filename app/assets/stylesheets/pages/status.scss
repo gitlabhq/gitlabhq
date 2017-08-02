@@ -1,142 +1,63 @@
-.container-fluid {
-  .ci-status {
-    padding: 2px 7px 4px;
-    margin-right: 10px;
-    border: 1px solid $gray-darker;
-    white-space: nowrap;
-    border-radius: 4px;
+.ci-status {
+  padding: 2px 7px 4px;
+  border: 1px solid $gray-darker;
+  white-space: nowrap;
+  border-radius: 4px;
 
-    &:hover,
-    &:focus {
-      text-decoration: none;
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  svg {
+    height: 13px;
+    width: 13px;
+    position: relative;
+    top: 2px;
+    overflow: visible;
+  }
+
+  &.ci-failed {
+    @include status-color($red-50, $red-500, $red-600);
+  }
+
+  &.ci-success {
+    @include green-status-color;
+  }
+
+  &.ci-canceled,
+  &.ci-disabled,
+  &.ci-manual {
+    color: $gl-text-color;
+    border-color: $gl-text-color;
+
+    &:not(span):hover {
+      background-color: rgba($gl-text-color, .07);
+    }
+  }
+
+  &.ci-pending,
+  &.ci-failed_with_warnings,
+  &.ci-success_with_warnings {
+    @include status-color($orange-50, $orange-500, $orange-700);
+  }
+
+  &.ci-info,
+  &.ci-running {
+    @include status-color($blue-50, $blue-500, $blue-600);
+  }
+
+  &.ci-created,
+  &.ci-skipped {
+    color: $gl-text-color-secondary;
+    border-color: $gl-text-color-secondary;
+
+    &:not(span):hover {
+      background-color: rgba($gl-text-color-secondary, .07);
     }
 
     svg {
-      height: 13px;
-      width: 13px;
-      position: relative;
-      top: 2px;
-      overflow: visible;
-    }
-
-    &.ci-failed,
-    &.ci-failed_with_warnings {
-      color: $red-500;
-      border-color: $red-500;
-
-      &:not(span):hover {
-        background-color: $red-50;
-        color: $red-600;
-        border-color: $red-600;
-
-        svg {
-          fill: $red-600;
-        }
-      }
-
-      svg {
-        fill: $red-500;
-      }
-    }
-
-    &.ci-success,
-    &.ci-success_with_warnings {
-      color: $green-600;
-      border-color: $green-500;
-
-      &:not(span):hover {
-        background-color: $green-50;
-        color: $green-700;
-        border-color: $green-600;
-
-        svg {
-          fill: $green-600;
-        }
-      }
-
-      svg {
-        fill: $green-500;
-      }
-    }
-
-    &.ci-canceled,
-    &.ci-disabled {
-      color: $gl-text-color;
-      border-color: $gl-text-color;
-
-      &:not(span):hover {
-        background-color: rgba($gl-text-color, .07);
-      }
-
-      svg {
-        fill: $gl-text-color;
-      }
-    }
-
-    &.ci-pending {
-      color: $orange-600;
-      border-color: $orange-500;
-
-      &:not(span):hover {
-        background-color: $orange-50;
-        color: $orange-700;
-        border-color: $orange-600;
-
-        svg {
-          fill: $orange-600;
-        }
-      }
-
-      svg {
-        fill: $orange-500;
-      }
-    }
-
-    &.ci-info,
-    &.ci-running {
-      color: $blue-500;
-      border-color: $blue-500;
-
-      &:not(span):hover {
-        background-color: $blue-50;
-        color: $blue-600;
-        border-color: $blue-600;
-
-        svg {
-          fill: $blue-600;
-        }
-      }
-
-      svg {
-        fill: $blue-500;
-      }
-    }
-
-    &.ci-created,
-    &.ci-skipped {
-      color: $gl-text-color-secondary;
-      border-color: $gl-text-color-secondary;
-
-      &:not(span):hover {
-        background-color: rgba($gl-text-color-secondary, .07);
-      }
-
-      svg {
-        fill: $gl-text-color-secondary;
-      }
-    }
-
-    &.ci-manual {
-      color: $gl-text-color;
-      border-color: $gl-text-color;
-
-      &:not(span):hover {
-        background-color: rgba($gl-text-color, .07);
-      }
-
-      svg {
-        fill: $gl-text-color;
-      }
+      fill: $gl-text-color-secondary;
     }
   }
 }

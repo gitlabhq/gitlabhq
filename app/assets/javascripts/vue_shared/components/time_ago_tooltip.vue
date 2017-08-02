@@ -1,5 +1,5 @@
 <script>
-import tooltipMixin from '../mixins/tooltip';
+import tooltip from '../directives/tooltip';
 import timeagoMixin from '../mixins/timeago';
 import '../../lib/utils/datetime_utility';
 
@@ -20,12 +20,6 @@ export default {
       default: 'top',
     },
 
-    shortFormat: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
     cssClass: {
       type: String,
       required: false,
@@ -34,25 +28,21 @@ export default {
   },
 
   mixins: [
-    tooltipMixin,
     timeagoMixin,
   ],
 
-  computed: {
-    timeagoCssClass() {
-      return this.shortFormat ? 'js-short-timeago' : 'js-timeago';
-    },
+  directives: {
+    tooltip,
   },
 };
 </script>
 <template>
   <time
-    :class="[timeagoCssClass, cssClass]"
-    class="js-timeago js-timeago-render"
+    v-tooltip
+    :class="cssClass"
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
-    data-container="body"
-    ref="tooltip">
+    data-container="body">
     {{timeFormated(time)}}
   </time>
 </template>

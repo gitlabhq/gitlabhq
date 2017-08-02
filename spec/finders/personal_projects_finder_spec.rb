@@ -32,7 +32,9 @@ describe PersonalProjectsFinder do
     end
 
     context 'external' do
-      before { current_user.update_attributes(external: true) }
+      before do
+        current_user.update_attributes(external: true)
+      end
 
       it { is_expected.to eq([private_project, public_project]) }
     end

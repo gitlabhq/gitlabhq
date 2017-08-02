@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BroadcastMessage, models: true do
+describe BroadcastMessage do
   subject { build(:broadcast_message) }
 
   it { is_expected.to be_valid }
@@ -21,22 +21,29 @@ describe BroadcastMessage, models: true do
   end
 
   describe '.current' do
-    it "returns last message if time match" do
+    it 'returns message if time match' do
       message = create(:broadcast_message)
 
-      expect(BroadcastMessage.current).to eq message
+      expect(described_class.current).to include(message)
     end
 
-    it "returns nil if time not come" do
+    it 'returns multiple messages if time match' do
+      message1 = create(:broadcast_message)
+      message2 = create(:broadcast_message)
+
+      expect(described_class.current).to contain_exactly(message1, message2)
+    end
+
+    it 'returns empty list if time not come' do
       create(:broadcast_message, :future)
 
-      expect(BroadcastMessage.current).to be_nil
+      expect(described_class.current).to be_empty
     end
 
-    it "returns nil if time has passed" do
+    it 'returns empty list if time has passed' do
       create(:broadcast_message, :expired)
 
-      expect(BroadcastMessage.current).to be_nil
+      expect(described_class.current).to be_empty
     end
   end
 

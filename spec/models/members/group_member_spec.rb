@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupMember, models: true do
+describe GroupMember do
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options_with_owner' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)
@@ -33,8 +33,8 @@ describe GroupMember, models: true do
       it "sends email to user" do
         membership = build(:group_member)
 
-        allow(membership).to receive(:notification_service).
-          and_return(double('NotificationService').as_null_object)
+        allow(membership).to receive(:notification_service)
+          .and_return(double('NotificationService').as_null_object)
         expect(membership).to receive(:notification_service)
 
         membership.save
@@ -44,8 +44,8 @@ describe GroupMember, models: true do
     describe "#after_update" do
       before do
         @group_member = create :group_member
-        allow(@group_member).to receive(:notification_service).
-          and_return(double('NotificationService').as_null_object)
+        allow(@group_member).to receive(:notification_service)
+          .and_return(double('NotificationService').as_null_object)
       end
 
       it "sends email to user" do

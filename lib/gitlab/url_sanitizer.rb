@@ -18,12 +18,6 @@ module Gitlab
       false
     end
 
-    def self.http_credentials_for_user(user)
-      return {} unless user.respond_to?(:username)
-
-      { user: user.username }
-    end
-
     def initialize(url, credentials: nil)
       @url = Addressable::URI.parse(url.strip)
       @credentials = credentials

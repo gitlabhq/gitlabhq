@@ -22,12 +22,6 @@
 }
 
 @media (min-width: $screen-sm-min) {
-  .issues_bulk_update {
-    .dropdown-menu-toggle {
-      width: 132px;
-    }
-  }
-
   .filter-item:not(:last-child) {
     margin-right: 6px;
   }
@@ -76,6 +70,13 @@
 
   .input-token {
     max-width: 200px;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+      background-color: inherit;
+      color: inherit;
+    }
   }
 
   .input-token:only-child,
@@ -90,6 +91,7 @@
 .filtered-search-term {
   display: -webkit-flex;
   display: flex;
+  flex-shrink: 0;
   margin-top: 5px;
   margin-bottom: 5px;
 
@@ -104,6 +106,22 @@
     padding: 2px 7px;
   }
 
+  .name {
+    background-color: $filter-name-resting-color;
+    color: $filter-name-text-color;
+    border-radius: 2px 0 0 2px;
+    margin-right: 1px;
+    text-transform: capitalize;
+  }
+
+  .value-container {
+    background-color: $white-normal;
+    color: $filter-value-text-color;
+    border-radius: 0 2px 2px 0;
+    margin-right: 5px;
+    padding-right: 8px;
+  }
+
   .value {
     padding-right: 0;
   }
@@ -111,7 +129,7 @@
   .remove-token {
     display: inline-block;
     padding-left: 4px;
-    padding-right: 8px;
+    padding-right: 0;
 
     .fa-close {
       color: $gl-text-color-secondary;
@@ -131,30 +149,27 @@
       }
     }
   }
+}
 
+.filtered-search-token:hover,
+.filtered-search-token .selected,
+.filtered-search-term .selected {
   .name {
-    background-color: $filter-name-resting-color;
-    color: $filter-name-text-color;
-    border-radius: 2px 0 0 2px;
-    margin-right: 1px;
-    text-transform: capitalize;
+    background-color: $filter-name-selected-color;
   }
 
   .value-container {
-    background-color: $white-normal;
-    color: $filter-value-text-color;
-    border-radius: 0 2px 2px 0;
-    margin-right: 5px;
+    box-shadow: inset 0 0 0 100px $filtered-search-term-shadow-color;
   }
+}
 
-  .selected {
-    .name {
-      background-color: $filter-name-selected-color;
-    }
+.droplab-dropdown li.filtered-search-token {
+  padding: 0;
 
-    .value-container {
-      background-color: $filter-value-selected-color;
-    }
+  &:hover,
+  &:focus {
+    background-color: inherit;
+    color: inherit;
   }
 }
 
@@ -238,9 +253,6 @@
     width: 35px;
     background-color: $white-light;
     border: none;
-    position: absolute;
-    right: 0;
-    height: 100%;
     outline: none;
     z-index: 1;
 
@@ -263,7 +275,7 @@
 }
 
 .filtered-search-input-dropdown-menu {
-  max-height: 215px;
+  max-height: 225px;
   max-width: 280px;
   overflow: auto;
 
@@ -356,7 +368,7 @@
     margin-right: 0.3em;
   }
 
-  & > .value {
+  > .value {
     font-weight: 600;
   }
 }
@@ -367,16 +379,6 @@
 
   .dropdown-toggle {
     line-height: 22px;
-  }
-}
-
-.dropdown-menu .filter-dropdown-item {
-  padding: 0;
-}
-
-@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-  .issue-bulk-update-dropdown-toggle {
-    width: 100px;
   }
 }
 
@@ -391,7 +393,8 @@
 @media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
-    .dropdown {
+    .dropdown,
+    .dropdown-menu {
       width: 100%;
     }
 
@@ -411,13 +414,16 @@
   background-color: $dropdown-hover-color;
   color: $white-light;
   text-decoration: none;
+  outline: 0;
 
   .avatar {
     border-color: $white-light;
   }
 }
 
-.filter-dropdown-item {
+.droplab-dropdown .dropdown-menu .filter-dropdown-item {
+  padding: 0;
+
   .btn {
     border: none;
     width: 100%;
@@ -429,6 +435,7 @@
 
     .fa {
       width: 15px;
+      line-height: $line-height-base;
     }
 
     .dropdown-label-box {
@@ -451,17 +458,14 @@
   }
 
   .dropdown-user {
-    display: -webkit-flex;
     display: flex;
   }
 
   .dropdown-user-details {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
 
-    &> span {
+    > span {
       white-space: normal;
       word-break: break-all;
     }
@@ -474,4 +478,5 @@
 
 .filter-dropdown-loading {
   padding: 8px 16px;
+  text-align: center;
 }

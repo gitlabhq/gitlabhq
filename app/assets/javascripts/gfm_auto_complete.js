@@ -1,7 +1,5 @@
-import emojiMap from 'emojis/digests.json';
-import emojiAliases from 'emojis/aliases.json';
-import { glEmojiTag } from '~/behaviors/gl_emoji';
-import glRegexp from '~/lib/utils/regexp';
+import glRegexp from './lib/utils/regexp';
+import AjaxCache from './lib/utils/ajax_cache';
 
 function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
@@ -32,9 +30,11 @@ class GfmAutoComplete {
     this.input.each((i, input) => {
       const $input = $(input);
       $input.off('focus.setupAtWho').on('focus.setupAtWho', this.setupAtWho.bind(this, $input));
+      $input.on('change.atwho', () => input.dispatchEvent(new Event('input')));
       // This triggers at.js again
-      // Needed for slash commands with suffixes (ex: /label ~)
+      // Needed for quick actions with suffixes (ex: /label ~)
       $input.on('inserted-commands.atwho', $input.trigger.bind($input, 'keyup'));
+      $input.on('clear-commands-cache.atwho', () => this.clearCache());
     });
   }
 
@@ -46,8 +46,8 @@ class GfmAutoComplete {
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);
 
-    // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
-    $input.filter('[data-supports-slash-commands="true"]').atwho({
+    // We don't instantiate the quick actions autocomplete for note and issue/MR edit forms
+    $input.filter('[data-supports-quick-actions="true"]').atwho({
       at: '/',
       alias: 'commands',
       searchKey: 'search',
@@ -373,13 +373,21 @@ class GfmAutoComplete {
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
-      this.loadData($input, at, Object.keys(emojiMap).concat(Object.keys(emojiAliases)));
+      import(/* webpackChunkName: 'emoji' */ './emoji')
+        .then(({ validEmojiNames, glEmojiTag }) => {
+          this.loadData($input, at, validEmojiNames);
+          GfmAutoComplete.glEmojiTag = glEmojiTag;
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     } else {
-      $.getJSON(this.dataSources[GfmAutoComplete.atTypeMap[at]], (data) => {
-        this.loadData($input, at, data);
-      }).fail(() => { this.isLoadingData[at] = false; });
+      AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
+        .then((data) => {
+          this.loadData($input, at, data);
+        })
+        .catch(() => { this.isLoadingData[at] = false; });
     }
   }
+
   loadData($input, at, data) {
     this.isLoadingData[at] = false;
     this.cachedData[at] = data;
@@ -387,6 +395,17 @@ class GfmAutoComplete {
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types
     return $input.trigger('keyup');
+  }
+
+  clearCache() {
+    this.cachedData = {};
+  }
+
+  destroy() {
+    this.input.each((i, input) => {
+      const $input = $(input);
+      $input.atwho('destroy');
+    });
   }
 
   static isLoading(data) {
@@ -414,12 +433,14 @@ GfmAutoComplete.atTypeMap = {
 };
 
 // Emoji
+GfmAutoComplete.glEmojiTag = null;
 GfmAutoComplete.Emoji = {
   templateFunction(name) {
-    return `<li>
-      ${name} ${glEmojiTag(name)}
-    </li>
-    `;
+    // glEmojiTag helper is loaded on-demand in fetchData()
+    if (GfmAutoComplete.glEmojiTag) {
+      return `<li>${name} ${GfmAutoComplete.glEmojiTag(name)}</li>`;
+    }
+    return `<li>${name}</li>`;
   },
 };
 // Team Members

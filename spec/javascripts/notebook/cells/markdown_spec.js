@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import MarkdownComponent from '~/notebook/cells/markdown.vue';
+import katex from 'vendor/katex';
 
 const Component = Vue.extend(MarkdownComponent);
+
+window.katex = katex;
 
 describe('Markdown component', () => {
   let vm;
@@ -37,5 +40,59 @@ describe('Markdown component', () => {
 
   it('renders the markdown HTML', () => {
     expect(vm.$el.querySelector('.markdown h1')).not.toBeNull();
+  });
+
+  describe('katex', () => {
+    beforeEach(() => {
+      json = getJSONFixture('blob/notebook/math.json');
+    });
+
+    it('renders multi-line katex', (done) => {
+      vm = new Component({
+        propsData: {
+          cell: json.cells[0],
+        },
+      }).$mount();
+
+      Vue.nextTick(() => {
+        expect(
+          vm.$el.querySelector('.katex'),
+        ).not.toBeNull();
+
+        done();
+      });
+    });
+
+    it('renders inline katex', (done) => {
+      vm = new Component({
+        propsData: {
+          cell: json.cells[1],
+        },
+      }).$mount();
+
+      Vue.nextTick(() => {
+        expect(
+          vm.$el.querySelector('p:first-child .katex'),
+        ).not.toBeNull();
+
+        done();
+      });
+    });
+
+    it('renders multiple inline katex', (done) => {
+      vm = new Component({
+        propsData: {
+          cell: json.cells[1],
+        },
+      }).$mount();
+
+      Vue.nextTick(() => {
+        expect(
+          vm.$el.querySelectorAll('p:nth-child(2) .katex').length,
+        ).toBe(4);
+
+        done();
+      });
+    });
   });
 });

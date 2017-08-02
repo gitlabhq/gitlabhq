@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge Request closing issues message', feature: true, js: true do
+feature 'Merge Request closing issues message', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue_1) { create(:issue, project: project)}
   let(:issue_2) { create(:issue, project: project)}
   let(:merge_request) do
@@ -20,9 +20,9 @@ feature 'Merge Request closing issues message', feature: true, js: true do
   before do
     project.team << [user, :master]
 
-    login_as user
+    sign_in user
 
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
     wait_for_requests
   end
 

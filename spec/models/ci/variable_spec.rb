@@ -1,39 +1,33 @@
 require 'spec_helper'
 
-describe Ci::Variable, models: true do
+describe Ci::Variable do
   subject { build(:ci_variable) }
 
-  let(:secret_value) { 'secret' }
-
-  it { is_expected.to validate_presence_of(:key) }
-  it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id) }
-  it { is_expected.to validate_length_of(:key).is_at_most(255) }
-  it { is_expected.to allow_value('foo').for(:key) }
-  it { is_expected.not_to allow_value('foo bar').for(:key) }
-  it { is_expected.not_to allow_value('foo/bar').for(:key) }
-
-  before :each do
-    subject.value = secret_value
+  describe 'validations' do
+    it { is_expected.to include_module(HasVariable) }
+    it { is_expected.to include_module(Presentable) }
+    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope) }
   end
 
-  describe '#value' do
-    it 'stores the encrypted value' do
-      expect(subject.encrypted_value).not_to be_nil
+  describe '.unprotected' do
+    subject { described_class.unprotected }
+
+    context 'when variable is protected' do
+      before do
+        create(:ci_variable, :protected)
+      end
+
+      it 'returns nothing' do
+        is_expected.to be_empty
+      end
     end
 
-    it 'stores an iv for value' do
-      expect(subject.encrypted_value_iv).not_to be_nil
-    end
+    context 'when variable is not protected' do
+      let(:variable) { create(:ci_variable, protected: false) }
 
-    it 'stores a salt for value' do
-      expect(subject.encrypted_value_salt).not_to be_nil
-    end
-
-    it 'fails to decrypt if iv is incorrect' do
-      subject.encrypted_value_iv = SecureRandom.hex
-      subject.instance_variable_set(:@value, nil)
-      expect { subject.value }.
-        to raise_error(OpenSSL::Cipher::CipherError, 'bad decrypt')
+      it 'returns the variable' do
+        is_expected.to contain_exactly(variable)
+      end
     end
   end
 end

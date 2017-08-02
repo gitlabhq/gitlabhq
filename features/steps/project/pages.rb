@@ -15,7 +15,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I visit the Project Pages' do
-    visit namespace_project_pages_path(@project.namespace, @project)
+    visit project_pages_path(@project)
   end
 
   step 'I should see the usage of GitLab Pages' do
@@ -35,7 +35,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'pages are deployed' do
-    pipeline = @project.ensure_pipeline('HEAD', @project.commit('HEAD').sha)
+    pipeline = @project.pipelines.create(ref: 'HEAD', sha: @project.commit('HEAD').sha)
     build = build(:ci_build,
                   project: @project,
                   pipeline: pipeline,
@@ -75,7 +75,7 @@ class Spinach::Features::ProjectPages < Spinach::FeatureSteps
   end
 
   step 'I visit add a new Pages Domain' do
-    visit new_namespace_project_pages_domain_path(@project.namespace, @project)
+    visit new_project_pages_domain_path(@project)
   end
 
   step 'I fill the domain' do

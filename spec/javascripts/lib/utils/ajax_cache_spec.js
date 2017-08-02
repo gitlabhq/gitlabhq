@@ -154,5 +154,36 @@ describe('AjaxCache', () => {
       .then(done)
       .catch(fail);
     });
+
+    it('makes Ajax call even if matching data exists when forceRequest parameter is provided', (done) => {
+      const oldDummyResponse = {
+        important: 'old dummy data',
+      };
+
+      AjaxCache.internalStorage[dummyEndpoint] = oldDummyResponse;
+
+      ajaxSpy = (url) => {
+        expect(url).toBe(dummyEndpoint);
+        const deferred = $.Deferred();
+        deferred.resolve(dummyResponse);
+        return deferred.promise();
+      };
+
+      // Call without forceRetrieve param
+      AjaxCache.retrieve(dummyEndpoint)
+        .then((data) => {
+          expect(data).toBe(oldDummyResponse);
+        })
+        .then(done)
+        .catch(fail);
+
+      // Call with forceRetrieve param
+      AjaxCache.retrieve(dummyEndpoint, true)
+        .then((data) => {
+          expect(data).toBe(dummyResponse);
+        })
+        .then(done)
+        .catch(fail);
+    });
   });
 });

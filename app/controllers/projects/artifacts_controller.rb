@@ -27,7 +27,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def file
     blob = @entry.blob
-    override_max_blob_size(blob)
+    conditionally_expand_blob(blob)
 
     respond_to do |format|
       format.html do
@@ -46,7 +46,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def keep
     build.keep_artifacts!
-    redirect_to namespace_project_build_path(project.namespace, project, build)
+    redirect_to project_job_path(project, build)
   end
 
   def latest_succeeded
@@ -79,7 +79,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build_from_id
-    project.builds.find_by(id: params[:build_id]) if params[:build_id]
+    project.builds.find_by(id: params[:job_id]) if params[:job_id]
   end
 
   def build_from_ref

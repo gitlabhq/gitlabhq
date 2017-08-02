@@ -1,29 +1,22 @@
 require 'spec_helper'
 
-feature 'Find files button in the tree header', feature: true do
+feature 'Find files button in the tree header' do
   given(:user) { create(:user) }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   background do
-    login_as(user)
+    sign_in(user)
     project.team << [user, :developer]
   end
 
   scenario 'project main screen' do
-    visit namespace_project_path(
-      project.namespace,
-      project
-    )
+    visit project_path(project)
 
     expect(page).to have_selector('.tree-controls .shortcuts-find-file')
   end
 
   scenario 'project tree screen' do
-    visit namespace_project_tree_path(
-      project.namespace,
-      project,
-      project.default_branch
-    )
+    visit project_tree_path(project, project.default_branch)
 
     expect(page).to have_selector('.tree-controls .shortcuts-find-file')
   end

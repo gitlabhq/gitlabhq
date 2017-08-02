@@ -57,6 +57,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
+        end
       end
 
       context 'when requesting stopped environments scope' do
@@ -177,7 +182,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/builds/#{action.id}" })
+              project_job_url(project, action) })
       end
     end
 
@@ -191,7 +196,7 @@ describe Projects::EnvironmentsController do
         expect(response).to have_http_status(200)
         expect(json_response).to eq(
           { 'redirect_url' =>
-              "http://test.host/#{project.path_with_namespace}/environments/#{environment.id}" })
+              project_environment_url(project, environment) })
       end
     end
   end
@@ -228,14 +233,14 @@ describe Projects::EnvironmentsController do
 
       context 'and valid id' do
         it 'returns the first terminal for the environment' do
-          expect_any_instance_of(Environment).
-            to receive(:terminals).
-            and_return([:fake_terminal])
+          expect_any_instance_of(Environment)
+            .to receive(:terminals)
+            .and_return([:fake_terminal])
 
-          expect(Gitlab::Workhorse).
-            to receive(:terminal_websocket).
-            with(:fake_terminal).
-            and_return(workhorse: :response)
+          expect(Gitlab::Workhorse)
+            .to receive(:terminal_websocket)
+            .with(:fake_terminal)
+            .and_return(workhorse: :response)
 
           get :terminal_websocket_authorize, environment_params
 
@@ -306,6 +311,48 @@ describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(json_response['success']).to be(true)
         expect(json_response['metrics']).to eq({})
+        expect(json_response['last_update']).to eq(42)
+      end
+    end
+  end
+
+  describe 'GET #additional_metrics' do
+    before do
+      allow(controller).to receive(:environment).and_return(environment)
+    end
+
+    context 'when environment has no metrics' do
+      before do
+        expect(environment).to receive(:additional_metrics).and_return(nil)
+      end
+
+      context 'when requesting metrics as JSON' do
+        it 'returns a metrics JSON document' do
+          get :additional_metrics, environment_params(format: :json)
+
+          expect(response).to have_http_status(204)
+          expect(json_response).to eq({})
+        end
+      end
+    end
+
+    context 'when environment has some metrics' do
+      before do
+        expect(environment)
+          .to receive(:additional_metrics)
+                .and_return({
+                              success: true,
+                              data: {},
+                              last_update: 42
+                            })
+      end
+
+      it 'returns a metrics JSON document' do
+        get :additional_metrics, environment_params(format: :json)
+
+        expect(response).to be_ok
+        expect(json_response['success']).to be(true)
+        expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
       end
     end

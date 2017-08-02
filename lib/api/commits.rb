@@ -67,7 +67,7 @@ module API
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
         if result[:status] == :success
-          commit_detail = user_project.repository.commits(result[:result], limit: 1).first
+          commit_detail = user_project.repository.commit(result[:result])
           present commit_detail, with: Entities::RepoCommitDetail
         else
           render_api_error!(result[:message], 400)
@@ -176,7 +176,7 @@ module API
         }
 
         if params[:path]
-          commit.raw_diffs(all_diffs: true).each do |diff|
+          commit.raw_diffs(limits: false).each do |diff|
             next unless diff.new_path == params[:path]
             lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 

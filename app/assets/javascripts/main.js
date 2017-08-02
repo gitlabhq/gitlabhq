@@ -39,10 +39,6 @@ import './shortcuts_network';
 // behaviors
 import './behaviors/';
 
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -56,7 +52,6 @@ import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
 import './lib/utils/url_utility';
@@ -75,7 +70,7 @@ import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
-import AwardsHandler from './awards_handler';
+import loadAwardsHandler from './awards_handler';
 import './breakpoints';
 import './broadcast_message';
 import './build';
@@ -105,16 +100,16 @@ import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
-import './issuable';
+import './issuable_index';
 import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './issues_bulk_assignment';
 import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
@@ -149,26 +144,11 @@ import './render_math';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './task_list';
-import './todos';
-import './tree';
-import './usage_ping';
-import './user';
-import './user_tabs';
-import './username_validator';
-import './users_select';
-import './version_check_image';
-import './visibility_select';
-import './wikis';
-import './zen_mode';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
@@ -178,6 +158,8 @@ document.addEventListener('beforeunload', function () {
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -185,6 +167,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');
@@ -261,6 +248,11 @@ $(function () {
       return $(el).data('placement') || 'bottom';
     }
   });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
+  });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
   // Form submitter
@@ -304,12 +296,7 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', function () {
-    $('.header-content .title').toggle();
-    $('.header-content .header-logo').toggle();
-    $('.header-content .navbar-collapse').toggle();
-    return $('.navbar-toggle').toggleClass('active');
-  });
+  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);
@@ -360,10 +347,20 @@ $(function () {
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
   });
-  gl.awardsHandler = new AwardsHandler();
+  loadAwardsHandler();
   new Aside();
 
-  gl.utils.initTimeagoTimeout();
+  gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

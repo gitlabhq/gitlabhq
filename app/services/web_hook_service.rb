@@ -39,8 +39,12 @@ class WebHookService
       execution_duration: Time.now - start_time
     )
 
-    [response.code, response.to_s]
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Net::OpenTimeout => e
+    {
+      status: :success,
+      http_status: response.code,
+      message: response.to_s
+    }
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout => e
     log_execution(
       trigger: hook_name,
       url: hook.url,
@@ -52,7 +56,10 @@ class WebHookService
 
     Rails.logger.error("WebHook Error => #{e}")
 
-    [nil, e.to_s]
+    {
+      status: :error,
+      message: e.to_s
+    }
   end
 
   def async_execute

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PersonalSnippetPolicy, models: true do
+describe PersonalSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
   let(:admin_user) { create(:user, :admin) }
@@ -14,7 +14,7 @@ describe PersonalSnippetPolicy, models: true do
   end
 
   def permissions(user)
-    described_class.abilities(user, snippet).to_set
+    described_class.new(user, snippet)
   end
 
   context 'public snippet' do
@@ -24,9 +24,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(nil) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -34,9 +34,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(regular_user) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -44,9 +44,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(snippet.author) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.to include(:comment_personal_snippet)
-        is_expected.to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:comment_personal_snippet)
+        is_expected.to be_allowed(*author_permissions)
       end
     end
   end
@@ -58,9 +58,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(nil) }
 
       it do
-        is_expected.not_to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -68,9 +68,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(regular_user) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -78,9 +78,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(external_user) }
 
       it do
-        is_expected.not_to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -88,9 +88,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(snippet.author) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.to include(:comment_personal_snippet)
-        is_expected.to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:comment_personal_snippet)
+        is_expected.to be_allowed(*author_permissions)
       end
     end
   end
@@ -102,9 +102,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(nil) }
 
       it do
-        is_expected.not_to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -112,9 +112,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(regular_user) }
 
       it do
-        is_expected.not_to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -122,9 +122,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(external_user) }
 
       it do
-        is_expected.not_to include(:read_personal_snippet)
-        is_expected.not_to include(:comment_personal_snippet)
-        is_expected.not_to include(*author_permissions)
+        is_expected.to be_disallowed(:read_personal_snippet)
+        is_expected.to be_disallowed(:comment_personal_snippet)
+        is_expected.to be_disallowed(*author_permissions)
       end
     end
 
@@ -132,9 +132,9 @@ describe PersonalSnippetPolicy, models: true do
       subject { permissions(snippet.author) }
 
       it do
-        is_expected.to include(:read_personal_snippet)
-        is_expected.to include(:comment_personal_snippet)
-        is_expected.to include(*author_permissions)
+        is_expected.to be_allowed(:read_personal_snippet)
+        is_expected.to be_allowed(:comment_personal_snippet)
+        is_expected.to be_allowed(*author_permissions)
       end
     end
   end

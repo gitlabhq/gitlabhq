@@ -5,9 +5,9 @@
 An application data backup creates an archive file that contains the database,
 all repositories and all attachments.
 
-You can only restore a backup to **exactly the same version** of GitLab on which
-it was created. The best way to migrate your repositories from one server to
-another is through backup restore.
+You can only restore a backup to **exactly the same version and type (CE/EE)** 
+of GitLab on which it was created. The best way to migrate your repositories 
+from one server to another is through backup restore.
 
 ## Backup
 
@@ -133,7 +133,7 @@ It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
 [imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-ce/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
-for AWS, Google, OpenStack Swift and Rackspace as well. A local driver is
+for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
 For omnibus packages, add the following to `/etc/gitlab/gitlab.rb`:
@@ -270,6 +270,15 @@ For installations from source:
       remote_directory: 'gitlab_backups'
 ```
 
+### Specifying a custom directory for backups
+
+If you want to group your backups you can pass a `DIRECTORY` environment variable:
+
+```
+sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
+sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
+```
+
 ### Backup archive permissions
 
 The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
@@ -369,8 +378,8 @@ The [restore prerequisites section](#restore-prerequisites) includes crucial
 information. Make sure to read and test the whole restore process at least once
 before attempting to perform it in a production environment.
 
-You can only restore a backup to **exactly the same version** of GitLab that
-you created it on, for example 9.1.0.
+You can only restore a backup to **exactly the same version and type (CE/EE)** of 
+GitLab that you created it on, for example CE 9.1.0.
 
 ### Restore prerequisites
 
@@ -441,8 +450,8 @@ Deleting tmp directories...[DONE]
 
 This procedure assumes that:
 
-- You have installed the **exact same version** of GitLab Omnibus with which the
-  backup was created.
+- You have installed the **exact same version and type (CE/EE)** of GitLab 
+  Omnibus with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running.  If not, start it using `sudo gitlab-ctl start`.
 

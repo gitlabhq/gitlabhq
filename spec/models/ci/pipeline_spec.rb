@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
+describe Ci::Pipeline do
   include EmailHelpers
 
   let(:user) { create(:user) }
@@ -17,16 +17,39 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
 
-  it { is_expected.to validate_presence_of :sha }
-  it { is_expected.to validate_presence_of :status }
+  it { is_expected.to validate_presence_of(:sha) }
+  it { is_expected.to validate_presence_of(:status) }
 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+
+  describe '#source' do
+    context 'when creating new pipeline' do
+      let(:pipeline) do
+        build(:ci_empty_pipeline, status: :created, project: project, source: nil)
+      end
+
+      it "prevents from creating an object" do
+        expect(pipeline).not_to be_valid
+      end
+    end
+
+    context 'when updating existing pipeline' do
+      before do
+        pipeline.update_attribute(:source, nil)
+      end
+
+      it "object is valid" do
+        expect(pipeline).to be_valid
+      end
+    end
+  end
 
   describe '#block' do
     it 'changes pipeline status to manual' do
@@ -202,8 +225,19 @@ describe Ci::Pipeline, models: true do
                              status: 'success')
     end
 
-    describe '#stages' do
-      subject { pipeline.stages }
+    describe '#stage_seeds' do
+      let(:pipeline) do
+        create(:ci_pipeline, config: { rspec: { script: 'rake' } })
+      end
+
+      it 'returns preseeded stage seeds object' do
+        expect(pipeline.stage_seeds).to all(be_a Gitlab::Ci::Stage::Seed)
+        expect(pipeline.stage_seeds.count).to eq 1
+      end
+    end
+
+    describe '#legacy_stages' do
+      subject { pipeline.legacy_stages }
 
       context 'stages list' do
         it 'returns ordered list of stages' do
@@ -252,7 +286,7 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'populates stage with correct number of warnings' do
-          deploy_stage = pipeline.stages.third
+          deploy_stage = pipeline.legacy_stages.third
 
           expect(deploy_stage).not_to receive(:statuses)
           expect(deploy_stage).to have_warnings
@@ -266,22 +300,22 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    describe '#stages_name' do
+    describe '#stages_names' do
       it 'returns a valid names of stages' do
-        expect(pipeline.stages_name).to eq(%w(build test deploy))
+        expect(pipeline.stages_names).to eq(%w(build test deploy))
       end
     end
   end
 
-  describe '#stage' do
-    subject { pipeline.stage('test') }
+  describe '#legacy_stage' do
+    subject { pipeline.legacy_stage('test') }
 
     context 'with status in stage' do
       before do
         create(:commit_status, pipeline: pipeline, stage: 'test')
       end
 
-      it { expect(subject).to be_a Ci::Stage }
+      it { expect(subject).to be_a Ci::LegacyStage }
       it { expect(subject.name).to eq 'test' }
       it { expect(subject.statuses).not_to be_empty }
     end
@@ -502,6 +536,20 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe '#has_stage_seeds?' do
+    context 'when pipeline has stage seeds' do
+      subject { build(:ci_pipeline_with_one_job) }
+
+      it { is_expected.to have_stage_seeds }
+    end
+
+    context 'when pipeline does not have stage seeds' do
+      subject { create(:ci_pipeline_without_jobs) }
+
+      it { is_expected.not_to have_stage_seeds }
+    end
+  end
+
   describe '#has_warnings?' do
     subject { pipeline.has_warnings? }
 
@@ -561,8 +609,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for the same ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B', 'C')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed', 'skipped')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed', 'skipped')
       end
     end
 
@@ -571,8 +619,8 @@ describe Ci::Pipeline, models: true do
 
       it 'returns the latest pipeline for ref and different sha' do
         expect(pipelines.map(&:sha)).to contain_exactly('A', 'B')
-        expect(pipelines.map(&:status)).
-          to contain_exactly('success', 'failed')
+        expect(pipelines.map(&:status))
+          .to contain_exactly('success', 'failed')
       end
     end
   end
@@ -607,8 +655,8 @@ describe Ci::Pipeline, models: true do
     end
 
     it 'returns the latest successful pipeline' do
-      expect(described_class.latest_successful_for('ref')).
-        to eq(latest_successful_pipeline)
+      expect(described_class.latest_successful_for('ref'))
+        .to eq(latest_successful_pipeline)
     end
   end
 
@@ -623,6 +671,12 @@ describe Ci::Pipeline, models: true do
 
       expect(described_class.latest_successful_for_refs(refs)).to eq({ 'ref1' => latest_successful_pipeline1, 'ref2' => latest_successful_pipeline2 })
     end
+  end
+
+  describe '.internal_sources' do
+    subject { described_class.internal_sources }
+
+    it { is_expected.to be_an(Array) }
   end
 
   describe '#status' do
@@ -681,6 +735,8 @@ describe Ci::Pipeline, models: true do
 
     context 'on failure and build retry' do
       before do
+        stub_not_protect_default_branch
+
         build.drop
         project.add_developer(user)
 
@@ -692,6 +748,39 @@ describe Ci::Pipeline, models: true do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
+    end
+  end
+
+  describe '#ci_yaml_file_path' do
+    subject { pipeline.ci_yaml_file_path }
+
+    it 'returns the path from project' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom/path' }
+
+      is_expected.to eq('custom/path')
+    end
+
+    it 'returns default when custom path is nil' do
+      allow(pipeline.project).to receive(:ci_config_path) { nil }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+
+    it 'returns default when custom path is empty' do
+      allow(pipeline.project).to receive(:ci_config_path) { '' }
+
+      is_expected.to eq('.gitlab-ci.yml')
+    end
+  end
+
+  describe '#ci_yaml_file' do
+    it 'reports error if the file is not found' do
+      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+      pipeline.ci_yaml_file
+
+      expect(pipeline.yaml_errors)
+        .to eq('Failed to load CI/CD config file at custom')
     end
   end
 
@@ -913,6 +1002,8 @@ describe Ci::Pipeline, models: true do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
+      stub_not_protect_default_branch
+
       project.add_developer(user)
     end
 
@@ -1109,7 +1200,9 @@ describe Ci::Pipeline, models: true do
     end
 
     context 'when pipeline is not stuck' do
-      before { create(:ci_runner, :shared, :online) }
+      before do
+        create(:ci_runner, :shared, :online)
+      end
 
       it 'is not stuck' do
         expect(pipeline).not_to be_stuck
@@ -1152,8 +1245,8 @@ describe Ci::Pipeline, models: true do
     before do
       project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
 
-      pipeline.user.global_notification_setting.
-        update(level: 'custom', failed_pipeline: true, success_pipeline: true)
+      pipeline.user.global_notification_setting
+        .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
 
       reset_delivered_emails!
 

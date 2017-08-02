@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-feature 'Issue Sidebar', feature: true do
+feature 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }
-  let(:project) { create(:project, :public, namespace: group) }
+  let(:project) { create(:empty_project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   context 'assignee', js: true do
@@ -56,6 +56,23 @@ feature 'Issue Sidebar', feature: true do
         expect(page.find('.dropdown-header')).to be_visible
         expect(page.find('.dropdown-menu-user-link.is-active')).to have_content(user.name)
       end
+    end
+
+    it 'keeps your filtered term after filtering and dismissing the dropdown' do
+      find('.dropdown-input-field').native.send_keys user2.name
+
+      wait_for_requests
+
+      page.within '.dropdown-menu-user' do
+        expect(page).not_to have_content 'Unassigned'
+        click_link user2.name
+      end
+
+      find('.js-right-sidebar').click
+      find('.block.assignee .edit-link').click
+
+      expect(page.all('.dropdown-menu-user li').length).to eq(1)
+      expect(find('.dropdown-input-field').value).to eq(user2.name)
     end
   end
 
@@ -137,20 +154,6 @@ feature 'Issue Sidebar', feature: true do
     end
   end
 
-  context 'as a allowed mobile user', js: true do
-    before do
-      project.team << [user, :developer]
-      resize_screen_xs
-      visit_issue(project, issue)
-    end
-
-    context 'mobile sidebar' do
-      it 'collapses the sidebar for small screens' do
-        expect(page).not_to have_css('aside.right-sidebar.right-sidebar-collapsed')
-      end
-    end
-  end
-
   context 'as a guest' do
     before do
       project.team << [user, :guest]
@@ -163,7 +166,7 @@ feature 'Issue Sidebar', feature: true do
   end
 
   def visit_issue(project, issue)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    visit project_issue_path(project, issue)
   end
 
   def open_issue_sidebar

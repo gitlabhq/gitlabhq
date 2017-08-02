@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::WikiPageMessage, models: true do
+describe ChatMessage::WikiPageMessage do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -23,7 +23,9 @@ describe ChatMessage::WikiPageMessage, models: true do
   context 'without markdown' do
     describe '#pretext' do
       context 'when :action == "create"' do
-        before { args[:object_attributes][:action] = 'create' }
+        before do
+          args[:object_attributes][:action] = 'create'
+        end
 
         it 'returns a message that a new wiki page was created' do
           expect(subject.pretext).to eq(
@@ -33,7 +35,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       end
 
       context 'when :action == "update"' do
-        before { args[:object_attributes][:action] = 'update' }
+        before do
+          args[:object_attributes][:action] = 'update'
+        end
 
         it 'returns a message that a wiki page was updated' do
           expect(subject.pretext).to eq(
@@ -47,7 +51,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       let(:color) { '#345' }
 
       context 'when :action == "create"' do
-        before { args[:object_attributes][:action] = 'create' }
+        before do
+          args[:object_attributes][:action] = 'create'
+        end
 
         it 'returns the attachment for a new wiki page' do
           expect(subject.attachments).to eq([
@@ -60,7 +66,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       end
 
       context 'when :action == "update"' do
-        before { args[:object_attributes][:action] = 'update' }
+        before do
+          args[:object_attributes][:action] = 'update'
+        end
 
         it 'returns the attachment for an updated wiki page' do
           expect(subject.attachments).to eq([
@@ -81,7 +89,9 @@ describe ChatMessage::WikiPageMessage, models: true do
 
     describe '#pretext' do
       context 'when :action == "create"' do
-        before { args[:object_attributes][:action] = 'create' }
+        before do
+          args[:object_attributes][:action] = 'create'
+        end
 
         it 'returns a message that a new wiki page was created' do
           expect(subject.pretext).to eq(
@@ -90,7 +100,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       end
 
       context 'when :action == "update"' do
-        before { args[:object_attributes][:action] = 'update' }
+        before do
+          args[:object_attributes][:action] = 'update'
+        end
 
         it 'returns a message that a wiki page was updated' do
           expect(subject.pretext).to eq(
@@ -101,7 +113,9 @@ describe ChatMessage::WikiPageMessage, models: true do
 
     describe '#attachments' do
       context 'when :action == "create"' do
-        before { args[:object_attributes][:action] = 'create' }
+        before do
+          args[:object_attributes][:action] = 'create'
+        end
 
         it 'returns the attachment for a new wiki page' do
           expect(subject.attachments).to eq('Wiki page description')
@@ -109,7 +123,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       end
 
       context 'when :action == "update"' do
-        before { args[:object_attributes][:action] = 'update' }
+        before do
+          args[:object_attributes][:action] = 'update'
+        end
 
         it 'returns the attachment for an updated wiki page' do
           expect(subject.attachments).to eq('Wiki page description')
@@ -119,7 +135,9 @@ describe ChatMessage::WikiPageMessage, models: true do
 
     describe '#activity' do
       context 'when :action == "create"' do
-        before { args[:object_attributes][:action] = 'create' }
+        before do
+          args[:object_attributes][:action] = 'create'
+        end
 
         it 'returns the attachment for a new wiki page' do
           expect(subject.activity).to eq({
@@ -132,7 +150,9 @@ describe ChatMessage::WikiPageMessage, models: true do
       end
 
       context 'when :action == "update"' do
-        before { args[:object_attributes][:action] = 'update' }
+        before do
+          args[:object_attributes][:action] = 'update'
+        end
 
         it 'returns the attachment for an updated wiki page' do
           expect(subject.activity).to eq({

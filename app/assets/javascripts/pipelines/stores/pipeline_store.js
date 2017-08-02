@@ -2,10 +2,10 @@ export default class PipelineStore {
   constructor() {
     this.state = {};
 
-    this.state.graph = [];
+    this.state.pipeline = {};
   }
 
-  storeGraph(graph = []) {
-    this.state.graph = graph;
+  storePipeline(pipeline = {}) {
+    this.state.pipeline = pipeline;
   }
 }

@@ -4,6 +4,71 @@ module API
 
     before { authenticate! }
 
+    helpers ::Gitlab::IssuableMetadata
+
+    helpers do
+      def find_merge_requests(args = {})
+        args = params.merge(args)
+
+        args[:milestone_title] = args.delete(:milestone)
+        args[:label_name] = args.delete(:labels)
+
+        merge_requests = MergeRequestsFinder.new(current_user, args).execute
+                           .reorder(args[:order_by] => args[:sort])
+        merge_requests = paginate(merge_requests)
+                           .preload(:target_project)
+
+        return merge_requests if args[:view] == 'simple'
+
+        merge_requests
+          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels)
+      end
+
+      params :merge_requests_params do
+        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
+                         desc: 'Return opened, closed, merged, or all merge requests'
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                            desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                        desc: 'Return merge requests sorted in `asc` or `desc` order.'
+        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
+        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
+        optional :view, type: String, values: %w[simple], desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
+        optional :author_id, type: Integer, desc: 'Return merge requests which are authored by the user with the given ID'
+        optional :assignee_id, type: Integer, desc: 'Return merge requests which are assigned to the user with the given ID'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
+                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        use :pagination
+      end
+    end
+
+    resource :merge_requests do
+      desc 'List merge requests' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        use :merge_requests_params
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
+                         desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+      end
+      get do
+        merge_requests = find_merge_requests
+
+        options = { with: Entities::MergeRequestBasic,
+                    current_user: current_user }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        present merge_requests, options
+      end
+    end
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -27,25 +92,6 @@ module API
           render_api_error!(errors, 400)
         end
 
-        def issue_entity(project)
-          if project.has_external_issue_tracker?
-            Entities::ExternalIssue
-          else
-            Entities::IssueBasic
-          end
-        end
-
-        def find_merge_requests(args = {})
-          args = params.merge(args)
-
-          args[:milestone_title] = args.delete(:milestone)
-          args[:label_name] = args.delete(:labels)
-
-          merge_requests = MergeRequestsFinder.new(current_user, args).execute.inc_notes_with_associations
-
-          merge_requests.reorder(args[:order_by] => args[:sort])
-        end
-
         params :optional_params_ce do
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
@@ -63,23 +109,25 @@ module API
         success Entities::MergeRequestBasic
       end
       params do
-        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
-                         desc: 'Return opened, closed, merged, or all merge requests'
-        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
-                            desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
-        optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return merge requests sorted in `asc` or `desc` order.'
+        use :merge_requests_params
         optional :iids, type: Array[Integer], desc: 'The IID array of merge requests'
-        optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
-        optional :labels, type: String, desc: 'Comma-separated list of label names'
-        use :pagination
       end
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
         merge_requests = find_merge_requests(project_id: user_project.id)
 
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+        options = { with: Entities::MergeRequestBasic,
+                    current_user: current_user,
+                    project: user_project }
+
+        if params[:view] == 'simple'
+          options[:with] = Entities::MergeRequestSimple
+        else
+          options[:issuable_metadata] = issuable_meta_data(merge_requests, 'MergeRequest')
+        end
+
+        present merge_requests, options
       end
 
       desc 'Create a merge request' do
@@ -97,7 +145,7 @@ module API
         authorize! :create_merge_request, user_project
 
         mr_params = declared_params(include_missing: false)
-        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch) if mr_params[:remove_source_branch].present?
+        mr_params[:force_remove_source_branch] = mr_params.delete(:remove_source_branch)
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, mr_params).execute
 
@@ -116,6 +164,7 @@ module API
         merge_request = find_project_merge_request(params[:merge_request_iid])
 
         authorize!(:destroy_merge_request, merge_request)
+        status 204
         merge_request.destroy
       end
 
@@ -256,7 +305,14 @@ module API
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
-        present paginate(issues), with: issue_entity(user_project), current_user: current_user
+        issues = paginate(issues)
+
+        external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }
+
+        data = Entities::IssueBasic.represent(internal_issues, current_user: current_user)
+        data += Entities::ExternalIssue.represent(external_issues, current_user: current_user)
+
+        data.as_json
       end
     end
   end

@@ -111,7 +111,7 @@ export default class BlobViewer {
 
     BlobViewer.loadViewer(newViewer)
     .then((viewer) => {
-      $(viewer).syntaxHighlight();
+      $(viewer).renderGFM();
 
       this.$fileHolder.trigger('highlight:line');
       gl.utils.handleLocationHash();

@@ -15,10 +15,10 @@ export default {
     <div class="time-tracking-help-state">
       <div class="time-tracking-info">
         <h4>
-          Track time with slash commands
+          Track time with quick actions
         </h4>
         <p>
-          Slash commands can be used in the issues description and comment boxes.
+          Quick actions can be used in the issues description and comment boxes.
         </p>
         <p>
           <code>

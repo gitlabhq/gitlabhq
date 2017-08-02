@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph in Commit View', :js, :feature do
+feature 'Mini Pipeline Graph in Commit View', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   context 'when commit has pipelines' do
@@ -22,7 +22,7 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
 
     before do
       build.run
-      visit namespace_project_commit_path(project.namespace, project, project.commit.id)
+      visit project_commit_path(project, project.commit.id)
     end
 
     it 'should display a mini pipeline graph' do
@@ -43,7 +43,7 @@ feature 'Mini Pipeline Graph in Commit View', :js, :feature do
 
   context 'when commit does not have pipelines' do
     before do
-      visit namespace_project_commit_path(project.namespace, project, project.commit.id)
+      visit project_commit_path(project, project.commit.id)
     end
 
     it 'should not display a mini pipeline graph' do

@@ -2741,13 +2741,12 @@
       "merge_request_diff": {
         "id": 27,
         "state": "collected",
-        "st_commits": [
+        "merge_request_diff_commits": [
           {
-            "id": "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
+            "merge_request_diff_id": 27,
+            "relative_order": 0,
+            "sha": "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
             "message": "Feature conflcit added\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "5937ac0a7beb003549fc5fd26fc247adbce4a52e"
-            ],
             "authored_date": "2014-08-06T08:35:52.000+02:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2756,11 +2755,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
+            "merge_request_diff_id": 27,
+            "relative_order": 1,
+            "sha": "5937ac0a7beb003549fc5fd26fc247adbce4a52e",
             "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "570e7b2abdd848b95f2f578043fc23bd6f6fd24d"
-            ],
             "authored_date": "2014-02-27T10:01:38.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2769,11 +2767,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
+            "merge_request_diff_id": 27,
+            "relative_order": 2,
+            "sha": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
             "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
-            ],
             "authored_date": "2014-02-27T09:57:31.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2782,11 +2779,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
+            "merge_request_diff_id": 27,
+            "relative_order": 3,
+            "sha": "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9",
             "message": "More submodules\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "d14d6c0abdd253381df51a723d58691b2ee1ab08"
-            ],
             "authored_date": "2014-02-27T09:54:21.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2795,11 +2791,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
+            "merge_request_diff_id": 27,
+            "relative_order": 4,
+            "sha": "d14d6c0abdd253381df51a723d58691b2ee1ab08",
             "message": "Remove ds_store files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "c1acaa58bbcbc3eafe538cb8274ba387047b69f8"
-            ],
             "authored_date": "2014-02-27T09:49:50.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2808,11 +2803,10 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           },
           {
-            "id": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
+            "merge_request_diff_id": 27,
+            "relative_order": 5,
+            "sha": "c1acaa58bbcbc3eafe538cb8274ba387047b69f8",
             "message": "Ignore DS files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-            "parent_ids": [
-              "ae73cb07c9eeaf35924a10f713b364d32b2dd34f"
-            ],
             "authored_date": "2014-02-27T09:48:32.000+01:00",
             "author_name": "Dmitriy Zaporozhets",
             "author_email": "dmitriy.zaporozhets@gmail.com",
@@ -2821,9 +2815,11 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "utf8_st_diffs": [
+        "merge_request_diff_files": [
           {
-            "diff": "Binary files a/.DS_Store and /dev/null differ\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 0,
+            "utf8_diff": "Binary files a/.DS_Store and /dev/null differ\n",
             "new_path": ".DS_Store",
             "old_path": ".DS_Store",
             "a_mode": "100644",
@@ -2834,7 +2830,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/.gitignore\n+++ b/.gitignore\n@@ -17,3 +17,4 @@ rerun.txt\n pickle-email-*.html\n .project\n config/initializers/secret_token.rb\n+.DS_Store\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 1,
+            "utf8_diff": "--- a/.gitignore\n+++ b/.gitignore\n@@ -17,3 +17,4 @@ rerun.txt\n pickle-email-*.html\n .project\n config/initializers/secret_token.rb\n+.DS_Store\n",
             "new_path": ".gitignore",
             "old_path": ".gitignore",
             "a_mode": "100644",
@@ -2845,7 +2843,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/.gitmodules\n+++ b/.gitmodules\n@@ -1,3 +1,9 @@\n [submodule \"six\"]\n \tpath = six\n \turl = git://github.com/randx/six.git\n+[submodule \"gitlab-shell\"]\n+\tpath = gitlab-shell\n+\turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 2,
+            "utf8_diff": "--- a/.gitmodules\n+++ b/.gitmodules\n@@ -1,3 +1,9 @@\n [submodule \"six\"]\n \tpath = six\n \turl = git://github.com/randx/six.git\n+[submodule \"gitlab-shell\"]\n+\tpath = gitlab-shell\n+\turl = https://github.com/gitlabhq/gitlab-shell.git\n+[submodule \"gitlab-grack\"]\n+\tpath = gitlab-grack\n+\turl = https://gitlab.com/gitlab-org/gitlab-grack.git\n",
             "new_path": ".gitmodules",
             "old_path": ".gitmodules",
             "a_mode": "100644",
@@ -2856,7 +2856,9 @@
             "too_large": false
           },
           {
-            "diff": "Binary files a/files/.DS_Store and /dev/null differ\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 3,
+            "utf8_diff": "Binary files a/files/.DS_Store and /dev/null differ\n",
             "new_path": "files/.DS_Store",
             "old_path": "files/.DS_Store",
             "a_mode": "100644",
@@ -2867,7 +2869,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to make merge conflict\n+class Conflict\n+end\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 4,
+            "utf8_diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to make merge conflict\n+class Conflict\n+end\n",
             "new_path": "files/ruby/feature.rb",
             "old_path": "files/ruby/feature.rb",
             "a_mode": "0",
@@ -2878,7 +2882,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/files/ruby/popen.rb\n+++ b/files/ruby/popen.rb\n@@ -6,12 +6,18 @@ module Popen\n \n   def popen(cmd, path=nil)\n     unless cmd.is_a?(Array)\n-      raise \"System commands must be given as an array of strings\"\n+      raise RuntimeError, \"System commands must be given as an array of strings\"\n     end\n \n     path ||= Dir.pwd\n-    vars = { \"PWD\" =\u003e path }\n-    options = { chdir: path }\n+\n+    vars = {\n+      \"PWD\" =\u003e path\n+    }\n+\n+    options = {\n+      chdir: path\n+    }\n \n     unless File.directory?(path)\n       FileUtils.mkdir_p(path)\n@@ -19,6 +25,7 @@ module Popen\n \n     @cmd_output = \"\"\n     @cmd_status = 0\n+\n     Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|\n       @cmd_output \u003c\u003c stdout.read\n       @cmd_output \u003c\u003c stderr.read\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 5,
+            "utf8_diff": "--- a/files/ruby/popen.rb\n+++ b/files/ruby/popen.rb\n@@ -6,12 +6,18 @@ module Popen\n \n   def popen(cmd, path=nil)\n     unless cmd.is_a?(Array)\n-      raise \"System commands must be given as an array of strings\"\n+      raise RuntimeError, \"System commands must be given as an array of strings\"\n     end\n \n     path ||= Dir.pwd\n-    vars = { \"PWD\" =\u003e path }\n-    options = { chdir: path }\n+\n+    vars = {\n+      \"PWD\" =\u003e path\n+    }\n+\n+    options = {\n+      chdir: path\n+    }\n \n     unless File.directory?(path)\n       FileUtils.mkdir_p(path)\n@@ -19,6 +25,7 @@ module Popen\n \n     @cmd_output = \"\"\n     @cmd_status = 0\n+\n     Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|\n       @cmd_output \u003c\u003c stdout.read\n       @cmd_output \u003c\u003c stderr.read\n",
             "new_path": "files/ruby/popen.rb",
             "old_path": "files/ruby/popen.rb",
             "a_mode": "100644",
@@ -2889,7 +2895,9 @@
             "too_large": false
           },
           {
-            "diff": "--- a/files/ruby/regex.rb\n+++ b/files/ruby/regex.rb\n@@ -19,14 +19,12 @@ module Gitlab\n     end\n \n     def archive_formats_regex\n-      #|zip|tar|    tar.gz    |         tar.bz2         |\n-      /(zip|tar|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n+      /(zip|tar|7z|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n     end\n \n     def git_reference_regex\n       # Valid git ref regex, see:\n       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html\n-\n       %r{\n         (?!\n            (?# doesn't begins with)\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 6,
+            "utf8_diff": "--- a/files/ruby/regex.rb\n+++ b/files/ruby/regex.rb\n@@ -19,14 +19,12 @@ module Gitlab\n     end\n \n     def archive_formats_regex\n-      #|zip|tar|    tar.gz    |         tar.bz2         |\n-      /(zip|tar|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n+      /(zip|tar|7z|tar\\.gz|tgz|gz|tar\\.bz2|tbz|tbz2|tb2|bz2)/\n     end\n \n     def git_reference_regex\n       # Valid git ref regex, see:\n       # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html\n-\n       %r{\n         (?!\n            (?# doesn't begins with)\n",
             "new_path": "files/ruby/regex.rb",
             "old_path": "files/ruby/regex.rb",
             "a_mode": "100644",
@@ -2900,7 +2908,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/gitlab-grack\n@@ -0,0 +1 @@\n+Subproject commit 645f6c4c82fd3f5e06f67134450a570b795e55a6\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 7,
+            "utf8_diff": "--- /dev/null\n+++ b/gitlab-grack\n@@ -0,0 +1 @@\n+Subproject commit 645f6c4c82fd3f5e06f67134450a570b795e55a6\n",
             "new_path": "gitlab-grack",
             "old_path": "gitlab-grack",
             "a_mode": "0",
@@ -2911,7 +2921,9 @@
             "too_large": false
           },
           {
-            "diff": "--- /dev/null\n+++ b/gitlab-shell\n@@ -0,0 +1 @@\n+Subproject commit 79bceae69cb5750d6567b223597999bfa91cb3b9\n",
+            "merge_request_diff_id": 27,
+            "relative_order": 8,
+            "utf8_diff": "--- /dev/null\n+++ b/gitlab-shell\n@@ -0,0 +1 @@\n+Subproject commit 79bceae69cb5750d6567b223597999bfa91cb3b9\n",
             "new_path": "gitlab-shell",
             "old_path": "gitlab-shell",
             "a_mode": "0",

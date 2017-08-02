@@ -6,7 +6,9 @@ describe Gitlab::Middleware::RailsQueueDuration do
   let(:env) { {} }
   let(:transaction) { double(:transaction) }
 
-  before { expect(app).to receive(:call).with(env).and_return('yay') }
+  before do
+    expect(app).to receive(:call).with(env).and_return('yay')
+  end
 
   describe '#call' do
     it 'calls the app when metrics are disabled' do
@@ -15,7 +17,9 @@ describe Gitlab::Middleware::RailsQueueDuration do
     end
 
     context 'when metrics are enabled' do
-      before { allow(Gitlab::Metrics).to receive(:current_transaction).and_return(transaction) }
+      before do
+        allow(Gitlab::Metrics).to receive(:current_transaction).and_return(transaction)
+      end
 
       it 'calls the app when metrics are enabled but no timing header is found' do
         expect(middleware.call(env)).to eq('yay')

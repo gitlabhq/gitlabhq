@@ -1,16 +1,18 @@
 require 'spec_helper'
 
-describe Ci::BuildPolicy, :models do
+describe Ci::BuildPolicy do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-  let(:policies) do
-    described_class.abilities(user, build).to_set
+  let(:policy) do
+    described_class.new(user, build)
   end
 
   shared_context 'public pipelines disabled' do
-    before { project.update_attribute(:public_builds, false) }
+    before do
+      project.update_attribute(:public_builds, false)
+    end
   end
 
   describe '#rules' do
@@ -19,7 +21,7 @@ describe Ci::BuildPolicy, :models do
 
       context 'when public builds are enabled' do
         it 'does not include ability to read build' do
-          expect(policies).not_to include :read_build
+          expect(policy).not_to be_allowed :read_build
         end
       end
 
@@ -27,7 +29,7 @@ describe Ci::BuildPolicy, :models do
         include_context 'public pipelines disabled'
 
         it 'does not include ability to read build' do
-          expect(policies).not_to include :read_build
+          expect(policy).not_to be_allowed :read_build
         end
       end
     end
@@ -37,7 +39,7 @@ describe Ci::BuildPolicy, :models do
 
       context 'when public builds are enabled' do
         it 'includes ability to read build' do
-          expect(policies).to include :read_build
+          expect(policy).to be_allowed :read_build
         end
       end
 
@@ -45,7 +47,7 @@ describe Ci::BuildPolicy, :models do
         include_context 'public pipelines disabled'
 
         it 'does not include ability to read build' do
-          expect(policies).not_to include :read_build
+          expect(policy).not_to be_allowed :read_build
         end
       end
     end
@@ -54,11 +56,13 @@ describe Ci::BuildPolicy, :models do
       let(:project) { create(:empty_project, :public) }
 
       context 'team member is a guest' do
-        before { project.team << [user, :guest] }
+        before do
+          project.team << [user, :guest]
+        end
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do
-            expect(policies).to include :read_build
+            expect(policy).to be_allowed :read_build
           end
         end
 
@@ -66,17 +70,19 @@ describe Ci::BuildPolicy, :models do
           include_context 'public pipelines disabled'
 
           it 'does not include ability to read build' do
-            expect(policies).not_to include :read_build
+            expect(policy).not_to be_allowed :read_build
           end
         end
       end
 
       context 'team member is a reporter' do
-        before { project.team << [user, :reporter] }
+        before do
+          project.team << [user, :reporter]
+        end
 
         context 'when public builds are enabled' do
           it 'includes ability to read build' do
-            expect(policies).to include :read_build
+            expect(policy).to be_allowed :read_build
           end
         end
 
@@ -84,61 +90,63 @@ describe Ci::BuildPolicy, :models do
           include_context 'public pipelines disabled'
 
           it 'does not include ability to read build' do
-            expect(policies).to include :read_build
+            expect(policy).to be_allowed :read_build
           end
         end
       end
     end
 
-    describe 'rules for manual actions' do
+    describe 'rules for protected ref' do
       let(:project) { create(:project) }
+      let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
 
       before do
         project.add_developer(user)
       end
 
-      context 'when branch build is assigned to is protected' do
+      context 'when no one can push or merge to the branch' do
         before do
           create(:protected_branch, :no_one_can_push,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
         end
 
-        context 'when build is a manual action' do
-          let(:build) do
-            create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
-          end
-
-          it 'does not include ability to update build' do
-            expect(policies).not_to include :update_build
-          end
-        end
-
-        context 'when build is not a manual action' do
-          let(:build) do
-            create(:ci_build, ref: 'some-ref', pipeline: pipeline)
-          end
-
-          it 'includes ability to update build' do
-            expect(policies).to include :update_build
-          end
+        it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :update_build
         end
       end
 
-      context 'when branch build is assigned to is not protected' do
-        context 'when build is a manual action' do
-          let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
-
-          it 'includes ability to update build' do
-            expect(policies).to include :update_build
-          end
+      context 'when developers can push to the branch' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: build.ref, project: project)
         end
 
-        context 'when build is not a manual action' do
-          let(:build) { create(:ci_build, pipeline: pipeline) }
+        it 'includes ability to update build' do
+          expect(policy).to be_allowed :update_build
+        end
+      end
 
-          it 'includes ability to update build' do
-            expect(policies).to include :update_build
-          end
+      context 'when no one can create the tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: build.ref, project: project)
+
+          build.update(tag: true)
+        end
+
+        it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :update_build
+        end
+      end
+
+      context 'when no one can create the tag but it is not a tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: build.ref, project: project)
+        end
+
+        it 'includes ability to update build' do
+          expect(policy).to be_allowed :update_build
         end
       end
     end

@@ -106,4 +106,8 @@ module LfsRequest
   def objects
     @objects ||= (params[:objects] || []).to_a
   end
+
+  def has_authentication_ability?(capability)
+    (authentication_abilities || []).include?(capability)
+  end
 end

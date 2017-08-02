@@ -22,11 +22,11 @@ module Bitbucket
       end
 
       def inline?
-        raw.has_key?('inline')
+        raw.key?('inline')
       end
 
       def has_parent?
-        raw.has_key?('parent')
+        raw.key?('parent')
       end
 
       private

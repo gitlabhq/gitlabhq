@@ -224,16 +224,6 @@ module API
         find_build(id) || not_found!
       end
 
-      def present_artifacts!(artifacts_file)
-        if !artifacts_file.file_storage?
-          redirect_to(build.artifacts_file.url)
-        elsif artifacts_file.exists?
-          present_file!(artifacts_file.path, artifacts_file.filename)
-        else
-          not_found!
-        end
-      end
-
       def filter_builds(builds, scope)
         return builds if scope.nil? || scope.empty?
 

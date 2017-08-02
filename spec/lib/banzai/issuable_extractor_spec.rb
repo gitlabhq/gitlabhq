@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::IssuableExtractor, lib: true do
+describe Banzai::IssuableExtractor do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
   let(:extractor) { described_class.new(project, user) }
@@ -29,16 +29,7 @@ describe Banzai::IssuableExtractor, lib: true do
     expect(result).to eq(issue_link => issue, merge_request_link => merge_request)
   end
 
-  describe 'caching' do
-    before do
-      RequestStore.begin!
-    end
-
-    after do
-      RequestStore.end!
-      RequestStore.clear!
-    end
-
+  describe 'caching', :request_store do
     it 'saves records to cache' do
       extractor.extract([issue_link, merge_request_link])
 

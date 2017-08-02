@@ -1,13 +1,11 @@
 require 'spec_helper'
 
-describe 'Pipeline', :feature, :js do
-  include GitlabRoutingHelper
-
+describe 'Pipeline', :js do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    sign_in(user)
     project.team << [user, :developer]
   end
 
@@ -44,10 +42,12 @@ describe 'Pipeline', :feature, :js do
   describe 'GET /:project/pipelines/:id' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
 
-    before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    before do
+      visit project_pipeline_path(project, pipeline)
+    end
 
     it 'shows the pipeline graph' do
       expect(page).to have_selector('.pipeline-visualization')
@@ -164,7 +164,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { find('.js-retry-button').trigger('click') }
+        before do
+          find('.js-retry-button').trigger('click')
+        end
 
         it { expect(page).not_to have_content('Retry') }
       end
@@ -174,7 +176,9 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
-        before { click_on 'Cancel running' }
+        before do
+          click_on 'Cancel running'
+        end
 
         it { expect(page).not_to have_content('Cancel running') }
       end
@@ -184,11 +188,11 @@ describe 'Pipeline', :feature, :js do
   describe 'GET /:project/pipelines/:id/builds' do
     include_context 'pipeline builds'
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
 
     before do
-      visit builds_namespace_project_pipeline_path(project.namespace, project, pipeline)
+      visit builds_project_pipeline_path(project, pipeline)
     end
 
     it 'shows a list of jobs' do
@@ -226,10 +230,11 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_content('retried') }
 
       context 'when retrying' do
-        before { find('.js-retry-button').trigger('click') }
+        before do
+          find('.js-retry-button').trigger('click')
+        end
 
         it { expect(page).not_to have_content('Retry') }
-        it { expect(page).to have_selector('.retried') }
       end
     end
 
@@ -237,10 +242,11 @@ describe 'Pipeline', :feature, :js do
       it { expect(page).not_to have_selector('.ci-canceled') }
 
       context 'when canceling' do
-        before { click_on 'Cancel running' }
+        before do
+          click_on 'Cancel running'
+        end
 
         it { expect(page).not_to have_content('Cancel running') }
-        it { expect(page).to have_selector('.ci-canceled') }
       end
     end
 
@@ -256,9 +262,9 @@ describe 'Pipeline', :feature, :js do
   end
 
   describe 'GET /:project/pipelines/:id/failures' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id) }
-    let(:pipeline_failures_page) { failures_namespace_project_pipeline_path(project.namespace, project, pipeline) }
+    let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
     context 'with failed build' do

@@ -6,16 +6,19 @@ Feature: Project Builds Summary
     And project has coverage enabled
     And project has a recent build
 
+  @javascript
   Scenario: I browse build details page
     When I visit recent build details page
     Then I see details of a build
     And I see build trace
 
+  @javascript
   Scenario: I browse project builds page
     When I visit project builds page
     Then I see coverage
     Then I see button to CI Lint
 
+  @javascript
   Scenario: I erase a build
     Given recent build is successful
     And recent build has a build trace

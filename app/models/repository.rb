@@ -4,7 +4,7 @@ class Repository
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
-  attr_accessor :path_with_namespace, :project
+  attr_accessor :full_path, :disk_path, :project
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -52,13 +52,14 @@ class Repository
     end
   end
 
-  def initialize(path_with_namespace, project)
-    @path_with_namespace = path_with_namespace
+  def initialize(full_path, project, disk_path: nil)
+    @full_path = full_path
+    @disk_path = disk_path || full_path
     @project = project
   end
 
   def raw_repository
-    return nil unless path_with_namespace
+    return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
@@ -66,7 +67,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, disk_path + '.git')
     )
   end
 
@@ -123,6 +124,7 @@ class Repository
     commits
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
     unless exists? && has_visible_content? && query.present?
       return []
@@ -241,11 +243,11 @@ class Repository
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
-      number_commits_behind = raw_repository.
-        count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
+      number_commits_behind = raw_repository
+        .count_commits_between(branch.dereferenced_target.sha, root_ref_hash)
 
-      number_commits_ahead = raw_repository.
-        count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
+      number_commits_ahead = raw_repository
+        .count_commits_between(root_ref_hash, branch.dereferenced_target.sha)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -456,10 +458,6 @@ class Repository
     nil
   end
 
-  def blob_by_oid(oid)
-    Gitlab::Git::Blob.raw(self, oid)
-  end
-
   def root_ref
     if raw_repository
       raw_repository.root_ref
@@ -470,8 +468,17 @@ class Repository
   end
   cache_method :root_ref
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    refs_directory_exists?
+    return false unless full_path
+
+    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+      if enabled
+        raw_repository.exists?
+      else
+        refs_directory_exists?
+      end
+    end
   end
   cache_method :exists?
 
@@ -605,27 +612,12 @@ class Repository
     end
   end
 
-  # Returns url for submodule
-  #
-  # Ex.
-  #   @repository.submodule_url_for('master', 'rack')
-  #   # => git@localhost:rack.git
-  #
-  def submodule_url_for(ref, path)
-    if submodules(ref).any?
-      submodule = submodules(ref)[path]
-
-      if submodule
-        submodule['url']
-      end
-    end
-  end
-
   def last_commit_for_path(sha, path)
     sha = last_commit_id_for_path(sha, path)
     commit(sha)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/383
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
@@ -946,6 +938,8 @@ class Repository
   end
 
   def is_ancestor?(ancestor_id, descendant_id)
+    return false if ancestor_id.nil? || descendant_id.nil?
+
     Gitlab::GitalyClient.migrate(:is_ancestor) do |is_enabled|
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
@@ -1012,7 +1006,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1092,8 +1086,8 @@ class Repository
     blob_data_at(sha, '.gitlab/route-map.yml')
   end
 
-  def gitlab_ci_yml_for(sha)
-    blob_data_at(sha, '.gitlab-ci.yml')
+  def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
+    blob_data_at(sha, path)
   end
 
   private
@@ -1102,18 +1096,17 @@ class Repository
     blob = blob_at(sha, path)
     return unless blob
 
-    blob.load_all_data!(self)
+    blob.load_all_data!
     blob.data
   end
 
   def refs_directory_exists?
-    return false unless path_with_namespace
-
     File.exist?(File.join(path_to_repo, 'refs'))
   end
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
+    # TODO: should we use UUIDs here? We could move repositories without clearing this cache
+    @cache ||= RepositoryCache.new(full_path, @project.id)
   end
 
   def tags_sorted_by_committed_date
@@ -1136,7 +1129,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
   def create_commit(params = {})
@@ -1150,6 +1143,6 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
   end
 end

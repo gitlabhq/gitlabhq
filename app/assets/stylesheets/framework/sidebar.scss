@@ -33,7 +33,7 @@
   padding-right: 0;
 
   @media (min-width: $screen-sm-min) {
-    &:not(.wiki-sidebar):not(.build-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
 
@@ -56,7 +56,7 @@
   z-index: 300;
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
-    &:not(.wiki-sidebar):not(.build-sidebar) .content-wrapper {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
       padding-right: $gutter_collapsed_width;
     }
   }
@@ -86,5 +86,52 @@
 
   &:not(.affix-top) {
     min-height: 100%;
+  }
+}
+
+.with-performance-bar .right-sidebar.affix {
+  top: $header-height + $performance-bar-height;
+}
+
+@mixin maintain-sidebar-dimensions {
+  display: block;
+  width: $gutter-width;
+}
+
+.issues-bulk-update.right-sidebar {
+  @include maintain-sidebar-dimensions;
+  width: 0;
+  padding: 0;
+  transition: width $sidebar-transition-duration;
+
+  &.right-sidebar-expanded {
+    @include maintain-sidebar-dimensions;
+    width: $gutter-width;
+
+    .issuable-sidebar-header {
+      // matches `.top-area .nav-controls` for issuable index pages
+      padding: 11px 0;
+    }
+
+    .block:last-of-type {
+      border: none;
+    }
+  }
+
+  &.right-sidebar-collapsed {
+    @include maintain-sidebar-dimensions;
+    width: 0;
+    padding: 0;
+
+    .block {
+      padding: 16px 0;
+      width: 250px;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+
+  .issuable-sidebar {
+    padding: 0 3px;
+    width: calc(100% + 35px);
   }
 }

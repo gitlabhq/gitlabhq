@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::PropagateServiceTemplate, services: true do
+describe Projects::PropagateServiceTemplate do
   describe '.propagate' do
     let!(:service_template) do
       PushoverService.create(
@@ -60,8 +60,8 @@ describe Projects::PropagateServiceTemplate, services: true do
       Service.build_from_template(project.id, service_template).save!
       Service.build_from_template(project.id, other_service).save!
 
-      expect { described_class.propagate(service_template) }.
-        not_to change { Service.count }
+      expect { described_class.propagate(service_template) }
+        .not_to change { Service.count }
     end
 
     it 'creates the service containing the template attributes' do
@@ -90,8 +90,8 @@ describe Projects::PropagateServiceTemplate, services: true do
       it 'updates the project external tracker' do
         service_template.update!(category: 'issue_tracker', default: false)
 
-        expect { described_class.propagate(service_template) }.
-          to change { project.reload.has_external_issue_tracker }.to(true)
+        expect { described_class.propagate(service_template) }
+          .to change { project.reload.has_external_issue_tracker }.to(true)
       end
     end
 
@@ -99,8 +99,8 @@ describe Projects::PropagateServiceTemplate, services: true do
       it 'updates the project external tracker' do
         service_template.update!(type: 'ExternalWikiService')
 
-        expect { described_class.propagate(service_template) }.
-          to change { project.reload.has_external_wiki }.to(true)
+        expect { described_class.propagate(service_template) }
+          .to change { project.reload.has_external_wiki }.to(true)
       end
     end
   end

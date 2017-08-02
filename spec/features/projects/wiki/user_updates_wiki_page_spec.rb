@@ -1,19 +1,18 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User updates wiki page', feature: true do
+feature 'Projects > Wiki > User updates wiki page' do
   let(:user) { create(:user) }
+  let!(:wiki_page) { WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute }
 
   background do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
 
-    visit namespace_project_path(project.namespace, project)
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-    click_link 'Wiki'
+    visit project_wikis_path(project)
   end
 
   context 'in the user namespace' do
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:empty_project, namespace: user.namespace) }
 
     context 'the home page' do
       scenario 'success when the wiki content is not empty' do
@@ -42,11 +41,30 @@ feature 'Projects > Wiki > User updates wiki page', feature: true do
         expect(page).to have_content('Content can\'t be blank')
         expect(find('textarea#wiki_content').value).to eq ''
       end
+
+      scenario 'content has autocomplete', :js do
+        click_link 'Edit'
+
+        find('#wiki_content').native.send_keys('')
+        fill_in :wiki_content, with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
+    end
+
+    scenario 'page has been updated since the user opened the edit page' do
+      click_link 'Edit'
+
+      wiki_page.update('Update')
+
+      click_button 'Save changes'
+
+      expect(page).to have_content 'Someone edited the page the same time you did.'
     end
   end
 
   context 'in a group namespace' do
-    let(:project) { create(:project, namespace: create(:group, :public)) }
+    let(:project) { create(:empty_project, namespace: create(:group, :public)) }
 
     scenario 'the home page' do
       click_link 'Edit'

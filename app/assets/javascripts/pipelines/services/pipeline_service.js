@@ -11,4 +11,9 @@ export default class PipelineService {
   getPipeline() {
     return this.pipeline.get();
   }
+
+  // eslint-disable-next-line
+  postAction(endpoint) {
+    return Vue.http.post(`${endpoint}.json`);
+  }
 }

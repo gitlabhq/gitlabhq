@@ -1,32 +1,32 @@
-- @no_container = true
+- @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- breadcrumb_title "Wiki"
 - page_title @page.title.capitalize, "Wiki"
 
-%div{ class: container_class }
-  .wiki-page-header.has-sidebar-toggle
-    %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
-      = icon('angle-double-left')
+.wiki-page-header.has-sidebar-toggle
+  %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+    = icon('angle-double-left')
 
-    .wiki-breadcrumb
-      %span= breadcrumb(@page.slug)
+  .wiki-breadcrumb
+    %span= breadcrumb(@page.slug)
 
-    .nav-text
-      %h2.wiki-page-title= @page.title.capitalize
-      %span.wiki-last-edit-by
-        Last edited by
-        %strong
-          #{@page.commit.author.name}
-        #{time_ago_with_tooltip(@page.commit.authored_date)}
+  .nav-text
+    %h2.wiki-page-title= @page.title.capitalize
+    %span.wiki-last-edit-by
+      Last edited by
+      %strong
+        #{@page.commit.author.name}
+      #{time_ago_with_tooltip(@page.commit.authored_date)}
 
-    .nav-controls
-      = render 'main_links'
+  .nav-controls
+    = render 'main_links'
 
-  - if @page.historical?
-    .warning_message
-      This is an old version of this page.
-      You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
+- if @page.historical?
+  .warning_message
+    This is an old version of this page.
+    You can view the #{link_to "most recent version", project_wiki_path(@project, @page)} or browse the #{link_to "history", project_wiki_history_path(@project, @page)}.
 
-  .wiki-holder.prepend-top-default.append-bottom-default
-    .wiki
-      = render_wiki_content(@page)
+.wiki-holder.prepend-top-default.append-bottom-default
+  .wiki
+    = render_wiki_content(@page)
 
 = render 'sidebar'

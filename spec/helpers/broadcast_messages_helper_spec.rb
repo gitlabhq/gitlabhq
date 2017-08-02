@@ -33,8 +33,8 @@ describe BroadcastMessagesHelper do
     it 'allows custom style' do
       broadcast_message = double(color: '#f2dede', font: '#b94a48')
 
-      expect(helper.broadcast_message_style(broadcast_message)).
-        to match('background-color: #f2dede; color: #b94a48')
+      expect(helper.broadcast_message_style(broadcast_message))
+        .to match('background-color: #f2dede; color: #b94a48')
     end
   end
 

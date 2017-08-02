@@ -11,7 +11,7 @@ module Projects
       end
 
       def enabled_keys
-        @enabled_keys ||= project.deploy_keys
+        @enabled_keys ||= project.deploy_keys.includes(:projects)
       end
 
       def any_keys_enabled?
@@ -23,11 +23,7 @@ module Projects
       end
 
       def available_project_keys
-        @available_project_keys ||= current_user.project_deploy_keys - enabled_keys
-      end
-
-      def any_available_project_keys_enabled?
-        available_project_keys.any?
+        @available_project_keys ||= current_user.project_deploy_keys.includes(:projects) - enabled_keys
       end
 
       def key_available?(deploy_key)
@@ -37,15 +33,11 @@ module Projects
       def available_public_keys
         return @available_public_keys if defined?(@available_public_keys)
 
-        @available_public_keys ||= DeployKey.are_public - enabled_keys
+        @available_public_keys ||= DeployKey.are_public.includes(:projects) - enabled_keys
 
         # Public keys that are already used by another accessible project are already
         # in @available_project_keys.
         @available_public_keys -= available_project_keys
-      end
-
-      def any_available_public_keys_enabled?
-        available_public_keys.any?
       end
 
       def as_json

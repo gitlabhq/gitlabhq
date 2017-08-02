@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Datetime
 class AddLastRepositoryUpdatedAtToProjects < ActiveRecord::Migration
   DOWNTIME = false
 

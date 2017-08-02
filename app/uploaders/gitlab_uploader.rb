@@ -3,14 +3,30 @@ class GitlabUploader < CarrierWave::Uploader::Base
     File.join(CarrierWave.root, upload_record.path)
   end
 
-  def self.base_dir
+  def self.root_dir
     'uploads'
   end
 
-  delegate :base_dir, to: :class
+  # When object storage is used, keep the `root_dir` as `base_dir`.
+  # The files aren't really in folders there, they just have a name.
+  # The files that contain user input in their name, also contain a hash, so
+  # the names are still unique
+  #
+  # This method is overridden in the `FileUploader`
+  def self.base_dir
+    return root_dir unless file_storage?
 
-  def file_storage?
-    self.class.storage == CarrierWave::Storage::File
+    File.join(root_dir, '-', 'system')
+  end
+
+  def self.file_storage?
+    self.storage == CarrierWave::Storage::File
+  end
+
+  delegate :base_dir, :file_storage?, to: :class
+
+  def file_cache_storage?
+    cache_storage.is_a?(CarrierWave::Storage::File)
   end
 
   # Reduce disk IO
@@ -36,5 +52,28 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   def exists?
     file.try(:exists?)
+  end
+
+  # Override this if you don't want to save files by default to the Rails.root directory
+  def work_dir
+    # Default path set by CarrierWave:
+    # https://github.com/carrierwaveuploader/carrierwave/blob/v1.0.0/lib/carrierwave/uploader/cache.rb#L182
+    CarrierWave.tmp_path
+  end
+
+  def filename
+    super || file&.filename
+  end
+
+  private
+
+  # To prevent files from moving across filesystems, override the default
+  # implementation:
+  # http://github.com/carrierwaveuploader/carrierwave/blob/v1.0.0/lib/carrierwave/uploader/cache.rb#L181-L183
+  def workfile_path(for_file = original_filename)
+    # To be safe, keep this directory outside of the the cache directory
+    # because calling CarrierWave.clean_cache_files! will remove any files in
+    # the cache directory.
+    File.join(work_dir, @cache_id, version_name.to_s, for_file)
   end
 end

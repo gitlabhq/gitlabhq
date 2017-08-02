@@ -4,7 +4,7 @@ module TodosHelper
   end
 
   def todos_count_format(count)
-    count > 99 ? '99+' : count
+    count > 99 ? '99+' : count.to_s
   end
 
   def todos_done_count
@@ -39,7 +39,7 @@ module TodosHelper
     anchor = dom_id(todo.note) if todo.note.present?
 
     if todo.for_commit?
-      namespace_project_commit_path(todo.project.namespace.becomes(Namespace), todo.project,
+      project_commit_path(todo.project,
                                     todo.target, anchor: anchor)
     else
       path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]

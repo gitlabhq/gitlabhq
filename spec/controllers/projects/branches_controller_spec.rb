@@ -32,8 +32,8 @@ describe Projects::BranchesController do
         let(:branch) { "merge_branch" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
+          expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/merge_branch")
         end
       end
 
@@ -41,8 +41,8 @@ describe Projects::BranchesController do
         let(:branch) { "<script>alert('merge');</script>" }
         let(:ref) { "master" }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
+          expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/alert('merge');")
         end
       end
 
@@ -81,8 +81,8 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
 
-        expect(subject).
-          to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
+        expect(subject)
+          .to redirect_to("/#{project.full_path}/tree/1-feature-branch")
       end
 
       it 'posts a system note' do
@@ -110,7 +110,7 @@ describe Projects::BranchesController do
             branch_name: branch,
             issue_iid: issue.iid
 
-          expect(response).to redirect_to namespace_project_tree_path(project.namespace, project, branch)
+          expect(response).to redirect_to project_tree_path(project, branch)
         end
 
         it 'redirects to autodeploy setup page' do
@@ -127,7 +127,7 @@ describe Projects::BranchesController do
             branch_name: branch,
             issue_iid: issue.iid
 
-          expect(response.location).to include(namespace_project_new_blob_path(project.namespace, project, branch))
+          expect(response.location).to include(project_new_blob_path(project, branch))
           expect(response).to have_http_status(302)
         end
       end
@@ -303,7 +303,7 @@ describe Projects::BranchesController do
 
       it 'redirects to branches path' do
         expect(response)
-          .to redirect_to(namespace_project_branches_path(project.namespace, project))
+          .to redirect_to(project_branches_path(project))
       end
     end
   end
@@ -323,7 +323,7 @@ describe Projects::BranchesController do
       it 'redirects to branches' do
         destroy_all_merged
 
-        expect(response).to redirect_to namespace_project_branches_path(project.namespace, project)
+        expect(response).to redirect_to project_branches_path(project)
       end
 
       it 'starts worker to delete merged branches' do
@@ -365,20 +365,6 @@ describe Projects::BranchesController do
 
         expect(parsed_response.length).to eq 1
         expect(parsed_response.first).to eq 'master'
-      end
-    end
-
-    context 'show_all = true' do
-      it 'returns all the branches name' do
-        get :index,
-            namespace_id: project.namespace,
-            project_id: project,
-            format: :json,
-            show_all: true
-
-        parsed_response = JSON.parse(response.body)
-
-        expect(parsed_response.length).to eq(project.repository.branches.count)
       end
     end
   end

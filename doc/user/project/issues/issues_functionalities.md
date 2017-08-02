@@ -43,7 +43,7 @@ assigned to them if they created the issue themselves.
 
 ##### 3.1. Multiple Assignees (EES/EEP)
 
-Issue Weights are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+Multiple Assignees are only available in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
 
 Often multiple people likely work on the same issue together,
 which can especially be difficult to track in large teams
@@ -52,25 +52,21 @@ where there is shared ownership of an issue.
 In GitLab Enterprise Edition, you can also select multiple assignees
 to an issue.
 
-> **Note:**
-Multiple Assignees was [introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1904)
-in [GitLab Enterprise Edition 9.2](https://about.gitlab.com/2017/05/22/gitlab-9-2-released/#multiple-assignees-for-issues).
+Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
 
 #### 4. Milestone
 
 - Select a [milestone](../milestones/index.md) to attribute that issue to.
 
-#### 5. Time Tracking (EES/EEP)
-
-This feature is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+#### 5. Time Tracking
 
 - Estimate time: add an estimate time in which the issue will be implemented
 - Spend: add the time spent on the implementation of that issue
 
 > **Note:**
-both estimate and spend times are set via [GitLab Slash Commands](../slash_commands.md).
+Both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
 
-Learn more on the [Time Tracking documentation](https://docs.gitlab.com/ee/workflow/time_tracking.html).
+Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.md).
 
 #### 6. Due date
 
@@ -147,7 +143,7 @@ or in the issue thread.
 
 #### 15. Award emoji
 
-- Award an emoji to that issue. 
+- Award an emoji to that issue.
 
 > **Tip:**
 Posting "+1" as comments in threads spam all

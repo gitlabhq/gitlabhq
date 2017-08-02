@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Download buttons in tags page', feature: true do
+feature 'Download buttons in tags page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
@@ -23,20 +23,18 @@ feature 'Download buttons in tags page', feature: true do
   end
 
   background do
-    login_as(user)
+    sign_in(user)
     project.team << [user, role]
   end
 
   describe 'when checking tags' do
     context 'with artifacts' do
       before do
-        visit namespace_project_tags_path(project.namespace, project)
+        visit project_tags_path(project)
       end
 
       scenario 'shows download artifacts button' do
-        href = latest_succeeded_namespace_project_artifacts_path(
-          project.namespace, project, "#{tag}/download",
-          job: 'build')
+        href = latest_succeeded_project_artifacts_path(project, "#{tag}/download", job: 'build')
 
         expect(page).to have_link "Download '#{build.name}'", href: href
       end

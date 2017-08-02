@@ -1,29 +1,11 @@
 require 'spec_helper'
 
-describe KubernetesService, models: true, caching: true do
+describe KubernetesService, :use_clean_rails_memory_store_caching do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
-
-  # We use Kubeclient to interactive with the Kubernetes API. It will
-  # GET /api/v1 for a list of resources the API supports. This must be stubbed
-  # in addition to any other HTTP requests we expect it to perform.
-  let(:discovery_url) { service.api_url + '/api/v1' }
-  let(:discovery_response) { { body: kube_discovery_body.to_json } }
-
-  let(:pods_url) { service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods" }
-  let(:pods_response) { { body: kube_pods_body(kube_pod).to_json } }
-
-  def stub_kubeclient_discover
-    WebMock.stub_request(:get, discovery_url).to_return(discovery_response)
-  end
-
-  def stub_kubeclient_pods
-    stub_kubeclient_discover
-    WebMock.stub_request(:get, pods_url).to_return(pods_response)
-  end
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -31,7 +13,9 @@ describe KubernetesService, models: true, caching: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.not_to validate_presence_of(:namespace) }
       it { is_expected.to validate_presence_of(:api_url) }
@@ -66,7 +50,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:api_url) }
       it { is_expected.not_to validate_presence_of(:token) }
@@ -87,7 +73,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'as template' do
-      before { subject.template = true }
+      before do
+        subject.template = true
+      end
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
@@ -96,7 +84,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'with associated project' do
-      before { subject.project = project }
+      before do
+        subject.project = project
+      end
 
       it 'sets the namespace to the default' do
         expect(kube_namespace).not_to be_nil
@@ -111,7 +101,35 @@ describe KubernetesService, models: true, caching: true do
     it "returns the default namespace" do
       is_expected.to eq(service.send(:default_namespace))
     end
-    
+
+    context 'when namespace is specified' do
+      before do
+        service.namespace = 'my-namespace'
+      end
+
+      it "returns the user-namespace" do
+        is_expected.to eq('my-namespace')
+      end
+    end
+
+    context 'when service is not assigned to project' do
+      before do
+        service.project = nil
+      end
+
+      it "does not return namespace" do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#actual_namespace' do
+    subject { service.actual_namespace }
+
+    it "returns the default namespace" do
+      is_expected.to eq(service.send(:default_namespace))
+    end
+
     context 'when namespace is specified' do
       before do
         service.namespace = 'my-namespace'
@@ -134,6 +152,8 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#test' do
+    let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
+
     before do
       stub_kubeclient_discover
     end
@@ -142,7 +162,8 @@ describe KubernetesService, models: true, caching: true do
       let(:discovery_url) { 'https://kubernetes.example.com/prefix/api/v1' }
 
       it 'tests with the prefix' do
-        service.api_url = 'https://kubernetes.example.com/prefix/'
+        service.api_url = 'https://kubernetes.example.com/prefix'
+        stub_kubeclient_discover
 
         expect(service.test[:success]).to be_truthy
         expect(WebMock).to have_requested(:get, discovery_url).once
@@ -170,9 +191,9 @@ describe KubernetesService, models: true, caching: true do
     end
 
     context 'failure' do
-      let(:discovery_response) { { status: 404 } }
-
       it 'fails to read the discovery endpoint' do
+        WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(status: 404)
+
         expect(service.test[:success]).to be_falsy
         expect(WebMock).to have_requested(:get, discovery_url).once
       end
@@ -180,6 +201,22 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#predefined_variables' do
+    let(:kubeconfig) do
+      config =
+        YAML.load(File.read(expand_fixture_path('config/kubeconfig.yml')))
+
+      config.dig('users', 0, 'user')['token'] =
+        'token'
+
+      config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
+        Base64.encode64('CA PEM DATA')
+
+      config.dig('contexts', 0, 'context')['namespace'] =
+        namespace
+
+      YAML.dump(config)
+    end
+
     before do
       subject.api_url = 'https://kube.domain.com'
       subject.token = 'token'
@@ -187,29 +224,33 @@ describe KubernetesService, models: true, caching: true do
       subject.project = project
     end
 
-    context 'namespace is provided' do
-      before { subject.namespace = 'my-project' }
-
+    shared_examples 'setting variables' do
       it 'sets the variables' do
         expect(subject.predefined_variables).to include(
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
           { key: 'KUBE_TOKEN', value: 'token', public: false },
-          { key: 'KUBE_NAMESPACE', value: 'my-project', public: true },
+          { key: 'KUBE_NAMESPACE', value: namespace, public: true },
+          { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
           { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
         )
       end
     end
 
-    context 'no namespace provided' do
-      it 'sets the variables' do
-        expect(subject.predefined_variables).to include(
-          { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
-          { key: 'KUBE_TOKEN', value: 'token', public: false },
-          { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
-          { key: 'KUBE_CA_PEM_FILE', value: 'CA PEM DATA', public: true, file: true }
-        )
+    context 'namespace is provided' do
+      let(:namespace) { 'my-project' }
+
+      before do
+        subject.namespace = namespace
       end
+
+      it_behaves_like 'setting variables'
+    end
+
+    context 'no namespace provided' do
+      let(:namespace) { subject.actual_namespace }
+
+      it_behaves_like 'setting variables'
 
       it 'sets the KUBE_NAMESPACE' do
         kube_namespace = subject.predefined_variables.find { |h| h[:key] == 'KUBE_NAMESPACE' }
@@ -258,27 +299,36 @@ describe KubernetesService, models: true, caching: true do
   end
 
   describe '#calculate_reactive_cache' do
-    before { stub_kubeclient_pods }
     subject { service.calculate_reactive_cache }
 
     context 'when service is inactive' do
-      before { service.active = false }
+      before do
+        service.active = false
+      end
 
       it { is_expected.to be_nil }
     end
 
     context 'when kubernetes responds with valid pods' do
+      before do
+        stub_kubeclient_pods
+      end
+
       it { is_expected.to eq(pods: [kube_pod]) }
     end
 
-    context 'when kubernetes responds with 500' do
-      let(:pods_response) { { status: 500 } }
+    context 'when kubernetes responds with 500s' do
+      before do
+        stub_kubeclient_pods(status: 500)
+      end
 
       it { expect { subject }.to raise_error(KubeException) }
     end
 
-    context 'when kubernetes responds with 404' do
-      let(:pods_response) { { status: 404 } }
+    context 'when kubernetes responds with 404s' do
+      before do
+        stub_kubeclient_pods(status: 404)
+      end
 
       it { is_expected.to eq(pods: []) }
     end

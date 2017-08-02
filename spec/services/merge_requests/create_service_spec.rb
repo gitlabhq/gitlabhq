@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::CreateService, services: true do
+describe MergeRequests::CreateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
@@ -75,9 +75,40 @@ describe MergeRequests::CreateService, services: true do
           expect(Todo.where(attributes).count).to eq 1
         end
       end
+
+      context 'when head pipelines already exist for merge request source branch' do
+        let(:sha) { project.commit(opts[:source_branch]).id }
+        let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
+        let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
+        let!(:pipeline_3) { create(:ci_pipeline, project: project, ref: "other_branch", project_id: project.id) }
+
+        before do
+          project.merge_requests
+            .where(source_branch: opts[:source_branch], target_branch: opts[:target_branch])
+            .destroy_all
+        end
+
+        it 'sets head pipeline' do
+          merge_request = service.execute
+
+          expect(merge_request.head_pipeline).to eq(pipeline_2)
+          expect(merge_request).to be_persisted
+        end
+
+        context 'when merge request head commit sha does not match pipeline sha' do
+          it 'sets the head pipeline correctly' do
+            pipeline_2.update(sha: 1234)
+
+            merge_request = service.execute
+
+            expect(merge_request.head_pipeline).to eq(pipeline_1)
+            expect(merge_request).to be_persisted
+          end
+        end
+      end
     end
 
-    it_behaves_like 'new issuable record that supports slash commands' do
+    it_behaves_like 'new issuable record that supports quick actions' do
       let(:default_params) do
         {
           source_branch: 'feature',
@@ -86,7 +117,7 @@ describe MergeRequests::CreateService, services: true do
       end
     end
 
-    context 'Slash commands' do
+    context 'Quick actions' do
       context 'with assignee and milestone in params and command' do
         let(:merge_request) { described_class.new(project, user, opts).execute }
         let(:milestone) { create(:milestone, project: project) }
@@ -119,7 +150,9 @@ describe MergeRequests::CreateService, services: true do
       context 'asssignee_id' do
         let(:assignee) { create(:user) }
 
-        before { project.team << [user, :master] }
+        before do
+          project.team << [user, :master]
+        end
 
         it 'removes assignee_id when user id is invalid' do
           opts = { title: 'Title', description: 'Description', assignee_id: -1 }

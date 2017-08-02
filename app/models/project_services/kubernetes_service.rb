@@ -59,21 +59,21 @@ class KubernetesService < DeploymentService
   def fields
     [
         { type: 'text',
-          name: 'namespace',
-          title: 'Kubernetes namespace',
-          placeholder: namespace_placeholder },
-        { type: 'text',
           name: 'api_url',
           title: 'API URL',
           placeholder: 'Kubernetes API URL, like https://kube.example.com/' },
-        { type: 'text',
-          name: 'token',
-          title: 'Service token',
-          placeholder: 'Service token' },
         { type: 'textarea',
           name: 'ca_pem',
-          title: 'Custom CA bundle',
-          placeholder: 'Certificate Authority bundle (PEM format)' }
+          title: 'CA Certificate',
+          placeholder: 'Certificate Authority bundle (PEM format)' },
+        { type: 'text',
+          name: 'namespace',
+          title: 'Project namespace (optional/unique)',
+          placeholder: namespace_placeholder },
+        { type: 'text',
+          name: 'token',
+          title: 'Token',
+          placeholder: 'Service token' }
     ]
   end
 
@@ -96,10 +96,13 @@ class KubernetesService < DeploymentService
   end
 
   def predefined_variables
+    config = YAML.dump(kubeconfig)
+
     variables = [
       { key: 'KUBE_URL', value: api_url, public: true },
       { key: 'KUBE_TOKEN', value: token, public: false },
-      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true }
+      { key: 'KUBE_NAMESPACE', value: actual_namespace, public: true },
+      { key: 'KUBECONFIG', value: config, public: false, file: true }
     ]
 
     if ca_pem.present?
@@ -116,35 +119,32 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-      pods = data.fetch(:pods, nil)
-      filter_pods(pods, app: environment.slug).
-        flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.
-        each { |terminal| add_terminal_auth(terminal, terminal_auth) }
+      pods = filter_by_label(data[:pods], app: environment.slug)
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+      terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
 
-  # Caches all pods in the namespace so other calls don't need to block on
-  # network access.
+  # Caches resources in the namespace so other calls don't need to block on
+  # network access
   def calculate_reactive_cache
     return unless active? && project && !project.pending_delete?
 
-    kubeclient = build_kubeclient!
-
-    # Store as hashes, rather than as third-party types
-    pods = begin
-      kubeclient.get_pods(namespace: actual_namespace).as_json
-    rescue KubeException => err
-      raise err unless err.error_code == 404
-      []
-    end
-
     # We may want to cache extra things in the future
-    { pods: pods }
+    { pods: read_pods }
   end
 
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
+
+  def kubeconfig
+    to_kubeconfig(
+      url: api_url,
+      namespace: actual_namespace,
+      token: token,
+      ca_pem: ca_pem)
+  end
 
   def namespace_placeholder
     default_namespace || TEMPLATE_PLACEHOLDER
@@ -166,6 +166,16 @@ class KubernetesService < DeploymentService
     )
   end
 
+  # Returns a hash of all pods in the namespace
+  def read_pods
+    kubeclient = build_kubeclient!
+
+    kubeclient.get_pods(namespace: actual_namespace).as_json
+  rescue KubeException => err
+    raise err unless err.error_code == 404
+    []
+  end
+
   def kubeclient_ssl_options
     opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
 
@@ -181,11 +191,11 @@ class KubernetesService < DeploymentService
     { bearer_token: token }
   end
 
-  def join_api_url(*parts)
+  def join_api_url(api_path)
     url = URI.parse(api_url)
     prefix = url.path.sub(%r{/+\z}, '')
 
-    url.path = [prefix, *parts].join("/")
+    url.path = [prefix, api_path].join("/")
 
     url.to_s
   end

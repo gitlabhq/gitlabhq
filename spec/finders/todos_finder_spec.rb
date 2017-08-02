@@ -6,7 +6,9 @@ describe TodosFinder do
     let(:project)       { create(:empty_project) }
     let(:finder)        { described_class }
 
-    before { project.team << [user, :developer] }
+    before do
+      project.team << [user, :developer]
+    end
 
     describe '#sort' do
       context 'by date' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issue, models: true do
+describe Issue do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to have_many(:assignees) }
@@ -33,8 +33,8 @@ describe Issue, models: true do
     let!(:issue4) { create(:issue, project: project, relative_position: 200) }
 
     it 'returns ordered list' do
-      expect(project.issues.order_by_position_and_priority).
-        to match [issue3, issue4, issue1, issue2]
+      expect(project.issues.order_by_position_and_priority)
+        .to match [issue3, issue4, issue1, issue2]
     end
   end
 
@@ -43,16 +43,16 @@ describe Issue, models: true do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([])
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
     end
 
     it 'includes the assignee name' do
       allow(subject).to receive(:author).and_return(double(name: 'Robert'))
       allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
 
-      expect(subject.card_attributes).
-        to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
@@ -245,7 +245,9 @@ describe Issue, models: true do
       let(:project) { create(:empty_project) }
       let(:issue) { create(:issue, project: project) }
 
-      before { project.team << [user, :reporter] }
+      before do
+        project.team << [user, :reporter]
+      end
 
       it { is_expected.to eq true }
 
@@ -259,12 +261,18 @@ describe Issue, models: true do
         let(:to_project) { create(:empty_project) }
 
         context 'destination project allowed' do
-          before { to_project.team << [user, :reporter] }
+          before do
+            to_project.team << [user, :reporter]
+          end
+
           it { is_expected.to eq true }
         end
 
         context 'destination project not allowed' do
-          before { to_project.team << [user, :guest] }
+          before do
+            to_project.team << [user, :guest]
+          end
+
           it { is_expected.to eq false }
         end
       end
@@ -291,8 +299,8 @@ describe Issue, models: true do
     let(:user) { build(:admin) }
 
     before do
-      allow(subject.project.repository).to receive(:branch_names).
-                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+      allow(subject.project.repository).to receive(:branch_names)
+                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -314,8 +322,8 @@ describe Issue, models: true do
     end
 
     it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(["#{subject.iid}-0-stable"])
+      allow(subject.project.repository).to receive(:branch_names)
+        .and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
     end
@@ -549,7 +557,9 @@ describe Issue, models: true do
         end
 
         context 'when the user is the project owner' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)

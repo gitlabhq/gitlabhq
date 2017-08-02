@@ -29,6 +29,8 @@
   - [email_receiver, 2]
   - [emails_on_push, 2]
   - [mailers, 2]
+  - [invalid_gpg_signature_update, 2]
+  - [create_gpg_signature, 2]
   - [upload_checksum, 1]
   - [use_key, 1]
   - [repository_fork, 1]
@@ -54,3 +56,4 @@
   - [system_hook_push, 1]
   - [update_user_activity, 1]
   - [propagate_service_template, 1]
+  - [background_migration, 1]

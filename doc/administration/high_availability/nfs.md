@@ -1,30 +1,16 @@
 # NFS
 
-## Required NFS Server features
+You can view information and options set for each of the mounted NFS file
+systems by running `sudo nfsstat -m`.
+
+## NFS Server features
+
+### Required features
 
 **File locking**: GitLab **requires** advisory file locking, which is only
 supported natively in NFS version 4. NFSv3 also supports locking as long as
 Linux Kernel 2.6.5+ is used. We recommend using version 4 and do not
 specifically test NFSv3.
-
-## AWS Elastic File System
-
-GitLab does not recommend using AWS Elastic File System (EFS).
-
-Customers and users have reported that AWS EFS does not perform well for GitLab's
-use-case. There are several issues that can cause problems. For these reasons
-GitLab does not recommend using EFS with GitLab.
-
-- EFS bases allowed IOPS on volume size. The larger the volume, the more IOPS
-  are allocated. For smaller volumes, users may experience decent performance
-  for a period of time due to 'Burst Credits'. Over a period of weeks to months
-  credits may run out and performance will bottom out.
-- For larger volumes, allocated IOPS may not be the problem. Workloads where
-  many small files are written in a serialized manner are not well-suited for EFS.
-  EBS with an NFS server on top will perform much better.
-
-For more details on another person's experience with EFS, see
-[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
 
 ### Recommended options
 
@@ -44,9 +30,33 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
+## AWS Elastic File System
+
+GitLab does not recommend using AWS Elastic File System (EFS).
+
+Customers and users have reported that AWS EFS does not perform well for GitLab's
+use-case. There are several issues that can cause problems. For these reasons
+GitLab does not recommend using EFS with GitLab.
+
+- EFS bases allowed IOPS on volume size. The larger the volume, the more IOPS
+  are allocated. For smaller volumes, users may experience decent performance
+  for a period of time due to 'Burst Credits'. Over a period of weeks to months
+  credits may run out and performance will bottom out.
+- For larger volumes, allocated IOPS may not be the problem. Workloads where
+  many small files are written in a serialized manner are not well-suited for EFS.
+  EBS with an NFS server on top will perform much better.
+
+In addition, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
+because this will also affect performance. We recommend that the log files be
+stored on a local volume.
+
+For more details on another person's experience with EFS, see
+[Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
+
 ## NFS Client mount options
 
-Below is an example of an NFS mount point we use on GitLab.com:
+Below is an example of an NFS mount point defined in `/etc/fstab` we use on
+GitLab.com:
 
 ```
 10.1.1.1:/var/opt/gitlab/git-data /var/opt/gitlab/git-data nfs4 defaults,soft,rsize=1048576,wsize=1048576,noatime,nobootwait,lookupcache=positive 0 2

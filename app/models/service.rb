@@ -2,7 +2,7 @@
 # and implement a set of methods
 class Service < ActiveRecord::Base
   include Sortable
-  serialize :properties, JSON
+  serialize :properties, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   default_value_for :active, false
   default_value_for :push_events, true
@@ -49,6 +49,14 @@ class Service < ActiveRecord::Base
 
   def activated?
     active
+  end
+
+  def show_active_box?
+    true
+  end
+
+  def editable?
+    true
   end
 
   def template?

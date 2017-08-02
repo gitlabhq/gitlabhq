@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::DestroyService, services: true do
+describe Users::DestroyService do
   describe "Deletes a user and all their personal projects" do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
@@ -147,16 +147,22 @@ describe Users::DestroyService, services: true do
     end
 
     context "migrating associated records" do
+      let!(:issue)     { create(:issue, author: user) }
+
       it 'delegates to the `MigrateToGhostUser` service to move associated records to the ghost user' do
-        expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once
+        expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once.and_call_original
 
         service.execute(user)
+
+        expect(issue.reload.author).to be_ghost
       end
 
       it 'does not run `MigrateToGhostUser` if hard_delete option is given' do
         expect_any_instance_of(Users::MigrateToGhostUserService).not_to receive(:execute)
 
         service.execute(user, hard_delete: true)
+
+        expect(Issue.exists?(issue.id)).to be_falsy
       end
     end
   end

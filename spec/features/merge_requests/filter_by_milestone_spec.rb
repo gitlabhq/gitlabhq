@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Merge Request filtering by Milestone', feature: true do
+feature 'Merge Request filtering by Milestone' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let!(:user)     { create(:user)}
   let(:milestone) { create(:milestone, project: project) }
 
@@ -15,7 +15,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
   end
 
   scenario 'filters by no Milestone', js: true do

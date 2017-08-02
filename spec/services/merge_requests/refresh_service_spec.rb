@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe MergeRequests::RefreshService, services: true do
+describe MergeRequests::RefreshService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:service) { MergeRequests::RefreshService }
+  let(:service) { described_class }
 
   describe '#execute' do
     before do
@@ -57,8 +57,8 @@ describe MergeRequests::RefreshService, services: true do
       end
 
       it 'executes hooks with update action' do
-        expect(refresh_service).to have_received(:execute_hooks).
-          with(@merge_request, 'update', @oldrev)
+        expect(refresh_service).to have_received(:execute_hooks)
+          .with(@merge_request, 'update', @oldrev)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -83,8 +83,8 @@ describe MergeRequests::RefreshService, services: true do
       end
 
       it 'executes hooks with update action' do
-        expect(refresh_service).to have_received(:execute_hooks).
-          with(@merge_request, 'update', @oldrev)
+        expect(refresh_service).to have_received(:execute_hooks)
+          .with(@merge_request, 'update', @oldrev)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -98,18 +98,52 @@ describe MergeRequests::RefreshService, services: true do
     end
 
     context 'push to origin repo target branch' do
-      before do
-        service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
-        reload_mrs
+      context 'when all MRs to the target branch had diffs' do
+        before do
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+        end
+
+        it 'updates the merge state' do
+          expect(@merge_request.notes.last.note).to include('merged')
+          expect(@merge_request).to be_merged
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+          expect(@build_failed_todo).to be_done
+          expect(@fork_build_failed_todo).to be_done
+        end
       end
 
-      it 'updates the merge state' do
-        expect(@merge_request.notes.last.note).to include('merged')
-        expect(@merge_request).to be_merged
-        expect(@fork_merge_request).to be_merged
-        expect(@fork_merge_request.notes.last.note).to include('merged')
-        expect(@build_failed_todo).to be_done
-        expect(@fork_build_failed_todo).to be_done
+      context 'when an MR to be closed was empty already' do
+        let!(:empty_fork_merge_request) do
+          create(:merge_request,
+                 source_project: @fork_project,
+                 source_branch: 'master',
+                 target_branch: 'master',
+                 target_project: @project)
+        end
+
+        before do
+          # This spec already has a fake push, so pretend that we were targeting
+          # feature all along.
+          empty_fork_merge_request.update_columns(target_branch: 'feature')
+
+          service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/feature')
+          reload_mrs
+          empty_fork_merge_request.reload
+        end
+
+        it 'only updates the non-empty MRs' do
+          expect(@merge_request).to be_merged
+          expect(@merge_request.notes.last.note).to include('merged')
+
+          expect(@fork_merge_request).to be_merged
+          expect(@fork_merge_request.notes.last.note).to include('merged')
+
+          expect(empty_fork_merge_request).to be_open
+          expect(empty_fork_merge_request.merge_request_diff.state).to eq('empty')
+          expect(empty_fork_merge_request.notes).to be_empty
+        end
       end
     end
 
@@ -146,8 +180,8 @@ describe MergeRequests::RefreshService, services: true do
         end
 
         it 'executes hooks with update action' do
-          expect(refresh_service).to have_received(:execute_hooks).
-            with(@fork_merge_request, 'update', @oldrev)
+          expect(refresh_service).to have_received(:execute_hooks)
+            .with(@fork_merge_request, 'update', @oldrev)
 
           expect(@merge_request.notes).to be_empty
           expect(@merge_request).to be_open
@@ -228,8 +262,8 @@ describe MergeRequests::RefreshService, services: true do
       let(:refresh_service) { service.new(@fork_project, @user) }
 
       it 'refreshes the merge request' do
-        expect(refresh_service).to receive(:execute_hooks).
-                                       with(@fork_merge_request, 'update', Gitlab::Git::BLANK_SHA)
+        expect(refresh_service).to receive(:execute_hooks)
+                                       .with(@fork_merge_request, 'update', Gitlab::Git::BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
 
         refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')

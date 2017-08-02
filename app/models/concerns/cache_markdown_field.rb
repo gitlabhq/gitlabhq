@@ -11,7 +11,7 @@ module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_VERSION = 1
+  CACHE_VERSION = 2
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -78,7 +78,7 @@ module CacheMarkdownField
   def cached_html_up_to_date?(markdown_field)
     html_field = cached_markdown_fields.html_field(markdown_field)
 
-    cached = !cached_html_for(markdown_field).nil? && !__send__(markdown_field).nil?
+    cached = cached_html_for(markdown_field).present? && __send__(markdown_field).present?
     return false unless cached
 
     markdown_changed = attribute_changed?(markdown_field) || false

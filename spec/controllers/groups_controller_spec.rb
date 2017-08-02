@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe GroupsController do
   let(:user) { create(:user) }
-  let(:group) { create(:group) }
+  let(:group) { create(:group, :public) }
   let(:project) { create(:empty_project, namespace: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
 
@@ -35,14 +35,15 @@ describe GroupsController do
         sign_in(user)
       end
 
-      it 'shows the public subgroups' do
+      it 'shows all subgroups' do
         get :subgroups, id: group.to_param
 
-        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup)
+        expect(assigns(:nested_groups)).to contain_exactly(public_subgroup, private_subgroup)
       end
 
-      context 'being member' do
+      context 'being member of private subgroup' do
         it 'shows public and private subgroups the user is member of' do
+          group_member.destroy!
           private_subgroup.add_guest(user)
 
           get :subgroups, id: group.to_param

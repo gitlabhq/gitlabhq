@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Mattermost slash commands', :feature, :js do
+feature 'Setup Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -9,8 +9,8 @@ feature 'Setup Mattermost slash commands', :feature, :js do
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
     project.team << [user, :master]
-    login_as(user)
-    visit edit_namespace_project_service_path(project.namespace, project, service)
+    sign_in(user)
+    visit edit_project_service_path(project, service)
   end
 
   describe 'user visits the mattermost slash command config page' do
@@ -24,15 +24,25 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       expect(token_placeholder).to eq('XXxxXXxxXXxxXXxxXXxxXXxx')
     end
 
-    it 'shows the token after saving' do
+    it 'redirects to the integrations page after saving but not activating' do
       token = ('a'..'z').to_a.join
 
       fill_in 'service_token', with: token
-      click_on 'Save'
+      click_on 'Save changes'
 
-      value = find_field('service_token').value
+      expect(current_path).to eq(project_settings_integrations_path(project))
+      expect(page).to have_content('Mattermost slash commands settings saved, but not activated.')
+    end
 
-      expect(value).to eq(token)
+    it 'redirects to the integrations page after activating' do
+      token = ('a'..'z').to_a.join
+
+      fill_in 'service_token', with: token
+      check 'service_active'
+      click_on 'Save changes'
+
+      expect(current_path).to eq(project_settings_integrations_path(project))
+      expect(page).to have_content('Mattermost slash commands activated.')
     end
 
     it 'shows the add to mattermost button' do
@@ -149,7 +159,7 @@ feature 'Setup Mattermost slash commands', :feature, :js do
       it 'shows the correct trigger url' do
         value = find_field('request_url').value
 
-        expect(value).to match("api/v3/projects/#{project.id}/services/mattermost_slash_commands/trigger")
+        expect(value).to match("api/v4/projects/#{project.id}/services/mattermost_slash_commands/trigger")
       end
 
       it 'shows a token placeholder' do

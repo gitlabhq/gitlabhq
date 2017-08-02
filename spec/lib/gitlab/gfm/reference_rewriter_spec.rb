@@ -6,7 +6,9 @@ describe Gitlab::Gfm::ReferenceRewriter do
   let(:new_project) { create(:empty_project, name: 'new-project') }
   let(:user) { create(:user) }
 
-  before { old_project.team << [user, :reporter] }
+  before do
+    old_project.team << [user, :reporter]
+  end
 
   describe '#rewrite' do
     subject do

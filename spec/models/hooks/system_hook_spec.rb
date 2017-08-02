@@ -1,14 +1,13 @@
 require "spec_helper"
 
-describe SystemHook, models: true do
+describe SystemHook do
   context 'default attributes' do
     let(:system_hook) { build(:system_hook) }
 
     it 'sets defined default parameters' do
       attrs = {
         push_events: false,
-        repository_update_events: true,
-        enable_ssl_verification: true
+        repository_update_events: true
       }
       expect(system_hook).to have_attributes(attrs)
     end
@@ -123,7 +122,7 @@ describe SystemHook, models: true do
     it 'returns hooks for repository update events only' do
       hook = create(:system_hook, repository_update_events: true)
       create(:system_hook, repository_update_events: false)
-      expect(SystemHook.repository_update_hooks).to eq([hook])
+      expect(described_class.repository_update_hooks).to eq([hook])
     end
   end
 

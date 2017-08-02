@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', js: true do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }
@@ -31,10 +31,10 @@ describe 'Dropdown author', js: true, feature: true do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -131,6 +131,25 @@ describe 'Dropdown author', js: true, feature: true do
 
       expect(page).to have_css(js_dropdown_author, visible: false)
       expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('author:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_author, visible: false)
+      expect_tokens([{ name: 'author', value: user.username }])
       expect_filtered_search_input_empty
     end
   end

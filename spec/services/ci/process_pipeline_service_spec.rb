@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService, '#execute', :services do
+describe Ci::ProcessPipelineService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
 
@@ -9,6 +9,8 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   before do
+    stub_not_protect_default_branch
+
     project.add_developer(user)
   end
 
@@ -62,6 +64,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       fail_running_or_pending
 
       expect(builds_statuses).to eq %w(failed pending)
+
+      fail_running_or_pending
+
+      expect(pipeline.reload).to be_success
     end
   end
 
@@ -333,10 +339,11 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
     context 'when pipeline is promoted sequentially up to the end' do
       before do
-        # We are using create(:empty_project), and users has to be master in
-        # order to execute manual action when repository does not exist.
+        # Users need ability to merge into a branch in order to trigger
+        # protected manual actions.
         #
-        project.add_master(user)
+        create(:protected_branch, :developers_can_merge,
+               name: 'master', project: project)
       end
 
       it 'properly processes entire pipeline' do
@@ -455,6 +462,35 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
       expect(all_builds.latest).to contain_exactly(build, test)
       expect(all_builds.retried).to contain_exactly(build_retried)
+    end
+  end
+
+  context 'when builds with auto-retries are configured' do
+    before do
+      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
+      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
+    end
+
+    it 'automatically retries builds in a valid order' do
+      expect(process_pipeline).to be_truthy
+
+      fail_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1]
+      expect(builds_statuses).to eq %w[failed pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success success]
+
+      expect(pipeline.reload).to be_success
     end
   end
 

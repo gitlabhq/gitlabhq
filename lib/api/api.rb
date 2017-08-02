@@ -2,6 +2,9 @@ module API
   class API < Grape::API
     include APIGuard
 
+    allow_access_with_scope :api
+    prefix :api
+
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
@@ -44,7 +47,7 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { allow_access_with_scope :api }
+    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
     before { Gitlab::I18n.locale = current_user&.preferred_language }
 
     after { Gitlab::I18n.use_default_locale }
@@ -83,6 +86,9 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
@@ -94,6 +100,8 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Events
+    mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Internal
@@ -105,11 +113,13 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::Milestones
+    mount ::API::ProjectMilestones
+    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets
@@ -129,6 +139,7 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::GroupVariables
     mount ::API::Version
 
     route :any, '*path' do

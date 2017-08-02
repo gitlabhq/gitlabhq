@@ -3,7 +3,7 @@
   %jump-to-discussion{ "inline-template" => true, ":discussion-id" => "'#{discussion.try(:id)}'" }
     .btn-group{ role: "group", "v-show" => "!allResolved", "v-if" => "showButton" }
       %button.btn.btn-default.discussion-next-btn.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion",
-        title: "Jump to next unresolved discussion",
-        "aria-label" => "Jump to next unresolved discussion",
+        ":title" => "buttonText",
+        ":aria-label" => "buttonText",
         data: { container: "body" } }
         = custom_icon("next_discussion")

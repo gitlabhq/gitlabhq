@@ -1,6 +1,39 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # Adds `created_at` and `updated_at` columns with timezone information.
+      #
+      # This method is an improved version of Rails' built-in method `add_timestamps`.
+      #
+      # Available options are:
+      # default - The default value for the column.
+      # null - When set to `true` the column will allow NULL values.
+      #        The default is to not allow NULL values.
+      def add_timestamps_with_timezone(table_name, options = {})
+        options[:null] = false if options[:null].nil?
+
+        [:created_at, :updated_at].each do |column_name|
+          if options[:default] && transaction_open?
+            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` ' \
+              'in the body of your migration class'
+          end
+
+          # If default value is presented, use `add_column_with_default` method instead.
+          if options[:default]
+            add_column_with_default(
+              table_name,
+              column_name,
+              :datetime_with_timezone,
+              default: options[:default],
+              allow_null: options[:null]
+            )
+          else
+            add_column(table_name, column_name, :datetime_with_timezone, options)
+          end
+        end
+      end
+
       # Creates a new index, concurrently when supported
       #
       # On PostgreSQL this method creates an index concurrently, on MySQL this
@@ -107,6 +140,8 @@ module Gitlab
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
+        else
+          on_delete = 'SET NULL' if on_delete == :nullify
         end
 
         disable_statement_timeout
@@ -122,7 +157,7 @@ module Gitlab
         ADD CONSTRAINT #{key_name}
         FOREIGN KEY (#{column})
         REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete}" : ''}
+        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
         NOT VALID;
         EOF
 
@@ -189,6 +224,12 @@ module Gitlab
       #
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
+        if transaction_open?
+          raise 'update_column_in_batches can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
         table = Arel::Table.new(table)
 
         count_arel = table.project(Arel.star.count.as('count'))
@@ -200,25 +241,31 @@ module Gitlab
 
         # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
+        max_size = 1000
+
+        # The upper limit is 1000 to ensure we don't lock too many rows. For
+        # example, for "merge_requests" even 1% of the table is around 35 000
+        # rows for GitLab.com.
+        batch_size = max_size if batch_size > max_size
 
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
         start_arel = yield table, start_arel if block_given?
         start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
 
         loop do
-          stop_arel = table.project(table[:id]).
-            where(table[:id].gteq(start_id)).
-            order(table[:id].asc).
-            take(1).
-            skip(batch_size)
+          stop_arel = table.project(table[:id])
+            .where(table[:id].gteq(start_id))
+            .order(table[:id].asc)
+            .take(1)
+            .skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
-            table(table).
-            set([[table[column], value]]).
-            where(table[:id].gteq(start_id))
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table)
+            .set([[table[column], value]])
+            .where(table[:id].gteq(start_id))
 
           if stop_row
             stop_id = stop_row['id'].to_i
@@ -547,15 +594,15 @@ module Gitlab
         quoted_replacement = Arel::Nodes::Quoted.new(replacement.to_s)
 
         if Database.mysql?
-          locate = Arel::Nodes::NamedFunction.
-            new('locate', [quoted_pattern, column])
-          insert_in_place = Arel::Nodes::NamedFunction.
-            new('insert', [column, locate, pattern.size, quoted_replacement])
+          locate = Arel::Nodes::NamedFunction
+            .new('locate', [quoted_pattern, column])
+          insert_in_place = Arel::Nodes::NamedFunction
+            .new('insert', [column, locate, pattern.size, quoted_replacement])
 
           Arel::Nodes::SqlLiteral.new(insert_in_place.to_sql)
         else
-          replace = Arel::Nodes::NamedFunction.
-            new("regexp_replace", [column, quoted_pattern, quoted_replacement])
+          replace = Arel::Nodes::NamedFunction
+            .new("regexp_replace", [column, quoted_pattern, quoted_replacement])
           Arel::Nodes::SqlLiteral.new(replace.to_sql)
         end
       end

@@ -145,23 +145,9 @@ module Gitlab
       private
 
       def find_diff_file(repository)
-        # We're at the initial commit, so just get that as we can't compare to anything.
-        compare =
-          if Gitlab::Git.blank_ref?(start_sha)
-            Gitlab::Git::Commit.find(repository.raw_repository, head_sha)
-          else
-            Gitlab::Git::Compare.new(
-              repository.raw_repository,
-              start_sha,
-              head_sha
-            )
-          end
+        return unless diff_refs.complete?
 
-        diff = compare.diffs(paths: paths).first
-
-        return unless diff
-
-        Gitlab::Diff::File.new(diff, repository: repository, diff_refs: diff_refs)
+        diff_refs.compare_in(repository.project).diffs(paths: paths, expanded: true).diff_files.first
       end
     end
   end

@@ -1,49 +1,38 @@
 require 'spec_helper'
 
-describe PagesDomain, models: true do
+describe PagesDomain do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
   end
 
   describe 'validate domain' do
-    subject { build(:pages_domain, domain: domain) }
+    subject(:pages_domain) { build(:pages_domain, domain: domain) }
 
     context 'is unique' do
       let(:domain) { 'my.domain.com' }
 
-      it { is_expected.to validate_uniqueness_of(:domain) }
+      it { is_expected.to validate_uniqueness_of(:domain).case_insensitive }
     end
 
-    context 'valid domain' do
-      let(:domain) { 'my.domain.com' }
+    {
+      'my.domain.com'    => true,
+      '123.456.789'      => true,
+      '0x12345.com'      => true,
+      '0123123'          => true,
+      '_foo.com'         => false,
+      'reserved.com'     => false,
+      'a.reserved.com'   => false,
+      nil                => false
+    }.each do |value, validity|
+      context "domain #{value.inspect} validity" do
+        before do
+          allow(Settings.pages).to receive(:host).and_return('reserved.com')
+        end
 
-      it { is_expected.to be_valid }
-    end
+        let(:domain) { value }
 
-    context 'valid hexadecimal-looking domain' do
-      let(:domain) { '0x12345.com'}
-
-      it { is_expected.to be_valid }
-    end
-
-    context 'no domain' do
-      let(:domain) { nil }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'invalid domain' do
-      let(:domain) { '0123123' }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'domain from .example.com' do
-      let(:domain) { 'my.domain.com' }
-
-      before { allow(Settings.pages).to receive(:host).and_return('domain.com') }
-
-      it { is_expected.not_to be_valid }
+        it { expect(pages_domain.valid?).to eq(validity) }
+      end
     end
   end
 

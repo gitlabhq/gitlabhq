@@ -4,7 +4,9 @@ shared_examples 'issuable update service' do
   end
 
   context 'changing state' do
-    before { expect(project).to receive(:execute_hooks).once }
+    before do
+      expect(project).to receive(:execute_hooks).once
+    end
 
     context 'to reopened' do
       it 'executes hooks only once' do
