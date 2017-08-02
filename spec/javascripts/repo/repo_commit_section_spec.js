@@ -4,7 +4,7 @@ import RepoStore from '~/repo/repo_store';
 import RepoHelper from '~/repo/repo_helper';
 import Api from '~/api';
 
-describe('RepoCommitSection', () => {
+fdescribe('RepoCommitSection', () => {
   const openedFiles = [{
     id: 0,
     changed: true,
