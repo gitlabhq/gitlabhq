@@ -69,7 +69,7 @@
 
     - if can?(current_user, :read_issue_link, @project)
       .js-related-issues-root{ data: { endpoint: project_issue_links_path(@project, @issue),
-        can_add_related_issues: "#{can?(current_user, :update_issue, @issue)}",
+        can_add_related_issues: "#{can?(current_user, :admin_issue_link, @issue)}",
         help_path: help_page_path('user/project/issues/related_issues') } }
         .related-issues-block
           .panel-slim.panel-default
