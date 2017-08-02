@@ -9,7 +9,7 @@ module SharedProject
 
   step "I own a project in some group namespace" do
     @group = create(:group, name: 'some group')
-    @project = create(:project, namespace: @group)
+    @project = create(:empty_project, namespace: @group)
     @project.team << [@user, :master]
   end
 
