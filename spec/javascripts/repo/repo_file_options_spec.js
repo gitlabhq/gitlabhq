@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import repoFileOptions from '~/repo/repo_file_options.vue';
 
-fdescribe('RepoFileOptions', () => {
+describe('RepoFileOptions', () => {
   const projectName = 'projectName';
 
   function createComponent(propsData) {
