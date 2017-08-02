@@ -5,12 +5,10 @@ class NotificationRecipient
     custom_action: nil,
     target: nil,
     acting_user: nil,
-    read_ability: nil,
     project: nil
   )
     @custom_action = custom_action
     @acting_user = acting_user
-    @read_ability = read_ability
     @target = target
     @project = project || @target&.project
     @user = user
@@ -81,10 +79,10 @@ class NotificationRecipient
       return false unless user.can?(:receive_notifications)
       return false if @project && !user.can?(:read_project, @project)
 
-      return true unless @read_ability
+      return true unless read_ability
       return true unless DeclarativePolicy.has_policy?(@target)
 
-      user.can?(@read_ability, @target)
+      user.can?(read_ability, @target)
     end
   end
 
@@ -96,6 +94,22 @@ class NotificationRecipient
   end
 
   private
+
+  def read_ability
+    return @read_ability if instance_variable_defined?(:@read_ability)
+
+    @read_ability =
+      case @target
+      when Issuable
+        :"read_#{@target.to_ability_name}"
+      when Ci::Pipeline
+        :read_build # We have build trace in pipeline emails
+      when ActiveRecord::Base
+        :"read_#{@target.class.model_name.name.underscore}"
+      else
+        nil
+      end
+  end
 
   def find_notification_setting
     project_setting = @project && user.notification_settings_for(@project)
