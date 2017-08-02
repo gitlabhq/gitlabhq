@@ -7,4 +7,4 @@
       %strong= membership_source.name
       %span.badge= access_requests.size
     %ul.content-list.members-list
-      = render partial: 'shared/members/member', collection: access_requests, as: :member, locals: { force_mobile_view: force_mobile_view }
+      = render partial: 'shared/members/access_request', collection: access_requests, as: :access_request, locals: { force_mobile_view: force_mobile_view }

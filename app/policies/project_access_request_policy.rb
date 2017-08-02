@@ -10,6 +10,7 @@ class ProjectAccessRequestPolicy < BasePolicy
   rule { anonymous }.prevent_all
 
   rule { can?(:admin_project_member) }.policy do
+    enable :update_project_access_request
     enable :destroy_project_access_request
   end
 

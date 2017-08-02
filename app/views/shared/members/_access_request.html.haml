@@ -1,0 +1,56 @@
+- show_roles = local_assigns.fetch(:show_roles, true)
+- show_controls = local_assigns.fetch(:show_controls, true)
+- force_mobile_view = local_assigns.fetch(:force_mobile_view, false)
+- user = local_assigns.fetch(:user, access_request.user)
+- source = access_request.source
+- can_update_access_request = can?(current_user, action_access_request_permission(:update, access_request), access_request)
+
+%li.member{ class: dom_class(access_request) }
+  %span.list-item-name
+    - if user
+      = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
+      .user-info
+        = link_to user.name, user_path(user), class: 'member'
+        %span.cgray= user.to_reference
+
+        - if user == current_user
+          %span.label.label-success.prepend-left-5 It's you
+
+        - if user.blocked?
+          %label.label.label-danger
+            %strong Blocked
+
+        - if source.instance_of?(Group) && source != @group
+          &middot;
+          = link_to source.full_name, source, class: "member-group-link"
+
+        .cgray
+          Requested
+          = time_ago_with_tooltip(access_request.created_at)
+
+  - if show_roles
+    - current_resource = @project || @group
+    .controls.member-controls
+      - if show_controls && access_request.source == current_resource
+        - if can_update_access_request
+          = link_to polymorphic_path([:approve_access_request, access_request.source, :members], user_id: access_request.user),
+                    method: :post,
+                    class: 'btn btn-success prepend-left-10',
+                    title: 'Grant access' do
+            %span{ class: ('visible-xs-block' unless force_mobile_view) }
+              Grant access
+            - unless force_mobile_view
+              = icon('check inverse', class: 'hidden-xs')
+
+          = link_to access_request.user,
+                    remote: true,
+                    method: :delete,
+                    data: { confirm: deny_access_request_message(access_request) },
+                    class: 'btn btn-remove prepend-left-10',
+                    title: deny_access_request_title(access_request) do
+            %span{ class: ('visible-xs-block' unless force_mobile_view) }
+              Delete
+            - unless force_mobile_view
+              = icon('trash', class: 'hidden-xs')
+      - else
+        %span.member-access-text Guest

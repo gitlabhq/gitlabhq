@@ -11,13 +11,7 @@ module MembersHelper
 
     text = 'Are you sure you want to '
     action =
-      if member.request?
-        if member.user == user
-          'withdraw your access request for'
-        else
-          "deny #{member.user.name}'s request to join"
-        end
-      elsif member.invite?
+      if member.invite?
         "revoke the invitation for #{member.invite_email} to join"
       else
         "remove #{member.user.name} from"
@@ -27,9 +21,7 @@ module MembersHelper
   end
 
   def remove_member_title(member)
-    text = " from #{member.real_source_type.humanize(capitalize: false)}"
-
-    text.prepend(member.request? ? 'Deny access request' : 'Remove user')
+    "Remove user from #{member.real_source_type.humanize(capitalize: false)}"
   end
 
   def leave_confirmation_message(member_source)
@@ -61,5 +53,24 @@ module MembersHelper
       end
 
     "Are you sure you want to withdraw your access request for the #{source}?"
+  end
+
+  def deny_access_request_message(access_request)
+    source =
+      if access_request.is_a?(ProjectAccessRequest)
+        "the #{access_request.project.human_name} project"
+      elsif access_request.is_a?(GroupAccessRequest)
+        "the #{access_request.group.human_name} group"
+      end
+
+    "Are you sure you want to deny #{access_request.user.name}'s request to join the #{source}?"
+  end
+
+  def deny_access_request_title(access_request)
+    if access_request.is_a?(ProjectAccessRequest)
+      "Deny access request from project"
+    elsif access_request.is_a?(GroupAccessRequest)
+      "Deny access request from group"
+    end
   end
 end

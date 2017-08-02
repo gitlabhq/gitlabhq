@@ -25,11 +25,7 @@
           = link_to source.full_name, source, class: "member-group-link"
 
         .cgray
-          - if member.request?
-            Requested
-            = time_ago_with_tooltip(member.requested_at)
-          - else
-            Joined #{time_ago_with_tooltip(member.created_at)}
+          Joined #{time_ago_with_tooltip(member.created_at)}
           - if member.expires?
             ·
             %span{ class: "#{"text-warning" if member.expires_soon?} has-tooltip", title: member.expires_at.to_time.in_time_zone.to_s(:medium) }
@@ -85,16 +81,6 @@
           = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
                     method: :post,
                     class: 'btn btn-default  prepend-left-10 visible-xs-block'
-
-        - elsif member.request? && can_admin_member
-          = link_to polymorphic_path([:approve_access_request, member]),
-                    method: :post,
-                    class: 'btn btn-success prepend-left-10',
-                    title: 'Grant access' do
-            %span{ class: ('visible-xs-block' unless force_mobile_view) }
-              Grant access
-            - unless force_mobile_view
-              = icon('check inverse', class: 'hidden-xs')
 
         - if can?(current_user, action_member_permission(:destroy, member), member)
           - if current_user == user

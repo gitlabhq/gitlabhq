@@ -10,6 +10,7 @@ class GroupAccessRequestPolicy < BasePolicy
   rule { anonymous }.prevent_all
 
   rule { can?(:admin_group_member) }.policy do
+    enable :update_group_access_request
     enable :destroy_group_access_request
   end
 

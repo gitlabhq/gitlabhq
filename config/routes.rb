@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   concern :access_requestable do
     post :request_access, on: :collection
     delete :withdraw_access_request, on: :collection
-    post :approve_access_request, on: :member
+    post :approve_access_request, on: :collection # requires user_id in query string
   end
 
   concern :awardable do
