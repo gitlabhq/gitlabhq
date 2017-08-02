@@ -90,7 +90,7 @@ class ListIssue {
       data.issue.label_ids = [''];
     }
 
-    return Vue.http.patch(this.updateUrl, data);
+    return Vue.http.patch(url, data);
   }
 }
 

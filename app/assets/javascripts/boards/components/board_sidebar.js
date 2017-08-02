@@ -59,7 +59,6 @@ gl.issueBoards.BoardSidebar = Vue.extend({
         this.list = this.detail.list;
 
         this.$nextTick(() => {
-          new UsersSelect();
           this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
         });
       },
