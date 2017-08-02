@@ -5,7 +5,7 @@ module Boards
         return false unless can?(current_user, :update_issue, issue)
         return false if issue_params.empty?
 
-        update_service.execute(issue)
+        update(issue)
       end
 
       private
@@ -27,8 +27,8 @@ module Boards
         @moving_to_list ||= board.lists.find_by(id: params[:to_list_id])
       end
 
-      def update_service
-        ::Issues::UpdateService.new(board.parent, current_user, issue_params)
+      def update(issue)
+        ::Issues::UpdateService.new(issue.project, current_user, issue_params).execute(issue)
       end
 
       def issue_params

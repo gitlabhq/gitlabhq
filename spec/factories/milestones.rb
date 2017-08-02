@@ -7,6 +7,7 @@ FactoryGirl.define do
       group nil
       project_id nil
       group_id nil
+      parent nil
     end
 
     trait :active do
@@ -26,6 +27,9 @@ FactoryGirl.define do
         milestone.project = evaluator.project
       elsif evaluator.project_id
         milestone.project_id = evaluator.project_id
+      elsif evaluator.parent
+        id = evaluator.parent.id
+        evaluator.parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
       else
         milestone.project = create(:empty_project)
       end

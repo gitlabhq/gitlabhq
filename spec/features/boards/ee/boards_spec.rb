@@ -10,6 +10,30 @@ describe 'issue boards', feature: true, js: true do
     login_as(user)
   end
 
+  context 'validations' do
+    context 'when group is present' do
+      it 'does not validate project presence' do
+        group = create(:group)
+
+        board = described_class.new(group: group)
+
+        expect(board).not_to validate_presence_of(:project)
+        expect(board).to validate_presence_of(:group)
+      end
+    end
+
+    context 'when project is present' do
+      it 'does not validate group presence' do
+        project = create(:project)
+
+        board = described_class.new(project: project)
+
+        expect(board).to validate_presence_of(:project)
+        expect(board).not_to validate_presence_of(:group)
+      end
+    end
+  end
+
   context 'issue board focus mode' do
     it 'shows the button when the feature is enabled' do
       stub_licensed_features(issue_board_focus_mode: true)

@@ -3,7 +3,7 @@ module Boards
     class CreateService < BaseService
       def execute(board)
         List.transaction do
-          label    = available_labels_for(board).find(params[:label_id])
+          label    = find_label_for(board)
           position = next_position(board)
 
           create_list(board, label, position)
@@ -11,6 +11,14 @@ module Boards
       end
 
       private
+
+      def find_label_for(board)
+        if board.is_group_board?
+          parent.labels.find(params[:label_id])
+        else
+          available_labels_for(board).find(params[:label_id])
+        end
+      end
 
       def available_labels_for(board)
         label_params =
