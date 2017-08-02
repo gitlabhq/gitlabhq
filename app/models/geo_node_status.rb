@@ -15,12 +15,7 @@ class GeoNodeStatus
   end
 
   def repositories_count
-    @repositories_count ||=
-      if restricted_project_ids
-        Project.where(id: restricted_project_ids).count
-      else
-        Project.count
-      end
+    @repositories_count ||= repositories.count
   end
 
   def repositories_count=(value)
@@ -137,6 +132,15 @@ class GeoNodeStatus
         Geo::ProjectRegistry.where(project_id: restricted_project_ids)
       else
         Geo::ProjectRegistry.all
+      end
+  end
+
+  def repositories
+    @repositories ||=
+      if restricted_project_ids
+        Project.where(id: restricted_project_ids)
+      else
+        Project.all
       end
   end
 
