@@ -11,7 +11,9 @@
   %ul.sidebar-top-level-items
     = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
       = link_to group_path(@group), title: 'About group' do
-        %span
+        .nav-icon-container
+          = custom_icon('project')
+        %span.nav-item-name
           About
 
       %ul.sidebar-sub-level-items
@@ -27,10 +29,12 @@
 
     = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
       = link_to issues_group_path(@group), title: 'Issues' do
-        %span
+        .nav-icon-container
+          = custom_icon('issues')
+        %span.nav-item-name
           - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-          %span.badge.count= number_with_delimiter(issues.count)
           Issues
+        %span.badge.count= number_with_delimiter(issues.count)
 
       %ul.sidebar-sub-level-items
         = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
@@ -50,18 +54,24 @@
 
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
-        %span
+        .nav-icon-container
+          = custom_icon('mr_bold')
+        %span.nav-item-name
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
-          %span.badge.count= number_with_delimiter(merge_requests.count)
           Merge Requests
+        %span.badge.count= number_with_delimiter(merge_requests.count)
     = nav_link(path: 'group_members#index') do
       = link_to group_group_members_path(@group), title: 'Members' do
-        %span
+        .nav-icon-container
+          = custom_icon('members')
+        %span.nav-item-name
           Members
     - if current_user && can?(current_user, :admin_group, @group)
       = nav_link(path: %w[groups#projects groups#edit ci_cd#show]) do
         = link_to edit_group_path(@group), title: 'Settings' do
-          %span
+          .nav-icon-container
+            = custom_icon('settings')
+          %span.nav-item-name
             Settings
         %ul.sidebar-sub-level-items
           = nav_link(path: 'groups#edit') do
