@@ -66,7 +66,7 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
 
   def group_has_project(groupname, projectname, visibility_level)
     group = Group.find_by(name: groupname) || create(:group, name: groupname)
-    project = create(:project,
+    project = create(:empty_project,
       namespace: group,
       name: projectname,
       path: "#{groupname}-#{projectname}",
