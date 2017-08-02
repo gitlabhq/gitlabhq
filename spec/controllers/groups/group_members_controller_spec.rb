@@ -160,21 +160,6 @@ describe Groups::GroupMembersController do
           expect(response).to have_http_status(403)
         end
       end
-
-      context 'and has requested access' do
-        before do
-          group.request_access(user)
-        end
-
-        it 'removes user from members' do
-          delete :leave, group_id: group
-
-          expect(response).to set_flash.to 'Your access request to the group has been withdrawn.'
-          expect(response).to redirect_to(group_path(group))
-          expect(group.access_requests).to be_empty
-          expect(group.users).not_to include user
-        end
-      end
     end
   end
 
@@ -190,6 +175,50 @@ describe Groups::GroupMembersController do
       expect(response).to redirect_to(group_path(group))
       expect(group.access_requests.exists?(user_id: user)).to be_truthy
       expect(group.users).not_to include user
+    end
+  end
+
+  describe 'DELETE withdraw_access_request' do
+    context 'when the current_user has requested access to the group' do
+      let!(:access_request) { group.request_access(user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'redirects with success message' do
+        delete :withdraw_access_request, group_id: group
+
+        expect(response).to set_flash.to /Your access request .* has been withdrawn/
+        expect(response).to redirect_to(group)
+      end
+
+      it 'destroys the access request' do
+        delete :withdraw_access_request, group_id: group
+
+        expect(group.access_requests.where(user: user)).not_to exist
+      end
+    end
+
+    context 'when the current_user has not requested access to the group' do
+      let(:other_user) { create(:user) }
+      let!(:other_access_request) { group.request_access(other_user) }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'responds 404 Not Found' do
+        delete :withdraw_access_request, group_id: group
+
+        expect(response).to have_http_status(404)
+      end
+
+      it "does not destroy another user's access request" do
+        delete :withdraw_access_request, group_id: group
+
+        expect(group.access_requests.where(user: other_user)).to exist
+      end
     end
   end
 
