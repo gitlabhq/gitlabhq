@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'html/pipeline'
 
-describe Banzai::Filter::LabelReferenceFilter, lib: true do
+describe Banzai::Filter::LabelReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public, name: 'sample-project') }
@@ -368,7 +368,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   describe 'cross-project / cross-namespace complete reference' do
     let(:project2)  { create(:empty_project) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
-    let(:reference) { "#{project2.path_with_namespace}~#{label.name}" }
+    let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
 
     it 'links to a valid reference' do
@@ -400,7 +400,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, namespace: namespace) }
     let(:project2)  { create(:empty_project, namespace: namespace) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
-    let(:reference) { "#{project2.path_with_namespace}~#{label.name}" }
+    let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
 
     it 'links to a valid reference' do
@@ -466,7 +466,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let(:another_group)    { create(:group) }
     let(:another_project)  { create(:empty_project, :public, namespace: another_group) }
     let(:group_label)      { create(:group_label, group: another_group, color: '#00ff00') }
-    let(:reference)        { "#{another_project.path_with_namespace}~#{group_label.name}" }
+    let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
     let!(:result)          { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
@@ -501,7 +501,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let(:project)          { create(:empty_project, :public, namespace: group) }
     let(:another_project)  { create(:empty_project, :public, namespace: group) }
     let(:group_label)      { create(:group_label, group: group, color: '#00ff00') }
-    let(:reference)        { "#{another_project.path_with_namespace}~#{group_label.name}" }
+    let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
     let!(:result)          { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do
@@ -535,7 +535,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     let(:group)       { create(:group) }
     let(:project)     { create(:empty_project, :public, namespace: group) }
     let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
-    let(:reference)   { "#{project.path_with_namespace}~#{group_label.name}" }
+    let(:reference)   { "#{project.full_path}~#{group_label.name}" }
     let!(:result)     { reference_filter("See #{reference}", project: project) }
 
     it 'points to referenced project issues page' do

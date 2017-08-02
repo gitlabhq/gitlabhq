@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group member cannot leave group project', feature: true do
+feature 'Projects > Members > Group member cannot leave group project' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, namespace: group) }
+  let(:project) { create(:empty_project, namespace: group) }
 
   background do
     group.add_developer(user)

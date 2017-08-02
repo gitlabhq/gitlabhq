@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Group milestones', :feature, :js do
+feature 'Group milestones', :js do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }

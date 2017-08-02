@@ -37,8 +37,8 @@ module Gitlab
     request_cache def can_create_tag?(ref)
       return false unless can_access_git?
 
-      if ProtectedTag.protected?(project, ref)
-        project.protected_tags.protected_ref_accessible_to?(ref, user, action: :create)
+      if protected?(ProtectedTag, project, ref)
+        protected_tag_accessible_to?(ref, action: :create)
       else
         user.can?(:push_code, project)
       end
@@ -47,20 +47,24 @@ module Gitlab
     request_cache def can_delete_branch?(ref)
       return false unless can_access_git?
 
-      if ProtectedBranch.protected?(project, ref)
+      if protected?(ProtectedBranch, project, ref)
         user.can?(:delete_protected_branch, project)
       else
         user.can?(:push_code, project)
       end
     end
 
+    def can_update_branch?(ref)
+      can_push_to_branch?(ref) || can_merge_to_branch?(ref)
+    end
+
     request_cache def can_push_to_branch?(ref)
       return false unless can_access_git?
 
-      if ProtectedBranch.protected?(project, ref)
+      if protected?(ProtectedBranch, project, ref)
         return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
 
-        project.protected_branches.protected_ref_accessible_to?(ref, user, action: :push)
+        protected_branch_accessible_to?(ref, action: :push)
       else
         user.can?(:push_code, project)
       end
@@ -69,8 +73,8 @@ module Gitlab
     request_cache def can_merge_to_branch?(ref)
       return false unless can_access_git?
 
-      if ProtectedBranch.protected?(project, ref)
-        project.protected_branches.protected_ref_accessible_to?(ref, user, action: :merge)
+      if protected?(ProtectedBranch, project, ref)
+        protected_branch_accessible_to?(ref, action: :merge)
       else
         user.can?(:push_code, project)
       end
@@ -86,6 +90,24 @@ module Gitlab
 
     def can_access_git?
       user && user.can?(:access_git)
+    end
+
+    def protected_branch_accessible_to?(ref, action:)
+      ProtectedBranch.protected_ref_accessible_to?(
+        ref, user,
+        action: action,
+        protected_refs: project.protected_branches)
+    end
+
+    def protected_tag_accessible_to?(ref, action:)
+      ProtectedTag.protected_ref_accessible_to?(
+        ref, user,
+        action: action,
+        protected_refs: project.protected_tags)
+    end
+
+    request_cache def protected?(kind, project, ref)
+      kind.protected?(project, ref)
     end
   end
 end

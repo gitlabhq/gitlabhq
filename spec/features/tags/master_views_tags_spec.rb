@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master views tags', feature: true do
+feature 'Master views tags' do
   let(:user) { create(:user) }
 
   before do

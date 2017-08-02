@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown hint', :js, :feature do
+describe 'Dropdown hint', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:empty_project) }

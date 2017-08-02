@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
@@ -77,7 +77,7 @@ describe Project, models: true do
 
     context 'after initialized' do
       it "has a project_feature" do
-        expect(Project.new.project_feature).to be_present
+        expect(described_class.new.project_feature).to be_present
       end
     end
 
@@ -261,27 +261,27 @@ describe Project, models: true do
 
     describe 'path validation' do
       it 'allows paths reserved on the root namespace' do
-        project = build(:project, path: 'api')
+        project = build(:empty_project, path: 'api')
 
         expect(project).to be_valid
       end
 
       it 'rejects paths reserved on another level' do
-        project = build(:project, path: 'tree')
+        project = build(:empty_project, path: 'tree')
 
         expect(project).not_to be_valid
       end
 
       it 'rejects nested paths' do
         parent = create(:group, :nested, path: 'environments')
-        project = build(:project, path: 'folders', namespace: parent)
+        project = build(:empty_project, path: 'folders', namespace: parent)
 
         expect(project).not_to be_valid
       end
 
       it 'allows a reserved group name' do
         parent = create(:group)
-        project = build(:project, path: 'avatar', namespace: parent)
+        project = build(:empty_project, path: 'avatar', namespace: parent)
 
         expect(project).to be_valid
       end
@@ -306,6 +306,7 @@ describe Project, models: true do
     it { is_expected.to respond_to(:execute_hooks) }
     it { is_expected.to respond_to(:owner) }
     it { is_expected.to respond_to(:path_with_namespace) }
+    it { is_expected.to respond_to(:full_path) }
   end
 
   describe 'delegation' do
@@ -438,7 +439,7 @@ describe Project, models: true do
   end
 
   it 'returns valid url to repo' do
-    project = Project.new(path: 'somewhere')
+    project = described_class.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
 
@@ -460,7 +461,7 @@ describe Project, models: true do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.path_with_namespace}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
         expect(project.new_issue_address(user)).to eq(address)
       end
@@ -533,15 +534,48 @@ describe Project, models: true do
     end
 
     context 'with external issues tracker' do
+      let!(:internal_issue) { create(:issue, project: project) }
       before do
-        allow(project).to receive(:default_issues_tracker?).and_return(false)
+        allow(project).to receive(:external_issue_tracker).and_return(true)
       end
 
-      it 'returns an ExternalIssue' do
-        issue = project.get_issue('FOO-1234', user)
-        expect(issue).to be_kind_of(ExternalIssue)
-        expect(issue.iid).to eq 'FOO-1234'
-        expect(issue.project).to eq project
+      context 'when internal issues are enabled' do
+        it 'returns interlan issue' do
+          issue = project.get_issue(internal_issue.iid, user)
+
+          expect(issue).to be_kind_of(Issue)
+          expect(issue.iid).to eq(internal_issue.iid)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
+      end
+
+      context 'when internal issues are disabled' do
+        before do
+          project.issues_enabled = false
+          project.save!
+        end
+
+        it 'returns always an External issues' do
+          issue = project.get_issue(internal_issue.iid, user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq(internal_issue.iid.to_s)
+          expect(issue.project).to eq(project)
+        end
+
+        it 'returns an ExternalIssue when internal issue does not exists' do
+          issue = project.get_issue('FOO-1234', user)
+          expect(issue).to be_kind_of(ExternalIssue)
+          expect(issue.iid).to eq('FOO-1234')
+          expect(issue.project).to eq(project)
+        end
       end
     end
   end
@@ -884,7 +918,7 @@ describe Project, models: true do
   end
 
   describe '.with_shared_runners' do
-    subject { Project.with_shared_runners }
+    subject { described_class.with_shared_runners }
 
     context 'when shared runners are enabled for project' do
       let!(:project) { create(:empty_project, shared_runners_enabled: true) }
@@ -909,10 +943,10 @@ describe Project, models: true do
     let!(:project2) { create(:empty_project, :public, group: group) }
 
     it 'returns total project count' do
-      expect(Project).to receive(:count).once.and_call_original
+      expect(described_class).to receive(:count).once.and_call_original
 
       3.times do
-        expect(Project.cached_count).to eq(2)
+        expect(described_class.cached_count).to eq(2)
       end
     end
   end
@@ -957,7 +991,7 @@ describe Project, models: true do
       user1.toggle_star(project1)
       user2.toggle_star(project2)
 
-      expect(Project.starred_by(user1)).to contain_exactly(project1)
+      expect(described_class.starred_by(user1)).to contain_exactly(project1)
     end
   end
 
@@ -1119,6 +1153,33 @@ describe Project, models: true do
 
     context "if public folder doesn't exist" do
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#pages_url' do
+    let(:group) { create :group, name: group_name }
+    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:domain) { 'Example.com' }
+
+    subject { project.pages_url }
+
+    before do
+      allow(Settings.pages).to receive(:host).and_return(domain)
+      allow(Gitlab.config.pages).to receive(:url).and_return('http://example.com')
+    end
+
+    context 'group page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'group.example.com' }
+
+      it { is_expected.to eq("http://group.example.com") }
+    end
+
+    context 'project page' do
+      let(:group_name) { 'Group' }
+      let(:project_name) { 'Project' }
+
+      it { is_expected.to eq("http://group.example.com/project") }
     end
   end
 
@@ -1308,7 +1369,7 @@ describe Project, models: true do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
+          .with(project.repository_storage_path, project.disk_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1318,7 +1379,7 @@ describe Project, models: true do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository)
-          .with(project.repository_storage_path, project.path_with_namespace)
+          .with(project.repository_storage_path, project.disk_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1351,7 +1412,7 @@ describe Project, models: true do
         .and_return(false)
 
       allow(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.path_with_namespace)
+        .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1375,7 +1436,7 @@ describe Project, models: true do
         .and_return(false)
 
       expect(shell).to receive(:add_repository)
-        .with(project.repository_storage_path, project.path_with_namespace)
+        .with(project.repository_storage_path, project.disk_path)
         .and_return(true)
 
       project.ensure_repository
@@ -1539,7 +1600,7 @@ describe Project, models: true do
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
-        .with(project.repository_storage_path, project.path_with_namespace, project.import_url)
+        .with(project.repository_storage_path, project.disk_path, project.import_url)
         .and_return(true)
 
       expect_any_instance_of(Repository).to receive(:after_import)
@@ -1677,7 +1738,7 @@ describe Project, models: true do
       it 'schedules a RepositoryForkWorker job' do
         expect(RepositoryForkWorker).to receive(:perform_async)
           .with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.path_with_namespace, project.namespace.full_path)
+              forked_from_project.disk_path, project.namespace.full_path)
 
         project.add_import_job
       end
@@ -1979,12 +2040,12 @@ describe Project, models: true do
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do
-      expect(Project.inside_path(path)).to eq([project1])
+      expect(described_class.inside_path(path)).to eq([project1])
     end
   end
 
   describe '#route_map_for' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       <<-MAP.strip_heredoc
       - source: /source/(.*)/
@@ -2021,7 +2082,7 @@ describe Project, models: true do
   end
 
   describe '#public_path_for_source_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:route_map) do
       Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
         - source: /source/(.*)/
@@ -2135,7 +2196,7 @@ describe Project, models: true do
   end
 
   describe '#pipeline_status' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     it 'builds a pipeline status' do
       expect(project.pipeline_status).to be_a(Gitlab::Cache::Ci::ProjectPipelineStatus)
     end
@@ -2146,7 +2207,7 @@ describe Project, models: true do
   end
 
   describe '#append_or_update_attribute' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
@@ -2183,7 +2244,7 @@ describe Project, models: true do
 
     context 'with a user' do
       let(:projects) do
-        Project.all.public_or_visible_to_user(user)
+        described_class.all.public_or_visible_to_user(user)
       end
 
       it 'includes projects the user has access to' do
@@ -2197,7 +2258,7 @@ describe Project, models: true do
 
     context 'without a user' do
       it 'only includes public projects' do
-        projects = Project.all.public_or_visible_to_user
+        projects = described_class.all.public_or_visible_to_user
 
         expect(projects).to eq([public_project])
       end
@@ -2205,19 +2266,43 @@ describe Project, models: true do
   end
 
   describe '#remove_private_deploy_keys' do
-    it 'removes the private deploy keys of a project' do
-      project = create(:empty_project)
+    let!(:project) { create(:empty_project) }
 
-      private_key = create(:deploy_key, public: false)
-      public_key = create(:deploy_key, public: true)
+    context 'for a private deploy key' do
+      let!(:key) { create(:deploy_key, public: false) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
 
-      create(:deploy_keys_project, deploy_key: private_key, project: project)
-      create(:deploy_keys_project, deploy_key: public_key, project: project)
+      context 'when the key is not linked to another project' do
+        it 'removes the key' do
+          project.remove_private_deploy_keys
 
-      project.remove_private_deploy_keys
+          expect(project.deploy_keys).not_to include(key)
+        end
+      end
 
-      expect(project.deploy_keys.where(public: false).any?).to eq(false)
-      expect(project.deploy_keys.where(public: true).any?).to eq(true)
+      context 'when the key is linked to another project' do
+        before do
+          another_project = create(:empty_project)
+          create(:deploy_keys_project, deploy_key: key, project: another_project)
+        end
+
+        it 'does not remove the key' do
+          project.remove_private_deploy_keys
+
+          expect(project.deploy_keys).to include(key)
+        end
+      end
+    end
+
+    context 'for a public deploy key' do
+      let!(:key) { create(:deploy_key, public: true) }
+      let!(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: key, project: project) }
+
+      it 'does not remove the key' do
+        project.remove_private_deploy_keys
+
+        expect(project.deploy_keys).to include(key)
+      end
     end
   end
 end

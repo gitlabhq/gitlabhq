@@ -94,7 +94,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       end
 
       it "renames the route for projects of the namespace" do
-        project = create(:project, path: "project-path", namespace: namespace)
+        project = create(:project, :repository, path: "project-path", namespace: namespace)
 
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -120,7 +120,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
       context "the-path namespace -> subgroup -> the-path0 project" do
         it "updates the route of the project correctly" do
           subgroup = create(:group, path: "subgroup", parent: namespace)
-          project = create(:project, path: "the-path0", namespace: subgroup)
+          project = create(:project, :repository, path: "the-path0", namespace: subgroup)
 
           subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -165,7 +165,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
       it 'renames all the routes for the namespace' do
         child = create(:group, path: 'child', parent: namespace)
-        project = create(:project, namespace: child, path: 'the-project')
+        project = create(:project, :repository, namespace: child, path: 'the-project')
         other_one = create(:namespace, path: 'the-path-is-similar')
 
         subject.perform_rename(migration_namespace(namespace), 'the-path', 'renamed')

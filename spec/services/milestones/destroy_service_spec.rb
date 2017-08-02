@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Milestones::DestroyService, services: true do
+describe Milestones::DestroyService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
   let(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }

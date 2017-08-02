@@ -11,7 +11,8 @@ following locations:
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
-- [Build Variables](build_variables.md)
+- [Project-level Variables](project_level_variables.md)
+- [Group-level Variables](group_level_variables.md)
 - [Commits](commits.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
@@ -29,7 +30,8 @@ following locations:
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Merge Requests](merge_requests.md)
-- [Milestones](milestones.md)
+- [Project milestones](milestones.md)
+- [Group milestones](group_milestones.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Notification settings](notification_settings.md)
@@ -41,6 +43,7 @@ following locations:
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
+- [Protected Branches](protected_branches.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
@@ -339,7 +342,18 @@ URL-encoded.
 For example, `/` is represented by `%2F`:
 
 ```
-/api/v4/projects/diaspora%2Fdiaspora
+GET /api/v4/projects/diaspora%2Fdiaspora
+```
+
+## Branches & tags name encoding
+
+If your branch or tag contains a `/`, make sure the branch/tag name is
+URL-encoded.
+
+For example, `/` is represented by `%2F`:
+
+```
+GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
 ## `id` vs `iid`

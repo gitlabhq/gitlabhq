@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User views the wiki page', feature: true do
+feature 'Projects > Wiki > User views the wiki page' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:empty_project, :public) }
   let(:old_page_version_id) { wiki_page.versions.last.id }
   let(:wiki_page) do
     WikiPages::CreateService.new(

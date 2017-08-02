@@ -69,13 +69,41 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   # Example: 'ldap.mydomain.com'
   host: '_your_ldap_server'
   # This port is an example, it is sometimes different but it is always an integer and not a string
-  port: 389
+  port: 389 # usually 636 for SSL
   uid: 'sAMAccountName' # This should be the attribute, not the value that maps to uid.
-  method: 'plain' # "tls" or "ssl" or "plain"
 
   # Examples: 'america\\momo' or 'CN=Gitlab Git,CN=Users,DC=mydomain,DC=com'
   bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
   password: '_the_password_of_the_bind_user'
+
+  # Encryption method. The "method" key is deprecated in favor of
+  # "encryption".
+  #
+  #   Examples: "start_tls" or "simple_tls" or "plain"
+  #
+  #   Deprecated values: "tls" was replaced with "start_tls" and "ssl" was
+  #   replaced with "simple_tls".
+  #
+  encryption: 'plain'
+
+  # Enables SSL certificate verification if encryption method is
+  # "start_tls" or "simple_tls". (Defaults to false for backward-
+  # compatibility)
+  verify_certificates: false
+
+  # Specifies the path to a file containing a PEM-format CA certificate,
+  # e.g. if you need to use an internal CA.
+  #
+  #   Example: '/etc/ca.pem'
+  #
+  ca_file: ''
+
+  # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
+  # is not appropriate.
+  #
+  #   Example: 'TLSv1_1'
+  #
+  ssl_version: ''
 
   # Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
   # a request if the LDAP server becomes unresponsive.
@@ -116,8 +144,8 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
   #
-  #   Below an example for get only specific users
-  #   Example: '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
+  #   Example for getting only specific users:
+  #   '(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'
   #
   user_filter: ''
 
@@ -231,9 +259,9 @@ group you can use the following syntax:
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
-Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at 
+Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
 https://msdn.microsoft.com/en-us/library/aa746475(v=vs.85).aspx. Support for
-nested members in the user filter should not be confused with 
+nested members in the user filter should not be confused with
 [group sync nested groups support (EE only)](https://docs.gitlab.com/ee/administration/auth/ldap-ee.html#supported-ldap-group-types-attributes).
 
 Please note that GitLab does not support the custom filter syntax used by
@@ -250,6 +278,19 @@ In other words, if an existing GitLab user wants to enable LDAP sign-in for
 themselves, they should check that their GitLab email address matches their
 LDAP email address, and then sign into GitLab via their LDAP credentials.
 
+## Encryption
+
+### TLS Server Authentication
+
+There are two encryption methods, `simple_tls` and `start_tls`.
+
+For either encryption method, if setting `validate_certificates: false`, TLS
+encryption is established with the LDAP server before any LDAP-protocol data is
+exchanged but no validation of the LDAP server's SSL certificate is performed.
+
+>**Note**: Before GitLab 9.5, `validate_certificates: false` is the default if
+unspecified.
+
 ## Limitations
 
 ### TLS Client Authentication
@@ -258,14 +299,6 @@ Not implemented by `Net::LDAP`.
 You should disable anonymous LDAP authentication and enable simple or SASL
 authentication. The TLS client authentication setting in your LDAP server cannot
 be mandatory and clients cannot be authenticated with the TLS protocol.
-
-### TLS Server Authentication
-
-Not supported by GitLab's configuration options.
-When setting `method: ssl`, the underlying authentication method used by
-`omniauth-ldap` is `simple_tls`.  This method establishes TLS encryption with
-the LDAP server before any LDAP-protocol data is exchanged but no validation of
-the LDAP server's SSL certificate is performed.
 
 ## Troubleshooting
 
@@ -306,9 +339,9 @@ tree and traverse it.
 ### Connection Refused
 
 If you are getting 'Connection Refused' errors when trying to connect to the
-LDAP server please double-check the LDAP `port` and `method` settings used by
-GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
-`method: 'ssl'` and `port: 636`.
+LDAP server please double-check the LDAP `port` and `encryption` settings used by
+GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
+`encryption: 'simple_tls'` and `port: 636`.
 
 ### Troubleshooting
 

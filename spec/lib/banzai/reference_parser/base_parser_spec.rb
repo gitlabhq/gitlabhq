@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::BaseParser, lib: true do
+describe Banzai::ReferenceParser::BaseParser do
   include ReferenceParserHelpers
 
   let(:user) { create(:user) }

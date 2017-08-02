@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectLabel, models: true do
+describe ProjectLabel do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end
@@ -105,14 +105,14 @@ describe ProjectLabel, models: true do
       context 'using name' do
         it 'returns cross reference with label name' do
           expect(label.to_reference(project, format: :name))
-            .to eq %Q(#{label.project.path_with_namespace}~"#{label.name}")
+            .to eq %Q(#{label.project.full_path}~"#{label.name}")
         end
       end
 
       context 'using id' do
         it 'returns cross reference with label id' do
           expect(label.to_reference(project, format: :id))
-            .to eq %Q(#{label.project.path_with_namespace}~#{label.id})
+            .to eq %Q(#{label.project.full_path}~#{label.id})
         end
       end
     end

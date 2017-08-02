@@ -211,6 +211,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  &.affix-top .issuable-sidebar {
+    height: 100%;
+  }
+
   &.right-sidebar-expanded {
     width: $gutter_width;
 
@@ -438,6 +442,14 @@
 
   .open .dropdown-menu {
     width: 100%;
+  }
+}
+
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
 }
 

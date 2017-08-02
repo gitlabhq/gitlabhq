@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UploadService, services: true do
+describe UploadService do
   describe 'File service' do
     before do
       @user = create(:user)

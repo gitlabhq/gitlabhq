@@ -34,7 +34,7 @@ module Projects
     private
 
     def transfer(project)
-      @old_path = project.path_with_namespace
+      @old_path = project.full_path
       @old_group = project.group
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
@@ -61,11 +61,13 @@ module Projects
         project.send_move_instructions(@old_path)
 
         # Move main repository
+        # TODO: check storage type and NOOP when not using Legacy
         unless move_repo_folder(@old_path, @new_path)
           raise TransferError.new('Cannot move project')
         end
 
         # Move wiki repo also if present
+        # TODO: check storage type and NOOP when not using Legacy
         move_repo_folder("#{@old_path}.wiki", "#{@new_path}.wiki")
 
         # Move missing group labels to project

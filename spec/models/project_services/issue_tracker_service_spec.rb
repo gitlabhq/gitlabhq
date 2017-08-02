@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe IssueTrackerService, models: true do
+describe IssueTrackerService do
   describe 'Validations' do
-    let(:project) { create :project }
+    let(:project) { create :empty_project }
 
     describe 'only one issue tracker per project' do
       let(:service) { RedmineService.new(project: project, active: true) }

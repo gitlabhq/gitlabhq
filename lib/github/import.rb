@@ -93,7 +93,7 @@ module Github
 
     def fetch_wiki_repository
       wiki_url  = "https://#{options.fetch(:token)}@github.com/#{repo}.wiki.git"
-      wiki_path = "#{project.path_with_namespace}.wiki"
+      wiki_path = "#{project.full_path}.wiki"
 
       unless project.wiki.repository_exists?
         gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)

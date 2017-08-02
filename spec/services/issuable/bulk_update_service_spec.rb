@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issuable::BulkUpdateService, services: true do
+describe Issuable::BulkUpdateService do
   let(:user)    { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
 

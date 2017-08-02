@@ -3,6 +3,7 @@ import memoryUsageComponent from '~/vue_merge_request_widget/components/mr_widge
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
 const url = '/root/acets-review-apps/environments/15/deployments/1/metrics';
+const monitoringUrl = '/root/acets-review-apps/environments/15/metrics';
 
 const metricsMockData = {
   success: true,
@@ -39,6 +40,7 @@ const createComponent = () => {
     el: document.createElement('div'),
     propsData: {
       metricsUrl: url,
+      metricsMonitoringUrl: monitoringUrl,
       memoryMetrics: [],
       deploymentTime: 0,
       hasMetrics: false,

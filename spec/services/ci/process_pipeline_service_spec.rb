@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService, '#execute', :services do
+describe Ci::ProcessPipelineService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
 
@@ -9,6 +9,8 @@ describe Ci::ProcessPipelineService, '#execute', :services do
   end
 
   before do
+    stub_not_protect_default_branch
+
     project.add_developer(user)
   end
 

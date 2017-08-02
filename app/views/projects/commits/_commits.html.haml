@@ -7,7 +7,7 @@
     %span.commits-count= n_("%d commit", "%d commits", commits.count) % commits.count
 
   %li.commits-row{ data: { day: day } }
-    %ul.content-list.commit-list
+    %ul.content-list.commit-list.flex-list
       = render partial: 'projects/commits/commit', collection: commits, locals: { project: project, ref: ref }
 
 - if hidden > 0

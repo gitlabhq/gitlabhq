@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Environment, models: true do
+describe Environment do
   set(:project) { create(:empty_project) }
   subject(:environment) { create(:environment, project: project) }
 
@@ -21,7 +21,7 @@ describe Environment, models: true do
   it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '.order_by_last_deployed_at' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let!(:environment1) { create(:environment, project: project) }
     let!(:environment2) { create(:environment, project: project) }
     let!(:environment3) { create(:environment, project: project) }

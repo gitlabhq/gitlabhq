@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::DestroyService, services: true do
+describe Groups::DestroyService do
   include DatabaseConnectionHelpers
 
   let!(:user)         { create(:user) }
@@ -33,6 +33,16 @@ describe Groups::DestroyService, services: true do
       it { expect(Group.unscoped.all).not_to include(nested_group) }
       it { expect(Project.unscoped.all).not_to include(project) }
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
+    end
+
+    context 'mattermost team' do
+      let!(:chat_team) { create(:chat_team, namespace: group) }
+
+      it 'destroys the team too' do
+        expect_any_instance_of(Mattermost::Team).to receive(:destroy)
+
+        destroy_group(group, user, async)
+      end
     end
 
     context 'file system' do
@@ -100,7 +110,7 @@ describe Groups::DestroyService, services: true do
 
           # Kick off the initial group destroy in a new thread, so that
           # it doesn't share this spec's database transaction.
-          Thread.new { Groups::DestroyService.new(group, user).async_execute }.join(5)
+          Thread.new { described_class.new(group, user).async_execute }.join(5)
 
           group_record = run_with_new_database_connection do |conn|
             conn.execute("SELECT * FROM namespaces WHERE id = #{group.id}").first

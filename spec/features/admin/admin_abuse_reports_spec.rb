@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::AbuseReports", feature: true, js: true  do
+describe "Admin::AbuseReports", js: true  do
   let(:user) { create(:user) }
 
   context 'as an admin' do

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::ProjectHooks, 'ProjectHooks' do
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) do
     create(:project_hook,
            :all_events_enabled,
@@ -87,7 +87,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "adds hook to project" do
       expect do
         post v3_api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com", issues_events: true, wiki_page_events: true
+          url: "http://example.com", issues_events: true, wiki_page_events: true, build_events: true
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_http_status(201)
@@ -97,7 +97,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
-      expect(json_response['build_events']).to eq(false)
+      expect(json_response['build_events']).to eq(true)
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
@@ -135,7 +135,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "updates an existing project hook" do
       put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org', push_events: false
+        url: 'http://example.org', push_events: false, build_events: true
       expect(response).to have_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
       expect(json_response['issues_events']).to eq(hook.issues_events)
@@ -204,7 +204,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
 
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
       test_user = create(:user)
-      other_project = create(:project)
+      other_project = create(:empty_project)
       other_project.team << [test_user, :master]
 
       delete v3_api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)

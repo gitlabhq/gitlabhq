@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User creates snippet', :js, feature: true do
+feature 'User creates snippet', :js do
   include DropzoneHelper
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Group, models: true do
+describe Ci::Group do
   subject do
     described_class.new('test', name: 'rspec', jobs: jobs)
   end

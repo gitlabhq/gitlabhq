@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe ProjectTeam, models: true do
+describe ProjectTeam do
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
@@ -330,7 +330,7 @@ describe ProjectTeam, models: true do
   end
 
   shared_examples 'max member access for users' do
-    let(:project) { create(:project) }
+    let(:project) { create(:empty_project) }
     let(:group) { create(:group) }
     let(:second_group) { create(:group) }
 

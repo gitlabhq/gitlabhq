@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::PlayBuildService, '#execute', :services do
+describe Ci::PlayBuildService, '#execute' do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -33,7 +33,7 @@ describe Ci::PlayBuildService, '#execute', :services do
   end
 
   context 'when project has repository' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it 'allows user with developer role to play a build' do
       project.add_developer(user)

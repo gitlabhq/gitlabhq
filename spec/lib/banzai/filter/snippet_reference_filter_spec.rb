@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SnippetReferenceFilter, lib: true do
+describe Banzai::Filter::SnippetReferenceFilter do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public) }
@@ -83,7 +83,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     let(:namespace) { create(:namespace) }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let!(:snippet)  { create(:project_snippet, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+    let(:reference) { "#{project2.full_path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -116,7 +116,7 @@ describe Banzai::Filter::SnippetReferenceFilter, lib: true do
     let(:project)   { create(:empty_project, :public, namespace: namespace) }
     let(:project2)  { create(:empty_project, :public, namespace: namespace) }
     let!(:snippet)  { create(:project_snippet, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}$#{snippet.id}" }
+    let(:reference) { "#{project2.full_path}$#{snippet.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")

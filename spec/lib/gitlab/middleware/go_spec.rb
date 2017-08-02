@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::Go, lib: true do
+describe Gitlab::Middleware::Go do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
 
@@ -18,7 +18,7 @@ describe Gitlab::Middleware::Go, lib: true do
       let(:current_user) { nil }
 
       context 'with simple 2-segment project path' do
-        let!(:project) { create(:project, :private) }
+        let!(:project) { create(:empty_project, :private) }
 
         context 'with subpackages' do
           let(:path) { "#{project.full_path}/subpackage" }
@@ -39,7 +39,7 @@ describe Gitlab::Middleware::Go, lib: true do
 
       context 'with a nested project path' do
         let(:group) { create(:group, :nested) }
-        let!(:project) { create(:project, :public, namespace: group) }
+        let!(:project) { create(:empty_project, :public, namespace: group) }
 
         shared_examples 'a nested project' do
           context 'when the project is public' do

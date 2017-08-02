@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe 'Merge request', :feature, :js do
+describe 'Merge request', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
@@ -200,7 +200,7 @@ describe 'Merge request', :feature, :js do
   end
 
   context 'user can merge into source project but cannot push to fork', js: true do
-    let(:fork_project) { create(:project, :public) }
+    let(:fork_project) { create(:project, :public, :repository) }
     let(:user2) { create(:user) }
 
     before do

@@ -59,6 +59,7 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
+  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
@@ -128,10 +129,14 @@ RSpec.configure do |config|
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.around(:each, :nested_groups) do |example|
@@ -148,3 +153,10 @@ FactoryGirl::SyntaxRunner.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

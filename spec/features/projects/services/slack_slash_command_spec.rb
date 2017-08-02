@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Slack slash commands', feature: true do
+feature 'Slack slash commands' do
   given(:user) { create(:user) }
-  given(:project) { create(:project) }
+  given(:project) { create(:empty_project) }
   given(:service) { project.create_slack_slash_commands_service }
 
   background do

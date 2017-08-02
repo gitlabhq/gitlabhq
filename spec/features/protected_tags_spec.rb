@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projected Tags', feature: true, js: true do
+feature 'Projected Tags', js: true do
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project, :repository) }
 

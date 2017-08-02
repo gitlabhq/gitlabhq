@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ProjectSearchResults, lib: true do
+describe Gitlab::ProjectSearchResults do
   let(:user) { create(:user) }
   let(:project) { create(:empty_project) }
   let(:query) { 'hello world' }
@@ -100,14 +100,14 @@ describe Gitlab::ProjectSearchResults, lib: true do
   end
 
   describe 'wiki search' do
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:empty_project, :public) }
     let(:wiki) { build(:project_wiki, project: project) }
     let!(:wiki_page) { wiki.create_page('Title', 'Content') }
 
     subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:project, :public, :wiki_disabled) }
+      let(:project) { create(:empty_project, :public, :wiki_disabled) }
 
       it 'hides wiki blobs from members' do
         project.add_reporter(user)
@@ -121,7 +121,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     context 'when wiki is internal' do
-      let(:project) { create(:project, :public, :wiki_private) }
+      let(:project) { create(:empty_project, :public, :wiki_private) }
 
       it 'finds wiki blobs for guest' do
         project.add_guest(user)

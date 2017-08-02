@@ -72,8 +72,8 @@ describe API::NotificationSettings do
 
       expect(response).to have_http_status(200)
       expect(json_response['level']).to eq(user.reload.notification_settings_for(project).level)
-      expect(json_response['events']['new_note']).to eq(true)
-      expect(json_response['events']['new_issue']).to eq(false)
+      expect(json_response['events']['new_note']).to be_truthy
+      expect(json_response['events']['new_issue']).to be_falsey
     end
   end
 

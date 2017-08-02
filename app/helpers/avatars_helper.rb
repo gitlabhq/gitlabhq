@@ -11,17 +11,12 @@ module AvatarsHelper
   def user_avatar_without_link(options = {})
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
-    css_class = options[:css_class] || ''
     avatar_url = options[:url] || avatar_icon(options[:user] || options[:user_email], avatar_size)
     data_attributes = { container: 'body' }
 
-    if options[:lazy]
-      data_attributes[:src] = avatar_url
-    end
-
     image_tag(
-      options[:lazy] ? '' : avatar_url,
-      class: "avatar has-tooltip s#{avatar_size} #{css_class}",
+      avatar_url,
+      class: %W[avatar has-tooltip s#{avatar_size}].push(*options[:css_class]),
       alt: "#{user_name}'s avatar",
       title: user_name,
       data: data_attributes

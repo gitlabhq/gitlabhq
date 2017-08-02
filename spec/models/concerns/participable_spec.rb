@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Participable, models: true do
+describe Participable do
   let(:model) do
     Class.new do
       include Participable
@@ -24,7 +24,7 @@ describe Participable, models: true do
       user1 = build(:user)
       user2 = build(:user)
       user3 = build(:user)
-      project = build(:project, :public)
+      project = build(:empty_project, :public)
       instance = model.new
 
       expect(instance).to receive(:foo).and_return(user2)
@@ -57,7 +57,7 @@ describe Participable, models: true do
       other = other_model.new
       user1 = build(:user)
       user2 = build(:user)
-      project = build(:project, :public)
+      project = build(:empty_project, :public)
 
       expect(instance).to receive(:foo).and_return(other)
       expect(other).to receive(:bar).and_return(user2)
@@ -69,7 +69,7 @@ describe Participable, models: true do
     context 'when using a Proc as an attribute' do
       it 'calls the supplied Proc' do
         user1 = build(:user)
-        project = build(:project, :public)
+        project = build(:empty_project, :public)
 
         user_arg = nil
         ext_arg = nil

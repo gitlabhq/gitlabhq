@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProtectedTags::CreateService, services: true do
+describe ProtectedTags::CreateService do
   let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:params) do

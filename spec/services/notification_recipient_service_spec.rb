@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NotificationRecipientService, services: true do
+describe NotificationRecipientService do
   set(:user) { create(:user) }
   set(:project) { create(:empty_project, :public) }
   set(:issue) { create(:issue, project: project) }

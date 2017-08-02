@@ -132,6 +132,22 @@ header {
     }
   }
 
+  &.navbar-gitlab-new {
+    .fa-times {
+      display: none;
+    }
+
+    .menu-expanded {
+      .fa-ellipsis-v {
+        display: none;
+      }
+
+      .fa-times {
+        display: block;
+      }
+    }
+  }
+
   .global-dropdown {
     position: absolute;
     left: -10px;
@@ -170,6 +186,19 @@ header {
     position: relative;
     min-height: $header-height;
     padding-left: 30px;
+
+    &.menu-expanded {
+      @media (max-width: $screen-xs-max) {
+        .header-logo,
+        .title-container {
+          display: none;
+        }
+
+        .navbar-collapse {
+          display: block;
+        }
+      }
+    }
 
     .dropdown-menu {
       margin-top: -5px;
@@ -284,6 +313,29 @@ header {
   .impersonation i {
     color: $red-500;
   }
+
+  // TODO: fallback to global style
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
+}
+
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
 }
 
 .navbar-nav {

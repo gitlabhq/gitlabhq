@@ -46,25 +46,25 @@ describe ProjectsHelper do
   end
 
   describe "readme_cache_key" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       helper.instance_variable_set(:@project, project)
     end
 
     it "returns a valid cach key" do
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-#{project.commit.id}-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-#{project.commit.id}-readme")
     end
 
     it "returns a valid cache key if HEAD does not exist" do
       allow(project).to receive(:commit) { nil }
 
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-nil-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-nil-readme")
     end
   end
 
   describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it "includes the route" do
       expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
@@ -251,7 +251,7 @@ describe ProjectsHelper do
   end
 
   describe '#sanitized_import_error' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')

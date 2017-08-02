@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issue, models: true do
+describe Issue do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to have_many(:assignees) }
@@ -724,7 +724,7 @@ describe Issue, models: true do
   end
 
   describe '#check_for_spam' do
-    let(:project) { create :project, visibility_level: visibility_level }
+    let(:project) { create :empty_project, visibility_level: visibility_level }
     let(:issue) { create :issue, project: project }
 
     subject do

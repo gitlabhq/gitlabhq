@@ -117,7 +117,7 @@ module Gitlab
 
         def subject
           subject_text = '[Git]'
-          subject_text << "[#{project.path_with_namespace}]"
+          subject_text << "[#{project.full_path}]"
           subject_text << "[#{ref_name}]" if @action == :push
           subject_text << ' '
 

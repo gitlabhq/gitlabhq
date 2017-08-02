@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Abuse reports', feature: true do
+feature 'Abuse reports' do
   let(:another_user) { create(:user) }
 
   before do

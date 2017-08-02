@@ -11,6 +11,7 @@
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
+#     author_id: integer
 #     assignee_id: integer
 #     search: string
 #     label_name: string
@@ -80,7 +81,6 @@ class IssuableFinder
     end
 
     counts[:all] = counts.values.sum
-    counts[:opened] += counts[:reopened]
 
     counts
   end

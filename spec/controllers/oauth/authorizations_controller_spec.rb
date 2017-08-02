@@ -42,8 +42,8 @@ describe Oauth::AuthorizationsController do
       end
 
       it 'deletes session.user_return_to and redirects when skip authorization' do
+        doorkeeper.update(trusted: true)
         request.session['user_return_to'] = 'http://example.com'
-        allow(controller).to receive(:skip_authorization?).and_return(true)
 
         get :new, params
 

@@ -64,7 +64,7 @@ FactoryGirl.define do
 
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -72,7 +72,7 @@ FactoryGirl.define do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
 
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'refs'))
       end
     end
 
@@ -171,10 +171,6 @@ FactoryGirl.define do
     end
 
     after :create do |project, evaluator|
-      TestEnv.copy_repo(project,
-        bare_repo: TestEnv.factory_repo_path_bare,
-        refs: TestEnv::BRANCH_SHA)
-
       if evaluator.create_template
         args = evaluator.create_template
 

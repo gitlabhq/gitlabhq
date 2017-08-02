@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Note, ResolvableNote, models: true do
-  let(:project) { create(:project) }
+describe Note, ResolvableNote do
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   subject { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
 

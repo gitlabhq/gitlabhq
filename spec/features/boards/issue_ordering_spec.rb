@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Issue Boards', :feature, :js do
+describe 'Issue Boards', :js do
   include DragTo
 
   let(:project) { create(:empty_project, :public) }

@@ -118,6 +118,13 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def languages(ref = nil)
+        request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: ref || '')
+        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request)
+
+        response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})

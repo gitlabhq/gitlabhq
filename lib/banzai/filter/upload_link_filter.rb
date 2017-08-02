@@ -28,7 +28,7 @@ module Banzai
       end
 
       def build_url(uri)
-        File.join(Gitlab.config.gitlab.url, project.path_with_namespace, uri)
+        File.join(Gitlab.config.gitlab.url, project.full_path, uri)
       end
 
       def project

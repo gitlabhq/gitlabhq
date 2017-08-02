@@ -37,3 +37,4 @@ do.
 | `/target_branch <Branch Name>` | Set target branch for current merge request |
 | `/award :emoji:`  | Toggle award for :emoji: |
 | `/board_move ~column`      | Move issue to column on the board |
+| `/duplicate #issue`        | Closes this issue and marks it as a duplicate of another issue |

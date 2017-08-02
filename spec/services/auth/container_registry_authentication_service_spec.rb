@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Auth::ContainerRegistryAuthenticationService, services: true do
+describe Auth::ContainerRegistryAuthenticationService do
   let(:current_project) { nil }
   let(:current_user) { nil }
   let(:current_params) { {} }
@@ -46,7 +46,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   shared_examples 'an accessible' do
     let(:access) do
       [{ 'type' => 'repository',
-         'name' => project.path_with_namespace,
+         'name' => project.full_path,
          'actions' => actions }]
     end
 
@@ -97,7 +97,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   describe '#full_access_token' do
     let(:project) { create(:empty_project) }
-    let(:token) { described_class.full_access_token(project.path_with_namespace) }
+    let(:token) { described_class.full_access_token(project.full_path) }
 
     subject { { token: token } }
 
@@ -124,7 +124,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:push" }
+          { scope: "repository:#{project.full_path}:push" }
         end
 
         it_behaves_like 'a pushable'
@@ -138,7 +138,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'when pulling from root level repository' do
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:pull" }
+            { scope: "repository:#{project.full_path}:pull" }
           end
 
           it_behaves_like 'a pullable'
@@ -152,7 +152,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:push,pull" }
+          { scope: "repository:#{project.full_path}:push,pull" }
         end
 
         it_behaves_like 'a pullable'
@@ -165,7 +165,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
         end
 
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull,push" }
+          { scope: "repository:#{project.full_path}:pull,push" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -178,7 +178,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'allow anyone to pull images' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull" }
+          { scope: "repository:#{project.full_path}:pull" }
         end
 
         it_behaves_like 'a pullable'
@@ -187,7 +187,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'disallow anyone to push images' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:push" }
+          { scope: "repository:#{project.full_path}:push" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -210,7 +210,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       context 'for internal user' do
         context 'allow anyone to pull images' do
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:pull" }
+            { scope: "repository:#{project.full_path}:pull" }
           end
 
           it_behaves_like 'a pullable'
@@ -219,7 +219,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
         context 'disallow anyone to push images' do
           let(:current_params) do
-            { scope: "repository:#{project.path_with_namespace}:push" }
+            { scope: "repository:#{project.full_path}:push" }
           end
 
           it_behaves_like 'an inaccessible'
@@ -230,7 +230,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       context 'for external user' do
         let(:current_user) { create(:user, external: true) }
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull,push" }
+          { scope: "repository:#{project.full_path}:pull,push" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -255,7 +255,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
     context 'allow to pull and push images' do
       let(:current_params) do
-        { scope: "repository:#{current_project.path_with_namespace}:pull,push" }
+        { scope: "repository:#{current_project.full_path}:pull,push" }
       end
 
       it_behaves_like 'a pullable and pushable' do
@@ -270,7 +270,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     context 'for other projects' do
       context 'when pulling' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull" }
+          { scope: "repository:#{project.full_path}:pull" }
         end
 
         context 'allow for public' do
@@ -337,7 +337,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'when pushing' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:push" }
+          { scope: "repository:#{project.full_path}:push" }
         end
 
         context 'disallow for all' do
@@ -371,7 +371,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'disallow when pulling' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull" }
+          { scope: "repository:#{project.full_path}:pull" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -399,7 +399,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
       let(:project) { create(:empty_project, :private) }
 
       let(:current_params) do
-        { scope: "repository:#{project.path_with_namespace}:pull" }
+        { scope: "repository:#{project.full_path}:pull" }
       end
 
       it_behaves_like 'a forbidden'
@@ -410,7 +410,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'when pulling and pushing' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:pull,push" }
+          { scope: "repository:#{project.full_path}:pull,push" }
         end
 
         it_behaves_like 'a pullable'
@@ -419,7 +419,7 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
       context 'when pushing' do
         let(:current_params) do
-          { scope: "repository:#{project.path_with_namespace}:push" }
+          { scope: "repository:#{project.full_path}:push" }
         end
 
         it_behaves_like 'a forbidden'

@@ -110,6 +110,10 @@
 
   .js-ca-dropdown {
     top: $gl-padding-top;
+
+    .dropdown-menu-align-right {
+      margin-top: 2px;
+    }
   }
 
   .content-list {
@@ -440,6 +444,24 @@
       width: 78px;
       display: inline-block;
       margin-bottom: 20px;
+    }
+  }
+
+  // TODO: fallback to global style
+  .dropdown-menu {
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
     }
   }
 }
