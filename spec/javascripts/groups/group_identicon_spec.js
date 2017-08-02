@@ -9,40 +9,18 @@ const createComponent = () => {
   const group = store.decorateGroup(group1);
 
   return new Component({
-    el: document.createElement('div'),
     propsData: {
       entityId: group.id,
       entityName: group.name,
     },
-  });
+  }).$mount();
 };
 
 describe('GroupIdenticonComponent', () => {
   let vm;
-  let el;
 
   beforeEach(() => {
     vm = createComponent();
-    el = vm.$el;
-  });
-
-  describe('props', () => {
-    it('should have props with defined data types', (done) => {
-      const identiconProps = groupIdenticonComponent.props;
-      const EntityIdTypeClass = identiconProps.entityId.type;
-      const EntityNameTypeClass = identiconProps.entityName.type;
-
-      Vue.nextTick(() => {
-        expect(identiconProps.entityId).toBeDefined();
-        expect(new EntityIdTypeClass() instanceof Number).toBeTruthy();
-        expect(identiconProps.entityId.required).toBeTruthy();
-
-        expect(identiconProps.entityName).toBeDefined();
-        expect(new EntityNameTypeClass() instanceof String).toBeTruthy();
-        expect(identiconProps.entityName.required).toBeTruthy();
-        done();
-      });
-    });
   });
 
   describe('computed', () => {
@@ -74,9 +52,9 @@ describe('GroupIdenticonComponent', () => {
 
   describe('template', () => {
     it('should render identicon', () => {
-      expect(el.nodeName).toBe('DIV');
-      expect(el.classList.contains('identicon')).toBeTruthy();
-      expect(el.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
+      expect(vm.$el.nodeName).toBe('DIV');
+      expect(vm.$el.classList.contains('identicon')).toBeTruthy();
+      expect(vm.$el.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
     });
   });
 });
