@@ -76,7 +76,6 @@ module NotificationRecipientService
           custom_action: custom_action,
           target: target,
           acting_user: acting_user,
-          read_ability: read_ability
         )
       end
 
@@ -89,15 +88,6 @@ module NotificationRecipientService
             users.uniq!
             users.freeze
           end
-      end
-
-      def read_ability
-        case target
-        when Issuable
-          :"read_#{target.to_ability_name}"
-        when Ci::Pipeline
-          :read_build # We have build trace in pipeline emails
-        end
       end
 
       def custom_action
@@ -283,12 +273,6 @@ module NotificationRecipientService
 
       def project
         note.project
-      end
-
-      def read_ability
-        return nil if target.nil?
-
-        :"read_#{target.class.model_name.name.underscore}"
       end
 
       def build!
