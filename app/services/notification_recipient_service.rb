@@ -252,6 +252,10 @@ module NotificationRecipientService
         note.noteable
       end
 
+      # NOTE: may be nil, in the case of a PersonalSnippet
+      #
+      # (this is okay because NotificationRecipient is written
+      # to handle nil projects)
       def project
         note.project
       end
