@@ -68,9 +68,7 @@ FactoryGirl.define do
       avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
-    # Project with test repository
-    #
-    # Repository source is at https://gitlab.com/gitlab-org/gitlab-test
+    # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
       path { 'gitlabhq' }
 

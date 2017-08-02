@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'New issue', js: true do
   include StubENV
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user)    { create(:user)}
 
   before do

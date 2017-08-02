@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Boards::Lists::ListService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:board) { create(:board, project: project) }
   let(:label) { create(:label, project: project) }
   let!(:list) { create(:list, board: board, label: label) }

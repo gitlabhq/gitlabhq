@@ -8,14 +8,14 @@ describe Search::GroupService do
       let(:nested_group) { create(:group, :nested) }
 
       # These projects shouldn't be found
-      let!(:outside_project) { create(:empty_project, :public, name: "Outside #{term}") }
-      let!(:private_project) { create(:empty_project, :private, namespace: nested_group, name: "Private #{term}" )}
-      let!(:other_project)   { create(:empty_project, :public, namespace: nested_group, name: term.reverse) }
+      let!(:outside_project) { create(:project, :public, name: "Outside #{term}") }
+      let!(:private_project) { create(:project, :private, namespace: nested_group, name: "Private #{term}" )}
+      let!(:other_project)   { create(:project, :public, namespace: nested_group, name: term.reverse) }
 
       # These projects should be found
-      let!(:project1) { create(:empty_project, :internal, namespace: nested_group, name: "Inner #{term} 1") }
-      let!(:project2) { create(:empty_project, :internal, namespace: nested_group, name: "Inner #{term} 2") }
-      let!(:project3) { create(:empty_project, :internal, namespace: nested_group.parent, name: "Outer #{term}") }
+      let!(:project1) { create(:project, :internal, namespace: nested_group, name: "Inner #{term} 1") }
+      let!(:project2) { create(:project, :internal, namespace: nested_group, name: "Inner #{term} 2") }
+      let!(:project3) { create(:project, :internal, namespace: nested_group.parent, name: "Outer #{term}") }
 
       let(:results) { described_class.new(user, search_group, search: term).execute }
       subject { results.objects('projects') }

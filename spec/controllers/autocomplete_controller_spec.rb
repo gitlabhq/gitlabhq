@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AutocompleteController do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
   context 'GET users' do
@@ -105,7 +105,7 @@ describe AutocompleteController do
     end
 
     context 'non-member login for public project' do
-      let!(:project) { create(:empty_project, :public) }
+      let!(:project) { create(:project, :public) }
 
       before do
         sign_in(non_member)
@@ -167,7 +167,7 @@ describe AutocompleteController do
     end
 
     context 'unauthenticated user' do
-      let(:public_project) { create(:empty_project, :public) }
+      let(:public_project) { create(:project, :public) }
       let(:body) { JSON.parse(response.body) }
 
       describe 'GET #users with public project' do
@@ -271,8 +271,8 @@ describe AutocompleteController do
   end
 
   context 'GET projects' do
-    let(:authorized_project) { create(:empty_project) }
-    let(:authorized_search_project) { create(:empty_project, name: 'rugged') }
+    let(:authorized_project) { create(:project) }
+    let(:authorized_search_project) { create(:project, name: 'rugged') }
 
     before do
       sign_in(user)
@@ -329,8 +329,8 @@ describe AutocompleteController do
 
     context 'authorized projects apply limit' do
       before do
-        authorized_project2 = create(:empty_project)
-        authorized_project3 = create(:empty_project)
+        authorized_project2 = create(:project)
+        authorized_project3 = create(:project)
 
         authorized_project.add_master(user)
         authorized_project2.add_master(user)
@@ -355,8 +355,8 @@ describe AutocompleteController do
 
     context 'authorized projects with offset' do
       before do
-        authorized_project2 = create(:empty_project)
-        authorized_project3 = create(:empty_project)
+        authorized_project2 = create(:project)
+        authorized_project3 = create(:project)
 
         authorized_project.add_master(user)
         authorized_project2.add_master(user)

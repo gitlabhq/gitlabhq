@@ -4,7 +4,7 @@ describe 'Edit Project Settings' do
   include Select2Helper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
     sign_in(user)
@@ -86,7 +86,7 @@ describe 'Edit Project Settings' do
         it 'overrides the redirect' do
           old_path = project_path(project)
           rename_project(project, path: 'bar')
-          new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
+          new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
           visit old_path
           expect(current_path).to eq(old_path)
           expect(find('h1.title')).to have_content(new_project.name)
@@ -132,7 +132,7 @@ describe 'Edit Project Settings' do
       it 'overrides the redirect' do
         old_path = project_path(project)
         transfer_project(project, group)
-        new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
+        new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
         expect(current_path).to eq(old_path)
         expect(find('h1.title')).to have_content(new_project.name)

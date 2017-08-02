@@ -5,7 +5,7 @@ describe Projects::UpdateService, '#execute' do
   let(:admin) { create(:admin) }
 
   let(:project) do
-    create(:empty_project, creator: user, namespace: user.namespace)
+    create(:project, creator: user, namespace: user.namespace)
   end
 
   context 'when changing visibility level' do
@@ -59,7 +59,7 @@ describe Projects::UpdateService, '#execute' do
   end
 
   describe 'when updating project that has forks' do
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
     let(:forked_project) { create(:forked_project_with_submodules, :internal) }
 
     before do

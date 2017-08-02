@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
@@ -743,7 +743,7 @@ describe QuickActions::InterpretService do
 
       context 'cross project references' do
         it_behaves_like 'duplicate command' do
-          let(:other_project) { create(:empty_project, :public) }
+          let(:other_project) { create(:project, :public) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
           let(:issuable) { issue }
@@ -755,7 +755,7 @@ describe QuickActions::InterpretService do
         end
 
         it_behaves_like 'empty command' do
-          let(:other_project) { create(:empty_project, :private) }
+          let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LabelsHelper do
   describe 'link_to_label' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:label) { create(:label, project: project) }
 
     context 'without subject' do
@@ -13,7 +13,7 @@ describe LabelsHelper do
 
     context 'with a project as subject' do
       let(:namespace) { build(:namespace, name: 'foo3') }
-      let(:another_project) { build(:empty_project, namespace: namespace, name: 'bar3') }
+      let(:another_project) { build(:project, namespace: namespace, name: 'bar3') }
 
       it 'links to project issues page' do
         expect(link_to_label(label, subject: another_project)).to match %r{<a href="/foo3/bar3/issues\?label_name%5B%5D=#{label.name}">.*</a>}

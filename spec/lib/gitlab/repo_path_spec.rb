@@ -65,7 +65,7 @@ describe ::Gitlab::RepoPath do
   end
 
   describe '.find_project' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:redirect) { project.route.create_redirect('foo/bar/baz') }
 
     context 'when finding a project by its canonical path' do

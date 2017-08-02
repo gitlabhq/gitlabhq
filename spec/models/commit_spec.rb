@@ -151,7 +151,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create(:empty_project, :public) }
+    let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 

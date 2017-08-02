@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Environment do
-  set(:project) { create(:empty_project) }
+  set(:project) { create(:project) }
   subject(:environment) { create(:environment, project: project) }
 
   it { is_expected.to belong_to(:project) }

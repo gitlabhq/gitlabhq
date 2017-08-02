@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::MergeRequestReferenceFilter do
   include FilterSpecHelper
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:merge)   { create(:merge_request, source_project: project) }
 
   it 'requires project context' do
@@ -100,7 +100,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
   end
 
   context 'cross-project / cross-namespace complete reference' do
-    let(:project2)          { create(:empty_project, :public) }
+    let(:project2)          { create(:project, :public) }
     let(:merge)             { create(:merge_request, source_project: project2) }
     let(:reference)         { "#{project2.full_path}!#{merge.iid}" }
 
@@ -132,8 +132,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
 
   context 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let!(:merge)    { create(:merge_request, source_project: project2) }
     let(:reference) { "#{project2.full_path}!#{merge.iid}" }
 
@@ -165,8 +165,8 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
 
   context 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let!(:merge)    { create(:merge_request, source_project: project2) }
     let(:reference) { "#{project2.path}!#{merge.iid}" }
 
@@ -198,7 +198,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
 
   context 'cross-project URL reference' do
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:merge)     { create(:merge_request, source_project: project2, target_project: project2) }
     let(:reference) { urls.project_merge_request_url(project2, merge) + '/diffs#note_123' }
 

@@ -12,7 +12,7 @@ describe NamespacelessProjectDestroyWorker do
   describe '#perform' do
     context 'project has namespace' do
       it 'does not do anything' do
-        project = create(:empty_project)
+        project = create(:project)
 
         subject.perform(project.id)
 
@@ -22,7 +22,7 @@ describe NamespacelessProjectDestroyWorker do
 
     context 'project has no namespace' do
       let!(:project) do
-        project = build(:empty_project, namespace_id: nil)
+        project = build(:project, namespace_id: nil)
         project.save(validate: false)
         project
       end
@@ -54,7 +54,7 @@ describe NamespacelessProjectDestroyWorker do
       end
 
       context 'project forked from another' do
-        let!(:parent_project) { create(:empty_project) }
+        let!(:parent_project) { create(:project) }
 
         before do
           create(:forked_project_link, forked_to_project: project, forked_from_project: parent_project)

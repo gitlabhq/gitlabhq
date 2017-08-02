@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::CycleAnalytics::Permissions do
-  let(:project) { create(:empty_project, public_builds: false) }
+  let(:project) { create(:project, public_builds: false) }
   let(:user) { create(:user) }
 
   subject { described_class.get(user: user, project: project) }
