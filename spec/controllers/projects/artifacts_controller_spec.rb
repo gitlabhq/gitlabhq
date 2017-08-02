@@ -79,7 +79,8 @@ describe Projects::ArtifactsController do
 
           expect(params.keys).to eq(%w(Archive Entry))
           expect(params['Archive']).to start_with(archive_path)
-          expect(params['Archive']).to end_with('build_artifacts.zip')
+          # On object storage, the URL can end with a query string
+          expect(params['Archive']).to match(/build_artifacts.zip(\?[^?]+)?$/)
           expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
         end
 
@@ -116,7 +117,7 @@ describe Projects::ArtifactsController do
 
     context 'when the file does not exist' do
       let(:path) { 'unknown' }
-    
+
       it 'responds Not Found' do
         subject
 
