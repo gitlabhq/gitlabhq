@@ -6,14 +6,9 @@ module Gitlab
 
         def query(environment_id)
           Environment.find_by(id: environment_id).try do |environment|
-            query_context = {
-              environment_slug: environment.slug,
-              environment_filter: %{container_name!="POD",environment="#{environment.slug}"},
-              timeframe_start: 8.hours.ago.to_f,
-              timeframe_end: Time.now.to_f
-            }
-
-            query_metrics(query_context)
+            query_metrics(
+              common_query_context(environment, timeframe_start: 8.hours.ago.to_f, timeframe_end: Time.now.to_f)
+            )
           end
         end
       end
