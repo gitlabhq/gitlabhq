@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import repoFile from '~/repo/repo_file.vue';
 
-fdescribe('RepoFile', () => {
+describe('RepoFile', () => {
   const updated = 'updated';
   const file = {
     icon: 'icon',
