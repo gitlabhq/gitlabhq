@@ -123,6 +123,7 @@ module API
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets
+    mount ::API::ProtectedBranches
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners

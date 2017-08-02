@@ -43,6 +43,7 @@ following locations:
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
+- [Protected Branches](protected_branches.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
