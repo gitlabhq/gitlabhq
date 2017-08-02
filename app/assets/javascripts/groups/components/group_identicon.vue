@@ -1,6 +1,5 @@
 <script>
 export default {
-  name: 'group-identicon',
   props: {
     entityId: {
       type: Number,
