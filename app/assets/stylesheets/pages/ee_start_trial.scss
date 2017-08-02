@@ -17,6 +17,10 @@
 
 /* Trial Banner */
 .gitlab-ee-trial-banner.alert {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  padding: 10px 35px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -44,17 +48,10 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    padding: 10px 35px;
-
-    .close {
-      position: absolute;
-      top: 15px;
-      right: 5px;
-    }
+  .close {
+    position: absolute;
+    top: 15%;
+    right: 10px;
   }
 }
 
