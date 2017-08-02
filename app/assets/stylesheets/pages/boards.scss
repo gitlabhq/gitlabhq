@@ -146,13 +146,12 @@
     }
 
     .board-title {
-      position: initial;
       padding: 0;
       border-bottom: 0;
 
       > span {
         display: block;
-        transform: rotate(90deg) translate(25px, 0);
+        transform: rotate(90deg) translate(35px, 10px);
       }
     }
 
@@ -180,21 +179,18 @@
 }
 
 .board-header {
-  border-top-left-radius: $border-radius-default;
-  border-top-right-radius: $border-radius-default;
+  position: relative;
 
-  &.has-border {
+  &.has-border::before {
     border-top: 3px solid;
-    margin-top: -1px;
-    margin-right: -1px;
-    margin-left: -1px;
-    padding-top: 1px;
-    padding-right: 1px;
-    padding-left: 1px;
-
-    .board-title {
-      padding-top: ($gl-padding - 3px);
-    }
+    border-color: inherit;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    content: '';
+    position: absolute;
+    width: calc(100% + 2px);
+    top: -1px;
+    left: -1px;
   }
 }
 
@@ -204,9 +200,8 @@
 }
 
 .board-title {
-  position: relative;
   margin: 0;
-  padding: $gl-padding;
+  padding: 12px $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
   display: flex;

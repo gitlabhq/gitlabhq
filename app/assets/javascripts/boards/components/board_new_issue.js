@@ -1,5 +1,6 @@
 /* global ListIssue */
 import eventHub from '../eventhub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import Api from '../../api';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -24,6 +25,14 @@ export default {
       projects: [],
       error: false,
     };
+  },
+  components: {
+    loadingIcon,
+  },
+  computed: {
+    selectedProjectName() {
+      return this.selectedProject.name || 'Select a project';
+    },
   },
   methods: {
     loadProjects() {
@@ -126,10 +135,11 @@ export default {
               type="button"
               data-toggle="dropdown"
               aria-expanded="false">
-              {{ selectedProject.name || 'Select a project' }}
-              <i class="fa fa-chevron-down"></i>
+              {{ selectedProjectName }}
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="dropdown-menu dropdown-menu-selectable wide">
+            <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
+              <loading-icon v-if="loading" />
               <ul>
                 <li v-for="project in projects">
                   <a

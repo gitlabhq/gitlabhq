@@ -68,14 +68,14 @@ const Api = {
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
-    var url = ""
+    let url;
 
     if (projectPath) {
       url = Api.buildUrl(Api.projectLabelsPath)
         .replace(':namespace_path', namespacePath)
         .replace(':project_path', projectPath);
     } else {
-      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath)
+      url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespacePath);
     }
 
     return $.ajax({

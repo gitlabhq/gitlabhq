@@ -171,7 +171,7 @@ export default {
       </div>
       <transition name="slide-down">
         <board-new-issue
-          :groupId="groupId"
+          :group-id="groupId"
           :list="list"
           v-if="list.type !== 'closed' && showIssueForm"/>
       </transition>
