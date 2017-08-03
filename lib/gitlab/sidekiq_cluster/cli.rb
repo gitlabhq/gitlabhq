@@ -30,13 +30,15 @@ module Gitlab
 
         option_parser.parse!(argv)
 
+        parsed_queues = SidekiqCluster.parse_queues(argv)
+
         queues =
-          if @negated_queues&.any?
-            parsed_queues = SidekiqCluster.parse_queues(@negated_queues)
+          if @negate_queues
             parsed_queues.map { |queues| SidekiqConfig.queues(@rails_path, except: queues) }
           else
-            SidekiqCluster.parse_queues(argv)
+            parsed_queues
           end
+
 
         @logger.info("Starting cluster with #{queues.length} processes")
 
@@ -99,8 +101,8 @@ module Gitlab
             @rails_path = path
           end
 
-          opt.on('-n', '--negate "[QUEUE,QUEUE] [QUEUE]"', "Run workers for all queues except these") do |queues|
-            @negated_queues = queues.split
+          opt.on('-n', '--negate', 'Run workers for all queues on sidekiq_queues.yml except the given ones') do
+            @negate_queues = true
           end
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|
