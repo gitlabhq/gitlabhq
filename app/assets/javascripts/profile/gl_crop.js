@@ -1,12 +1,7 @@
 /* eslint-disable no-useless-escape, max-len, quotes, no-var, no-underscore-dangle, func-names, space-before-function-paren, no-unused-vars, no-return-assign, object-shorthand, one-var, one-var-declaration-per-line, comma-dangle, consistent-return, class-methods-use-this, new-parens */
-<<<<<<< HEAD
-import _ from 'underscore';
-import 'vendor/cropper';
-=======
 
 import 'cropper';
 import _ from 'underscore';
->>>>>>> ce/master
 
 ((global) => {
   // Matches everything but the file name
