@@ -12,14 +12,6 @@ module TreeHelper
     tree.html_safe
   end
 
-  def repo_url(project)
-    if controller_name == 'projects'
-      readme_path(project) || project_tree_path(project, project.default_branch)
-    else
-      request.original_url
-    end
-  end
-
   # Return an image icon depending on the file type and mode
   #
   # type - String type of the tree item; either 'folder' or 'file'

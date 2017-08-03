@@ -8,7 +8,6 @@
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 #blob-content-holder.blob-content-holder
-  - unless show_new_repo?
-    %article.file-holder
-      = render 'projects/blob/header', blob: blob
-      = render 'projects/blob/content', blob: blob
+  %article.file-holder
+    = render 'projects/blob/header', blob: blob
+    = render 'projects/blob/content', blob: blob
