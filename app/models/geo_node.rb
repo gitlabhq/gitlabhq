@@ -108,6 +108,10 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
+  def namespaces_changed?
+    namespaces.any? { |n| n.new_record? || n.marked_for_destruction? }
+  end
+
   def project_ids
     return unless namespaces.presence
 

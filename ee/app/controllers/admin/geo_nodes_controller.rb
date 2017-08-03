@@ -25,7 +25,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def update
-    if @node.update_attributes(geo_node_params.except(:geo_node_key_attributes))
+    if Geo::NodeUpdateService.new(@node, geo_node_params).execute
       redirect_to admin_geo_nodes_path, notice: 'Geo Node was successfully updated.'
     else
       render 'edit'
