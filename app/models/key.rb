@@ -16,8 +16,6 @@ class Key < ActiveRecord::Base
     presence: true,
     length: { maximum: 5000 },
     format: { with: /\A(ssh|ecdsa)-.*\Z/ }
-  validates :key,
-    format: { without: /\n|\r/, message: 'should be a single line' }
   validates :fingerprint,
     uniqueness: true,
     presence: { message: 'cannot be generated' }
@@ -31,6 +29,7 @@ class Key < ActiveRecord::Base
   after_destroy :post_destroy_hook
 
   def key=(value)
+    value&.delete!("\n\r")
     value.strip! unless value.blank?
     write_attribute(:key, value)
   end
