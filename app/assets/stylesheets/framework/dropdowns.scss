@@ -722,3 +722,48 @@
   @include set-invisible;
   overflow: hidden;
 }
+
+// TODO: change global style and remove mixin
+@mixin new-style-dropdown {
+  .dropdown-menu {
+    li {
+      padding: 0 1px;
+
+      &.dropdown-header {
+        padding: 8px 16px;
+      }
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+
+        &.is-active {
+          font-weight: inherit;
+
+          &::before {
+            top: 16px;
+          }
+        }
+      }
+    }
+
+    &.dropdown-menu-selectable {
+      li {
+        a {
+          padding: 8px 40px;
+
+          &.is-active::before {
+            left: 16px;
+          }
+        }
+      }
+    }
+  }
+}
