@@ -1,6 +1,6 @@
 module Boards
   class IssuesController < Boards::ApplicationController
-    include BoardsResponses
+    include EE::BoardsResponses
 
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
@@ -72,9 +72,9 @@ module Boards
     end
 
     def issue_params
-      params.require(:issue).
-        permit(:title, :milestone_id, :project_id).
-        merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
+      params.require(:issue)
+        .permit(:title, :milestone_id, :project_id)
+        .merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
     end
 
     def serialize_as_json(resource)

@@ -7,6 +7,8 @@ module EE
     extend ActiveSupport::Concern
 
     included do
+      has_many :boards
+
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
         state :started

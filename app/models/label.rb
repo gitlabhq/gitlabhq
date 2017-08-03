@@ -3,6 +3,9 @@ class Label < ActiveRecord::Base
   include Referable
   include Subscribable
 
+  # EE specific
+  prepend EE::Label
+
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
   LabelStruct = Struct.new(:title, :name)
@@ -36,7 +39,6 @@ class Label < ActiveRecord::Base
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
-  scope :on_group_boards, ->(group_id) { with_lists_and_board.where(boards: { group_id: group_id }) }
 
   def self.prioritized(project)
     joins(:priorities)

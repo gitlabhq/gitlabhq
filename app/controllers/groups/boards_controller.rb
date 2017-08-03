@@ -1,6 +1,6 @@
 class Groups::BoardsController < Groups::ApplicationController
   prepend EE::Boards::BoardsController
-  include BoardsResponses
+  include EE::BoardsResponses
 
   before_action :check_group_issue_boards_available!
   before_action :assign_endpoint_vars

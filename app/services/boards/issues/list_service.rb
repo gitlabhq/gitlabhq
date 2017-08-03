@@ -1,6 +1,8 @@
 module Boards
   module Issues
     class ListService < BaseService
+      prepend EE::Boards::Issues::ListService
+
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless movable_list? || closed_list?
@@ -45,8 +47,7 @@ module Boards
       end
 
       def set_parent
-        param_key = parent.is_a?(Group) ? :group_id : :project_id
-        params[param_key] = parent.id
+        params[:project_id] = @parent.id
       end
 
       def set_state

@@ -2,7 +2,7 @@ module BoardsHelper
   prepend EE::BoardsHelper
 
   def board
-     @board ||= @board || @boards.first
+    @board ||= @board || @boards.first
   end
 
   def board_data
@@ -20,9 +20,7 @@ module BoardsHelper
   end
 
   def build_issue_link_base
-    return project_issues_path(@project) unless @board.is_group_board?
-
-    "/#{@board.group.path}/:project_path/issues"
+    project_issues_path(@project)
   end
 
   def current_board_json
@@ -37,11 +35,7 @@ module BoardsHelper
   end
 
   def board_base_url
-    if @project
-      project_boards_path(@project)
-    elsif @group
-      group_boards_path(@group)
-    end
+    project_boards_path(@project)
   end
 
   def multiple_boards_available?
@@ -49,17 +43,11 @@ module BoardsHelper
   end
 
   def board_path(board)
-    @board_path ||= begin
-      if board.is_group_board?
-        group_board_path(current_board_parent, board)
-      else
-        project_board_path(current_board_parent, board)
-      end
-    end
+    @board_path ||= project_board_path(current_board_parent, board)
   end
 
   def current_board_parent
-    @current_board_parent ||= @project || @group
+    @current_board_parent ||= @project
   end
 
   def can_admin_issue?
@@ -72,8 +60,7 @@ module BoardsHelper
       list_labels_path: labels_filter_path(true),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
-      project_path: @project&.try(:path),
-      group_path: @group&.try(:path)
+      project_path: @project&.try(:path)
     }
   end
 
@@ -86,7 +73,6 @@ module BoardsHelper
       first_user: current_user&.username,
       current_user: 'true',
       project_id: @project&.try(:id),
-      group_id: @group&.try(:id),
       null_user: 'true',
       multi_select: 'true',
       'dropdown-header': dropdown_options[:data][:'dropdown-header'],

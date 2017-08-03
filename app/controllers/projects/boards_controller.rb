@@ -1,7 +1,7 @@
 class Projects::BoardsController < Projects::ApplicationController
   prepend EE::Boards::BoardsController
   include IssuableCollections
-  include BoardsResponses
+  include EE::BoardsResponses
 
   before_action :authorize_read_board!, only: [:index, :show]
   before_action :assign_endpoint_vars

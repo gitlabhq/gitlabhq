@@ -10,7 +10,7 @@ FactoryGirl.define do
       parent nil
     end
 
-    after(:build) do |board, evaluator|
+    after(:build, :stub) do |board, evaluator|
       if evaluator.group
         board.group = evaluator.group
       elsif evaluator.group_id
