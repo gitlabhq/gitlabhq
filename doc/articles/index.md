@@ -12,11 +12,6 @@ where they were originally published.
 
 ## Authentication
 
-<<<<<<< HEAD
-- **LDAP**
-  - [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md)
-  - [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md)
-=======
 Explore GitLab's supported [authentications methods](../topics/authentication/index.md):
 
 | Article title | Category | Publishing date |
@@ -42,7 +37,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/) | Technical overview | 2016/05/23 |
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017/05/15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016/03/10 |
->>>>>>> ce/master
 
 ## Git
 

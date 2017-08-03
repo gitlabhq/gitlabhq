@@ -51,22 +51,15 @@ Shortcuts to GitLab's most visited docs:
   - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
   - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
-<<<<<<< HEAD
-  - [Subgroups](user/group/subgroups/index.md): nest groups in subgroups.
-=======
   - [Subgroups](user/group/subgroups/index.md)
->>>>>>> ce/master
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
-<<<<<<< HEAD
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
 - **(EES/EEP)** [Contribution Analytics](analytics/contribution_analytics.md): See detailed statistics of projects' contributors.
-=======
->>>>>>> ce/master
 
 ### Repository
 
