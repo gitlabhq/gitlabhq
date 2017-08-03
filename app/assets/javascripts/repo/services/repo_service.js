@@ -19,7 +19,9 @@ const RepoService = {
   },
 
   getRaw(url) {
-    return axios.get(url);
+    return axios.get(url, {
+      transformResponse: [res => res],
+    });
   },
 
   buildParams(url = this.url) {
