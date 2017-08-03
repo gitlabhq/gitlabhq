@@ -15,10 +15,10 @@
             to enjoy GitLab Enterprise Edition Premium for 30 days.
           = form_for License.new, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
             = f.hidden_field :data, value: license_key
-            %a{ href: '#hide-license', class: 'hide-license', id: 'hide-license' }
+            %a#hide-license.hide-license{ href: '#hide-license' }
               Show license key
               = icon('chevron-down')
-            %a{ href: '#show-license', class: 'show-license', id: 'show-license' }
+            %a#show-license.show-license{ href: '#show-license' }
               Hide license key
               = icon('chevron-up')
             .well.trial-license-preview.prepend-top-15
