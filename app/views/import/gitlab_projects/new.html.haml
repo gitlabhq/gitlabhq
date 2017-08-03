@@ -5,7 +5,7 @@
   Import an exported GitLab project
 %hr
 
-= form_for import_gitlab_project_path, class: 'form-horizontal', multipart: true do |f|
+= form_for import_gitlab_project_path, class: 'form-horizontal import-project', multipart: true do |f|
   .row
     .form-group.col-xs-12.col-sm-6
       = f.label :namespace_id, class: 'label-light' do

@@ -7,7 +7,8 @@
 }
 
 .new_project,
-.edit-project {
+.edit-project,
+.import-project {
 
   .sharing-and-permissions {
     .header {
@@ -486,7 +487,7 @@ a.deploy-project-label {
       font-size: 24px;
     }
 
-    @media (max-width: $screen-md-max) {
+    @media (max-width: $screen-xs-max) {
       .btn-template-icon {
         display: inline-block;
         height: 14px;
@@ -514,53 +515,92 @@ a.deploy-project-label {
   }
 }
 
-.new-project-second-column {
-  padding-top: 30px;
+.create-project-options {
+  display: flex;
 
-  @media (min-width: $screen-lg-min) {
-    padding-top: 0;
+  @media (max-width: $screen-xs-max) {
+    display: block;
   }
 
-  &::before {
-    content: "OR";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    z-index: 10;
-    padding: 0 10px;
-    text-align: center;
-    background-color: $white-light;
-    color: $gray-darkest;
-    transform: translateX(-50%);
+  .first-column {
+    @media(min-width: $screen-xs-min) {
+      max-width: 50%;
+      width: 50%;
+    }
 
-    @media (min-width: $screen-lg-min) {
-      left: -30px;
-      top: 50%;
-      padding: 10px 0;
-      width: 20px;
-      line-height: 20px;
-      transform: translateY(-50%);
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
     }
   }
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    height: 1px;
-    background-color: $gray-darkest;
+  .second-column {
+    @media(min-width: $screen-xs-min) {
+      width: 50%;
+      flex: 1;
+      padding-left: 30px;
+      position: relative;
+    }
 
-    @media (min-width: $screen-lg-min) {
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+      padding-left: 0;
+      position: relative;
+    }
+
+    // Mobile
+    @media (max-width: $screen-xs-max) {
+      padding-top: 30px;
+    }
+
+    &::before {
+      content: "OR";
+      position: absolute;
+      left: 0px;
+      top: 40%;
+      z-index: 10;
+      padding: 8px 0;
+      text-align: center;
+      background-color: $white-light;
+      color: $gl-text-color-tertiary;
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: bold;;
+      line-height: 20px;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        left: 50%;
+        top: 10px;
+        transform: translateY(-50%);
+        padding: 0px 8px;
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: $border-color;
       bottom: 0;
-      left: -20px;
+      left: 0;
       right: auto;
       height: 100%;
       width: 1px;
+      top: 0;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 1px;
+        width: auto;
+      }
     }
   }
 }
+
 
 .project-stats {
   font-size: 0;
