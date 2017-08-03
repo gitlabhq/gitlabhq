@@ -22,7 +22,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "Respond to" do
     subject { repository }
 
-    it { is_expected.to respond_to(:raw) }
     it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
