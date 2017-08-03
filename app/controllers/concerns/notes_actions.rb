@@ -179,7 +179,7 @@ module NotesActions
   def set_polling_interval_header
     return unless noteable.is_a?(Issue)
 
-    Gitlab::PollingInterval.set_header(response, interval: 3_000)
+    Gitlab::PollingInterval.set_header(response, interval: 6_000)
   end
 
   def noteable

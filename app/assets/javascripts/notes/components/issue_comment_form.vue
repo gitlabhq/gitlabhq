@@ -1,5 +1,5 @@
 <script>
-  /* global Flash */
+  /* global Flash, Autosave */
 
   import { mapActions, mapGetters } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -7,6 +7,7 @@
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import eventHub from '../event_hub';
   import * as constants from '../constants';
+  import '../../autosave';
 
   export default {
     data() {
@@ -153,15 +154,17 @@
           }
         }
       },
+      initAutoSave() {
+        return new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id]);
+      },
     },
     mounted() {
-      eventHub.$on('issueStateChanged', (isClosed) => {
+      // jQuery is needed here because it is a custom event being dispatched with jQuery.
+      $(document).on('issuable:change', (e, isClosed) => {
         this.issueState = isClosed ? constants.CLOSED : constants.REOPENED;
       });
-    },
 
-    destroyed() {
-      eventHub.$off('issueStateChanged');
+      this.initAutoSave();
     },
   };
 </script>

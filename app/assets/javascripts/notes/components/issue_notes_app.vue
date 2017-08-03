@@ -4,7 +4,6 @@
   import { mapGetters, mapActions } from 'vuex';
   import store from '../stores/';
   import * as constants from '../constants';
-  import eventHub from '../event_hub';
   import issueNote from './issue_note.vue';
   import issueDiscussion from './issue_discussion.vue';
   import issueSystemNote from './issue_system_note.vue';
@@ -96,17 +95,6 @@
 
         this.poll();
       },
-      bindEventHubListeners() {
-        this.$el.parentElement.addEventListener('toggleAward', (event) => {
-          const { awardName, noteId } = event.detail;
-          this.actionToggleAward({ awardName, noteId });
-        });
-
-        // JQuery is needed here because it is a custom event being dispatched with jQuery.
-        $(document).on('issuable:change', (e, isClosed) => {
-          eventHub.$emit('issueStateChanged', isClosed);
-        });
-      },
       checkLocationHash() {
         const hash = gl.utils.getLocationHash();
         const $el = $(`#${hash}`);
@@ -125,7 +113,11 @@
     mounted() {
       this.fetchNotes();
       this.initPolling();
-      this.bindEventHubListeners();
+
+      this.$el.parentElement.addEventListener('toggleAward', (event) => {
+        const { awardName, noteId } = event.detail;
+        this.actionToggleAward({ awardName, noteId });
+      });
     },
   };
 </script>

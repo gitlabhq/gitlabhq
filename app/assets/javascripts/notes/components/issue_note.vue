@@ -39,7 +39,6 @@
         return {
           'is-editing': this.isEditing,
           'disabled-content': this.isDeleting,
-          //'js-my-note': this.author.id === this.currentUserId,
           target: this.targetNoteHash === this.noteAnchorId,
         };
       },

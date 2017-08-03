@@ -1,5 +1,5 @@
 <script>
-  /* global Flash */
+  /* global Flash, Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
@@ -11,6 +11,7 @@
   import issueNoteForm from './issue_note_form.vue';
   import placeholderNote from './issue_placeholder_note.vue';
   import placeholderSystemNote from './issue_placeholder_system_note.vue';
+  import '../../autosave';
 
   export default {
     props: {
@@ -107,6 +108,19 @@
           })
           .catch(() => Flash('Something went wrong while adding your reply. Please try again.'));
       },
+      initAutoSave() {
+        return new Autosave($(this.$refs.noteForm.$refs.textarea), ['Note', 'Issue', this.note.id]);
+      },
+    },
+    mounted() {
+      if (this.isReplying) {
+        this.initAutoSave();
+      }
+    },
+    updated() {
+      if (this.isReplying) {
+        this.initAutoSave();
+      }
     },
   };
 </script>

@@ -1,8 +1,10 @@
 <script>
+  /* global Autosave */
   import issueNoteEditedText from './issue_note_edited_text.vue';
   import issueNoteAwardsList from './issue_note_awards_list.vue';
   import issueNoteForm from './issue_note_form.vue';
   import TaskList from '../../task_list';
+  import '../../autosave';
 
   export default {
     props: {
@@ -49,13 +51,22 @@
       formCancelHandler(shouldConfirm, isDirty) {
         this.$emit('cancelFormEdition', shouldConfirm, isDirty);
       },
+      initAutoSave() {
+        return new Autosave($(this.$refs.noteForm.$refs.textarea), ['Note', 'Issue', this.note.id]);
+      },
     },
     mounted() {
       this.renderGFM();
       this.initTaskList();
+      if (this.isEditing) {
+        this.initAutoSave();
+      }
     },
     updated() {
       this.initTaskList();
+      if (this.isEditing) {
+        this.initAutoSave();
+      }
     },
   };
 </script>
