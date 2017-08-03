@@ -1,11 +1,13 @@
 module Github
   class Client
+    TIMEOUT = 60
+
     attr_reader :connection, :rate_limit
 
     def initialize(options)
       @connection = Faraday.new(url: options.fetch(:url, root_endpoint)) do |faraday|
-        faraday.options.open_timeout = options.fetch(:timeout, 60)
-        faraday.options.timeout = options.fetch(:timeout, 60)
+        faraday.options.open_timeout = options.fetch(:timeout, TIMEOUT)
+        faraday.options.timeout = options.fetch(:timeout, TIMEOUT)
         faraday.authorization 'token', options.fetch(:token)
         faraday.adapter :net_http
       end
