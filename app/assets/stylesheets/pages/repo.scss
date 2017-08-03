@@ -223,19 +223,8 @@
         padding: 0;
         border-top: none;
         background: $gray-light;
-        width: 190px;
+        width: 100%;
         display: inline-block;
-
-        &:hover {
-          .title {
-            width: 105px;
-          }
-
-          ul {
-            display: inline-block;
-          }
-
-        }
 
         .title {
           display: inline-block;
@@ -249,19 +238,6 @@
           text-overflow: ellipsis;
           vertical-align: middle;
           padding: 2px 16px;
-        }
-
-        ul {
-          display: none;
-          float: right;
-          margin: 0 10px 0 0;
-          padding: 1px 0;
-
-          li {
-            display: inline-block;
-            padding: 0 2px;
-            border-bottom: none;
-          }
         }
       }
 
