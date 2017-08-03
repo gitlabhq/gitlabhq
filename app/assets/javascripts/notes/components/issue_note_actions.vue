@@ -92,7 +92,7 @@
       data-position="right"
       href="#"
       title="Add reaction">
-        <loading-icon />
+        <loading-icon :inline="true" />
         <span
           v-html="emojiSmiling"
           class="link-highlight award-control-icon-neutral">

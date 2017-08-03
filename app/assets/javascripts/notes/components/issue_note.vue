@@ -39,7 +39,7 @@
         return {
           'is-editing': this.isEditing,
           'disabled-content': this.isDeleting,
-          'js-my-note': this.author.id === this.currentUserId,
+          //'js-my-note': this.author.id === this.currentUserId,
           target: this.targetNoteHash === this.noteAnchorId,
         };
       },
@@ -123,8 +123,7 @@
     class="note timeline-entry"
     :id="noteAnchorId"
     :class="classNameBindings"
-    :data-award-url="note.toggle_award_path"
-    :note-id="note.id">
+    :data-award-url="note.toggle_award_path">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
