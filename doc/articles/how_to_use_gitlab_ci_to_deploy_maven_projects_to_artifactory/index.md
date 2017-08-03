@@ -14,7 +14,7 @@ You'll create two different projects:
 - `simple-maven-dep`: the app built and deployed to Artifactory (available at https://gitlab.com/gitlab-examples/maven/simple-maven-dep)
 - `simple-maven-app`: the app using the previous one as a dependency (available at https://gitlab.com/gitlab-examples/maven/simple-maven-app)
 
-We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and GitLab CI/CD.
+We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/).
 We also assume that an Artifactory instance is available and reachable from the internet, and that you have valid credentials to deploy on it.
 
 ## Create the simple Maven dependency
@@ -82,7 +82,10 @@ and set a command line parameter in `.gitlab-ci.yml` to use the custom location 
 
 ### Configure GitLab CI/CD for `simple-maven-dep`
 
-Now it's time we set up GitLab CI/CD to automatically build, test and deploy the dependency!  
+Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) to automatically build, test and deploy the dependency!
+
+[GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
+that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](https://docs.gitlab.com/ee/ci/yaml/).
 
 First of all, remember to set up secret variables for your deployment. Navigate to your project's **Settings > Pipelines** page
 and add the following secret variables (replace them with your current values, of course):
@@ -189,11 +192,12 @@ Now you are ready to use the Artifactory repository to resolve dependencies and 
 
 ### Configure GitLab CI/CD for `simple-maven-app`
 
-You need a last step to have everything in place: configure `.gitlab-ci.yml`.
+You need a last step to have everything in place: configure the `.gitlab-ci.yml` file for this project, as you already did for `simple-maven-dep`.
 
-You want to build, test and run your awesome application, and see if you can get the greeting as expected!
+You want to leverage [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/) to automatically build, test and run your awesome application,
+and see if you can get the greeting as expected!
 
-Add the `.gitlab-ci.yml` to the repo:
+All you need to do is to add the following `.gitlab-ci.yml` to the repo:
 
 ```yaml
 image: maven:latest
@@ -228,6 +232,9 @@ run:
     - mvn $MAVEN_CLI_OPTS package
     - mvn $MAVEN_CLI_OPTS exec:java -Dexec.mainClass="com.example.app.App"
 ```
+
+It is very similar to the configuration used for `simple-maven-dep`, but instead of the `deploy` job there is a `run` job.
+Probably something that you don't want to use in real projects, but here it is useful to see the application automatically running.
 
 And that's it! In the `run` job output log you will find a friendly hello to GitLab!
 
