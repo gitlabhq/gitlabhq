@@ -58,7 +58,7 @@ describe RenameSystemNamespaces, truncate: true do
     end
 
     it "renames the route for projects of the namespace" do
-      project = build(:project, path: "project-path", namespace: system_namespace)
+      project = build(:project, :repository, path: "project-path", namespace: system_namespace)
       save_invalid_routable(project)
 
       migration.up
@@ -68,7 +68,7 @@ describe RenameSystemNamespaces, truncate: true do
 
     it "doesn't touch routes of namespaces that look like system" do
       namespace = create(:group, path: 'systemlookalike')
-      project = create(:project, namespace: namespace, path: 'the-project')
+      project = create(:project, :repository, namespace: namespace, path: 'the-project')
 
       migration.up
 
@@ -77,7 +77,7 @@ describe RenameSystemNamespaces, truncate: true do
     end
 
     it "moves the the repository for a project in the namespace" do
-      project = build(:project, namespace: system_namespace, path: "system-project")
+      project = build(:project, :repository, namespace: system_namespace, path: "system-project")
       save_invalid_routable(project)
       TestEnv.copy_repo(project,
                         bare_repo: TestEnv.factory_repo_path_bare,
@@ -105,7 +105,7 @@ describe RenameSystemNamespaces, truncate: true do
 
     describe "clears the markdown cache for projects in the system namespace" do
       let!(:project) do
-        project = build(:project, namespace: system_namespace)
+        project = build(:project, :repository, namespace: system_namespace)
         save_invalid_routable(project)
         project
       end
@@ -161,7 +161,7 @@ describe RenameSystemNamespaces, truncate: true do
       it "updates the route of the project correctly" do
         subgroup = build(:group, path: "subgroup", parent: system_namespace)
         save_invalid_routable(subgroup)
-        project = build(:project, path: "system0", namespace: subgroup)
+        project = build(:project, :repository, path: "system0", namespace: subgroup)
         save_invalid_routable(project)
 
         migration.up
@@ -174,7 +174,7 @@ describe RenameSystemNamespaces, truncate: true do
   describe "#move_repositories" do
     let(:namespace) { create(:group, name: "hello-group") }
     it "moves a project for a namespace" do
-      create(:project, namespace: namespace, path: "hello-project")
+      create(:project, :repository, namespace: namespace, path: "hello-project")
       expected_path = File.join(TestEnv.repos_path, "bye-group", "hello-project.git")
 
       migration.move_repositories(namespace, "hello-group", "bye-group")
@@ -184,7 +184,7 @@ describe RenameSystemNamespaces, truncate: true do
 
     it "moves a namespace in a subdirectory correctly" do
       child_namespace = create(:group, name: "sub-group", parent: namespace)
-      create(:project, namespace: child_namespace, path: "hello-project")
+      create(:project, :repository, namespace: child_namespace, path: "hello-project")
 
       expected_path = File.join(TestEnv.repos_path, "hello-group", "renamed-sub-group", "hello-project.git")
 
@@ -195,7 +195,7 @@ describe RenameSystemNamespaces, truncate: true do
 
     it "moves a parent namespace with subdirectories" do
       child_namespace = create(:group, name: "sub-group", parent: namespace)
-      create(:project, namespace: child_namespace, path: "hello-project")
+      create(:project, :repository, namespace: child_namespace, path: "hello-project")
       expected_path = File.join(TestEnv.repos_path, "renamed-group", "sub-group", "hello-project.git")
 
       migration.move_repositories(child_namespace, "hello-group", "renamed-group")

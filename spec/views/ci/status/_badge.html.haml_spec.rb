@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'ci/status/_badge' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :private) }
+  let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when rendering status for build' do

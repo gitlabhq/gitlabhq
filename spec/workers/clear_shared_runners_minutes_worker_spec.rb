@@ -12,7 +12,7 @@ describe ClearSharedRunnersMinutesWorker do
     subject { worker.perform }
 
     context 'when project statistics are defined' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:statistics) { project.statistics }
 
       before do

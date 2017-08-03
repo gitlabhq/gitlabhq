@@ -123,7 +123,7 @@ describe 'Git HTTP requests' do
 
     context "when requesting the Wiki" do
       let(:wiki) { ProjectWiki.new(project) }
-      let(:path) { "/#{wiki.repository.path_with_namespace}.git" }
+      let(:path) { "/#{wiki.repository.full_path}.git" }
 
       context "when the project is public" do
         let(:project) { create(:project, :repository, :public, :wiki_enabled) }
@@ -139,7 +139,7 @@ describe 'Git HTTP requests' do
             download(path) do |response|
               json_body = ActiveSupport::JSON.decode(response.body)
 
-              expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
+              expect(json_body['RepoPath']).to include(wiki.repository.full_path)
             end
           end
         end
@@ -222,7 +222,7 @@ describe 'Git HTTP requests' do
     end
 
     context "when the project exists" do
-      let(:path) { "#{project.path_with_namespace}.git" }
+      let(:path) { "#{project.full_path}.git" }
 
       context "when the project is public" do
         let(:project) { create(:project, :repository, :public) }
@@ -286,7 +286,7 @@ describe 'Git HTTP requests' do
         context 'when the request is not from gitlab-workhorse' do
           it 'raises an exception' do
             expect do
-              get("/#{project.path_with_namespace}.git/info/refs?service=git-upload-pack")
+              get("/#{project.full_path}.git/info/refs?service=git-upload-pack")
             end.to raise_error(JWT::DecodeError)
           end
         end
@@ -294,7 +294,7 @@ describe 'Git HTTP requests' do
         context 'when the repo is public' do
           context 'but the repo is disabled' do
             let(:project) { create(:project, :public, :repository, :repository_disabled) }
-            let(:path) { "#{project.path_with_namespace}.git" }
+            let(:path) { "#{project.full_path}.git" }
             let(:env) { {} }
 
             it_behaves_like 'pulls require Basic HTTP Authentication'
@@ -303,7 +303,7 @@ describe 'Git HTTP requests' do
 
           context 'but the repo is enabled' do
             let(:project) { create(:project, :public, :repository, :repository_enabled) }
-            let(:path) { "#{project.path_with_namespace}.git" }
+            let(:path) { "#{project.full_path}.git" }
             let(:env) { {} }
 
             it_behaves_like 'pulls are allowed'
@@ -421,7 +421,7 @@ describe 'Git HTTP requests' do
                   @token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api")
                 end
 
-                let(:path) { "#{project.path_with_namespace}.git" }
+                let(:path) { "#{project.full_path}.git" }
                 let(:env) { { user: 'oauth2', password: @token.token } }
 
                 it_behaves_like 'pulls are allowed'
@@ -431,7 +431,7 @@ describe 'Git HTTP requests' do
               context 'when user has 2FA enabled' do
                 let(:user) { create(:user, :two_factor) }
                 let(:access_token) { create(:personal_access_token, user: user) }
-                let(:path) { "#{project.path_with_namespace}.git" }
+                let(:path) { "#{project.full_path}.git" }
 
                 before do
                   project.team << [user, :master]
@@ -555,13 +555,13 @@ describe 'Git HTTP requests' do
             end
 
             context "when the user doesn't have access to the project" do
-              it "pulls get status 404 Not Found" do
+              it "pulls get status 404" do
                 download(path, user: user.username, password: user.password) do |response|
                   expect(response).to have_http_status(:not_found)
                 end
               end
 
-              it "uploads get status 404 Not Found" do
+              it "uploads get status 404" do
                 upload(path, user: user.username, password: user.password) do |response|
                   expect(response).to have_http_status(:not_found)
                 end
@@ -573,14 +573,14 @@ describe 'Git HTTP requests' do
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
           let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:empty_project) }
+          let(:other_project) { create(:project) }
 
           before do
             build.update!(project: project) # can't associate it on factory create
           end
 
           context 'when build created by system is authenticated' do
-            let(:path) { "#{project.path_with_namespace}.git" }
+            let(:path) { "#{project.full_path}.git" }
             let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
             it_behaves_like 'pulls are allowed'
@@ -602,7 +602,7 @@ describe 'Git HTTP requests' do
             # We are "authenticated" as CI using a valid token here. But we are
             # not authorized to see any other project, so return "not found".
             it "rejects pulls for other project with 404 Not Found" do
-              clone_get("#{other_project.path_with_namespace}.git", env)
+              clone_get("#{other_project.full_path}.git", env)
 
               expect(response).to have_http_status(:not_found)
               expect(response.body).to eq(git_access_error(:project_not_found))
@@ -616,13 +616,13 @@ describe 'Git HTTP requests' do
             end
 
             shared_examples 'can download code only' do
-              let(:path) { "#{project.path_with_namespace}.git" }
+              let(:path) { "#{project.full_path}.git" }
               let(:env) { { user: 'gitlab-ci-token', password: build.token } }
 
               it_behaves_like 'pulls are allowed'
 
               context 'when the repo does not exist' do
-                let(:project) { create(:empty_project) }
+                let(:project) { create(:project) }
 
                 it 'rejects pulls with 403 Forbidden' do
                   clone_get path, env
@@ -645,8 +645,8 @@ describe 'Git HTTP requests' do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 403 Forbidden' do
-                clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+              it 'downloads from other project get status 403' do
+                clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(:forbidden)
               end
@@ -657,8 +657,8 @@ describe 'Git HTTP requests' do
 
               it_behaves_like 'can download code only'
 
-              it 'downloads from other project get status 404 Not Found' do
-                clone_get "#{other_project.path_with_namespace}.git", user: 'gitlab-ci-token', password: build.token
+              it 'downloads from other project get status 404' do
+                clone_get "#{other_project.full_path}.git", user: 'gitlab-ci-token', password: build.token
 
                 expect(response).to have_http_status(:not_found)
               end
@@ -795,7 +795,7 @@ describe 'Git HTTP requests' do
         let(:project) { create(:project, :repository, :public, path: 'project.git-project') }
 
         context "GET info/refs" do
-          let(:path) { "/#{project.path_with_namespace}/info/refs" }
+          let(:path) { "/#{project.full_path}/info/refs" }
 
           context "when no params are added" do
             before do
@@ -803,7 +803,7 @@ describe 'Git HTTP requests' do
             end
 
             it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs")
+              expect(response).to redirect_to("/#{project.full_path}.git/info/refs")
             end
           end
 
@@ -815,7 +815,7 @@ describe 'Git HTTP requests' do
             end
 
             it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+              expect(response).to redirect_to("/#{project.full_path}.git/info/refs?service=#{params[:service]}")
             end
           end
 
@@ -827,7 +827,7 @@ describe 'Git HTTP requests' do
             end
 
             it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.path_with_namespace}.git/info/refs?service=#{params[:service]}")
+              expect(response).to redirect_to("/#{project.full_path}.git/info/refs?service=#{params[:service]}")
             end
           end
 
@@ -846,13 +846,13 @@ describe 'Git HTTP requests' do
 
         context "POST git-upload-pack" do
           it "fails to find a route" do
-            expect { clone_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+            expect { clone_post(project.full_path) }.to raise_error(ActionController::RoutingError)
           end
         end
 
         context "POST git-receive-pack" do
           it "fails to find a route" do
-            expect { push_post(project.path_with_namespace) }.to raise_error(ActionController::RoutingError)
+            expect { push_post(project.full_path) }.to raise_error(ActionController::RoutingError)
           end
         end
       end
@@ -868,7 +868,7 @@ describe 'Git HTTP requests' do
               Blob.decorate(Gitlab::Git::Blob.find(project.repository, 'master', 'bar/branch-test.txt'), project)
             end
 
-            get "/#{project.path_with_namespace}/blob/master/info/refs"
+            get "/#{project.full_path}/blob/master/info/refs"
           end
 
           it "returns the file" do
@@ -878,7 +878,7 @@ describe 'Git HTTP requests' do
 
         context "when the file does not exist" do
           before do
-            get "/#{project.path_with_namespace}/blob/master/info/refs"
+            get "/#{project.full_path}/blob/master/info/refs"
           end
 
           it "returns not found" do

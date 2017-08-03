@@ -5,7 +5,7 @@ FactoryGirl.define do
     ref 'master'
     active true
     description "pipeline schedule"
-    project factory: :empty_project
+    project
 
     trait :nightly do
       cron '0 1 * * *'

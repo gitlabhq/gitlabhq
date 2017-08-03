@@ -73,10 +73,7 @@ class UsersController < ApplicationController
   end
 
   def calendar
-    calendar = contributions_calendar
-    @activity_dates = calendar.activity_dates
-
-    render 'calendar', layout: false
+    render json: contributions_calendar.activity_dates
   end
 
   def calendar_activities

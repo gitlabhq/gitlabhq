@@ -79,6 +79,7 @@ class User < ActiveRecord::Base
     where(type.not_eq('DeployKey').or(type.eq(nil)))
   end, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :gpg_keys
 
   has_many :emails, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -160,6 +161,7 @@ class User < ActiveRecord::Base
   before_save :ensure_authentication_token, :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   after_save :ensure_namespace_correct
+  after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
   after_initialize :set_projects_limit
   after_destroy :post_destroy_hook
 
@@ -529,6 +531,10 @@ class User < ActiveRecord::Base
       Emails::DestroyService.new(self, email: email).execute
       Emails::CreateService.new(self, email: email_was).execute
     end
+  end
+
+  def update_invalid_gpg_signatures
+    gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
   # Returns the groups a user has access to

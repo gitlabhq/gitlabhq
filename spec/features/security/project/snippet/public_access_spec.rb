@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Public Project Snippets Access"  do
   include AccessMatchers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   let(:public_snippet)   { create(:project_snippet, :public,   project: project, author: project.owner) }
   let(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }

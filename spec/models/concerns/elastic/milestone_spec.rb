@@ -12,7 +12,7 @@ describe Milestone, elastic: true do
   end
 
   it "searches milestones" do
-    project = create :empty_project
+    project = create :project
 
     Sidekiq::Testing.inline! do
       create :milestone, title: 'bla-bla term1', project: project

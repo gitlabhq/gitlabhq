@@ -56,15 +56,13 @@ Learn more on the [Multiple Assignees documentation](multiple_assignees_for_issu
 
 - Select a [milestone](../milestones/index.md) to attribute that issue to.
 
-#### 5. Time Tracking (EES/EEP)
-
-This feature is available only in [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/).
+#### 5. Time Tracking
 
 - Estimate time: add an estimate time in which the issue will be implemented
 - Spend: add the time spent on the implementation of that issue
 
 > **Note:**
-both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
+Both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
 
 Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.md).
 

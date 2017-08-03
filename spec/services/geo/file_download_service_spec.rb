@@ -42,7 +42,7 @@ describe Geo::FileDownloadService do
     end
 
     context 'project avatar' do
-      let(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
 
       subject { described_class.new(:avatar, upload.id) }
@@ -74,7 +74,7 @@ describe Geo::FileDownloadService do
     end
 
     context 'with file upload' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
 
       subject { described_class.new(:file, upload.id) }

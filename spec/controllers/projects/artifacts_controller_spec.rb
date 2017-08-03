@@ -65,26 +65,61 @@ describe Projects::ArtifactsController do
   end
 
   describe 'GET raw' do
+    subject { get(:raw, namespace_id: project.namespace, project_id: project, job_id: job, path: path) }
+
     context 'when the file exists' do
-      it 'serves the file using workhorse' do
-        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
+      let(:path) { 'ci_artifacts.txt' }
+      let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline, artifacts_file_store: store, artifacts_metadata_store: store) }
 
-        send_data = response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+      shared_examples 'a valid file' do
+        it 'serves the file using workhorse' do
+          subject
 
-        expect(send_data).to start_with('artifacts-entry:')
+          expect(send_data).to start_with('artifacts-entry:')
 
-        base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
-        params = JSON.parse(Base64.urlsafe_decode64(base64_params))
+          expect(params.keys).to eq(%w(Archive Entry))
+          expect(params['Archive']).to start_with(archive_path)
+          # On object storage, the URL can end with a query string
+          expect(params['Archive']).to match(/build_artifacts.zip(\?[^?]+)?$/)
+          expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+        end
 
-        expect(params.keys).to eq(%w(Archive Entry))
-        expect(params['Archive']).to end_with('build_artifacts.zip')
-        expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
+        def send_data
+          response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+        end
+
+        def params
+          @params ||= begin
+            base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
+            JSON.parse(Base64.urlsafe_decode64(base64_params))
+          end
+        end
+      end
+
+      context 'when using local file storage' do
+        it_behaves_like 'a valid file' do
+          let(:store) { ObjectStoreUploader::LOCAL_STORE }
+          let(:archive_path) { ArtifactUploader.local_artifacts_store }
+        end
+      end
+
+      context 'when using remote file storage' do
+        before do
+          stub_artifacts_object_storage
+        end
+
+        it_behaves_like 'a valid file' do
+          let(:store) { ObjectStoreUploader::REMOTE_STORE }
+          let(:archive_path) { 'https://' }
+        end
       end
     end
 
     context 'when the file does not exist' do
+      let(:path) { 'unknown' }
+
       it 'responds Not Found' do
-        get :raw, namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown'
+        subject
 
         expect(response).to be_not_found
       end

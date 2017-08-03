@@ -530,7 +530,7 @@ namespace :gitlab do
         repo_dirs = user.authorized_projects.map do |p|
           File.join(
             p.repository_storage_path,
-            "#{p.path_with_namespace}.git"
+            "#{p.disk_path}.git"
           )
         end
 

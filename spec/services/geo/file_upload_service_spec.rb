@@ -53,7 +53,7 @@ describe Geo::FileUploadService do
     end
 
     context 'project avatar' do
-      let(:project) { create(:empty_project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+      let(:project) { create(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
       let(:upload) { Upload.find_by(model: project, uploader: 'AvatarUploader') }
       let(:params) { { id: upload.id, type: 'avatar' } }
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:avatar, upload) }
@@ -101,7 +101,7 @@ describe Geo::FileUploadService do
     end
 
     context 'file upload' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
       let(:params) { { id: upload.id, type: 'file' } }
       let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }

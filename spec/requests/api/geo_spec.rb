@@ -208,7 +208,7 @@ describe API::Geo do
 
   describe 'GET /geo/transfers/file/1' do
     let!(:secondary_node) { create(:geo_node) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
     let(:transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
     let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }

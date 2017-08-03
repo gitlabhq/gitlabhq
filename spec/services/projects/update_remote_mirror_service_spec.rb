@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateRemoteMirrorService do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:remote_project) { create(:forked_project_with_submodules) }
   let(:repository) { project.repository }
   let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true) }

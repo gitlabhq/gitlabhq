@@ -37,7 +37,7 @@ describe FixWronglyRenamedRoutes, truncate: true do
   describe '#routes_in_namespace_query' do
     it 'includes only the required routes' do
       namespace = create(:group, path: 'hello')
-      project = create(:empty_project, namespace: namespace)
+      project = create(:project, namespace: namespace)
       _other_namespace = create(:group, path: 'hello0')
 
       result = Route.where(subject.routes_in_namespace_query('hello'))
@@ -48,7 +48,7 @@ describe FixWronglyRenamedRoutes, truncate: true do
 
   describe '#up' do
     let(:broken_project) do
-      project = create(:empty_project, namespace: broken_namespace, path: 'broken-project')
+      project = create(:project, namespace: broken_namespace, path: 'broken-project')
       project.route.update_attribute(:path, 'api0is/broken-project')
       project
     end

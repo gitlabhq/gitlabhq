@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::RepositoryDeletedEventStore do
-  let(:project) { create(:empty_project, path: 'bar') }
+  let(:project) { create(:project, path: 'bar') }
   let!(:project_id) { project.id }
   let!(:project_name) { project.name }
   let!(:repo_path) { project.full_path }

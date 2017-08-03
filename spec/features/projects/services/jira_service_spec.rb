@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Setup Jira service', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:service) { project.create_jira_service }
 
   let(:url) { 'http://jira.example.com' }
@@ -62,7 +62,7 @@ feature 'Setup Jira service', :js do
         click_button('Test settings and save changes')
         wait_for_requests
 
-        expect(find('.flash-container-page')).to have_content 'Test failed.'
+        expect(find('.flash-container-page')).to have_content 'Test failed. message'
         expect(find('.flash-container-page')).to have_content 'Save anyway'
 
         find('.flash-alert .flash-action').trigger('click')

@@ -35,7 +35,7 @@ describe Project do
   describe "#execute_hooks" do
     context "group hooks" do
       let(:group) { create(:group) }
-      let(:project) { create(:empty_project, namespace: group) }
+      let(:project) { create(:project, namespace: group) }
       let(:group_hook) { create(:group_hook, group: group, push_events: true) }
 
       it 'executes the hook when the feature is enabled' do
@@ -198,7 +198,7 @@ describe Project do
 
   describe '#mirror_waiting_duration' do
     it 'returns in seconds the time spent in the queue' do
-      project = create(:empty_project, :mirror, :import_scheduled)
+      project = create(:project, :mirror, :import_scheduled)
       mirror_data = project.mirror_data
 
       mirror_data.update_attributes(last_update_started_at: mirror_data.last_update_scheduled_at + 5.minutes)
@@ -209,7 +209,7 @@ describe Project do
 
   describe '#mirror_update_duration' do
     it 'returns in seconds the time spent updating' do
-      project = create(:empty_project, :mirror, :import_started)
+      project = create(:project, :mirror, :import_started)
 
       project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
 
@@ -218,7 +218,7 @@ describe Project do
   end
 
   describe '#has_remote_mirror?' do
-    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    let(:project) { create(:project, :remote_mirror, :import_started) }
     subject { project.has_remote_mirror? }
 
     before do
@@ -243,7 +243,7 @@ describe Project do
   end
 
   describe '#update_remote_mirrors' do
-    let(:project) { create(:empty_project, :remote_mirror, :import_started) }
+    let(:project) { create(:project, :remote_mirror, :import_started) }
     delegate :update_remote_mirrors, to: :project
 
     before do
@@ -274,7 +274,7 @@ describe Project do
   end
 
   describe '#any_runners_limit' do
-    let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
+    let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
     let(:shared_runner) { create(:ci_runner, :shared) }
 
@@ -296,7 +296,7 @@ describe Project do
       context 'with used pipeline minutes' do
         let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
         let(:project) do
-          create(:empty_project,
+          create(:project,
             namespace: namespace,
             shared_runners_enabled: shared_runners_enabled)
         end
@@ -314,7 +314,7 @@ describe Project do
     context 'with used pipeline minutes' do
       let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
       let(:project) do
-        create(:empty_project,
+        create(:project,
           namespace: namespace,
           shared_runners_enabled: true)
       end
@@ -330,7 +330,7 @@ describe Project do
   end
 
   describe '#shared_runners_minutes_limit_enabled?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.shared_runners_minutes_limit_enabled? }
 
@@ -379,7 +379,7 @@ describe Project do
   end
 
   describe '#size_limit_enabled?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when repository_size_limit is not configured' do
       it 'is disabled' do
@@ -424,7 +424,7 @@ describe Project do
     let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:namespace) { create(:namespace) }
 
-    subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
+    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
 
     before do
       allow(::Gitlab).to receive(:com?).and_return(true)
@@ -459,7 +459,7 @@ describe Project do
   end
 
   describe '#service_desk_address' do
-    let(:project) { create(:empty_project, service_desk_enabled: true) }
+    let(:project) { create(:project, service_desk_enabled: true) }
 
     before do
       allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
@@ -473,7 +473,7 @@ describe Project do
   end
 
   describe '#secret_variables_for' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     let!(:secret_variable) do
       create(:ci_variable, value: 'secret', project: project)
@@ -724,7 +724,7 @@ describe Project do
       { ff: false, rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge }
     ].each do |spec|
       context spec.inspect do
-        let(:project) { build(:empty_project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
+        let(:project) { build(:project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
         let(:spec) { spec }
 
         subject { project.merge_method }
@@ -752,15 +752,7 @@ describe Project do
       it 'logs the Geo::RepositoryRenamedEvent' do
         stub_container_registry_config(enabled: false)
 
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-          .and_return(true)
-
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-          .and_return(true)
+        allow(gitlab_shell).to receive(:mv_repository).twice.and_return(true)
 
         expect(Geo::RepositoryRenamedEventStore).to receive(:new)
           .with(instance_of(described_class), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")

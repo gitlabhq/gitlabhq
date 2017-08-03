@@ -107,9 +107,9 @@ _The artifacts are stored by default in
 
     ```ruby
     gitlab_rails['artifacts_enabled'] = true
-    gitlab_rails['artifacts']['object_store_enabled'] = false
-    gitlab_rails['artifacts']['object_store_directory'] = "artifacts"
-    gitlab_rails['artifacts']['object_store_connection'] = {
+    gitlab_rails['artifacts_object_store_enabled'] = true
+    gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
+    gitlab_rails['artifacts_object_store_connection'] = {
       'provider' => 'AWS',
       'region' => 'eu-central-1',
       'aws_access_key_id' => 'AWS_ACCESS_KEY_ID',

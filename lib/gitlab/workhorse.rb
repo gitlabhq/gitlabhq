@@ -35,7 +35,10 @@ module Gitlab
                           when 'git_receive_pack'
                             Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                           when 'git_upload_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            Gitlab::GitalyClient.feature_enabled?(
+                              :post_upload_pack,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+                            )
                           when 'info_refs'
                             true
                           else
@@ -123,8 +126,16 @@ module Gitlab
       end
 
       def send_artifacts_entry(build, entry)
+        file = build.artifacts_file
+        archive = 
+          if file.file_storage?
+            file.path
+          else
+            file.url
+          end
+
         params = {
-          'Archive' => build.artifacts_file.path,
+          'Archive' => archive,
           'Entry' => Base64.encode64(entry.path)
         }
 

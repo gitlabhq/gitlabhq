@@ -393,7 +393,8 @@
 @media (max-width: $screen-xs) {
   .filter-dropdown-container {
     .dropdown-toggle,
-    .dropdown {
+    .dropdown,
+    .dropdown-menu {
       width: 100%;
     }
 

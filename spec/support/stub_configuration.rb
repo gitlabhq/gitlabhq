@@ -4,9 +4,9 @@ module StubConfiguration
 
     # Stubbing both of these because we're not yet consistent with how we access
     # current application settings
-    allow_any_instance_of(ApplicationSetting).to receive_messages(messages)
+    allow_any_instance_of(ApplicationSetting).to receive_messages(to_settings(messages))
     allow(Gitlab::CurrentSettings.current_application_settings)
-      .to receive_messages(messages)
+      .to receive_messages(to_settings(messages))
   end
 
   def stub_application_setting_on_object(object, messages)
@@ -25,23 +25,27 @@ module StubConfiguration
   end
 
   def stub_config_setting(messages)
-    allow(Gitlab.config.gitlab).to receive_messages(messages)
+    allow(Gitlab.config.gitlab).to receive_messages(to_settings(messages))
   end
 
   def stub_gravatar_setting(messages)
-    allow(Gitlab.config.gravatar).to receive_messages(messages)
+    allow(Gitlab.config.gravatar).to receive_messages(to_settings(messages))
   end
 
   def stub_incoming_email_setting(messages)
-    allow(Gitlab.config.incoming_email).to receive_messages(messages)
+    allow(Gitlab.config.incoming_email).to receive_messages(to_settings(messages))
   end
 
   def stub_mattermost_setting(messages)
-    allow(Gitlab.config.mattermost).to receive_messages(messages)
+    allow(Gitlab.config.mattermost).to receive_messages(to_settings(messages))
   end
 
   def stub_omniauth_setting(messages)
-    allow(Gitlab.config.omniauth).to receive_messages(messages)
+    allow(Gitlab.config.omniauth).to receive_messages(to_settings(messages))
+  end
+
+  def stub_backup_setting(messages)
+    allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
   end
 
   private
@@ -62,6 +66,17 @@ module StubConfiguration
     keys.each do |key|
       predicate = key + '?'
       messages[predicate.to_sym] = messages[key.to_sym]
+    end
+  end
+
+  # Support nested hashes by converting all values into Settingslogic objects
+  def to_settings(hash)
+    hash.transform_values do |value|
+      if value.is_a? Hash
+        Settingslogic.new(value.deep_stringify_keys)
+      else
+        value
+      end
     end
   end
 end

@@ -319,6 +319,15 @@ module Gitlab
         end
       end
 
+      # Get the gpg signature of this commit.
+      #
+      # Ex.
+      #   commit.signature(repo)
+      #
+      def signature(repo)
+        Rugged::Commit.extract_signature(repo.rugged, sha)
+      end
+
       def stats
         Gitlab::Git::CommitStats.new(self)
       end
@@ -327,7 +336,7 @@ module Gitlab
         begin
           raw_commit.to_mbox(options)
         rescue Rugged::InvalidError => ex
-          if ex.message =~ /Commit \w+ is a merge commit/
+          if ex.message =~ /commit \w+ is a merge commit/i
             'Patch format is not currently supported for merge commits.'
           end
         end

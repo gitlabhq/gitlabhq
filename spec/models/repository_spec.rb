@@ -300,7 +300,7 @@ describe Repository do
     end
 
     context "when committing to another project" do
-      let(:forked_project) { create(:project) }
+      let(:forked_project) { create(:project, :repository) }
 
       it "creates a fork and commit to the forked project" do
         expect do
@@ -515,7 +515,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
@@ -543,7 +543,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
 
       results = repository.search_files_by_name('test', 'master')
 
@@ -942,7 +942,7 @@ describe Repository do
       end
 
       it 'expires creation and branch cache' do
-        empty_repository = create(:empty_project, :empty_repo).repository
+        empty_repository = create(:project, :empty_repo).repository
 
         expect(empty_repository).to receive(:expire_exists_cache)
         expect(empty_repository).to receive(:expire_root_ref_cache)
@@ -962,7 +962,7 @@ describe Repository do
     end
 
     it 'returns false if no full path can be constructed' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
@@ -1422,8 +1422,8 @@ describe Repository do
 
     describe "class method find_commits_by_message_with_elastic" do
       it "returns commits" do
-        project = create :project
-        project1 = create :project
+        project = create :project, :repository
+        project1 = create :project, :repository
 
         project.repository.index_commits
         project1.repository.index_commits
@@ -1438,7 +1438,7 @@ describe Repository do
 
     describe "find_commits_by_message_with_elastic" do
       it "returns commits" do
-        project = create :project
+        project = create :project, :repository
 
         project.repository.index_commits
 
@@ -1860,7 +1860,7 @@ describe Repository do
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
-        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.push_remote_branches('remote_name', ['branch'])
     end
@@ -1869,7 +1869,7 @@ describe Repository do
   describe '#delete_remote_branches' do
     it 'delete branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
-        .with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
+        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.delete_remote_branches('remote_name', ['branch'])
     end
@@ -1888,7 +1888,7 @@ describe Repository do
       masterrev = repository.find_branch('master').dereferenced_target.id
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags)
-        .with(repository.storage_path, repository.path_with_namespace, 'upstream')
+        .with(repository.storage_path, repository.disk_path, 'upstream')
         .and_return({ 'v0.0.1' => masterrev })
 
       tags = repository.remote_tags('upstream')
@@ -1949,7 +1949,7 @@ describe Repository do
   end
 
   describe '#commit_count_for_ref' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     context 'with a non-existing repository' do
       it 'returns 0' do

@@ -19,14 +19,14 @@ feature 'Ref switcher', js: true do
       input.set 'binary'
       wait_for_requests
 
-      expect(find('.dropdown-content ul')).to have_selector('li', count: 6)
+      expect(find('.dropdown-content ul')).to have_selector('li', count: 7)
 
       page.within '.dropdown-content ul' do
         input.native.send_keys :enter
       end
     end
 
-    expect(page).to have_title 'binary-encoding'
+    expect(page).to have_title 'add-pdf-text-binary'
   end
 
   it "user selects ref with special characters" do

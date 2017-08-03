@@ -50,7 +50,7 @@ describe ForkedProjectLink, "add link on fork" do
   end
 
   describe '#forked?' do
-    let(:project_to) { create(:project, forked_project_link: forked_project_link) }
+    let(:project_to) { create(:project, :repository, forked_project_link: forked_project_link) }
     let(:forked_project_link) { create(:forked_project_link) }
 
     before do

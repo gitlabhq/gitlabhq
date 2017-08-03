@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GeoRepositoryDestroyWorker do
   let!(:project) { create :project_empty_repo }
-  let!(:path) { project.repository.path_with_namespace }
+  let!(:path) { project.repository.full_path }
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
   let(:perform!) { subject.perform(project.id, project.name, path) }
 
@@ -29,7 +29,7 @@ describe GeoRepositoryDestroyWorker do
 
   describe '#probe_repository_storage' do
     it 'returns a repository_storage when repository can be found' do
-      expect(subject.send(:probe_repository_storage, project.path_with_namespace)).to eq('default')
+      expect(subject.send(:probe_repository_storage, project.full_path)).to eq('default')
     end
 
     it 'returns nil when repository cannot be found in any existing repository_storage' do

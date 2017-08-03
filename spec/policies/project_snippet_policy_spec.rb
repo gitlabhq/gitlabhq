@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ProjectSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   let(:author_permissions) do
     [

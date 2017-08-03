@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ExportCsvWorker do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator: user) }
+  let(:project) { create(:project, creator: user) }
 
   def perform(params = {})
     described_class.new.perform(user.id, project.id, params)

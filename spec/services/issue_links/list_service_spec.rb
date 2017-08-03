@@ -38,7 +38,7 @@ describe IssueLinks::ListService do
       it 'ensures no N+1 queries are made' do
         control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
-        project = create :empty_project, :public
+        project = create :project, :public
         issue_x = create :issue, project: project
         issue_y = create :issue, project: project
         issue_z = create :issue, project: project
@@ -76,7 +76,7 @@ describe IssueLinks::ListService do
     end
 
     context 'referencing a public project issue' do
-      let(:public_project) { create :empty_project, :public }
+      let(:public_project) { create :project, :public }
       let(:issue_b) { create :issue, project: public_project }
 
       let!(:issue_link) do
@@ -158,7 +158,7 @@ describe IssueLinks::ListService do
 
       context 'user can admin related issues just on target project' do
         let(:user_role) { :guest }
-        let(:target_project) { create :empty_project }
+        let(:target_project) { create :project }
         let(:referenced_issue) { create :issue, project: target_project }
 
         it 'returns no destroy relation path' do
@@ -170,7 +170,7 @@ describe IssueLinks::ListService do
 
       context 'user can admin related issues just on source project' do
         let(:user_role) { :developer }
-        let(:target_project) { create :empty_project }
+        let(:target_project) { create :project }
         let(:referenced_issue) { create :issue, project: target_project }
 
         it 'returns no destroy relation path' do

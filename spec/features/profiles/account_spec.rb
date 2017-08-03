@@ -27,7 +27,7 @@ feature 'Profile > Account' do
     end
 
     context 'with a project' do
-      given!(:project) { create(:empty_project, namespace: user.namespace) }
+      given!(:project) { create(:project, namespace: user.namespace) }
       given(:new_project_path) { "/#{new_username}/#{project.path}" }
       given(:old_project_path) { "/#{user.username}/#{project.path}" }
 

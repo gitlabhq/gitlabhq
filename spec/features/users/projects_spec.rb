@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe 'Projects tab on a user profile', :js do
   let(:user) { create(:user) }
-  let!(:project) { create(:empty_project, namespace: user.namespace) }
-  let!(:project2) { create(:empty_project, namespace: user.namespace) }
+  let!(:project) { create(:project, namespace: user.namespace) }
+  let!(:project2) { create(:project, namespace: user.namespace) }
 
   before do
     allow(Project).to receive(:default_per_page).and_return(1)

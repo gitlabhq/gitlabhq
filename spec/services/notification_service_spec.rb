@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe NotificationService do
-  include EmailHelpers
-
+describe NotificationService, :mailer do
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
@@ -14,7 +12,6 @@ describe NotificationService do
 
   shared_examples 'notifications for new mentions' do
     def send_notifications(*new_mentions)
-      reset_delivered_emails!
       notification.send(notification_method, mentionable, new_mentions, @u_disabled)
     end
 
@@ -93,6 +90,18 @@ describe NotificationService do
     end
   end
 
+  describe 'GpgKeys' do
+    describe '#new_gpg_key' do
+      let!(:key) { create(:gpg_key) }
+
+      it { expect(notification.new_gpg_key(key)).to be_truthy }
+
+      it 'sends email to key owner' do
+        expect{ notification.new_gpg_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+  end
+
   describe 'Email' do
     describe '#new_email' do
       let!(:email) { create(:email) }
@@ -107,7 +116,7 @@ describe NotificationService do
 
   describe 'Notes' do
     context 'issue note' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
@@ -125,11 +134,10 @@ describe NotificationService do
       describe '#new_note' do
         it do
           add_users_with_subscription(note.project, issue)
+          reset_delivered_emails!
 
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
-
-          reset_delivered_emails!
 
           notification.new_note(note)
 
@@ -153,8 +161,9 @@ describe NotificationService do
 
         it "emails the note author if they've opted into notifications about their activity" do
           add_users_with_subscription(note.project, issue)
-          note.author.notified_of_own_activity = true
           reset_delivered_emails!
+
+          note.author.notified_of_own_activity = true
 
           notification.new_note(note)
 
@@ -216,7 +225,7 @@ describe NotificationService do
     end
 
     context 'confidential issue note' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:author) { create(:user) }
       let(:assignee) { create(:user) }
       let(:non_member) { create(:user) }
@@ -248,7 +257,7 @@ describe NotificationService do
     end
 
     context 'issue note mention' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
@@ -291,7 +300,7 @@ describe NotificationService do
     end
 
     context 'project snippet note' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
       let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: snippet.project.id, note: '@all mentioned') }
 
@@ -452,8 +461,8 @@ describe NotificationService do
 
   describe 'Issues' do
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, :public, namespace: group) }
-    let(:another_project) { create(:empty_project, :public, namespace: group) }
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:another_project) { create(:project, :public, namespace: group) }
     let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant' }
 
     before do
@@ -854,7 +863,7 @@ describe NotificationService do
   describe 'Merge Requests' do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, :repository, namespace: group) }
-    let(:another_project) { create(:empty_project, :public, namespace: group) }
+    let(:another_project) { create(:project, :public, namespace: group) }
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
@@ -1200,7 +1209,7 @@ describe NotificationService do
   end
 
   describe 'Projects' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       build_team(project)
@@ -1261,7 +1270,7 @@ describe NotificationService do
 
   describe 'ProjectMember' do
     describe '#decline_group_invite' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:member) { create(:user) }
 
       before(:each) do
@@ -1279,7 +1288,7 @@ describe NotificationService do
   end
 
   context 'guest user in private project' do
-    let(:private_project) { create(:empty_project, :private) }
+    let(:private_project) { create(:project, :private) }
     let(:guest) { create(:user) }
     let(:developer) { create(:user) }
     let(:assignee) { create(:user) }

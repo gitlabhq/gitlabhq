@@ -66,7 +66,7 @@ class IrkerWorker
   end
 
   def send_new_branch(project, repo_name, committer, branch)
-    repo_path = project.path_with_namespace
+    repo_path = project.full_path
     newbranch = "#{Gitlab.config.gitlab.url}/#{repo_path}/branches"
     newbranch = "\x0302\x1f#{newbranch}\x0f" if @colors
 
@@ -109,7 +109,7 @@ class IrkerWorker
   end
 
   def send_commits_count(data, project, repo, committer, branch)
-    url = compare_url data, project.path_with_namespace
+    url = compare_url data, project.full_path
     commits = colorize_commits data['total_commits_count']
 
     new_commits = 'new commit'

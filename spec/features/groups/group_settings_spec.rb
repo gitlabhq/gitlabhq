@@ -74,7 +74,7 @@ feature 'Edit group settings' do
     end
 
     context 'with a project' do
-      given!(:project) { create(:empty_project, group: group) }
+      given!(:project) { create(:project, group: group) }
       given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'Milestone show' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:milestone) { create(:milestone, project: project) }
   let(:labels) { create_list(:label, 2, project: project) }
   let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone, labels: labels } }

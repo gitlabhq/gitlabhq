@@ -239,7 +239,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     describe 'confidential issues' do
-      let!(:public_project) { create(:empty_project, :public) }
+      let!(:public_project) { create(:project, :public) }
       let!(:context_group) { try(:group) }
       let!(:milestone) do
         context_group ? create(:milestone, group: context_group) : create(:milestone, project: public_project)

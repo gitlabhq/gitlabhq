@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :gitlab_license, class: "Gitlab::License" do
+    skip_create
+
     trait :trial do
       block_changes_at nil
       restrictions do

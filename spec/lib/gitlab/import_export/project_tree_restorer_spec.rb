@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       RSpec::Mocks.with_temporary_scope do
         @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
-        @project = create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end
@@ -178,7 +178,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
   context 'Light JSON' do
     let(:user) { create(:user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
-    let!(:project) { create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+    let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
 
@@ -210,7 +210,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     context 'with group' do
       let!(:project) do
-        create(:empty_project,
+        create(:project,
                :builds_disabled,
                :issues_disabled,
                name: 'project',

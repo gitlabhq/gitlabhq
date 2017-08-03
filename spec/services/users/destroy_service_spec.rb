@@ -5,7 +5,7 @@ describe Users::DestroyService do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
     let!(:namespace) { create(:namespace, owner: user) }
-    let!(:project)   { create(:empty_project, namespace: namespace) }
+    let!(:project)   { create(:project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
@@ -66,7 +66,7 @@ describe Users::DestroyService do
     end
 
     context "a deleted user's merge_requests" do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         project.add_developer(user)
@@ -177,7 +177,7 @@ describe Users::DestroyService do
       end
 
       it 'updates the mirror_user to one of the group owners' do
-        project = create(:empty_project, namespace_id: group.id, creator: group_owner, mirror_user: mirror_user)
+        project = create(:project, namespace_id: group.id, creator: group_owner, mirror_user: mirror_user)
         service.execute(mirror_user)
 
         expect(project.reload.mirror_user).to eq group_owner

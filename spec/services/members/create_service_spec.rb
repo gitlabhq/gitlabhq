@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Members::CreateService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:project_user) { create(:user) }
 

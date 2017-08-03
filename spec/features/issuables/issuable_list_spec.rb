@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'issuable list' do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]

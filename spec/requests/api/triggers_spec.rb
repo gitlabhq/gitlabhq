@@ -13,7 +13,7 @@ describe API::Triggers do
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger/pipeline' do
-    let!(:project2) { create(:project) }
+    let!(:project2) { create(:project, :repository) }
     let(:options) do
       {
         token: trigger_token
@@ -191,11 +191,14 @@ describe API::Triggers do
                 variables: { 'KEY' => 'VALUE' } }
             end
 
-            it 'forbids to create a pipeline' do
-              subject
+            it 'creates a new pipeline with a variable' do
+              expect { subject }.to change(Ci::Pipeline, :count)
+                                .and change(Ci::PipelineVariable, :count)
 
-              expect(response).to have_http_status(400)
-              expect(json_response['message']).to eq('400 Variables not supported')
+              expect(response).to have_http_status(201)
+              expect(Ci::Pipeline.last.source).to eq('pipeline')
+              expect(Ci::Pipeline.last.triggered_by_pipeline).not_to be_nil
+              expect(Ci::Pipeline.last.variables.map { |v| { v.key => v.value } }.last).to eq(params[:variables])
             end
           end
         end

@@ -1,72 +1,76 @@
-/* eslint-disable max-len, space-before-function-paren, no-underscore-dangle, consistent-return, comma-dangle, no-unused-vars, dot-notation, no-new, no-return-assign, camelcase, no-param-reassign, class-methods-use-this */
+import ActivityCalendar from './activity_calendar';
 
-/*
-UserTabs
+/**
+ * UserTabs
+ *
+ * Handles persisting and restoring the current tab selection and lazily-loading
+ * content on the Users#show page.
+ *
+ * ### Example Markup
+ *
+ * <ul class="nav-links">
+ *   <li class="activity-tab active">
+ *     <a data-action="activity" data-target="#activity" data-toggle="tab" href="/u/username">
+ *       Activity
+ *     </a>
+ *   </li>
+ *   <li class="groups-tab">
+ *     <a data-action="groups" data-target="#groups" data-toggle="tab" href="/u/username/groups">
+ *       Groups
+ *     </a>
+ *   </li>
+ *   <li class="contributed-tab">
+ *     ...
+ *   </li>
+ *   <li class="projects-tab">
+ *     ...
+ *   </li>
+ *   <li class="snippets-tab">
+ *     ...
+ *   </li>
+ * </ul>
+ *
+ * <div class="tab-content">
+ *   <div class="tab-pane" id="activity">
+ *     Activity Content
+ *   </div>
+ *   <div class="tab-pane" id="groups">
+ *     Groups Content
+ *   </div>
+ *   <div class="tab-pane" id="contributed">
+ *     Contributed projects content
+ *   </div>
+ *   <div class="tab-pane" id="projects">
+ *    Projects content
+ *   </div>
+ *   <div class="tab-pane" id="snippets">
+ *     Snippets content
+ *   </div>
+ * </div>
+ *
+ * <div class="loading-status">
+ *   <div class="loading">
+ *     Loading Animation
+ *   </div>
+ * </div>
+ */
 
-Handles persisting and restoring the current tab selection and lazily-loading
-content on the Users#show page.
-
-### Example Markup
-
-   <ul class="nav-links">
-     <li class="activity-tab active">
-       <a data-action="activity" data-target="#activity" data-toggle="tab" href="/u/username">
-         Activity
-       </a>
-     </li>
-     <li class="groups-tab">
-       <a data-action="groups" data-target="#groups" data-toggle="tab" href="/u/username/groups">
-         Groups
-       </a>
-     </li>
-     <li class="contributed-tab">
-       <a data-action="contributed" data-target="#contributed" data-toggle="tab" href="/u/username/contributed">
-         Contributed projects
-       </a>
-     </li>
-     <li class="projects-tab">
-       <a data-action="projects" data-target="#projects" data-toggle="tab" href="/u/username/projects">
-         Personal projects
-       </a>
-     </li>
-    <li class="snippets-tab">
-       <a data-action="snippets" data-target="#snippets" data-toggle="tab" href="/u/username/snippets">
-       </a>
-     </li>
-   </ul>
-
-   <div class="tab-content">
-     <div class="tab-pane" id="activity">
-       Activity Content
-     </div>
-     <div class="tab-pane" id="groups">
-       Groups Content
-     </div>
-     <div class="tab-pane" id="contributed">
-       Contributed projects content
-     </div>
-     <div class="tab-pane" id="projects">
-      Projects content
-     </div>
-     <div class="tab-pane" id="snippets">
-       Snippets content
-     </div>
+const CALENDAR_TEMPLATE = `
+  <div class="clearfix calendar">
+    <div class="js-contrib-calendar"></div>
+    <div class="calendar-hint">
+      Summary of issues, merge requests, push events, and comments
+    </div>
   </div>
-
-   <div class="loading-status">
-     <div class="loading">
-      Loading Animation
-     </div>
-   </div>
-*/
+`;
 
 export default class UserTabs {
-  constructor ({ defaultAction, action, parentEl }) {
+  constructor({ defaultAction, action, parentEl }) {
     this.loaded = {};
     this.defaultAction = defaultAction || 'activity';
     this.action = action || this.defaultAction;
     this.$parentEl = $(parentEl) || $(document);
-    this._location = window.location;
+    this.windowLocation = window.location;
     this.$parentEl.find('.nav-links a')
       .each((i, navLink) => {
         this.loaded[$(navLink).attr('data-action')] = false;
@@ -82,12 +86,10 @@ export default class UserTabs {
   }
 
   bindEvents() {
-    this.changeProjectsPageWrapper = this.changeProjectsPage.bind(this);
-
-    this.$parentEl.off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
-      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event));
-
-    this.$parentEl.on('click', '.gl-pagination a', this.changeProjectsPageWrapper);
+    this.$parentEl
+      .off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
+      .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event))
+      .on('click', '.gl-pagination a', event => this.changeProjectsPage(event));
   }
 
   changeProjectsPage(e) {
@@ -122,7 +124,7 @@ export default class UserTabs {
 
     const loadableActions = ['groups', 'contributed', 'projects', 'snippets'];
     if (loadableActions.indexOf(action) > -1) {
-      return this.loadTab(action, endpoint);
+      this.loadTab(action, endpoint);
     }
   }
 
@@ -131,25 +133,38 @@ export default class UserTabs {
       beforeSend: () => this.toggleLoading(true),
       complete: () => this.toggleLoading(false),
       dataType: 'json',
-      type: 'GET',
       url: endpoint,
       success: (data) => {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
         this.loaded[action] = true;
-        return gl.utils.localTimeAgo($('.js-timeago', tabSelector));
-      }
+        gl.utils.localTimeAgo($('.js-timeago', tabSelector));
+      },
     });
   }
 
   loadActivities() {
-    if (this.loaded['activity']) {
+    if (this.loaded.activity) {
       return;
     }
     const $calendarWrap = this.$parentEl.find('.user-calendar');
-    $calendarWrap.load($calendarWrap.data('href'));
+    const calendarPath = $calendarWrap.data('calendarPath');
+    const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
+
+    $.ajax({
+      dataType: 'json',
+      url: calendarPath,
+      success: (activityData) => {
+        $calendarWrap.html(CALENDAR_TEMPLATE);
+
+        // eslint-disable-next-line no-new
+        new ActivityCalendar('.js-contrib-calendar', activityData, calendarActivitiesPath);
+      },
+    });
+
+    // eslint-disable-next-line no-new
     new gl.Activities();
-    return this.loaded['activity'] = true;
+    this.loaded.activity = true;
   }
 
   toggleLoading(status) {
@@ -158,13 +173,13 @@ export default class UserTabs {
   }
 
   setCurrentAction(source) {
-    let new_state = source;
-    new_state = new_state.replace(/\/+$/, '');
-    new_state += this._location.search + this._location.hash;
+    let newState = source;
+    newState = newState.replace(/\/+$/, '');
+    newState += this.windowLocation.search + this.windowLocation.hash;
     history.replaceState({
-      url: new_state
-    }, document.title, new_state);
-    return new_state;
+      url: newState,
+    }, document.title, newState);
+    return newState;
   }
 
   getCurrentAction() {
