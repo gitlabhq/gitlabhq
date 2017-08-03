@@ -36,7 +36,7 @@ module Geo
       end
     end
 
-   def try_obtain_lease
+    def try_obtain_lease
       lease = exclusive_lease.try_obtain
 
       unless lease
