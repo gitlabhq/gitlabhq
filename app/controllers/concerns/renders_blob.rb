@@ -1,7 +1,7 @@
 module RendersBlob
   extend ActiveSupport::Concern
 
-  def render_blob_json(blob)
+  def blob_json(blob)
     viewer =
       case params[:viewer]
       when 'rich'
@@ -11,27 +11,19 @@ module RendersBlob
       else
         blob.simple_viewer
       end
-    
-    return render_404 unless viewer
 
-    if blob.binary?
-      render json: {
-        binary: true,
-        mime_type: blob.mime_type,
-        name: blob.name,
-        extension: blob.extension,
-        size: blob.raw_size
-      }
-    else
-      render json: {
-        html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false),
-        plain: blob.data,
-        name: blob.name,
-        extension: blob.extension,
-        size: blob.raw_size,
-        mime_type: blob.mime_type
-      }
-    end
+    return unless viewer
+
+    {
+      html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false)
+    }
+  end
+
+  def render_blob_json(blob)
+    json = blob_json(blob)
+    return render_404 unless json
+
+    render json: json
   end
 
   def conditionally_expand_blob(blob)

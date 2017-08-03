@@ -4,7 +4,6 @@ class Projects::BlobController < Projects::ApplicationController
   include CreatesCommit
   include RendersBlob
   include ActionView::Helpers::SanitizeHelper
-  include ApplicationHelper
 
   # Raised when given an invalid file path
   InvalidPathError = Class.new(StandardError)
@@ -38,17 +37,32 @@ class Projects::BlobController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        assign_ref_vars
-
         environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
         @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
-        @last_commit = @repository.last_commit_for_path(@commit.id, tree.path) || @commit
+        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
 
-        show_new_repo? ? render('projects/tree/show') : render('show')
+        render 'show'
       end
 
       format.json do
-        render_blob_json(@blob)
+        json = blob_json(@blob)
+        return render_404 unless json
+
+        render json: json.merge(
+          path: blob.path,
+          name: blob.name,
+          extension: blob.extension,
+          size: blob.raw_size,
+          mime_type: blob.mime_type,
+          binary: blob.raw_binary?,
+          simple_viewer: blob.simple_viewer&.class&.partial_name,
+          rich_viewer: blob.rich_viewer&.class&.partial_name,
+          show_viewer_switcher: !!blob.show_viewer_switcher?,
+          raw_path: project_raw_path(project, @id),
+          blame_path: project_blame_path(project, @id),
+          commits_path: project_commits_path(project, @id),
+          permalink: project_blob_path(project, File.join(@commit.id, @path)),
+        )
       end
     end
   end
