@@ -72,7 +72,10 @@
       },
       editMyLastNote() {
         if (this.note === '') {
-          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion, this.currentUserId);
+          const lastNoteInDiscussion = this.getDiscussionLastNote(
+            this.discussion,
+            this.currentUserId,
+          );
 
           if (lastNoteInDiscussion) {
             eventHub.$emit('enterEditMode', {

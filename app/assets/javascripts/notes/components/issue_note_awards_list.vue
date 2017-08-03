@@ -52,10 +52,10 @@
       // We need to do this otherwise we will render the same emoji over and over again.
       groupedAwards() {
         const awards = this.awards.reduce((acc, award) => {
-          if (acc.hasOwnProperty(award.name)) {
+          if (Object.prototype.hasOwnProperty.call(acc, award.name)) {
             acc[award.name].push(award);
           } else {
-            Object.assign(acc, {[award.name]: [award]});
+            Object.assign(acc, { [award.name]: [award] });
           }
 
           return acc;
@@ -73,7 +73,7 @@
           delete awards.thumbsdown;
         }
 
-        return  Object.assign({}, orderedAwards, awards);
+        return Object.assign({}, orderedAwards, awards);
       },
       isAuthoredByMe() {
         return this.noteAuthorId === window.gon.current_user_id;
@@ -150,7 +150,7 @@
           endpoint: this.toggleAwardPath,
           noteId: this.noteId,
         // 100 emoji is a number. Callback for v-for click sends it as a string
-          awardName: awardName === "100" ? 100: awardName,
+          awardName: awardName === '100' ? 100 : awardName,
         };
 
         this.toggleAwardRequest(data)

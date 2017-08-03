@@ -5,16 +5,15 @@
     name: 'singInLinksNotes',
     computed: {
       ...mapGetters([
-        'getNotesDataByProp'
+        'getNotesDataByProp',
       ]),
       registerLink() {
-       return this.getNotesDataByProp('registerPath')
-
+        return this.getNotesDataByProp('registerPath');
       },
-      signInLink(){
+      signInLink() {
         return this.getNotesDataByProp('newSessionPath');
-      }
-    }
+      },
+    },
   };
 </script>
 

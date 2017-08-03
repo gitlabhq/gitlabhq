@@ -75,14 +75,14 @@
             });
         }
       },
-      formUpdateHandler(note) {
+      formUpdateHandler(noteText) {
         const data = {
           endpoint: this.note.path,
           note: {
             full_data: true,
             target_type: 'issue',
             target_id: this.note.noteable_id,
-            note: { note: note },
+            note: { note: noteText },
           },
         };
 

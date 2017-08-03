@@ -27,7 +27,7 @@
       userData: {
         type: Object,
         required: false,
-        default: {}
+        default: {},
       },
     },
     store,
@@ -89,7 +89,7 @@
               this.checkLocationHash();
             });
           })
-          .catch((error) => Flash('Something went wrong while fetching issue comments. Please try again.'));
+          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'));
       },
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
@@ -99,8 +99,7 @@
       bindEventHubListeners() {
         this.$el.parentElement.addEventListener('toggleAward', (event) => {
           const { awardName, noteId } = event.detail;
-          this.actionToggleAward({ awardName, noteId })
-
+          this.actionToggleAward({ awardName, noteId });
         });
 
         // JQuery is needed here because it is a custom event being dispatched with jQuery.
@@ -121,7 +120,7 @@
     created() {
       this.setNotesData(this.notesData);
       this.setIssueData(this.issueData);
-      this.setUserData(this.userData)
+      this.setUserData(this.userData);
     },
     mounted() {
       this.fetchNotes();

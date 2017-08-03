@@ -48,7 +48,7 @@
       },
       formCancelHandler(shouldConfirm, isDirty) {
         this.$emit('cancelFormEdition', shouldConfirm, isDirty);
-      }
+      },
     },
     mounted() {
       this.renderGFM();

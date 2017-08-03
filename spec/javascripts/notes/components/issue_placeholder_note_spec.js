@@ -1,16 +1,5 @@
-import Vue from 'vue';
-import placeholderNote from '~/notes/components/issue_placeholder_note.vue';
-
 describe('issue placeholder system note component', () => {
-  let mountComponent;
   beforeEach(() => {
-    const PlaceholderNote = Vue.extend(placeholderNote);
-
-    mountComponent = props => new PlaceholderNote({
-      propsData: {
-        note: props,
-      },
-    }).$mount();
   });
 
   describe('user information', () => {

@@ -37,7 +37,7 @@
         'getIssueData',
       ]),
       isLoggedIn() {
-        return this.getUserData === null ? false : true;
+        return this.getUserData !== null;
       },
       commentButtonTitle() {
         return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
@@ -64,7 +64,7 @@
       },
       canSubmit() {
         return !this.note.length || this.isSubmitting;
-      }
+      },
     },
     methods: {
       ...mapActions([

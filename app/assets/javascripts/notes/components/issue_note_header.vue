@@ -1,7 +1,6 @@
 <script>
   import { mapActions } from 'vuex';
   import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
-  import * as types from '../stores/mutation_types';
 
   export default {
     props: {
@@ -55,7 +54,7 @@
     },
     methods: {
       ...mapActions([
-        'setTargetNoteHash'
+        'setTargetNoteHash',
       ]),
       handleToggle() {
         this.isExpanded = !this.isExpanded;

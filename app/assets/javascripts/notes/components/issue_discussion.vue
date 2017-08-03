@@ -50,7 +50,7 @@
       },
       newNotePath() {
         return this.getIssueData.create_note_path;
-      }
+      },
     },
     methods: {
       ...mapActions([

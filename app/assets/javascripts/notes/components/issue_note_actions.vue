@@ -74,7 +74,7 @@
       },
       currentUserId() {
         return this.getUserDataByProp('id');
-      }
+      },
     },
   };
 </script>
