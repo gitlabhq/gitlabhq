@@ -98,7 +98,11 @@
                 if (res.errors.commands_only) {
                   this.discard();
                 } else {
-                  Flash('Something went wrong while adding your comment. Please try again.');
+                  Flash(
+                    'Something went wrong while adding your comment. Please try again.',
+                    'alert',
+                    $(this.$refs.commentForm),
+                  );
                 }
               } else {
                 this.discard();
@@ -168,7 +172,7 @@
     <ul
       v-if="isLoggedIn"
       class="notes notes-form timeline new-note">
-      <li class="timeline-entry">
+      <li class="timeline-entry" ref="commentForm">
         <div class="timeline-entry-inner">
           <div class="flash-container timeline-content"></div>
           <div class="timeline-icon hidden-xs hidden-sm">

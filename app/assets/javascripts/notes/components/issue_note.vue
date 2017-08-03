@@ -75,7 +75,7 @@
             });
         }
       },
-      formUpdateHandler(noteText) {
+      formUpdateHandler(noteText, parentElement) {
         const data = {
           endpoint: this.note.path,
           note: {
@@ -92,7 +92,11 @@
             // TODO: this could be moved down, by setting a prop
             $(this.$refs.noteBody.$el).renderGFM();
           })
-          .catch(() => Flash('Something went wrong while editing your comment. Please try again.'));
+          .catch(() => Flash(
+            'Something went wrong while editing your comment. Please try again.',
+            'alert',
+            $(parentElement),
+          ));
       },
       formCancelHandler(shouldConfirm, isDirty) {
         if (shouldConfirm && isDirty) {

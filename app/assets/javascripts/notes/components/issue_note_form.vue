@@ -68,7 +68,7 @@
     methods: {
       handleUpdate() {
         this.isSubmitting = true;
-        this.$emit('handleFormUpdate', this.note);
+        this.$emit('handleFormUpdate', this.note, this.$refs.editNoteForm);
       },
       editMyLastNote() {
         if (this.note === '') {
@@ -94,6 +94,7 @@
     },
     watch: {
       noteBody() {
+        debugger;
         if (this.note === this.initialNote) {
           this.note = this.noteBody;
         } else {
@@ -105,7 +106,7 @@
 </script>
 
 <template>
-  <div class="note-edit-form current-note-edit-form">
+  <div ref="editNoteForm" class="note-edit-form current-note-edit-form">
     <div
       v-if="conflictWhileEditing"
       class="js-conflict-edit-warning alert alert-danger">
@@ -116,6 +117,7 @@
         rel="noopener noreferrer">updated comment</a>
         to ensure information is not lost.
     </div>
+    <div class="flash-container timeline-content"></div>
     <form
       class="edit-note common-note-form">
       <markdown-field
