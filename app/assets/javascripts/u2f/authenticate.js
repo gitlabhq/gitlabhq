@@ -3,6 +3,8 @@
 /* global U2FError */
 /* global U2FUtil */
 
+import _ from 'underscore';
+
 // Authenticate U2F (universal 2nd factor) devices for users to authenticate with.
 //
 // State Flow #1: setup -> in_progress -> authenticated -> POST to server

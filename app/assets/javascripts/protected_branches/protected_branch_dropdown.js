@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default class ProtectedBranchDropdown {
   /**
    * @param {Object} options containing

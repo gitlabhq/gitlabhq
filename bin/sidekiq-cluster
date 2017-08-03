@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require_relative '../lib/gitlab/sidekiq_config'
 require_relative '../lib/gitlab/sidekiq_cluster'
 require_relative '../lib/gitlab/sidekiq_cluster/cli'
 
