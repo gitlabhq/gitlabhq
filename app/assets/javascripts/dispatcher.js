@@ -449,7 +449,6 @@ import initGroupAnalytics from './init_group_analytics';
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
 
-
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
             PathLocks.init(
               document.querySelector('.js-tree-content').dataset.pathLocksToggle,

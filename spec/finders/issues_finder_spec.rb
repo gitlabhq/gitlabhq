@@ -388,7 +388,7 @@ describe IssuesFinder do
       end
 
       context 'for an admin' do
-       let(:admin_user) { create(:user, :admin) }
+        let(:admin_user) { create(:user, :admin) }
 
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 

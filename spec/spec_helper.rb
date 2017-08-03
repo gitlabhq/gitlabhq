@@ -65,7 +65,6 @@ RSpec.configure do |config|
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
 
-
   config.infer_spec_type_from_file_location!
 
   config.define_derived_metadata(file_path: %r{/spec/requests/(ci/)?api/}) do |metadata|
