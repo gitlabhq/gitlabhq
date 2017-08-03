@@ -21,8 +21,8 @@
 = render 'projects/fork_suggestion'
 
 - if @project.feature_available?(:file_locks)
-  :javascript
-    PathLocks.init(
-      '#{toggle_project_path_locks_path(@project)}',
-      '#{@path}'
-    );
+  %script#js-file-lock{ type: "application/json" }
+    - data = {}
+    - data[:path] = @path
+    - data[:toggle_path] = toggle_project_path_locks_path(@project)
+    = data.to_json.html_safe
