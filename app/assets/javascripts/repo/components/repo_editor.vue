@@ -15,7 +15,7 @@ const RepoEditor = {
 
       const monacoInstance = this.monaco.editor.create(this.$el, {
         model: null,
-        readOnly: true,
+        readOnly: false,
         contextmenu: false,
       });
 

@@ -160,8 +160,6 @@ const RepoHelper = {
           Store.binaryMimeType = data.mime_type;
           // file might be undefined
           RepoHelper.setBinaryDataAsBase64(data);
-          const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
-          RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView()) {
           Service.getRaw(data.raw_path)
@@ -189,7 +187,10 @@ const RepoHelper = {
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
-    }).catch(RepoHelper.loadingError);
+    }).catch((e) => {
+      console.log(e)
+      RepoHelper.loadingError()
+    });
   },
 
   setFile(data, file) {
