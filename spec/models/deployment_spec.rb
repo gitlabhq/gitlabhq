@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Deployment, models: true do
+describe Deployment do
   subject { build(:deployment) }
 
   it { is_expected.to belong_to(:project) }
@@ -30,7 +30,7 @@ describe Deployment, models: true do
   end
 
   describe '#includes_commit?' do
-    let(:project)     { create(:project, :repository) }
+    let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) do
       create(:deployment, environment: environment, sha: project.commit.id)
@@ -90,6 +90,36 @@ describe Deployment, models: true do
     end
   end
 
+  describe '#additional_metrics' do
+    let(:project) { create(:project, :repository) }
+    let(:deployment) { create(:deployment, project: project) }
+
+    subject { deployment.additional_metrics }
+
+    context 'metrics are disabled' do
+      it { is_expected.to eq({}) }
+    end
+
+    context 'metrics are enabled' do
+      let(:simple_metrics) do
+        {
+          success: true,
+          metrics: {},
+          last_update: 42
+        }
+      end
+
+      let(:prometheus_service) { double('prometheus_service') }
+
+      before do
+        allow(project).to receive(:prometheus_service).and_return(prometheus_service)
+        allow(prometheus_service).to receive(:additional_deployment_metrics).and_return(simple_metrics)
+      end
+
+      it { is_expected.to eq(simple_metrics.merge({ deployment_time: deployment.created_at.to_i })) }
+    end
+  end
+
   describe '#stop_action' do
     let(:build) { create(:ci_build) }
 
@@ -102,7 +132,7 @@ describe Deployment, models: true do
     end
 
     context 'with other actions' do
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       context 'when matching action is defined' do
         let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_other_app') }
@@ -130,7 +160,7 @@ describe Deployment, models: true do
     context 'when matching action is defined' do
       let(:build) { create(:ci_build) }
       let(:deployment) { FactoryGirl.build(:deployment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, pipeline: build.pipeline, name: 'close_app', when: :manual) }
+      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
 
       it { is_expected.to be_truthy }
     end

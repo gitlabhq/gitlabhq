@@ -126,6 +126,7 @@ import '~/notes';
         const deferred = $.Deferred();
         spyOn($, 'ajax').and.returnValue(deferred.promise());
         spyOn(this.notes, 'revertNoteEditForm');
+        spyOn(this.notes, 'setupNewNote');
 
         $('.js-comment-button').click();
         deferred.resolve(noteEntity);
@@ -136,6 +137,46 @@ import '~/notes';
         this.notes.updateNote(updatedNote, $targetNote);
 
         expect(this.notes.revertNoteEditForm).toHaveBeenCalledWith($targetNote);
+        expect(this.notes.setupNewNote).toHaveBeenCalled();
+      });
+    });
+
+    describe('updateNoteTargetSelector', () => {
+      const hash = 'note_foo';
+      let $note;
+
+      beforeEach(() => {
+        $note = $(`<div id="${hash}"></div>`);
+        spyOn($note, 'filter').and.callThrough();
+        spyOn($note, 'toggleClass').and.callThrough();
+      });
+
+      it('sets target when hash matches', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(hash);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.filter).toHaveBeenCalledWith(`#${hash}`);
+        expect($note.toggleClass).toHaveBeenCalledWith('target', true);
+      });
+
+      it('unsets target when hash does not match', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
+      });
+
+      it('unsets target when there is not a hash fragment anymore', () => {
+        spyOn(gl.utils, 'getLocationHash');
+        gl.utils.getLocationHash.and.returnValue(null);
+
+        Notes.updateNoteTargetSelector($note);
+
+        expect($note.toggleClass).toHaveBeenCalledWith('target', false);
       });
     });
 
@@ -189,9 +230,13 @@ import '~/notes';
           Notes.isUpdatedNote.and.returnValue(true);
           const $note = $('<div>');
           $notesList.find.and.returnValue($note);
+          const $newNote = $(note.html);
+          Notes.animateUpdateNote.and.returnValue($newNote);
+
           Notes.prototype.renderNote.call(notes, note, null, $notesList);
 
           expect(Notes.animateUpdateNote).toHaveBeenCalledWith(note.html, $note);
+          expect(notes.setupNewNote).toHaveBeenCalledWith($newNote);
         });
 
         describe('while editing', () => {
@@ -378,6 +423,23 @@ import '~/notes';
       });
     });
 
+    describe('putEditFormInPlace', () => {
+      it('should call gl.GLForm with GFM parameter passed through', () => {
+        spyOn(gl, 'GLForm');
+
+        const $el = jasmine.createSpyObj('$form', ['find', 'closest']);
+        $el.find.and.returnValue($('<div>'));
+        $el.closest.and.returnValue($('<div>'));
+
+        Notes.prototype.putEditFormInPlace.call({
+          getEditFormSelector: () => '',
+          enableGFM: true
+        }, $el);
+
+        expect(gl.GLForm).toHaveBeenCalledWith(jasmine.any(Object), true);
+      });
+    });
+
     describe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
@@ -461,6 +523,90 @@ import '~/notes';
       });
     });
 
+    describe('postComment with Slash commands', () => {
+      const sampleComment = '/assign @root\n/award :100:';
+      const note = {
+        commands_changes: {
+          assignee_id: 1,
+          emoji_award: '100'
+        },
+        errors: {
+          commands_only: ['Commands applied']
+        },
+        valid: false
+      };
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        gl.awardsHandler = {
+          addAwardToEmojiBar: () => {},
+          scrollToAwards: () => {}
+        };
+        gl.GfmAutoComplete = {
+          dataSources: {
+            commands: '/root/test-project/autocomplete_sources/commands'
+          }
+        };
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').val(sampleComment);
+      });
+
+      it('should remove slash command placeholder when comment with slash commands is done posting', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();
+        $('.js-comment-button').click();
+
+        expect($notesContainer.find('.system-note.being-posted').length).toEqual(1); // Placeholder shown
+        deferred.resolve(note);
+        expect($notesContainer.find('.system-note.being-posted').length).toEqual(0); // Placeholder removed
+      });
+    });
+
+    describe('update comment with script tags', () => {
+      const sampleComment = '<script></script>';
+      const updatedComment = '<script></script>';
+      const note = {
+        id: 1234,
+        html: `<li class="note note-row-1234 timeline-entry" id="note_1234">
+                <div class="note-text">${sampleComment}</div>
+               </li>`,
+        note: sampleComment,
+        valid: true
+      };
+      let $form;
+      let $notesContainer;
+
+      beforeEach(() => {
+        this.notes = new Notes('', []);
+        window.gon.current_username = 'root';
+        window.gon.current_user_fullname = 'Administrator';
+        $form = $('form.js-main-target-form');
+        $notesContainer = $('ul.main-notes-list');
+        $form.find('textarea.js-note-text').html(sampleComment);
+      });
+
+      it('should not render a script tag', () => {
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
+        $('.js-comment-button').click();
+
+        deferred.resolve(note);
+        const $noteEl = $notesContainer.find(`#note_${note.id}`);
+        $noteEl.find('.js-note-edit').click();
+        $noteEl.find('textarea.js-note-text').html(updatedComment);
+        $noteEl.find('.js-comment-save-button').click();
+
+        const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`).find('.js-task-list-container');
+        expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
+      });
+    });
+
     describe('getFormData', () => {
       let $form;
       let sampleComment;
@@ -494,46 +640,46 @@ import '~/notes';
       });
     });
 
-    describe('hasSlashCommands', () => {
+    describe('hasQuickActions', () => {
       beforeEach(() => {
         this.notes = new Notes('', []);
       });
 
-      it('should return true when comment begins with a slash command', () => {
+      it('should return true when comment begins with a quick action', () => {
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeTruthy();
+        expect(hasQuickActions).toBeTruthy();
       });
 
-      it('should return false when comment does NOT begin with a slash command', () => {
+      it('should return false when comment does NOT begin with a quick action', () => {
         const sampleComment = 'Hey, /unassign Merging this';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeFalsy();
+        expect(hasQuickActions).toBeFalsy();
       });
 
-      it('should return false when comment does NOT have any slash commands', () => {
+      it('should return false when comment does NOT have any quick actions', () => {
         const sampleComment = 'Looking good, Awesome!';
-        const hasSlashCommands = this.notes.hasSlashCommands(sampleComment);
+        const hasQuickActions = this.notes.hasQuickActions(sampleComment);
 
-        expect(hasSlashCommands).toBeFalsy();
+        expect(hasQuickActions).toBeFalsy();
       });
     });
 
-    describe('stripSlashCommands', () => {
-      it('should strip slash commands from the comment which begins with a slash command', () => {
+    describe('stripQuickActions', () => {
+      it('should strip quick actions from the comment which begins with a quick action', () => {
         this.notes = new Notes();
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign Merging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('');
       });
 
-      it('should strip slash commands from the comment but leaves plain comment if it is present', () => {
+      it('should strip quick actions from the comment but leaves plain comment if it is present', () => {
         this.notes = new Notes();
         const sampleComment = '/wip\n/milestone %1.0\n/merge\n/unassign\nMerging this';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe('Merging this');
       });
@@ -541,14 +687,14 @@ import '~/notes';
       it('should NOT strip string that has slashes within', () => {
         this.notes = new Notes();
         const sampleComment = 'http://127.0.0.1:3000/root/gitlab-shell/issues/1';
-        const stripedComment = this.notes.stripSlashCommands(sampleComment);
+        const stripedComment = this.notes.stripQuickActions(sampleComment);
 
         expect(stripedComment).toBe(sampleComment);
       });
     });
 
-    describe('getSlashCommandDescription', () => {
-      const availableSlashCommands = [
+    describe('getQuickActionDescription', () => {
+      const availableQuickActions = [
         { name: 'close', description: 'Close this issue', params: [] },
         { name: 'title', description: 'Change title', params: [{}] },
         { name: 'estimate', description: 'Set time estimate', params: [{}] }
@@ -558,19 +704,19 @@ import '~/notes';
         this.notes = new Notes();
       });
 
-      it('should return executing slash command description when note has single slash command', () => {
+      it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
-        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying command to close this issue');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying command to close this issue');
       });
 
-      it('should return generic multiple slash command description when note has multiple slash commands', () => {
+      it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getSlashCommandDescription(sampleComment, availableSlashCommands)).toBe('Applying multiple commands');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying multiple commands');
       });
 
-      it('should return generic slash command description when available slash commands list is not populated', () => {
+      it('should return generic quick action description when available quick actions list is not populated', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getSlashCommandDescription(sampleComment)).toBe('Applying command');
+        expect(this.notes.getQuickActionDescription(sampleComment)).toBe('Applying command');
       });
     });
 

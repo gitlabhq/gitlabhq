@@ -15,7 +15,7 @@ module DiffHelper
   def diff_view
     @diff_view ||= begin
       diff_views = %w(inline parallel)
-      diff_view = cookies[:diff_view]
+      diff_view = params[:view] || cookies[:diff_view]
       diff_view = diff_views.first unless diff_views.include?(diff_view)
       diff_view.to_sym
     end
@@ -66,12 +66,12 @@ module DiffHelper
 
     discussions_left = discussions_right = nil
 
-    if left && (left.unchanged? || left.discussable?)
+    if left && left.discussable? && (left.unchanged? || left.removed?)
       line_code = diff_file.line_code(left)
       discussions_left = @grouped_diff_discussions[line_code]
     end
 
-    if right&.discussable?
+    if right && right.discussable? && right.added?
       line_code = diff_file.line_code(right)
       discussions_right = @grouped_diff_discussions[line_code]
     end
@@ -103,18 +103,18 @@ module DiffHelper
   end
 
   def diff_file_blob_raw_path(diff_file)
-    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.content_sha, diff_file.file_path))
+    project_raw_path(@project, tree_join(diff_file.content_sha, diff_file.file_path))
   end
 
   def diff_file_old_blob_raw_path(diff_file)
     sha = diff_file.old_content_sha
     return unless sha
-    namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.old_content_sha, diff_file.old_path))
+    project_raw_path(@project, tree_join(diff_file.old_content_sha, diff_file.old_path))
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
-      blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
+      blob_diff_path: project_blob_diff_path(project,
                                                        tree_join(diff_commit_id, diff_file_path)),
       view: diff_view
     }
@@ -122,6 +122,30 @@ module DiffHelper
 
   def editable_diff?(diff_file)
     !diff_file.deleted_file? && @merge_request && @merge_request.source_project
+  end
+
+  def diff_render_error_reason(viewer)
+    case viewer.render_error
+    when :too_large
+      "it is too large"
+    when :server_side_but_stored_externally
+      case viewer.diff_file.external_storage
+      when :lfs
+        'it is stored in LFS'
+      else
+        'it is stored externally'
+      end
+    end
+  end
+
+  def diff_render_error_options(viewer)
+    diff_file = viewer.diff_file
+    options = []
+
+    blob_url = project_blob_path(@project, tree_join(diff_file.content_sha, diff_file.file_path))
+    options << link_to('view the blob', blob_url)
+
+    options
   end
 
   private
@@ -139,17 +163,17 @@ module DiffHelper
   end
 
   def commit_diff_whitespace_link(project, commit, options)
-    url = namespace_project_commit_path(project.namespace, project, commit.id, params_with_whitespace)
+    url = project_commit_path(project, commit.id, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
 
   def diff_merge_request_whitespace_link(project, merge_request, options)
-    url = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, params_with_whitespace)
+    url = diffs_project_merge_request_path(project, merge_request, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
 
   def diff_compare_whitespace_link(project, from, to, options)
-    url = namespace_project_compare_path(project.namespace, project, from, to, params_with_whitespace)
+    url = project_compare_path(project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
 

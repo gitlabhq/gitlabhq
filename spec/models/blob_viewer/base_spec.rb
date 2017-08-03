@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::Base, model: true do
+describe BlobViewer::Base do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
 
   let(:viewer_class) do
     Class.new(described_class) do
@@ -106,9 +106,9 @@ describe BlobViewer::Base, model: true do
   end
 
   describe '#render_error' do
-    context 'when expanded' do
+    context 'when the blob is expanded' do
       before do
-        viewer.expanded = true
+        blob.expand!
       end
 
       context 'when the blob size is larger than the size limit' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Note, models: true do
+describe Note do
   include RepoHelpers
 
   describe 'associations' do
@@ -26,14 +26,18 @@ describe Note, models: true do
     it { is_expected.to validate_presence_of(:project) }
 
     context 'when note is on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(true) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(true)
+      end
 
       it { is_expected.to validate_presence_of(:commit_id) }
       it { is_expected.not_to validate_presence_of(:noteable_id) }
     end
 
     context 'when note is not on commit' do
-      before { allow(subject).to receive(:for_commit?).and_return(false) }
+      before do
+        allow(subject).to receive(:for_commit?).and_return(false)
+      end
 
       it { is_expected.not_to validate_presence_of(:commit_id) }
       it { is_expected.to validate_presence_of(:noteable_id) }
@@ -42,7 +46,7 @@ describe Note, models: true do
     context 'when noteable and note project differ' do
       subject do
         build(:note, noteable: build_stubbed(:issue),
-                     project: build_stubbed(:empty_project))
+                     project: build_stubbed(:project))
       end
 
       it { is_expected.to be_invalid }
@@ -93,8 +97,8 @@ describe Note, models: true do
 
   describe 'authorization' do
     before do
-      @p1 = create(:empty_project)
-      @p2 = create(:empty_project)
+      @p1 = create(:project)
+      @p2 = create(:project)
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
@@ -148,8 +152,8 @@ describe Note, models: true do
     let!(:note2) { create(:note_on_issue) }
 
     it "reads the rendered note body from the cache" do
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note1.note,
           context: {
             skip_project_check: false,
@@ -160,8 +164,8 @@ describe Note, models: true do
           }
         }]).and_call_original
 
-      expect(Banzai::Renderer).to receive(:cache_collection_render).
-        with([{
+      expect(Banzai::Renderer).to receive(:cache_collection_render)
+        .with([{
           text: note2.note,
           context: {
             skip_project_check: false,
@@ -191,10 +195,10 @@ describe Note, models: true do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:empty_project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
-    let(:ext_proj)  { create(:empty_project, :public) }
+    let(:ext_proj)  { create(:project, :public) }
     let(:ext_issue) { create(:issue, project: ext_proj) }
 
     let(:note) do
@@ -237,7 +241,7 @@ describe Note, models: true do
 
   describe '#participants' do
     it 'includes the note author' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       issue = create(:issue, project: project)
       note = create(:note_on_issue, noteable: issue, project: project)
 
@@ -402,8 +406,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_project_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: false }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: false }).and_return(html)
 
         note.save
       end
@@ -417,8 +421,8 @@ describe Note, models: true do
       let(:note) { build(:note_on_personal_snippet) }
 
       before do
-        expect(Banzai::Renderer).to receive(:cacheless_render_field).
-          with(note, :note, { skip_project_check: true }).and_return(html)
+        expect(Banzai::Renderer).to receive(:cacheless_render_field)
+          .with(note, :note, { skip_project_check: true }).and_return(html)
 
         note.save
       end
@@ -521,7 +525,7 @@ describe Note, models: true do
 
       it "has a discussion id" do
         # The discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = Note.find(note.id)
+        reloaded_note = described_class.find(note.id)
 
         expect(reloaded_note.discussion_id).not_to be_nil
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)

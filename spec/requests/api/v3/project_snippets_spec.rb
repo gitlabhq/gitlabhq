@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe API::ProjectSnippets do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -85,23 +85,23 @@ describe API::ProjectSnippets do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
-            to change { Snippet.count }.by(1)
+          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }
+            .to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-            not_to change { Snippet.count }
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
+            .not_to change { Snippet.count }
 
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
       end
     end
@@ -147,8 +147,8 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'creates the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { snippet.reload.title }.to('Foo')
+          expect { update_snippet(title: 'Foo') }
+            .to change { snippet.reload.title }.to('Foo')
         end
       end
 
@@ -156,13 +156,13 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo') }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo') }
+            .to change { SpamLog.count }.by(1)
         end
       end
 
@@ -170,16 +170,16 @@ describe API::ProjectSnippets do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the snippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .not_to change { snippet.reload.title }
 
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq({ "error" => "Spam detected" })
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
       end
     end

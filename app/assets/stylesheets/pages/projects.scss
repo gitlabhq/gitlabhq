@@ -26,7 +26,7 @@
       margin-bottom: 5px;
     }
 
-    & > .form-group {
+    > .form-group {
       padding-left: 0;
     }
 
@@ -83,7 +83,7 @@
       border: 1px solid $border-color;
     }
 
-    & + .select2 a {
+    + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -377,10 +377,11 @@ a.deploy-project-label {
 }
 
 .breadcrumb.repo-breadcrumb {
+  flex: 1;
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 36px;
+  line-height: 34px;
   margin: 0;
 
   > li + li::before {
@@ -482,11 +483,12 @@ a.deploy-project-label {
 .project-stats {
   font-size: 0;
   text-align: center;
+  max-width: 100%;
+  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -585,9 +587,9 @@ pre.light-well {
   }
 
   .project-row {
+    @include basic-list-stats;
     display: flex;
     align-items: center;
-    @include basic-list-stats;
   }
 
   h3 {
@@ -705,6 +707,7 @@ pre.light-well {
   background-color: transparent;
   border: 0;
   text-align: left;
+  text-overflow: ellipsis;
 }
 
 .protected-branches-list,
@@ -740,7 +743,8 @@ pre.light-well {
   }
 }
 
-.protected-tags-list {
+.protected-tags-list,
+.protected-branches-list {
   .dropdown-menu-toggle {
     width: 100%;
     max-width: 300px;
@@ -769,8 +773,7 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects,
-.dropdown-menu-branches {
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {

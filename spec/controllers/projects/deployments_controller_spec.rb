@@ -4,7 +4,7 @@ describe Projects::DeploymentsController do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:environment) { create(:environment, name: 'production', project: project) }
 
   before do
@@ -42,6 +42,7 @@ describe Projects::DeploymentsController do
     before do
       allow(controller).to receive(:deployment).and_return(deployment)
     end
+
     context 'when metrics are disabled' do
       before do
         allow(deployment).to receive(:has_metrics?).and_return false
@@ -103,6 +104,69 @@ describe Projects::DeploymentsController do
           get :metrics, deployment_params(id: deployment.id)
 
           expect(response).to be_not_found
+        end
+      end
+    end
+  end
+
+  describe 'GET #additional_metrics' do
+    let(:deployment) { create(:deployment, project: project, environment: environment) }
+
+    before do
+      allow(controller).to receive(:deployment).and_return(deployment)
+    end
+
+    context 'when metrics are disabled' do
+      before do
+        allow(deployment).to receive(:has_metrics?).and_return false
+      end
+
+      it 'responds with not found' do
+        get :metrics, deployment_params(id: deployment.id)
+
+        expect(response).to be_not_found
+      end
+    end
+
+    context 'when metrics are enabled' do
+      let(:prometheus_service) { double('prometheus_service') }
+
+      before do
+        allow(deployment.project).to receive(:prometheus_service).and_return(prometheus_service)
+      end
+
+      context 'when environment has no metrics' do
+        before do
+          expect(deployment).to receive(:additional_metrics).and_return({})
+        end
+
+        it 'returns a empty response 204 response' do
+          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
+          expect(response).to have_http_status(204)
+          expect(response.body).to eq('')
+        end
+      end
+
+      context 'when environment has some metrics' do
+        let(:empty_metrics) do
+          {
+            success: true,
+            metrics: {},
+            last_update: 42
+          }
+        end
+
+        before do
+          expect(deployment).to receive(:additional_metrics).and_return(empty_metrics)
+        end
+
+        it 'returns a metrics JSON document' do
+          get :additional_metrics, deployment_params(id: deployment.id, format: :json)
+
+          expect(response).to be_ok
+          expect(json_response['success']).to be(true)
+          expect(json_response['metrics']).to eq({})
+          expect(json_response['last_update']).to eq(42)
         end
       end
     end

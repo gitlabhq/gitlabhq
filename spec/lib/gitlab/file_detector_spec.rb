@@ -3,13 +3,13 @@ require 'spec_helper'
 describe Gitlab::FileDetector do
   describe '.types_in_paths' do
     it 'returns the file types for the given paths' do
-      expect(described_class.types_in_paths(%w(README.md CHANGELOG VERSION VERSION))).
-        to eq(%i{readme changelog version})
+      expect(described_class.types_in_paths(%w(README.md CHANGELOG VERSION VERSION)))
+        .to eq(%i{readme changelog version})
     end
 
     it 'does not include unrecognized file paths' do
-      expect(described_class.types_in_paths(%w(README.md foo.txt))).
-        to eq(%i{readme})
+      expect(described_class.types_in_paths(%w(README.md foo.txt)))
+        .to eq(%i{readme})
     end
   end
 

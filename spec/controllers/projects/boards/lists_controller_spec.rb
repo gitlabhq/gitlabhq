@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Boards::ListsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let(:guest)   { create(:user) }
@@ -27,7 +27,7 @@ describe Projects::Boards::ListsController do
       parsed_response = JSON.parse(response.body)
 
       expect(response).to match_response_schema('lists')
-      expect(parsed_response.length).to eq 2
+      expect(parsed_response.length).to eq 3
     end
 
     context 'with unauthorized user' do

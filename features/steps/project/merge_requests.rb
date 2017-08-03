@@ -14,7 +14,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "New Merge Request"' do
-    page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
+    page.within '#content-body' do
+      page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
+    end
   end
 
   step 'I click link "Bug NS-04"' do
@@ -26,7 +28,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters [data-state="all"] span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
@@ -36,9 +38,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    page.within('.issues-state-filters') do
-      click_link "Closed"
-    end
+    find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
   step 'I should see merge request "Wiki Feature"' do
@@ -65,7 +65,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should not see "master" branch' do
-    expect(find('.merge-request-info')).not_to have_content "master"
+    expect(find('.issuable-info')).not_to have_content "master"
   end
 
   step 'I should see "feature_conflict" branch' do
@@ -256,7 +256,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I switch to the merge request\'s comments tab' do
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    visit project_merge_request_path(project, merge_request)
   end
 
   step 'I click on the commit in the merge request' do
@@ -299,6 +299,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I change the comment "Line is wrong" to "Typo, please fix" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
+
       find('.js-note-edit').click
 
       page.within('.current-note-edit-form', visible: true) do
@@ -324,6 +327,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I delete the comment "Line is wrong" on diff' do
     page.within('.diff-file:nth-of-type(5) .note') do
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
+
       find('.js-note-delete').click
     end
   end

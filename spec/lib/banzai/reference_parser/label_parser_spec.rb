@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::LabelParser, lib: true do
+describe Banzai::ReferenceParser::LabelParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
   subject { described_class.new(project, user) }
@@ -11,7 +11,9 @@ describe Banzai::ReferenceParser::LabelParser, lib: true do
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-label'] = label.id.to_s }
+      before do
+        link['data-label'] = label.id.to_s
+      end
 
       it_behaves_like "referenced feature visibility", "issues", "merge_requests"
     end

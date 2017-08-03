@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::Registry::RepositoriesController do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, :private) }
+  let(:project) { create(:project, :private) }
 
   before do
     sign_in(user)

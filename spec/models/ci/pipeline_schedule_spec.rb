@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe Ci::PipelineSchedule, models: true do
+describe Ci::PipelineSchedule do
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:owner) }
 
   it { is_expected.to have_many(:pipelines) }
+  it { is_expected.to have_many(:variables) }
 
   it { is_expected.to respond_to(:ref) }
   it { is_expected.to respond_to(:cron) }
@@ -40,12 +41,12 @@ describe Ci::PipelineSchedule, models: true do
 
     context 'when creates new pipeline schedule' do
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone).
-          next_time_from(Time.now)
+        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone)
+          .next_time_from(Time.now)
       end
 
       it 'updates next_run_at automatically' do
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
 
@@ -53,14 +54,14 @@ describe Ci::PipelineSchedule, models: true do
       let(:new_cron) { '0 0 1 1 *' }
 
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(new_cron, pipeline_schedule.cron_timezone).
-          next_time_from(Time.now)
+        Gitlab::Ci::CronParser.new(new_cron, pipeline_schedule.cron_timezone)
+          .next_time_from(Time.now)
       end
 
       it 'updates next_run_at automatically' do
         pipeline_schedule.update!(cron: new_cron)
 
-        expect(Ci::PipelineSchedule.last.next_run_at).to eq(expected_next_run_at)
+        expect(described_class.last.next_run_at).to eq(expected_next_run_at)
       end
     end
   end
@@ -72,8 +73,8 @@ describe Ci::PipelineSchedule, models: true do
       let(:future_time) { 10.days.from_now }
 
       let(:expected_next_run_at) do
-        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone).
-          next_time_from(future_time)
+        Gitlab::Ci::CronParser.new(pipeline_schedule.cron, pipeline_schedule.cron_timezone)
+          .next_time_from(future_time)
       end
 
       it 'points to proper next_run_at' do
@@ -116,5 +117,21 @@ describe Ci::PipelineSchedule, models: true do
         end
       end
     end
+  end
+
+  describe '#job_variables' do
+    let!(:pipeline_schedule) { create(:ci_pipeline_schedule) }
+
+    let!(:pipeline_schedule_variables) do
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
+    end
+
+    subject { pipeline_schedule.job_variables }
+
+    before do
+      pipeline_schedule.reload
+    end
+
+    it { is_expected.to contain_exactly(*pipeline_schedule_variables.map(&:to_runner_variable)) }
   end
 end

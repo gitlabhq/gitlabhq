@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'Visual tokens', js: true, feature: true do
+describe 'Visual tokens', js: true do
   include FilteredSearchHelpers
   include WaitForRequests
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
   let!(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
@@ -25,10 +25,10 @@ describe 'Visual tokens', js: true, feature: true do
   before do
     project.add_user(user, :master)
     project.add_user(user_rock, :master)
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'editing author token' do
@@ -133,7 +133,7 @@ describe 'Visual tokens', js: true, feature: true do
   describe 'editing milestone token' do
     before do
       input_filtered_search('milestone:%10.0 author:none', submit: false)
-      first('.tokens-container .filtered-search-token').double_click
+      first('.tokens-container .filtered-search-token').click
       first('#js-dropdown-milestone .filter-dropdown .filter-dropdown-item')
     end
 

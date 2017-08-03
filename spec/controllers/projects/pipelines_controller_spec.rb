@@ -4,10 +4,14 @@ describe Projects::PipelinesController do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
+  let(:feature) { ProjectFeature::DISABLED }
 
   before do
+    stub_not_protect_default_branch
     project.add_developer(user)
+    project.project_feature.update(
+      builds_access_level: feature)
 
     sign_in(user)
   end
@@ -49,22 +53,15 @@ describe Projects::PipelinesController do
       expect(json_response['details']).to have_key 'stages'
     end
 
-    context 'when the pipeline has multiple stages and groups' do
+    context 'when the pipeline has multiple stages and groups', :request_store do
       before do
-        RequestStore.begin!
-
         create_build('build', 0, 'build')
         create_build('test', 1, 'rspec 0')
         create_build('deploy', 2, 'production')
         create_build('post deploy', 3, 'pages 0')
       end
 
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:pipeline) do
         create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
@@ -160,9 +157,19 @@ describe Projects::PipelinesController do
                    format: :json
     end
 
-    it 'retries a pipeline without returning any content' do
-      expect(response).to have_http_status(:no_content)
-      expect(build.reload).to be_retried
+    context 'when builds are enabled' do
+      let(:feature) { ProjectFeature::ENABLED }
+
+      it 'retries a pipeline without returning any content' do
+        expect(response).to have_http_status(:no_content)
+        expect(build.reload).to be_retried
+      end
+    end
+
+    context 'when builds are disabled' do
+      it 'fails to retry pipeline' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 
@@ -177,9 +184,19 @@ describe Projects::PipelinesController do
                     format: :json
     end
 
-    it 'cancels a pipeline without returning any content' do
-      expect(response).to have_http_status(:no_content)
-      expect(pipeline.reload).to be_canceled
+    context 'when builds are enabled' do
+      let(:feature) { ProjectFeature::ENABLED }
+
+      it 'cancels a pipeline without returning any content' do
+        expect(response).to have_http_status(:no_content)
+        expect(pipeline.reload).to be_canceled
+      end
+    end
+
+    context 'when builds are disabled' do
+      it 'fails to retry pipeline' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
   end
 end

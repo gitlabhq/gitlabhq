@@ -1,19 +1,16 @@
 require 'spec_helper'
 
-describe 'Target branch', feature: true, js: true do
+describe 'Target branch', js: true do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
 
   def path_to_merge_request
-    namespace_project_merge_request_path(
-      project.namespace,
-      project, merge_request
-    )
+    project_merge_request_path(project, merge_request)
   end
 
   before do
-    login_as user
+    sign_in user
     project.team << [user, :master]
   end
 

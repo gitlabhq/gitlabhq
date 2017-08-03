@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PushoverService, models: true do
+describe PushoverService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -8,7 +8,9 @@ describe PushoverService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:api_key) }
       it { is_expected.to validate_presence_of(:user_key) }
@@ -16,7 +18,9 @@ describe PushoverService, models: true do
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:api_key) }
       it { is_expected.not_to validate_presence_of(:user_key) }
@@ -25,7 +29,7 @@ describe PushoverService, models: true do
   end
 
   describe 'Execute' do
-    let(:pushover) { PushoverService.new }
+    let(:pushover) { described_class.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:sample_data) do

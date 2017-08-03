@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe 'Explore Groups page', :js, :feature do
+describe 'Explore Groups page', :js do
   let!(:user) { create :user }
   let!(:group) { create(:group) }
   let!(:public_group) { create(:group, :public) }
   let!(:private_group) { create(:group, :private) }
-  let!(:empty_project) { create(:empty_project, group: public_group) }
+  let!(:empty_project) { create(:project, group: public_group) }
 
   before do
     group.add_owner(user)
 
-    login_as(user)
+    sign_in(user)
 
     visit explore_groups_path
   end

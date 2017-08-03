@@ -5,6 +5,8 @@ describe PipelineEntity do
   let(:request) { double('request') }
 
   before do
+    stub_not_protect_default_branch
+
     allow(request).to receive(:current_user).and_return(user)
   end
 
@@ -40,7 +42,7 @@ describe PipelineEntity do
     end
 
     context 'when pipeline is retryable' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       let(:pipeline) do
         create(:ci_pipeline, status: :success, project: project)
@@ -51,7 +53,9 @@ describe PipelineEntity do
       end
 
       context 'user has ability to retry pipeline' do
-        before { project.team << [user, :developer] }
+        before do
+          project.add_developer(user)
+        end
 
         it 'contains retry path' do
           expect(subject[:retry_path]).to be_present
@@ -66,7 +70,7 @@ describe PipelineEntity do
     end
 
     context 'when pipeline is cancelable' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       let(:pipeline) do
         create(:ci_pipeline, status: :running, project: project)
@@ -77,7 +81,9 @@ describe PipelineEntity do
       end
 
       context 'user has ability to cancel pipeline' do
-        before { project.add_developer(user) }
+        before do
+          project.add_developer(user)
+        end
 
         it 'contains cancel path' do
           expect(subject[:cancel_path]).to be_present

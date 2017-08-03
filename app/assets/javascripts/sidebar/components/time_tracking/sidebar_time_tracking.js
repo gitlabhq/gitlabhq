@@ -16,10 +16,10 @@ export default {
     'issuable-time-tracker': timeTracker,
   },
   methods: {
-    listenForSlashCommands() {
-      $(document).on('ajax:success', '.gfm-form', this.slashCommandListened);
+    listenForQuickActions() {
+      $(document).on('ajax:success', '.gfm-form', this.quickActionListened);
     },
-    slashCommandListened(e, data) {
+    quickActionListened(e, data) {
       const subscribedCommands = ['spend_time', 'time_estimate'];
       let changedCommands;
       if (data !== undefined) {
@@ -35,7 +35,7 @@ export default {
     },
   },
   mounted() {
-    this.listenForSlashCommands();
+    this.listenForQuickActions();
   },
   template: `
     <div class="block">

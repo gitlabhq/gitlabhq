@@ -1,4 +1,4 @@
-class SlackSlashCommandsService < ChatSlashCommandsService
+class SlackSlashCommandsService < SlashCommandsService
   include TriggersHelper
 
   def title

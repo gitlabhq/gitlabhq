@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequestEntity do
-  let(:project)  { create :empty_project }
+  let(:project)  { create :project }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
 
@@ -47,7 +47,7 @@ describe MergeRequestEntity do
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
-                               :commits_count)
+                               :target_branch_tree_path, :commits_count)
   end
 
   it 'has email_patches_path' do

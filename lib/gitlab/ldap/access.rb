@@ -16,8 +16,8 @@ module Gitlab
       def self.allowed?(user)
         self.open(user) do |access|
           if access.allowed?
-            user.last_credential_check_at = Time.now
-            user.save
+            Users::UpdateService.new(user, last_credential_check_at: Time.now).execute
+
             true
           else
             false

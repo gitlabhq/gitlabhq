@@ -12,6 +12,14 @@
 
   &.readme-holder {
     margin: $gl-padding 0;
+
+    &.limited-width-container .file-content {
+      max-width: $limited-layout-width-sm;
+      margin-left: auto;
+      margin-right: auto;
+      padding-top: 64px;
+      padding-bottom: 64px;
+    }
   }
 
   table {
@@ -59,6 +67,44 @@
     }
   }
 
+  .file-blame-legend {
+    background-color: $gray-light;
+    text-align: right;
+    padding: 8px $gl-padding;
+    border-bottom: 1px solid $border-color;
+
+    @media (max-width: $screen-xs-max) {
+      text-align: left;
+    }
+
+    .left-label {
+      padding-right: 5px;
+    }
+
+    .right-label {
+      padding-left: 5px;
+    }
+
+    .legend-box {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      padding: 0 2px;
+    }
+
+    @for $i from 0 through 5 {
+      .legend-box-#{$i} {
+        background-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+      }
+    }
+
+    @for $i from 1 through 4 {
+      .legend-box-#{$i + 5} {
+        background-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+      }
+    }
+  }
+
   .file-content {
     background: $white-light;
 
@@ -85,7 +131,7 @@
     }
 
     /**
-     *  Annotate file
+     *  Blame file
      */
     &.blame {
       table {
@@ -117,7 +163,30 @@
       td.blame-commit {
         padding: 5px 10px;
         min-width: 400px;
+        max-width: 400px;
         background: $gray-light;
+        border-left: 3px solid;
+
+        .commit-row-title {
+          display: flex;
+        }
+
+        .item-title {
+          flex: 1;
+          margin-right: 0.5em;
+        }
+      }
+
+      @for $i from 0 through 5 {
+        td.blame-commit-age-#{$i} {
+          border-left-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+        }
+      }
+
+      @for $i from 1 through 4 {
+        td.blame-commit-age-#{$i + 5} {
+          border-left-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+        }
       }
 
       td.line-numbers {

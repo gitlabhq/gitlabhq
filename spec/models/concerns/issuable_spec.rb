@@ -69,8 +69,8 @@ describe Issuable do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it 'returns notes with a matching title' do
-      expect(issuable_class.search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(issuable_class.search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -78,8 +78,8 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(issuable_class.search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
   end
 
@@ -89,8 +89,8 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title' do
-      expect(issuable_class.full_search(searchable_issue.title)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.title))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching title' do
@@ -98,23 +98,23 @@ describe Issuable do
     end
 
     it 'returns notes with a matching title regardless of the casing' do
-      expect(issuable_class.full_search(searchable_issue.title.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.title.upcase))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description' do
-      expect(issuable_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a partially matching description' do
-      expect(issuable_class.full_search(searchable_issue.description)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description))
+        .to eq([searchable_issue])
     end
 
     it 'returns notes with a matching description regardless of the casing' do
-      expect(issuable_class.full_search(searchable_issue.description.upcase)).
-        to eq([searchable_issue])
+      expect(issuable_class.full_search(searchable_issue.description.upcase))
+        .to eq([searchable_issue])
     end
   end
 
@@ -155,7 +155,7 @@ describe Issuable do
   end
 
   describe "#sort" do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { create(:project) }
 
     context "by milestone due date" do
       # Correct order is:
@@ -200,7 +200,9 @@ describe Issuable do
     let(:project) { issue.project }
 
     context 'user is not a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_falsey
@@ -220,7 +222,9 @@ describe Issuable do
     end
 
     context 'user is a participant in the issue' do
-      before { allow(issue).to receive(:participants).with(user).and_return([user]) }
+      before do
+        allow(issue).to receive(:participants).with(user).and_return([user])
+      end
 
       it 'returns false when no subcription exists' do
         expect(issue.subscribed?(user, project)).to be_truthy
@@ -252,7 +256,9 @@ describe Issuable do
     end
 
     context "issue is assigned" do
-      before { issue.assignees << user }
+      before do
+        issue.assignees << user
+      end
 
       it "returns correct hook data" do
         expect(data[:assignees].first).to eq(user.hook_attrs)
@@ -276,7 +282,9 @@ describe Issuable do
     context 'issue has labels' do
       let(:labels) { [create(:label), create(:label)] }
 
-      before { issue.update_attribute(:labels, labels)}
+      before do
+        issue.update_attribute(:labels, labels)
+      end
 
       it 'includes labels in the hook data' do
         expect(data[:labels]).to eq(labels.map(&:hook_attrs))
@@ -288,7 +296,7 @@ describe Issuable do
   end
 
   describe '#labels_array' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
@@ -302,7 +310,7 @@ describe Issuable do
   end
 
   describe '#user_notes_count' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue1) { create(:issue, project: project) }
     let(:issue2) { create(:issue, project: project) }
 
@@ -332,7 +340,7 @@ describe Issuable do
   end
 
   describe '.order_due_date_and_labels_priority' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     def create_issue(milestone, labels)
       create(:labeled_issue, milestone: milestone, labels: labels, project: project)
@@ -386,7 +394,7 @@ describe Issuable do
   end
 
   describe ".with_label" do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:feature) { create(:label, project: project, title: 'feature') }
     let(:enhancement) { create(:label, project: project, title: 'enhancement') }

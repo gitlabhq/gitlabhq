@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RepositoryArchiveCleanUpService, services: true do
+describe RepositoryArchiveCleanUpService do
   describe '#execute' do
     subject(:service) { described_class.new }
 

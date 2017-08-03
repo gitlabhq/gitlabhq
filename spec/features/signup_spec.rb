@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-feature 'Signup', feature: true do
+feature 'Signup' do
   describe 'signup with no errors' do
     context "when sending confirmation email" do
-      before { stub_application_setting(send_user_confirmation_email: true) }
+      before do
+        stub_application_setting(send_user_confirmation_email: true)
+      end
 
       it 'creates the user account and sends a confirmation email' do
         user = build(:user)
@@ -23,7 +25,9 @@ feature 'Signup', feature: true do
     end
 
     context "when not sending confirmation email" do
-      before { stub_application_setting(send_user_confirmation_email: false) }
+      before do
+        stub_application_setting(send_user_confirmation_email: false)
+      end
 
       it 'creates the user account and goes to dashboard' do
         user = build(:user)

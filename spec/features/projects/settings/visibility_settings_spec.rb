@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Visibility settings', feature: true, js: true do
+feature 'Visibility settings', js: true do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace, visibility_level: 20) }
 
   context 'as owner' do
     before do
-      login_as(user)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility select is available' do
@@ -32,8 +32,8 @@ feature 'Visibility settings', feature: true, js: true do
 
     before do
       project.team << [master_user, :master]
-      login_as(master_user)
-      visit edit_namespace_project_path(project.namespace, project)
+      sign_in(master_user)
+      visit edit_project_path(project)
     end
 
     scenario 'project visibility is locked' do

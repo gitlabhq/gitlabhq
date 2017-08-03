@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard Feed", feature: true  do
+describe "Dashboard Feed"  do
   describe "GET /" do
     let!(:user) { create(:user, name: "Jonh") }
 
@@ -35,8 +35,8 @@ describe "Dashboard Feed", feature: true  do
       end
 
       it "has issue comment event" do
-        expect(body).
-          to have_content("#{user.name} commented on issue ##{issue.iid}")
+        expect(body)
+          .to have_content("#{user.name} commented on issue ##{issue.iid}")
       end
     end
   end

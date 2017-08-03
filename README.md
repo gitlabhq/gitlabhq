@@ -9,7 +9,7 @@
 ## Test coverage
 
 - [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
-- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=rake+karma)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-javascript) JavaScript
+- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=karma)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-javascript) JavaScript
 
 ## Canonical source
 

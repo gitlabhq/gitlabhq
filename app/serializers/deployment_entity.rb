@@ -11,10 +11,7 @@ class DeploymentEntity < Grape::Entity
     end
 
     expose :ref_path do |deployment|
-      namespace_project_tree_path(
-        deployment.project.namespace,
-        deployment.project,
-        id: deployment.ref)
+      project_tree_path(deployment.project, id: deployment.ref)
     end
   end
 
@@ -24,6 +21,6 @@ class DeploymentEntity < Grape::Entity
 
   expose :user, using: UserEntity
   expose :commit, using: CommitEntity
-  expose :deployable, using: BuildEntity
-  expose :manual_actions, using: BuildEntity
+  expose :deployable, using: JobEntity
+  expose :manual_actions, using: JobEntity
 end

@@ -3,19 +3,15 @@ require 'spec_helper'
 # This test serves as a regression test for a bug that caused an error
 # message to be shown by JavaScript when the source branch was deleted.
 # Please do not remove "js: true".
-describe 'Deleted source branch', feature: true, js: true do
+describe 'Deleted source branch', js: true do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
 
   before do
-    login_as user
+    sign_in user
     merge_request.project.team << [user, :master]
     merge_request.update!(source_branch: 'this-branch-does-not-exist')
-    visit namespace_project_merge_request_path(
-      merge_request.project.namespace,
-      merge_request.project,
-      merge_request
-    )
+    visit project_merge_request_path(merge_request.project, merge_request)
   end
 
   it 'shows a message about missing source branch' do

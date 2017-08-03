@@ -22,7 +22,9 @@ describe Gitlab::Serializer::Pagination do
     let(:params) { { page: 1, per_page: 2 } }
 
     context 'when a multiple resources are present in relation' do
-      before { create_list(:user, 3) }
+      before do
+        create_list(:user, 3)
+      end
 
       it 'correctly paginates the resource' do
         expect(subject.count).to be 2

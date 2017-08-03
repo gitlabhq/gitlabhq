@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MicrosoftTeamsService, models: true do
+describe MicrosoftTeamsService do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 
@@ -11,14 +11,18 @@ describe MicrosoftTeamsService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:webhook) }
       it_behaves_like 'issue tracker service URL attribute', :webhook
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:webhook) }
     end
@@ -108,7 +112,7 @@ describe MicrosoftTeamsService, models: true do
       let(:wiki_page_sample_data) do
         service = WikiPages::CreateService.new(project, user, opts)
         wiki_page = service.execute
-        service.hook_data(wiki_page, 'create')
+        Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create')
       end
 
       it "calls Microsoft Teams API" do

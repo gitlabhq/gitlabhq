@@ -16,9 +16,9 @@ module Gitlab
           project = merge_request.source_project
 
           new(merge_request, project).tap do |file_collection|
-            project.
-              repository.
-              with_repo_branch_commit(merge_request.target_project.repository, merge_request.target_branch) do
+            project
+              .repository
+              .with_repo_branch_commit(merge_request.target_project.repository, merge_request.target_branch) do
 
               yield file_collection
             end

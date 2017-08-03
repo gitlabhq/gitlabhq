@@ -10,7 +10,7 @@
                 Pipelines
 
         - if project_nav_tab? :builds
-          = nav_link(controller: [:builds, :artifacts]) do
+          = nav_link(controller: [:jobs, :artifacts]) do
             = link_to project_jobs_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
               %span
                 Jobs
@@ -29,6 +29,6 @@
 
         - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
           = nav_link(path: 'pipelines#charts') do
-            = link_to charts_namespace_project_pipelines_path(@project.namespace, @project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
+            = link_to charts_project_pipelines_path(@project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
               %span
                 Charts

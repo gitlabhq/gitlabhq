@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AwardEmoji, models: true do
+describe AwardEmoji do
   describe 'Associations' do
     it { is_expected.to belong_to(:awardable) }
     it { is_expected.to belong_to(:user) }

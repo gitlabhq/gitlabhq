@@ -3,7 +3,7 @@ class PersonalAccessToken < ActiveRecord::Base
   include TokenAuthenticatable
   add_authentication_token_field :token
 
-  serialize :scopes, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user
 
@@ -15,11 +15,10 @@ class PersonalAccessToken < ActiveRecord::Base
   scope :without_impersonation, -> { where(impersonation: false) }
 
   validates :scopes, presence: true
-  validate :validate_api_scopes
+  validate :validate_scopes
 
   def revoke!
-    self.revoked = true
-    self.save
+    update!(revoked: true)
   end
 
   def active?
@@ -28,9 +27,9 @@ class PersonalAccessToken < ActiveRecord::Base
 
   protected
 
-  def validate_api_scopes
-    unless scopes.all? { |scope| Gitlab::Auth::API_SCOPES.include?(scope.to_sym) }
-      errors.add :scopes, "can only contain API scopes"
+  def validate_scopes
+    unless scopes.all? { |scope| Gitlab::Auth::AVAILABLE_SCOPES.include?(scope.to_sym) }
+      errors.add :scopes, "can only contain available scopes"
     end
   end
 end

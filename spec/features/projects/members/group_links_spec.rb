@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Anonymous user sees members', feature: true, js: true do
+feature 'Projects > Members > Anonymous user sees members', js: true do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   background do
     project.team << [user, :master]
     @group_link = create(:project_group_link, project: project, group: group)
 
-    login_as(user)
-    visit namespace_project_settings_members_path(project.namespace, project)
+    sign_in(user)
+    visit project_settings_members_path(project)
   end
 
   it 'updates group access level' do
@@ -22,7 +22,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
 
     wait_for_requests
 
-    visit namespace_project_settings_members_path(project.namespace, project)
+    visit project_settings_members_path(project)
 
     expect(first('.group_member')).to have_content('Guest')
   end

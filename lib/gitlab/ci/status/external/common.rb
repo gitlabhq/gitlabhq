@@ -3,6 +3,10 @@ module Gitlab
     module Status
       module External
         module Common
+          def label
+            subject.description
+          end
+
           def has_details?
             subject.target_url.present? &&
               can?(user, :read_commit_status, subject)

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssueReferenceFilter, lib: true do
+describe Banzai::Filter::IssueReferenceFilter do
   include FilterSpecHelper
 
   def helper
     IssuesHelper
   end
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue)  { create(:issue, project: project) }
 
   it 'requires project context' do
@@ -39,18 +39,11 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     let(:reference) { "##{issue.iid}" }
 
-    it 'ignores valid references when using non-default tracker' do
-      allow(project).to receive(:default_issues_tracker?).and_return(false)
-
-      exp = act = "Issue #{reference}"
-      expect(reference_filter(act).to_html).to eq exp
-    end
-
     it 'links to a valid reference' do
       doc = reference_filter("Fixed #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project)
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project)
     end
 
     it 'links with adjacent text' do
@@ -132,14 +125,14 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
   context 'cross-project / cross-namespace complete reference' do
     it_behaves_like 'a reference containing an element node'
 
-    let(:project2)  { create(:empty_project, :public) }
+    let(:project2)  { create(:project, :public) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
+    let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
-      expect_any_instance_of(described_class).to receive(:find_object).
-        with(project2, issue.iid).
-        and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object)
+        .with(project2, issue.iid)
+        .and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -148,20 +141,20 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project2)
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'link has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.css('a').first.text).to eql("#{project2.path_with_namespace}##{issue.iid}")
+      expect(doc.css('a').first.text).to eql("#{project2.full_path}##{issue.iid}")
     end
 
     it 'has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.text).to eq("Fixed (#{project2.path_with_namespace}##{issue.iid}.)")
+      expect(doc.text).to eq("Fixed (#{project2.full_path}##{issue.iid}.)")
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -175,15 +168,15 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
-    let(:reference) { "#{project2.path_with_namespace}##{issue.iid}" }
+    let(:reference) { "#{project2.full_path}##{issue.iid}" }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
-      expect_any_instance_of(described_class).to receive(:find_object).
-        with(project2, issue.iid).
-        and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object)
+        .with(project2, issue.iid)
+        .and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -192,8 +185,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project2)
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'link has valid text' do
@@ -219,15 +212,15 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, :public, namespace: namespace) }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project)   { create(:project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{project2.path}##{issue.iid}" }
 
     it 'ignores valid references when cross-reference project uses external tracker' do
-      expect_any_instance_of(described_class).to receive(:find_object).
-        with(project2, issue.iid).
-        and_return(nil)
+      expect_any_instance_of(described_class).to receive(:find_object)
+        .with(project2, issue.iid)
+        .and_return(nil)
 
       exp = act = "Issue #{reference}"
       expect(reference_filter(act).to_html).to eq exp
@@ -236,8 +229,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project2)
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'link has valid text' do
@@ -263,15 +256,15 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { helper.url_for_issue(issue.iid, project2) + "#note_123" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq reference
+      expect(doc.css('a').first.attr('href'))
+        .to eq reference
     end
 
     it 'links with adjacent text' do
@@ -284,7 +277,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { issue.to_reference(project) }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
@@ -292,8 +285,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project2)
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project2)
     end
 
     it 'links with adjacent text' do
@@ -306,7 +299,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it_behaves_like 'a reference containing an element node'
 
     let(:namespace) { create(:namespace, name: 'cross-reference') }
-    let(:project2)  { create(:empty_project, :public, namespace: namespace) }
+    let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:issue)     { create(:issue, project: project2) }
     let(:reference) { "#{helper.url_for_issue(issue.iid, project2) + "#note_123"}" }
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
@@ -314,8 +307,8 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference_link}")
 
-      expect(doc.css('a').first.attr('href')).
-        to eq helper.url_for_issue(issue.iid, project2) + "#note_123"
+      expect(doc.css('a').first.attr('href'))
+        .to eq helper.url_for_issue(issue.iid, project2) + "#note_123"
     end
 
     it 'links with adjacent text' do
@@ -330,32 +323,14 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
         doc = Nokogiri::HTML.fragment('')
         filter = described_class.new(doc, project: project)
 
-        expect(filter).to receive(:projects_per_reference).
-          and_return({ project.path_with_namespace => project })
+        expect(filter).to receive(:projects_per_reference)
+          .and_return({ project.full_path => project })
 
-        expect(filter).to receive(:references_per_project).
-          and_return({ project.path_with_namespace => Set.new([issue.iid]) })
+        expect(filter).to receive(:references_per_project)
+          .and_return({ project.full_path => Set.new([issue.iid]) })
 
-        expect(filter.issues_per_project).
-          to eq({ project => { issue.iid => issue } })
-      end
-    end
-
-    context 'using an external issue tracker' do
-      it 'returns a Hash containing the issues per project' do
-        doc = Nokogiri::HTML.fragment('')
-        filter = described_class.new(doc, project: project)
-
-        expect(project).to receive(:default_issues_tracker?).and_return(false)
-
-        expect(filter).to receive(:projects_per_reference).
-          and_return({ project.path_with_namespace => project })
-
-        expect(filter).to receive(:references_per_project).
-          and_return({ project.path_with_namespace => Set.new([1]) })
-
-        expect(filter.issues_per_project[project][1]).
-          to be_an_instance_of(ExternalIssue)
+        expect(filter.issues_per_project)
+          .to eq({ project => { issue.iid => issue } })
       end
     end
   end

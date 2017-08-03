@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ExpirePipelineCacheWorker do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   subject { described_class.new }
 
@@ -37,8 +37,8 @@ describe ExpirePipelineCacheWorker do
     end
 
     it 'updates the cached status for a project' do
-      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline).
-                                                            with(pipeline)
+      expect(Gitlab::Cache::Ci::ProjectPipelineStatus).to receive(:update_for_pipeline)
+                                                            .with(pipeline)
 
       subject.perform(pipeline.id)
     end

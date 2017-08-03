@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::SanitizationFilter, lib: true do
+describe Banzai::Filter::SanitizationFilter do
   include FilterSpecHelper
 
   describe 'default whitelist' do
@@ -221,8 +221,8 @@ describe Banzai::Filter::SanitizationFilter, lib: true do
     end
 
     it 'disallows invalid URIs' do
-      expect(Addressable::URI).to receive(:parse).with('foo://example.com').
-        and_raise(Addressable::URI::InvalidURIError)
+      expect(Addressable::URI).to receive(:parse).with('foo://example.com')
+        .and_raise(Addressable::URI::InvalidURIError)
 
       input = '<a href="foo://example.com">Foo</a>'
       output = filter(input)

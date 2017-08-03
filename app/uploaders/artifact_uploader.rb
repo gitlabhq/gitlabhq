@@ -23,6 +23,10 @@ class ArtifactUploader < GitlabUploader
     File.join(self.class.local_artifacts_store, 'tmp/cache')
   end
 
+  def work_dir
+    File.join(self.class.local_artifacts_store, 'tmp/work')
+  end
+
   private
 
   def default_local_path

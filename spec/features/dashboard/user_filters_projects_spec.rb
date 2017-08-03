@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Dashboard > User filters projects', :feature do
+describe 'Dashboard > User filters projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace) }
   let(:user2) { create(:user) }
@@ -9,7 +9,7 @@ describe 'Dashboard > User filters projects', :feature do
   before do
     project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'filtering personal projects' do

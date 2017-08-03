@@ -1,10 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::I18n, lib: true do
+describe Gitlab::I18n do
   let(:user) { create(:user, preferred_language: 'es') }
 
   describe '.locale=' do
-    after { described_class.use_default_locale }
+    after do
+      described_class.use_default_locale
+    end
 
     it 'sets the locale based on current user preferred language' do
       described_class.locale = user.preferred_language

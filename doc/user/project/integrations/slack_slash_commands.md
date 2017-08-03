@@ -2,7 +2,7 @@
 
 > Introduced in GitLab 8.15
 
-Slack slash commands (also known as chat commmands) allow you to control GitLab and view content right inside Slack, without having to leave it. This requires configurations in both Slack and GitLab. 
+Slack slash commands allow you to control GitLab and view content right inside Slack, without having to leave it. This requires configurations in both Slack and GitLab.
 
 > Note: GitLab can also send events (e.g. issue created) to Slack as notifications. This is the separately configured [Slack Notifications Service](slack.md).
 
@@ -20,4 +20,4 @@ Slack slash commands (also known as chat commmands) allow you to control GitLab 
 
 ## Usage
 
-You can now use the [Slack slash commands](../../../integration/chat_commands.md).
+You can now use the [Slack slash commands](../../../integration/slash_commands.md).

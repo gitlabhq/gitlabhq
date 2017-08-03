@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'Profile > Applications', feature: true do
+describe 'Profile > Applications' do
   let(:user) { create(:user) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   describe 'User manages applications', js: true do

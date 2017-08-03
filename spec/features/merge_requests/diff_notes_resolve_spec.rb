@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Diff notes resolve', feature: true, js: true do
+feature 'Diff notes resolve', js: true do
   let(:user)          { create(:user) }
-  let(:project)       { create(:project, :public) }
+  let(:project)       { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
   let!(:note)         { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
   let(:path)          { "files/ruby/popen.rb" }
@@ -19,7 +19,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'no discussions' do
     before do
       project.team << [user, :master]
-      login_as user
+      sign_in user
       note.destroy
       visit_merge_request
     end
@@ -33,7 +33,7 @@ feature 'Diff notes resolve', feature: true, js: true do
   context 'as authorized user' do
     before do
       project.team << [user, :master]
-      login_as user
+      sign_in user
       visit_merge_request
     end
 
@@ -402,7 +402,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     before do
       project.team << [guest, :guest]
-      login_as guest
+      sign_in guest
     end
 
     context 'someone elses merge request' do
@@ -494,6 +494,6 @@ feature 'Diff notes resolve', feature: true, js: true do
 
   def visit_merge_request(mr = nil)
     mr = mr || merge_request
-    visit namespace_project_merge_request_path(mr.project.namespace, mr.project, mr)
+    visit project_merge_request_path(mr.project, mr)
   end
 end

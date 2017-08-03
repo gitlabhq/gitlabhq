@@ -2,6 +2,7 @@ import Vue from 'vue';
 import '~/flash';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import { environmentsList } from '../mock_data';
+import { headersInterceptor } from '../../helpers/vue_resource_helper';
 
 describe('Environments Folder View', () => {
   preloadFixtures('static/environments/environments_folder_view.html.raw');
@@ -36,6 +37,8 @@ describe('Environments Folder View', () => {
 
     beforeEach(() => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
+      Vue.http.interceptors.push(headersInterceptor);
+
       component = new EnvironmentsFolderViewComponent({
         el: document.querySelector('#environments-folder-list-view'),
       });
@@ -45,6 +48,7 @@ describe('Environments Folder View', () => {
       Vue.http.interceptors = _.without(
         Vue.http.interceptors, environmentsResponseInterceptor,
       );
+      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
     });
 
     it('should render a table with environments', (done) => {

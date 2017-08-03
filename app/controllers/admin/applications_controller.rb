@@ -39,7 +39,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def destroy
     @application.destroy
-    redirect_to admin_applications_url, notice: 'Application was successfully destroyed.'
+    redirect_to admin_applications_url, status: 302, notice: 'Application was successfully destroyed.'
   end
 
   private
@@ -50,6 +50,6 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def application_params
-    params[:doorkeeper_application].permit(:name, :redirect_uri, :scopes)
+    params.require(:doorkeeper_application).permit(:name, :redirect_uri, :trusted, :scopes)
   end
 end

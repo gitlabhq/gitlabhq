@@ -99,11 +99,11 @@ module Banzai
       def find_users_for_projects(ids)
         return [] if ids.empty?
 
-        collection_objects_for_ids(Project, ids).
-          flat_map { |p| p.team.members.to_a }
+        collection_objects_for_ids(Project, ids)
+          .flat_map { |p| p.team.members.to_a }
       end
 
-      def can_read_reference?(user, ref_project)
+      def can_read_reference?(user, ref_project, node)
         can?(user, :read_project, ref_project)
       end
     end

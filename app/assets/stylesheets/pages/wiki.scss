@@ -42,9 +42,7 @@
   }
 
   .git-access-header {
-    padding: 16px 40px 11px 0;
-    line-height: 28px;
-    font-size: 18px;
+    padding: $gl-padding 0 $gl-padding-top;
   }
 
   .git-clone-holder {
@@ -66,6 +64,7 @@
 
     .git-clone-holder {
       width: 480px;
+      padding-bottom: $gl-padding;
     }
 
     .nav-controls {
@@ -89,9 +88,9 @@
   margin: $gl-padding 0;
 
   h3 {
-    font-size: 22px;
+    font-size: 19px;
     font-weight: normal;
-    margin-top: 1.4em;
+    margin: $gl-padding 0;
   }
 }
 
@@ -148,13 +147,13 @@
 }
 
 ul.wiki-pages-list.content-list {
-  & ul {
+  ul {
     list-style: none;
     margin-left: 0;
     padding-left: 15px;
   }
 
-  & ul li {
+  ul li {
     padding: 5px 0;
   }
 }

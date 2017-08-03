@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Gitlab::Gfm::ReferenceRewriter do
   let(:text) { 'some text' }
-  let(:old_project) { create(:empty_project, name: 'old-project') }
-  let(:new_project) { create(:empty_project, name: 'new-project') }
+  let(:old_project) { create(:project, name: 'old-project') }
+  let(:new_project) { create(:project, name: 'new-project') }
   let(:user) { create(:user) }
 
-  before { old_project.team << [user, :reporter] }
+  before do
+    old_project.team << [user, :reporter]
+  end
 
   describe '#rewrite' do
     subject do

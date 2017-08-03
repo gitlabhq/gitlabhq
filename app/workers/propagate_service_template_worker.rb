@@ -14,8 +14,8 @@ class PropagateServiceTemplateWorker
   private
 
   def try_obtain_lease_for(template_id)
-    Gitlab::ExclusiveLease.
-      new("propagate_service_template_worker:#{template_id}", timeout: LEASE_TIMEOUT).
-      try_obtain
+    Gitlab::ExclusiveLease
+      .new("propagate_service_template_worker:#{template_id}", timeout: LEASE_TIMEOUT)
+      .try_obtain
   end
 end

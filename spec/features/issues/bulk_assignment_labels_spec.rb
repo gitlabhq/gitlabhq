@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > Labels bulk assignment', feature: true do
+feature 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
@@ -13,7 +13,22 @@ feature 'Issues > Labels bulk assignment', feature: true do
     before do
       project.team << [user, :master]
 
-      login_as user
+      sign_in user
+    end
+
+    context 'sidebar' do
+      before do
+        enable_bulk_update
+      end
+
+      it 'is present when bulk edit is enabled' do
+        expect(page).to have_css('.issuable-sidebar')
+      end
+
+      it 'is not present when bulk edit is disabled' do
+        disable_bulk_update
+        expect(page).not_to have_css('.issuable-sidebar')
+      end
     end
 
     context 'can bulk assign' do
@@ -331,9 +346,9 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   context 'as a guest' do
     before do
-      login_as user
+      sign_in user
 
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     end
 
     context 'cannot bulk assign labels' do
@@ -395,7 +410,11 @@ feature 'Issues > Labels bulk assignment', feature: true do
   end
 
   def enable_bulk_update
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
     click_button 'Edit Issues'
+  end
+
+  def disable_bulk_update
+    click_button 'Cancel'
   end
 end

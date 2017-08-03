@@ -40,6 +40,10 @@ module Banzai
           self.class.data_attribute
         )
       end
+
+      def can_read_reference?(user, ref_project, node)
+        can?(user, :read_merge_request, ref_project)
+      end
     end
   end
 end

@@ -14,7 +14,9 @@ describe Projects::ForksController do
     end
 
     context 'when fork is public' do
-      before { forked_project.update_attribute(:visibility_level, Project::PUBLIC) }
+      before do
+        forked_project.update_attribute(:visibility_level, Project::PUBLIC)
+      end
 
       it 'is visible for non logged in users' do
         get_forks
@@ -35,7 +37,9 @@ describe Projects::ForksController do
       end
 
       context 'when user is logged in' do
-        before { sign_in(project.creator) }
+        before do
+          sign_in(project.creator)
+        end
 
         context 'when user is not a Project member neither a group member' do
           it 'does not see the Project listed' do
@@ -46,7 +50,9 @@ describe Projects::ForksController do
         end
 
         context 'when user is a member of the Project' do
-          before { forked_project.team << [project.creator, :developer] }
+          before do
+            forked_project.team << [project.creator, :developer]
+          end
 
           it 'sees the project listed' do
             get_forks
@@ -56,7 +62,9 @@ describe Projects::ForksController do
         end
 
         context 'when user is a member of the Group' do
-          before { forked_project.group.add_developer(project.creator) }
+          before do
+            forked_project.group.add_developer(project.creator)
+          end
 
           it 'sees the project listed' do
             get_forks

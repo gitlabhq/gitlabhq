@@ -15,9 +15,9 @@ class Label < ActiveRecord::Base
 
   default_value_for :color, DEFAULT_COLOR
 
-  has_many :lists, dependent: :destroy
+  has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
-  has_many :label_links, dependent: :destroy
+  has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
@@ -46,9 +46,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id))).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]).and(priorities[:project_id].eq(project.id)))
+                              .join_sources
 
     joins(label_priorities).where(priorities[:priority].eq(nil))
   end
@@ -57,9 +57,9 @@ class Label < ActiveRecord::Base
     labels = Label.arel_table
     priorities = LabelPriority.arel_table
 
-    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin).
-                              on(labels[:id].eq(priorities[:label_id])).
-                              join_sources
+    label_priorities = labels.join(priorities, Arel::Nodes::OuterJoin)
+                              .on(labels[:id].eq(priorities[:label_id]))
+                              .join_sources
 
     joins(label_priorities)
   end

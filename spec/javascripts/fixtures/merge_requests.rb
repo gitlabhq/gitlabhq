@@ -5,7 +5,7 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
 
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project) { create(:project, namespace: namespace, path: 'merge-requests-project') }
+  let(:project) { create(:project, :repository, namespace: namespace, path: 'merge-requests-project') }
   let(:merge_request) { create(:merge_request, :with_diffs, source_project: project, target_project: project, description: '- [ ] Task List Item') }
   let(:merged_merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
   let(:pipeline) do
@@ -61,7 +61,8 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     get :show,
       namespace_id: project.namespace.to_param,
       project_id: project,
-      id: merge_request.to_param
+      id: merge_request.to_param,
+      format: :html
 
     expect(response).to be_success
     store_frontend_fixture(response, fixture_file_name)

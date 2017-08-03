@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe "Container Registry" do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:container_repository) do
     create(:container_repository, name: 'my/image')
   end
 
   before do
-    login_as(user)
+    sign_in(user)
     project.add_developer(user)
     stub_container_registry_config(enabled: true)
     stub_container_registry_tags(repository: :any, tags: [])
@@ -55,7 +55,6 @@ describe "Container Registry" do
   end
 
   def visit_container_registry
-    visit namespace_project_container_registry_index_path(
-      project.namespace, project)
+    visit project_container_registry_index_path(project)
   end
 end

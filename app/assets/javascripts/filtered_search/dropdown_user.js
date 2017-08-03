@@ -2,10 +2,12 @@
 
 import AjaxFilter from '~/droplab/plugins/ajax_filter';
 import './filtered_search_dropdown';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class DropdownUser extends gl.FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, tokenKeys, filter) {
-    super(droplab, dropdown, input, filter);
+  constructor(options = {}) {
+    const { tokenKeys } = options;
+    super(options);
     this.config = {
       AjaxFilter: {
         endpoint: `${gon.relative_url_root || ''}/autocomplete/users.json`,
@@ -32,8 +34,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
   }
 
   hideCurrentUser() {
-    const currenUserItem = this.dropdown.querySelector('.js-current-user');
-    currenUserItem.classList.add('hidden');
+    addClassIfElementExists(this.dropdown.querySelector('.js-current-user'), 'hidden');
   }
 
   itemClicked(e) {

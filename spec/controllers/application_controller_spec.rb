@@ -30,6 +30,15 @@ describe ApplicationController do
       expect(controller).not_to receive(:redirect_to)
       controller.send(:check_password_expiration)
     end
+
+    it 'does not redirect if the user is over their password expiry but sign-in is disabled' do
+      stub_application_setting(password_authentication_enabled: false)
+      user.password_expires_at = Time.new(2002)
+      allow(controller).to receive(:current_user).and_return(user)
+      expect(controller).not_to receive(:redirect_to)
+
+      controller.send(:check_password_expiration)
+    end
   end
 
   describe "#authenticate_user_from_token!" do
@@ -95,6 +104,36 @@ describe ApplicationController do
         get :index, private_token: "token"
         expect(response.status).not_to eq(200)
         expect(response.body).not_to eq('authenticated')
+      end
+    end
+  end
+
+  describe 'response format' do
+    controller(described_class) do
+      def index
+        respond_to do |format|
+          format.json do
+            head :ok
+          end
+        end
+      end
+    end
+
+    context 'when format is handled' do
+      let(:requested_format) { :json }
+
+      it 'returns 200 response' do
+        get :index, private_token: user.private_token, format: requested_format
+
+        expect(response).to have_http_status 200
+      end
+    end
+
+    context 'when format is not handled' do
+      it 'returns 404 response' do
+        get :index, private_token: user.private_token
+
+        expect(response).to have_http_status 404
       end
     end
   end

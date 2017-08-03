@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   include SentryHelper
   include WorkhorseHelper
   include EnforcesTwoFactorAuthentication
+  include WithPerformanceBar
 
   before_action :authenticate_user_from_private_token!
   before_action :authenticate_user_from_rss_token!
@@ -18,7 +19,7 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables
+  before_action :add_gon_variables, unless: -> { request.path.start_with?('/-/peek') }
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
@@ -36,6 +37,10 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
     log_exception(exception)
+    render_404
+  end
+
+  rescue_from(ActionController::UnknownFormat) do
     render_404
   end
 
@@ -65,6 +70,16 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def append_info_to_payload(payload)
+    super
+    payload[:remote_ip] = request.remote_ip
+
+    if current_user.present?
+      payload[:user_id] = current_user.id
+      payload[:username] = current_user.username
+    end
+  end
+
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
     token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
@@ -90,6 +105,8 @@ class ApplicationController < ActionController::Base
   end
 
   def log_exception(exception)
+    Raven.capture_exception(exception) if sentry_enabled?
+
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
@@ -163,7 +180,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && current_user.allow_password_authentication?
       return redirect_to new_profile_password_path
     end
   end

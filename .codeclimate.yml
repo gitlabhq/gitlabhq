@@ -10,9 +10,9 @@ engines:
       languages:
       - ruby
       - javascript
+    exclude_paths:
+      - "lib/api/v3/*"
   eslint:
-    enabled: true
-  fixme:
     enabled: true
   rubocop:
     enabled: true
@@ -35,4 +35,13 @@ exclude_paths:
 - node_modules/
 - spec/
 - vendor/
-- lib/api/v3/
+- .yarn-cache/
+- tmp/
+- builds/
+- coverage/
+- public/
+- shared/
+- webpack-report/
+- log/
+- backups/
+- coverage-javascript/

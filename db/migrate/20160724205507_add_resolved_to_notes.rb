@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Datetime
 class AddResolvedToNotes < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

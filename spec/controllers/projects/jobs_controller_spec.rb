@@ -3,9 +3,13 @@ require 'spec_helper'
 describe Projects::JobsController do
   include ApiHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
+
+  before do
+    stub_not_protect_default_branch
+  end
 
   describe 'GET index' do
     context 'when scope is pending' do
@@ -28,7 +32,7 @@ describe Projects::JobsController do
         get_index(scope: 'running')
       end
 
-      it 'has only running builds' do
+      it 'has only running jobs' do
         expect(response).to have_http_status(:ok)
         expect(assigns(:builds).first.status).to eq('running')
       end
@@ -41,7 +45,7 @@ describe Projects::JobsController do
         get_index(scope: 'finished')
       end
 
-      it 'has only finished builds' do
+      it 'has only finished jobs' do
         expect(response).to have_http_status(:ok)
         expect(assigns(:builds).first.status).to eq('success')
       end
@@ -67,23 +71,16 @@ describe Projects::JobsController do
     context 'number of queries' do
       before do
         Ci::Build::AVAILABLE_STATUSES.each do |status|
-          create_build(status, status)
+          create_job(status, status)
         end
-
-        RequestStore.begin!
       end
 
-      after do
-        RequestStore.end!
-        RequestStore.clear!
-      end
-
-      it "verifies number of queries" do
+      it 'verifies number of queries', :request_store do
         recorded = ActiveRecord::QueryRecorder.new { get_index }
-        expect(recorded.count).to be_within(5).of(8)
+        expect(recorded.count).to be_within(5).of(7)
       end
 
-      def create_build(name, status)
+      def create_job(name, status)
         pipeline = create(:ci_pipeline, project: project)
         create(:ci_build, :tags, :triggered, :artifacts,
           pipeline: pipeline, name: name, status: status)
@@ -101,21 +98,21 @@ describe Projects::JobsController do
   end
 
   describe 'GET show' do
-    let!(:build) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:job) { create(:ci_build, :failed, pipeline: pipeline) }
 
     context 'when requesting HTML' do
-      context 'when build exists' do
+      context 'when job exists' do
         before do
-          get_show(id: build.id)
+          get_show(id: job.id)
         end
 
-        it 'has a build' do
+        it 'has a job' do
           expect(response).to have_http_status(:ok)
-          expect(assigns(:build).id).to eq(build.id)
+          expect(assigns(:build).id).to eq(job.id)
         end
       end
 
-      context 'when build does not exist' do
+      context 'when job does not exist' do
         before do
           get_show(id: 1234)
         end
@@ -135,12 +132,12 @@ describe Projects::JobsController do
 
         allow_any_instance_of(Ci::Build).to receive(:merge_request).and_return(merge_request)
 
-        get_show(id: build.id, format: :json)
+        get_show(id: job.id, format: :json)
       end
 
       it 'exposes needed information' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['raw_path']).to match(/builds\/\d+\/raw\z/)
+        expect(json_response['raw_path']).to match(/jobs\/\d+\/raw\z/)
         expect(json_response.dig('merge_request', 'path')).to match(/merge_requests\/\d+\z/)
         expect(json_response['new_issue_path'])
           .to include('/issues/new')
@@ -162,35 +159,35 @@ describe Projects::JobsController do
       get_trace
     end
 
-    context 'when build has a trace' do
-      let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+    context 'when job has a trace' do
+      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
 
       it 'returns a trace' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['id']).to eq build.id
-        expect(json_response['status']).to eq build.status
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
         expect(json_response['html']).to eq('BUILD TRACE')
       end
     end
 
-    context 'when build has no traces' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+    context 'when job has no traces' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns no traces' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['id']).to eq build.id
-        expect(json_response['status']).to eq build.status
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
         expect(json_response['html']).to be_nil
       end
     end
 
-    context 'when build has a trace with ANSI sequence and Unicode' do
-      let(:build) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
+    context 'when job has a trace with ANSI sequence and Unicode' do
+      let(:job) { create(:ci_build, :unicode_trace, pipeline: pipeline) }
 
       it 'returns a trace with Unicode' do
         expect(response).to have_http_status(:ok)
-        expect(json_response['id']).to eq build.id
-        expect(json_response['status']).to eq build.status
+        expect(json_response['id']).to eq job.id
+        expect(json_response['status']).to eq job.status
         expect(json_response['html']).to include("ヾ(´༎ຶД༎ຶ`)ﾉ")
       end
     end
@@ -198,23 +195,23 @@ describe Projects::JobsController do
     def get_trace
       get :trace, namespace_id: project.namespace,
                   project_id: project,
-                  id: build.id,
+                  id: job.id,
                   format: :json
     end
   end
 
   describe 'GET status.json' do
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-    let(:status) { build.detailed_status(double('user')) }
+    let(:job) { create(:ci_build, pipeline: pipeline) }
+    let(:status) { job.detailed_status(double('user')) }
 
     before do
       get :status, namespace_id: project.namespace,
                    project_id: project,
-                   id: build.id,
+                   id: job.id,
                    format: :json
     end
 
-    it 'return a detailed build status in json' do
+    it 'return a detailed job status in json' do
       expect(response).to have_http_status(:ok)
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
@@ -231,17 +228,17 @@ describe Projects::JobsController do
       post_retry
     end
 
-    context 'when build is retryable' do
-      let(:build) { create(:ci_build, :retryable, pipeline: pipeline) }
+    context 'when job is retryable' do
+      let(:job) { create(:ci_build, :retryable, pipeline: pipeline) }
 
-      it 'redirects to the retried build page' do
+      it 'redirects to the retried job page' do
         expect(response).to have_http_status(:found)
         expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
       end
     end
 
-    context 'when build is not retryable' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+    context 'when job is not retryable' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'renders unprocessable_entity' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -251,7 +248,7 @@ describe Projects::JobsController do
     def post_retry
       post :retry, namespace_id: project.namespace,
                    project_id: project,
-                   id: build.id
+                   id: job.id
     end
   end
 
@@ -267,21 +264,21 @@ describe Projects::JobsController do
       post_play
     end
 
-    context 'when build is playable' do
-      let(:build) { create(:ci_build, :playable, pipeline: pipeline) }
+    context 'when job is playable' do
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
-      it 'redirects to the played build page' do
+      it 'redirects to the played job page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
       it 'transits to pending' do
-        expect(build.reload).to be_pending
+        expect(job.reload).to be_pending
       end
     end
 
-    context 'when build is not playable' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+    context 'when job is not playable' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'renders unprocessable_entity' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -291,7 +288,7 @@ describe Projects::JobsController do
     def post_play
       post :play, namespace_id: project.namespace,
                   project_id: project,
-                  id: build.id
+                  id: job.id
     end
   end
 
@@ -303,21 +300,21 @@ describe Projects::JobsController do
       post_cancel
     end
 
-    context 'when build is cancelable' do
-      let(:build) { create(:ci_build, :cancelable, pipeline: pipeline) }
+    context 'when job is cancelable' do
+      let(:job) { create(:ci_build, :cancelable, pipeline: pipeline) }
 
-      it 'redirects to the canceled build page' do
+      it 'redirects to the canceled job page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
       it 'transits to canceled' do
-        expect(build.reload).to be_canceled
+        expect(job.reload).to be_canceled
       end
     end
 
-    context 'when build is not cancelable' do
-      let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
+    context 'when job is not cancelable' do
+      let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
 
       it 'returns unprocessable_entity' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -327,7 +324,7 @@ describe Projects::JobsController do
     def post_cancel
       post :cancel, namespace_id: project.namespace,
                     project_id: project,
-                    id: build.id
+                    id: job.id
     end
   end
 
@@ -337,7 +334,7 @@ describe Projects::JobsController do
       sign_in(user)
     end
 
-    context 'when builds are cancelable' do
+    context 'when jobs are cancelable' do
       before do
         create_list(:ci_build, 2, :cancelable, pipeline: pipeline)
 
@@ -354,7 +351,7 @@ describe Projects::JobsController do
       end
     end
 
-    context 'when builds are not cancelable' do
+    context 'when jobs are not cancelable' do
       before do
         create_list(:ci_build, 2, :canceled, pipeline: pipeline)
 
@@ -381,26 +378,26 @@ describe Projects::JobsController do
       post_erase
     end
 
-    context 'when build is erasable' do
-      let(:build) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
+    context 'when job is erasable' do
+      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
 
-      it 'redirects to the erased build page' do
+      it 'redirects to the erased job page' do
         expect(response).to have_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: build.id))
+        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
       end
 
       it 'erases artifacts' do
-        expect(build.artifacts_file.exists?).to be_falsey
-        expect(build.artifacts_metadata.exists?).to be_falsey
+        expect(job.artifacts_file.exists?).to be_falsey
+        expect(job.artifacts_metadata.exists?).to be_falsey
       end
 
       it 'erases trace' do
-        expect(build.trace.exist?).to be_falsey
+        expect(job.trace.exist?).to be_falsey
       end
     end
 
-    context 'when build is not erasable' do
-      let(:build) { create(:ci_build, :erased, pipeline: pipeline) }
+    context 'when job is not erasable' do
+      let(:job) { create(:ci_build, :erased, pipeline: pipeline) }
 
       it 'returns unprocessable_entity' do
         expect(response).to have_http_status(:unprocessable_entity)
@@ -410,7 +407,7 @@ describe Projects::JobsController do
     def post_erase
       post :erase, namespace_id: project.namespace,
                    project_id: project,
-                   id: build.id
+                   id: job.id
     end
   end
 
@@ -419,8 +416,8 @@ describe Projects::JobsController do
       get_raw
     end
 
-    context 'when build has a trace file' do
-      let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
+    context 'when job has a trace file' do
+      let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
 
       it 'send a trace file' do
         expect(response).to have_http_status(:ok)
@@ -429,8 +426,8 @@ describe Projects::JobsController do
       end
     end
 
-    context 'when build does not have a trace file' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+    context 'when job does not have a trace file' do
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'returns not_found' do
         expect(response).to have_http_status(:not_found)
@@ -440,7 +437,7 @@ describe Projects::JobsController do
     def get_raw
       post :raw, namespace_id: project.namespace,
                  project_id: project,
-                 id: build.id
+                 id: job.id
     end
   end
 end

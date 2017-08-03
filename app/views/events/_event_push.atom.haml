@@ -2,7 +2,7 @@
   - event.commits.first(15).each do |commit|
     %p
       %strong= commit[:author][:name]
-      = link_to "(##{truncate_sha(commit[:id])})", namespace_project_commit_path(event.project.namespace, event.project, id: commit[:id])
+      = link_to "(##{truncate_sha(commit[:id])})", project_commit_path(event.project, id: commit[:id])
       %i
         at
         = commit[:timestamp].to_time.to_s(:short)

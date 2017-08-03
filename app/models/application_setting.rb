@@ -13,13 +13,13 @@ class ApplicationSetting < ActiveRecord::Base
                             [\r\n]          # any number of newline characters
                           }x
 
-  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiverecordSerialize
-  serialize :import_sources # rubocop:disable Cop/ActiverecordSerialize
-  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiverecordSerialize
-  serialize :repository_storages # rubocop:disable Cop/ActiverecordSerialize
-  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiverecordSerialize
+  serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :disabled_oauth_sign_in_sources, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -37,7 +37,12 @@ class ApplicationSetting < ActiveRecord::Base
   validates :home_page_url,
             allow_blank: true,
             url: true,
-            if: :home_page_url_column_exist
+            if: :home_page_url_column_exists?
+
+  validates :help_page_support_url,
+            allow_blank: true,
+            url: true,
+            if: :help_page_support_url_column_exists?
 
   validates :after_sign_out_path,
             allow_blank: true,
@@ -179,6 +184,9 @@ class ApplicationSetting < ActiveRecord::Base
     Rails.cache.fetch(CACHE_KEY) do
       ApplicationSetting.last
     end
+  rescue
+    # Fall back to an uncached value if there are any problems (e.g. redis down)
+    ApplicationSetting.last
   end
 
   def self.expire
@@ -215,6 +223,7 @@ class ApplicationSetting < ActiveRecord::Base
       domain_whitelist: Settings.gitlab['domain_whitelist'],
       gravatar_enabled: Settings.gravatar['enabled'],
       help_page_text: nil,
+      help_page_hide_commercial_content: false,
       unique_ips_limit_per_user: 10,
       unique_ips_limit_time_window: 3600,
       unique_ips_limit_enabled: false,
@@ -228,6 +237,8 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
+      password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
+      performance_bar_allowed_group_id: nil,
       plantuml_enabled: false,
       plantuml_url: nil,
       recaptcha_enabled: false,
@@ -241,7 +252,6 @@ class ApplicationSetting < ActiveRecord::Base
       shared_runners_text: nil,
       sidekiq_throttling_enabled: false,
       sign_in_text: nil,
-      signin_enabled: Settings.gitlab['signin_enabled'],
       signup_enabled: Settings.gitlab['signup_enabled'],
       terminal_max_session_time: 0,
       two_factor_grace_period: 48,
@@ -263,8 +273,12 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  def home_page_url_column_exist
+  def home_page_url_column_exists?
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
+  end
+
+  def help_page_support_url_column_exists?
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :help_page_support_url)
   end
 
   def sidekiq_throttling_column_exists?
@@ -301,7 +315,9 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
+  # DEPRECATED
   # repository_storage is still required in the API. Remove in 9.0
+  # Still used in API v3
   def repository_storage
     repository_storages.first
   end
@@ -324,6 +340,48 @@ class ApplicationSetting < ActiveRecord::Base
 
   def restricted_visibility_levels=(levels)
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+  end
+
+  def performance_bar_allowed_group_id=(group_full_path)
+    group_full_path = nil if group_full_path.blank?
+
+    if group_full_path.nil?
+      if group_full_path != performance_bar_allowed_group_id
+        super(group_full_path)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+      return
+    end
+
+    group = Group.find_by_full_path(group_full_path)
+
+    if group
+      if group.id != performance_bar_allowed_group_id
+        super(group.id)
+        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+      end
+    else
+      super(nil)
+      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+    end
+  end
+
+  def performance_bar_allowed_group
+    Group.find_by_id(performance_bar_allowed_group_id)
+  end
+
+  # Return true if the Performance Bar is enabled for a given group
+  def performance_bar_enabled
+    performance_bar_allowed_group_id.present?
+  end
+
+  # - If `enable` is true, we early return since the actual attribute that holds
+  #   the enabling/disabling is `performance_bar_allowed_group_id`
+  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
+  def performance_bar_enabled=(enable)
+    return if enable
+
+    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have

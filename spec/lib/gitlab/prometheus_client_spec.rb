@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::PrometheusClient, lib: true do
+describe Gitlab::PrometheusClient do
   include PrometheusHelpers
 
   subject { described_class.new(api_url: 'https://prometheus.example.com') }
@@ -116,6 +116,36 @@ describe Gitlab::PrometheusClient, lib: true do
 
     it_behaves_like 'failure response' do
       let(:execute_query) { subject.query(prometheus_query) }
+    end
+  end
+
+  describe '#series' do
+    let(:query_url) { prometheus_series_url('series_name', 'other_service') }
+
+    around do |example|
+      Timecop.freeze { example.run }
+    end
+
+    it 'calls endpoint and returns list of series' do
+      req_stub = stub_prometheus_request(query_url, body: prometheus_series('series_name'))
+      expected = prometheus_series('series_name').deep_stringify_keys['data']
+
+      expect(subject.series('series_name', 'other_service')).to eq(expected)
+
+      expect(req_stub).to have_been_requested
+    end
+  end
+
+  describe '#label_values' do
+    let(:query_url) { prometheus_label_values_url('__name__') }
+
+    it 'calls endpoint and returns label values' do
+      req_stub = stub_prometheus_request(query_url, body: prometheus_label_values)
+      expected = prometheus_label_values.deep_stringify_keys['data']
+
+      expect(subject.label_values('__name__')).to eq(expected)
+
+      expect(req_stub).to have_been_requested
     end
   end
 

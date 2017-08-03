@@ -10,11 +10,10 @@
       %p
     Access token is
     %code#health-check-token= current_application_settings.health_check_access_token
-    = button_to reset_health_check_token_admin_application_settings_path,
-      method: :put, class: 'btn btn-default',
-      data: { confirm: 'Are you sure you want to reset the health check token?' } do
-      = icon('spinner')
-      Reset health check access token
+    .prepend-top-10
+      = button_to "Reset health check access token", reset_health_check_token_admin_application_settings_path,
+        method: :put, class: 'btn btn-default',
+        data: { confirm: 'Are you sure you want to reset the health check token?' }
   %p.light
     Health information can be retrieved from the following endpoints. More information is available
     = link_to 'here', help_page_path('user/admin_area/monitoring/health_check')

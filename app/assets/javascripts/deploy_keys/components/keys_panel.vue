@@ -20,6 +20,10 @@
         type: Object,
         required: true,
       },
+      endpoint: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       key,
@@ -34,18 +38,22 @@
       ({{ keys.length }})
     </h5>
     <ul class="well-list"
-      v-if="keys.length">
+      v-if="keys.length"
+    >
       <li
         v-for="deployKey in keys"
         :key="deployKey.id">
         <key
           :deploy-key="deployKey"
-          :store="store" />
+          :store="store"
+          :endpoint="endpoint"
+        />
       </li>
     </ul>
     <div
       class="settings-message text-center"
-      v-else-if="showHelpBox">
+      v-else-if="showHelpBox"
+    >
       No deploy keys found. Create one with the form above.
     </div>
   </div>

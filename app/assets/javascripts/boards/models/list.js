@@ -12,7 +12,9 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.preset = ['closed', 'blank'].indexOf(this.type) > -1;
+    this.preset = ['backlog', 'closed', 'blank'].indexOf(this.type) > -1;
+    this.isExpandable = ['backlog', 'closed'].indexOf(this.type) > -1;
+    this.isExpanded = true;
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
@@ -38,9 +40,8 @@ class List {
 
   save () {
     return gl.boardService.createList(this.label.id)
-      .then((resp) => {
-        const data = resp.json();
-
+      .then(resp => resp.json())
+      .then((data) => {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
@@ -89,8 +90,8 @@ class List {
     }
 
     return gl.boardService.getIssuesForList(this.id, data)
-      .then((resp) => {
-        const data = resp.json();
+      .then(resp => resp.json())
+      .then((data) => {
         this.loading = false;
         this.issuesSize = data.size;
 
@@ -103,13 +104,18 @@ class List {
   }
 
   newIssue (issue) {
-    this.addIssue(issue);
+    this.addIssue(issue, null, 0);
     this.issuesSize += 1;
 
     return gl.boardService.newIssue(this.id, issue)
-      .then((resp) => {
-        const data = resp.json();
+      .then(resp => resp.json())
+      .then((data) => {
         issue.id = data.iid;
+
+        if (this.issuesSize > 1) {
+          const moveBeforeIid = this.issues[1].id;
+          gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeIid);
+        }
       });
   }
 

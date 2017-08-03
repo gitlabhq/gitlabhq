@@ -45,7 +45,9 @@ module API
         optional :protected, type: String, desc: 'Whether the variable is protected'
       end
       post ':id/variables' do
-        variable = user_project.variables.create(declared(params, include_parent_namespaces: false).to_h)
+        variable_params = declared_params(include_missing: false)
+
+        variable = user_project.variables.create(variable_params)
 
         if variable.valid?
           present variable, with: Entities::Variable
@@ -67,7 +69,9 @@ module API
 
         return not_found!('Variable') unless variable
 
-        if variable.update(declared_params(include_missing: false).except(:key))
+        variable_params = declared_params(include_missing: false).except(:key)
+
+        if variable.update(variable_params)
           present variable, with: Entities::Variable
         else
           render_validation_error!(variable)
@@ -84,6 +88,7 @@ module API
         variable = user_project.variables.find_by(key: params[:key])
         not_found!('Variable') unless variable
 
+        status 204
         variable.destroy
       end
     end

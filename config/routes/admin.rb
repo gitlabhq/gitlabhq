@@ -48,7 +48,7 @@ namespace :admin do
     end
   end
 
-  resources :deploy_keys, only: [:index, :new, :create, :destroy]
+  resources :deploy_keys, only: [:index, :new, :create, :edit, :update, :destroy]
 
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do

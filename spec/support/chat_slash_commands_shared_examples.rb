@@ -36,7 +36,7 @@ RSpec.shared_examples 'chat slash commands service' do
     end
 
     context 'with a token passed' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:params) { { token: 'token' } }
 
       before do
@@ -87,7 +87,7 @@ RSpec.shared_examples 'chat slash commands service' do
         end
 
         it 'triggers the command' do
-          expect_any_instance_of(Gitlab::ChatCommands::Command).to receive(:execute)
+          expect_any_instance_of(Gitlab::SlashCommands::Command).to receive(:execute)
 
           subject.trigger(params)
         end

@@ -22,7 +22,7 @@ module Gitlab
           sha: pipeline.sha,
           before_sha: pipeline.before_sha,
           status: pipeline.status,
-          stages: pipeline.stages_name,
+          stages: pipeline.stages_names,
           created_at: pipeline.created_at,
           finished_at: pipeline.finished_at,
           duration: pipeline.duration

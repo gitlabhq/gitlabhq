@@ -14,11 +14,11 @@
           = merge_request.to_reference
         %span.merge-request-info
           %strong
-            = link_to_gfm merge_request.title, merge_request_path(merge_request), class: "row_title"
+            = link_to merge_request.title, merge_request_path(merge_request), class: "row_title"
           - unless @issue.project.id == merge_request.target_project.id
             in
             - project = merge_request.target_project
-            = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
+            = link_to project.name_with_namespace, project_path(project)
 
         - if merge_request.merged?
           %span.merge-request-status.prepend-left-10.merged

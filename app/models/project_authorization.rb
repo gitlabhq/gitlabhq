@@ -7,9 +7,9 @@ class ProjectAuthorization < ActiveRecord::Base
   validates :user, uniqueness: { scope: [:project, :access_level] }, presence: true
 
   def self.select_from_union(union)
-    select(['project_id', 'MAX(access_level) AS access_level']).
-      from("(#{union.to_sql}) #{ProjectAuthorization.table_name}").
-      group(:project_id)
+    select(['project_id', 'MAX(access_level) AS access_level'])
+      .from("(#{union.to_sql}) #{ProjectAuthorization.table_name}")
+      .group(:project_id)
   end
 
   def self.insert_authorizations(rows, per_batch = 1000)

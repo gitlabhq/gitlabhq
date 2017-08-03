@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Environment', :feature do
-  given(:project) { create(:empty_project) }
+feature 'Environment' do
+  given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }
 
   background do
-    login_as(user)
+    sign_in(user)
     project.team << [user, role]
   end
 
@@ -114,7 +114,7 @@ feature 'Environment', :feature do
                 before do
                   # Stub #terminals as it causes js-enabled feature specs to render the page incorrectly
                   allow_any_instance_of(Environment).to receive(:terminals) { nil }
-                  visit terminal_namespace_project_environment_path(project.namespace, project, environment)
+                  visit terminal_project_environment_path(project, environment)
                 end
 
                 it 'displays a web terminal' do
@@ -194,9 +194,7 @@ feature 'Environment', :feature do
                              name: 'staging-1.0/review',
                              state: :available)
 
-        visit folder_namespace_project_environments_path(project.namespace,
-                                                         project,
-                                                         id: 'staging-1.0')
+        visit folder_project_environments_path(project, id: 'staging-1.0')
       end
 
       it 'renders a correct environment folder' do
@@ -207,7 +205,7 @@ feature 'Environment', :feature do
   end
 
   feature 'auto-close environment when branch is deleted' do
-    given(:project) { create(:project) }
+    given(:project) { create(:project, :repository) }
 
     given!(:environment) do
       create(:environment, :with_review_app, project: project,
@@ -221,7 +219,7 @@ feature 'Environment', :feature do
     end
 
     scenario 'user deletes the branch with running environment' do
-      visit namespace_project_branches_path(project.namespace, project, search: 'feature')
+      visit project_branches_path(project, search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') { find('a.btn-remove').click }
@@ -249,12 +247,10 @@ feature 'Environment', :feature do
   end
 
   def visit_environment(environment)
-    visit namespace_project_environment_path(environment.project.namespace,
-                                             environment.project,
-                                             environment)
+    visit project_environment_path(environment.project, environment)
   end
 
   def have_terminal_button
-    have_link(nil, href: terminal_namespace_project_environment_path(project.namespace, project, environment))
+    have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 end

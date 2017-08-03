@@ -28,8 +28,8 @@ export default class SidebarMediator {
 
   fetch() {
     this.service.get()
-      .then((response) => {
-        const data = response.json();
+      .then(response => response.json())
+      .then((data) => {
         this.store.setAssigneeData(data);
         this.store.setTimeTrackingData(data);
       })

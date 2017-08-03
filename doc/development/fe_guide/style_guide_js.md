@@ -447,6 +447,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `name`
   1. `props`
   1. `mixins`
+  1. `directives`
   1. `data`
   1. `components`
   1. `computedProps`
@@ -463,20 +464,24 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   1. `destroyed`
 
 #### Vue and Boostrap
-1. Tooltips: Do not rely on `has-tooltip` class name for vue components
+1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
   ```javascript
     // bad
-    <span class="has-tooltip">
+    <span
+      class="has-tooltip"
+      title="Some tooltip text">
       Text
     </span>
 
     // good
-    <span data-toggle="tooltip">
+    <span
+      v-tooltip
+      title="Some tooltip text">
       Text
     </span>
   ```
 
-1. Tooltips: When using a tooltip, include the tooltip mixin
+1. Tooltips: When using a tooltip, include the tooltip directive, `./app/assets/javascripts/vue_shared/directives/tooltip.js`
 
 1. Don't change `data-original-title`.
   ```javascript

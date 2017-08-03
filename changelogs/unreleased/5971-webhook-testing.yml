@@ -1,0 +1,4 @@
+---
+title: Allow testing any events for project hooks and system hooks
+merge_request: 11728
+author: Alexander Randa (@randaalex)

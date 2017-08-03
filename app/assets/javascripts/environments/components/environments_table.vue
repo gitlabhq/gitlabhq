@@ -29,12 +29,6 @@ export default {
       required: false,
       default: false,
     },
-
-    isLoadingFolderContent: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
 
   methods: {
@@ -47,19 +41,19 @@ export default {
 <template>
   <div class="ci-table" role="grid">
     <div class="gl-responsive-table-row table-row-header" role="row">
-      <div class="table-section section-10 environments-name" role="rowheader">
+      <div class="table-section section-10 environments-name" role="columnheader">
         Environment
       </div>
-      <div class="table-section section-10 environments-deploy" role="rowheader">
+      <div class="table-section section-10 environments-deploy" role="columnheader">
         Deployment
       </div>
-      <div class="table-section section-15 environments-build" role="rowheader">
+      <div class="table-section section-15 environments-build" role="columnheader">
         Job
       </div>
-      <div class="table-section section-25 environments-commit" role="rowheader">
+      <div class="table-section section-25 environments-commit" role="columnheader">
         Commit
       </div>
-      <div class="table-section section-10 environments-date" role="rowheader">
+      <div class="table-section section-10 environments-date" role="columnheader">
         Updated
       </div>
     </div>
@@ -74,7 +68,7 @@ export default {
         />
 
       <template v-if="model.isFolder && model.isOpen && model.children && model.children.length > 0">
-        <div v-if="isLoadingFolderContent">
+        <div v-if="model.isLoadingFolderContent">
           <loading-icon size="2" />
         </div>
 

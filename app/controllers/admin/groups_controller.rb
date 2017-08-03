@@ -56,7 +56,9 @@ class Admin::GroupsController < Admin::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to admin_groups_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to admin_groups_path,
+                status: 302,
+                alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   private

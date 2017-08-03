@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Group', feature: true do
+feature 'Group' do
   before do
-    login_as(:admin)
+    sign_in(create(:admin))
   end
 
   matcher :have_namespace_error_message do
@@ -12,7 +12,9 @@ feature 'Group', feature: true do
   end
 
   describe 'create a group' do
-    before { visit new_group_path }
+    before do
+      visit new_group_path
+    end
 
     describe 'with space in group path' do
       it 'renders new group form with validation errors' do
@@ -106,8 +108,8 @@ feature 'Group', feature: true do
 
       before do
         group.add_owner(user)
-        logout
-        login_as(user)
+        sign_out(:user)
+        sign_in(user)
 
         visit subgroups_group_path(group)
         click_link 'New Subgroup'
@@ -126,19 +128,21 @@ feature 'Group', feature: true do
   it 'checks permissions to avoid exposing groups by parent_id' do
     group = create(:group, :private, path: 'secret-group')
 
-    logout
-    login_as(:user)
+    sign_out(:user)
+    sign_in(create(:user))
     visit new_group_path(parent_id: group.id)
 
     expect(page).not_to have_content('secret-group')
   end
 
-  describe 'group edit' do
+  describe 'group edit', js: true do
     let(:group) { create(:group) }
     let(:path)  { edit_group_path(group) }
     let(:new_name) { 'new-name' }
 
-    before { visit path }
+    before do
+      visit path
+    end
 
     it 'saves new settings' do
       fill_in 'group_name', with: new_name
@@ -153,8 +157,8 @@ feature 'Group', feature: true do
     end
 
     it 'removes group' do
-      click_link 'Remove group'
-
+      expect { remove_with_confirm('Remove group', group.path) }.to change {Group.count}.by(-1)
+      expect(group.members.all.count).to be_zero
       expect(page).to have_content "scheduled for deletion"
     end
   end
@@ -207,5 +211,11 @@ feature 'Group', feature: true do
 
       expect(page).to have_content(nested_group.name)
     end
+  end
+
+  def remove_with_confirm(button_text, confirm_with)
+    click_button button_text
+    fill_in 'confirm_name_input', with: confirm_with
+    click_button 'Confirm'
   end
 end

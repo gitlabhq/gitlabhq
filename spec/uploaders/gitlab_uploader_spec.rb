@@ -53,4 +53,19 @@ describe GitlabUploader do
       expect(subject.move_to_store).to eq(true)
     end
   end
+
+  describe '#cache!' do
+    it 'moves the file from the working directory to the cache directory' do
+      # One to get the work dir, the other to remove it
+      expect(subject).to receive(:workfile_path).exactly(2).times.and_call_original
+      # Test https://github.com/carrierwavesubject/carrierwave/blob/v1.0.0/lib/carrierwave/sanitized_file.rb#L200
+      expect(FileUtils).to receive(:mv).with(anything, /^#{subject.work_dir}/).and_call_original
+      expect(FileUtils).to receive(:mv).with(/^#{subject.work_dir}/, /#{subject.cache_dir}/).and_call_original
+
+      fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
+      subject.cache!(fixture_file_upload(fixture))
+
+      expect(subject.file.path).to match(/#{subject.cache_dir}/)
+    end
+  end
 end

@@ -42,7 +42,7 @@ describe API::Runner do
         end
 
         context 'when project token is used' do
-          let(:project) { create(:empty_project) }
+          let(:project) { create(:project) }
 
           it 'creates runner' do
             post api('/runners'), token: project.runners_token
@@ -182,7 +182,7 @@ describe API::Runner do
   end
 
   describe '/api/v4/jobs' do
-    let(:project) { create(:empty_project, shared_runners_enabled: false) }
+    let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
     let!(:job) do
@@ -190,17 +190,23 @@ describe API::Runner do
              pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
     end
 
-    before { project.runners << runner }
+    before do
+      project.runners << runner
+    end
 
     describe 'POST /api/v4/jobs/request' do
       let!(:last_update) {}
       let!(:new_update) { }
       let(:user_agent) { 'gitlab-runner 9.0.0 (9-0-stable; go1.7.4; linux/amd64)' }
 
-      before { stub_container_registry_config(enabled: false) }
+      before do
+        stub_container_registry_config(enabled: false)
+      end
 
       shared_examples 'no jobs available' do
-        before { request_job }
+        before do
+          request_job
+        end
 
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
@@ -277,7 +283,9 @@ describe API::Runner do
         end
 
         context 'when jobs are finished' do
-          before { job.success }
+          before do
+            job.success
+          end
 
           it_behaves_like 'no jobs available'
         end
@@ -343,7 +351,8 @@ describe API::Runner do
           let(:expected_cache) do
             [{ 'key' => 'cache_key',
                'untracked' => false,
-               'paths' => ['vendor/*'] }]
+               'paths' => ['vendor/*'],
+               'policy' => 'pull-push' }]
           end
 
           it 'picks a job' do
@@ -356,8 +365,11 @@ describe API::Runner do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1' })
-            expect(json_response['services']).to eq([{ 'name' => 'postgres' }])
+            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
+            expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
+                                                       'alias' => nil, 'command' => nil },
+                                                     { 'name' => 'docker:dind', 'entrypoint' => '/bin/sh',
+                                                       'alias' => 'docker', 'command' => 'sleep 30' }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
@@ -403,8 +415,8 @@ describe API::Runner do
 
           context 'when concurrently updating a job' do
             before do
-              expect_any_instance_of(Ci::Build).to receive(:run!).
-                  and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
+              expect_any_instance_of(Ci::Build).to receive(:run!)
+                  .and_raise(ActiveRecord::StaleObjectError.new(nil, nil))
             end
 
             it 'returns a conflict' do
@@ -431,8 +443,29 @@ describe API::Runner do
               expect(response).to have_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
-              expect(json_response['dependencies']).to include({ 'id' => job.id, 'name' => job.name, 'token' => job.token },
-                                                               { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token },
+                { 'id' => job2.id, 'name' => job2.name, 'token' => job2.token })
+            end
+          end
+
+          context 'when pipeline have jobs with artifacts' do
+            let!(:job) { create(:ci_build_tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+
+            before do
+              job.success
+            end
+
+            it 'returns dependent jobs' do
+              request_job
+
+              expect(response).to have_http_status(201)
+              expect(json_response['id']).to eq(test_job.id)
+              expect(json_response['dependencies'].count).to eq(1)
+              expect(json_response['dependencies']).to include(
+                { 'id' => job.id, 'name' => job.name, 'token' => job.token,
+                  'artifacts_file' => { 'filename' => 'ci_build_artifacts.zip', 'size' => 106365 } })
             end
           end
 
@@ -484,10 +517,14 @@ describe API::Runner do
           end
 
           context 'when job has no tags' do
-            before { job.update(tags: []) }
+            before do
+              job.update(tags: [])
+            end
 
             context 'when runner is allowed to pick untagged jobs' do
-              before { runner.update_column(:run_untagged, true) }
+              before do
+                runner.update_column(:run_untagged, true)
+              end
 
               it 'picks job' do
                 request_job
@@ -497,7 +534,9 @@ describe API::Runner do
             end
 
             context 'when runner is not allowed to pick untagged jobs' do
-              before { runner.update_column(:run_untagged, false) }
+              before do
+                runner.update_column(:run_untagged, false)
+              end
 
               it_behaves_like 'no jobs available'
             end
@@ -537,7 +576,9 @@ describe API::Runner do
             end
 
             context 'when registry is enabled' do
-              before { stub_container_registry_config(enabled: true, host_port: registry_url) }
+              before do
+                stub_container_registry_config(enabled: true, host_port: registry_url)
+              end
 
               it 'sends registry credentials key' do
                 request_job
@@ -548,7 +589,9 @@ describe API::Runner do
             end
 
             context 'when registry is disabled' do
-              before { stub_container_registry_config(enabled: false, host_port: registry_url) }
+              before do
+                stub_container_registry_config(enabled: false, host_port: registry_url)
+              end
 
               it 'does not send registry credentials' do
                 request_job
@@ -570,7 +613,9 @@ describe API::Runner do
     describe 'PUT /api/v4/jobs/:id' do
       let(:job) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
 
-      before { job.run! }
+      before do
+        job.run!
+      end
 
       context 'when status is given' do
         it 'mark job as succeeded' do
@@ -625,7 +670,9 @@ describe API::Runner do
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
       let(:update_interval) { 10.seconds.to_i }
 
-      before { initial_patch_the_trace }
+      before do
+        initial_patch_the_trace
+      end
 
       context 'when request is valid' do
         it 'gets correct response' do
@@ -767,7 +814,9 @@ describe API::Runner do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
 
-      before { job.run! }
+      before do
+        job.run!
+      end
 
       describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
         context 'when using token as parameter' do
@@ -873,13 +922,17 @@ describe API::Runner do
             end
 
             context 'when uses regular file post' do
-              before { upload_artifacts(file_upload, headers_with_token, false) }
+              before do
+                upload_artifacts(file_upload, headers_with_token, false)
+              end
 
               it_behaves_like 'successful artifacts upload'
             end
 
             context 'when uses accelerated file post' do
-              before { upload_artifacts(file_upload, headers_with_token, true) }
+              before do
+                upload_artifacts(file_upload, headers_with_token, true)
+              end
 
               it_behaves_like 'successful artifacts upload'
             end
@@ -1033,7 +1086,9 @@ describe API::Runner do
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
           end
 
-          after { FileUtils.remove_entry @tmpdir }
+          after do
+            FileUtils.remove_entry @tmpdir
+          end
 
           it' "fails to post artifacts for outside of tmp path"' do
             upload_artifacts(file_upload, headers_with_token)
@@ -1055,7 +1110,9 @@ describe API::Runner do
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
 
-        before { download_artifact }
+        before do
+          download_artifact
+        end
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build, :artifacts) }

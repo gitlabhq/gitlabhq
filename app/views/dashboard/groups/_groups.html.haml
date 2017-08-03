@@ -1,6 +1,9 @@
 .js-groups-list-holder
-  %ul.content-list
-    - @group_members.each do |group_member|
-      = render 'shared/groups/group', group: group_member.group, group_member: group_member
-
-  = paginate @group_members, theme: 'gitlab'
+  #dashboard-group-app{ data: { endpoint: dashboard_groups_path(format: :json), path: dashboard_groups_path } }
+    .groups-list-loading
+      = icon('spinner spin', 'v-show' => 'isLoading')
+    %template{ 'v-if' => '!isLoading && isEmpty' }
+      %div{ 'v-cloak' => true }
+        = render 'empty_state'
+    %template{ 'v-else-if' => '!isLoading && !isEmpty' }
+      %groups-component{ ':groups' => 'state.groups', ':page-info' => 'state.pageInfo' }

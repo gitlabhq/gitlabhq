@@ -32,12 +32,12 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     showSidebar () {
       return Object.keys(this.issue).length;
     },
-    assigneeId() {
-      return this.issue.assignee ? this.issue.assignee.id : 0;
-    },
     milestoneTitle() {
       return this.issue.milestone ? this.issue.milestone.title : 'No Milestone';
-    }
+    },
+    canRemove() {
+      return !this.list.preset;
+    },
   },
   watch: {
     detail: {

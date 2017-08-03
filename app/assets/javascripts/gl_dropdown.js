@@ -248,7 +248,7 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput();
+              _this.focusTextInput(true);
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
@@ -728,8 +728,20 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function() {
-    if (this.options.filterable) { this.filterInput.focus(); }
+  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+    if (this.options.filterable) {
+      this.dropdown.one('transitionend', () => {
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
+      });
+
+      if (triggerFocus) {
+        // This triggers after a ajax request
+        // in case of slow requests, the dropdown transition could already be finished
+        this.dropdown.trigger('transitionend');
+      }
+    }
   };
 
   GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {

@@ -6,7 +6,7 @@ describe API::Internal do
   let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 
-  describe "GET /internal/check", no_db: true do
+  describe "GET /internal/check" do
     it do
       get api("/internal/check"), secret_token: secret_token
 
@@ -15,21 +15,54 @@ describe API::Internal do
     end
   end
 
-  describe "GET /internal/broadcast_message" do
-    context "broadcast message exists" do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow ) }
+  describe 'GET /internal/broadcast_message' do
+    context 'broadcast message exists' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+      it 'returns one broadcast message'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
-        expect(json_response["message"]).to eq(broadcast_message.message)
+        expect(json_response['message']).to eq(broadcast_message.message)
       end
     end
 
-    context "broadcast message doesn't exist" do
-      it do
-        get api("/internal/broadcast_message"), secret_token: secret_token
+    context 'broadcast message does not exist' do
+      it 'returns nothing'  do
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'nil broadcast message' do
+      it 'returns nothing' do
+        allow(BroadcastMessage).to receive(:current).and_return(nil)
+
+        get api('/internal/broadcast_message'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_empty
+      end
+    end
+  end
+
+  describe 'GET /internal/broadcast_messages' do
+    context 'broadcast message(s) exist' do
+      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
+
+      it 'returns active broadcast message(s)' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
+
+        expect(response).to have_http_status(200)
+        expect(json_response[0]['message']).to eq(broadcast_message.message)
+      end
+    end
+
+    context 'broadcast message does not exist' do
+      it 'returns nothing' do
+        get api('/internal/broadcast_messages'), secret_token: secret_token
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_empty
@@ -146,7 +179,7 @@ describe API::Internal do
     end
   end
 
-  describe "POST /internal/allowed", :redis do
+  describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -198,31 +231,77 @@ describe API::Internal do
       end
 
       context "git pull" do
-        it do
-          pull(key, project)
+        context "gitaly disabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(false)
+            pull(key, project)
 
-          expect(response).to have_http_status(200)
-          expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          expect(user).to have_an_activity_record
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).to be_nil
+            expect(user).to have_an_activity_record
+          end
+        end
+
+        context "gitaly enabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(true)
+            pull(key, project)
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(user).to have_an_activity_record
+          end
         end
       end
 
       context "git push" do
-        it do
-          push(key, project)
+        context "gitaly disabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(false)
+            push(key, project)
 
-          expect(response).to have_http_status(200)
-          expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["gl_repository"]).to eq("project-#{project.id}")
-          expect(user).not_to have_an_activity_record
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).to be_nil
+            expect(user).not_to have_an_activity_record
+          end
+        end
+
+        context "gitaly enabled" do
+          it "has the correct payload" do
+            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(true)
+            push(key, project)
+
+            expect(response).to have_http_status(200)
+            expect(json_response["status"]).to be_truthy
+            expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+            expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gitaly"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]).not_to be_nil
+            expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
+            expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
+            expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
+            expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
+            expect(user).not_to have_an_activity_record
+          end
         end
 
         context 'project as /namespace/project' do
           it do
-            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+            pull(key, project_with_repo_path('/' + project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -233,7 +312,7 @@ describe API::Internal do
 
         context 'project as namespace/project' do
           it do
-            pull(key, project_with_repo_path(project.path_with_namespace))
+            pull(key, project_with_repo_path(project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -271,7 +350,7 @@ describe API::Internal do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       before do
         user.block
@@ -299,8 +378,6 @@ describe API::Internal do
     end
 
     context "archived project" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
-
       before do
         project.team << [user, :developer]
         project.archive!
@@ -423,6 +500,42 @@ describe API::Internal do
         expect(json_response['status']).to be_truthy
       end
     end
+
+    context 'the project path was changed' do
+      let!(:old_path_to_repo) { project.repository.path_to_repo }
+      let!(:old_full_path) { project.full_path }
+      let(:project_moved_message) do
+        <<-MSG.strip_heredoc
+          Project '#{old_full_path}' was moved to '#{project.full_path}'.
+
+          Please update your Git remote and try again:
+
+            git remote set-url origin #{project.ssh_url_to_repo}
+        MSG
+      end
+
+      before do
+        project.team << [user, :developer]
+        project.path = 'new_path'
+        project.save!
+      end
+
+      it 'rejects the push' do
+        push_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
+      end
+
+      it 'rejects the SSH pull' do
+        pull_with_path(key, old_path_to_repo)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(project_moved_message)
+      end
+    end
   end
 
   describe 'GET /internal/merge_request_urls' do
@@ -481,10 +594,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the project's repository" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -493,10 +606,10 @@ describe API::Internal do
   #   end
   #
   #   it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #     expect(Gitlab::GitalyClient::Notifications).
+  #     expect(Gitlab::GitalyClient::NotificationService).
   #       to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #       and_call_original
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive)
   #
   #     post api("/internal/notify_post_receive"), valid_wiki_params
@@ -505,7 +618,7 @@ describe API::Internal do
   #   end
   #
   #   it "returns 500 if the gitaly call fails" do
-  #     expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #     expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #       to receive(:post_receive).and_raise(GRPC::Unavailable)
   #
   #     post api("/internal/notify_post_receive"), valid_params
@@ -523,10 +636,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the project's repository" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_params
@@ -535,10 +648,10 @@ describe API::Internal do
   #     end
   #
   #     it "calls the Gitaly client with the wiki's repository if it's a wiki" do
-  #       expect(Gitlab::GitalyClient::Notifications).
+  #       expect(Gitlab::GitalyClient::NotificationService).
   #         to receive(:new).with(gitlab_git_repository_with(path: project.wiki.repository.path)).
   #         and_call_original
-  #       expect_any_instance_of(Gitlab::GitalyClient::Notifications).
+  #       expect_any_instance_of(Gitlab::GitalyClient::NotificationService).
   #         to receive(:post_receive)
   #
   #       post api("/internal/notify_post_receive"), valid_wiki_params
@@ -565,12 +678,36 @@ describe API::Internal do
     )
   end
 
+  def pull_with_path(key, path_to_repo, protocol = 'ssh')
+    post(
+      api("/internal/allowed"),
+      key_id: key.id,
+      project: path_to_repo,
+      action: 'git-upload-pack',
+      secret_token: secret_token,
+      protocol: protocol
+    )
+  end
+
   def push(key, project, protocol = 'ssh', env: nil)
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.repository.path_to_repo,
+      action: 'git-receive-pack',
+      secret_token: secret_token,
+      protocol: protocol,
+      env: env
+    )
+  end
+
+  def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
+    post(
+      api("/internal/allowed"),
+      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+      key_id: key.id,
+      project: path_to_repo,
       action: 'git-receive-pack',
       secret_token: secret_token,
       protocol: protocol,

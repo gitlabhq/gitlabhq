@@ -10,9 +10,21 @@ describe API::Helpers do
   let(:key) { create(:key, user: user) }
 
   let(:params) { {} }
-  let(:env) { { 'REQUEST_METHOD' => 'GET' } }
-  let(:request) { Rack::Request.new(env) }
+  let(:csrf_token) { SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH) }
+  let(:env) do
+    {
+      'rack.input' => '',
+      'rack.session' => {
+        _csrf_token: csrf_token
+      },
+      'REQUEST_METHOD' => 'GET'
+    }
+  end
   let(:header) { }
+
+  before do
+    allow_any_instance_of(self.class).to receive(:options).and_return({})
+  end
 
   def set_env(user_or_token, identifier)
     clear_env
@@ -54,42 +66,94 @@ describe API::Helpers do
   describe ".current_user" do
     subject { current_user }
 
-    describe "Warden authentication" do
-      before { doorkeeper_guard_returns false }
+    describe "Warden authentication", :allow_forgery_protection do
+      before do
+        doorkeeper_guard_returns false
+      end
 
       context "with invalid credentials" do
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to be_nil }
         end
       end
 
       context "with valid credentials" do
-        before { warden_authenticate_returns user }
+        before do
+          warden_authenticate_returns user
+        end
 
         context "GET request" do
-          before { env['REQUEST_METHOD'] = 'GET' }
+          before do
+            env['REQUEST_METHOD'] = 'GET'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "HEAD request" do
-          before { env['REQUEST_METHOD'] = 'HEAD' }
+          before do
+            env['REQUEST_METHOD'] = 'HEAD'
+          end
+
           it { is_expected.to eq(user) }
         end
 
         context "PUT request" do
-          before { env['REQUEST_METHOD'] = 'PUT' }
-          it { is_expected.to be_nil }
+          before do
+            env['REQUEST_METHOD'] = 'PUT'
+          end
+
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
 
         context "POST request" do
-          before { env['REQUEST_METHOD'] = 'POST' }
-          it { is_expected.to be_nil }
+          before do
+            env['REQUEST_METHOD'] = 'POST'
+          end
+
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
 
         context "DELETE request" do
-          before { env['REQUEST_METHOD'] = 'DELETE' }
-          it { is_expected.to be_nil }
+          before do
+            env['REQUEST_METHOD'] = 'DELETE'
+          end
+
+          context 'without CSRF token' do
+            it { is_expected.to be_nil }
+          end
+
+          context 'with CSRF token' do
+            before do
+              env['HTTP_X_CSRF_TOKEN'] = csrf_token
+            end
+
+            it { is_expected.to eq(user) }
+          end
         end
       end
     end
@@ -145,7 +209,6 @@ describe API::Helpers do
       it "returns nil for a token without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow_access_with_scope('write_user')
 
         expect(current_user).to be_nil
       end

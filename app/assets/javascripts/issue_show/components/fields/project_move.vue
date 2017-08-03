@@ -1,10 +1,10 @@
 <script>
-  import tooltipMixin from '../../../vue_shared/mixins/tooltip';
+  import tooltip from '../../../vue_shared/directives/tooltip';
 
   export default {
-    mixins: [
-      tooltipMixin,
-    ],
+    directives: {
+      tooltip,
+    },
     props: {
       formState: {
         type: Object,
@@ -71,9 +71,9 @@
         data-placeholder="Move to a different project" />
     </div>
     <span
+      v-tooltip
       data-placement="auto top"
-      title="Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location."
-      ref="tooltip">
+      title="Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.">
       <i
         class="fa fa-question-circle"
         aria-hidden="true">

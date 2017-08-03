@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MilestonesController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project, milestone: milestone) }
@@ -28,6 +28,40 @@ describe Projects::MilestonesController do
       view_milestone
 
       expect(response).to have_http_status(200)
+    end
+  end
+
+  describe "#index" do
+    context "as html" do
+      before do
+        get :index, namespace_id: project.namespace.id, project_id: project.id
+      end
+
+      it "queries only projects milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(1)
+        expect(milestones.where(project_id: nil)).to be_empty
+      end
+    end
+
+    context "as json" do
+      let!(:group) { create(:group, :public) }
+      let!(:group_milestone) { create(:milestone, group: group) }
+      let!(:group_member) { create(:group_member, group: group, user: user) }
+
+      before do
+        project.update(namespace: group)
+        get :index, namespace_id: project.namespace.id, project_id: project.id, format: :json
+      end
+
+      it "queries projects milestones and groups milestones" do
+        milestones = assigns(:milestones)
+
+        expect(milestones.count).to eq(2)
+        expect(milestones.where(project_id: nil).first).to eq(group_milestone)
+        expect(milestones.where(group_id: nil).first).to eq(milestone)
+      end
     end
   end
 

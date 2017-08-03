@@ -2,13 +2,13 @@ require 'spec_helper'
 
 describe ProjectAuthorization do
   let(:user) { create(:user) }
-  let(:project1) { create(:empty_project) }
-  let(:project2) { create(:empty_project) }
+  let(:project1) { create(:project) }
+  let(:project2) { create(:project) }
 
   describe '.insert_authorizations' do
     it 'inserts the authorizations' do
-      described_class.
-        insert_authorizations([[user.id, project1.id, Gitlab::Access::MASTER]])
+      described_class
+        .insert_authorizations([[user.id, project1.id, Gitlab::Access::MASTER]])
 
       expect(user.project_authorizations.count).to eq(1)
     end

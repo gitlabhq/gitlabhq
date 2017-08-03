@@ -1,19 +1,19 @@
 require 'rails_helper'
 
-describe 'Milestone show', feature: true do
+describe 'Milestone show' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:milestone) { create(:milestone, project: project) }
   let(:labels) { create_list(:label, 2, project: project) }
   let(:issue_params) { { project: project, assignees: [user], author: user, milestone: milestone, labels: labels } }
 
   before do
     project.add_user(user, :developer) 
-    login_as(user)
+    sign_in(user)
   end
 
   def visit_milestone
-    visit namespace_project_milestone_path(project.namespace, project, milestone)
+    visit project_milestone_path(project, milestone)
   end
 
   it 'avoids N+1 database queries' do

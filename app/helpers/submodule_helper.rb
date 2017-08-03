@@ -73,6 +73,7 @@ module SubmoduleHelper
   end
 
   def relative_self_links(url, commit)
+    url.rstrip!
     # Map relative links to a namespace and project
     # For example:
     # ../bar.git -> same namespace, repo bar

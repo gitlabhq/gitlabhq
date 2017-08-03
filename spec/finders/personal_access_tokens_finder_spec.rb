@@ -25,49 +25,65 @@ describe PersonalAccessTokensFinder do
       end
 
       describe 'without impersonation' do
-        before { params[:impersonation] = false }
+        before do
+          params[:impersonation] = false
+        end
 
         it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token) }
 
         describe 'with active state' do
-          before { params[:state] = 'active' }
+          before do
+            params[:state] = 'active'
+          end
 
           it { is_expected.to contain_exactly(active_personal_access_token) }
         end
 
         describe 'with inactive state' do
-          before { params[:state] = 'inactive' }
+          before do
+            params[:state] = 'inactive'
+          end
 
           it { is_expected.to contain_exactly(revoked_personal_access_token, expired_personal_access_token) }
         end
       end
 
       describe 'with impersonation' do
-        before { params[:impersonation] = true }
+        before do
+          params[:impersonation] = true
+        end
 
         it { is_expected.to contain_exactly(active_impersonation_token, revoked_impersonation_token, expired_impersonation_token) }
 
         describe 'with active state' do
-          before { params[:state] = 'active' }
+          before do
+            params[:state] = 'active'
+          end
 
           it { is_expected.to contain_exactly(active_impersonation_token) }
         end
 
         describe 'with inactive state' do
-          before { params[:state] = 'inactive' }
+          before do
+            params[:state] = 'inactive'
+          end
 
           it { is_expected.to contain_exactly(revoked_impersonation_token, expired_impersonation_token) }
         end
       end
 
       describe 'with active state' do
-        before { params[:state] = 'active' }
+        before do
+          params[:state] = 'active'
+        end
 
         it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token) }
       end
 
       describe 'with inactive state' do
-        before { params[:state] = 'inactive' }
+        before do
+          params[:state] = 'inactive'
+        end
 
         it do
           is_expected.to contain_exactly(expired_personal_access_token, revoked_personal_access_token,
@@ -81,7 +97,9 @@ describe PersonalAccessTokensFinder do
         it { is_expected.to eq(active_personal_access_token) }
 
         describe 'with impersonation' do
-          before { params[:impersonation] = true }
+          before do
+            params[:impersonation] = true
+          end
 
           it { is_expected.to be_nil }
         end
@@ -93,7 +111,9 @@ describe PersonalAccessTokensFinder do
         it { is_expected.to eq(active_personal_access_token) }
 
         describe 'with impersonation' do
-          before { params[:impersonation] = true }
+          before do
+            params[:impersonation] = true
+          end
 
           it { is_expected.to be_nil }
         end
@@ -109,7 +129,9 @@ describe PersonalAccessTokensFinder do
       let!(:other_user_expired_impersonation_token) { create(:personal_access_token, :expired, :impersonation, user: user2) }
       let!(:other_user_revoked_impersonation_token) { create(:personal_access_token, :revoked, :impersonation, user: user2) }
 
-      before { params[:user] = user }
+      before do
+        params[:user] = user
+      end
 
       it do
         is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token,
@@ -118,49 +140,65 @@ describe PersonalAccessTokensFinder do
       end
 
       describe 'without impersonation' do
-        before { params[:impersonation] = false }
+        before do
+          params[:impersonation] = false
+        end
 
         it { is_expected.to contain_exactly(active_personal_access_token, revoked_personal_access_token, expired_personal_access_token) }
 
         describe 'with active state' do
-          before { params[:state] = 'active' }
+          before do
+            params[:state] = 'active'
+          end
 
           it { is_expected.to contain_exactly(active_personal_access_token) }
         end
 
         describe 'with inactive state' do
-          before { params[:state] = 'inactive' }
+          before do
+            params[:state] = 'inactive'
+          end
 
           it { is_expected.to contain_exactly(revoked_personal_access_token, expired_personal_access_token) }
         end
       end
 
       describe 'with impersonation' do
-        before { params[:impersonation] = true }
+        before do
+          params[:impersonation] = true
+        end
 
         it { is_expected.to contain_exactly(active_impersonation_token, revoked_impersonation_token, expired_impersonation_token) }
 
         describe 'with active state' do
-          before { params[:state] = 'active' }
+          before do
+            params[:state] = 'active'
+          end
 
           it { is_expected.to contain_exactly(active_impersonation_token) }
         end
 
         describe 'with inactive state' do
-          before { params[:state] = 'inactive' }
+          before do
+            params[:state] = 'inactive'
+          end
 
           it { is_expected.to contain_exactly(revoked_impersonation_token, expired_impersonation_token) }
         end
       end
 
       describe 'with active state' do
-        before { params[:state] = 'active' }
+        before do
+          params[:state] = 'active'
+        end
 
         it { is_expected.to contain_exactly(active_personal_access_token, active_impersonation_token) }
       end
 
       describe 'with inactive state' do
-        before { params[:state] = 'inactive' }
+        before do
+          params[:state] = 'inactive'
+        end
 
         it do
           is_expected.to contain_exactly(expired_personal_access_token, revoked_personal_access_token,
@@ -174,7 +212,9 @@ describe PersonalAccessTokensFinder do
         it { is_expected.to eq(active_personal_access_token) }
 
         describe 'with impersonation' do
-          before { params[:impersonation] = true }
+          before do
+            params[:impersonation] = true
+          end
 
           it { is_expected.to be_nil }
         end
@@ -186,7 +226,9 @@ describe PersonalAccessTokensFinder do
         it { is_expected.to eq(active_personal_access_token) }
 
         describe 'with impersonation' do
-          before { params[:impersonation] = true }
+          before do
+            params[:impersonation] = true
+          end
 
           it { is_expected.to be_nil }
         end

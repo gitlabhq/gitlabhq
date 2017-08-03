@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Kubernetes do
+  include KubernetesHelpers
   include described_class
 
   describe '#container_exec_url' do
@@ -34,6 +35,39 @@ describe Gitlab::Kubernetes do
 
       it { expect(result.path).to eq('/api/v1/namespaces/default%20namespace/pods/pod%201/exec') }
       it { expect(result.query).to match(/\Acontainer=container\+1&/) }
+    end
+  end
+
+  describe '#filter_by_label' do
+    it 'returns matching labels' do
+      matching_items = [kube_pod(app: 'foo')]
+      items = matching_items + [kube_pod]
+
+      expect(filter_by_label(items, app: 'foo')).to eq(matching_items)
+    end
+  end
+
+  describe '#to_kubeconfig' do
+    subject do
+      to_kubeconfig(
+        url: 'https://kube.domain.com',
+        namespace: 'NAMESPACE',
+        token: 'TOKEN',
+        ca_pem: ca_pem)
+    end
+
+    context 'when CA PEM is provided' do
+      let(:ca_pem) { 'PEM' }
+      let(:path) { expand_fixture_path('config/kubeconfig.yml') }
+
+      it { is_expected.to eq(YAML.load_file(path)) }
+    end
+
+    context 'when CA PEM is not provided' do
+      let(:ca_pem) { nil }
+      let(:path) { expand_fixture_path('config/kubeconfig-without-ca.yml') }
+
+      it { is_expected.to eq(YAML.load_file(path)) }
     end
   end
 end

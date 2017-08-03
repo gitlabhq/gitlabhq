@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe 'Merge requests > User posts notes', :js do
-  let(:project) { create(:project) }
+  include NoteInteractionHelpers
+
+  let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
   end
@@ -11,8 +13,8 @@ describe 'Merge requests > User posts notes', :js do
   end
 
   before do
-    login_as :admin
-    visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+    sign_in(create(:admin))
+    visit project_merge_request_path(project, merge_request)
   end
 
   subject { page }
@@ -20,8 +22,8 @@ describe 'Merge requests > User posts notes', :js do
   describe 'the note form' do
     it 'is valid' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value).
-        to eq('Comment')
+      expect(find('.js-main-target-form .js-comment-button').value)
+        .to eq('Comment')
       page.within('.js-main-target-form') do
         expect(page).not_to have_link('Cancel')
       end
@@ -73,6 +75,8 @@ describe 'Merge requests > User posts notes', :js do
     describe 'editing the note' do
       before do
         find('.note').hover
+        open_more_actions_dropdown(note)
+
         find('.js-note-edit').click
       end
 
@@ -100,6 +104,8 @@ describe 'Merge requests > User posts notes', :js do
 
         wait_for_requests
         find('.note').hover
+        open_more_actions_dropdown(note)
+
         find('.js-note-edit').click
 
         page.within('.current-note-edit-form') do
@@ -117,8 +123,8 @@ describe 'Merge requests > User posts notes', :js do
 
         page.within("#note_#{note.id}") do
           is_expected.to have_css('.note_edited_ago')
-          expect(find('.note_edited_ago').text).
-            to match(/less than a minute ago/)
+          expect(find('.note_edited_ago').text)
+            .to match(/less than a minute ago/)
         end
       end
     end
@@ -126,6 +132,8 @@ describe 'Merge requests > User posts notes', :js do
     describe 'deleting an attachment' do
       before do
         find('.note').hover
+        open_more_actions_dropdown(note)
+
         find('.js-note-edit').click
       end
 

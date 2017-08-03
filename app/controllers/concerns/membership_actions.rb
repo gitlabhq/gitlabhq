@@ -15,8 +15,8 @@ module MembershipActions
   end
 
   def destroy
-    Members::DestroyService.new(membershipable, current_user, params).
-      execute(:all)
+    Members::DestroyService.new(membershipable, current_user, params)
+      .execute(:all)
 
     respond_to do |format|
       format.html do
@@ -42,8 +42,8 @@ module MembershipActions
   end
 
   def leave
-    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
-      execute(:all)
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
+      .execute(:all)
 
     notice =
       if member.request?
@@ -52,9 +52,14 @@ module MembershipActions
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
 
-    redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+    respond_to do |format|
+      format.html do
+        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+        redirect_to redirect_path, notice: notice
+      end
 
-    redirect_to redirect_path, notice: notice
+      format.json { render json: { notice: notice } }
+    end
   end
 
   protected
@@ -65,7 +70,7 @@ module MembershipActions
 
   def members_page_url
     if membershipable.is_a?(Project)
-      project_settings_members_path(membershipable)
+      project_project_members_path(membershipable)
     else
       polymorphic_url([membershipable, :members])
     end

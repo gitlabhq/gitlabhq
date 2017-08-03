@@ -1,4 +1,4 @@
-# Koding & GitLab
+# Koding integration
 
 > [Introduced][ce-5909] in GitLab 8.11.
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IssueCollection do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue1) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project) }
   let(:collection) { described_class.new([issue1, issue2]) }
@@ -50,8 +50,8 @@ describe IssueCollection do
 
     context 'using a user that is the owner of a project' do
       it 'returns the issues of the project' do
-        expect(collection.updatable_by_user(project.namespace.owner)).
-          to eq([issue1, issue2])
+        expect(collection.updatable_by_user(project.namespace.owner))
+          .to eq([issue1, issue2])
       end
     end
   end

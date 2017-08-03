@@ -4,6 +4,10 @@ import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown_manager';
 
 describe('Filtered Search Dropdown Manager', () => {
+  beforeEach(() => {
+    spyOn(jQuery, 'ajax');
+  });
+
   describe('addWordToInput', () => {
     function getInputValue() {
       return document.querySelector('.filtered-search').value;

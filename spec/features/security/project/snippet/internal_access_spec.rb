@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe "Internal Project Snippets Access", feature: true  do
+describe "Internal Project Snippets Access"  do
   include AccessMatchers
 
-  let(:project) { create(:empty_project, :internal) }
+  let(:project) { create(:project, :internal) }
 
   let(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }
   let(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.owner) }
 
   describe "GET /:project_path/snippets" do
-    subject { namespace_project_snippets_path(project.namespace, project) }
+    subject { project_snippets_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -23,7 +23,7 @@ describe "Internal Project Snippets Access", feature: true  do
   end
 
   describe "GET /:project_path/snippets/new" do
-    subject { new_namespace_project_snippet_path(project.namespace, project) }
+    subject { new_project_snippet_path(project) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -38,7 +38,7 @@ describe "Internal Project Snippets Access", feature: true  do
 
   describe "GET /:project_path/snippets/:id" do
     context "for an internal snippet" do
-      subject { namespace_project_snippet_path(project.namespace, project, internal_snippet) }
+      subject { project_snippet_path(project, internal_snippet) }
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -52,7 +52,7 @@ describe "Internal Project Snippets Access", feature: true  do
     end
 
     context "for a private snippet" do
-      subject { namespace_project_snippet_path(project.namespace, project, private_snippet) }
+      subject { project_snippet_path(project, private_snippet) }
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -68,7 +68,7 @@ describe "Internal Project Snippets Access", feature: true  do
 
   describe "GET /:project_path/snippets/:id/raw" do
     context "for an internal snippet" do
-      subject { raw_namespace_project_snippet_path(project.namespace, project, internal_snippet) }
+      subject { raw_project_snippet_path(project, internal_snippet) }
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
@@ -82,7 +82,7 @@ describe "Internal Project Snippets Access", feature: true  do
     end
 
     context "for a private snippet" do
-      subject { raw_namespace_project_snippet_path(project.namespace, project, private_snippet) }
+      subject { raw_project_snippet_path(project, private_snippet) }
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }

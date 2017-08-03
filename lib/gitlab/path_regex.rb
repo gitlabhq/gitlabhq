@@ -14,42 +14,42 @@ module Gitlab
     TOP_LEVEL_ROUTES = %w[
       -
       .well-known
+      404.html
+      422.html
+      500.html
+      502.html
+      503.html
       abuse_reports
       admin
-      all
       api
+      apple-touch-icon-precomposed.png
+      apple-touch-icon.png
       assets
       autocomplete
       ci
       dashboard
+      deploy.html
       explore
+      favicon.ico
       files
       groups
       health_check
       help
-      hooks
       import
       invites
-      issues
       jwt
       koding
-      member
-      merge_requests
-      new
-      notes
       notification_settings
       oauth
       profile
       projects
       public
-      repository
       robots.txt
       s
       search
       sent_notifications
-      services
+      slash-command-logo.png
       snippets
-      teams
       u
       unicorn_test
       unsubscribes
@@ -111,6 +111,7 @@ module Gitlab
     # this group would not be accessible through `/groups/parent/activity` since
     # this would map to the activity-page of its parent.
     GROUP_ROUTES = %w[
+      -
       activity
       analytics
       audit_events

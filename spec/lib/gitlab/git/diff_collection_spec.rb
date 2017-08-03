@@ -325,8 +325,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
       end
 
       it 'yields Diff instances even when they are too large' do
-        expect { |b| collection.each(&b) }.
-          to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+        expect { |b| collection.each(&b) }
+          .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
       end
 
       it 'prunes diffs that are too large' do
@@ -348,8 +348,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:expanded) { true }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'does not prune diffs' do
@@ -367,8 +367,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:expanded) { false }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'prunes diffs that are quite big' do
@@ -454,8 +454,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
         let(:limits) { false }
 
         it 'yields Diff instances even when they are quite big' do
-          expect { |b| subject.each(&b) }.
-            to yield_with_args(an_instance_of(Gitlab::Git::Diff))
+          expect { |b| subject.each(&b) }
+            .to yield_with_args(an_instance_of(Gitlab::Git::Diff))
         end
 
         it 'does not prune diffs' do
@@ -484,6 +484,8 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
     end
 
     def each
+      return enum_for(:each) unless block_given?
+
       loop do
         break if @count.zero?
         # It is critical to decrement before yielding. We may never reach the lines after 'yield'.

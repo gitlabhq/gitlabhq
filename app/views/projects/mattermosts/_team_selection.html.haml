@@ -2,7 +2,7 @@
   This service will be installed on the Mattermost instance at
   %strong= link_to Gitlab.config.mattermost.host, Gitlab.config.mattermost.host
 %hr
-= form_for(:mattermost, method: :post, url: namespace_project_mattermost_path(@project.namespace, @project), html: { class: 'js-requires-input'} ) do |f|
+= form_for(:mattermost, method: :post, url: project_mattermost_path(@project), html: { class: 'js-requires-input'} ) do |f|
   %h4 Team
   %p
     = @teams.one? ? 'The team' : 'Select the team'
@@ -33,7 +33,7 @@
       Suggestions:
       %code= 'gitlab'
       %code= @project.path # Path contains no spaces, but dashes
-      %code= @project.path_with_namespace
+      %code= @project.full_path
     %p
       Reserved:
       = link_to 'https://docs.mattermost.com/help/messaging/executing-commands.html#built-in-commands', target: '__blank' do
@@ -42,5 +42,5 @@
   %hr
   .clearfix
     .pull-right
-      = link_to 'Cancel', edit_namespace_project_service_path(@project.namespace, @project, @service), class: 'btn btn-lg'
+      = link_to 'Cancel', edit_project_service_path(@project, @service), class: 'btn btn-lg'
       = f.submit 'Install', class: 'btn btn-save btn-lg'

@@ -5,17 +5,17 @@ class CommitStatus < ActiveRecord::Base
 
   self.table_name = 'ci_builds'
 
+  belongs_to :user
   belongs_to :project
   belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
-  belongs_to :user
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
 
-  validates :name, presence: true
+  validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
 
@@ -112,7 +112,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
+    name.to_s.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def failed_but_allowed?
@@ -129,6 +129,11 @@ class CommitStatus < ActiveRecord::Base
 
   # To be overriden when inherrited from
   def retryable?
+    false
+  end
+
+  # To be overriden when inherrited from
+  def cancelable?
     false
   end
 
@@ -151,7 +156,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def sortable_name
-    name.split(/(\d+)/).map do |v|
+    name.to_s.split(/(\d+)/).map do |v|
       v =~ /\d+/ ? v.to_i : v
     end
   end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::Labels do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:label1) { create(:label, title: 'label1', project: project) }
   let!(:priority_label) { create(:label, title: 'bug', project: project, priority: 3) }
 
@@ -339,7 +339,9 @@ describe API::Labels do
     end
 
     context "when user is already subscribed to label" do
-      before { label1.subscribe(user, project) }
+      before do
+        label1.subscribe(user, project)
+      end
 
       it "returns 304" do
         post api("/projects/#{project.id}/labels/#{label1.id}/subscribe", user)
@@ -358,7 +360,9 @@ describe API::Labels do
   end
 
   describe "POST /projects/:id/labels/:label_id/unsubscribe" do
-    before { label1.subscribe(user, project) }
+    before do
+      label1.subscribe(user, project)
+    end
 
     context "when label_id is a label title" do
       it "unsubscribes from the label" do
@@ -381,7 +385,9 @@ describe API::Labels do
     end
 
     context "when user is already unsubscribed from label" do
-      before { label1.unsubscribe(user, project) }
+      before do
+        label1.unsubscribe(user, project)
+      end
 
       it "returns 304" do
         post api("/projects/#{project.id}/labels/#{label1.id}/unsubscribe", user)

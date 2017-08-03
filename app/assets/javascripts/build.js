@@ -13,24 +13,21 @@ window.Build = (function () {
     this.options = options || $('.js-build-options').data();
 
     this.pageUrl = this.options.pageUrl;
-    this.buildUrl = this.options.buildUrl;
     this.buildStatus = this.options.buildStatus;
     this.state = this.options.logState;
     this.buildStage = this.options.buildStage;
     this.$document = $(document);
     this.logBytes = 0;
-    this.scrollOffsetPadding = 30;
+    this.hasBeenScrolled = false;
 
     this.updateDropdown = this.updateDropdown.bind(this);
     this.getBuildTrace = this.getBuildTrace.bind(this);
-    this.scrollToBottom = this.scrollToBottom.bind(this);
 
-    this.$body = $('body');
     this.$buildTrace = $('#build-trace');
     this.$buildRefreshAnimation = $('.js-build-refresh');
     this.$truncatedInfo = $('.js-truncated-info');
     this.$buildTraceOutput = $('.js-build-output');
-    this.$scrollContainer = $('.js-scroll-container');
+    this.$topBar = $('.js-top-bar');
 
     // Scroll controllers
     this.$scrollTopBtn = $('.js-scroll-up');
@@ -62,73 +59,97 @@ window.Build = (function () {
       .off('click')
       .on('click', this.scrollToBottom.bind(this));
 
+    this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
+
+    $(window)
+      .off('scroll')
+      .on('scroll', () => {
+        const contentHeight = this.$buildTraceOutput.height();
+        if (contentHeight > this.windowSize) {
+          // means the user did not scroll, the content was updated.
+          this.windowSize = contentHeight;
+        } else {
+          // User scrolled
+          this.hasBeenScrolled = true;
+          this.toggleScrollAnimation(false);
+        }
+
+        this.scrollThrottled();
+      });
+
     $(window)
       .off('resize.build')
       .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
     this.updateArtifactRemoveDate();
+    this.initAffixTopArea();
 
-    // eslint-disable-next-line
-    this.getBuildTrace()
-      .then(() => this.makeTraceScrollable())
-      .then(() => this.scrollToBottom());
-
-    this.verifyTopPosition();
+    this.getBuildTrace();
   }
 
-  Build.prototype.makeTraceScrollable = function () {
-    this.$scrollContainer.niceScroll({
-      cursorcolor: '#fff',
-      cursoropacitymin: 1,
-      cursorwidth: '3px',
-      railpadding: { top: 5, bottom: 5, right: 5 },
+  Build.prototype.initAffixTopArea = function () {
+    /**
+      If the browser does not support position sticky, it returns the position as static.
+      If the browser does support sticky, then we allow the browser to handle it, if not
+      then we default back to Bootstraps affix
+    **/
+    if (this.$topBar.css('position') !== 'static') return;
+
+    const offsetTop = this.$buildTrace.offset().top;
+
+    this.$topBar.affix({
+      offset: {
+        top: offsetTop,
+      },
     });
-
-    this.$scrollContainer.on('scroll', _.throttle(this.toggleScroll.bind(this), 100));
-
-    this.toggleScroll();
   };
 
   Build.prototype.canScroll = function () {
-    return (this.$scrollContainer.prop('scrollHeight') - this.scrollOffsetPadding) > this.$scrollContainer.height();
+    return $(document).height() > $(window).height();
   };
 
-  /**
-   * |                          | Up       | Down     |
-   * |--------------------------|----------|----------|
-   * | on scroll bottom         | active   | disabled |
-   * | on scroll top            | disabled | active   |
-   * | no scroll                | disabled | disabled |
-   * | on.('scroll') is on top  | disabled | active   |
-   * | on('scroll) is on bottom | active   | disabled |
-   *
-   */
   Build.prototype.toggleScroll = function () {
-    const bottomScroll = this.$scrollContainer.scrollTop() +
-      this.scrollOffsetPadding +
-      this.$scrollContainer.height();
+    const currentPosition = $(document).scrollTop();
+    const scrollHeight = $(document).height();
 
+    const windowHeight = $(window).height();
     if (this.canScroll()) {
-      if (this.$scrollContainer.scrollTop() === 0) {
+      if (currentPosition > 0 &&
+        (scrollHeight - currentPosition !== windowHeight)) {
+      // User is in the middle of the log
+
+        this.toggleDisableButton(this.$scrollTopBtn, false);
+        this.toggleDisableButton(this.$scrollBottomBtn, false);
+      } else if (currentPosition === 0) {
+        // User is at Top of Build Log
+
         this.toggleDisableButton(this.$scrollTopBtn, true);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (bottomScroll === this.$scrollContainer.prop('scrollHeight')) {
+      } else if (scrollHeight - currentPosition === windowHeight) {
+        // User is at the bottom of the build log.
+
         this.toggleDisableButton(this.$scrollTopBtn, false);
         this.toggleDisableButton(this.$scrollBottomBtn, true);
-      } else {
-        this.toggleDisableButton(this.$scrollTopBtn, false);
-        this.toggleDisableButton(this.$scrollBottomBtn, false);
       }
+    } else {
+      this.toggleDisableButton(this.$scrollTopBtn, true);
+      this.toggleDisableButton(this.$scrollBottomBtn, true);
     }
   };
 
-  Build.prototype.scrollToTop = function () {
-    this.$scrollContainer.getNiceScroll(0).doScrollTop(0);
-    this.toggleScroll();
+  Build.prototype.scrollDown = function () {
+    $(document).scrollTop($(document).height());
   };
 
   Build.prototype.scrollToBottom = function () {
-    this.$scrollContainer.getNiceScroll(0).doScrollTo(this.$scrollContainer.prop('scrollHeight'));
+    this.scrollDown();
+    this.hasBeenScrolled = true;
+    this.toggleScroll();
+  };
+
+  Build.prototype.scrollToTop = function () {
+    $(document).scrollTop(0);
+    this.hasBeenScrolled = true;
     this.toggleScroll();
   };
 
@@ -139,40 +160,6 @@ window.Build = (function () {
 
   Build.prototype.toggleScrollAnimation = function (toggle) {
     this.$scrollBottomBtn.toggleClass('animate', toggle);
-  };
-
-  /**
-   * Build trace top position depends on the space ocupied by the elments rendered before
-   */
-  Build.prototype.verifyTopPosition = function () {
-    const $buildPage = $('.build-page');
-
-    const $header = $('.build-header', $buildPage);
-    const $runnersStuck = $('.js-build-stuck', $buildPage);
-    const $startsEnvironment = $('.js-environment-container', $buildPage);
-    const $erased = $('.js-build-erased', $buildPage);
-
-    let topPostion = 168;
-
-    if ($header) {
-      topPostion += $header.outerHeight();
-    }
-
-    if ($runnersStuck) {
-      topPostion += $runnersStuck.outerHeight();
-    }
-
-    if ($startsEnvironment) {
-      topPostion += $startsEnvironment.outerHeight();
-    }
-
-    if ($erased) {
-      topPostion += $erased.outerHeight() + 10;
-    }
-
-    this.$buildTrace.css({
-      top: topPostion,
-    });
   };
 
   Build.prototype.initSidebar = function () {
@@ -187,9 +174,12 @@ window.Build = (function () {
     })
       .done((log) => {
         gl.utils.setCiStatusFavicon(`${this.pageUrl}/status.json`);
+
         if (log.state) {
           this.state = log.state;
         }
+
+        this.windowSize = this.$buildTraceOutput.height();
 
         if (log.append) {
           this.$buildTraceOutput.append(log.html);
@@ -211,12 +201,14 @@ window.Build = (function () {
         }
 
         if (!log.complete) {
-          this.toggleScrollAnimation(true);
+          if (!this.hasBeenScrolled) {
+            this.toggleScrollAnimation(true);
+          } else {
+            this.toggleScrollAnimation(false);
+          }
 
           Build.timeout = setTimeout(() => {
-            //eslint-disable-next-line
-            this.getBuildTrace()
-              .then(() => this.scrollToBottom());
+            this.getBuildTrace();
           }, 4000);
         } else {
           this.$buildRefreshAnimation.remove();
@@ -229,7 +221,13 @@ window.Build = (function () {
       })
       .fail(() => {
         this.$buildRefreshAnimation.remove();
-      });
+      })
+      .then(() => {
+        if (!this.hasBeenScrolled) {
+          this.scrollDown();
+        }
+      })
+      .then(() => this.toggleScroll());
   };
 
   Build.prototype.shouldHideSidebarForViewport = function () {
@@ -238,24 +236,26 @@ window.Build = (function () {
   };
 
   Build.prototype.toggleSidebar = function (shouldHide) {
-    const shouldShow = !shouldHide;
+    const shouldShow = typeof shouldHide === 'boolean' ? !shouldHide : undefined;
+    const $toggleButton = $('.js-sidebar-build-toggle-header');
 
-    this.$buildTrace
-      .toggleClass('sidebar-expanded', shouldShow)
-      .toggleClass('sidebar-collapsed', shouldHide);
     this.$sidebar
       .toggleClass('right-sidebar-expanded', shouldShow)
       .toggleClass('right-sidebar-collapsed', shouldHide);
+
+    this.$topBar
+      .toggleClass('sidebar-expanded', shouldShow)
+      .toggleClass('sidebar-collapsed', shouldHide);
+
+    if (this.$sidebar.hasClass('right-sidebar-expanded')) {
+      $toggleButton.addClass('hidden');
+    } else {
+      $toggleButton.removeClass('hidden');
+    }
   };
 
   Build.prototype.sidebarOnResize = function () {
     this.toggleSidebar(this.shouldHideSidebarForViewport());
-
-    this.verifyTopPosition();
-
-    if (this.$scrollContainer.getNiceScroll(0)) {
-      this.toggleScroll();
-    }
   };
 
   Build.prototype.sidebarOnClick = function () {

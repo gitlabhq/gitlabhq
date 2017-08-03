@@ -1,18 +1,18 @@
 - show_controls = local_assigns.fetch(:show_controls, true)
 - pipeline = @build.pipeline
 
-.content-block.build-header.top-area
+.content-block.build-header.top-area.page-content-header
   .header-content
     = render 'ci/status/badge', status: @build.detailed_status(current_user), link: false, title: @build.status_title
     %strong
       Job
-      = link_to "##{@build.id}", namespace_project_job_path(@project.namespace, @project, @build), class: 'js-build-id'
+      = link_to "##{@build.id}", project_job_path(@project, @build), class: 'js-build-id'
     in pipeline
     %strong
       = link_to "##{pipeline.id}", pipeline_path(pipeline)
     for
     %strong
-      = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: 'commit-sha'
+      = link_to pipeline.short_sha, project_commit_path(@project, pipeline.sha), class: 'commit-sha'
     from
     %strong
       = link_to @build.ref, project_ref_path(@project, @build.ref), class: 'ref-name'
@@ -24,8 +24,8 @@
   - if show_controls
     .nav-controls
       - if can?(current_user, :create_issue, @project) && @build.failed?
-        = link_to "New issue", new_namespace_project_issue_path(@project.namespace, @project, issue: build_failed_issue_options), class: 'btn btn-new btn-inverted'
+        = link_to "New issue", new_project_issue_path(@project, issue: build_failed_issue_options), class: 'btn btn-new btn-inverted'
       - if can?(current_user, :update_build, @build) && @build.retryable?
-        = link_to "Retry job", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'btn btn-inverted-secondary', method: :post
+        = link_to "Retry job", retry_project_job_path(@project, @build), class: 'btn btn-inverted-secondary', method: :post
     %button.btn.btn-default.pull-right.visible-xs-block.visible-sm-block.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
       = icon('angle-double-left')

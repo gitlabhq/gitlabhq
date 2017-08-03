@@ -34,9 +34,9 @@ instructions to [generate an SSH key](../../ssh/README.md). Do not add a
 passphrase to the SSH key, or the `before_script` will prompt for it.
 
 Then, create a new **Secret Variable** in your project settings on GitLab
-following **Settings > Variables**. As **Key** add the name `SSH_PRIVATE_KEY`
-and in the **Value** field paste the content of your _private_ key that you
-created earlier.
+following **Settings > Pipelines** and look for the "Secret Variables" section.
+As **Key** add the name `SSH_PRIVATE_KEY` and in the **Value** field paste the 
+content of your _private_ key that you created earlier.
 
 It is also good practice to check the server's own public key to make sure you
 are not being targeted by a man-in-the-middle attack. To do this, add another

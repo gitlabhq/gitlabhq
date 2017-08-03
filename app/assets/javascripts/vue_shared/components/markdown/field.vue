@@ -44,9 +44,8 @@
               text: this.$slots.textarea[0].elm.value,
             },
           )
-          .then((res) => {
-            const data = res.json();
-
+          .then(resp => resp.json())
+          .then((data) => {
             this.markdownPreviewLoading = false;
             this.markdownPreview = data.body;
 
@@ -63,6 +62,12 @@
         GLForm class handles all the toolbar buttons
       */
       return new gl.GLForm($(this.$refs['gl-form']), true);
+    },
+    beforeDestroy() {
+      const glForm = $(this.$refs['gl-form']).data('gl-form');
+      if (glForm) {
+        glForm.destroy();
+      }
     },
   };
 </script>

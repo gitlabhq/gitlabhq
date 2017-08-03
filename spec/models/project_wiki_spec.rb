@@ -1,30 +1,37 @@
 require "spec_helper"
 
-describe ProjectWiki, models: true do
-  let(:project) { create(:empty_project) }
+describe ProjectWiki do
+  let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
-  let(:project_wiki) { ProjectWiki.new(project, user) }
+  let(:project_wiki) { described_class.new(project, user) }
 
   subject { project_wiki }
-  before { project_wiki.wiki }
+
+  before do
+    project_wiki.wiki
+  end
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
-      expect(subject.path_with_namespace).to eq(project.path_with_namespace + ".wiki")
+      expect(subject.path_with_namespace).to eq(project.full_path + '.wiki')
+    end
+
+    it 'returns the same value as #full_path' do
+      expect(subject.path_with_namespace).to eq(subject.full_path)
     end
   end
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/wikis/home")
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/wikis/home")
     end
   end
 
   describe "#url_to_repo" do
     it "returns the correct ssh url to the repo" do
-      expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.path_with_namespace))
+      expect(subject.url_to_repo).to eq(gitlab_shell.url_to_repo(subject.full_path))
     end
   end
 
@@ -35,10 +42,10 @@ describe ProjectWiki, models: true do
   end
 
   describe "#http_url_to_repo" do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     it 'returns the full http url to the repo' do
-      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.path_with_namespace}.git"
+      expected_url = "#{Gitlab.config.gitlab.url}/#{subject.full_path}.git"
 
       expect(project_wiki.http_url_to_repo).to eq(expected_url)
       expect(project_wiki.http_url_to_repo).not_to include('@')
@@ -47,7 +54,7 @@ describe ProjectWiki, models: true do
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.path_with_namespace}/wikis"
+      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.full_path}/wikis"
 
       expect(subject.wiki_base_path).to eq(wiki_base_path)
     end
@@ -74,7 +81,7 @@ describe ProjectWiki, models: true do
         allow_any_instance_of(Gitlab::Shell).to receive(:add_repository) do
           create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
         end
-        allow(project).to receive(:path_with_namespace).and_return("non-existant")
+        allow(project).to receive(:full_path).and_return("non-existant")
       end
 
       describe '#empty?' do
@@ -146,15 +153,15 @@ describe ProjectWiki, models: true do
   describe '#find_file' do
     before do
       file = Gollum::File.new(subject.wiki)
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('image.jpg', 'master', true).
-                   and_return(file)
-      allow_any_instance_of(Gollum::File).
-                   to receive(:mime_type).
-                   and_return('image/jpeg')
-      allow_any_instance_of(Gollum::Wiki).
-                   to receive(:file).with('non-existant', 'master', true).
-                   and_return(nil)
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('image.jpg', 'master', true)
+                   .and_return(file)
+      allow_any_instance_of(Gollum::File)
+                   .to receive(:mime_type)
+                   .and_return('image/jpeg')
+      allow_any_instance_of(Gollum::Wiki)
+                   .to receive(:file).with('non-existant', 'master', true)
+                   .and_return(nil)
     end
 
     after do
@@ -265,13 +272,31 @@ describe ProjectWiki, models: true do
 
   describe '#create_repo!' do
     it 'creates a repository' do
-      expect(subject).to receive(:init_repo).
-        with(subject.path_with_namespace).
-        and_return(true)
+      expect(subject).to receive(:init_repo)
+        .with(subject.full_path)
+        .and_return(true)
 
       expect(subject.repository).to receive(:after_create)
 
       expect(subject.create_repo!).to be_an_instance_of(Gollum::Wiki)
+    end
+  end
+
+  describe '#ensure_repository' do
+    it 'creates the repository if it not exist' do
+      allow(subject).to receive(:repository_exists?).and_return(false)
+
+      expect(subject).to receive(:create_repo!)
+
+      subject.ensure_repository
+    end
+
+    it 'does not create the repository if it exists' do
+      allow(subject).to receive(:repository_exists?).and_return(true)
+
+      expect(subject).not_to receive(:create_repo!)
+
+      subject.ensure_repository
     end
   end
 

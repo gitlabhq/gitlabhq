@@ -8,12 +8,12 @@ class Projects::BranchesController < Projects::ApplicationController
   before_action :authorize_push_code!, only: [:new, :create, :destroy, :destroy_all_merged]
 
   def index
-    @sort = params[:sort].presence || sort_value_name
+    @sort = params[:sort].presence || sort_value_recently_updated
     @branches = BranchesFinder.new(@repository, params).execute
+    @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
     respond_to do |format|
       format.html do
-        paginate_branches
         @refs_pipelines = @project.pipelines.latest_successful_for_refs(@branches.map(&:name))
 
         @max_commits = @branches.reduce(0) do |memo, branch|
@@ -22,7 +22,6 @@ class Projects::BranchesController < Projects::ApplicationController
         end
       end
       format.json do
-        paginate_branches unless params[:show_all]
         render json: @branches.map(&:name)
       end
     end
@@ -38,8 +37,8 @@ class Projects::BranchesController < Projects::ApplicationController
 
     redirect_to_autodeploy = project.empty_repo? && project.deployment_services.present?
 
-    result = CreateBranchService.new(project, current_user).
-        execute(branch_name, ref)
+    result = CreateBranchService.new(project, current_user)
+        .execute(branch_name, ref)
 
     if params[:issue_iid]
       issue = IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:issue_iid])
@@ -53,7 +52,7 @@ class Projects::BranchesController < Projects::ApplicationController
             redirect_to url_to_autodeploy_setup(project, branch_name),
               notice: view_context.autodeploy_flash_notice(branch_name)
           else
-            redirect_to namespace_project_tree_path(@project.namespace, @project, branch_name)
+            redirect_to project_tree_path(@project, branch_name)
           end
         else
           @error = result[:message]
@@ -63,7 +62,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
       format.json do
         if result[:status] == :success
-          render json: { name: branch_name, url: namespace_project_tree_url(@project.namespace, @project, branch_name) }
+          render json: { name: branch_name, url: project_tree_url(@project, branch_name) }
         else
           render json: result[:messsage], status: :unprocessable_entity
         end
@@ -80,7 +79,7 @@ class Projects::BranchesController < Projects::ApplicationController
         flash_type = result[:status] == :error ? :alert : :notice
         flash[flash_type] = result[:message]
 
-        redirect_to namespace_project_branches_path(@project.namespace, @project), status: 303
+        redirect_to project_branches_path(@project), status: 303
       end
 
       format.js { render nothing: true, status: result[:return_code] }
@@ -91,7 +90,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def destroy_all_merged
     DeleteMergedBranchesService.new(@project, current_user).async_execute
 
-    redirect_to namespace_project_branches_path(@project.namespace, @project),
+    redirect_to project_branches_path(@project),
       notice: 'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'
   end
 
@@ -106,13 +105,8 @@ class Projects::BranchesController < Projects::ApplicationController
     end
   end
 
-  def paginate_branches
-    @branches = Kaminari.paginate_array(@branches).page(params[:page])
-  end
-
   def url_to_autodeploy_setup(project, branch_name)
-    namespace_project_new_blob_path(
-      project.namespace,
+    project_new_blob_path(
       project,
       branch_name,
       file_name: '.gitlab-ci.yml',

@@ -736,7 +736,7 @@ X-Gitlab-Event: Merge Request Hook
 
 ### Wiki Page events
 
-Triggered when a wiki page is created, edited or deleted.
+Triggered when a wiki page is created, updated or deleted.
 
 **Request Header**:
 
@@ -1014,6 +1014,13 @@ X-Gitlab-Event: Build Hook
 }
 ```
 
+## Testing webhooks
+
+You can trigger the webhook manually. Sample data from the project will be used.Sample data will take from the project. 
+> For example: for triggering `Push Events` your project should have at least one commit.
+
+![Webhook testing](img/webhook_testing.png)
+
 ## Troubleshoot webhooks
 
 Gitlab stores each perform of the webhook.
@@ -1056,7 +1063,7 @@ Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
 8000`.  Then add your server as a webhook receiver in GitLab as
 `http://my.host:8000/`.
 
-When you press 'Test Hook' in GitLab, you should see something like this in the
+When you press 'Test' in GitLab, you should see something like this in the
 console:
 
 ```

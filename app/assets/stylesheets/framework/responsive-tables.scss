@@ -19,7 +19,7 @@
   .table-section {
     white-space: nowrap;
 
-    $section-widths: 10 15 25 30;
+    $section-widths: 10 15 20 25 30 40;
     @each $width in $section-widths {
       &.section-#{$width} {
         flex: 0 0 #{$width + '%'};
@@ -36,11 +36,56 @@
         align-self: stretch;
         padding: 10px;
         align-items: center;
-        height: 62px;
+        min-height: 62px;
 
         &:not(:first-of-type) {
           border-top: 1px solid $white-normal;
         }
+      }
+    }
+
+    &.section-wrap {
+      white-space: normal;
+
+      @media (max-width: $screen-sm-max) {
+        flex-wrap: wrap;
+      }
+    }
+  }
+}
+
+
+.table-button-footer {
+  @media (min-width: $screen-md-min) {
+    text-align: right;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    background-color: $gray-normal;
+    align-self: stretch;
+    border-top: 1px solid $border-color;
+
+    .table-action-buttons {
+      padding: 10px 5px;
+      display: flex;
+
+      .btn {
+        border-radius: 3px;
+      }
+
+      > .btn-group,
+      > .external-url,
+      > .btn {
+        flex: 1 1 28px;
+        margin: 0 5px;
+      }
+
+      .dropdown-new {
+        width: 100%;
+      }
+
+      .dropdown-menu {
+        min-width: initial;
       }
     }
   }
@@ -55,8 +100,9 @@
 }
 
 .table-mobile-header {
-  color: $gl-text-color-secondary;
   @include flex-max-width(40);
+  color: $gl-text-color-secondary;
+  text-align: left;
 
   @media (min-width: $screen-md-min) {
     display: none;
@@ -82,5 +128,10 @@
 
   @media (min-width: $screen-md-min) {
     flex: 0 0 90%;
+  }
+
+  .avatar {
+    float: none;
+    margin-right: 4px;
   }
 }

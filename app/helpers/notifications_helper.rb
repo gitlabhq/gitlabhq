@@ -21,30 +21,36 @@ module NotificationsHelper
   end
 
   def notification_title(level)
+    # Can be anything in `NotificationSetting.level:
     case level.to_sym
     when :participating
-      'Participate'
+      s_('NotificationLevel|Participate')
     when :mention
-      'On mention'
+      s_('NotificationLevel|On mention')
     else
-      level.to_s.titlecase
+      N_('NotificationLevel|Global')
+      N_('NotificationLevel|Watch')
+      N_('NotificationLevel|Disabled')
+      N_('NotificationLevel|Custom')
+      level = "NotificationLevel|#{level.to_s.humanize}"
+      s_(level)
     end
   end
 
   def notification_description(level)
     case level.to_sym
     when :participating
-      'You will only receive notifications for threads you have participated in'
+      _('You will only receive notifications for threads you have participated in')
     when :mention
-      'You will receive notifications only for comments in which you were @mentioned'
+      _('You will receive notifications only for comments in which you were @mentioned')
     when :watch
-      'You will receive notifications for any activity'
+      _('You will receive notifications for any activity')
     when :disabled
-      'You will not get any notifications via email'
+      _('You will not get any notifications via email')
     when :global
-      'Use your global notification setting'
+      _('Use your global notification setting')
     when :custom
-      'You will only receive notifications for the events you choose'
+      _('You will only receive notifications for the events you choose')
     end
   end
 
@@ -76,11 +82,22 @@ module NotificationsHelper
   end
 
   def notification_event_name(event)
+    # All values from NotificationSetting::EMAIL_EVENTS
     case event
     when :success_pipeline
-      'Successful pipeline'
+      s_('NotificationEvent|Successful pipeline')
     else
-      event.to_s.humanize
+      N_('NotificationEvent|New note')
+      N_('NotificationEvent|New issue')
+      N_('NotificationEvent|Reopen issue')
+      N_('NotificationEvent|Close issue')
+      N_('NotificationEvent|Reassign issue')
+      N_('NotificationEvent|New merge request')
+      N_('NotificationEvent|Close merge request')
+      N_('NotificationEvent|Reassign merge request')
+      N_('NotificationEvent|Merge merge request')
+      N_('NotificationEvent|Failed pipeline')
+      s_(event.to_s.humanize)
     end
   end
 end

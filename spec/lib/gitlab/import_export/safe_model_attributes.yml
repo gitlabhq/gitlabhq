@@ -82,6 +82,7 @@ Milestone:
 - id
 - title
 - project_id
+- group_id
 - description
 - due_date
 - start_date
@@ -92,6 +93,7 @@ Milestone:
 ProjectSnippet:
 - id
 - title
+- description
 - content
 - author_id
 - project_id
@@ -171,9 +173,33 @@ MergeRequestDiff:
 - real_size
 - head_commit_sha
 - start_commit_sha
+MergeRequestDiffCommit:
+- merge_request_diff_id
+- relative_order
+- sha
+- authored_date
+- committed_date
+- author_name
+- author_email
+- committer_name
+- committer_email
+- message
+MergeRequestDiffFile:
+- merge_request_diff_id
+- relative_order
+- new_file
+- renamed_file
+- deleted_file
+- new_path
+- old_path
+- a_mode
+- b_mode
+- too_large
+- binary
 Ci::Pipeline:
 - id
 - project_id
+- source
 - ref
 - sha
 - before_sha
@@ -191,7 +217,13 @@ Ci::Pipeline:
 - lock_version
 - auto_canceled_by_id
 - pipeline_schedule_id
-- source
+Ci::Stage:
+- id
+- name
+- project_id
+- pipeline_id
+- created_at
+- updated_at
 CommitStatus:
 - id
 - project_id
@@ -213,6 +245,7 @@ CommitStatus:
 - stage
 - trigger_request_id
 - stage_idx
+- stage_id
 - tag
 - ref
 - user_id
@@ -363,6 +396,8 @@ Project:
 - printing_merge_request_link_enabled
 - build_allow_git_fetch
 - last_repository_updated_at
+- ci_config_path
+- delete_error
 Author:
 - name
 ProjectFeature:

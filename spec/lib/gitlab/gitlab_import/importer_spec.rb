@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitlabImport::Importer, lib: true do
+describe Gitlab::GitlabImport::Importer do
   include ImportSpecHelper
 
   describe '#execute' do
@@ -24,7 +24,7 @@ describe Gitlab::GitlabImport::Importer, lib: true do
     end
 
     it 'persists issues' do
-      project = create(:empty_project, import_source: 'asd/vim')
+      project = create(:project, import_source: 'asd/vim')
       project.build_import_data(credentials: { password: 'password' })
 
       subject = described_class.new(project)
@@ -45,8 +45,8 @@ describe Gitlab::GitlabImport::Importer, lib: true do
     def stub_request(path, body)
       url = "https://gitlab.com/api/v3/projects/asd%2Fvim/#{path}?page=1&per_page=100"
 
-      WebMock.stub_request(:get, url).
-        to_return(
+      WebMock.stub_request(:get, url)
+        .to_return(
           headers: { 'Content-Type' => 'application/json' },
           body: body
         )

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService, '#execute', services: true do
+describe Projects::CreateService, '#execute' do
   let(:user) { create :user }
   let(:opts) do
     {
@@ -115,7 +115,7 @@ describe Projects::CreateService, '#execute', services: true do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
 
       opts.merge!(
-        visibility_level: Gitlab::VisibilityLevel.options['Public']
+        visibility_level: Gitlab::VisibilityLevel::PUBLIC
       )
     end
 

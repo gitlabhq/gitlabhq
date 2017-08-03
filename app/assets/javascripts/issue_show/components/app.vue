@@ -51,6 +51,11 @@ export default {
       required: false,
       default: '',
     },
+    initialTaskStatus: {
+      type: String,
+      required: false,
+      default: '',
+    },
     updatedAt: {
       type: String,
       required: false,
@@ -105,6 +110,7 @@ export default {
       updatedAt: this.updatedAt,
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
+      taskStatus: this.initialTaskStatus,
     });
 
     return {
@@ -196,16 +202,7 @@ export default {
     this.poll = new Poll({
       resource: this.service,
       method: 'getData',
-      successCallback: (res) => {
-        const data = res.json();
-        const shouldUpdate = this.store.stateShouldUpdate(data);
-
-        this.store.updateState(data);
-
-        if (this.showForm && (shouldUpdate.title || shouldUpdate.description)) {
-          this.store.formState.lockedWarningVisible = true;
-        }
-      },
+      successCallback: res => res.json().then(data => this.store.updateState(data)),
       errorCallback(err) {
         throw new Error(err);
       },

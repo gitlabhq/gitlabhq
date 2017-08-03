@@ -1,16 +1,18 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::ExternalIssueParser, lib: true do
+describe Banzai::ReferenceParser::ExternalIssueParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do
-      before { link['data-external-issue'] = 123 }
+      before do
+        link['data-external-issue'] = 123
+      end
 
       levels = [ProjectFeature::DISABLED, ProjectFeature::PRIVATE, ProjectFeature::ENABLED]
 

@@ -1,15 +1,17 @@
 require 'spec_helper'
 
-describe 'Dashboard > milestone filter', :feature, :js do
+feature 'Dashboard > milestone filter', :js do
+  include FilterItemSelectHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
-  let(:milestone) { create(:milestone, title: "v1.0", project: project) }
-  let(:milestone2) { create(:milestone, title: "v2.0", project: project) }
+  let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
+  let(:milestone2) { create(:milestone, title: 'v2.0', project: project) }
   let!(:issue) { create :issue, author: user, project: project, milestone: milestone }
   let!(:issue2) { create :issue, author: user, project: project, milestone: milestone2 }
 
   before do
-    login_as(user)
+    sign_in(user)
     visit issues_dashboard_path(author_id: user.id)
   end
 
@@ -22,17 +24,11 @@ describe 'Dashboard > milestone filter', :feature, :js do
   end
 
   context 'filtering by milestone' do
-    milestone_select = '.js-milestone-select'
+    milestone_select_selector = '.js-milestone-select'
 
     before do
-      find(milestone_select).click
-      wait_for_requests
-
-      page.within('.dropdown-content') do
-        click_link 'v1.0'
-      end
-
-      find(milestone_select).click
+      filter_item_select('v1.0', milestone_select_selector)
+      find(milestone_select_selector).click
       wait_for_requests
     end
 
@@ -49,7 +45,7 @@ describe 'Dashboard > milestone filter', :feature, :js do
 
       expect(find('.milestone-filter')).not_to have_selector('.dropdown.open')
 
-      find(milestone_select).click
+      find(milestone_select_selector).click
 
       expect(find('.dropdown-content')).to have_selector('a.is-active', count: 1)
       expect(find('.dropdown-content a.is-active')).to have_content('v1.0')

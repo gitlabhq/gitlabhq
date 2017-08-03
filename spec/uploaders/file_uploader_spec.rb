@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe FileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:empty_project)) }
+  let(:uploader) { described_class.new(build_stubbed(:project)) }
 
   describe '.absolute_path' do
     it 'returns the correct absolute path by building it dynamically' do
@@ -12,6 +12,16 @@ describe FileUploader do
 
       expect(described_class.absolute_path(upload))
         .to end_with("#{dynamic_segment}/secret/foo.jpg")
+    end
+  end
+
+  describe "#store_dir" do
+    it "stores in the namespace path" do
+      project = build_stubbed(:project)
+      uploader = described_class.new(project)
+
+      expect(uploader.store_dir).to include(project.path_with_namespace)
+      expect(uploader.store_dir).not_to include("system")
     end
   end
 

@@ -13,18 +13,8 @@ module Gitlab
       scope :public_and_internal_only,  -> { where(visibility_level: [PUBLIC, INTERNAL] ) }
       scope :non_public_only,           -> { where.not(visibility_level: PUBLIC) }
 
-      scope :public_to_user, -> (user) do
-        if user
-          if user.admin?
-            all
-          elsif !user.external?
-            public_and_internal_only
-          else
-            public_only
-          end
-        else
-          public_only
-        end
+      scope :public_to_user, -> (user = nil) do
+        where(visibility_level: VisibilityLevel.levels_for_user(user))
       end
     end
 
@@ -35,15 +25,27 @@ module Gitlab
     class << self
       delegate :values, to: :options
 
+      def levels_for_user(user = nil)
+        return [PUBLIC] unless user
+
+        if user.full_private_access?
+          [PRIVATE, INTERNAL, PUBLIC]
+        elsif user.external?
+          [PUBLIC]
+        else
+          [INTERNAL, PUBLIC]
+        end
+      end
+
       def string_values
         string_options.keys
       end
 
       def options
         {
-          'Private'  => PRIVATE,
-          'Internal' => INTERNAL,
-          'Public'   => PUBLIC
+          N_('VisibilityLevel|Private')  => PRIVATE,
+          N_('VisibilityLevel|Internal') => INTERNAL,
+          N_('VisibilityLevel|Public')   => PUBLIC
         }
       end
 
@@ -87,12 +89,12 @@ module Gitlab
       end
 
       def level_name(level)
-        level_name = 'Unknown'
+        level_name = N_('VisibilityLevel|Unknown')
         options.each do |name, lvl|
           level_name = name if lvl == level.to_i
         end
 
-        level_name
+        s_(level_name)
       end
 
       def level_value(level)

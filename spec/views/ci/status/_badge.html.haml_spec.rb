@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'ci/status/_badge', :view do
+describe 'ci/status/_badge' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :private) }
+  let(:project) { create(:project, :private) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when rendering status for build' do
@@ -16,8 +16,7 @@ describe 'ci/status/_badge', :view do
       end
 
       it 'has link to build details page' do
-        details_path = namespace_project_job_path(
-          project.namespace, project, build)
+        details_path = project_job_path(project, build)
 
         render_status(build)
 

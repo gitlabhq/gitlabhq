@@ -3,10 +3,12 @@ require 'spec_helper'
 describe Admin::ServicesController do
   let(:admin) { create(:admin) }
 
-  before { sign_in(admin) }
+  before do
+    sign_in(admin)
+  end
 
   describe 'GET #edit' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     Service.available_services_names.each do |service_name|
       context "#{service_name}" do
@@ -25,7 +27,7 @@ describe Admin::ServicesController do
   end
 
   describe "#update" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.create(
         project: project,

@@ -40,27 +40,27 @@ describe IssuablesHelper do
       end
 
       it 'returns "Open" when state is :opened' do
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'returns "Closed" when state is :closed' do
-        expect(helper.issuables_state_counter_text(:issues, :closed)).
-          to eq('<span>Closed</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :closed))
+          .to eq('<span>Closed</span> <span class="badge">42</span>')
       end
 
       it 'returns "Merged" when state is :merged' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :merged)).
-          to eq('<span>Merged</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :merged))
+          .to eq('<span>Merged</span> <span class="badge">42</span>')
       end
 
       it 'returns "All" when state is :all' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :all)).
-          to eq('<span>All</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :all))
+          .to eq('<span>All</span> <span class="badge">42</span>')
       end
     end
 
-    describe 'counter caching based on issuable type and params', :caching do
+    describe 'counter caching based on issuable type and params', :use_clean_rails_memory_store_caching do
       let(:params) do
         {
           scope: 'created-by-me',
@@ -77,57 +77,92 @@ describe IssuablesHelper do
         }.with_indifferent_access
       end
 
+      let(:issues_finder) { IssuesFinder.new(nil, params) }
+      let(:merge_requests_finder) { MergeRequestsFinder.new(nil, params) }
+
+      before do
+        allow(helper).to receive(:issues_finder).and_return(issues_finder)
+        allow(helper).to receive(:merge_requests_finder).and_return(merge_requests_finder)
+      end
+
       it 'returns the cached value when called for the same issuable type & with the same params' do
-        expect(helper).to receive(:params).twice.and_return(params)
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
-        expect(helper).not_to receive(:issuables_count_for_state)
+        expect(issues_finder).not_to receive(:count_by_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
+      end
+
+      it 'takes confidential status into account when searching for issues' do
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 42)
+
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to include('42')
+
+        expect(issues_finder).to receive(:user_cannot_see_confidential_issues?).twice.and_return(false)
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 40)
+
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to include('40')
+
+        expect(issues_finder).to receive(:user_can_see_all_confidential_issues?).and_return(true)
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 45)
+
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to include('45')
+      end
+
+      it 'does not take confidential status into account when searching for merge requests' do
+        expect(merge_requests_finder).to receive(:count_by_state).and_return(opened: 42)
+        expect(merge_requests_finder).not_to receive(:user_cannot_see_confidential_issues?)
+        expect(merge_requests_finder).not_to receive(:user_can_see_all_confidential_issues?)
+
+        expect(helper.issuables_state_counter_text(:merge_requests, :opened))
+          .to include('42')
       end
 
       it 'does not take some keys into account in the cache key' do
-        expect(helper).to receive(:params).and_return({
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 42)
+        expect(issues_finder).to receive(:params).and_return({
           author_id: '11',
           state: 'foo',
           sort: 'foo',
           utf8: 'foo',
           page: 'foo'
         }.with_indifferent_access)
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
-        expect(helper).to receive(:params).and_return({
+        expect(issues_finder).not_to receive(:count_by_state)
+        expect(issues_finder).to receive(:params).and_return({
           author_id: '11',
           state: 'bar',
           sort: 'bar',
           utf8: 'bar',
           page: 'bar'
         }.with_indifferent_access)
-        expect(helper).not_to receive(:issuables_count_for_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
 
       it 'does not take params order into account in the cache key' do
-        expect(helper).to receive(:params).and_return('author_id' => '11', 'state' => 'opened')
-        expect(helper).to receive(:issuables_count_for_state).with(:issues, :opened).and_return(42)
+        expect(issues_finder).to receive(:params).and_return('author_id' => '11', 'state' => 'opened')
+        expect(issues_finder).to receive(:count_by_state).and_return(opened: 42)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
 
-        expect(helper).to receive(:params).and_return('state' => 'opened', 'author_id' => '11')
-        expect(helper).not_to receive(:issuables_count_for_state)
+        expect(issues_finder).to receive(:params).and_return('state' => 'opened', 'author_id' => '11')
+        expect(issues_finder).not_to receive(:count_by_state)
 
-        expect(helper.issuables_state_counter_text(:issues, :opened)).
-          to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened))
+          .to eq('<span>Open</span> <span class="badge">42</span>')
       end
     end
   end
@@ -209,5 +244,25 @@ describe IssuablesHelper do
 
     it { expect(helper.updated_at_by(unedited_issuable)).to eq({}) }
     it { expect(helper.updated_at_by(edited_issuable)).to eq(edited_updated_at_by) }
+
+    context 'when updated by a deleted user' do
+      let(:edited_updated_at_by) do
+        {
+          updatedAt: edited_issuable.updated_at.to_time.iso8601,
+          updatedBy: {
+            name: User.ghost.name,
+            path: user_path(User.ghost)
+          }
+        }
+      end
+
+      before do
+        user.destroy
+      end
+
+      it 'returns "Ghost user" as edited_by' do
+        expect(helper.updated_at_by(edited_issuable.reload)).to eq(edited_updated_at_by)
+      end
+    end
   end
 end

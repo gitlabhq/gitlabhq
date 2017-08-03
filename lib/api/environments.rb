@@ -79,6 +79,7 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
 
+        status 204
         environment.destroy
       end
 

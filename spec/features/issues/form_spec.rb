@@ -1,7 +1,6 @@
 require 'rails_helper'
 
-describe 'New/edit issue', :feature, :js do
-  include GitlabRoutingHelper
+describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
@@ -16,50 +15,30 @@ describe 'New/edit issue', :feature, :js do
   before do
     project.team << [user, :master]
     project.team << [user2, :master]
-    login_as(user)
+    sign_in(user)
   end
 
   context 'new issue' do
     before do
-      visit new_namespace_project_issue_path(project.namespace, project)
+      visit new_project_issue_path(project)
     end
 
     describe 'shorten users API pagination limit' do
       before do
-        allow_any_instance_of(FormHelper).to receive(:issue_dropdown_options).and_wrap_original do |original, *args|
-          has_multiple_assignees = *args[1]
-
-          options = {
-            toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
-            title: 'Select assignee',
-            filter: true,
-            dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
-            placeholder: 'Search users',
-            data: {
-              per_page: 1,
-              null_user: true,
-              current_user: true,
-              project_id: project.try(:id),
-              field_name: "issue[assignee_ids][]",
-              default_label: 'Assignee',
-              'max-select': 1,
-              'dropdown-header': 'Assignee',
-              multi_select: true,
-              'input-meta': 'name',
-              'always-show-selectbox': true
-            }
-          }
-
-          if has_multiple_assignees
-            options[:title] = 'Select assignee(s)'
-            options[:data][:'dropdown-header'] = 'Assignee(s)'
-            options[:data].delete(:'max-select')
-          end
+        # Using `allow_any_instance_of`/`and_wrap_original`, `original` would
+        # somehow refer to the very block we defined to _wrap_ that method, instead of
+        # the original method, resulting in infinite recurison when called.
+        # This is likely a bug with helper modules included into dynamically generated view classes.
+        # To work around this, we have to hold on to and call to the original implementation manually.
+        original_issue_dropdown_options = FormHelper.instance_method(:issue_assignees_dropdown_options)
+        allow_any_instance_of(FormHelper).to receive(:issue_assignees_dropdown_options).and_wrap_original do |original, *args|
+          options = original_issue_dropdown_options.bind(original.receiver).call(*args)
+          options[:data][:per_page] = 2
 
           options
         end
 
-        visit new_namespace_project_issue_path(project.namespace, project)
+        visit new_project_issue_path(project)
 
         click_button 'Unassigned'
 
@@ -74,6 +53,7 @@ describe 'New/edit issue', :feature, :js do
           click_link user2.name
         end
 
+        find('.js-assignee-search').click
         find('.js-dropdown-input-clear').click
 
         page.within '.dropdown-menu-user' do
@@ -229,11 +209,18 @@ describe 'New/edit issue', :feature, :js do
 
       expect(find('.js-assignee-search')).to have_content(user2.name)
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   context 'edit issue' do
     before do
-      visit edit_namespace_project_issue_path(project.namespace, project, issue)
+      visit edit_project_issue_path(project, issue)
     end
 
     it 'allows user to update issue' do
@@ -277,17 +264,24 @@ describe 'New/edit issue', :feature, :js do
         end
       end
     end
+
+    it 'description has autocomplete' do
+      find('#issue_description').native.send_keys('')
+      fill_in 'issue_description', with: '@'
+
+      expect(page).to have_selector('.atwho-view')
+    end
   end
 
   describe 'sub-group project' do
     let(:group) { create(:group) }
     let(:nested_group_1) { create(:group, parent: group) }
-    let(:sub_group_project) { create(:empty_project, group: nested_group_1) }
+    let(:sub_group_project) { create(:project, group: nested_group_1) }
 
     before do
       sub_group_project.add_master(user)
 
-      visit new_namespace_project_issue_path(sub_group_project.namespace, sub_group_project)
+      visit new_project_issue_path(sub_group_project)
     end
 
     it 'creates new label from dropdown' do

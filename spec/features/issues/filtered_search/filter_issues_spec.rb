@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Filter issues', js: true, feature: true do
+describe 'Filter issues', js: true do
   include Devise::Test::IntegrationHelpers
   include FilteredSearchHelpers
 
@@ -89,7 +89,7 @@ describe 'Filter issues', js: true, feature: true do
       milestone: future_milestone,
       project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'filter issues by author' do
@@ -459,7 +459,7 @@ describe 'Filter issues', js: true, feature: true do
 
     context 'issue label clicked' do
       before do
-        find('.issues-list .issue .issue-info a .label', text: multiple_words_label.title).click
+        find('.issues-list .issue .issue-main-info .issuable-info a .label', text: multiple_words_label.title).click
       end
 
       it 'filters' do
@@ -777,17 +777,17 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'open state' do
-      find('.issues-state-filters a', text: 'Closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
-      find('.issues-state-filters a', text: 'Open').click
+      find('.issues-state-filters [data-state="opened"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 4)
     end
 
     it 'closed state' do
-      find('.issues-state-filters a', text: 'Closed').click
+      find('.issues-state-filters [data-state="closed"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 1)
@@ -795,7 +795,7 @@ describe 'Filter issues', js: true, feature: true do
     end
 
     it 'all state' do
-      find('.issues-state-filters a', text: 'All').click
+      find('.issues-state-filters [data-state="all"]').click
       wait_for_requests
 
       expect(page).to have_selector('.issues-list .issue', count: 5)
@@ -804,7 +804,7 @@ describe 'Filter issues', js: true, feature: true do
 
   describe 'RSS feeds' do
     it 'updates atom feed link for project issues' do
-      visit namespace_project_issues_path(project.namespace, project, milestone_title: milestone.title, assignee_id: user.id)
+      visit project_issues_path(project, milestone_title: milestone.title, assignee_id: user.id)
       link = find_link('Subscribe')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
@@ -836,7 +836,7 @@ describe 'Filter issues', js: true, feature: true do
 
   context 'URL has a trailing slash' do
     before do
-      visit "#{namespace_project_issues_path(project.namespace, project)}/"
+      visit "#{project_issues_path(project)}/"
     end
 
     it 'milestone dropdown loads milestones' do

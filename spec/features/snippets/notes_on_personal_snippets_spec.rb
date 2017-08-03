@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-describe 'Comments on personal snippets', :js, feature: true do
+describe 'Comments on personal snippets', :js do
+  include NoteInteractionHelpers
+
   let!(:user)    { create(:user) }
   let!(:snippet) { create(:personal_snippet, :public) }
   let!(:snippet_notes) do
@@ -12,7 +14,7 @@ describe 'Comments on personal snippets', :js, feature: true do
   let!(:other_note) { create(:note_on_personal_snippet) }
 
   before do
-    login_as user
+    sign_in user
     visit snippet_path(snippet)
   end
 
@@ -22,12 +24,17 @@ describe 'Comments on personal snippets', :js, feature: true do
     it 'contains notes for a snippet with correct action icons' do
       expect(page).to have_selector('#notes-list li', count: 2)
 
+      open_more_actions_dropdown(snippet_notes[0])
+
       # comment authored by current user
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         expect(page).to have_content(snippet_notes[0].note)
         expect(page).to have_selector('.js-note-delete')
         expect(page).to have_selector('.note-emoji-button')
       end
+
+      find('body').click # close dropdown
+      open_more_actions_dropdown(snippet_notes[1])
 
       page.within("#notes-list li#note_#{snippet_notes[1].id}") do
         expect(page).to have_content(snippet_notes[1].note)
@@ -40,8 +47,8 @@ describe 'Comments on personal snippets', :js, feature: true do
   context 'when submitting a note' do
     it 'shows a valid form' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value).
-        to eq('Comment')
+      expect(find('.js-main-target-form .js-comment-button').value)
+        .to eq('Comment')
 
       page.within('.js-main-target-form') do
         expect(page).not_to have_link('Cancel')
@@ -64,10 +71,28 @@ describe 'Comments on personal snippets', :js, feature: true do
 
       expect(find('div#notes')).to have_content('This is awesome!')
     end
+
+    it 'should not have autocomplete' do
+      wait_for_requests
+      request_count_before = page.driver.network_traffic.count
+
+      find('#note_note').native.send_keys('')
+      fill_in 'note[note]', with: '@'
+
+      wait_for_requests
+      request_count_after = page.driver.network_traffic.count
+
+      # This selector probably won't be in place even if autocomplete was enabled
+      # but we want to make sure
+      expect(page).not_to have_selector('.atwho-view')
+      expect(request_count_before).to eq(request_count_after)
+    end
   end
 
   context 'when editing a note' do
     it 'changes the text' do
+      open_more_actions_dropdown(snippet_notes[0])
+
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
         click_on 'Edit comment'
       end
@@ -89,8 +114,10 @@ describe 'Comments on personal snippets', :js, feature: true do
 
   context 'when deleting a note' do
     it 'removes the note from the snippet detail page' do
+      open_more_actions_dropdown(snippet_notes[0])
+
       page.within("#notes-list li#note_#{snippet_notes[0].id}") do
-        click_on 'Remove comment'
+        click_on 'Delete comment'
       end
 
       wait_for_requests

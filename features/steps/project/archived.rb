@@ -15,7 +15,7 @@ class Spinach::Features::ProjectArchived < Spinach::FeatureSteps
 
   When 'I visit project "Forum" page' do
     project = Project.find_by(name: "Forum")
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I should not see "Archived"' do

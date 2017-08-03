@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Archived Project', feature: true do
+RSpec.describe 'Dashboard Archived Project' do
   let(:user) { create :user }
   let(:project) { create :project}
   let(:archived_project) { create(:project, :archived) }
@@ -9,7 +9,7 @@ RSpec.describe 'Dashboard Archived Project', feature: true do
     project.team << [user, :master]
     archived_project.team << [user, :master]
 
-    login_as(user)
+    sign_in(user)
 
     visit dashboard_projects_path
   end

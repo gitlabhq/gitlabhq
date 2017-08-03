@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-feature 'Admin uses repository checks', feature: true do
+feature 'Admin uses repository checks' do
   include StubENV
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   scenario 'to trigger a single check' do
-    project = create(:empty_project)
+    project = create(:project)
     visit_admin_project_page(project)
 
     page.within('.repository-check') do
@@ -20,7 +20,7 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   scenario 'to see a single failed repository check' do
-    project = create(:empty_project)
+    project = create(:project)
     project.update_columns(
       last_repository_check_failed: true,
       last_repository_check_at: Time.now
@@ -43,6 +43,6 @@ feature 'Admin uses repository checks', feature: true do
   end
 
   def visit_admin_project_page(project)
-    visit admin_namespace_project_path(project.namespace, project)
+    visit admin_project_path(project)
   end
 end

@@ -28,7 +28,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    find('.issues-state-filters a', text: "Closed").click
+    find('.issues-state-filters [data-state="closed"] span', text: 'Closed').click
   end
 
   step 'I click button "Unsubscribe"' do
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "All"' do
-    click_link "All"
+    find('.issues-state-filters [data-state="all"] span', text: 'All').click
     # Waits for load
     expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
@@ -62,7 +62,9 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I click link "New issue"' do
-    page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+    page.within '#content-body' do
+      page.has_link?('New Issue') ? click_link('New Issue') : click_link('New issue')
+    end
   end
 
   step 'I click "author" dropdown' do
@@ -245,7 +247,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When 'I visit empty project page' do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_path(project.namespace, project)
+    visit project_path(project)
   end
 
   step 'I see empty project details with ssh clone info' do
@@ -257,12 +259,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   When "I visit project \"Community\" issues page" do
     project = Project.find_by(name: 'Community')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   When "I visit empty project's issues page" do
     project = Project.find_by(name: 'Empty Project')
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   step 'I leave a comment with code block' do

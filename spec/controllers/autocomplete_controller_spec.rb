@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AutocompleteController do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
   context 'GET users' do
@@ -97,6 +97,21 @@ describe AutocompleteController do
       it { expect(body.size).to eq User.count }
     end
 
+    context 'user order' do
+      it 'shows exact matches first' do
+        reported_user = create(:user, username: 'reported_user', name: 'Doug')
+        user = create(:user, username: 'user', name: 'User')
+        user1 = create(:user, username: 'user1', name: 'Ian')
+
+        sign_in(user)
+        get(:users, search: 'user')
+
+        response_usernames = JSON.parse(response.body).map { |user| user['username']  }
+
+        expect(response_usernames.take(3)).to match_array([user.username, reported_user.username, user1.username])
+      end
+    end
+
     context 'limited users per page' do
       let(:per_page) { 2 }
 
@@ -170,27 +185,39 @@ describe AutocompleteController do
     end
 
     context 'author of issuable included' do
-      before do
-        sign_in(user)
-      end
-
       let(:body) { JSON.parse(response.body) }
 
-      it 'includes the author' do
-        get(:users, author_id: non_member.id)
+      context 'authenticated' do
+        before do
+          sign_in(user)
+        end
 
-        expect(body.first["username"]).to eq non_member.username
+        it 'includes the author' do
+          get(:users, author_id: non_member.id)
+
+          expect(body.first["username"]).to eq non_member.username
+        end
+
+        it 'rejects non existent user ids' do
+          get(:users, author_id: 99999)
+
+          expect(body.collect { |u| u['id'] }).not_to include(99999)
+        end
       end
 
-      it 'rejects non existent user ids' do
-        get(:users, author_id: 99999)
+      context 'without authenticating' do
+        it 'returns empty result' do
+          get(:users, author_id: non_member.id)
 
-        expect(body.collect { |u| u['id'] }).not_to include(99999)
+          expect(body).to be_empty
+        end
       end
     end
 
     context 'skip_users parameter included' do
-      before { sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       it 'skips the user IDs passed' do
         get(:users, skip_users: [user, user2].map(&:id))

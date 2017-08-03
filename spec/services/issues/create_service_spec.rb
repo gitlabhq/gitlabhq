@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Issues::CreateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Issues::CreateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -155,7 +155,9 @@ describe Issues::CreateService, services: true do
 
     context 'issue create service' do
       context 'assignees' do
-        before { project.team << [user, :master] }
+        before do
+          project.team << [user, :master]
+        end
 
         it 'removes assignee when user id is invalid' do
           opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }
@@ -204,9 +206,9 @@ describe Issues::CreateService, services: true do
       end
     end
 
-    it_behaves_like 'new issuable record that supports slash commands'
+    it_behaves_like 'new issuable record that supports quick actions'
 
-    context 'Slash commands' do
+    context 'Quick actions' do
       context 'with assignee and milestone in params and command' do
         let(:opts) do
           {

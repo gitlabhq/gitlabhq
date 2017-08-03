@@ -9,6 +9,10 @@ class Issue < ActiveRecord::Base
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
+  include IgnorableColumn
+  include CreatedAtFilterable
+
+  ignore_column :position
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -20,9 +24,14 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :merge_requests_closing_issues, class_name: 'MergeRequestsClosingIssues', dependent: :delete_all
+  has_many :merge_requests_closing_issues,
+    class_name: 'MergeRequestsClosingIssues',
+    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :issue_assignees
+  has_many :assignees, class_name: "User", through: :issue_assignees
 
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
@@ -42,9 +51,7 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
-  scope :created_after, -> (datetime) { where("created_at >= ?", datetime) }
-
-  scope :include_associations, -> { includes(:labels, project: :namespace) }
+  scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   after_save :expire_etag_cache
 
@@ -55,15 +62,14 @@ class Issue < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:opened] => :closed
     end
 
     event :reopen do
-      transition closed: :reopened
+      transition closed: :opened
     end
 
     state :opened
-    state :reopened
     state :closed
 
     before_transition any => :closed do |issue|
@@ -121,8 +127,8 @@ class Issue < ActiveRecord::Base
   end
 
   def self.order_by_position_and_priority
-    order_labels_priority.
-      reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
+    order_labels_priority
+      .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
   end
@@ -292,11 +298,7 @@ class Issue < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    key = Gitlab::Routing.url_helpers.realtime_changes_namespace_project_issue_path(
-      project.namespace,
-      project,
-      self
-    )
+    key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

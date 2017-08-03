@@ -34,7 +34,7 @@ EOT
   describe 'size limit feature toggles' do
     context 'when the feature gitlab_git_diff_size_limit_increase is enabled' do
       before do
-        Feature.enable('gitlab_git_diff_size_limit_increase')
+        stub_feature_flags(gitlab_git_diff_size_limit_increase: true)
       end
 
       it 'returns 200 KB for size_limit' do
@@ -48,7 +48,7 @@ EOT
 
     context 'when the feature gitlab_git_diff_size_limit_increase is disabled' do
       before do
-        Feature.disable('gitlab_git_diff_size_limit_increase')
+        stub_feature_flags(gitlab_git_diff_size_limit_increase: false)
       end
 
       it 'returns 100 KB for size_limit' do
@@ -90,7 +90,7 @@ EOT
         let(:diff) { described_class.new(@rugged_diff) }
 
         it 'initializes the diff' do
-          expect(diff.to_hash).to eq(@raw_diff_hash.merge(too_large: nil))
+          expect(diff.to_hash).to eq(@raw_diff_hash)
         end
 
         it 'does not prune the diff' do
@@ -100,8 +100,8 @@ EOT
 
       context 'using a diff that is too large' do
         it 'prunes the diff' do
-          expect_any_instance_of(String).to receive(:bytesize).
-            and_return(1024 * 1024 * 1024)
+          expect_any_instance_of(String).to receive(:bytesize)
+            .and_return(1024 * 1024 * 1024)
 
           diff = described_class.new(@rugged_diff)
 
@@ -130,8 +130,8 @@ EOT
 
       context 'using a large binary diff' do
         it 'does not prune the diff' do
-          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?).
-            and_return(true)
+          expect_any_instance_of(Rugged::Diff::Delta).to receive(:binary?)
+            .and_return(true)
 
           diff = described_class.new(@rugged_diff)
 
@@ -173,6 +173,14 @@ EOT
         it 'prunes the diff' do
           expect(diff.diff).to be_empty
           expect(diff).to be_too_large
+        end
+      end
+
+      context 'when the patch passed is not UTF-8-encoded' do
+        let(:raw_patch) { @raw_diff_hash[:diff].encode(Encoding::ASCII_8BIT) }
+
+        it 'encodes diff patch to UTF-8' do
+          expect(diff.diff).to be_utf8
         end
       end
     end
@@ -233,7 +241,7 @@ EOT
   end
 
   describe '.filter_diff_options' do
-    let(:options) { { max_size: 100, invalid_opt: true } }
+    let(:options) { { max_files: 100, invalid_opt: true } }
 
     context "without default options" do
       let(:filtered_options) { described_class.filter_diff_options(options) }
@@ -245,7 +253,7 @@ EOT
 
     context "with default options" do
       let(:filtered_options) do
-        default_options = { max_size: 5, bad_opt: 1, ignore_whitespace: true }
+        default_options = { max_files: 5, bad_opt: 1, ignore_whitespace_change: true }
         described_class.filter_diff_options(options, default_options)
       end
 
@@ -255,12 +263,12 @@ EOT
       end
 
       it "should merge with default options" do
-        expect(filtered_options).to have_key(:ignore_whitespace)
+        expect(filtered_options).to have_key(:ignore_whitespace_change)
       end
 
       it "should override default options" do
-        expect(filtered_options).to have_key(:max_size)
-        expect(filtered_options[:max_size]).to eq(100)
+        expect(filtered_options).to have_key(:max_files)
+        expect(filtered_options[:max_files]).to eq(100)
       end
     end
   end

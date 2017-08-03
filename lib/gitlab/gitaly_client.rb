@@ -1,3 +1,5 @@
+require 'base64'
+
 require 'gitaly'
 
 module Gitlab
@@ -48,12 +50,28 @@ module Gitlab
       address
     end
 
-    def self.enabled?
-      Gitlab.config.gitaly.enabled
+    # All Gitaly RPC call sites should use GitalyClient.call. This method
+    # makes sure that per-request authentication headers are set.
+    def self.call(storage, service, rpc, request)
+      metadata = request_metadata(storage)
+      metadata = yield(metadata) if block_given?
+      stub(service, storage).send(rpc, request, metadata)
+    end
+
+    def self.request_metadata(storage)
+      encoded_token = Base64.strict_encode64(token(storage).to_s)
+      { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
+    end
+
+    def self.token(storage)
+      params = Gitlab.config.repositories.storages[storage]
+      raise "storage not found: #{storage.inspect}" if params.nil?
+
+      params['gitaly_token'].presence || Gitlab.config.gitaly['token']
     end
 
     def self.feature_enabled?(feature, status: MigrationStatus::OPT_IN)
-      return false if !enabled? || status == MigrationStatus::DISABLED
+      return false if status == MigrationStatus::DISABLED
 
       feature = Feature.get("gitaly_#{feature}")
 
@@ -68,8 +86,8 @@ module Gitlab
       feature.enabled?
     end
 
-    def self.migrate(feature)
-      is_enabled  = feature_enabled?(feature)
+    def self.migrate(feature, status: MigrationStatus::OPT_IN)
+      is_enabled  = feature_enabled?(feature, status: status)
       metric_name = feature.to_s
       metric_name += "_gitaly" if is_enabled
 

@@ -4,7 +4,7 @@ require 'rails_helper'
 describe Blob do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project, lfs_enabled: true) }
+  let(:project) { build(:project, lfs_enabled: true) }
 
   before do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
@@ -196,6 +196,14 @@ describe Blob do
       blob = fake_blob(path: 'file.md')
 
       expect(blob.extension).to eq('md')
+    end
+  end
+
+  describe '#file_type' do
+    it 'returns the file type' do
+      blob = fake_blob(path: 'README.md')
+
+      expect(blob.file_type).to eq(:readme)
     end
   end
 

@@ -143,12 +143,21 @@ import '~/lib/utils/common_utils';
 
       it('should return valid parameter', () => {
         const value = gl.utils.getParameterByName('scope');
+        expect(gl.utils.getParameterByName('p')).toEqual('2');
         expect(value).toBe('all');
       });
 
       it('should return invalid parameter', () => {
         const value = gl.utils.getParameterByName('fakeParameter');
         expect(value).toBe(null);
+      });
+
+      it('should return valid paramentes if URL is provided', () => {
+        let value = gl.utils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+        expect(value).toBe('bar');
+
+        value = gl.utils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+        expect(value).toBe('canchu');
       });
     });
 

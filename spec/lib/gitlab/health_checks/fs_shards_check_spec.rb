@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::HealthChecks::FsShardsCheck do
   def command_exists?(command)
     _, status = Gitlab::Popen.popen(%W{ #{command} 1 echo })
-    status == 0
+    status.zero?
   rescue Errno::ENOENT
     false
   end
@@ -64,9 +64,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it 'cleans up files used for testing' do
           expect(described_class).to receive(:storage_write_test).with(any_args).and_call_original
 
-          subject
-
-          expect(Dir.entries(tmp_dir).count).to eq(2)
+          expect { subject }.not_to change(Dir.entries(tmp_dir), :count)
         end
 
         context 'read test fails' do
@@ -88,8 +86,6 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     end
 
     describe '#metrics' do
-      subject { described_class.metrics }
-
       context 'storage points to not existing folder' do
         let(:storages_paths) do
           {
@@ -97,30 +93,45 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           }.with_indifferent_access
         end
 
-        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
+        # Unsolved intermittent failure in CI https://gitlab.com/gitlab-org/gitlab-ce/issues/31128
+        around(:each) do |example| # rubocop:disable RSpec/AroundBlock
+          times_to_try = ENV['CI'] ? 4 : 1
+          example.run_with_retry retry: times_to_try
+        end
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 0)) }
+        it 'provides metrics' do
+          metrics = described_class.metrics
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
+          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
+        end
       end
 
       context 'storage points to directory that has both read and write rights' do
         before do
           FileUtils.chmod_R(0755, tmp_dir)
         end
-        it { is_expected.to all(have_attributes(labels: { shard: :default })) }
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_accessible, value: 1)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_readable, value: 1)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_writable, value: 1)) }
+        it 'provides metrics' do
+          metrics = described_class.metrics
 
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0)) }
-        it { is_expected.to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0)) }
+          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
+        end
+
+        it 'cleans up files used for metrics' do
+          expect { described_class.metrics }.not_to change(Dir.entries(tmp_dir), :count)
+        end
       end
     end
   end
@@ -140,18 +151,16 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     end
 
     describe '#metrics' do
-      subject { described_class.metrics }
-
       it 'provides metrics' do
-        expect(subject).to all(have_attributes(labels: { shard: :default }))
+        metrics = described_class.metrics
 
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
-
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        expect(metrics).to all(have_attributes(labels: { shard: :default }))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
       end
     end
   end

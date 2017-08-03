@@ -1,5 +1,5 @@
 module BroadcastMessagesHelper
-  def broadcast_message(message = BroadcastMessage.current)
+  def broadcast_message(message)
     return unless message.present?
 
     content_tag :div, class: 'broadcast-message', style: broadcast_message_style(message) do

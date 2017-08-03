@@ -1,10 +1,14 @@
 class NotificationSetting < ActiveRecord::Base
+  include IgnorableColumn
+
+  ignore_column :events
+
   enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :project, foreign_key: 'source_id'
 
   validates :user, presence: true
@@ -19,7 +23,7 @@ class NotificationSetting < ActiveRecord::Base
   # pending delete).
   #
   scope :for_projects, -> do
-    includes(:project).references(:projects).where(source_type: 'Project').where.not(projects: { id: nil })
+    includes(:project).references(:projects).where(source_type: 'Project').where.not(projects: { id: nil, pending_delete: true })
   end
 
   EMAIL_EVENTS = [
@@ -41,11 +45,6 @@ class NotificationSetting < ActiveRecord::Base
     :success_pipeline
   ].freeze
 
-  store :events, accessors: EMAIL_EVENTS, coder: JSON
-
-  before_create :set_events
-  before_save :events_to_boolean
-
   def self.find_or_create_for(source)
     setting = find_or_initialize_by(source: source)
 
@@ -56,23 +55,6 @@ class NotificationSetting < ActiveRecord::Base
     setting
   end
 
-  # Set all event attributes to false when level is not custom or being initialized for UX reasons
-  def set_events
-    return if custom?
-
-    self.events = {}
-  end
-
-  # Validates store accessors values as boolean
-  # It is a text field so it does not cast correct boolean values in JSON
-  def events_to_boolean
-    EMAIL_EVENTS.each do |event|
-      bool = ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES.include?(public_send(event))
-
-      events[event] = bool
-    end
-  end
-
   # Allow people to receive failed pipeline notifications if they already have
   # custom notifications enabled, as these are more like mentions than the other
   # custom settings.
@@ -80,5 +62,10 @@ class NotificationSetting < ActiveRecord::Base
     bool = super
 
     bool.nil? || bool
+  end
+  alias_method :failed_pipeline?, :failed_pipeline
+
+  def event_enabled?(event)
+    respond_to?(event) && !!public_send(event)
   end
 end

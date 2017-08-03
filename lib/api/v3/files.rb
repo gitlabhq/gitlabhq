@@ -56,7 +56,7 @@ module API
           blob = repo.blob_at(commit.sha, params[:file_path])
           not_found!('File') unless blob
 
-          blob.load_all_data!(repo)
+          blob.load_all_data!
           status(200)
 
           {

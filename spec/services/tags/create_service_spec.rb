@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Tags::CreateService, services: true do
+describe Tags::CreateService do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:user) { create(:user) }
@@ -26,9 +26,9 @@ describe Tags::CreateService, services: true do
 
     context 'when tag already exists' do
       it 'returns an error' do
-        expect(repository).to receive(:add_tag).
-          with(user, 'v1.1.0', 'master', 'Foo').
-          and_raise(Rugged::TagError)
+        expect(repository).to receive(:add_tag)
+          .with(user, 'v1.1.0', 'master', 'Foo')
+          .and_raise(Rugged::TagError)
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 
@@ -39,9 +39,9 @@ describe Tags::CreateService, services: true do
 
     context 'when pre-receive hook fails' do
       it 'returns an error' do
-        expect(repository).to receive(:add_tag).
-          with(user, 'v1.1.0', 'master', 'Foo').
-          and_raise(GitHooksService::PreReceiveError, 'something went wrong')
+        expect(repository).to receive(:add_tag)
+          .with(user, 'v1.1.0', 'master', 'Foo')
+          .and_raise(GitHooksService::PreReceiveError, 'something went wrong')
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 

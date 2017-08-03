@@ -152,6 +152,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
         <div class="card-assignee">
           <user-avatar-link
             v-for="(assignee, index) in issue.assignees"
+            :key="assignee.id"
             v-if="shouldRenderAssignee(index)"
             class="js-no-trigger"
             :link-href="assigneeUrl(assignee)"

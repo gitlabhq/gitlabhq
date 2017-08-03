@@ -1,10 +1,83 @@
 .tree-holder {
-  > .nav-block {
-    margin: 11px 0;
+
+  .nav-block {
+    margin: 10px 0;
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+
+      .tree-ref-container {
+        flex: 1;
+      }
+
+      .tree-controls {
+        text-align: right;
+
+        .btn-group {
+          margin-left: 10px;
+        }
+
+        .control {
+          float: left;
+          margin-left: 10px;
+        }
+      }
+
+      .tree-ref-holder {
+        float: left;
+        margin-right: 15px;
+      }
+
+      .repo-breadcrumb {
+        li:last-of-type {
+          position: relative;
+        }
+      }
+
+      .add-to-tree-dropdown {
+        position: absolute;
+        left: 18px;
+      }
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    .repo-breadcrumb {
+      margin-top: 10px;
+      position: relative;
+
+      .dropdown-menu {
+        min-width: 100%;
+        width: 100%;
+        left: inherit;
+        right: 0;
+      }
+    }
+
+    .add-to-tree-dropdown {
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    .tree-controls {
+      margin-bottom: 10px;
+
+      .btn,
+      .dropdown,
+      .btn-group {
+        width: 100%;
+      }
+
+      .btn {
+        margin: 10px 0 0;
+      }
+    }
   }
 
   .file-finder {
-    width: 50%;
+    max-width: 500px;
+    width: 100%;
 
     .file-finder-input {
       width: 95%;
@@ -129,11 +202,28 @@
       }
     }
   }
-}
 
-.tree-ref-holder {
-  float: left;
-  margin-right: 15px;
+  // TODO: fallback to global style
+  .dropdown-menu:not(.dropdown-menu-selectable) {
+    li {
+      padding: 0 1px;
+
+      &.dropdown-header {
+        padding: 8px 16px;
+      }
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
 }
 
 .blob-commit-info {
@@ -157,16 +247,6 @@
 .upload-link {
   font-weight: normal;
   color: $md-link-color;
-}
-
-.tree-controls {
-  float: right;
-  position: relative;
-  z-index: 2;
-
-  .project-action-button {
-    margin-left: $btn-side-margin;
-  }
 }
 
 .repo-charts {

@@ -10,9 +10,9 @@ module Issues
     def merge_request_to_resolve_discussions_of
       return @merge_request_to_resolve_discussions_of if defined?(@merge_request_to_resolve_discussions_of)
 
-      @merge_request_to_resolve_discussions_of = MergeRequestsFinder.new(current_user, project_id: project.id).
-                                                     execute.
-                                                     find_by(iid: merge_request_to_resolve_discussions_of_iid)
+      @merge_request_to_resolve_discussions_of = MergeRequestsFinder.new(current_user, project_id: project.id)
+                                                     .execute
+                                                     .find_by(iid: merge_request_to_resolve_discussions_of_iid)
     end
 
     def discussions_to_resolve

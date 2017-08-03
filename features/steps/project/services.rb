@@ -4,7 +4,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I visit project "Shop" services page' do
-    visit namespace_project_settings_integrations_path(@project.namespace, @project)
+    visit project_settings_integrations_path(@project)
   end
 
   step 'I should see list of available services' do
@@ -175,7 +175,6 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     fill_in 'JIRA API URL', with: 'http://jira.example/api'
     fill_in 'Username', with: 'gitlab'
     fill_in 'Password', with: 'gitlab'
-    fill_in 'Project Key', with: 'GITLAB'
     click_button 'Save'
   end
 

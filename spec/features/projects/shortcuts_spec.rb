@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-feature 'Project shortcuts', feature: true do
+feature 'Project shortcuts' do
   let(:project) { create(:project, name: 'Victorialand') }
   let(:user) { create(:user) }
 
   describe 'On a project', js: true do
     before do
       project.team << [user, :master]
-      login_as user
-      visit namespace_project_path(project.namespace, project)
+      sign_in user
+      visit project_path(project)
     end
 
     describe 'pressing "i"' do

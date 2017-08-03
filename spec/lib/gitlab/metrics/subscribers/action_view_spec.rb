@@ -21,11 +21,11 @@ describe Gitlab::Metrics::Subscribers::ActionView do
       values = { duration: 2.1 }
       tags   = { view: 'app/views/x.html.haml' }
 
-      expect(transaction).to receive(:increment).
-        with(:view_duration, 2.1)
+      expect(transaction).to receive(:increment)
+        .with(:view_duration, 2.1)
 
-      expect(transaction).to receive(:add_metric).
-        with(described_class::SERIES, values, tags)
+      expect(transaction).to receive(:add_metric)
+        .with(described_class::SERIES, values, tags)
 
       subscriber.render_template(event)
     end

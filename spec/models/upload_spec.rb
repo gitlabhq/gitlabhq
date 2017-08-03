@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Upload, type: :model do
+describe Upload do
   describe 'assocations' do
     it { is_expected.to belong_to(:model) }
   end
@@ -54,8 +54,8 @@ describe Upload, type: :model do
         uploader: 'AvatarUploader'
       )
 
-      expect { described_class.remove_path(__FILE__) }.
-        to change { described_class.count }.from(1).to(0)
+      expect { described_class.remove_path(__FILE__) }
+        .to change { described_class.count }.from(1).to(0)
     end
   end
 

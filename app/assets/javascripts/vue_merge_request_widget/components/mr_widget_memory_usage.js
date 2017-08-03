@@ -1,5 +1,5 @@
-import statusCodes from '~/lib/utils/http_status';
-import { bytesToMiB } from '~/lib/utils/number_utils';
+import statusCodes from '../../lib/utils/http_status';
+import { bytesToMiB } from '../../lib/utils/number_utils';
 
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 import MRWidgetService from '../services/mr_widget_service';
@@ -7,7 +7,14 @@ import MRWidgetService from '../services/mr_widget_service';
 export default {
   name: 'MemoryUsage',
   props: {
-    metricsUrl: { type: String, required: true },
+    metricsUrl: {
+      type: String,
+      required: true,
+    },
+    metricsMonitoringUrl: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -124,7 +131,7 @@ export default {
       <p
         v-if="shouldShowMemoryGraph"
         class="usage-info js-usage-info">
-        Memory usage <b>{{memoryChangeType}}</b> from {{memoryFrom}}MB to {{memoryTo}}MB
+        <a :href="metricsMonitoringUrl">Memory</a> usage <b>{{memoryChangeType}}</b> from {{memoryFrom}}MB to {{memoryTo}}MB
       </p>
       <p
         v-if="shouldShowLoadFailure"

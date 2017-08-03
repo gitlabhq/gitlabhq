@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Issues', feature: true do
+RSpec.describe 'Dashboard Issues' do
   let(:current_user) { create :user }
-  let!(:public_project) { create(:empty_project, :public) }
-  let(:project) { create(:empty_project) }
-  let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled) }
+  let(:user) { current_user } # Shared examples depend on this being available
+  let!(:public_project) { create(:project, :public) }
+  let(:project) { create(:project) }
+  let(:project_with_issues_disabled) { create(:project, :issues_disabled) }
   let!(:authored_issue) { create :issue, author: current_user, project: project }
   let!(:authored_issue_on_public_project) { create :issue, author: current_user, project: public_project }
   let!(:assigned_issue) { create :issue, assignees: [current_user], project: project }
@@ -12,7 +13,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
   before do
     [project, project_with_issues_disabled].each { |project| project.team << [current_user, :master] }
-    login_as(current_user)
+    sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end
 
@@ -59,6 +60,11 @@ RSpec.describe 'Dashboard Issues', feature: true do
       expect(page).to have_content(other_issue.title)
     end
 
+    it 'state filter tabs work' do
+      find('#state-closed').click
+      expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, state: 'closed'), url: true)
+    end
+
     it_behaves_like "it has an RSS button with current_user's RSS token"
     it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
   end
@@ -70,6 +76,18 @@ RSpec.describe 'Dashboard Issues', feature: true do
       page.within('.select2-results') do
         expect(page).to have_content(project.name_with_namespace)
         expect(page).not_to have_content(project_with_issues_disabled.name_with_namespace)
+      end
+    end
+
+    it 'shows the new issue page', :js do
+      find('.new-project-item-select-button').trigger('click')
+      wait_for_requests
+      find('.select2-results li').click
+
+      expect(page).to have_current_path("/#{project.path_with_namespace}/issues/new")
+
+      page.within('#content-body') do
+        expect(page).to have_selector('.issue-form')
       end
     end
   end

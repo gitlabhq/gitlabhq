@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'Projects > Issuables > Default sort order', feature: true do
-  let(:project) { create(:empty_project, :public) }
+describe 'Projects > Issuables > Default sort order' do
+  let(:project) { create(:project, :public) }
 
   let(:first_created_issuable) { issuables.order_created_asc.first }
   let(:last_created_issuable) { issuables.order_created_desc.first }
@@ -153,7 +153,9 @@ describe 'Projects > Issuables > Default sort order', feature: true do
     context 'when the sort in the URL is id_desc' do
       let(:issuable_type) { :issue }
 
-      before { visit_issues(project, sort: 'id_desc') }
+      before do
+        visit_issues(project, sort: 'id_desc')
+      end
 
       it 'shows the sort order as last created' do
         expect(find('.issues-other-filters')).to have_content('Last created')
@@ -165,7 +167,9 @@ describe 'Projects > Issuables > Default sort order', feature: true do
     context 'when the sort in the URL is id_asc' do
       let(:issuable_type) { :issue }
 
-      before { visit_issues(project, sort: 'id_asc') }
+      before do
+        visit_issues(project, sort: 'id_asc')
+      end
 
       it 'shows the sort order as oldest created' do
         expect(find('.issues-other-filters')).to have_content('Oldest created')

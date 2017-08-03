@@ -25,17 +25,17 @@ describe MarkupHelper do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
       it "links to the merge request" do
-        expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
+        expected = project_merge_request_path(project, merge_request)
         expect(helper.markdown(actual)).to match(expected)
       end
 
       it "links to the commit" do
-        expected = namespace_project_commit_path(project.namespace, project, commit)
+        expected = project_commit_path(project, commit)
         expect(helper.markdown(actual)).to match(expected)
       end
 
       it "links to the issue" do
-        expected = namespace_project_issue_path(project.namespace, project, issue)
+        expected = project_issue_path(project, issue)
         expect(helper.markdown(actual)).to match(expected)
       end
     end
@@ -46,7 +46,7 @@ describe MarkupHelper do
       let(:second_issue) { create(:issue, project: second_project) }
 
       it 'links to the issue' do
-        expected = namespace_project_issue_path(second_project.namespace, second_project, second_issue)
+        expected = project_issue_path(second_project, second_issue)
         expect(markdown(actual, project: second_project)).to match(expected)
       end
     end
@@ -68,8 +68,8 @@ describe MarkupHelper do
       expect(doc.css('a')[0].text).to eq 'This should finally fix '
 
       # First issue link
-      expect(doc.css('a')[1].attr('href')).
-        to eq namespace_project_issue_path(project.namespace, project, issues[0])
+      expect(doc.css('a')[1].attr('href'))
+        .to eq project_issue_path(project, issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -77,8 +77,8 @@ describe MarkupHelper do
       expect(doc.css('a')[2].text).to eq ' and '
 
       # Second issue link
-      expect(doc.css('a')[3].attr('href')).
-        to eq namespace_project_issue_path(project.namespace, project, issues[1])
+      expect(doc.css('a')[3].attr('href'))
+        .to eq project_issue_path(project, issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -98,8 +98,8 @@ describe MarkupHelper do
 
     it "escapes HTML passed in as the body" do
       actual = "This is a <h1>test</h1> - see #{issues[0].to_reference}"
-      expect(helper.link_to_gfm(actual, link)).
-        to match('&lt;h1&gt;test&lt;/h1&gt;')
+      expect(helper.link_to_gfm(actual, link))
+        .to match('&lt;h1&gt;test&lt;/h1&gt;')
     end
 
     it 'ignores reference links when they are the entire body' do
@@ -110,8 +110,8 @@ describe MarkupHelper do
 
     it 'replaces commit message with emoji to link' do
       actual = link_to_gfm(':book: Book', '/foo')
-      expect(actual).
-        to eq '<gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo"> Book</a>'
+      expect(actual)
+        .to eq '<gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo"> Book</a>'
     end
   end
 
@@ -210,11 +210,11 @@ describe MarkupHelper do
 
   describe '#cross_project_reference' do
     it 'shows the full MR reference' do
-      expect(helper.cross_project_reference(project, merge_request)).to include(project.path_with_namespace)
+      expect(helper.cross_project_reference(project, merge_request)).to include(project.full_path)
     end
 
     it 'shows the full issue reference' do
-      expect(helper.cross_project_reference(project, issue)).to include(project.path_with_namespace)
+      expect(helper.cross_project_reference(project, issue)).to include(project.full_path)
     end
   end
 end

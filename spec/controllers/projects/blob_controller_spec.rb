@@ -47,8 +47,8 @@ describe Projects::BlobController do
       context 'redirect to tree' do
         let(:id) { 'markdown/doc' }
         it 'redirects' do
-          expect(subject).
-            to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
+          expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
         end
       end
     end
@@ -117,7 +117,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to redirect_to(namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG'))
+        expect(response).to redirect_to(project_blob_path(project, 'master/CHANGELOG'))
       end
     end
 
@@ -164,7 +164,7 @@ describe Projects::BlobController do
     end
 
     def blob_after_edit_path
-      namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG')
+      project_blob_path(project, 'master/CHANGELOG')
     end
 
     before do
@@ -186,14 +186,14 @@ describe Projects::BlobController do
       it 'redirects to MR diff' do
         put :update, mr_params
 
-        after_edit_path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        after_edit_path = diffs_project_merge_request_path(project, merge_request)
         file_anchor = "##{Digest::SHA1.hexdigest('CHANGELOG')}"
         expect(response).to redirect_to(after_edit_path + file_anchor)
       end
 
       context "when user doesn't have access" do
         before do
-          other_project = create(:empty_project)
+          other_project = create(:project, :repository)
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 
@@ -223,7 +223,7 @@ describe Projects::BlobController do
         it 'redirects to blob' do
           put :update, default_params
 
-          expect(response).to redirect_to(namespace_project_blob_path(forked_project.namespace, forked_project, 'master/CHANGELOG'))
+          expect(response).to redirect_to(project_blob_path(forked_project, 'master/CHANGELOG'))
         end
       end
 
@@ -235,8 +235,7 @@ describe Projects::BlobController do
           put :update, default_params
 
           expect(response).to redirect_to(
-            new_namespace_project_merge_request_path(
-              forked_project.namespace,
+            project_new_merge_request_path(
               forked_project,
               merge_request: {
                 source_project_id: forked_project.id,

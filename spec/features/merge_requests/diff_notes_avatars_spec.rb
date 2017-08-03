@@ -1,8 +1,10 @@
 require 'spec_helper'
 
-feature 'Diff note avatars', feature: true, js: true do
+feature 'Diff note avatars', js: true do
+  include NoteInteractionHelpers
+
   let(:user)          { create(:user) }
-  let(:project)       { create(:project, :public) }
+  let(:project)       { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
   let(:path)          { "files/ruby/popen.rb" }
   let(:position) do
@@ -18,12 +20,12 @@ feature 'Diff note avatars', feature: true, js: true do
 
   before do
     project.team << [user, :master]
-    login_as user
+    sign_in user
   end
 
   context 'discussion tab' do
     before do
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
     end
 
     it 'does not show avatars on discussion tab' do
@@ -48,7 +50,7 @@ feature 'Diff note avatars', feature: true, js: true do
 
   context 'commit view' do
     before do
-      visit namespace_project_commit_path(project.namespace, project, merge_request.commits.first.id)
+      visit project_commit_path(project, merge_request.commits.first.id)
     end
 
     it 'does not render avatar after commenting' do
@@ -63,7 +65,7 @@ feature 'Diff note avatars', feature: true, js: true do
         wait_for_requests
       end
 
-      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit project_merge_request_path(project, merge_request)
 
       expect(page).to have_content('test comment')
       expect(page).not_to have_selector('.js-avatar-container')
@@ -74,7 +76,7 @@ feature 'Diff note avatars', feature: true, js: true do
   %w(inline parallel).each do |view|
     context "#{view} view" do
       before do
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
+        visit diffs_project_merge_request_path(project, merge_request, view: view)
 
         wait_for_requests
       end
@@ -110,6 +112,8 @@ feature 'Diff note avatars', feature: true, js: true do
       end
 
       it 'removes avatar when note is deleted' do
+        open_more_actions_dropdown(note)
+
         page.within find(".note-row-#{note.id}") do
           find('.js-note-delete').click
         end
@@ -164,7 +168,7 @@ feature 'Diff note avatars', feature: true, js: true do
         before do
           create_list(:diff_note_on_merge_request, 3, project: project, noteable: merge_request, in_reply_to: note)
 
-          visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request, view: view)
+          visit diffs_project_merge_request_path(project, merge_request, view: view)
 
           wait_for_requests
         end

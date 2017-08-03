@@ -10,7 +10,7 @@
     - if show_whitespace_toggle
       - if current_controller?(:commit)
         = commit_diff_whitespace_link(diffs.project, @commit, class: 'hidden-xs')
-      - elsif current_controller?(:merge_requests)
+      - elsif current_controller?('projects/merge_requests/diffs')
         = diff_merge_request_whitespace_link(diffs.project, @merge_request, class: 'hidden-xs')
       - elsif current_controller?(:compare)
         = diff_compare_whitespace_link(diffs.project, params[:from], params[:to], class: 'hidden-xs')

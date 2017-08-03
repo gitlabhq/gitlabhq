@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MattermostsController do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
   before do
@@ -11,8 +11,8 @@ describe Projects::MattermostsController do
 
   describe 'GET #new' do
     before do
-      allow_any_instance_of(MattermostSlashCommandsService).
-        to receive(:list_teams).and_return([])
+      allow_any_instance_of(MattermostSlashCommandsService)
+        .to receive(:list_teams).and_return([])
     end
 
     it 'accepts the request' do
@@ -38,7 +38,7 @@ describe Projects::MattermostsController do
       it 'shows the error' do
         allow_any_instance_of(MattermostSlashCommandsService).to receive(:configure).and_return([false, "error message"])
 
-        expect(subject).to redirect_to(new_namespace_project_mattermost_url(project.namespace, project))
+        expect(subject).to redirect_to(new_project_mattermost_url(project))
       end
     end
 
@@ -51,7 +51,7 @@ describe Projects::MattermostsController do
         subject
         service = project.services.last
 
-        expect(subject).to redirect_to(edit_namespace_project_service_url(project.namespace, project, service))
+        expect(subject).to redirect_to(edit_project_service_url(project, service))
       end
     end
   end

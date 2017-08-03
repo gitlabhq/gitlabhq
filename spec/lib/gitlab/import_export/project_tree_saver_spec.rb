@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
+describe Gitlab::ImportExport::ProjectTreeSaver do
   describe 'saves the project tree into a json object' do
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }
@@ -83,6 +83,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests'].first['merge_request_diff']['utf8_st_diffs']).not_to be_nil
       end
 
+      it 'has merge request diff files' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_files']).not_to be_empty
+      end
+
+      it 'has merge request diff commits' do
+        expect(saved_project_json['merge_requests'].first['merge_request_diff']['merge_request_diff_commits']).not_to be_empty
+      end
+
       it 'has merge requests comments' do
         expect(saved_project_json['merge_requests'].first['notes']).not_to be_empty
       end
@@ -141,6 +149,12 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
       it 'does not complain about non UTF-8 characters in MR diffs' do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
+
+        expect(project_tree_saver.save).to be true
+      end
+
+      it 'does not complain about non UTF-8 characters in MR diff files' do
+        ActiveRecord::Base.connection.execute("UPDATE merge_request_diff_files SET diff = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
         expect(project_tree_saver.save).to be true
       end

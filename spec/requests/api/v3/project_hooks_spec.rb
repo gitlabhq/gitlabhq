@@ -87,7 +87,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "adds hook to project" do
       expect do
         post v3_api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com", issues_events: true, wiki_page_events: true
+          url: "http://example.com", issues_events: true, wiki_page_events: true, build_events: true
       end.to change {project.hooks.count}.by(1)
 
       expect(response).to have_http_status(201)
@@ -97,7 +97,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
-      expect(json_response['build_events']).to eq(false)
+      expect(json_response['build_events']).to eq(true)
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
       expect(json_response['enable_ssl_verification']).to eq(true)
@@ -135,7 +135,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "updates an existing project hook" do
       put v3_api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org', push_events: false
+        url: 'http://example.org', push_events: false, build_events: true
       expect(response).to have_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
       expect(json_response['issues_events']).to eq(hook.issues_events)

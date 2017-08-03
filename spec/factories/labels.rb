@@ -5,7 +5,7 @@ FactoryGirl.define do
   end
 
   factory :label, traits: [:base_label], class: ProjectLabel do
-    project factory: :empty_project
+    project
 
     transient do
       priority nil

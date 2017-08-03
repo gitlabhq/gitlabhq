@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Key, models: true do
+describe Key do
   include EmailHelpers
 
   describe "Associations" do
@@ -34,8 +34,8 @@ describe Key, models: true do
 
       context 'when key was not updated during the last day' do
         before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-            and_return('000000')
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+            .and_return('000000')
         end
 
         it 'enqueues a UseKeyWorker job' do
@@ -46,8 +46,8 @@ describe Key, models: true do
 
       context 'when key was updated during the last day' do
         before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-            and_return(false)
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+            .and_return(false)
         end
 
         it 'does not enqueue a UseKeyWorker job' do

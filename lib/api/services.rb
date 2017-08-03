@@ -313,12 +313,6 @@ module API
           desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
-          required: true,
-          name: :project_key,
-          type: String,
-          desc: 'The short identifier for your JIRA project, all uppercase, e.g., PROJ'
-        },
-        {
           required: false,
           name: :username,
           type: String,
@@ -685,7 +679,7 @@ module API
 
     trigger_services.each do |service_slug, settings|
       helpers do
-        def chat_command_service(project, service_slug, params)
+        def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
@@ -710,7 +704,7 @@ module API
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = chat_command_service(project, service_slug, params)
+          service = slash_command_service(project, service_slug, params)
           result = service.try(:trigger, params)
 
           if result

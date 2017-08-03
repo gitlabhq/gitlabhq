@@ -34,7 +34,7 @@ module Users
         # Keep trying until we obtain the lease. If we don't do so we may end up
         # not updating the list of authorized projects properly. To prevent
         # hammering Redis too much we'll wait for a bit between retries.
-        sleep(1)
+        sleep(0.1)
       end
 
       begin

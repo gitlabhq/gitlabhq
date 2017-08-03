@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-feature 'User uploads file to note', feature: true do
+feature 'User uploads file to note' do
   include DropzoneHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator: user, namespace: user.namespace) }
+  let(:project) { create(:project, creator: user, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project, author: user) }
 
   before do
-    login_as(user)
-    visit namespace_project_issue_path(project.namespace, project, issue)
+    sign_in(user)
+    visit project_issue_path(project, issue)
   end
 
   context 'before uploading' do

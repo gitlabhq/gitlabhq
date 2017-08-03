@@ -9,7 +9,7 @@ describe Admin::UsersController do
   end
 
   describe 'DELETE #user with projects' do
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 
     before do
@@ -116,8 +116,8 @@ describe Admin::UsersController do
     it 'displays an alert' do
       go
 
-      expect(flash[:notice]).
-        to eq 'Two-factor Authentication has been disabled for this user'
+      expect(flash[:notice])
+        .to eq 'Two-factor Authentication has been disabled for this user'
     end
 
     def go

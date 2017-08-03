@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Variables do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:empty_project, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let!(:variable) { create(:ci_variable, project: project) }
@@ -80,6 +80,17 @@ describe API::Variables do
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_truthy
+      end
+
+      it 'creates variable with optional attributes' do
+        expect do
+          post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
+        end.to change{project.variables.count}.by(1)
+
+        expect(response).to have_http_status(201)
+        expect(json_response['key']).to eq('TEST_VARIABLE_2')
+        expect(json_response['value']).to eq('VALUE_2')
+        expect(json_response['protected']).to be_falsey
       end
 
       it 'does not allow to duplicate variable key' do

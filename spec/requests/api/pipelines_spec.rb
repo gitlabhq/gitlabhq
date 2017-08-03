@@ -10,7 +10,9 @@ describe API::Pipelines do
                                ref: project.default_branch, user: user)
   end
 
-  before { project.team << [user, :master] }
+  before do
+    project.team << [user, :master]
+  end
 
   describe 'GET /projects/:id/pipelines ' do
     context 'authorized user' do
@@ -285,7 +287,9 @@ describe API::Pipelines do
   describe 'POST /projects/:id/pipeline ' do
     context 'authorized user' do
       context 'with gitlab-ci.yml' do
-        before { stub_ci_pipeline_to_return_yaml_file }
+        before do
+          stub_ci_pipeline_to_return_yaml_file
+        end
 
         it 'creates and returns a new pipeline' do
           expect do
@@ -419,7 +423,9 @@ describe API::Pipelines do
     context 'user without proper access rights' do
       let!(:reporter) { create(:user) }
 
-      before { project.team << [reporter, :reporter] }
+      before do
+        project.team << [reporter, :reporter]
+      end
 
       it 'rejects the action' do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)

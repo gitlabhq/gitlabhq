@@ -7,8 +7,8 @@ describe API::V3::Projects do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -31,7 +31,7 @@ describe API::V3::Projects do
     access_level: ProjectMember::MASTER)
   end
   let(:project4) do
-    create(:empty_project,
+    create(:project,
     name: 'third_project',
     path: 'third_project',
     creator_id: user4.id,
@@ -121,6 +121,36 @@ describe API::V3::Projects do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(user.namespace.projects.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).count)
+        end
+      end
+
+      context 'and using archived' do
+        let!(:archived_project) { create(:project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived project' do
+          get v3_api('/projects?archived=true', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(archived_project.id)
+        end
+
+        it 'returns non-archived project' do
+          get v3_api('/projects?archived=false', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(project.id)
+        end
+
+        it 'returns all project' do
+          get v3_api('/projects', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
         end
       end
 
@@ -251,7 +281,7 @@ describe API::V3::Projects do
       end
     end
 
-    let!(:public_project) { create(:empty_project, :public) }
+    let!(:public_project) { create(:project, :public) }
     before do
       project
       project2
@@ -282,7 +312,7 @@ describe API::V3::Projects do
   end
 
   describe 'GET /projects/starred' do
-    let(:public_project) { create(:empty_project, :public) }
+    let(:public_project) { create(:project, :public) }
 
     before do
       project_member
@@ -301,15 +331,15 @@ describe API::V3::Projects do
     context 'maximum number of projects reached' do
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
-        expect { post v3_api('/projects', user2), name: 'foo' }.
-          to change {Project.count}.by(0)
+        expect { post v3_api('/projects', user2), name: 'foo' }
+          .to change {Project.count}.by(0)
         expect(response).to have_http_status(403)
       end
     end
 
     it 'creates new project without path but with name and returns 201' do
-      expect { post v3_api('/projects', user), name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -319,8 +349,8 @@ describe API::V3::Projects do
     end
 
     it 'creates new project without name but with path and returns 201' do
-      expect { post v3_api('/projects', user), path: 'foo_project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), path: 'foo_project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -330,8 +360,8 @@ describe API::V3::Projects do
     end
 
     it 'creates new project name and path and returns 201' do
-      expect { post v3_api('/projects', user), path: 'foo-Project', name: 'Foo Project' }.
-        to change { Project.count }.by(1)
+      expect { post v3_api('/projects', user), path: 'foo-Project', name: 'Foo Project' }
+        .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
       project = Project.first
@@ -489,8 +519,8 @@ describe API::V3::Projects do
     end
 
     it 'responds with 400 on failure and not project' do
-      expect { post v3_api("/projects/user/#{user.id}", admin) }.
-        not_to change { Project.count }
+      expect { post v3_api("/projects/user/#{user.id}", admin) }
+        .not_to change { Project.count }
 
       expect(response).to have_http_status(400)
       expect(json_response['error']).to eq('name is missing')
@@ -607,7 +637,7 @@ describe API::V3::Projects do
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
       it 'returns the public projects' do
-        public_project = create(:empty_project, :public)
+        public_project = create(:project, :public)
 
         get v3_api("/projects/#{public_project.id}")
 
@@ -688,9 +718,9 @@ describe API::V3::Projects do
 
       it 'handles users with dots' do
         dot_user = create(:user, username: 'dot.user')
-        project = create(:empty_project, creator_id: dot_user.id, namespace: dot_user.namespace)
+        project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
-        get v3_api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+        get v3_api("/projects/#{CGI.escape(project.full_path)}", dot_user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end
@@ -704,7 +734,8 @@ describe API::V3::Projects do
           'name' => user.namespace.name,
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
-          'full_path' => user.namespace.full_path
+          'full_path' => user.namespace.full_path,
+          'parent_id' => nil
         })
       end
 
@@ -716,8 +747,8 @@ describe API::V3::Projects do
             get v3_api("/projects", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response.first['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response.first['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
@@ -728,14 +759,14 @@ describe API::V3::Projects do
             get v3_api("/projects/#{project.id}", user)
 
             expect(response).to have_http_status(200)
-            expect(json_response['permissions']['project_access']['access_level']).
-            to eq(Gitlab::Access::MASTER)
+            expect(json_response['permissions']['project_access']['access_level'])
+            .to eq(Gitlab::Access::MASTER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
 
         context 'group project' do
-          let(:project2) { create(:empty_project, group: create(:group)) }
+          let(:project2) { create(:project, group: create(:group)) }
 
           before { project2.group.add_owner(user) }
 
@@ -744,8 +775,8 @@ describe API::V3::Projects do
 
             expect(response).to have_http_status(200)
             expect(json_response['permissions']['project_access']).to be_nil
-            expect(json_response['permissions']['group_access']['access_level']).
-            to eq(Gitlab::Access::OWNER)
+            expect(json_response['permissions']['group_access']['access_level'])
+            .to eq(Gitlab::Access::OWNER)
           end
         end
       end
@@ -780,7 +811,7 @@ describe API::V3::Projects do
 
     context 'when unauthenticated' do
       it_behaves_like 'project events response' do
-        let(:project) { create(:empty_project, :public) }
+        let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
@@ -830,7 +861,7 @@ describe API::V3::Projects do
 
     context 'when unauthenticated' do
       it_behaves_like 'project users response' do
-        let(:project) { create(:empty_project, :public) }
+        let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
@@ -944,11 +975,11 @@ describe API::V3::Projects do
   end
 
   describe 'fork management' do
-    let(:project_fork_target) { create(:empty_project) }
-    let(:project_fork_source) { create(:empty_project, :public) }
+    let(:project_fork_target) { create(:project) }
+    let(:project_fork_source) { create(:project, :public) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
-      let(:new_project_fork_source) { create(:empty_project, :public) }
+      let(:new_project_fork_source) { create(:project, :public) }
 
       it "is not available for non admin users" do
         post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
@@ -989,7 +1020,7 @@ describe API::V3::Projects do
       end
 
       context 'when users belong to project group' do
-        let(:project_fork_target) { create(:empty_project, group: create(:group)) }
+        let(:project_fork_target) { create(:project, group: create(:group)) }
 
         before do
           project_fork_target.group.add_owner user
@@ -1109,16 +1140,16 @@ describe API::V3::Projects do
 
   describe 'GET /projects/search/:query' do
     let!(:query)            { 'query'}
-    let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
-    let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
-    let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
-    let!(:internal)         { create(:empty_project, :internal, name: "internal #{query}") }
-    let!(:unfound_internal) { create(:empty_project, :internal, name: 'unfound internal') }
-    let!(:public)           { create(:empty_project, :public, name: "public #{query}") }
-    let!(:unfound_public)   { create(:empty_project, :public, name: 'unfound public') }
-    let!(:one_dot_two)      { create(:empty_project, :public, name: "one.dot.two") }
+    let!(:search)           { create(:project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre)              { create(:project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post)             { create(:project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post)         { create(:project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound)          { create(:project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:internal)         { create(:project, :internal, name: "internal #{query}") }
+    let!(:unfound_internal) { create(:project, :internal, name: 'unfound internal') }
+    let!(:public)           { create(:project, :public, name: "public #{query}") }
+    let!(:unfound_public)   { create(:project, :public, name: 'unfound public') }
+    let!(:one_dot_two)      { create(:project, :public, name: "one.dot.two") }
 
     shared_examples_for 'project search response' do |args = {}|
       it 'returns project search responses' do

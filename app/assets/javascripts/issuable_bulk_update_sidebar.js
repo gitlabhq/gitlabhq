@@ -5,6 +5,7 @@
 /* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import SidebarHeightManager from './sidebar_height_manager';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
@@ -22,6 +23,7 @@ export default class IssuableBulkUpdateSidebar {
   initDomElements() {
     this.$page = $('.page-with-sidebar');
     this.$sidebar = $('.right-sidebar');
+    this.$sidebarInnerContainer = this.$sidebar.find('.issuable-sidebar');
     this.$bulkEditCancelBtn = $('.js-bulk-update-menu-hide');
     this.$bulkEditSubmitBtn = $('.update-selected-issues');
     this.$bulkUpdateEnableBtn = $('.js-bulk-update-toggle');
@@ -55,18 +57,6 @@ export default class IssuableBulkUpdateSidebar {
     return navbarHeight + layoutNavHeight + subNavScroll;
   }
 
-  initSidebar() {
-    if (!this.navHeight) {
-      this.navHeight = this.getNavHeight();
-    }
-
-    if (!this.sidebarInitialized) {
-      $(document).off('scroll').on('scroll', _.throttle(this.setSidebarHeight, 10).bind(this));
-      $(window).off('resize').on('resize', _.throttle(this.setSidebarHeight, 10).bind(this));
-      this.sidebarInitialized = true;
-    }
-  }
-
   setupBulkUpdateActions() {
     IssuableBulkUpdateActions.setOriginalDropdownData();
   }
@@ -96,7 +86,20 @@ export default class IssuableBulkUpdateSidebar {
     this.toggleCheckboxDisplay(enable);
 
     if (enable) {
-      this.initSidebar();
+      this.initAffix();
+      SidebarHeightManager.init();
+    }
+  }
+
+  initAffix() {
+    if (!this.$sidebar.hasClass('affix-top')) {
+      const offsetTop = $('.scrolling-tabs-container').outerHeight() + $('.sub-nav-scroll').outerHeight();
+
+      this.$sidebar.affix({
+        offset: {
+          top: offsetTop,
+        },
+      });
     }
   }
 
@@ -113,6 +116,7 @@ export default class IssuableBulkUpdateSidebar {
   toggleSidebarDisplay(show) {
     this.$page.toggleClass(SIDEBAR_EXPANDED_CLASS, show);
     this.$page.toggleClass(SIDEBAR_COLLAPSED_CLASS, !show);
+    this.$sidebarInnerContainer.toggleClass(HIDDEN_CLASS, !show);
     this.$sidebar.toggleClass(SIDEBAR_EXPANDED_CLASS, show);
     this.$sidebar.toggleClass(SIDEBAR_COLLAPSED_CLASS, !show);
   }
@@ -139,17 +143,6 @@ export default class IssuableBulkUpdateSidebar {
       this.$bulkEditSubmitBtn.disable();
     } else {
       this.$bulkEditSubmitBtn.enable();
-    }
-  }
-  // loosely based on method of the same name in right_sidebar.js
-  setSidebarHeight() {
-    const currentScrollDepth = window.pageYOffset || 0;
-    const diff = this.navHeight - currentScrollDepth;
-
-    if (diff > 0) {
-      this.$sidebar.outerHeight(window.innerHeight - diff);
-    } else {
-      this.$sidebar.outerHeight('100%');
     }
   }
 

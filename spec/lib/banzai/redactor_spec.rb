@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Banzai::Redactor do
   let(:user) { build(:user) }
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
   let(:redactor) { described_class.new(project, user) }
 
   describe '#redact' do
@@ -12,11 +12,11 @@ describe Banzai::Redactor do
       end
 
       it 'redacts an array of documents' do
-        doc1 = Nokogiri::HTML.
-               fragment('<a class="gfm" data-reference-type="issue">foo</a>')
+        doc1 = Nokogiri::HTML
+               .fragment('<a class="gfm" data-reference-type="issue">foo</a>')
 
-        doc2 = Nokogiri::HTML.
-               fragment('<a class="gfm" data-reference-type="issue">bar</a>')
+        doc2 = Nokogiri::HTML
+               .fragment('<a class="gfm" data-reference-type="issue">bar</a>')
 
         redacted_data = redactor.redact([doc1, doc2])
 
@@ -93,9 +93,9 @@ describe Banzai::Redactor do
       doc = Nokogiri::HTML.fragment('<a href="foo">foo</a>')
       node = doc.children[0]
 
-      expect(redactor).to receive(:nodes_visible_to_user).
-        with([node]).
-        and_return(Set.new)
+      expect(redactor).to receive(:nodes_visible_to_user)
+        .with([node])
+        .and_return(Set.new)
 
       redactor.redact_document_nodes([{ document: doc, nodes: [node] }])
 
@@ -108,10 +108,10 @@ describe Banzai::Redactor do
       doc = Nokogiri::HTML.fragment('<a data-reference-type="issue"></a>')
       node = doc.children[0]
 
-      expect_any_instance_of(Banzai::ReferenceParser::IssueParser).
-        to receive(:nodes_visible_to_user).
-        with(user, [node]).
-        and_return([node])
+      expect_any_instance_of(Banzai::ReferenceParser::IssueParser)
+        .to receive(:nodes_visible_to_user)
+        .with(user, [node])
+        .and_return([node])
 
       expect(redactor.nodes_visible_to_user([node])).to eq(Set.new([node]))
     end

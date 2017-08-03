@@ -10,17 +10,13 @@
 
   .table-holder {
     width: 100%;
-
-    @media (max-width: $screen-sm-max) {
-      overflow: auto;
-    }
   }
 
   .commit-title {
     margin: 0;
   }
 
-  .table.ci-table {
+  .ci-table {
 
     .label {
       margin-bottom: 3px;
@@ -28,11 +24,6 @@
 
     .pipeline-id {
       color: $black;
-    }
-
-    .stage-cell {
-      min-width: 130px; // Guarantees we show at least 4 stages in line
-      width: 20%;
     }
 
     .pipelines-time-ago {
@@ -108,39 +99,7 @@
   }
 }
 
-.table.ci-table {
-
-  &.builds-page tbody tr {
-    height: 71px;
-  }
-
-  tr {
-    th {
-      padding: 16px 8px;
-      border: none;
-    }
-
-    td {
-      padding: 10px 8px;
-    }
-
-    td.environments-actions {
-      padding-right: 0;
-    }
-
-    td.stage-cell {
-      padding: 10px 0;
-    }
-
-    .commit-link {
-      padding: 9px 8px 10px 2px;
-    }
-  }
-
-  tbody {
-    border-top-width: 1px;
-  }
-
+.ci-table {
   .build.retried {
     background-color: $gray-lightest;
   }
@@ -174,7 +133,7 @@
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
-      vertical-align: top;
+      vertical-align: middle;
       text-overflow: ellipsis;
     }
 
@@ -192,13 +151,6 @@
 
     .commit-sha {
       color: $gl-link-color;
-    }
-
-    .commit-title {
-      max-width: 225px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
     .label {
@@ -253,11 +205,7 @@
 }
 
 .stage-cell {
-  font-size: 0;
-  padding: 0 4px;
-
-  > .stage-container > div > button > span > svg,
-  > .stage-container > button > svg {
+  .mini-pipeline-graph-dropdown-toggle svg {
     height: 22px;
     width: 22px;
     position: absolute;
@@ -545,12 +493,13 @@
       border: 1px solid $border-color;
       border-radius: 30px;
       background-color: $white-light;
+    }
 
-      &:hover {
-        background-color: $stage-hover-bg;
-        border: 1px solid $stage-hover-border;
-        color: $gl-text-color;
-      }
+    a.build-content:hover,
+    button.build-content:hover {
+      background-color: $stage-hover-bg;
+      border: 1px solid $stage-hover-border;
+      color: $gl-text-color;
     }
 
 
@@ -630,8 +579,25 @@
   font-weight: normal;
 }
 
+@mixin mini-pipeline-graph-color($color-light, $color-main, $color-dark) {
+  border-color: $color-main;
+  color: $color-main;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $color-light;
+    border-color: $color-dark;
+    color: $color-dark;
+
+    svg {
+      fill: $color-dark;
+    }
+  }
+}
+
 // Dropdown button in mini pipeline graph
-.mini-pipeline-graph-dropdown-toggle {
+button.mini-pipeline-graph-dropdown-toggle {
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;
@@ -642,6 +608,7 @@
   padding: 0;
   transition: all 0.2s linear;
   position: relative;
+  vertical-align: middle;
 
   > .fa.fa-caret-down {
     position: absolute;
@@ -669,100 +636,32 @@
 
   // Dropdown button animation in mini pipeline graph
   &.ci-status-icon-success {
-    border-color: $green-500;
-    color: $green-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $green-50;
-      border-color: $green-600;
-      color: $green-600;
-
-      svg {
-        fill: $green-600;
-      }
-    }
+    @include mini-pipeline-graph-color($green-50, $green-500, $green-600);
   }
 
   &.ci-status-icon-failed {
-    border-color: $red-500;
-    color: $red-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $red-50;
-      border-color: $red-600;
-      color: $red-600;
-
-      svg {
-        fill: $red-600;
-      }
-    }
+    @include mini-pipeline-graph-color($red-50, $red-500, $red-600);
   }
 
   &.ci-status-icon-pending,
   &.ci-status-icon-success_with_warnings {
-    border-color: $orange-500;
-    color: $orange-500;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $orange-50;
-      border-color: $orange-600;
-      color: $orange-600;
-
-      svg {
-        fill: $orange-600;
-      }
-    }
+    @include mini-pipeline-graph-color($orange-50, $orange-500, $orange-600);
   }
 
   &.ci-status-icon-running {
-    border-color: $blue-400;
-    color: $blue-400;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $blue-50;
-      border-color: $blue-600;
-      color: $blue-600;
-
-      svg {
-        fill: $blue-600;
-      }
-    }
+    @include mini-pipeline-graph-color($blue-50, $blue-400, $blue-600);
   }
 
   &.ci-status-icon-canceled,
   &.ci-status-icon-disabled,
   &.ci-status-icon-not-found,
   &.ci-status-icon-manual {
-    border-color: $gl-text-color;
-    color: $gl-text-color;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba($gl-text-color, 0.1);
-      border-color: $gl-text-color;
-    }
+    @include mini-pipeline-graph-color(rgba($gl-text-color, 0.1), $gl-text-color, $gl-text-color);
   }
 
   &.ci-status-icon-created,
   &.ci-status-icon-skipped {
-    border-color: $gray-darkest;
-    color: $gray-darkest;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: rgba($gray-darkest, 0.1);
-      border-color: $gray-darkest;
-    }
+    @include mini-pipeline-graph-color(rgba($gray-darkest, 0.1), $gray-darkest, $gray-darkest);
   }
 }
 
@@ -841,6 +740,10 @@
       top: 1px;
       vertical-align: text-bottom;
       position: relative;
+
+      @media (max-width: $screen-xs-max) {
+        max-width: 60%;
+      }
     }
 
     // status icon on the left
@@ -928,8 +831,14 @@
     border-color: transparent;
     border-style: solid;
     top: -6px;
-    left: 2px;
+    left: 50%;
+    transform: translate(-50%, 0);
     border-width: 0 5px 6px;
+
+    @media (max-width: $screen-sm-max) {
+      left: 100%;
+      margin-left: -12px;
+    }
   }
 
   &::before {
@@ -943,6 +852,20 @@
   }
 }
 
+/**
+ * Center dropdown menu in mini graph
+ */
+.mini-pipeline-graph-dropdown-menu.dropdown-menu {
+  transform: translate(-80%, 0);
+  min-width: 150px;
+
+  @media(min-width: $screen-md-min) {
+    transform: translate(-50%, 0);
+    right: auto;
+    left: 50%;
+    min-width: 240px;
+  }
+}
 /**
  * Terminal
  */
@@ -985,10 +908,17 @@
   }
 }
 
-.pipeline-header-container {
+.ci-header-container {
   min-height: 55px;
 
   .text-center {
     padding-top: 12px;
+  }
+
+  .header-action-buttons {
+    .btn,
+    a {
+      margin-left: 10px;
+    }
   }
 }

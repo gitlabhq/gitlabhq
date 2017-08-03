@@ -17,16 +17,34 @@ module IssuesHelper
     return '' if project.nil?
 
     url =
-      if options[:only_path]
-        project.issues_tracker.issue_path(issue_iid)
+      if options[:internal]
+        url_for_internal_issue(issue_iid, project, options)
       else
-        project.issues_tracker.issue_url(issue_iid)
+        url_for_tracker_issue(issue_iid, project, options)
       end
 
     # Ensure we return a valid URL to prevent possible XSS.
     URI.parse(url).to_s
   rescue URI::InvalidURIError
     ''
+  end
+
+  def url_for_tracker_issue(issue_iid, project, options)
+    if options[:only_path]
+      project.issues_tracker.issue_path(issue_iid)
+    else
+      project.issues_tracker.issue_url(issue_iid)
+    end
+  end
+
+  def url_for_internal_issue(issue_iid, project = @project, options = {})
+    helpers = Gitlab::Routing.url_helpers
+
+    if options[:only_path]
+      helpers.namespace_project_issue_path(namespace_id: project.namespace, project_id: project, id: issue_iid)
+    else
+      helpers.namespace_project_issue_url(namespace_id: project.namespace, project_id: project, id: issue_iid)
+    end
   end
 
   def bulk_update_milestone_options
@@ -150,7 +168,7 @@ module IssuesHelper
              Gitlab::UrlBuilder.build(single_discussion.first_note)
            else
              project = merge_request.project
-             namespace_project_merge_request_path(project.namespace, project, merge_request)
+             project_merge_request_path(project, merge_request)
            end
 
     link_to link_text, path
@@ -158,4 +176,6 @@ module IssuesHelper
 
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
+  module_function :url_for_internal_issue
+  module_function :url_for_tracker_issue
 end

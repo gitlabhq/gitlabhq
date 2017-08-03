@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Route, models: true do
+describe Route do
   let(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let(:route) { group.route }
 
@@ -9,10 +9,13 @@ describe Route, models: true do
   end
 
   describe 'validations' do
-    before { route }
+    before do
+      expect(route).to be_persisted
+    end
+
     it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_presence_of(:path) }
-    it { is_expected.to validate_uniqueness_of(:path) }
+    it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
   end
 
   describe 'callbacks' do
@@ -31,7 +34,7 @@ describe Route, models: true do
     context 'after create' do
       it 'calls #delete_conflicting_redirects' do
         route.destroy
-        new_route = Route.new(source: group, path: group.path)
+        new_route = described_class.new(source: group, path: group.path)
         expect(new_route).to receive(:delete_conflicting_redirects)
         new_route.save!
       end
@@ -46,7 +49,7 @@ describe Route, models: true do
     let!(:another_group_nested) { create(:group, path: 'another', name: 'another', parent: similar_group) }
 
     it 'returns correct routes' do
-      expect(Route.inside_path('git_lab')).to match_array([nested_group.route, deep_nested_group.route])
+      expect(described_class.inside_path('git_lab')).to match_array([nested_group.route, deep_nested_group.route])
     end
   end
 
@@ -59,7 +62,9 @@ describe Route, models: true do
 
     context 'path update' do
       context 'when route name is set' do
-        before { route.update_attributes(path: 'bar') }
+        before do
+          route.update_attributes(path: 'bar')
+        end
 
         it 'updates children routes with new path' do
           expect(described_class.exists?(path: 'bar')).to be_truthy

@@ -5,6 +5,7 @@
  */
 import eventHub from '../event_hub';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -12,6 +13,10 @@ export default {
       type: String,
       default: '',
     },
+  },
+
+  directives: {
+    tooltip,
   },
 
   data() {
@@ -46,8 +51,9 @@ export default {
 </script>
 <template>
   <button
+    v-tooltip
     type="button"
-    class="btn stop-env-link has-tooltip hidden-xs hidden-sm"
+    class="btn stop-env-link hidden-xs hidden-sm"
     data-container="body"
     @click="onClick"
     :disabled="isLoading"

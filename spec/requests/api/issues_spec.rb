@@ -5,7 +5,7 @@ describe API::Issues do
 
   set(:user) { create(:user) }
   set(:project) do
-    create(:empty_project, :public, creator_id: user.id, namespace: user.namespace)
+    create(:project, :public, creator_id: user.id, namespace: user.namespace)
   end
 
   let(:user2)       { create(:user) }
@@ -71,7 +71,6 @@ describe API::Issues do
         expect(response).to have_http_status(401)
       end
     end
-
     context "when authenticated" do
       let(:first_issue) { json_response.first }
 
@@ -103,6 +102,42 @@ describe API::Issues do
         expect_paginated_array_response(size: 2)
         expect(first_issue['id']).to eq(issue.id)
         expect(json_response.second['id']).to eq(closed_issue.id)
+      end
+
+      it 'returns issues assigned to me' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user2), scope: 'assigned-to-me'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues authored by the given author id' do
+        issue2 = create(:issue, author: user2, project: project)
+
+        get api('/issues', user), author_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues assigned to the given assignee id' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user), assignee_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues authored by the given author id and assigned to the given assignee id' do
+        issue2 = create(:issue, author: user2, assignees: [user2], project: project)
+
+        get api('/issues', user), author_id: user2.id, assignee_id: user2.id, scope: 'all'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
       end
 
       it 'returns issues matching given search string for title' do
@@ -261,7 +296,7 @@ describe API::Issues do
 
   describe "GET /groups/:id/issues" do
     let!(:group)            { create(:group) }
-    let!(:group_project)    { create(:empty_project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
@@ -483,7 +518,7 @@ describe API::Issues do
     end
 
     it "returns 404 on private projects for other users" do
-      private_project = create(:empty_project, :private)
+      private_project = create(:project, :private)
       create(:issue, project: private_project)
 
       get api("/projects/#{private_project.id}/issues", non_member)
@@ -492,7 +527,7 @@ describe API::Issues do
     end
 
     it 'returns no issues when user has access to project but not issues' do
-      restricted_project = create(:empty_project, :public, :issues_private)
+      restricted_project = create(:project, :public, :issues_private)
       create(:issue, project: restricted_project)
 
       get api("/projects/#{restricted_project.id}/issues", non_member)
@@ -693,6 +728,19 @@ describe API::Issues do
       expect(json_response['confidential']).to be_falsy
     end
 
+    context 'links exposure' do
+      it 'exposes related resources full URIs' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}", user)
+
+        links = json_response['_links']
+
+        expect(links['self']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}")
+        expect(links['notes']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/notes")
+        expect(links['award_emoji']).to end_with("/api/v4/projects/#{project.id}/issues/#{issue.iid}/award_emoji")
+        expect(links['project']).to end_with("/api/v4/projects/#{project.id}")
+      end
+    end
+
     it "returns a project issue by internal id" do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
@@ -772,7 +820,7 @@ describe API::Issues do
       end
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'creates a new project issue with no more than one assignee' do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', assignee_ids: [user2.id, guest.id]
@@ -1123,7 +1171,7 @@ describe API::Issues do
       expect(json_response['assignees'].first['name']).to eq(user2.name)
     end
 
-    context 'CE restrictions' do
+    context 'single assignee restrictions' do
       it 'updates an issue with several assignees but only one has been applied' do
         put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           assignee_ids: [user2.id, guest.id]
@@ -1211,7 +1259,7 @@ describe API::Issues do
       put api("/projects/#{project.id}/issues/#{closed_issue.iid}", user), state_event: 'reopen'
 
       expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq 'reopened'
+      expect(json_response['state']).to eq 'opened'
     end
 
     context 'when an admin or owner makes the request' do
@@ -1251,7 +1299,7 @@ describe API::Issues do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:empty_project, namespace: owner.namespace) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.iid}", owner)
@@ -1276,8 +1324,8 @@ describe API::Issues do
   end
 
   describe '/projects/:id/issues/:issue_iid/move' do
-    let!(:target_project) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
-    let!(:target_project2) { create(:empty_project, creator_id: non_member.id, namespace: non_member.namespace ) }
+    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
       post api("/projects/#{project.id}/issues/#{issue.iid}/move", user),
@@ -1459,6 +1507,25 @@ describe API::Issues do
       get api("/projects/#{project.id}/issues/9999/closed_by", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
+    let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
+
+    it 'exposes known attributes' do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
+      expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
+      expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it "returns unautorized for non-admin users" do
+      get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
+
+      expect(response).to have_http_status(403)
     end
   end
 

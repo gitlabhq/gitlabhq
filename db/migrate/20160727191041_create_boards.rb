@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Timestamps
 class CreateBoards < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

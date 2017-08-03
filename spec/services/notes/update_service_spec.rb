@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Notes::UpdateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Notes::UpdateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }

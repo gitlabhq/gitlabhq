@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe GroupsHelper do
+  include ApplicationHelper
+
   describe 'group_icon' do
     avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
@@ -8,8 +10,8 @@ describe GroupsHelper do
       group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
-      expect(group_icon(group.path).to_s).
-        to match("/uploads/group/avatar/#{group.id}/banana_sample.gif")
+      expect(group_icon(group.path).to_s)
+        .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
     end
 
     it 'gives default avatar_icon when no avatar is present' do
@@ -21,7 +23,7 @@ describe GroupsHelper do
 
   describe 'group_lfs_status' do
     let(:group) { create(:group) }
-    let!(:project) { create(:empty_project, namespace_id: group.id) }
+    let!(:project) { create(:project, namespace_id: group.id) }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
@@ -45,7 +47,7 @@ describe GroupsHelper do
 
     context 'more than one project in group' do
       before do
-        create(:empty_project, namespace_id: group.id)
+        create(:project, namespace_id: group.id)
       end
 
       context 'LFS enabled in group' do
@@ -79,6 +81,17 @@ describe GroupsHelper do
           expect(group_lfs_status(group)).to include('Disabled for 1 out of 2 projects')
         end
       end
+    end
+  end
+
+  describe 'group_title', :nested_groups do
+    let(:group) { create(:group) }
+    let(:nested_group) { create(:group, parent: group) }
+    let(:deep_nested_group) { create(:group, parent: nested_group) }
+    let!(:very_deep_nested_group) { create(:group, parent: deep_nested_group) }
+
+    it 'outputs the groups in the correct order' do
+      expect(helper.group_title(very_deep_nested_group)).to match(/>#{group.name}<\/a>.*>#{nested_group.name}<\/a>.*>#{deep_nested_group.name}<\/a>/)
     end
   end
 end

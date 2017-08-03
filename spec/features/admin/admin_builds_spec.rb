@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin Builds' do
   before do
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   describe 'GET /admin/builds' do

@@ -1,5 +1,4 @@
 require 'constraints/project_url_constrainer'
-require 'gitlab/routes/legacy_builds'
 
 resources :projects, only: [:index, :new, :create]
 
@@ -73,7 +72,11 @@ constraints(ProjectUrlConstrainer.new) do
 
       resource :mattermost, only: [:new, :create]
 
-      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
+      namespace :prometheus do
+        get :active_metrics
+      end
+
+      resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
         member do
           put :enable
           put :disable
@@ -83,13 +86,8 @@ constraints(ProjectUrlConstrainer.new) do
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
-      resources :merge_requests, concerns: :awardable, constraints: { id: /\d+/ } do
+      resources :merge_requests, concerns: :awardable, except: [:new, :create], constraints: { id: /\d+/ } do
         member do
-          get :commits
-          get :diffs
-          get :conflicts
-          get :conflict_for_path
-          get :pipelines
           get :commit_change_content
           post :merge
           post :cancel_merge_when_pipeline_succeeds
@@ -97,18 +95,32 @@ constraints(ProjectUrlConstrainer.new) do
           get :ci_environments_status
           post :toggle_subscription
           post :remove_wip
-          get :diff_for_path
-          post :resolve_conflicts
           post :assign_related_issues
+
+          scope constraints: { format: nil }, action: :show do
+            get :commits, defaults: { tab: 'commits' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+            get :diffs, defaults: { tab: 'diffs' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :commits
+            get :pipelines
+            get :diffs, to: 'merge_requests/diffs#show'
+          end
+
+          get :diff_for_path, controller: 'merge_requests/diffs'
+
+          scope controller: 'merge_requests/conflicts' do
+            get :conflicts, action: :show
+            get :conflict_for_path
+            post :resolve_conflicts
+          end
         end
 
         collection do
-          get :branch_from
-          get :branch_to
-          get :update_branches
           get :diff_for_path
           post :bulk_update
-          get :new_diffs, path: 'new/diffs'
         end
 
         resources :discussions, only: [], constraints: { id: /\h{40}/ } do
@@ -116,6 +128,29 @@ constraints(ProjectUrlConstrainer.new) do
             post :resolve
             delete :resolve, action: :unresolve
           end
+        end
+      end
+
+      controller 'merge_requests/creations', path: 'merge_requests' do
+        post '', action: :create, as: nil
+
+        scope path: 'new', as: :new_merge_request do
+          get '', action: :new
+
+          scope constraints: { format: nil }, action: :new do
+            get :diffs, defaults: { tab: 'diffs' }
+            get :pipelines, defaults: { tab: 'pipelines' }
+          end
+
+          scope constraints: { format: 'json' }, as: :json do
+            get :diffs
+            get :pipelines
+          end
+
+          get :diff_for_path
+          get :update_branches
+          get :branch_from
+          get :branch_to
         end
       end
 
@@ -153,6 +188,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :stop
           get :terminal
           get :metrics
+          get :additional_metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
         end
 
@@ -163,6 +199,7 @@ constraints(ProjectUrlConstrainer.new) do
         resources :deployments, only: [:index] do
           member do
             get :metrics
+            get :additional_metrics
           end
         end
       end
@@ -215,7 +252,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      Gitlab::Routes::LegacyBuilds.new(self).draw
+      draw :legacy_builds
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
@@ -235,7 +272,7 @@ constraints(ProjectUrlConstrainer.new) do
       namespace :registry do
         resources :repository, only: [] do
           resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end
 
@@ -342,14 +379,16 @@ constraints(ProjectUrlConstrainer.new) do
         collection do
           scope '*ref', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
             constraints format: /svg/ do
-              get :build
+              # Keep around until 10.0, see gitlab-org/gitlab-ce#35307
+              get :build, to: "badges#pipeline"
+              get :pipeline
               get :coverage
             end
           end
         end
       end
       namespace :settings do
-        resource :members, only: [:show]
+        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository

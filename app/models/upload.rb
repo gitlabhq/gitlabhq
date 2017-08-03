@@ -2,7 +2,7 @@ class Upload < ActiveRecord::Base
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
 
-  belongs_to :model, polymorphic: true
+  belongs_to :model, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :size, presence: true
   validates :path, presence: true

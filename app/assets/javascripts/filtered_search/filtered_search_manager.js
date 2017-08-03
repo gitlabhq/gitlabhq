@@ -3,6 +3,7 @@ import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
 import RecentSearchesService from './services/recent_searches_service';
 import eventHub from './event_hub';
+import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
 class FilteredSearchManager {
   constructor(page) {
@@ -19,13 +20,13 @@ class FilteredSearchManager {
       allowedKeys: this.filteredSearchTokenKeys.getKeys(),
     });
     this.searchHistoryDropdownElement = document.querySelector('.js-filtered-search-history-dropdown');
-    const projectPath = this.searchHistoryDropdownElement ?
-      this.searchHistoryDropdownElement.dataset.projectFullPath : 'project';
+    const fullPath = this.searchHistoryDropdownElement ?
+      this.searchHistoryDropdownElement.dataset.fullPath : 'project';
     let recentSearchesPagePrefix = 'issue-recent-searches';
     if (this.page === 'merge_requests') {
       recentSearchesPagePrefix = 'merge-request-recent-searches';
     }
-    const recentSearchesKey = `${projectPath}-${recentSearchesPagePrefix}`;
+    const recentSearchesKey = `${fullPath}-${recentSearchesPagePrefix}`;
     this.recentSearchesService = new RecentSearchesService(recentSearchesKey);
   }
 
@@ -40,6 +41,10 @@ class FilteredSearchManager {
         return [];
       })
       .then((searches) => {
+        if (!searches) {
+          return;
+        }
+
         // Put any searches that may have come in before
         // we fetched the saved searches ahead of the already saved ones
         const resultantSearches = this.recentSearchesStore.setRecentSearches(
@@ -74,6 +79,41 @@ class FilteredSearchManager {
 
     if (this.recentSearchesRoot) {
       this.recentSearchesRoot.destroy();
+    }
+  }
+
+  bindStateEvents() {
+    this.stateFilters = document.querySelector('.container-fluid .issues-state-filters');
+
+    if (this.stateFilters) {
+      this.searchStateWrapper = this.searchState.bind(this);
+
+      this.stateFilters.querySelector('[data-state="opened"]')
+        .addEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('[data-state="closed"]')
+        .addEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('[data-state="all"]')
+        .addEventListener('click', this.searchStateWrapper);
+
+      this.mergedState = this.stateFilters.querySelector('[data-state="merged"]');
+      if (this.mergedState) {
+        this.mergedState.addEventListener('click', this.searchStateWrapper);
+      }
+    }
+  }
+
+  unbindStateEvents() {
+    if (this.stateFilters) {
+      this.stateFilters.querySelector('[data-state="opened"]')
+        .removeEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('[data-state="closed"]')
+        .removeEventListener('click', this.searchStateWrapper);
+      this.stateFilters.querySelector('[data-state="all"]')
+        .removeEventListener('click', this.searchStateWrapper);
+
+      if (this.mergedState) {
+        this.mergedState.removeEventListener('click', this.searchStateWrapper);
+      }
     }
   }
 
@@ -112,6 +152,8 @@ class FilteredSearchManager {
     document.addEventListener('click', this.removeInputContainerFocusWrapper);
     document.addEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$on('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+
+    this.bindStateEvents();
   }
 
   unbindEvents() {
@@ -132,6 +174,8 @@ class FilteredSearchManager {
     document.removeEventListener('click', this.removeInputContainerFocusWrapper);
     document.removeEventListener('keydown', this.removeSelectedTokenKeydownWrapper);
     eventHub.$off('recentSearchesItemSelected', this.onrecentSearchesItemSelectedWrapper);
+
+    this.unbindStateEvents();
   }
 
   checkForBackspace(e) {
@@ -184,11 +228,7 @@ class FilteredSearchManager {
   }
 
   addInputContainerFocus() {
-    const inputContainer = this.filteredSearchInput.closest('.filtered-search-box');
-
-    if (inputContainer) {
-      inputContainer.classList.add('focus');
-    }
+    addClassIfElementExists(this.filteredSearchInput.closest('.filtered-search-box'), 'focus');
   }
 
   removeInputContainerFocus(e) {
@@ -447,7 +487,20 @@ class FilteredSearchManager {
     }
   }
 
-  search() {
+  searchState(e) {
+    e.preventDefault();
+    const target = e.currentTarget;
+    // remove focus outline after click
+    target.blur();
+
+    const state = target.dataset && target.dataset.state;
+
+    if (state) {
+      this.search(state);
+    }
+  }
+
+  search(state = null) {
     const paths = [];
     const searchQuery = gl.DropdownUtils.getSearchQuery();
 
@@ -455,7 +508,7 @@ class FilteredSearchManager {
 
     const { tokens, searchToken }
       = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
-    const currentState = gl.utils.getParameterByName('state') || 'opened';
+    const currentState = state || gl.utils.getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
     tokens.forEach((token) => {

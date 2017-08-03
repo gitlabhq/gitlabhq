@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
@@ -31,10 +31,10 @@ describe 'Dropdown author', js: true, feature: true do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do

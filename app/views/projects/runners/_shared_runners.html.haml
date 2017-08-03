@@ -9,10 +9,10 @@
     on GitLab.com).
   %hr
   - if @project.shared_runners_enabled?
-    = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-warning', method: :post do
+    = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn btn-warning', method: :post do
       Disable shared Runners
   - else
-    = link_to toggle_shared_runners_namespace_project_runners_path(@project.namespace, @project), class: 'btn btn-success', method: :post do
+    = link_to toggle_shared_runners_project_runners_path(@project), class: 'btn btn-success', method: :post do
       Enable shared Runners
   &nbsp; for this project
 

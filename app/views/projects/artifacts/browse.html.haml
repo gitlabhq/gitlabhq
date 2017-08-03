@@ -5,18 +5,18 @@
 
 .tree-holder
   .nav-block
+    %ul.breadcrumb.repo-breadcrumb
+      %li
+        = link_to 'Artifacts', browse_project_job_artifacts_path(@project, @build)
+      - path_breadcrumbs do |title, path|
+        %li
+          = link_to truncate(title, length: 40), browse_project_job_artifacts_path(@project, @build, path)
+
     .tree-controls
-      = link_to download_namespace_project_job_artifacts_path(@project.namespace, @project, @build),
+      = link_to download_project_job_artifacts_path(@project, @build),
         rel: 'nofollow', download: '', class: 'btn btn-default download' do
         = icon('download')
         Download artifacts archive
-
-    %ul.breadcrumb.repo-breadcrumb
-      %li
-        = link_to 'Artifacts', browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build)
-      - path_breadcrumbs do |title, path|
-        %li
-          = link_to truncate(title, length: 40), browse_namespace_project_job_artifacts_path(@project.namespace, @project, @build, path)
 
   .tree-content-holder
     %table.table.tree-table

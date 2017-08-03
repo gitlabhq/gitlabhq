@@ -29,13 +29,13 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    result = Tags::CreateService.new(@project, current_user).
-      execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+    result = Tags::CreateService.new(@project, current_user)
+      .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
     if result[:status] == :success
       @tag = result[:tag]
 
-      redirect_to namespace_project_tag_path(@project.namespace, @project, @tag.name)
+      redirect_to project_tag_path(@project, @tag.name)
     else
       @error = result[:message]
       @message = params[:message]
@@ -50,7 +50,7 @@ class Projects::TagsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         format.html do
-          redirect_to namespace_project_tags_path(@project.namespace, @project), status: 303
+          redirect_to project_tags_path(@project), status: 303
         end
 
         format.js
@@ -58,7 +58,7 @@ class Projects::TagsController < Projects::ApplicationController
         @error = result[:message]
 
         format.html do
-          redirect_to namespace_project_tags_path(@project.namespace, @project),
+          redirect_to project_tags_path(@project),
             alert: @error, status: 303
         end
 

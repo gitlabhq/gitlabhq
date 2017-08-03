@@ -13,7 +13,9 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
@@ -78,7 +80,7 @@ describe API::Files do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository files' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -151,7 +153,7 @@ describe API::Files do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw files' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -203,8 +205,8 @@ describe API::Files do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file).
-        and_raise(Repository::CommitError, 'Cannot create file')
+      allow_any_instance_of(Repository).to receive(:create_file)
+        .and_raise(Repository::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 

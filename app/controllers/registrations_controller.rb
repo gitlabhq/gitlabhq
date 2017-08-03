@@ -30,7 +30,7 @@ class RegistrationsController < Devise::RegistrationsController
     respond_to do |format|
       format.html do
         session.try(:destroy)
-        redirect_to new_user_session_path, notice: "Account scheduled for removal."
+        redirect_to new_user_session_path, status: 302, notice: "Account scheduled for removal."
       end
     end
   end

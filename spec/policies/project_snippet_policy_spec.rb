@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe ProjectSnippetPolicy, models: true do
+describe ProjectSnippetPolicy do
   let(:regular_user) { create(:user) }
   let(:external_user) { create(:user, :external) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project, :public) }
 
   let(:author_permissions) do
     [
@@ -15,7 +15,15 @@ describe ProjectSnippetPolicy, models: true do
   def abilities(user, snippet_visibility)
     snippet = create(:project_snippet, snippet_visibility, project: project)
 
-    described_class.abilities(user, snippet).to_set
+    described_class.new(user, snippet)
+  end
+
+  def expect_allowed(*permissions)
+    permissions.each { |p| is_expected.to be_allowed(p) }
+  end
+
+  def expect_disallowed(*permissions)
+    permissions.each { |p| is_expected.not_to be_allowed(p) }
   end
 
   context 'public snippet' do
@@ -23,8 +31,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(nil, :public) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -32,8 +40,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(regular_user, :public) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -41,8 +49,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(external_user, :public) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
   end
@@ -52,8 +60,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(nil, :internal) }
 
       it do
-        is_expected.not_to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_disallowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -61,8 +69,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(regular_user, :internal) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -70,19 +78,21 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(external_user, :internal) }
 
       it do
-        is_expected.not_to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_disallowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
     context 'project team member external user' do
       subject { abilities(external_user, :internal) }
 
-      before { project.team << [external_user, :developer] }
+      before do
+        project.team << [external_user, :developer]
+      end
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
   end
@@ -92,8 +102,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(nil, :private) }
 
       it do
-        is_expected.not_to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_disallowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -101,41 +111,45 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(regular_user, :private) }
 
       it do
-        is_expected.not_to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_disallowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
     context 'snippet author' do
-      let(:snippet) { create(:project_snippet, :private, author: regular_user) }
+      let(:snippet) { create(:project_snippet, :private, author: regular_user, project: project) }
 
-      subject { described_class.abilities(regular_user, snippet).to_set }
+      subject { described_class.new(regular_user, snippet) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_allowed(*author_permissions)
       end
     end
 
     context 'project team member normal user' do
       subject { abilities(regular_user, :private) }
 
-      before { project.team << [regular_user, :developer] }
+      before do
+        project.team << [regular_user, :developer]
+      end
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
     context 'project team member external user' do
       subject { abilities(external_user, :private) }
 
-      before { project.team << [external_user, :developer] }
+      before do
+        project.team << [external_user, :developer]
+      end
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.not_to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_disallowed(*author_permissions)
       end
     end
 
@@ -143,8 +157,8 @@ describe ProjectSnippetPolicy, models: true do
       subject { abilities(create(:admin), :private) }
 
       it do
-        is_expected.to include(:read_project_snippet)
-        is_expected.to include(*author_permissions)
+        expect_allowed(:read_project_snippet)
+        expect_allowed(*author_permissions)
       end
     end
   end

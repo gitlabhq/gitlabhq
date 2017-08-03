@@ -44,32 +44,34 @@ describe('Description component', () => {
     });
   });
 
-  it('re-inits the TaskList when description changed', (done) => {
-    spyOn(gl, 'TaskList');
-    vm.descriptionHtml = 'changed';
+  // TODO: gl.TaskList no longer exists. rewrite these tests once we have a way to rewire ES modules
 
-    setTimeout(() => {
-      expect(
-        gl.TaskList,
-      ).toHaveBeenCalled();
+  // it('re-inits the TaskList when description changed', (done) => {
+  //   spyOn(gl, 'TaskList');
+  //   vm.descriptionHtml = 'changed';
+  //
+  //   setTimeout(() => {
+  //     expect(
+  //       gl.TaskList,
+  //     ).toHaveBeenCalled();
+  //
+  //     done();
+  //   });
+  // });
 
-      done();
-    });
-  });
-
-  it('does not re-init the TaskList when canUpdate is false', (done) => {
-    spyOn(gl, 'TaskList');
-    vm.canUpdate = false;
-    vm.descriptionHtml = 'changed';
-
-    setTimeout(() => {
-      expect(
-        gl.TaskList,
-      ).not.toHaveBeenCalled();
-
-      done();
-    });
-  });
+  // it('does not re-init the TaskList when canUpdate is false', (done) => {
+  //   spyOn(gl, 'TaskList');
+  //   vm.canUpdate = false;
+  //   vm.descriptionHtml = 'changed';
+  //
+  //   setTimeout(() => {
+  //     expect(
+  //       gl.TaskList,
+  //     ).not.toHaveBeenCalled();
+  //
+  //     done();
+  //   });
+  // });
 
   describe('taskStatus', () => {
     it('adds full taskStatus', (done) => {
@@ -91,6 +93,34 @@ describe('Description component', () => {
         expect(
           document.querySelector('.issuable-meta #task_status_short').textContent.trim(),
         ).toBe('1/1 task');
+
+        done();
+      });
+    });
+
+    it('clears task status text when no tasks are present', (done) => {
+      vm.taskStatus = '0 of 0';
+
+      setTimeout(() => {
+        expect(
+          document.querySelector('.issuable-meta #task_status').textContent.trim(),
+        ).toBe('');
+
+        done();
+      });
+    });
+  });
+
+  it('applies syntax highlighting and math when description changed', (done) => {
+    spyOn(vm, 'renderGFM').and.callThrough();
+    spyOn($.prototype, 'renderGFM').and.callThrough();
+    vm.descriptionHtml = 'changed';
+
+    Vue.nextTick(() => {
+      setTimeout(() => {
+        expect(vm.$refs['gfm-content']).toBeDefined();
+        expect(vm.renderGFM).toHaveBeenCalled();
+        expect($.prototype.renderGFM).toHaveBeenCalled();
 
         done();
       });

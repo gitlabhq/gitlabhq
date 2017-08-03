@@ -1,8 +1,0 @@
-.dropdown-page-two.dropdown-new-branch
-  = dropdown_title('Create new branch', back: true)
-  = dropdown_content do
-    %input#new_branch_name.default-dropdown-input.append-bottom-10{ type: "text", placeholder: "Name new branch" }
-      %button.btn.btn-primary.pull-left.js-new-branch-btn{ type: "button" }
-        Create
-      %button.btn.btn-default.pull-right.js-cancel-branch-btn{ type: "button" }
-        Cancel

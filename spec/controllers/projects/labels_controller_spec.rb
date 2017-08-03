@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::LabelsController do
   let(:group)   { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:user)    { create(:user) }
 
   before do
@@ -73,7 +73,7 @@ describe Projects::LabelsController do
 
   describe 'POST #generate' do
     context 'personal project' do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       it 'creates labels' do
         post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project
@@ -117,7 +117,7 @@ describe Projects::LabelsController do
     let!(:promoted_label_name) { "Promoted Label" }
     let!(:label_1) { create(:label, title: promoted_label_name, project: project) }
 
-    context 'not group owner' do
+    context 'not group reporters' do
       it 'denies access' do
         post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
 
@@ -125,9 +125,9 @@ describe Projects::LabelsController do
       end
     end
 
-    context 'group owner' do
+    context 'group reporter' do
       before do
-        GroupMember.add_users(group, [user], :owner)
+        group.add_reporter(user)
       end
 
       it 'gives access' do
@@ -178,7 +178,7 @@ describe Projects::LabelsController do
             it 'redirects to the correct casing' do
               get :index, namespace_id: project.namespace, project_id: project.to_param.upcase
 
-              expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+              expect(response).to redirect_to(project_labels_path(project))
               expect(controller).not_to set_flash[:notice]
             end
           end
@@ -191,7 +191,7 @@ describe Projects::LabelsController do
         it 'redirects to the canonical path' do
           get :index, namespace_id: project.namespace, project_id: project.to_param + 'old'
 
-          expect(response).to redirect_to(namespace_project_labels_path(project.namespace, project))
+          expect(response).to redirect_to(project_labels_path(project))
           expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, project))
         end
       end
