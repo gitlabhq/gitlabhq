@@ -234,7 +234,7 @@ run:
 ```
 
 It is very similar to the configuration used for `simple-maven-dep`, but instead of the `deploy` job there is a `run` job.
-Probably something that you don't want to use in real projects, but here it is useful to see the application automatically running.
+Probably something that you don't want to use in real projects, but here it is useful to see the application executed automatically.
 
 And that's it! In the `run` job output log you will find a friendly hello to GitLab!
 
