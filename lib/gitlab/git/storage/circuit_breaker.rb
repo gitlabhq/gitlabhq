@@ -14,7 +14,7 @@ module Gitlab
           pattern = "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}*"
 
           Gitlab::Git::Storage.redis.with do |redis|
-            all_storage_keys = redis.scan_each(match: pattern).to_a
+            all_storage_keys = redis.keys(pattern)
             redis.del(*all_storage_keys) unless all_storage_keys.empty?
           end
 

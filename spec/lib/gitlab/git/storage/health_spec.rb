@@ -23,7 +23,9 @@ describe Gitlab::Git::Storage::Health, clean_gitlab_redis_shared_state: true, br
   describe '.load_for_keys' do
     let(:subject) do
       results = Gitlab::Git::Storage.redis.with do |redis|
-        described_class.load_for_keys({ 'broken' => [host1_key] }, redis)
+        fake_future = double
+        allow(fake_future).to receive(:value).and_return([host1_key])
+        described_class.load_for_keys({ 'broken' => fake_future }, redis)
       end
 
       # Make sure the `Redis#future is loaded

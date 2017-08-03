@@ -14,17 +14,7 @@ module Gitlab
 
           Gitlab::Git::Storage.redis.with do |redis|
             keys_per_storage = all_keys_for_storages(storage_names, redis)
-
-            # We need to make sure all keys are actually loaded as an array.
-            # Otherwise when using the enumerator of the `scan_each` within a
-            # second pipeline, it will be assumed unloaded, wich would make the
-            # result unusable inside the pipeline.
-            loaded_keys_per_storage = keys_per_storage.inject({}) do |loaded_keys, (storage_name, keys)|
-              loaded_keys[storage_name] = keys.to_a
-              loaded_keys
-            end
-
-            results_per_storage = load_for_keys(loaded_keys_per_storage, redis)
+            results_per_storage = load_for_keys(keys_per_storage, redis)
           end
 
           results_per_storage.map do |name, info|
@@ -34,13 +24,13 @@ module Gitlab
         end
 
         def self.all_keys_for_storages(storage_names, redis)
-          keys_per_storage = nil
+          keys_per_storage = {}
 
           redis.pipelined do
-            keys_per_storage = storage_names.inject({}) do |result, storage_name|
-              key = pattern_for_storage(storage_name)
+            storage_names.each do |storage_name|
+              pattern = pattern_for_storage(storage_name)
 
-              result.merge(storage_name => redis.scan_each(match: key))
+              keys_per_storage[storage_name] = redis.keys(pattern)
             end
           end
 
@@ -48,15 +38,15 @@ module Gitlab
         end
 
         def self.load_for_keys(keys_per_storage, redis)
-          info_for_keys = nil
+          info_for_keys = {}
 
           redis.pipelined do
-            info_for_keys = keys_per_storage.inject({}) do |result, (storage_name, keys)|
-              info_for_storage = keys.map do |key|
+            keys_per_storage.each do |storage_name, keys_future|
+              info_for_storage = keys_future.value.map do |key|
                 { name: key, failure_count: redis.hget(key, :failure_count) }
               end
 
-              result.merge(storage_name => info_for_storage)
+              info_for_keys[storage_name] = info_for_storage
             end
           end
 
