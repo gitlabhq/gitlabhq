@@ -83,12 +83,11 @@ module Gitlab
 
       def call_update_hook(gl_id, gl_username, oldrev, newrev, ref)
         Dir.chdir(repo_path) do
-          stdout, stderr, status = Open3.capture3(
-            {
-              'GL_ID' => gl_id,
-              'GL_USERNAME' => gl_username
-            },
-            path, ref, oldrev, newrev)
+          env = {
+            'GL_ID' => gl_id,
+            'GL_USERNAME' => gl_username
+          }
+          stdout, stderr, status = Open3.capture3(env, path, ref, oldrev, newrev)
           [status.success?, (stderr.presence || stdout).gsub(/\R/, "<br>").html_safe]
         end
       end
