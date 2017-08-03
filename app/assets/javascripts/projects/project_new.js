@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-document.addEventListener('DOMContentLoaded', () => {
-  const importBtnTooltip = 'Please enter a valid project name.';
-  const $importBtnWrapper = $('.import_gitlab_project');
-=======
 let hasUserDefinedProjectPath = false;
 
 const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
@@ -40,7 +35,6 @@ const bindEvents = () => {
   if ($newProjectForm.length !== 1) {
     return;
   }
->>>>>>> ce/master
 
   $('.how_to_import_link').on('click', (e) => {
     e.preventDefault();
@@ -53,21 +47,6 @@ const bindEvents = () => {
 
   $('.btn_import_gitlab_project').on('click', () => {
     const importHref = $('a.btn_import_gitlab_project').attr('href');
-<<<<<<< HEAD
-    $('.btn_import_gitlab_project').attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&path=${$('#project_path').val()}`);
-  });
-
-  $('.btn_import_gitlab_project').attr('disabled', !$('#project_path').val().trim().length);
-  $importBtnWrapper.attr('title', importBtnTooltip);
-
-  $('#new_project').on('submit', () => {
-    const $path = $('#project_path');
-    $path.val($path.val().trim());
-  });
-
-  $('#project_path').on('keyup', () => {
-    if ($('#project_path').val().trim().length) {
-=======
     $('.btn_import_gitlab_project').attr('href', `${importHref}?namespace_id=${$('#project_namespace_id').val()}&path=${$projectPath.val()}`);
   });
 
@@ -81,7 +60,6 @@ const bindEvents = () => {
   $projectPath.on('keyup', () => {
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
     if (hasUserDefinedProjectPath) {
->>>>>>> ce/master
       $('.btn_import_gitlab_project').attr('disabled', false);
       $importBtnWrapper.attr('title', '');
       $importBtnWrapper.removeClass('has-tooltip');
@@ -91,14 +69,6 @@ const bindEvents = () => {
     }
   });
 
-<<<<<<< HEAD
-  $('#project_import_url').disable();
-  $('.import_git').on('click', () => {
-    const $projectImportUrl = $('#project_import_url');
-    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'));
-  });
-});
-=======
   $projectImportUrl.disable();
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
 
@@ -113,4 +83,3 @@ export default {
   bindEvents,
   deriveProjectPathFromUrl,
 };
->>>>>>> ce/master

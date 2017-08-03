@@ -9,10 +9,7 @@
 /* global MilestoneSelect */
 /* global Commit */
 /* global CommitsList */
-<<<<<<< HEAD
 /* global NewCommitForm */
-=======
->>>>>>> ce/master
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
@@ -31,10 +28,7 @@
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
-<<<<<<< HEAD
 /* global PathLocks */
-=======
->>>>>>> ce/master
 /* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
@@ -82,9 +76,6 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
-import initNotes from './init_notes';
-import initLegacyFilters from './init_legacy_filters';
-import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
@@ -350,34 +341,19 @@ import AuditLogs from './audit_logs';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
-<<<<<<< HEAD
           break;
         case 'projects:activity':
           new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           break;
-        case 'projects:commits:show':
-          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-=======
-          break;
-        case 'projects:activity':
->>>>>>> ce/master
-          new gl.Activities();
-          shortcut_handler = new ShortcutsNavigation();
-          break;
-<<<<<<< HEAD
-        case 'projects:edit':
-          new UsersSelect();
-          break;
-        case 'projects:imports:show':
-          new ProjectImport();
-=======
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
           new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
->>>>>>> ce/master
+          break;
+        case 'projects:edit':
+          new UsersSelect();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -392,12 +368,9 @@ import AuditLogs from './audit_logs';
         case 'projects:edit':
           setupProjectEdit();
           break;
-<<<<<<< HEAD
-=======
         case 'projects:imports:show':
           new ProjectImport();
           break;
->>>>>>> ce/master
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
@@ -455,7 +428,7 @@ import AuditLogs from './audit_logs';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-<<<<<<< HEAD
+
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
             PathLocks.init(
@@ -464,8 +437,6 @@ import AuditLogs from './audit_logs';
             );
           }
 
-=======
->>>>>>> ce/master
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
