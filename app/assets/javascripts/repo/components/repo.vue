@@ -4,6 +4,7 @@ import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoBinaryViewer from './repo_binary_viewer.vue';
+import RepoPreview from './repo_preview.vue';
 import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import Store from '../stores/repo_store';
@@ -21,16 +22,11 @@ export default {
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
     'repo-commit-section': RepoCommitSection,
     'popup-dialog': PopupDialog,
-    preview: { // POC
-      data: () => Store,
-      template: '<div v-html="activeFile.html"></div>',
-    },
+    'repo-preview': RepoPreview,
   },
 
   mounted() {
-    RepoHelper.getContent().then(() => {
-
-    }).catch(RepoHelper.loadingError);
+    RepoHelper.getContent().catch(RepoHelper.loadingError);
   },
 
   methods: {

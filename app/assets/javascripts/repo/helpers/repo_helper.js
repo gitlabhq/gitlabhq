@@ -165,9 +165,9 @@ const RepoHelper = {
           // file might be undefined
           const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
           RepoHelper.setBinaryDataAsBase64(rawUrl, data);
-          Store.currentBlobView = 'preview';
+          Store.setViewToPreview();
         } else {
-          if (Store.currentBlobView !== 'preview') {
+          if (!Store.isPreviewView()) {
             Service.getRaw(data.raw_path)
             .then((rawResponse) => {
               Store.blobRaw = rawResponse.data;

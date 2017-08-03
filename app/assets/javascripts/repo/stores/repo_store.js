@@ -20,7 +20,7 @@ const RepoStore = {
   submodules: [],
   blobRaw: '',
   blobRendered: '',
-  currentBlobView: 'preview',
+  currentBlobView: 'repo-preview',
   openedFiles: [],
   tabSize: 100,
   defaultTabSize: 100,
@@ -211,13 +211,21 @@ const RepoStore = {
   },
 
   toggleBlobView() {
-    RepoStore.currentBlobView = RepoStore.currentBlobView === 'preview' ? 'repo-editor' : 'preview';
+    RepoStore.currentBlobView = RepoStore.isPreviewView() ? 'repo-editor' : 'repo-preview';
+  },
+
+  setViewToPreview() {
+    RepoStore.currentBlobView = 'repo-preview';
   },
 
   // getters
 
   isActiveFile(file) {
     return file && file.url === RepoStore.activeFile.url;
+  },
+
+  isPreviewView() {
+    return RepoStore.currentBlobView === 'repo-preview';
   },
 };
 export default RepoStore;
