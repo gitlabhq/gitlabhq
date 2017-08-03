@@ -58,6 +58,7 @@ module BoardsHelper
     {
       toggle: "dropdown",
       list_labels_path: labels_filter_path(true),
+      labels: labels_filter_path(true),
       labels_endpoint: @labels_endpoint,
       namespace_path: @namespace_path,
       project_path: @project&.try(:path)

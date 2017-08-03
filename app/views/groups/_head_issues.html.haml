@@ -8,10 +8,11 @@
             %span
               List
 
-        = nav_link(path: 'groups#boards') do
-          = link_to group_boards_path(@group), title: 'Boards' do
-            %span
-              Boards
+        - if @group.feature_available?(:group_issue_boards)
+          = nav_link(path: 'groups#boards') do
+            = link_to group_boards_path(@group), title: 'Boards' do
+              %span
+                Boards
 
         = nav_link(path: 'labels#index') do
           = link_to group_labels_path(@group), title: 'Labels' do
