@@ -14,7 +14,7 @@ You'll create two different projects:
 - `simple-maven-dep`: the app built and deployed to Artifactory (available at https://gitlab.com/gitlab-examples/maven/simple-maven-dep)
 - `simple-maven-app`: the app using the previous one as a dependency (available at https://gitlab.com/gitlab-examples/maven/simple-maven-app)
 
-We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of GitLab CI/CD.
+We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and GitLab CI/CD.
 We also assume that an Artifactory instance is available and reachable from the internet, and that you have valid credentials to deploy on it.
 
 ## Create the simple Maven dependency
@@ -41,6 +41,7 @@ The application is ready to use, but you need some additional steps to deploy it
 2. from the main screen, click on the `libs-release-local` item in the **Set Me Up** panel
 3. copy to clipboard the configuration snippet under the **Deploy** paragraph
 4. change the `url` value in order to have it configurable via secret variables
+5. copy the snippet in the `pom.xml` file for your project, just after the `dependencies` section
 
 The snippet should look like this:
 
@@ -54,14 +55,14 @@ The snippet should look like this:
 </distributionManagement>
 ```
 
-Now copy the snippet in the `pom.xml` file for your project, just after the `dependencies` section. Easy!
-
 Another step you need to do before you can deploy the dependency to Artifactory is to configure authentication data.
 It is a simple task, but Maven requires it to stay in a file called `settings.xml` that has to be in the `.m2` subfolder in the user's homedir.
-Since you want to use GitLab Runner to automatically deploy the application, you should create the file in the project home
-and set a command line parameter in `.gitlab-ci.yml` to use the custom location instead of the default one.
 
-For this scope, create a folder called `.m2` in the root of the repo. You must create a file named `settings.xml` there, and copy the following text into it.
+Since you want to use GitLab Runner to automatically deploy the application, you should create the file in the project home
+and set a command line parameter in `.gitlab-ci.yml` to use the custom location instead of the default one:
+1. create a folder called `.m2` in the root of the repo
+2. create a file called `settings.xml` in the `.m2` folder
+3. copy the following content into `settings.xml`
 
 ```xml
 <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
@@ -78,8 +79,6 @@ For this scope, create a folder called `.m2` in the root of the repo. You must c
 
 >**Note**:
 `username` and `password` will be replaced by the correct values using secret variables.
-
-Remember to commit all the changes to the repo!
 
 ### Configure GitLab CI/CD for `simple-maven-dep`
 
@@ -157,9 +156,14 @@ Now that you have the dependency available on Artifactory, you want to use it!
 Create another application by cloning the one you can find at `https://gitlab.com/gitlab-examples/maven/simple-maven-app.git`.  
 If you look at the `src/main/java/com/example/app/App.java` file you can see that it imports the `com.example.dep.Dep` class and calls the `hello` method passing `GitLab` as a parameter.
 
-Since Maven doesn't know how to resolve the dependency, you need to modify the configuration.  
-Go back to Artifactory, and browse the `libs-release-local` repository selecting the `simple-maven-dep-1.0.jar` file.
-In the **Dependency Declaration** section of the main panel you can copy the configuration snippet:
+Since Maven doesn't know how to resolve the dependency, you need to modify the configuration: 
+1. go back to Artifactory
+2. browse the `libs-release-local` repository
+3. select the `simple-maven-dep-1.0.jar` file
+4. find the configuration snippet from the **Dependency Declaration** section of the main panel
+5. copy the snippet in the `dependencies` section of the `pom.xml` file
+
+The snippet should look like this:
 
 ```xml
 <dependency>
@@ -168,8 +172,6 @@ In the **Dependency Declaration** section of the main panel you can copy the con
   <version>1.0</version>
 </dependency>
 ```
-
-Copy this in the `dependencies` section of the `pom.xml` file.
 
 ### Configure the Artifactory repository location
 
