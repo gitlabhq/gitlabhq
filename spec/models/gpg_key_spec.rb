@@ -114,9 +114,7 @@ describe GpgKey do
     end
   end
 
-  describe 'notification' do
-    include EmailHelpers
-
+  describe 'notification', :mailer do
     let(:user) { create(:user) }
 
     it 'sends a notification' do
