@@ -90,10 +90,6 @@ import initGroupAnalytics from './init_group_analytics';
 (function() {
   var Dispatcher;
 
-  $(function() {
-    return new Dispatcher();
-  });
-
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -712,4 +708,8 @@ import initGroupAnalytics from './init_group_analytics';
 
     return Dispatcher;
   })();
+
+  $(function() {
+    new Dispatcher();
+  });
 }).call(window);

@@ -87,3 +87,21 @@ command, and not the PID(s) of the started Sidekiq processes.
 The Rails environment can be set by passing the `--environment` flag to the
 `sidekiq-cluster` command, or by setting `RAILS_ENV` to a non-empty value. The
 default value is "development".
+
+## All Queues With Exceptions
+
+You're able to run all queues in `sidekiq_queues.yml` file on a single or 
+multiple processes with exceptions using the `--negate` flag.
+
+For example, say you want to run a single process for all queues, 
+except "process_commit" and "post_receive". You can do so by executing:
+
+```bash
+sidekiq-cluster process_commit,post_receive --negate
+```
+
+For multiple processes of all queues (except "process_commit" and "post_receive"):
+
+```bash
+sidekiq-cluster process_commit,post_receive process_commit,post_receive --negate
+```
