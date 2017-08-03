@@ -9,6 +9,9 @@ module EE
       rule { reporter }.policy do
         enable :admin_list
         enable :admin_board
+
+        # Only used for group issue boards
+        enable :admin_issue
       end
 
       rule { public_group }.enable :read_board

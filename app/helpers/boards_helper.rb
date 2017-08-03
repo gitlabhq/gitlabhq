@@ -63,11 +63,7 @@ module BoardsHelper
   end
 
   def can_admin_issue
-    if @project
-      can?(current_user, :admin_issue, @project)
-    elsif @group
-      can?(current_user, :admin_board, @group)
-    end
+    can?(current_user, :admin_issue, current_board_parent)
   end
 
   def board_list_data
