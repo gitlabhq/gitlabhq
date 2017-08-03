@@ -81,7 +81,12 @@ module LicenseHelper
   end
 
   def show_promotions?
-     !License.current || (License.current&.trial? && license.expired?)
+    if current_application_settings.should_check_namespace_plan?
+      true
+    else
+      license = License.current
+      license.nil? || license.expired?
+    end
   end
 
   extend self
