@@ -64,7 +64,7 @@ feature "Admin Health Check", feature: true, broken_storage: true do
     end
 
     it 'shows storage failure information' do
-      hostname = Gitlab.config.gitlab.hostname
+      hostname = Gitlab::Environment.hostname
 
       expect(page).to have_content('broken: failed storage access attempt on host:')
       expect(page).to have_content("#{hostname}: 1 of 10 failures.")

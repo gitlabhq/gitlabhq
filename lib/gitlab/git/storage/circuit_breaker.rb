@@ -31,7 +31,7 @@ module Gitlab
           cached_circuitbreakers[storage]
         end
 
-        def initialize(storage, hostname = Gitlab.config.gitlab.hostname)
+        def initialize(storage, hostname = Gitlab::Environment.hostname)
           @storage = storage
           @hostname = hostname
 

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: true, broken_storage: true do
   let(:circuit_breaker) { described_class.new('default') }
-  let(:hostname) { Gitlab.config.gitlab.hostname }
+  let(:hostname) { Gitlab::Environment.hostname }
   let(:cache_key) { "storage_accessible:default:#{hostname}" }
 
   def value_from_redis(name)
