@@ -62,10 +62,6 @@ const RepoHelper = {
     return file;
   },
 
-  getRawURLFromBlobURL(url) {
-    return url.replace('blob', 'raw');
-  },
-
   isKindaBinary() {
     const okExts = ['md', 'svg'];
     return okExts.indexOf(Store.activeFile.extension) > -1;
@@ -79,8 +75,8 @@ const RepoHelper = {
     return url.replace('blob', 'commits');
   },
 
-  setBinaryDataAsBase64(url, file) {
-    Service.getBase64Content(url)
+  setBinaryDataAsBase64(file) {
+    Service.getBase64Content(file.raw_path)
     .then((response) => {
       Store.blobRaw = response;
       file.base64 = response; // eslint-disable-line no-param-reassign
@@ -163,6 +159,7 @@ const RepoHelper = {
         if (data.binary) {
           Store.binaryMimeType = data.mime_type;
           // file might be undefined
+          RepoHelper.setBinaryDataAsBase64(data);
           const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
           RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           Store.setViewToPreview();
