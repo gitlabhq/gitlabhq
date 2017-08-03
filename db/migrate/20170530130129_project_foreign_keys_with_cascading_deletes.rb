@@ -62,8 +62,8 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
 
     # These columns are not indexed yet, meaning a cascading delete would take
     # forever.
-    add_concurrent_index(:project_group_links, :project_id)
-    add_concurrent_index(:pages_domains, :project_id)
+    add_index_if_not_exists(:project_group_links, :project_id)
+    add_index_if_not_exists(:pages_domains, :project_id)
   end
 
   def down
@@ -71,15 +71,15 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
       remove_foreign_key_without_error(source, column)
     end
 
-    add_concurrent_foreign_key(:boards, :projects, column: :project_id)
-    add_concurrent_foreign_key(:lists, :labels, column: :label_id)
-    add_concurrent_foreign_key(:lists, :boards, column: :board_id)
+    add_foreign_key_if_not_exists(:boards, :projects, column: :project_id)
+    add_foreign_key_if_not_exists(:lists, :labels, column: :label_id)
+    add_foreign_key_if_not_exists(:lists, :boards, column: :board_id)
 
-    add_concurrent_foreign_key(:protected_branch_merge_access_levels,
+    add_foreign_key_if_not_exists(:protected_branch_merge_access_levels,
                                :protected_branches,
                                column: :protected_branch_id)
 
-    add_concurrent_foreign_key(:protected_branch_push_access_levels,
+    add_foreign_key_if_not_exists(:protected_branch_push_access_levels,
                                :protected_branches,
                                column: :protected_branch_id)
 
@@ -89,7 +89,7 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
 
   def add_foreign_keys
     TABLES.each do |(source, target, column)|
-      add_concurrent_foreign_key(source, target, column: column)
+      add_foreign_key_if_not_exists(source, target, column: column)
     end
   end
 
@@ -153,6 +153,18 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
     EOF
   end
 
+  def add_foreign_key_if_not_exists(source, target, column:)
+    return if foreign_key_exists?(source, column)
+
+    add_concurrent_foreign_key(source, target, column: column)
+  end
+
+  def add_index_if_not_exists(table, column)
+    return if index_exists?(table, column)
+
+    add_concurrent_index(table, column)
+  end
+
   def remove_foreign_key_without_error(table, column)
     remove_foreign_key(table, column: column)
   rescue ArgumentError
@@ -161,6 +173,12 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
   def remove_index_without_error(table, column)
     remove_concurrent_index(table, column)
   rescue ArgumentError
+  end
+
+  def foreign_key_exists?(table, column)
+    foreign_keys(table).any? do |key|
+      key.options[:column] == column.to_s
+    end
   end
 
   def connection
