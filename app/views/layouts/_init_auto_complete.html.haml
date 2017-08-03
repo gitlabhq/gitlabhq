@@ -2,6 +2,7 @@
 - noteable_type = @noteable.class if @noteable.present?
 
 - if project
+  -# haml-lint:disable InlineJavaScript
   :javascript
     gl.GfmAutoComplete = gl.GfmAutoComplete || {};
     gl.GfmAutoComplete.dataSources = {

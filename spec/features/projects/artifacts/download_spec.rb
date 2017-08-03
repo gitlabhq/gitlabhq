@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Download artifact', :js do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_empty_pipeline, status: :success, project: project) }
   let(:job) { create(:ci_build, :artifacts, :success, pipeline: pipeline) }
 

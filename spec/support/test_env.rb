@@ -133,6 +133,12 @@ module TestEnv
   def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+
+    if gitaly_dir_stale?(gitaly_dir)
+      puts "rm -rf #{gitaly_dir}"
+      FileUtils.rm_rf(gitaly_dir) 
+    end
+
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
@@ -143,11 +149,19 @@ module TestEnv
     start_gitaly(gitaly_dir)
   end
 
+  def gitaly_dir_stale?(dir)
+    gitaly_executable = File.join(dir, 'gitaly')
+    !File.exist?(gitaly_executable) || (File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION')))
+  end
+
   def start_gitaly(gitaly_dir)
-    gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    gitaly_config = File.join(gitaly_dir, 'config.toml')
-    log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = Bundler.with_original_env { spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file) }
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
+    end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
   end
 
   def stop_gitaly

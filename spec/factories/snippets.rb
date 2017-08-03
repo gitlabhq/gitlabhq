@@ -20,7 +20,7 @@ FactoryGirl.define do
   end
 
   factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
-    project factory: :empty_project
+    project
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do

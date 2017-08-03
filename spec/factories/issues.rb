@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :issue do
     title { generate(:title) }
     author
-    project factory: :empty_project
+    project
 
     trait :confidential do
       confidential true

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe IssuesHelper do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 

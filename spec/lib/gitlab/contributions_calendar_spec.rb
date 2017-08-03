@@ -5,19 +5,19 @@ describe Gitlab::ContributionsCalendar do
   let(:user) { create(:user) }
 
   let(:private_project) do
-    create(:empty_project, :private) do |project|
+    create(:project, :private) do |project|
       create(:project_member, user: contributor, project: project)
     end
   end
 
   let(:public_project) do
-    create(:empty_project, :public) do |project|
+    create(:project, :public) do |project|
       create(:project_member, user: contributor, project: project)
     end
   end
 
   let(:feature_project) do
-    create(:empty_project, :public, :issues_private) do |project|
+    create(:project, :public, :issues_private) do |project|
       create(:project_member, user: contributor, project: project).project
     end
   end

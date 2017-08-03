@@ -101,7 +101,7 @@ class WebHookService
       request_headers: build_headers(hook_name),
       request_data: request_data,
       response_headers: format_response_headers(response),
-      response_body: response.body,
+      response_body: safe_response_body(response),
       response_status: response.code,
       internal_error_message: error_message
     )
@@ -123,5 +123,11 @@ class WebHookService
   # This method format response to capitalized hash with strings: { 'Content-Type' => 'text/html; charset=utf-8' }
   def format_response_headers(response)
     response.headers.each_capitalized.to_h
+  end
+
+  def safe_response_body(response)
+    return '' unless response.body
+
+    response.body.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
   end
 end

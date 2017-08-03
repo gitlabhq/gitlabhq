@@ -156,13 +156,13 @@ end
 
 describe Project, 'Routable' do
   describe '#full_path' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
   end
 
   describe '#full_name' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
   end

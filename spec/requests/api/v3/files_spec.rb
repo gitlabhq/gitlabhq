@@ -74,7 +74,7 @@ describe API::V3::Files do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository files' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end

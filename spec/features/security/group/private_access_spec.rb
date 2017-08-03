@@ -4,7 +4,7 @@ describe 'Private Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :private) }
-  let(:project) { create(:empty_project, :private, group: group) }
+  let(:project) { create(:project, :private, group: group) }
   let(:project_guest) do
     create(:user) do |user|
       project.add_guest(user)

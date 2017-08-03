@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :event do
-    project factory: :empty_project
+    project
     author factory: :user
 
     trait(:created)   { action Event::CREATED }

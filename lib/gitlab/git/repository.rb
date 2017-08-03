@@ -353,6 +353,13 @@ module Gitlab
         rugged.merge_base(from, to)
       end
 
+      # Gitaly note: JV: check gitlab-ee before removing this method.
+      def rugged_is_ancestor?(ancestor_id, descendant_id)
+        return false if ancestor_id.nil? || descendant_id.nil?
+
+        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+      end
+
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def is_ancestor?(from, to)
         gitaly_commit_client.is_ancestor(from, to)
@@ -634,6 +641,33 @@ module Gitlab
       # See `Gitlab::Git::Attributes` for more information.
       def attributes(path)
         @attributes.attributes(path)
+      end
+
+      def languages(ref = nil)
+        Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.languages(ref)
+          else
+            ref ||= rugged.head.target_id
+            languages = Linguist::Repository.new(rugged, ref).languages
+            total = languages.map(&:last).sum
+
+            languages = languages.map do |language|
+              name, share = language
+              color = Linguist::Language[name].color || "##{Digest::SHA256.hexdigest(name)[0...6]}"
+              {
+                value: (share.to_f * 100 / total).round(2),
+                label: name,
+                color: color,
+                highlight: color
+              }
+            end
+
+            languages.sort do |x, y|
+              y[:value] <=> x[:value]
+            end
+          end
+        end
       end
 
       def gitaly_repository

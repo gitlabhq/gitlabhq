@@ -4,7 +4,7 @@ feature 'Dashboard > milestone filter', :js do
   include FilterItemSelectHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
   let(:milestone2) { create(:milestone, title: 'v2.0', project: project) }
   let!(:issue) { create :issue, author: user, project: project, milestone: milestone }

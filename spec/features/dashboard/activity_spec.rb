@@ -17,7 +17,7 @@ feature 'Dashboard > Activity' do
   end
 
   context 'event filters', :js do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     let(:merge_request) do
       create(:merge_request, author: user, source_project: project, target_project: project)

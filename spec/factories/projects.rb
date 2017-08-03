@@ -5,7 +5,7 @@ FactoryGirl.define do
   #
   # Project does not have bare repository.
   # Use this factory if you don't need repository in tests
-  factory :empty_project, class: 'Project' do
+  factory :project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     namespace
@@ -54,8 +54,42 @@ FactoryGirl.define do
       avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
+    # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
-      # no-op... for now!
+      path { 'gitlabhq' }
+
+      test_repo
+
+      transient do
+        create_template nil
+      end
+
+      after :create do |project, evaluator|
+        if evaluator.create_template
+          args = evaluator.create_template
+
+          project.add_user(args[:user], args[:access])
+
+          project.repository.create_file(
+            args[:user],
+            ".gitlab/#{args[:path]}/bug.md",
+            'something valid',
+            message: 'test 3',
+            branch_name: 'master')
+          project.repository.create_file(
+            args[:user],
+            ".gitlab/#{args[:path]}/template_test.md",
+            'template_test',
+            message: 'test 1',
+            branch_name: 'master')
+          project.repository.create_file(
+            args[:user],
+            ".gitlab/#{args[:path]}/feature_proposal.md",
+            'feature_proposal',
+            message: 'test 2',
+            branch_name: 'master')
+        end
+      end
     end
 
     trait :empty_repo do
@@ -64,7 +98,7 @@ FactoryGirl.define do
 
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'hooks'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -72,7 +106,7 @@ FactoryGirl.define do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
 
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.path_with_namespace}.git", 'refs'))
+        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'refs'))
       end
     end
 
@@ -146,59 +180,18 @@ FactoryGirl.define do
   #
   # This is a case when you just created a project
   # but not pushed any code there yet
-  factory :project_empty_repo, parent: :empty_project do
+  factory :project_empty_repo, parent: :project do
     empty_repo
   end
 
   # Project with broken repository
   #
   # Project with an invalid repository state
-  factory :project_broken_repo, parent: :empty_project do
+  factory :project_broken_repo, parent: :project do
     broken_repo
   end
 
-  # Project with test repository
-  #
-  # Test repository source can be found at
-  # https://gitlab.com/gitlab-org/gitlab-test
-  factory :project, parent: :empty_project do
-    path { 'gitlabhq' }
-
-    test_repo
-
-    transient do
-      create_template nil
-    end
-
-    after :create do |project, evaluator|
-      if evaluator.create_template
-        args = evaluator.create_template
-
-        project.add_user(args[:user], args[:access])
-
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/bug.md",
-          'something valid',
-          message: 'test 3',
-          branch_name: 'master')
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/template_test.md",
-          'template_test',
-          message: 'test 1',
-          branch_name: 'master')
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/feature_proposal.md",
-          'feature_proposal',
-          message: 'test 2',
-          branch_name: 'master')
-      end
-    end
-  end
-
-  factory :forked_project_with_submodules, parent: :empty_project do
+  factory :forked_project_with_submodules, parent: :project do
     path { 'forked-gitlabhq' }
 
     after :create do |project|
@@ -228,11 +221,11 @@ FactoryGirl.define do
     jira_service
   end
 
-  factory :kubernetes_project, parent: :empty_project do
+  factory :kubernetes_project, parent: :project do
     kubernetes_service
   end
 
-  factory :prometheus_project, parent: :empty_project do
+  factory :prometheus_project, parent: :project do
     after :create do |project|
       project.create_prometheus_service(
         active: true,

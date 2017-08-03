@@ -301,7 +301,7 @@ describe API::Internal do
 
         context 'project as /namespace/project' do
           it do
-            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+            pull(key, project_with_repo_path('/' + project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -312,7 +312,7 @@ describe API::Internal do
 
         context 'project as namespace/project' do
           it do
-            pull(key, project_with_repo_path(project.path_with_namespace))
+            pull(key, project_with_repo_path(project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -350,7 +350,7 @@ describe API::Internal do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       before do
         user.block

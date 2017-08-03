@@ -29,7 +29,7 @@ describe JiraService do
     context 'validating urls' do
       let(:service) do
         described_class.new(
-          project: create(:empty_project),
+          project: create(:project),
           active: true,
           username: 'username',
           password: 'test',
@@ -74,7 +74,7 @@ describe JiraService do
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request) }
 
     before do
@@ -135,7 +135,7 @@ describe JiraService do
         body: hash_including(
           GlobalID: "GitLab",
           object: {
-            url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{merge_request.diff_head_sha}",
+            url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
             icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
             status: { resolved: true }
@@ -159,7 +159,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{custom_base_url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+        body: /#{custom_base_url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 
@@ -174,7 +174,7 @@ describe JiraService do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
       expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /#{Gitlab.config.gitlab.url}\/#{project.path_with_namespace}\/commit\/#{merge_request.diff_head_sha}/
+        body: /#{Gitlab.config.gitlab.url}\/#{project.full_path}\/commit\/#{merge_request.diff_head_sha}/
       ).once
     end
 
@@ -233,7 +233,7 @@ describe JiraService do
   end
 
   describe "Stored password invalidation" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context "when a password was previously set" do
       before do
@@ -338,7 +338,7 @@ describe JiraService do
   end
 
   describe 'description and title' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when it is not set' do
       before do
@@ -373,7 +373,7 @@ describe JiraService do
   end
 
   describe 'project and issue urls' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when gitlab.yml was initialized' do
       before do

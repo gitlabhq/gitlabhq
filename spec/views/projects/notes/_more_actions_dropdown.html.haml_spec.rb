@@ -4,7 +4,7 @@ describe 'projects/notes/_more_actions_dropdown' do
   let(:author_user) { create(:user) }
   let(:not_author_user) { create(:user) }
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let!(:note) { create(:note_on_issue, author: author_user, noteable: issue, project: project) }
 

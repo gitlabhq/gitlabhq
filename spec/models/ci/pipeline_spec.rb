@@ -4,7 +4,7 @@ describe Ci::Pipeline do
   include EmailHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -93,7 +93,7 @@ describe Ci::Pipeline do
   end
 
   describe "coverage" do
-    let(:project) { create(:empty_project, build_coverage_regex: "/.*/") }
+    let(:project) { create(:project, build_coverage_regex: "/.*/") }
     let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
     it "calculates average when there are two builds with coverage" do
@@ -1147,7 +1147,7 @@ describe Ci::Pipeline do
   end
 
   describe "#merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -1172,7 +1172,7 @@ describe Ci::Pipeline do
   end
 
   describe "#all_merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
     it "returns all merge requests having the same source branch" do

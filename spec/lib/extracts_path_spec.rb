@@ -14,7 +14,7 @@ describe ExtractsPath do
     repo = double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0',
                               'release/app', 'release/app/v1.0.0'])
     allow(project).to receive(:repository).and_return(repo)
-    allow(project).to receive(:path_with_namespace)
+    allow(project).to receive(:full_path)
       .and_return('gitlab/gitlab-ci')
     allow(request).to receive(:format=)
   end
@@ -29,7 +29,7 @@ describe ExtractsPath do
 
     it "log tree path has no escape sequences" do
       assign_ref_vars
-      expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
+      expect(@logs_path).to eq("/#{@project.full_path}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
     context 'ref contains %20' do

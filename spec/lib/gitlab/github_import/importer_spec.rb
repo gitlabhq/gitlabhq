@@ -207,7 +207,7 @@ describe Gitlab::GithubImport::Importer do
     end
   end
 
-  let(:project) { create(:project, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
+  let(:project) { create(:project, :repository, :wiki_disabled, import_url: "#{repo_root}/octocat/Hello-World.git") }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:credentials) { { user: 'joe' } }
 

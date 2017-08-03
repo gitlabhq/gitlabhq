@@ -68,7 +68,7 @@ describe Projects::BlobController do
         let(:id) { 'markdown/doc' }
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.path_with_namespace}/tree/markdown/doc")
+            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
         end
       end
     end
@@ -213,7 +213,7 @@ describe Projects::BlobController do
 
       context "when user doesn't have access" do
         before do
-          other_project = create(:empty_project)
+          other_project = create(:project, :repository)
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 

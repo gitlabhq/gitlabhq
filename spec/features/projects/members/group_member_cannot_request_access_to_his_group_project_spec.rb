@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Members > Group member cannot request access to his group project' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
 
   scenario 'owner does not see the request access button' do
     group.add_owner(user)

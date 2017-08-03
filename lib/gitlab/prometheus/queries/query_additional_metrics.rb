@@ -42,15 +42,18 @@ module Gitlab
         end
 
         def process_query(context, query)
-          query_with_result = query.dup
+          query = query.dup
           result =
             if query.key?(:query_range)
-              client_query_range(query[:query_range] % context, start: context[:timeframe_start], stop: context[:timeframe_end])
+              query[:query_range] %= context
+              client_query_range(query[:query_range], start: context[:timeframe_start], stop: context[:timeframe_end])
             else
-              client_query(query[:query] % context, time: context[:timeframe_end])
+              query[:query] %= context
+              client_query(query[:query], time: context[:timeframe_end])
             end
-          query_with_result[:result] = result&.map(&:deep_symbolize_keys)
-          query_with_result
+
+          query[:result] = result&.map(&:deep_symbolize_keys)
+          query
         end
 
         def available_metrics
@@ -66,6 +69,16 @@ module Gitlab
           end
 
           result.select { |group| group.metrics.any? }
+        end
+
+        def common_query_context(environment, timeframe_start:, timeframe_end:)
+          {
+            timeframe_start: timeframe_start,
+            timeframe_end: timeframe_end,
+            ci_environment_slug: environment.slug,
+            kube_namespace: environment.project.kubernetes_service&.actual_namespace || '',
+            environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
+          }
         end
       end
     end
