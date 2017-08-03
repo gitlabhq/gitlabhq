@@ -3,7 +3,7 @@ require 'spec_helper'
 describe SystemNoteService do
   include Gitlab::Routing
 
-  let(:project)  { create(:empty_project) }
+  let(:project)  { create(:project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
@@ -648,7 +648,7 @@ describe SystemNoteService do
   end
 
   describe '.noteable_moved' do
-    let(:new_project) { create(:empty_project) }
+    let(:new_project) { create(:project) }
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
@@ -718,7 +718,7 @@ describe SystemNoteService do
   describe 'JIRA integration' do
     include JiraServiceHelper
 
-    let(:project)         { create(:jira_project) }
+    let(:project)         { create(:jira_project, :repository) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
     let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
@@ -1116,7 +1116,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:empty_project) }
+      let(:other_project)  { create(:project) }
       let(:canonical_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1141,7 +1141,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:empty_project) }
+      let(:other_project)  { create(:project) }
       let(:duplicate_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do

@@ -4,7 +4,7 @@ describe Admin::ApplicationSettingsController do
   include StubENV
 
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user)}
 

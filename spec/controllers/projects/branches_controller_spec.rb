@@ -96,7 +96,7 @@ describe Projects::BranchesController do
       end
 
       context 'repository-less project' do
-        let(:project) { create :empty_project }
+        let(:project) { create :project }
 
         it 'redirects to newly created branch' do
           result = { status: :success, branch: double(name: branch) }

@@ -8,7 +8,7 @@ describe Projects::AutocompleteService do
       let(:non_member) { create(:user) }
       let(:member) { create(:user) }
       let(:admin) { create(:admin) }
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
       let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
       let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }

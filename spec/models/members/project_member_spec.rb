@@ -24,7 +24,7 @@ describe ProjectMember do
   describe '.add_user' do
     it 'adds the user as a member' do
       user = create(:user)
-      project = create(:empty_project)
+      project = create(:project)
 
       expect(project.users).not_to include(user)
 
@@ -82,8 +82,8 @@ describe ProjectMember do
 
   describe '.import_team' do
     before do
-      @project_1 = create(:empty_project)
-      @project_2 = create(:empty_project)
+      @project_1 = create(:project)
+      @project_2 = create(:project)
 
       @user_1 = create :user
       @user_2 = create :user
@@ -112,7 +112,7 @@ describe ProjectMember do
 
   describe '.add_users_to_projects' do
     it 'adds the given users to the given projects' do
-      projects = create_list(:empty_project, 2)
+      projects = create_list(:project, 2)
       users = create_list(:user, 2)
 
       described_class.add_users_to_projects(
@@ -130,8 +130,8 @@ describe ProjectMember do
 
   describe '.truncate_teams' do
     before do
-      @project_1 = create(:empty_project)
-      @project_2 = create(:empty_project)
+      @project_1 = create(:project)
+      @project_2 = create(:project)
 
       @user_1 = create :user
       @user_2 = create :user

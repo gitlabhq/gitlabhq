@@ -28,7 +28,7 @@ describe DynamicPathValidator do
   describe '#path_valid_for_record?' do
     context 'for project' do
       it 'calls valid_project_path?' do
-        project = build(:empty_project, path: 'activity')
+        project = build(:project, path: 'activity')
 
         expect(described_class).to receive(:valid_project_path?).with(project.full_path).and_call_original
 
@@ -86,7 +86,7 @@ describe DynamicPathValidator do
     end
 
     it 'updating to an invalid path is not allowed' do
-      project = create(:empty_project)
+      project = create(:project)
       project.path = 'update'
 
       validator.validate_each(project, :path, 'update')

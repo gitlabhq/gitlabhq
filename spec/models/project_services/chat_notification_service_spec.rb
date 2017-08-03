@@ -12,7 +12,7 @@ describe ChatNotificationService do
   describe '#can_test?' do
     context 'with empty repository' do
       it 'returns true' do
-        subject.project = create(:empty_project, :empty_repo)
+        subject.project = create(:project, :empty_repo)
 
         expect(subject.can_test?).to be true
       end

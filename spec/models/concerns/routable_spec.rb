@@ -27,7 +27,7 @@ describe Group, 'Routable' do
 
     it 'ensure route path uniqueness across different objects' do
       create(:group, parent: group, path: 'xyz')
-      duplicate = build(:empty_project, namespace: group, path: 'xyz')
+      duplicate = build(:project, namespace: group, path: 'xyz')
 
       expect { duplicate.save! }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Route path has already been taken, Route is invalid')
     end
@@ -156,13 +156,13 @@ end
 
 describe Project, 'Routable' do
   describe '#full_path' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_path).to eq "#{project.namespace.full_path}/#{project.path}" }
   end
 
   describe '#full_name' do
-    let(:project) { build_stubbed(:empty_project) }
+    let(:project) { build_stubbed(:project) }
 
     it { expect(project.full_name).to eq "#{project.namespace.human_name} / #{project.name}" }
   end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Labels::UpdateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     let(:hex_color) { '#FF0000' }
     let(:named_color) { 'red' }

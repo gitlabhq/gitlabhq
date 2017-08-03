@@ -3,9 +3,9 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Issues' do
   let(:current_user) { create :user }
   let(:user) { current_user } # Shared examples depend on this being available
-  let!(:public_project) { create(:empty_project, :public) }
-  let(:project) { create(:empty_project) }
-  let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled) }
+  let!(:public_project) { create(:project, :public) }
+  let(:project) { create(:project) }
+  let(:project_with_issues_disabled) { create(:project, :issues_disabled) }
   let!(:authored_issue) { create :issue, author: current_user, project: project }
   let!(:authored_issue_on_public_project) { create :issue, author: current_user, project: public_project }
   let!(:assigned_issue) { create :issue, assignees: [current_user], project: project }

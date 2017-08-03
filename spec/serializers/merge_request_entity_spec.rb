@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MergeRequestEntity do
-  let(:project)  { create :empty_project }
+  let(:project)  { create :project }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
 

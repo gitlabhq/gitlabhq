@@ -4,7 +4,7 @@ describe CreateGpgSignatureWorker do
   context 'when GpgKey is found' do
     it 'calls Commit#signature' do
       commit_sha = '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33'
-      project = create :empty_project
+      project = create :project
       commit = instance_double(Commit)
 
       allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
@@ -18,7 +18,7 @@ describe CreateGpgSignatureWorker do
 
   context 'when Commit is not found' do
     let(:nonexisting_commit_sha) { 'bogus' }
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     it 'does not raise errors' do
       expect { described_class.new.perform(nonexisting_commit_sha, project.id) }.not_to raise_error

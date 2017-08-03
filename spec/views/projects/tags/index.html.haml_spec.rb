@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/tags/index' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     assign(:project, project)

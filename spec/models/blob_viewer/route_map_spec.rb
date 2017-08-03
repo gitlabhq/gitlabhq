@@ -3,7 +3,7 @@ require 'spec_helper'
 describe BlobViewer::RouteMap do
   include FakeBlobHelpers
 
-  let(:project) { build_stubbed(:empty_project) }
+  let(:project) { build_stubbed(:project) }
   let(:data) do
     <<-MAP.strip_heredoc
       # Team data

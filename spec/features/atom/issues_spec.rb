@@ -5,7 +5,7 @@ describe 'Issues Feed'  do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
     let!(:group)    { create(:group) }
-    let!(:project)  { create(:empty_project) }
+    let!(:project)  { create(:project) }
     let!(:issue)    { create(:issue, author: user, assignees: [assignee], project: project) }
 
     before do

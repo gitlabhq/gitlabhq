@@ -193,7 +193,7 @@ describe Projects::BlobController do
 
       context "when user doesn't have access" do
         before do
-          other_project = create(:empty_project)
+          other_project = create(:project, :repository)
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 
