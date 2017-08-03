@@ -39,16 +39,7 @@ module Gitlab
           # See: https://robots.thoughtbot.com/postgres-foreign-data-wrapper (requires PG 9.6)
           $stdout.print 'Searching for non replicated projects...'
 
-          restricted_project_ids = Gitlab::Geo.current_node.project_ids
-
-          relation =
-            if restricted_project_ids
-              Project.where(id: restricted_project_ids)
-            else
-              Project.all
-            end
-
-          relation.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
+          Gitlab::Geo.current_node.projects.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
             $stdout.print '.'
 
             project_ids = batch.map(&:id)
