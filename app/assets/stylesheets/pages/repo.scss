@@ -211,8 +211,12 @@
       vertical-align: top;
       width: 20%;
       border-right: 1px solid $white-normal;
-      height: 100vh;
+      height: calc(100vh + 20px);
       overflow: auto;
+    }
+
+    table {
+      margin-bottom: 0;
     }
 
     tr {
