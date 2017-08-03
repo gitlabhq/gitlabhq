@@ -111,7 +111,11 @@ class GeoNode < ActiveRecord::Base
   def project_ids
     return unless namespaces.presence
 
-    namespaces.flat_map { |namespace| namespace.all_projects.select(:id).pluck(:id) }.uniq
+    relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
+
+    Project.unscoped
+       .from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
+       .pluck(:id)
   end
 
   def lfs_objects
