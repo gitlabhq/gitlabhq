@@ -725,7 +725,8 @@
 
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown {
-  .dropdown-menu {
+  .dropdown-menu,
+  .dropdown-menu-nav {
     li {
       padding: 0 1px;
 
@@ -765,5 +766,9 @@
         }
       }
     }
+  }
+
+  .dropdown-menu-align-right {
+    margin-top: 2px;
   }
 }
