@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-60.0-node-7.1-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
