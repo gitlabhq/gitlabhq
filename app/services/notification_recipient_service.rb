@@ -71,7 +71,7 @@ module NotificationRecipientService
           project: project,
           custom_action: custom_action,
           target: target,
-          acting_user: acting_user,
+          acting_user: acting_user
         )
       end
 
