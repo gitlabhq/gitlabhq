@@ -12,7 +12,7 @@ describe ProjectWiki, elastic: true do
   end
 
   it "searches wiki page" do
-    project = create :empty_project
+    project = create :project
 
     Sidekiq::Testing.inline! do
       project.wiki.create_page("index_page", "Bla bla term1")

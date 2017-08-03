@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Multiple issue updating from issues#index', :js do
-  let!(:project)   { create(:empty_project) }
+  let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
 

@@ -9,7 +9,7 @@ feature 'Issues > User uses quick actions', js: true do
 
   describe 'issue-only commands' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
 
     before do
       project.team << [user, :master]

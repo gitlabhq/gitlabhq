@@ -3,7 +3,7 @@ require 'spec_helper'
 describe AdminEmailsWorker do
   context "recipients" do
     let(:group) { create :group }
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     before do
       2.times do

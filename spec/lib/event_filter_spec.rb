@@ -3,7 +3,7 @@ require 'spec_helper'
 describe EventFilter do
   describe '#apply_filter' do
     let(:source_user) { create(:user) }
-    let!(:public_project) { create(:empty_project, :public) }
+    let!(:public_project) { create(:project, :public) }
 
     let!(:push_event)     { create(:event, :pushed,    project: public_project, target: public_project, author: source_user) }
     let!(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project, author: source_user) }

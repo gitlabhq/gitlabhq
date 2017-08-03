@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::CommitRangeParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }

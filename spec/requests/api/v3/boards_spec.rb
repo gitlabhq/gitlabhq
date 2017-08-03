@@ -4,7 +4,7 @@ describe API::V3::Boards do
   let(:user)        { create(:user) }
   let(:guest)       { create(:user) }
   let(:non_member)  { create(:user) }
-  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
 
   let!(:dev_label) do
     create(:label, title: 'Development', color: '#FFAABB', project: project)
@@ -99,7 +99,7 @@ describe API::V3::Boards do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:empty_project, namespace: owner.namespace) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
 
       it "deletes the list if an admin requests it" do
         delete v3_api("#{base_url}/#{dev_list.id}", owner)

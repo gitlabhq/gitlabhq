@@ -6,19 +6,19 @@ describe Admin::ProjectsFinder do
     let(:group) { create(:group, :public) }
 
     let!(:private_project) do
-      create(:empty_project, :private, name: 'A', path: 'A')
+      create(:project, :private, name: 'A', path: 'A')
     end
 
     let!(:internal_project) do
-      create(:empty_project, :internal, group: group, name: 'B', path: 'B')
+      create(:project, :internal, group: group, name: 'B', path: 'B')
     end
 
     let!(:public_project) do
-      create(:empty_project, :public, group: group, name: 'C', path: 'C')
+      create(:project, :public, group: group, name: 'C', path: 'C')
     end
 
     let!(:shared_project) do
-      create(:empty_project, :private, name: 'D', path: 'D')
+      create(:project, :private, name: 'D', path: 'D')
     end
 
     let(:params) { {} }
@@ -40,7 +40,7 @@ describe Admin::ProjectsFinder do
 
     context 'filter by namespace_id' do
       let(:namespace) { create(:namespace) }
-      let!(:project_in_namespace) { create(:empty_project, namespace: namespace) }
+      let!(:project_in_namespace) { create(:project, namespace: namespace) }
       let(:params) { { namespace_id: namespace.id } }
 
       it { is_expected.to eq([project_in_namespace]) }
@@ -99,7 +99,7 @@ describe Admin::ProjectsFinder do
     end
 
     context 'filter by archived' do
-      let!(:archived_project) { create(:empty_project, :public, :archived, name: 'E', path: 'E') }
+      let!(:archived_project) { create(:project, :public, :archived, name: 'E', path: 'E') }
 
       context 'archived=false' do
         let(:params) { { archived: false } }
@@ -115,7 +115,7 @@ describe Admin::ProjectsFinder do
     end
 
     context 'filter by personal' do
-      let!(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let!(:personal_project) { create(:project, namespace: user.namespace) }
       let(:params) { { personal: true } }
 
       it { is_expected.to eq([personal_project]) }

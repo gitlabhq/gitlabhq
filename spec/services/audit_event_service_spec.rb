@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AuditEventService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:project_member) { create(:project_member, user: user) }
   let(:service) { described_class.new(user, project, { action: :destroy }) }

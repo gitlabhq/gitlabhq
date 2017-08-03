@@ -15,7 +15,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'Group "Owned" has a public project "Public-project"' do
     group = owned_group
 
-    @project = create :empty_project, :public,
+    @project = create :project, :public,
                  group: group,
                  name: "Public-project"
   end
@@ -132,7 +132,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'Group "Owned" has archived project' do
     group = Group.find_by(name: 'Owned')
-    @archived_project = create(:empty_project, :archived, namespace: group, path: "archived-project")
+    @archived_project = create(:project, :archived, namespace: group, path: "archived-project")
   end
 
   step 'I should see "archived" label' do

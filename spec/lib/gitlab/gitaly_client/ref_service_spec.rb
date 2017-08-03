@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::RefService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
   let(:client) { described_class.new(project.repository) }

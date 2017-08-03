@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::API::Builds do
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: %w(mysql ruby)) }
-  let(:project) { FactoryGirl.create(:empty_project, shared_runners_enabled: false) }
+  let(:project) { FactoryGirl.create(:project, shared_runners_enabled: false) }
   let(:last_update) { nil }
 
   describe "Builds API for runners" do

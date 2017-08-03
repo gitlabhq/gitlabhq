@@ -237,7 +237,7 @@ describe EE::Gitlab::LDAP::Sync::Group do
         end
 
         it 'updates projects authorizations' do
-          project = create(:empty_project, namespace: group)
+          project = create(:project, namespace: group)
           group.add_user(user, Gitlab::Access::MASTER)
 
           sync_group.update_permissions

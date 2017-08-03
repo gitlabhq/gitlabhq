@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Slack application' do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:service) { create(:gitlab_slack_application_service, project: project) }

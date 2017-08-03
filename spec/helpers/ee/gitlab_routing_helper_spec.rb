@@ -5,7 +5,7 @@ describe EE::GitlabRoutingHelper do
   include ApplicationSettingsHelper
 
   let!(:primary_node) { create(:geo_node, :primary) }
-  let(:project) { build_stubbed(:empty_project) }
+  let(:project) { build_stubbed(:project) }
 
   describe '#geo_primary_default_url_to_repo' do
     it 'returns an HTTP URL' do

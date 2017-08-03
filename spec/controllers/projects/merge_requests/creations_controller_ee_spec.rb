@@ -80,7 +80,7 @@ describe Projects::MergeRequests::CreationsController do
 
       context 'when the target project is a fork of a deleted project' do
         before do
-          original_project = create(:empty_project)
+          original_project = create(:project)
           project.update_attributes(forked_from_project: original_project, approvals_before_merge: 4)
           original_project.update_attributes(pending_delete: true)
 

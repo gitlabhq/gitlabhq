@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe IssueLinks::DestroyService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
 
     subject { described_class.new(issue_link, user).execute }
@@ -37,7 +37,7 @@ describe IssueLinks::DestroyService do
     end
 
     context 'when failing to remove an issue link' do
-      let(:unauthorized_project) { create(:empty_project) }
+      let(:unauthorized_project) { create(:project) }
       let(:issue_a) { create(:issue, project: project) }
       let(:issue_b) { create(:issue, project: unauthorized_project) }
 

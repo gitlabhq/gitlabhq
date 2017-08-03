@@ -264,8 +264,8 @@ describe MergeRequests::BuildService do
     end
 
     context 'upstream project has disabled merge requests' do
-      let(:upstream_project) { create(:empty_project, :merge_requests_disabled) }
-      let(:project) { create(:empty_project, forked_from_project: upstream_project) }
+      let(:upstream_project) { create(:project, :merge_requests_disabled) }
+      let(:project) { create(:project, forked_from_project: upstream_project) }
       let(:commits) { Commit.decorate([commit_1], project) }
 
       it 'sets target project correctly' do

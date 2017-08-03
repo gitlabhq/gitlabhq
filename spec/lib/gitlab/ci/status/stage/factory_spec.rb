@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Ci::Status::Stage::Factory do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:stage) do

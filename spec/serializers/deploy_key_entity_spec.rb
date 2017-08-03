@@ -4,9 +4,9 @@ describe DeployKeyEntity do
   include RequestAwareEntity
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :internal)}
-  let(:project_private) { create(:empty_project, :private)}
-  let!(:project_pending_delete) { create(:empty_project, :internal, pending_delete: true) }
+  let(:project) { create(:project, :internal)}
+  let(:project_private) { create(:project, :private)}
+  let!(:project_pending_delete) { create(:project, :internal, pending_delete: true) }
   let(:deploy_key) { create(:deploy_key) }
   let!(:deploy_key_internal) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
   let!(:deploy_key_private)  { create(:deploy_keys_project, project: project_private, deploy_key: deploy_key) }

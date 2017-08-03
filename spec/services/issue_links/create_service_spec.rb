@@ -3,7 +3,7 @@ require 'spec_helper'
 describe IssueLinks::CreateService do
   describe '#execute' do
     let(:namespace) { create :namespace }
-    let(:project) { create :empty_project, namespace: namespace }
+    let(:project) { create :project, namespace: namespace }
     let(:issue) { create :issue, project: project }
     let(:user) { create :user }
     let(:params) do
@@ -62,7 +62,7 @@ describe IssueLinks::CreateService do
 
     context 'when there is an issue to relate' do
       let(:issue_a) { create :issue, project: project }
-      let(:another_project) { create :empty_project, namespace: project.namespace }
+      let(:another_project) { create :project, namespace: project.namespace }
       let(:another_project_issue) { create :issue, project: another_project }
 
       let(:issue_a_ref) { issue_a.to_reference }

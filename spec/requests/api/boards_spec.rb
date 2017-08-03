@@ -5,7 +5,7 @@ describe API::Boards do
   let(:non_member)  { create(:user) }
   let(:guest)       { create(:user) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
   let(:milestone)   { create(:milestone, project: project) }
 
   let!(:dev_label) do
@@ -201,7 +201,7 @@ describe API::Boards do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:empty_project, namespace: owner.namespace) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
 
       it "deletes the list if an admin requests it" do
         delete api("#{base_url}/#{dev_list.id}", owner)

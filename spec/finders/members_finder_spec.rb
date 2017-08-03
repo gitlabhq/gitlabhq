@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MembersFinder, '#execute' do
   let(:group)        { create(:group) }
   let(:nested_group) { create(:group, :access_requestable, parent: group) }
-  let(:project)      { create(:empty_project, namespace: nested_group) }
+  let(:project)      { create(:project, namespace: nested_group) }
   let(:user1)        { create(:user) }
   let(:user2)        { create(:user) }
   let(:user3)        { create(:user) }

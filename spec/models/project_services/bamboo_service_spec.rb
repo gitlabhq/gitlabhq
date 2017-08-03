@@ -7,7 +7,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
 
   subject(:service) do
     described_class.create(
-      project: create(:empty_project),
+      project: create(:project),
       properties: {
         bamboo_url: bamboo_url,
         username: 'mic',

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::LabelsController do
   let(:group)   { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:user)    { create(:user) }
 
   before do
@@ -73,7 +73,7 @@ describe Projects::LabelsController do
 
   describe 'POST #generate' do
     context 'personal project' do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       it 'creates labels' do
         post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project

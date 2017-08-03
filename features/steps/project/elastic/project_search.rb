@@ -16,7 +16,7 @@ class Spinach::Features::ProjectSearch < Spinach::FeatureSteps
   end
 
   step 'project has all data available for the search' do
-    @project = create :project
+    @project = create :project, :repository
     @project.team << [current_user, :master]
 
     @issue = create :issue, title: 'bla-bla initial', project: @project

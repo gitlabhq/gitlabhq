@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'Multiple Issue Boards', :js do
   let(:user)      { create(:user) }
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let!(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:board)    { create(:board, project: project) }
   let!(:board2)   { create(:board, project: project) }

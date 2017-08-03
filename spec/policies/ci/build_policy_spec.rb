@@ -17,7 +17,7 @@ describe Ci::BuildPolicy do
 
   describe '#rules' do
     context 'when user does not have access to the project' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       context 'when public builds are enabled' do
         it 'does not include ability to read build' do
@@ -35,7 +35,7 @@ describe Ci::BuildPolicy do
     end
 
     context 'when anonymous user has access to the project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'when public builds are enabled' do
         it 'includes ability to read build' do
@@ -53,7 +53,7 @@ describe Ci::BuildPolicy do
     end
 
     context 'when team member has access to the project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'team member is a guest' do
         before do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ContainerRegistry::Blob do
   let(:group) { create(:group, name: 'group') }
-  let(:project) { create(:empty_project, path: 'test', group: group) }
+  let(:project) { create(:project, path: 'test', group: group) }
 
   let(:repository) do
     create(:container_repository, name: 'image',

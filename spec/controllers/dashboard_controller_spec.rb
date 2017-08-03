@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe DashboardController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     project.team << [user, :master]
