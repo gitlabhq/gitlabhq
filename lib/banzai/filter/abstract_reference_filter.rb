@@ -59,6 +59,12 @@ module Banzai
         # Example: project.merge_requests.find
       end
 
+      # Override if the link reference pattern produces a different ID (global
+      # ID vs internal ID, for instance) to the regular reference pattern.
+      def find_object_from_link(project, id)
+        find_object(project, id)
+      end
+
       def find_object_cached(project, id)
         if RequestStore.active?
           cache = find_objects_cache[object_class][project.id]
@@ -66,6 +72,16 @@ module Banzai
           get_or_set_cache(cache, id) { find_object(project, id) }
         else
           find_object(project, id)
+        end
+      end
+
+      def find_object_from_link_cached(project, id)
+        if RequestStore.active?
+          cache = find_objects_from_link_cache[object_class][project.id]
+
+          get_or_set_cache(cache, id) { find_object_from_link(project, id) }
+        else
+          find_object_from_link(project, id)
         end
       end
 
@@ -120,7 +136,7 @@ module Banzai
 
               if link == inner_html && inner_html =~ /\A#{link_pattern}/
                 replace_link_node_with_text(node, link) do
-                  object_link_filter(inner_html, link_pattern)
+                  object_link_filter(inner_html, link_pattern, link_reference: true)
                 end
 
                 next
@@ -128,7 +144,7 @@ module Banzai
 
               if link =~ /\A#{link_pattern}\z/
                 replace_link_node_with_href(node, link) do
-                  object_link_filter(link, link_pattern, link_content: inner_html)
+                  object_link_filter(link, link_pattern, link_content: inner_html, link_reference: true)
                 end
 
                 next
@@ -146,15 +162,26 @@ module Banzai
       # text - String text to replace references in.
       # pattern - Reference pattern to match against.
       # link_content - Original content of the link being replaced.
+      # link_reference - True if this was using the link reference pattern,
+      #                  false otherwise.
       #
       # Returns a String with references replaced with links. All links
       # have `gfm` and `gfm-OBJECT_NAME` class names attached for styling.
-      def object_link_filter(text, pattern, link_content: nil)
+      def object_link_filter(text, pattern, link_content: nil, link_reference: false)
         references_in(text, pattern) do |match, id, project_ref, namespace_ref, matches|
           project_path = full_project_path(namespace_ref, project_ref)
           project = project_from_ref_cached(project_path)
 
-          if project && object = find_object_cached(project, id)
+          if project
+            object =
+              if link_reference
+                find_object_from_link_cached(project, id)
+              else
+                find_object_cached(project, id)
+              end
+          end
+
+          if object
             title = object_link_title(object)
             klass = reference_class(object_sym)
 
@@ -299,6 +326,12 @@ module Banzai
 
       def find_objects_cache
         RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
+          hash[key] = Hash.new { |h, k| h[k] = {} }
+        end
+      end
+
+      def find_objects_from_link_cache
+        RequestStore[:banzai_find_objects_from_link_cache] ||= Hash.new do |hash, key|
           hash[key] = Hash.new { |h, k| h[k] = {} }
         end
       end
