@@ -79,8 +79,12 @@ class Groups::MilestonesController < Groups::ApplicationController
 
     milestones = MilestonesFinder.new(search_params).execute
 
-    legacy_milestones = []
-    legacy_milestones = GroupMilestone.build_collection(group, group_projects, params) unless params[:only_group_milestones]
+    legacy_milestones =
+      if params[:only_group_milestones]
+        []
+      else
+        GroupMilestone.build_collection(group, group_projects, params)
+      end
 
     milestones + legacy_milestones
   end
