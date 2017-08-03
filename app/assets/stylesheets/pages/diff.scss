@@ -561,6 +561,7 @@
 
 .diff-files-changed {
   .commit-stat-summary {
+    @include new-style-dropdown;
     z-index: -1;
 
     @media (min-width: $screen-sm-min) {
