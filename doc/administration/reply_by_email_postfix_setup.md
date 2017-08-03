@@ -177,6 +177,20 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
     ```sh
     sudo apt-get install courier-imap
     ```
+    
+    And start `imapd`:
+    ```sh
+    imapd start
+    ```
+    
+1. The courier-authdaemon isn't started after installation. Without it, imap authentication will fail:
+    ```sh
+    sudo service courier-authdaemon start
+    ```
+    You can also configure courier-authdaemon to start on boot:
+    ```sh
+    sudo systemctl enable courier-authdaemon
+    ```
 
 ## Configure Postfix to receive email from the internet
 
