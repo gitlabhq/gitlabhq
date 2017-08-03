@@ -3,7 +3,7 @@
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'
   - elsif  @project.group
     %p Contact an owner of group #{ @project.group.name } to upgrade the license.
-  - else 
+  - else
     - owner = @project.namespace.owner
     %p Contact owner #{ link_to(simple_sanitize(owner.name), user_path(owner)) } to upgrade the license.
 - elsif current_user.admin?
