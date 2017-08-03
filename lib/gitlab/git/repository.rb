@@ -324,7 +324,9 @@ module Gitlab
       # Return a collection of Rugged::Commits between the two revspec arguments.
       # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
       # a detailed list of valid arguments.
-      def commits_between(from, to)
+      #
+      # Gitaly note: JV: to be deprecated in favor of Commit.between
+      def rugged_commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
         walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
