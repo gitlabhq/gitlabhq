@@ -125,11 +125,12 @@ deploy:
     - master
 ```
 
-It uses the latest Docker image for Maven, which already contains everything you need to perform all the tasks.
-Environment variables are set to instruct Maven to use the `homedir` of the repo instead of the user's home.
-Caching the .m2/repository folder (where all the Maven files are stored), and the target folder (where our application will be created), will be useful for speeding up the process
+GitLab Runner will use the latest [Maven Docker image](https://hub.docker.com/_/maven/), which already contains all the tools and the dependencies you need to manage the project,
+in order to run the jobs.
+Environment variables are set to instruct Maven to use the `homedir` of the repo instead of the user's home when searching for configuration and dependencies.
+Caching the `.m2/repository folder` (where all the Maven files are stored), and the `target` folder (where our application will be created), is useful for speeding up the process
 by running all Maven phases in a sequential order, therefore, executing `mvn test` will automatically run `mvn compile` if necessary.
-Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
+Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the application.
 
 Deploy to Artifactory is done as defined by the secret variables we have just set up.
 The deployment occurs only if we're pushing or merging to `master` branch, so that the development versions are tested but not published.
