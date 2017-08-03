@@ -94,15 +94,17 @@ describe Key do
       expect(key).not_to be_valid
     end
 
+    it 'accepts a key with newline charecters after stripping them' do
+      key = build(:key)
+      key.key = key.key.insert(100, "\n")
+      key.key = key.key.insert(40, "\r\n")
+      expect(key).to be_valid
+    end
+
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
     end
-
-    it 'rejects the multiple line key' do
-      key = build(:key)
-      key.key.tr!(' ', "\n")
-      expect(key).not_to be_valid
-    end
+    
   end
 
   context 'callbacks' do
