@@ -29,7 +29,7 @@ const RepoEditor = {
 
       this.monacoInstance.setModel(newModel);
 
-    }).catch(RepoHelper.loadingError);
+    }).catch(Helper.loadingError);
   },
 
   methods: {
@@ -115,7 +115,6 @@ const RepoEditor = {
     },
 
     blobRaw() {
-      debugger
       this.showHide();
 
       if (this.isTree) return;
