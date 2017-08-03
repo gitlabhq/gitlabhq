@@ -120,19 +120,48 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
     end
   end
 
-  describe '#check_storage_accessible!' do
+  describe "storage_available?" do
     context 'when the storage is available' do
       it 'tracks that the storage was accessible an raises the error' do
         expect(circuit_breaker).to receive(:track_storage_accessible)
 
-        circuit_breaker.check_storage_accessible!
+        circuit_breaker.storage_available?
+      end
+
+      it 'only performs the check once' do
+        expect(Gitlab::Git::Storage::ForkedStorageCheck)
+          .to receive(:storage_available?).once.and_call_original
+
+        2.times { circuit_breaker.storage_available? }
+      end
+    end
+
+    context 'when storage is not available' do
+      let(:circuit_breaker) { described_class.new('broken') }
+
+      it 'tracks that the storage was inaccessible' do
+        expect(circuit_breaker).to receive(:track_storage_inaccessible)
+
+        circuit_breaker.storage_available?
+      end
+    end
+  end
+
+  describe '#check_storage_accessible!' do
+    it 'raises an exception with retry time when the circuit is open' do
+      allow(circuit_breaker).to receive(:circuit_broken?).and_return(true)
+
+      expect { circuit_breaker.check_storage_accessible! }
+        .to raise_error do |exception|
+        expect(exception).to be_kind_of(Gitlab::Git::Storage::CircuitOpen)
+        expect(exception.retry_after).to eq(30)
       end
     end
 
     context 'when the storage is not available' do
       let(:circuit_breaker) { described_class.new('broken') }
 
-      it 'tracks that the storage was unavailable and raises an error with retry time' do
+      it 'raises an error' do
         expect(circuit_breaker).to receive(:track_storage_inaccessible)
 
         expect { circuit_breaker.check_storage_accessible! }

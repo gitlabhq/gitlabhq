@@ -46,10 +46,6 @@ module Gitlab
         def perform
           return yield unless Feature.enabled?('git_storage_circuit_breaker')
 
-          if circuit_broken?
-            raise Gitlab::Git::Storage::CircuitOpen.new("Circuit for #{storage} open", failure_wait_time)
-          end
-
           check_storage_accessible!
 
           yield
@@ -70,14 +66,24 @@ module Gitlab
         # When the storage appears not available, and the memoized value is `false`
         # we might want to try again.
         def storage_available?
-          @storage_available ||= Gitlab::Git::Storage::ForkedStorageCheck.storage_available?(storage_path, storage_timeout)
-        end
+          return @storage_available if @storage_available
 
-        def check_storage_accessible!
-          if storage_available?
+          if @storage_available = Gitlab::Git::Storage::ForkedStorageCheck
+                                    .storage_available?(storage_path, storage_timeout)
             track_storage_accessible
           else
             track_storage_inaccessible
+          end
+
+          @storage_available
+        end
+
+        def check_storage_accessible!
+          if circuit_broken?
+            raise Gitlab::Git::Storage::CircuitOpen.new("Circuit for #{storage} is broken", failure_wait_time)
+          end
+
+          unless storage_available?
             raise Gitlab::Git::Storage::Inaccessible.new("#{storage} not accessible", failure_wait_time)
           end
         end
