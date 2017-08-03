@@ -56,4 +56,5 @@ total merge requests and issues.
 
 ## Quick actions
 
-[Quick actions](../quick_actions.md) are available for assigning and removing project milestones only. [In the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/34778), this will also apply to group milestones.
+[Quick actions](../quick_actions.md) are available for assigning and removing
+project and group milestones.
