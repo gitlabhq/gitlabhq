@@ -29,7 +29,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
   end
 
   describe '#remove_cached_html_for_projects' do
-    let(:project) { create(:empty_project, description_html: 'Project description') }
+    let(:project) { create(:project, description_html: 'Project description') }
 
     it 'removes description_html from projects' do
       subject.remove_cached_html_for_projects([project.id])
@@ -110,7 +110,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
       it "doesn't rename routes that start with a similar name" do
         other_namespace = create(:namespace, path: 'the-path-but-not-really')
-        project = create(:empty_project, path: 'the-project', namespace: other_namespace)
+        project = create(:project, path: 'the-project', namespace: other_namespace)
 
         subject.rename_path_for_routable(migration_namespace(namespace))
 
@@ -131,7 +131,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :trunca
 
     context 'for projects' do
       let(:parent) { create(:namespace, path: 'the-parent') }
-      let(:project) { create(:empty_project, path: 'the-path', namespace: parent) }
+      let(:project) { create(:project, path: 'the-path', namespace: parent) }
 
       it 'renames the project called `the-path`' do
         subject.rename_path_for_routable(migration_project(project))

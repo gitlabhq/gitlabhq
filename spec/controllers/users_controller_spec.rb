@@ -86,7 +86,7 @@ describe UsersController do
     end
 
     context 'forked project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:forked_project) { Projects::ForkService.new(project, user).execute }
 
       before do
@@ -104,7 +104,7 @@ describe UsersController do
   end
 
   describe 'GET #calendar_activities' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
     let(:user) { create(:user) }
 
     before do

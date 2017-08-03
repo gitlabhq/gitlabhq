@@ -4,7 +4,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
   include GitlabRoutingHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, approvals_before_merge: 1) }
+  let(:project) { create(:project, approvals_before_merge: 1) }
 
   before do
     gitlab_sign_in(user)

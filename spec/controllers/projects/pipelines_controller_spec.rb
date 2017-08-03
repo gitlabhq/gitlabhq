@@ -4,7 +4,7 @@ describe Projects::PipelinesController do
   include ApiHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:feature) { ProjectFeature::DISABLED }
 
   before do

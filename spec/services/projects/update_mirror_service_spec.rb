@@ -124,7 +124,7 @@ describe Projects::UpdateMirrorService do
     end
 
     describe "when is no mirror" do
-      let(:project) { build_stubbed(:empty_project) }
+      let(:project) { build_stubbed(:project) }
 
       it "success" do
         expect(project.mirror?).to eq(false)

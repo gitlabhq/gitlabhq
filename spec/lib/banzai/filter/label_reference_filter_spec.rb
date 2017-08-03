@@ -4,7 +4,7 @@ require 'html/pipeline'
 describe Banzai::Filter::LabelReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public, name: 'sample-project') }
+  let(:project)   { create(:project, :public, name: 'sample-project') }
   let(:label)     { create(:label, project: project) }
   let(:reference) { label.to_reference }
 
@@ -315,7 +315,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'group label references' do
     let(:group)       { create(:group) }
-    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:project)     { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, name: 'gfm references', group: group) }
 
     context 'without project reference' do
@@ -366,7 +366,7 @@ describe Banzai::Filter::LabelReferenceFilter do
   end
 
   describe 'cross-project / cross-namespace complete reference' do
-    let(:project2)  { create(:empty_project) }
+    let(:project2)  { create(:project) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -397,8 +397,8 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
-    let(:project2)  { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
+    let(:project2)  { create(:project, namespace: namespace) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.full_path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -429,8 +429,8 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
-    let(:project2)  { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
+    let(:project2)  { create(:project, namespace: namespace) }
     let(:label)     { create(:label, project: project2, color: '#00ff00') }
     let(:reference) { "#{project2.path}~#{label.name}" }
     let!(:result)   { reference_filter("See #{reference}") }
@@ -462,9 +462,9 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'cross group label references' do
     let(:group)            { create(:group) }
-    let(:project)          { create(:empty_project, :public, namespace: group) }
+    let(:project)          { create(:project, :public, namespace: group) }
     let(:another_group)    { create(:group) }
-    let(:another_project)  { create(:empty_project, :public, namespace: another_group) }
+    let(:another_project)  { create(:project, :public, namespace: another_group) }
     let(:group_label)      { create(:group_label, group: another_group, color: '#00ff00') }
     let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
     let!(:result)          { reference_filter("See #{reference}", project: project) }
@@ -498,8 +498,8 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'cross-project / same-group_label complete reference' do
     let(:group)            { create(:group) }
-    let(:project)          { create(:empty_project, :public, namespace: group) }
-    let(:another_project)  { create(:empty_project, :public, namespace: group) }
+    let(:project)          { create(:project, :public, namespace: group) }
+    let(:another_project)  { create(:project, :public, namespace: group) }
     let(:group_label)      { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)        { "#{another_project.full_path}~#{group_label.name}" }
     let!(:result)          { reference_filter("See #{reference}", project: project) }
@@ -533,7 +533,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'same project / same group_label complete reference' do
     let(:group)       { create(:group) }
-    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:project)     { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)   { "#{project.full_path}~#{group_label.name}" }
     let!(:result)     { reference_filter("See #{reference}", project: project) }
@@ -565,7 +565,7 @@ describe Banzai::Filter::LabelReferenceFilter do
 
   describe 'same project / same group_label shorthand reference' do
     let(:group)       { create(:group) }
-    let(:project)     { create(:empty_project, :public, namespace: group) }
+    let(:project)     { create(:project, :public, namespace: group) }
     let(:group_label) { create(:group_label, group: group, color: '#00ff00') }
     let(:reference)   { "#{project.path}~#{group_label.name}" }
     let!(:result)     { reference_filter("See #{reference}", project: project) }

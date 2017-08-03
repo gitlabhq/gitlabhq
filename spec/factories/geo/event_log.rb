@@ -7,6 +7,6 @@ FactoryGirl.define do
     source 0
     branches_affected 0
     tags_affected 0
-    project factory: :empty_project
+    project
   end
 end

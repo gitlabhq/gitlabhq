@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe ProjectWiki do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -42,7 +42,7 @@ describe ProjectWiki do
   end
 
   describe "#http_url_to_repo" do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     it 'returns the full http url to the repo' do
       expected_url = "#{Gitlab.config.gitlab.url}/#{subject.full_path}.git"

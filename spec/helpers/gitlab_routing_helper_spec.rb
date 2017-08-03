@@ -9,13 +9,13 @@ describe GitlabRoutingHelper do
     end
 
     describe '#request_access_project_members_path' do
-      let(:project) { build_stubbed(:empty_project) }
+      let(:project) { build_stubbed(:project) }
 
       it { expect(request_access_project_members_path(project)).to eq request_access_project_project_members_path(project) }
     end
 
     describe '#leave_project_members_path' do
-      let(:project) { build_stubbed(:empty_project) }
+      let(:project) { build_stubbed(:project) }
 
       it { expect(leave_project_members_path(project)).to eq leave_project_project_members_path(project) }
     end

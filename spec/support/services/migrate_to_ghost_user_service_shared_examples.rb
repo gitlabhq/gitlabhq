@@ -8,7 +8,7 @@ shared_examples "migrating a deleted user's associated records to the ghost user
     when MergeRequest
       create(:project, :repository)
     else
-      create(:empty_project)
+      create(:project)
     end
   end
 

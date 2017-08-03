@@ -5,7 +5,7 @@ describe Labels::PromoteService do
     let!(:user) { create(:user) }
 
     context 'project without group' do
-      let!(:project_1)  { create(:empty_project) }
+      let!(:project_1)  { create(:project) }
 
       let!(:project_label_1_1)  { create(:label, project: project_1) }
 
@@ -27,10 +27,10 @@ describe Labels::PromoteService do
       let!(:group_1)  { create(:group) }
       let!(:group_2)  { create(:group) }
 
-      let!(:project_1)  { create(:empty_project, namespace: group_1) }
-      let!(:project_2)  { create(:empty_project, namespace: group_1) }
-      let!(:project_3)  { create(:empty_project, namespace: group_1) }
-      let!(:project_4)  { create(:empty_project, namespace: group_2) }
+      let!(:project_1)  { create(:project, namespace: group_1) }
+      let!(:project_2)  { create(:project, namespace: group_1) }
+      let!(:project_3)  { create(:project, namespace: group_1) }
+      let!(:project_4)  { create(:project, namespace: group_2) }
 
       # Labels/issues can't be lazily created so we might as well eager initialize
       # all other objects too since we use them inside

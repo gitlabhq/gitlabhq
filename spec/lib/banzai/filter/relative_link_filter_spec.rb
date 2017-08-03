@@ -56,7 +56,7 @@ describe Banzai::Filter::RelativeLinkFilter do
   end
 
   context 'without a repository' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     include_examples :preserve_unchanged
   end
 

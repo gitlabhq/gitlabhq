@@ -8,7 +8,7 @@ FactoryGirl.define do
 
     trait :project_event do
       entity_type 'Project'
-      entity_id   { create(:empty_project).id }
+      entity_id   { create(:project).id }
     end
 
     trait :group_event do

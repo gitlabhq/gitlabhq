@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let(:reference) { milestone.to_reference }
 
@@ -150,7 +150,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
   describe 'cross-project / cross-namespace complete reference' do
     let(:namespace)       { create(:namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
     let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
@@ -186,8 +186,8 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
   describe 'cross-project / same-namespace complete reference' do
     let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:empty_project, :public, namespace: namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:project)         { create(:project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
     let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
@@ -223,8 +223,8 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
   describe 'cross project shorthand reference' do
     let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:empty_project, :public, namespace: namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:project)         { create(:project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
     let(:reference)       { "#{another_project.path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
@@ -259,7 +259,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
   end
 
   describe 'cross project milestone references' do
-    let(:another_project)  { create(:empty_project, :public) }
+    let(:another_project)  { create(:project, :public) }
     let(:project_path) { another_project.full_path }
     let(:milestone) { create(:milestone, project: another_project) }
     let(:reference) { milestone.to_reference(project) }

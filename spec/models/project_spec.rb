@@ -83,7 +83,7 @@ describe Project do
     end
 
     describe '#members & #requesters' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) { create(:project, :public, :access_requestable) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do
@@ -126,7 +126,7 @@ describe Project do
     context '#with_wiki_enabled' do
       it 'returns a project' do
         project = create(:project_empty_repo, wiki_access_level: ProjectFeature::ENABLED)
-        project1 = create(:empty_project, wiki_access_level: ProjectFeature::DISABLED)
+        project1 = create(:project, wiki_access_level: ProjectFeature::DISABLED)
 
         expect(described_class.with_wiki_enabled).to include(project)
         expect(described_class.with_wiki_enabled).not_to include(project1)
@@ -135,7 +135,7 @@ describe Project do
   end
 
   describe 'validation' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
@@ -158,7 +158,7 @@ describe Project do
     it { is_expected.to validate_presence_of(:repository_storage) }
 
     it 'does not allow new projects beyond user limits' do
-      project2 = build(:empty_project)
+      project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
       expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
@@ -167,7 +167,7 @@ describe Project do
     describe 'wiki path conflict' do
       context "when the new path has been used by the wiki of other Project" do
         it 'has an error on the name attribute' do
-          new_project = build_stubbed(:empty_project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
+          new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
 
           expect(new_project).not_to be_valid
           expect(new_project.errors[:name].first).to eq('has already been taken')
@@ -176,8 +176,8 @@ describe Project do
 
       context "when the new wiki path has been used by the path of other Project" do
         it 'has an error on the name attribute' do
-          project_with_wiki_suffix = create(:empty_project, path: 'foo.wiki')
-          new_project = build_stubbed(:empty_project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
+          project_with_wiki_suffix = create(:project, path: 'foo.wiki')
+          new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
 
           expect(new_project).not_to be_valid
           expect(new_project.errors[:name].first).to eq('has already been taken')
@@ -186,7 +186,7 @@ describe Project do
     end
 
     context 'repository storages inclussion' do
-      let(:project2) { build(:empty_project, repository_storage: 'missing') }
+      let(:project2) { build(:project, repository_storage: 'missing') }
 
       before do
         storages = { 'custom' => { 'path' => 'tmp/tests/custom_repositories' } }
@@ -201,7 +201,7 @@ describe Project do
 
     context '#mark_stuck_remote_mirrors_as_failed!' do
       it 'fails stuck remote mirrors' do
-        project = create(:project, :remote_mirror, :repository)
+        project = create(:project, :repository, :remote_mirror)
 
         project.remote_mirrors.first.update_attributes(
           update_status: :started,
@@ -215,75 +215,75 @@ describe Project do
     end
 
     context 'mirror' do
-      subject { build(:empty_project, mirror: true) }
+      subject { build(:project, mirror: true) }
 
       it { is_expected.to validate_presence_of(:import_url) }
       it { is_expected.to validate_presence_of(:mirror_user) }
     end
 
     it 'does not allow an invalid URI as import_url' do
-      project2 = build(:empty_project, import_url: 'invalid://')
+      project2 = build(:project, import_url: 'invalid://')
 
       expect(project2).not_to be_valid
     end
 
     it 'does allow a valid URI as import_url' do
-      project2 = build(:empty_project, import_url: 'ssh://test@gitlab.com/project.git')
+      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
 
       expect(project2).to be_valid
     end
 
     it 'allows an empty URI' do
-      project2 = build(:empty_project, import_url: '')
+      project2 = build(:project, import_url: '')
 
       expect(project2).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do
-      project2 = build(:empty_project, import_url: '')
+      project2 = build(:project, import_url: '')
 
       expect(project2.import_data).to be_nil
     end
 
     it 'does not produce import data on an invalid URI' do
-      project2 = build(:empty_project, import_url: 'test://')
+      project2 = build(:project, import_url: 'test://')
 
       expect(project2.import_data).to be_nil
     end
 
     it "does not allow blocked import_url localhost" do
-      project2 = build(:empty_project, import_url: 'http://localhost:9000/t.git')
+      project2 = build(:project, import_url: 'http://localhost:9000/t.git')
 
       expect(project2).to be_invalid
       expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
     end
 
     it "does not allow blocked import_url port" do
-      project2 = build(:empty_project, import_url: 'http://github.com:25/t.git')
+      project2 = build(:project, import_url: 'http://github.com:25/t.git')
 
       expect(project2).to be_invalid
       expect(project2.errors[:import_url]).to include('imports are not allowed from that URL')
     end
 
     it 'creates mirror data when enabled' do
-      project2 = create(:empty_project, :mirror, mirror: false)
+      project2 = create(:project, :mirror, mirror: false)
 
       expect { project2.update_attributes(mirror: true) }.to change { ProjectMirrorData.count }.from(0).to(1)
     end
 
     it 'destroys mirror data when disabled' do
-      project2 = create(:empty_project, :mirror)
+      project2 = create(:project, :mirror)
 
       expect { project2.update_attributes(mirror: false) }.to change { ProjectMirrorData.count }.from(1).to(0)
     end
 
     describe 'project pending deletion' do
       let!(:project_pending_deletion) do
-        create(:empty_project,
+        create(:project,
                pending_delete: true)
       end
       let(:new_project) do
-        build(:empty_project,
+        build(:project,
               name: project_pending_deletion.name,
               namespace: project_pending_deletion.namespace)
       end
@@ -299,27 +299,27 @@ describe Project do
 
     describe 'path validation' do
       it 'allows paths reserved on the root namespace' do
-        project = build(:empty_project, path: 'api')
+        project = build(:project, path: 'api')
 
         expect(project).to be_valid
       end
 
       it 'rejects paths reserved on another level' do
-        project = build(:empty_project, path: 'tree')
+        project = build(:project, path: 'tree')
 
         expect(project).not_to be_valid
       end
 
       it 'rejects nested paths' do
         parent = create(:group, :nested, path: 'environments')
-        project = build(:empty_project, path: 'folders', namespace: parent)
+        project = build(:project, path: 'folders', namespace: parent)
 
         expect(project).not_to be_valid
       end
 
       it 'allows a reserved group name' do
         parent = create(:group)
-        project = build(:empty_project, path: 'avatar', namespace: parent)
+        project = build(:project, path: 'avatar', namespace: parent)
 
         expect(project).to be_valid
       end
@@ -328,12 +328,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryGirl.create :empty_project, runners_token: ''
+      project = FactoryGirl.create :project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryGirl.create :empty_project, runners_token: 'my-token'
+      project = FactoryGirl.create :project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
   end
@@ -361,7 +361,7 @@ describe Project do
   describe '#to_reference' do
     let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }
-    let(:project)   { create(:empty_project, path: 'sample-project', namespace: namespace) }
+    let(:project)   { create(:project, path: 'sample-project', namespace: namespace) }
     let(:group)     { create(:group, name: 'Group', path: 'sample-group', owner: owner) }
 
     context 'when nil argument' do
@@ -385,7 +385,7 @@ describe Project do
     end
 
     context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+      let(:another_namespace_project) { create(:project, name: 'another-project') }
 
       it 'returns complete path to the project' do
         expect(project.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project'
@@ -393,7 +393,7 @@ describe Project do
     end
 
     context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:empty_project, namespace: namespace) }
+      let(:another_project) { create(:project, namespace: namespace) }
 
       it 'returns path to the project' do
         expect(project.to_reference(another_project)).to eq 'sample-project'
@@ -402,7 +402,7 @@ describe Project do
 
     context 'when different namespace / cross-project argument' do
       let(:another_namespace) { create(:namespace, path: 'another-namespace', owner: owner) }
-      let(:another_project)   { create(:empty_project, path: 'another-project', namespace: another_namespace) }
+      let(:another_project)   { create(:project, path: 'another-project', namespace: another_namespace) }
 
       it 'returns full path to the project' do
         expect(project.to_reference(another_project)).to eq 'sample-namespace/sample-project'
@@ -427,7 +427,7 @@ describe Project do
   describe '#to_human_reference' do
     let(:owner) { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, name: 'Sample namespace', owner: owner) }
-    let(:project) { create(:empty_project, name: 'Sample project', namespace: namespace) }
+    let(:project) { create(:project, name: 'Sample project', namespace: namespace) }
 
     context 'when nil argument' do
       it 'returns nil' do
@@ -442,7 +442,7 @@ describe Project do
     end
 
     context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+      let(:another_namespace_project) { create(:project, name: 'another-project') }
 
       it 'returns complete name with namespace of the project' do
         expect(project.to_human_reference(another_namespace_project)).to eq 'Gitlab / Sample project'
@@ -450,7 +450,7 @@ describe Project do
     end
 
     context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:empty_project, namespace: namespace) }
+      let(:another_project) { create(:project, namespace: namespace) }
 
       it 'returns name of the project' do
         expect(project.to_human_reference(another_project)).to eq 'Sample project'
@@ -459,7 +459,7 @@ describe Project do
   end
 
   describe '#repository_storage_path' do
-    let(:project) { create(:empty_project, repository_storage: 'custom') }
+    let(:project) { create(:project, repository_storage: 'custom') }
 
     before do
       FileUtils.mkdir('tmp/tests/custom_repositories')
@@ -482,7 +482,7 @@ describe Project do
   end
 
   describe "#web_url" do
-    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:project) { create(:project, path: "somewhere") }
 
     it 'returns the full web URL for this repo' do
       expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.namespace.full_path}/somewhere")
@@ -490,7 +490,7 @@ describe Project do
   end
 
   describe "#kerberos_url_to_repo" do
-    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:project) { create(:project, path: "somewhere") }
 
     it 'returns valid kerberos url for this repo' do
       expect(project.kerberos_url_to_repo).to eq("#{Gitlab.config.build_gitlab_kerberos_url}/#{project.namespace.path}/somewhere.git")
@@ -498,7 +498,7 @@ describe Project do
   end
 
   describe "#new_issue_address" do
-    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }
 
     context 'incoming email enabled' do
@@ -527,7 +527,7 @@ describe Project do
   describe 'last_activity methods' do
     let(:timestamp) { 2.hours.ago }
     # last_activity_at gets set to created_at upon creation
-    let(:project) { create(:empty_project, created_at: timestamp, updated_at: timestamp) }
+    let(:project) { create(:project, created_at: timestamp, updated_at: timestamp) }
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
@@ -552,7 +552,7 @@ describe Project do
   end
 
   describe '#get_issue' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:issue)  { create(:issue, project: project) }
     let(:user)    { create(:user) }
 
@@ -627,7 +627,7 @@ describe Project do
   end
 
   describe '#issue_exists?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'is truthy when issue exists' do
       expect(project).to receive(:get_issue).and_return(double)
@@ -644,7 +644,7 @@ describe Project do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
-        @project = create(:empty_project, name: 'gitlabhq', namespace: @group)
+        @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
       it { expect(@project.to_param).to eq('gitlabhq') }
@@ -652,7 +652,7 @@ describe Project do
 
     context 'with invalid path' do
       it 'returns previous path to keep project suitable for use in URLs when persisted' do
-        project = create(:empty_project, path: 'gitlab')
+        project = create(:project, path: 'gitlab')
         project.path = 'foo&bar'
 
         expect(project).not_to be_valid
@@ -660,7 +660,7 @@ describe Project do
       end
 
       it 'returns current path when new record' do
-        project = build(:empty_project, path: 'gitlab')
+        project = build(:project, path: 'gitlab')
         project.path = 'foo&bar'
 
         expect(project).not_to be_valid
@@ -678,7 +678,7 @@ describe Project do
   end
 
   describe 'repository size restrictions' do
-    let(:project) { build(:empty_project) }
+    let(:project) { build(:project) }
 
     before do
       allow_any_instance_of(ApplicationSetting).to receive(:repository_size_limit).and_return(50)
@@ -728,7 +728,7 @@ describe Project do
 
     describe '#above_size_limit?' do
       let(:project) do
-        create(:empty_project,
+        create(:project,
                statistics: build(:project_statistics))
       end
 
@@ -754,7 +754,7 @@ describe Project do
 
   describe '#repository_size_limit column' do
     it 'support values up to 8 exabytes' do
-      project = create(:empty_project)
+      project = create(:project)
       project.update_column(:repository_size_limit, 8.exabytes - 1)
 
       project.reload
@@ -765,7 +765,7 @@ describe Project do
 
   describe '#default_issues_tracker?' do
     it "is true if used internal tracker" do
-      project = build(:empty_project)
+      project = build(:project)
 
       expect(project.default_issues_tracker?).to be_truthy
     end
@@ -779,7 +779,7 @@ describe Project do
   end
 
   describe '#external_issue_tracker' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
     context 'on existing projects with no value for has_external_issue_tracker' do
@@ -814,7 +814,7 @@ describe Project do
   end
 
   describe '#cache_has_external_issue_tracker' do
-    let(:project) { create(:empty_project, has_external_issue_tracker: nil) }
+    let(:project) { create(:project, has_external_issue_tracker: nil) }
 
     it 'stores true if there is any external_issue_tracker' do
       services = double(:service, external_issue_trackers: [RedmineService.new])
@@ -844,7 +844,7 @@ describe Project do
   end
 
   describe '#cache_has_external_wiki' do
-    let(:project) { create(:empty_project, has_external_wiki: nil) }
+    let(:project) { create(:project, has_external_wiki: nil) }
 
     it 'stores true if there is any external_wikis' do
       services = double(:service, external_wikis: [ExternalWikiService.new])
@@ -874,9 +874,9 @@ describe Project do
   end
 
   describe '#has_wiki?' do
-    let(:no_wiki_project)       { create(:empty_project, :wiki_disabled, has_external_wiki: false) }
-    let(:wiki_enabled_project)  { create(:empty_project) }
-    let(:external_wiki_project) { create(:empty_project, has_external_wiki: true) }
+    let(:no_wiki_project)       { create(:project, :wiki_disabled, has_external_wiki: false) }
+    let(:wiki_enabled_project)  { create(:project) }
+    let(:external_wiki_project) { create(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
       expect(wiki_enabled_project).to have_wiki
@@ -886,7 +886,7 @@ describe Project do
   end
 
   describe '#external_wiki' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'with an active external wiki' do
       before do
@@ -940,7 +940,7 @@ describe Project do
     it 'counts stars from multiple users' do
       user1 = create :user
       user2 = create :user
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
 
       expect(project.star_count).to eq(0)
 
@@ -962,8 +962,8 @@ describe Project do
 
     it 'counts stars on the right project' do
       user = create :user
-      project1 = create(:empty_project, :public)
-      project2 = create(:empty_project, :public)
+      project1 = create(:project, :public)
+      project2 = create(:project, :public)
 
       expect(project1.star_count).to eq(0)
       expect(project2.star_count).to eq(0)
@@ -995,7 +995,7 @@ describe Project do
   end
 
   describe '#avatar_type' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'is true if avatar is image' do
       project.update_attribute(:avatar, 'uploads/avatar.png')
@@ -1011,10 +1011,10 @@ describe Project do
   describe '#avatar_url' do
     subject { project.avatar_url }
 
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when avatar file is uploaded' do
-      let(:project) { create(:empty_project, :with_avatar) }
+      let(:project) { create(:project, :with_avatar) }
       let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
       let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
@@ -1050,7 +1050,7 @@ describe Project do
     end
 
     context 'when git repo is empty' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       it { is_expected.to eq nil }
     end
@@ -1091,7 +1091,7 @@ describe Project do
   end
 
   describe '#builds_enabled' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.builds_enabled }
 
@@ -1102,7 +1102,7 @@ describe Project do
     subject { described_class.with_shared_runners }
 
     context 'when shared runners are enabled for project' do
-      let!(:project) { create(:empty_project, shared_runners_enabled: true) }
+      let!(:project) { create(:project, shared_runners_enabled: true) }
 
       it "returns a project" do
         is_expected.to eq([project])
@@ -1110,7 +1110,7 @@ describe Project do
     end
 
     context 'when shared runners are disabled for project' do
-      let!(:project) { create(:empty_project, shared_runners_enabled: false) }
+      let!(:project) { create(:project, shared_runners_enabled: false) }
 
       it "returns an empty array" do
         is_expected.to be_empty
@@ -1120,8 +1120,8 @@ describe Project do
 
   describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
-    let!(:project1) { create(:empty_project, :public, group: group) }
-    let!(:project2) { create(:empty_project, :public, group: group) }
+    let!(:project1) { create(:project, :public, group: group) }
+    let!(:project2) { create(:project, :public, group: group) }
 
     it 'returns total project count' do
       expect(described_class).to receive(:count).once.and_call_original
@@ -1134,8 +1134,8 @@ describe Project do
 
   describe '.trending' do
     let(:group)    { create(:group, :public) }
-    let(:project1) { create(:empty_project, :public, group: group) }
-    let(:project2) { create(:empty_project, :public, group: group) }
+    let(:project1) { create(:project, :public, group: group) }
+    let(:project2) { create(:project, :public, group: group) }
 
     before do
       2.times do
@@ -1166,9 +1166,9 @@ describe Project do
     it 'returns only projects starred by the given user' do
       user1 = create(:user)
       user2 = create(:user)
-      project1 = create(:empty_project)
-      project2 = create(:empty_project)
-      create(:empty_project)
+      project1 = create(:project)
+      project2 = create(:project)
+      create(:project)
       user1.toggle_star(project1)
       user2.toggle_star(project2)
 
@@ -1177,7 +1177,7 @@ describe Project do
   end
 
   describe '.visible_to_user' do
-    let!(:project) { create(:empty_project, :private) }
+    let!(:project) { create(:project, :private) }
     let!(:user)    { create(:user) }
 
     subject { described_class.visible_to_user(user) }
@@ -1196,7 +1196,7 @@ describe Project do
   end
 
   context 'repository storage by default' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       storages = {
@@ -1214,7 +1214,7 @@ describe Project do
   end
 
   context 'shared runners by default' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.shared_runners_enabled }
 
@@ -1236,7 +1236,7 @@ describe Project do
   end
 
   describe '#any_runners' do
-    let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
+    let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
     let(:shared_runner) { create(:ci_runner, :shared) }
 
@@ -1284,7 +1284,7 @@ describe Project do
     subject { project.shared_runners }
 
     context 'when shared runners are enabled for project' do
-      let!(:project) { create(:empty_project, shared_runners_enabled: true) }
+      let!(:project) { create(:project, shared_runners_enabled: true) }
 
       it "returns a list of shared runners" do
         is_expected.to eq([runner])
@@ -1292,7 +1292,7 @@ describe Project do
     end
 
     context 'when shared runners are disabled for project' do
-      let!(:project) { create(:empty_project, shared_runners_enabled: false) }
+      let!(:project) { create(:project, shared_runners_enabled: false) }
 
       it "returns a empty list" do
         is_expected.to be_empty
@@ -1301,7 +1301,7 @@ describe Project do
   end
 
   describe '#visibility_level_allowed?' do
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
 
     context 'when checking on non-forked project' do
       it { expect(project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
@@ -1310,8 +1310,8 @@ describe Project do
     end
 
     context 'when checking on forked project' do
-      let(:project)        { create(:empty_project, :internal) }
-      let(:forked_project) { create(:empty_project, forked_from_project: project) }
+      let(:project)        { create(:project, :internal) }
+      let(:forked_project) { create(:project, forked_from_project: project) }
 
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be_truthy }
       it { expect(forked_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_truthy }
@@ -1320,7 +1320,7 @@ describe Project do
   end
 
   describe '#pages_deployed?' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     subject { project.pages_deployed? }
 
@@ -1339,7 +1339,7 @@ describe Project do
 
   describe '#pages_url' do
     let(:group) { create :group, name: group_name }
-    let(:project) { create :empty_project, namespace: group, name: project_name }
+    let(:project) { create :project, namespace: group, name: project_name }
     let(:domain) { 'Example.com' }
 
     subject { project.pages_url }
@@ -1365,7 +1365,7 @@ describe Project do
   end
 
   describe '.search' do
-    let(:project) { create(:empty_project, description: 'kitten mittens') }
+    let(:project) { create(:project, description: 'kitten mittens') }
 
     it 'returns projects with a matching name' do
       expect(described_class.search(project.name)).to eq([project])
@@ -1422,7 +1422,7 @@ describe Project do
     end
 
     describe 'with pending_delete project' do
-      let(:pending_delete_project) { create(:empty_project, pending_delete: true) }
+      let(:pending_delete_project) { create(:project, pending_delete: true) }
 
       it 'shows pending deletion project' do
         search_result = described_class.search(pending_delete_project.name)
@@ -1508,7 +1508,7 @@ describe Project do
   end
 
   describe '.search_by_title' do
-    let(:project) { create(:empty_project, name: 'kittens') }
+    let(:project) { create(:project, name: 'kittens') }
 
     it 'returns projects with a matching name' do
       expect(described_class.search_by_title(project.name)).to eq([project])
@@ -1527,8 +1527,8 @@ describe Project do
     let(:private_group)    { create(:group, visibility_level: 0)  }
     let(:internal_group)   { create(:group, visibility_level: 10) }
 
-    let(:private_project)  { create :empty_project, :private, group: private_group }
-    let(:internal_project) { create :empty_project, :internal, group: internal_group }
+    let(:private_project)  { create :project, :private, group: private_group }
+    let(:internal_project) { create :project, :internal, group: internal_group }
 
     context 'when group is private project can not be internal' do
       it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
@@ -1627,7 +1627,7 @@ describe Project do
   describe 'handling import URL' do
     context 'when project is a mirror' do
       it 'returns the full URL' do
-        project = create(:empty_project, :mirror, import_url: 'http://user:pass@test.com')
+        project = create(:project, :mirror, import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1637,7 +1637,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns the sanitized URL' do
-        project = create(:empty_project, import_status: 'started', import_url: 'http://user:pass@test.com')
+        project = create(:project, import_status: 'started', import_url: 'http://user:pass@test.com')
 
         project.import_finish
 
@@ -1647,7 +1647,7 @@ describe Project do
   end
 
   describe '#user_can_push_to_empty_repo?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user)    { create(:user) }
 
     it 'returns false when default_branch_protection is in full protection and user is developer' do
@@ -1686,7 +1686,7 @@ describe Project do
   end
 
   describe '#container_registry_url' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.container_registry_url }
 
@@ -1713,7 +1713,7 @@ describe Project do
   end
 
   describe '#has_container_registry_tags?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when container registry is enabled' do
       before do
@@ -1777,7 +1777,7 @@ describe Project do
   end
 
   describe '#ci_config_path=' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'sets nil' do
       project.update!(ci_config_path: nil)
@@ -1799,7 +1799,7 @@ describe Project do
   end
 
   describe 'Project import job' do
-    let(:project) { create(:empty_project, import_url: generate(:url)) }
+    let(:project) { create(:project, import_url: generate(:url)) }
 
     before do
       allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
@@ -1819,7 +1819,7 @@ describe Project do
     end
 
     context 'with a mirrored project' do
-      let(:project) { create(:empty_project, :mirror) }
+      let(:project) { create(:project, :mirror) }
 
       it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
         allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
@@ -1848,7 +1848,7 @@ describe Project do
       end
 
       it 'does not perform housekeeping when project repository does not exist' do
-        project = create(:empty_project, :import_started, import_type: :github)
+        project = create(:project, :import_started, import_type: :github)
 
         project.import_finish
 
@@ -1856,7 +1856,7 @@ describe Project do
       end
 
       it 'does not perform housekeeping when project does not have a valid import type' do
-        project = create(:empty_project, :import_started, import_type: nil)
+        project = create(:project, :import_started, import_type: nil)
 
         project.import_finish
 
@@ -1869,7 +1869,7 @@ describe Project do
         end
 
         it 'does not index the repository' do
-          project = create(:empty_project, :import_started, import_type: :github)
+          project = create(:project, :import_started, import_type: :github)
 
           expect(ElasticCommitIndexerWorker).not_to receive(:perform_async)
 
@@ -1878,7 +1878,7 @@ describe Project do
       end
 
       context 'elasticsearch indexing enabled' do
-        let(:project) { create(:empty_project, :import_started, import_type: :github) }
+        let(:project) { create(:project, :import_started, import_type: :github) }
 
         before do
           stub_application_setting(elasticsearch_indexing: true)
@@ -2009,7 +2009,7 @@ describe Project do
   describe  '#updating_mirror?' do
     context 'when repository is empty' do
       it 'returns false' do
-        project = create(:empty_project, :mirror, :import_started)
+        project = create(:project, :mirror, :import_started)
 
         expect(project.updating_mirror?).to be false
       end
@@ -2017,7 +2017,7 @@ describe Project do
 
     context 'when project is not a mirror' do
       it 'returns false' do
-        project = create(:empty_project, :import_started)
+        project = create(:project, :import_started)
 
         expect(project.updating_mirror?).to be false
       end
@@ -2035,7 +2035,7 @@ describe Project do
   describe '#force_import_job!' do
     it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
       timestamp = Time.now
-      project = create(:empty_project, :mirror)
+      project = create(:project, :mirror)
 
       project.mirror_data.update_attributes(next_execution_timestamp: timestamp - 3.minutes)
 
@@ -2062,7 +2062,7 @@ describe Project do
 
       context 'without mirror' do
         it 'returns nil' do
-          project = create(:empty_project)
+          project = create(:project)
 
           expect(project.add_import_job).to be_nil
         end
@@ -2070,7 +2070,7 @@ describe Project do
 
       context 'without repository' do
         it 'schedules RepositoryImportWorker' do
-          project = create(:empty_project, import_url: generate(:url))
+          project = create(:project, import_url: generate(:url))
 
           expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
@@ -2091,7 +2091,7 @@ describe Project do
 
     context 'not forked' do
       it 'schedules a RepositoryImportWorker job' do
-        project = create(:empty_project, import_url: generate(:url))
+        project = create(:project, import_url: generate(:url))
 
         expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
 
@@ -2101,19 +2101,19 @@ describe Project do
   end
 
   describe '#gitlab_project_import?' do
-    subject(:project) { build(:empty_project, import_type: 'gitlab_project') }
+    subject(:project) { build(:project, import_type: 'gitlab_project') }
 
     it { expect(project.gitlab_project_import?).to be true }
   end
 
   describe '#gitea_import?' do
-    subject(:project) { build(:empty_project, import_type: 'gitea') }
+    subject(:project) { build(:project, import_type: 'gitea') }
 
     it { expect(project.gitea_import?).to be true }
   end
 
   describe '#lfs_enabled?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     shared_examples 'project overrides group' do
       it 'returns true when enabled in project' do
@@ -2188,8 +2188,8 @@ describe Project do
     end
 
     context 'with valid paths' do
-      let!(:project1) { create(:empty_project) }
-      let!(:project2) { create(:empty_project) }
+      let!(:project1) { create(:project) }
+      let!(:project2) { create(:project) }
 
       it 'returns the projects matching the paths' do
         projects = described_class.where_full_path_in([project1.full_path,
@@ -2208,7 +2208,7 @@ describe Project do
   end
 
   describe '#find_path_lock' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:path_lock) { create :path_lock, project: project }
     let(:path) { path_lock.path }
 
@@ -2300,7 +2300,7 @@ describe Project do
   end
 
   describe '#pushes_since_gc' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -2322,7 +2322,7 @@ describe Project do
   end
 
   describe '#increment_pushes_since_gc' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -2349,13 +2349,13 @@ describe Project do
   end
 
   describe '#approver_group_ids=' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'create approver_groups' do
       group = create :group
       group1 = create :group
 
-      project = create :empty_project
+      project = create :project
 
       project.approver_group_ids = "#{group.id}, #{group1.id}"
       project.save!
@@ -2365,7 +2365,7 @@ describe Project do
   end
 
   describe '#reset_pushes_since_gc' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     after do
       project.reset_pushes_since_gc
@@ -2382,7 +2382,7 @@ describe Project do
 
   describe '#deployment_variables' do
     context 'when project has no deployment service' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       it 'returns an empty array' do
         expect(project.deployment_variables).to eq []
@@ -2401,7 +2401,7 @@ describe Project do
   end
 
   describe '#secret_variables_for' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     let!(:secret_variable) do
       create(:ci_variable, value: 'secret', project: project)
@@ -2448,7 +2448,7 @@ describe Project do
   end
 
   describe '#protected_for?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.protected_for?('ref') }
 
@@ -2485,7 +2485,7 @@ describe Project do
   end
 
   describe '#update_project_statistics' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it "is called after creation" do
       expect(project.statistics).to be_a ProjectStatistics
@@ -2506,7 +2506,7 @@ describe Project do
 
   describe '#create_mirror_data' do
     it 'it is called after save' do
-      project = create(:empty_project)
+      project = create(:project)
 
       expect(project).to receive(:create_mirror_data)
 
@@ -2515,9 +2515,9 @@ describe Project do
   end
 
   describe 'inside_path' do
-    let!(:project1) { create(:empty_project, namespace: create(:namespace, path: 'name_pace')) }
-    let!(:project2) { create(:empty_project) }
-    let!(:project3) { create(:empty_project, namespace: create(:namespace, path: 'namespace')) }
+    let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
+    let!(:project2) { create(:project) }
+    let!(:project3) { create(:project, namespace: create(:namespace, path: 'namespace')) }
     let!(:path) { project1.namespace.full_path }
 
     it 'returns correct project' do
@@ -2602,13 +2602,13 @@ describe Project do
   end
 
   describe '#parent' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it { expect(project.parent).to eq(project.namespace) }
   end
 
   describe '#parent_changed?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       project.namespace_id = 7
@@ -2634,7 +2634,7 @@ describe Project do
     end
 
     context 'top-level group' do
-      let(:project) { create :empty_project, namespace: group, name: project_name }
+      let(:project) { create :project, namespace: group, name: project_name }
 
       context 'group page' do
         let(:project_name) { 'group.example.com' }
@@ -2650,7 +2650,7 @@ describe Project do
     end
 
     context 'nested group' do
-      let(:project) { create :empty_project, namespace: nested_group, name: project_name }
+      let(:project) { create :project, namespace: nested_group, name: project_name }
       let(:expected_url) { "http://group.example.com/#{nested_group.path}/#{project.path}" }
 
       context 'group page' do
@@ -2668,7 +2668,7 @@ describe Project do
   end
 
   describe '#http_url_to_repo' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     it 'returns the url to the repo without a username' do
       expect(project.http_url_to_repo).to eq("#{project.web_url}.git")
@@ -2688,7 +2688,7 @@ describe Project do
   end
 
   describe '#append_or_update_attribute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
@@ -2708,7 +2708,7 @@ describe Project do
 
   describe '#last_repository_updated_at' do
     it 'sets to created_at upon creation' do
-      project = create(:empty_project, created_at: 2.hours.ago)
+      project = create(:project, created_at: 2.hours.ago)
 
       expect(project.last_repository_updated_at.to_i).to eq(project.created_at.to_i)
     end
@@ -2718,10 +2718,10 @@ describe Project do
     let!(:user) { create(:user) }
 
     let!(:private_project) do
-      create(:empty_project, :private, creator: user, namespace: user.namespace)
+      create(:project, :private, creator: user, namespace: user.namespace)
     end
 
-    let!(:public_project) { create(:empty_project, :public) }
+    let!(:public_project) { create(:project, :public) }
 
     context 'with a user' do
       let(:projects) do
@@ -2748,7 +2748,7 @@ describe Project do
 
   describe '#remove_private_deploy_keys' do
     it 'removes the private deploy keys of a project' do
-      project = create(:empty_project)
+      project = create(:project)
 
       private_key = create(:deploy_key, public: false)
       public_key = create(:deploy_key, public: true)

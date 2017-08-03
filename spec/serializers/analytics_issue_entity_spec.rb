@@ -13,7 +13,7 @@ describe AnalyticsIssueEntity do
     }
   end
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:request) { EntityRequest.new(project: project, entity: :merge_request) }
 
   let(:entity) do

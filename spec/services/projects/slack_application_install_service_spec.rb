@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::SlackApplicationInstallService do
   let!(:user) { create(:user) }
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   def service(params = {})
     Projects::SlackApplicationInstallService.new(project, user, params)

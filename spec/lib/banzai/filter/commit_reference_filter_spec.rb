@@ -121,7 +121,7 @@ describe Banzai::Filter::CommitReferenceFilter do
 
   context 'cross-project / same-namespace complete reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.full_path}@#{commit.short_id}" }
@@ -147,7 +147,7 @@ describe Banzai::Filter::CommitReferenceFilter do
 
   context 'cross-project shorthand reference' do
     let(:namespace) { create(:namespace) }
-    let(:project)   { create(:empty_project, namespace: namespace) }
+    let(:project)   { create(:project, namespace: namespace) }
     let(:project2)  { create(:project, :public, :repository, namespace: namespace) }
     let(:commit)    { project2.commit }
     let(:reference) { "#{project2.full_path}@#{commit.short_id}" }

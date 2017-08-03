@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Dashboard > User sorts todos' do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
   let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Banzai::Filter::AbstractReferenceFilter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   describe '#references_per_project' do
     it 'returns a Hash containing references grouped per project paths' do

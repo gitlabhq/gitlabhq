@@ -1,8 +1,8 @@
 require('spec_helper')
 
 describe ProjectsController do
-  let(:project) { create(:empty_project) }
-  let(:public_project) { create(:empty_project, :public) }
+  let(:project) { create(:project) }
+  let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -34,7 +34,7 @@ describe ProjectsController do
       end
 
       context "user does not have access to project" do
-        let(:private_project) { create(:empty_project, :private) }
+        let(:private_project) { create(:project, :private) }
 
         it "does not initialize notification setting" do
           get :show, namespace_id: private_project.namespace, id: private_project
@@ -199,7 +199,7 @@ describe ProjectsController do
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
 
       it 'expects an error creating the project' do
         expect(public_project_with_dot_atom).not_to be_valid
@@ -208,7 +208,7 @@ describe ProjectsController do
 
     context 'when the project is pending deletions' do
       it 'renders a 404 error' do
-        project = create(:empty_project, pending_delete: true)
+        project = create(:project, pending_delete: true)
         sign_in(user)
 
         get :show, namespace_id: project.namespace, id: project
@@ -219,7 +219,7 @@ describe ProjectsController do
 
     context "redirection from http://someproject.git" do
       it 'redirects to project page (format.html)' do
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
 
         get :show, namespace_id: project.namespace, id: project, format: :git
 
@@ -431,7 +431,7 @@ describe ProjectsController do
       end
 
       context 'when project not forked' do
-        let(:unforked_project) { create(:empty_project, namespace: user.namespace) }
+        let(:unforked_project) { create(:project, namespace: user.namespace) }
 
         it 'does nothing if project was not forked' do
           delete(:remove_fork,

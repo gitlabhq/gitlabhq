@@ -426,8 +426,6 @@ Here are some things to keep in mind regarding test performance:
 - `FactoryGirl.build(...)` and `.build_stubbed` are faster than `.create`.
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
-- Use `create(:empty_project)` instead of `create(:project)` when you don't need
-  the underlying Git repository. Filesystem operations are slow!
 - Don't mark a feature as requiring JavaScript (through `@javascript` in
   Spinach or `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!

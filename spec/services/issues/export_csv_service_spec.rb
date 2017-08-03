@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issues::ExportCsvService do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let!(:issue)  { create(:issue, project: project, author: user) }
   let(:subject) { described_class.new(Issue.all) }
 

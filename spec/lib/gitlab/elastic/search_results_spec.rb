@@ -77,8 +77,8 @@ describe Gitlab::Elastic::SearchResults do
   end
 
   describe 'confidential issues' do
-    let(:project_3) { create(:empty_project) }
-    let(:project_4) { create(:empty_project) }
+    let(:project_3) { create(:project) }
+    let(:project_4) { create(:project) }
     let(:limit_project_ids) { [project_1.id, project_2.id, project_3.id] }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }

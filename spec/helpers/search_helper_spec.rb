@@ -80,7 +80,7 @@ describe SearchHelper do
       end
 
       it "includes the user's projects" do
-        project = create(:empty_project, namespace: create(:namespace, owner: user))
+        project = create(:project, namespace: create(:namespace, owner: user))
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
@@ -98,6 +98,40 @@ describe SearchHelper do
           expect(search_autocomplete_opts("Files").size).to eq(1)
           expect(search_autocomplete_opts("Commits").size).to eq(1)
         end
+      end
+    end
+  end
+
+  describe 'search_filter_input_options' do
+    context 'project' do
+      before do
+        @project = create(:project, :repository)
+      end
+
+      it 'includes id with type' do
+        expect(search_filter_input_options('type')[:id]).to eq('filtered-search-type')
+      end
+
+      it 'includes project-id' do
+        expect(search_filter_input_options('')[:data]['project-id']).to eq(@project.id)
+      end
+
+      it 'includes project base-endpoint' do
+        expect(search_filter_input_options('')[:data]['base-endpoint']).to eq(project_path(@project))
+      end
+    end
+
+    context 'group' do
+      before do
+        @group = create(:group, name: 'group')
+      end
+
+      it 'does not includes project-id' do
+        expect(search_filter_input_options('')[:data]['project-id']).to eq(nil)
+      end
+
+      it 'includes group base-endpoint' do
+        expect(search_filter_input_options('')[:data]['base-endpoint']).to eq("/groups#{group_path(@group)}")
       end
     end
   end

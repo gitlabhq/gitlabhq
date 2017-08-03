@@ -64,7 +64,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
 
     context 'visibility checks' do
       it 'shows wiki for guests' do
-        project = create :empty_project, :public
+        project = create :project, :public
         guest = create :user
         project.add_guest(guest)
 
@@ -125,7 +125,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
   end
 
   describe 'search for blobs in non-default branch' do
-    let(:project) { create(:project, :public, :repository_private) }
+    let(:project) { create(:project, :public, :repository, :repository_private) }
     let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
     subject(:blobs) { result.objects('blobs') }

@@ -560,8 +560,8 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporter]
@@ -997,7 +997,7 @@ describe API::MergeRequests do
     end
 
     it 'handles external issues' do
-      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      jira_project = create(:jira_project, :public, :repository, name: 'JIR_EXT1')
       ext_issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
       issue = create(:issue, project: jira_project)
       description = "Closes #{ext_issue.to_reference(jira_project)}\ncloses #{issue.to_reference}"
@@ -1019,7 +1019,7 @@ describe API::MergeRequests do
     end
 
     it 'returns 403 if the user has no access to the merge request' do
-      project = create(:empty_project, :private)
+      project = create(:project, :private)
       merge_request = create(:merge_request, :simple, source_project: project)
       guest = create(:user)
       project.team << [guest, :guest]

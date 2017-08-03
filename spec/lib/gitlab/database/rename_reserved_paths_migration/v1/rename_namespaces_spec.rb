@@ -187,7 +187,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
     end
 
     it 'invalidates the markdown cache of related projects' do
-      project = create(:empty_project, namespace: namespace, path: "the-path-project")
+      project = create(:project, namespace: namespace, path: "the-path-project")
 
       expect(subject).to receive(:remove_cached_html_for_projects).with([project.id])
 

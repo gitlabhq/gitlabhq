@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::IssueFormatter do
   let(:client) { double }
-  let!(:project) { create(:empty_project, namespace: create(:namespace, path: 'octocat')) }
+  let!(:project) { create(:project, namespace: create(:namespace, path: 'octocat')) }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }

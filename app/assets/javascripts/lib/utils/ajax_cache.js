@@ -6,6 +6,10 @@ class AjaxCache extends Cache {
     this.pendingRequests = { };
   }
 
+  override(endpoint, data) {
+    this.internalStorage[endpoint] = data;
+  }
+
   retrieve(endpoint, forceRetrieve) {
     if (this.hasData(endpoint) && !forceRetrieve) {
       return Promise.resolve(this.get(endpoint));

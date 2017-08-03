@@ -450,7 +450,7 @@ describe Notify do
     end
 
     describe 'project was moved' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:user) { create(:user) }
       subject { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
@@ -468,7 +468,7 @@ describe Notify do
     describe 'project access requested' do
       context 'for a project in a user namespace' do
         let(:project) do
-          create(:empty_project, :public, :access_requestable) do |project|
+          create(:project, :public, :access_requestable) do |project|
             project.team << [project.owner, :master, project.owner]
           end
         end
@@ -499,7 +499,7 @@ describe Notify do
       context 'for a project in a group' do
         let(:group_owner) { create(:user) }
         let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
-        let(:project) { create(:empty_project, :public, :access_requestable, namespace: group) }
+        let(:project) { create(:project, :public, :access_requestable, namespace: group) }
         let(:user) { create(:user) }
         let(:project_member) do
           project.request_access(user)
@@ -525,7 +525,7 @@ describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:empty_project, :public, :access_requestable) }
+      let(:project) { create(:project, :public, :access_requestable) }
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
@@ -546,7 +546,7 @@ describe Notify do
 
     describe 'project access changed' do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
-      let(:project) { create(:empty_project, :public, :access_requestable, namespace: owner.namespace) }
+      let(:project) { create(:project, :public, :access_requestable, namespace: owner.namespace) }
       let(:user) { create(:user) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { described_class.member_access_granted_email('project', project_member.id) }
@@ -576,7 +576,7 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
@@ -596,7 +596,7 @@ describe Notify do
     end
 
     describe 'project invitation accepted' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:invited_user) { create(:user, name: 'invited user') }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
@@ -621,7 +621,7 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
@@ -1370,7 +1370,7 @@ describe Notify do
   end
 
   describe 'HTML emails setting' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
     let(:multipart_mail) { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 

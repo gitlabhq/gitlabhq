@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Issues csv' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
   let(:idea_label) { create(:label, project: project, title: 'Idea') }
   let(:feature_label) { create(:label, project: project, title: 'Feature') }

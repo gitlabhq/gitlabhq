@@ -5,7 +5,7 @@ describe RepositoryUpdateMirrorWorker do
 
   describe '#perform' do
     context 'with status none' do
-      let(:project) { create(:empty_project, :mirror, :import_scheduled) }
+      let(:project) { create(:project, :mirror, :import_scheduled) }
 
       it 'sets status as finished when update mirror service executes successfully' do
         expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)

@@ -4,7 +4,7 @@ describe MattermostSlashCommandsService do
   it_behaves_like "chat slash commands service"
 
   context 'Mattermost API' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:service) { project.build_mattermost_slash_commands_service }
     let(:user) { create(:user) }
 

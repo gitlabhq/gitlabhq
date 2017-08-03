@@ -42,7 +42,7 @@ describe JoinedGroupsFinder do
 
       context 'if profile visitor is in one of the private group projects' do
         before do
-          project = create(:empty_project, :private, group: private_group, name: 'B', path: 'B')
+          project = create(:project, :private, group: private_group, name: 'B', path: 'B')
           project.add_user(profile_visitor, Gitlab::Access::DEVELOPER)
         end
 

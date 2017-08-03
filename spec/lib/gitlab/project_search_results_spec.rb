@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::ProjectSearchResults do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
@@ -100,14 +100,14 @@ describe Gitlab::ProjectSearchResults do
   end
 
   describe 'wiki search' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:wiki) { build(:project_wiki, project: project) }
     let!(:wiki_page) { wiki.create_page('Title', 'Content') }
 
     subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
 
     context 'when wiki is disabled' do
-      let(:project) { create(:empty_project, :public, :wiki_disabled) }
+      let(:project) { create(:project, :public, :wiki_disabled) }
 
       it 'hides wiki blobs from members' do
         project.add_reporter(user)
@@ -121,7 +121,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     context 'when wiki is internal' do
-      let(:project) { create(:empty_project, :public, :wiki_private) }
+      let(:project) { create(:project, :public, :wiki_private) }
 
       it 'finds wiki blobs for guest' do
         project.add_guest(user)
@@ -154,7 +154,7 @@ describe Gitlab::ProjectSearchResults do
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
     let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
@@ -226,7 +226,7 @@ describe Gitlab::ProjectSearchResults do
 
   describe 'notes search' do
     it 'lists notes' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       note = create(:note, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -235,7 +235,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it "doesn't list issue notes when access is restricted" do
-      project = create(:empty_project, :public, :issues_private)
+      project = create(:project, :public, :issues_private)
       note = create(:note_on_issue, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -244,7 +244,7 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it "doesn't list merge_request notes when access is restricted" do
-      project = create(:empty_project, :public, :merge_requests_private)
+      project = create(:project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       results = described_class.new(user, project, note.note)

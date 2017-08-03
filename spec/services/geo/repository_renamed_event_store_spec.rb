@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::RepositoryRenamedEventStore do
-  let(:project) { create(:empty_project, path: 'bar') }
+  let(:project) { create(:project, path: 'bar') }
   let(:old_path) { 'foo' }
   let(:old_path_with_namespace) { "#{project.namespace.full_path}/foo" }
 

@@ -12,7 +12,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
   let(:namespace) { create(:namespace, name: "email") }
 
   context 'service desk is enabled for the project' do
-    let(:project) { create(:empty_project, :public, namespace: namespace, path: 'test', service_desk_enabled: true) }
+    let(:project) { create(:project, :public, namespace: namespace, path: 'test', service_desk_enabled: true) }
 
     before do
       allow(Notify).to receive(:service_desk_thank_you_email)
@@ -85,7 +85,7 @@ describe Gitlab::Email::Handler::EE::ServiceDeskHandler do
   end
 
   context 'service desk is disabled for the project' do
-    let(:project) { create(:empty_project, :public, namespace: namespace, path: 'test') }
+    let(:project) { create(:project, :public, namespace: namespace, path: 'test') }
 
     it 'bounces the email' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::ProcessingError)

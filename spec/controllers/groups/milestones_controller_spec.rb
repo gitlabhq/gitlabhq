@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Groups::MilestonesController do
   let(:group) { create(:group) }
-  let!(:project) { create(:empty_project, group: group) }
-  let!(:project2) { create(:empty_project, group: group) }
+  let!(:project) { create(:project, group: group) }
+  let!(:project2) { create(:project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
   let(:milestone) do
