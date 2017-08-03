@@ -133,6 +133,12 @@ module TestEnv
   def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+
+    if gitaly_dir_stale?(gitaly_dir)
+      puts "rm -rf #{gitaly_dir}"
+      FileUtils.rm_rf(gitaly_dir) 
+    end
+
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
@@ -141,6 +147,11 @@ module TestEnv
     end
 
     start_gitaly(gitaly_dir)
+  end
+
+  def gitaly_dir_stale?(dir)
+    gitaly_executable = File.join(dir, 'gitaly')
+    !File.exist?(gitaly_executable) || (File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION')))
   end
 
   def start_gitaly(gitaly_dir)
