@@ -1,11 +1,10 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
-<<<<<<< HEAD
+  include Storage::LegacyProjectWiki
+
+  # EE only modules
   include Elastic::WikiRepositoriesSearch
   include Gitlab::CurrentSettings
-=======
->>>>>>> ce/master
-  include Storage::LegacyProjectWiki
 
   MARKUPS = {
     'Markdown' => :markdown,

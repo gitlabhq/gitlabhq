@@ -1,10 +1,7 @@
 module MergeRequests
   class BaseService < ::IssuableBaseService
-<<<<<<< HEAD
     prepend EE::MergeRequests::BaseService
 
-=======
->>>>>>> ce/master
     def create_note(merge_request, state = merge_request.state)
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end

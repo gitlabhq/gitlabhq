@@ -18,12 +18,9 @@ class Project < ActiveRecord::Base
   include SelectForProjectAuthorization
   include Routable
   include Storage::LegacyProject
-<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
-=======
->>>>>>> ce/master
 
   extend Gitlab::ConfigHelper
 

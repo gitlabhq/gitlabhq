@@ -131,13 +131,8 @@ class GitPushService < BaseService
     mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
-<<<<<<< HEAD
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push, mirror_update: mirror_update)
-    
-=======
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
 
->>>>>>> ce/master
     SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
