@@ -77,8 +77,8 @@ describe Geo::FileDownloadDispatchWorker do
 
     context 'when node has namespace restrictions' do
       let(:group_1)    { create(:group) }
-      let!(:project_1) { create(:empty_project, group: group_1) }
-      let!(:project_2) { create(:empty_project) }
+      let!(:project_1) { create(:project, group: group_1) }
+      let!(:project_2) { create(:project) }
 
       before do
         allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)

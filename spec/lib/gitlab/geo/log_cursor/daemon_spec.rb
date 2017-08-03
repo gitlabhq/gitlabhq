@@ -112,7 +112,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
       let(:geo_node) { create(:geo_node, :current) }
       let(:group_1) { create(:group) }
       let(:group_2) { create(:group) }
-      let(:project) { create(:empty_project, group: group_1) }
+      let(:project) { create(:project, group: group_1) }
       let(:repository_updated_event) { create(:geo_repository_updated_event, project: project) }
       let(:event_log) { create(:geo_event_log, repository_updated_event: repository_updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }

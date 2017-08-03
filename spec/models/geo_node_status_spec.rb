@@ -3,10 +3,10 @@ require 'spec_helper'
 describe GeoNodeStatus do
   let!(:geo_node) { create(:geo_node, :current) }
   let(:group)      { create(:group) }
-  let!(:project_1) { create(:empty_project, group: group) }
-  let!(:project_2) { create(:empty_project, group: group) }
-  let!(:project_3) { create(:empty_project) }
-  let!(:project_4) { create(:empty_project) }
+  let!(:project_1) { create(:project, group: group) }
+  let!(:project_2) { create(:project, group: group) }
+  let!(:project_3) { create(:project) }
+  let!(:project_4) { create(:project) }
 
   subject { described_class.new }
 

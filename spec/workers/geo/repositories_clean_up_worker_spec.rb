@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Geo::RepositoriesCleanUpWorker do
   let!(:geo_node)  { create(:geo_node) }
   let(:group)      { create(:group) }
-  let!(:project_1) { create(:empty_project, group: group) }
-  let!(:project_2) { create(:empty_project) }
+  let!(:project_1) { create(:project, group: group) }
+  let!(:project_2) { create(:project) }
 
   describe '#perform' do
     before do

@@ -329,9 +329,9 @@ describe GeoNode, type: :model do
         group_1 = create(:group)
         group_2 = create(:group)
         nested_group_1 = create(:group, parent: group_1)
-        project_1 = create(:empty_project, group: group_1)
-        project_2 = create(:empty_project, group: nested_group_1)
-        project_3 = create(:empty_project, group: group_2)
+        project_1 = create(:project, group: group_1)
+        project_2 = create(:project, group: nested_group_1)
+        project_3 = create(:project, group: group_2)
 
         node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
 
