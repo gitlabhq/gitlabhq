@@ -23,7 +23,7 @@ import './mock_u2f_device';
       var deviceResponse, inProgressMessage, registeredMessage, setupButton;
       setupButton = this.container.find("#js-setup-u2f-device");
       expect(setupButton.text()).toBe('Setup new U2F device');
-      setupButton.trigger('click');
+      setupButton.click;
       inProgressMessage = this.container.children("p");
       expect(inProgressMessage.text()).toContain("Trying to communicate with your device");
       this.u2fDevice.respondToRegisterRequest({
@@ -38,7 +38,7 @@ import './mock_u2f_device';
       it("doesn't allow the same device to be registered twice (for the same user", function() {
         var errorMessage, setupButton;
         setupButton = this.container.find("#js-setup-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToRegisterRequest({
           errorCode: 4
         });
@@ -48,7 +48,7 @@ import './mock_u2f_device';
       it("displays an error message for other errors", function() {
         var errorMessage, setupButton;
         setupButton = this.container.find("#js-setup-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToRegisterRequest({
           errorCode: "error!"
         });
@@ -58,14 +58,14 @@ import './mock_u2f_device';
       return it("allows retrying registration after an error", function() {
         var registeredMessage, retryButton, setupButton;
         setupButton = this.container.find("#js-setup-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToRegisterRequest({
           errorCode: "error!"
         });
         retryButton = this.container.find("#U2FTryAgain");
-        retryButton.trigger('click');
+        retryButton.click;
         setupButton = this.container.find("#js-setup-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToRegisterRequest({
           deviceData: "this is data from the device"
         });

@@ -44,7 +44,7 @@ import './mock_u2f_device';
       it("displays an error message", function() {
         var errorMessage, setupButton;
         setupButton = this.container.find("#js-login-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToAuthenticateRequest({
           errorCode: "error!"
         });
@@ -54,14 +54,14 @@ import './mock_u2f_device';
       return it("allows retrying authentication after an error", function() {
         var retryButton, setupButton;
         setupButton = this.container.find("#js-login-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToAuthenticateRequest({
           errorCode: "error!"
         });
         retryButton = this.container.find("#js-u2f-try-again");
-        retryButton.trigger('click');
+        retryButton.click;
         setupButton = this.container.find("#js-login-u2f-device");
-        setupButton.trigger('click');
+        setupButton.click;
         this.u2fDevice.respondToAuthenticateRequest({
           deviceData: "this is data from the device"
         });

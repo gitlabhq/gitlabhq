@@ -80,7 +80,7 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows the new issue page', :js do
-      find('.new-project-item-select-button').trigger('click')
+      find('.new-project-item-select-button').click
       wait_for_requests
       find('.select2-results li').click
 

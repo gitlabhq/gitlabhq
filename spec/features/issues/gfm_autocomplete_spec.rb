@@ -19,7 +19,7 @@ feature 'GFM autocomplete', js: true do
 
     find('#issue-description').native.send_keys("@#{user.name[0...3]}")
 
-    find('.atwho-view .cur').trigger('click')
+    find('.atwho-view .cur').click
 
     click_button 'Save changes'
 

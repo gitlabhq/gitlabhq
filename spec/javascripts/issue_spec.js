@@ -128,7 +128,7 @@ describe('Issue', function() {
       });
 
       it(`${action}s the issue`, function() {
-        this.$triggeredButton.trigger('click');
+        this.$triggeredButton.click;
         this.issueStateDeferred.resolve({
           id: 34
         });
@@ -143,7 +143,7 @@ describe('Issue', function() {
       });
 
       it(`fails to ${action} the issue if saved:false`, function() {
-        this.$triggeredButton.trigger('click');
+        this.$triggeredButton.click;
         this.issueStateDeferred.resolve({
           saved: false
         });
@@ -159,7 +159,7 @@ describe('Issue', function() {
       });
 
       it(`fails to ${action} the issue if HTTP error occurs`, function() {
-        this.$triggeredButton.trigger('click');
+        this.$triggeredButton.click;
         this.issueStateDeferred.reject();
         this.canCreateBranchDeferred.resolve({
           can_create_branch: isIssueInitiallyOpen
@@ -173,7 +173,7 @@ describe('Issue', function() {
       });
 
       it('disables the new branch button if Ajax call fails', function() {
-        this.$triggeredButton.trigger('click');
+        this.$triggeredButton.click;
         this.issueStateDeferred.reject();
         this.canCreateBranchDeferred.reject();
 
@@ -184,7 +184,7 @@ describe('Issue', function() {
         Issue.$btnNewBranch = $();
         this.canCreateBranchDeferred = null;
 
-        this.$triggeredButton.trigger('click');
+        this.$triggeredButton.click;
         this.issueStateDeferred.reject();
       });
     });

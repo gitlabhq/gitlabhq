@@ -84,7 +84,7 @@ describe('Merge request notes', () => {
 
         spyOnEvent('.note:last .js-note-edit', 'click');
 
-        $('.js-discussion-reply-button').trigger('click');
+        $('.js-discussion-reply-button').click;
 
         setTimeout(() => {
           $('.js-note-text').trigger(upArrowEvent);

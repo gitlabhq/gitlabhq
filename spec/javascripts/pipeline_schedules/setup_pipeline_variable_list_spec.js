@@ -92,7 +92,7 @@ describe('Pipeline Variable List', () => {
     });
 
     it('should remove the row when clicking the remove button', () => {
-      $markup.find('.js-row-remove-button').trigger('click');
+      $markup.find('.js-row-remove-button').click;
 
       expect($markup.find('.js-row').length).toBe(0);
     });

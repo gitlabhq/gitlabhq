@@ -168,7 +168,7 @@ describe('IntegrationSettingsForm', () => {
       expect($flashAction).toBeDefined();
 
       spyOn(integrationSettingsForm.$form, 'submit');
-      $flashAction.trigger('click');
+      $flashAction.click;
       expect(integrationSettingsForm.$form.submit).toHaveBeenCalled();
     });
 

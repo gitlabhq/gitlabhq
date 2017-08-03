@@ -15,7 +15,7 @@ feature 'Projects > Wiki > User creates wiki page', :js do
 
     context 'when wiki is empty' do
       before do
-        find('.shortcuts-wiki').trigger('click')
+        find('.shortcuts-wiki').click
       end
 
       scenario 'commit message field has value "Create home"' do
@@ -70,7 +70,7 @@ feature 'Projects > Wiki > User creates wiki page', :js do
     context 'when wiki is not empty' do
       before do
         WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-        find('.shortcuts-wiki').trigger('click')
+        find('.shortcuts-wiki').click
       end
 
       context 'via the "new wiki page" page' do
@@ -161,7 +161,7 @@ feature 'Projects > Wiki > User creates wiki page', :js do
 
     context 'when wiki is empty' do
       before do
-        find('.shortcuts-wiki').trigger('click')
+        find('.shortcuts-wiki').click
       end
 
       scenario 'commit message field has value "Create home"' do
@@ -183,7 +183,7 @@ feature 'Projects > Wiki > User creates wiki page', :js do
     context 'when wiki is not empty' do
       before do
         WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
-        find('.shortcuts-wiki').trigger('click')
+        find('.shortcuts-wiki').click
       end
 
       scenario 'via the "new wiki page" page' do
