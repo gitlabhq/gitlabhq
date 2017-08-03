@@ -5,7 +5,15 @@ module Projects
     end
 
     def milestones
-      @project.milestones.active.reorder(due_date: :asc, title: :asc).select([:iid, :title])
+      finder_params = {
+        project_ids: [@project.id],
+        state: :active,
+        order: { due_date: :asc, title: :asc }
+      }
+
+      finder_params[:group_ids] = [@project.group.id] if @project.group
+
+      MilestonesFinder.new(finder_params).execute.select([:iid, :title])
     end
 
     def merge_requests
