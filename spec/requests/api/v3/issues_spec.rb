@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues do
-  include EmailHelpers
-
+describe API::V3::Issues, :mailer do
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }

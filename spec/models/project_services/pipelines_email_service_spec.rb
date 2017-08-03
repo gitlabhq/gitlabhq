@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe PipelinesEmailService do
-  include EmailHelpers
-
+describe PipelinesEmailService, :mailer do
   let(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit('master').sha)
   end
@@ -12,10 +10,6 @@ describe PipelinesEmailService do
 
   let(:data) do
     Gitlab::DataBuilder::Pipeline.build(pipeline)
-  end
-
-  before do
-    reset_delivered_emails!
   end
 
   describe 'Validations' do

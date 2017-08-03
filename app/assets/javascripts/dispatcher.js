@@ -84,6 +84,8 @@ import initIssuableSidebar from './init_issuable_sidebar';
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
+import initGeoInfoModal from './init_geo_info_modal';
+import initGroupAnalytics from './init_group_analytics';
 
 (function() {
   var Dispatcher;
@@ -121,6 +123,19 @@ import AuditLogs from './audit_logs';
         });
       });
 
+      function initBlobEE() {
+        const dataEl = document.getElementById('js-file-lock');
+
+        if (dataEl) {
+          const {
+            toggle_path,
+            path,
+           } = JSON.parse(dataEl.innerHTML);
+
+          PathLocks.init(toggle_path, path);
+        }
+      }
+
       function initBlob() {
         new LineHighlighter();
 
@@ -146,6 +161,8 @@ import AuditLogs from './audit_logs';
           actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
         })
           .init();
+
+        initBlobEE();
       }
 
       const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
@@ -352,8 +369,13 @@ import AuditLogs from './audit_logs';
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
+<<<<<<< HEAD
         case 'projects:edit':
           new UsersSelect();
+=======
+        case 'projects:imports:show':
+          new ProjectImport();
+>>>>>>> upstream/master
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -364,8 +386,11 @@ import AuditLogs from './audit_logs';
           if ($('.blob-viewer').length) {
             new BlobViewer();
           }
+          initGeoInfoModal();
           break;
         case 'projects:edit':
+          new UsersSelect();
+          new GroupsSelect();
           setupProjectEdit();
           break;
         case 'projects:imports:show':
@@ -541,6 +566,23 @@ import AuditLogs from './audit_logs';
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
           new gl.DueDateSelectors();
+          break;
+        case 'admin:licenses:new':
+          const $licenseFile = $('.license-file');
+          const $licenseKey = $('.license-key');
+
+          const showLicenseType = () => {
+            const $checkedFile = $('input[name="license_type"]:checked').val() === 'file';
+
+            $licenseFile.toggle($checkedFile);
+            $licenseKey.toggle(!$checkedFile);
+          };
+
+          $('input[name="license_type"]').on('change', showLicenseType);
+          showLicenseType();
+          break;
+        case 'groups:analytics:show':
+          initGroupAnalytics();
           break;
       }
       switch (path.first()) {

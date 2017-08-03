@@ -38,21 +38,3 @@
 
   .form-actions
     = f.submit 'Upload license', class: 'btn btn-primary'
-
-:javascript
-  function showLicenseType() {
-    if ($("input[name='license_type']:checked").val() == "file")
-    {
-      $(".license-file").show();
-      $(".license-key").hide();
-    }
-    else
-    {
-      $(".license-file").hide();
-      $(".license-key").show();
-    }
-  }
-
-  $("input[name='license_type']").click(showLicenseType);
-
-  showLicenseType();
