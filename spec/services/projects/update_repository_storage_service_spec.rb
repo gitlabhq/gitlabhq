@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateRepositoryStorageService, services: true do
+describe Projects::UpdateRepositoryStorageService do
   subject { described_class.new(project) }
 
   describe "#execute" do
@@ -26,19 +26,19 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       FileUtils.rm_rf('tmp/tests/storage_b')
     end
 
-    context 'without wiki' do
-      let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
+    context 'without wiki', skip_gitaly_mock: true do
+      let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
             .and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
-              project.path_with_namespace,
-              "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}")
+              project.disk_path,
+              "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           subject.execute('b')
 
@@ -50,7 +50,7 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
             .and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
@@ -62,8 +62,8 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       end
     end
 
-    context 'with wiki' do
-      let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
+    context 'with wiki', skip_gitaly_mock: true do
+      let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
 
       before do
         project.create_wiki
@@ -72,22 +72,22 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       context 'when the move succeeds' do
         it 'moves the repository and its wiki to the new storage and unmarks the repository as read only' do
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
             .and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
-              project.path_with_namespace,
-              "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}")
+              project.disk_path,
+              "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', "#{project.disk_path}.wiki", 'tmp/tests/storage_b')
             .and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
               'tmp/tests/storage_a',
-              "#{project.path_with_namespace}.wiki",
-              "#{project.path_with_namespace}+#{project.id}+moved+#{time.to_i}.wiki")
+              "#{project.disk_path}.wiki",
+              "#{project.disk_path}+#{project.id}+moved+#{time.to_i}.wiki")
 
           subject.execute('b')
 
@@ -99,10 +99,10 @@ describe Projects::UpdateRepositoryStorageService, services: true do
       context 'when the move of the wiki fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', project.path_with_namespace, 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', project.disk_path, 'tmp/tests/storage_b')
             .and_return(true)
           expect(gitlab_shell).to receive(:mv_storage)
-            .with('tmp/tests/storage_a', "#{project.path_with_namespace}.wiki", 'tmp/tests/storage_b')
+            .with('tmp/tests/storage_a', "#{project.disk_path}.wiki", 'tmp/tests/storage_b')
             .and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 

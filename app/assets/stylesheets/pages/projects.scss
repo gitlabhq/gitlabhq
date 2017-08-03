@@ -290,6 +290,8 @@
 }
 
 .project-repo-buttons {
+  @include new-style-dropdown;
+
   .project-action-button .dropdown-menu {
     max-height: 250px;
     overflow-y: auto;
@@ -727,6 +729,7 @@ a.allowed-to-push {
   background-color: transparent;
   border: 0;
   text-align: left;
+  text-overflow: ellipsis;
 }
 
 .protected-branches-list,
@@ -770,14 +773,17 @@ a.allowed-to-push {
   @extend .btn.disabled;
 }
 
+.protected-branches-list,
+.protected-tags-list {
+  .flash-container {
+    padding: 0;
+  }
+}
+
 .protected-tags-list {
   .dropdown-menu-toggle {
     width: 100%;
     max-width: 300px;
-  }
-
-  .flash-container {
-    padding: 0;
   }
 }
 

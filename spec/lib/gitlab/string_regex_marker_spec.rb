@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::StringRegexMarker, lib: true do
+describe Gitlab::StringRegexMarker do
   describe '#mark' do
     let(:raw)  { %{"name": "AFNetworking"} }
     let(:rich) { %{<span class="key">"name"</span><span class="punctuation">: </span><span class="value">"AFNetworking"</span>}.html_safe }

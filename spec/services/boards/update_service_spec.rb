@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Boards::UpdateService, services: true do
+describe Boards::UpdateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:board)  { create(:board, project: project, name: 'Backend') }
 
     it "updates board's name" do

@@ -6,19 +6,40 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-15 21:59-0500\n"
+"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-07-05 02:56-0400\n"
+"Language-Team: Portuguese (Brazil) (https://translate.zanata.org/project/view/GitLab)\n"
+"PO-Revision-Date: 2017-07-14 01:17-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
-"Language-Team: Portuguese (Brazil)\n"
 "Language: pt-BR\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural ""
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] ""
+"%s commit adicional foi omitido para prevenir problemas de performance."
+msgstr[1] ""
+"%s commits adicionais foram omitidos para prevenir problemas de performance."
+
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d commit"
+msgstr[1] "%d commits"
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} fez commit %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 pipeline"
+msgstr[1] "%d pipelines"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Uma coleção de gráficos sobre Integração Contínua"
 
 msgid "About auto deploy"
 msgstr "Sobre a implantação automática"
@@ -67,8 +88,23 @@ msgstr ""
 "implantação automática, selecione um modelo de Yaml do GitLab CI e registre "
 "suas mudanças. %{link_to_autodeploy_doc}"
 
+msgid "BranchSwitcherPlaceholder|Search branches"
+msgstr "BranchSwitcherPlaceholder|Procurar por branches"
+
+msgid "BranchSwitcherTitle|Switch branch"
+msgstr "BranchSwitcherTitle|Mudar de branch"
+
 msgid "Branches"
 msgstr "Branches"
+
+msgid "Browse Directory"
+msgstr "Navegar no Diretório"
+
+msgid "Browse File"
+msgstr "Pesquisar Arquivo"
+
+msgid "Browse Files"
+msgstr "Pesquisar Arquivos"
 
 msgid "Browse files"
 msgstr "Navegar pelos arquivos"
@@ -165,6 +201,9 @@ msgid_plural "Commits"
 msgstr[0] "Commit"
 msgstr[1] "Commits"
 
+msgid "Commit duration in minutes for last 30 commits"
+msgstr "Duração do commit em minutos para os últimos 30 commits"
+
 msgid "Commit message"
 msgstr "Mensagem de commit"
 
@@ -176,6 +215,9 @@ msgstr "Adicionar %{file_name}"
 
 msgid "Commits"
 msgstr "Commits"
+
+msgid "Commits feed"
+msgstr "Feed de commits"
 
 msgid "Commits|History"
 msgstr "Histórico"
@@ -201,6 +243,13 @@ msgstr "Copiar SHA do commit para a área de transferência"
 msgid "Create New Directory"
 msgstr "Criar Novo Diretório"
 
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr ""
+"Crie um token de acesso pessoal na sua conta para dar pull ou push via "
+"%{protocol}."
+
 msgid "Create directory"
 msgstr "Criar diretório"
 
@@ -218,6 +267,9 @@ msgstr "Fork"
 
 msgid "CreateTag|Tag"
 msgstr "Tag"
+
+msgid "CreateTokenToCloneLink|create a personal access token"
+msgstr "CreateTokenToCloneLink|criar um token de acesso pessoal"
 
 msgid "Cron Timezone"
 msgstr "Fuso horário do cron"
@@ -340,6 +392,9 @@ msgstr "Erro ao excluir o agendamento do pipeline"
 msgid "Files"
 msgstr "Arquivos"
 
+msgid "Filter by commit message"
+msgstr "Filtrar por mensagem de commit"
+
 msgid "Find by path"
 msgstr "Localizar por caminho"
 
@@ -387,6 +442,15 @@ msgstr "Padrão de intervalo"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Apresentando a Análise de Ciclo"
+
+msgid "Jobs for last month"
+msgstr "Jobs no último mês"
+
+msgid "Jobs for last week"
+msgstr "Jobs na última semana"
+
+msgid "Jobs for last year"
+msgstr "Jobs no último ano"
 
 msgid "LFSStatus|Disabled"
 msgstr "Desabilitado"
@@ -553,6 +617,21 @@ msgstr "Agendamento da Pipeline"
 msgid "Pipeline Schedules"
 msgstr "Agendamentos da Pipeline"
 
+msgid "PipelineCharts|Failed:"
+msgstr "PipelineCharts|Falhou:"
+
+msgid "PipelineCharts|Overall statistics"
+msgstr "PipelineCharts|Estatísticas gerais"
+
+msgid "PipelineCharts|Success ratio:"
+msgstr "PipelineCharts|Taxa de sucesso:"
+
+msgid "PipelineCharts|Successful:"
+msgstr "PipelineCharts|Sucesso:"
+
+msgid "PipelineCharts|Total:"
+msgstr "PipelineCharts|Total:"
+
 msgid "PipelineSchedules|Activated"
 msgstr "Ativado"
 
@@ -565,6 +644,12 @@ msgstr "Todos"
 msgid "PipelineSchedules|Inactive"
 msgstr "Inativo"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "PipelineSchedules|Chave da variável de entrada"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "PipelineSchedules|Valor da variável de entrada"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "Próxima Execução"
 
@@ -574,14 +659,32 @@ msgstr "Nenhum"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "Digite uma descrição curta para esta pipeline"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "PipelineSchedules|Remova a linha da variável"
+
 msgid "PipelineSchedules|Take ownership"
 msgstr "Tornar-se proprietário"
 
 msgid "PipelineSchedules|Target"
 msgstr "Destino"
 
+msgid "PipelineSchedules|Variables"
+msgstr "PipelineSchedules|Variáveis"
+
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "Personalizado"
+
+msgid "Pipelines"
+msgstr "Pipelines"
+
+msgid "Pipelines charts"
+msgstr "Gráficos de pipelines"
+
+msgid "Pipeline|all"
+msgstr "Pipeline|todos"
+
+msgid "Pipeline|success"
+msgstr "Pipeline|sucesso"
 
 msgid "Pipeline|with stage"
 msgstr "com etapa"
@@ -713,10 +816,10 @@ msgstr "Selecionar fuso horário"
 msgid "Select target branch"
 msgstr "Selecionar branch de destino"
 
-msgid "Set a password on your account to pull or push via %{protocol}"
+msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 "Defina uma senha para sua conta para aceitar ou entregar código via "
-"%{protocol}"
+"%{protocol}."
 
 msgid "Set up CI"
 msgstr "Configurar CI"
@@ -1032,8 +1135,14 @@ msgstr "Enviar Novo Arquivo"
 msgid "Upload file"
 msgstr "Enviar arquivo"
 
+msgid "UploadLink|click to upload"
+msgstr "UploadLink|clique para fazer upload"
+
 msgid "Use your global notification setting"
 msgstr "Utilizar configuração de notificação global"
+
+msgid "View open merge request"
+msgstr "Ver merge request aberto"
 
 msgid "VisibilityLevel|Internal"
 msgstr "Interno"
@@ -1052,6 +1161,15 @@ msgstr "Esta etapa não possui dados suficientes para exibição."
 
 msgid "Withdraw Access Request"
 msgstr "Remover Requisição de Acesso"
+
+msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr ""
+"Você vai remover %{group_name}.\n"
+"Grupos removidos NÃO PODEM ser restaurados!\n"
+"Você está ABSOLUTAMENTE certo?"
 
 msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"

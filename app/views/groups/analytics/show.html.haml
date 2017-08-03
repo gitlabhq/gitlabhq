@@ -121,24 +121,10 @@
           %td= @stats[:total_events][index]
 
 
-
-- [:push, :issues_closed, :merge_requests_created].each do |scope|
-  :javascript
-    var data = {
-      labels : #{@users.map(&:name).to_json},
-      datasets : [
-        {
-          fillColor : "rgba(220,220,220,0.5)",
-          strokeColor : "rgba(220,220,220,1)",
-          barStrokeWidth: 1,
-          barValueSpacing: 1,
-          barDatasetSpacing: 1,
-          data : #{@stats[scope].to_json}
-        }
-      ]
-    }
-    var ctx = $("##{scope}").get(0).getContext("2d");
-    new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
-
-:javascript
-  $("#event-stats").tablesorter();
+%script#js-analytics-data{ type: "application/json" }
+  - data = {}
+  - data[:labels] = @users.map(&:name)
+  - [:push, :issues_closed, :merge_requests_created].each do |scope|
+    - data[scope] = {}
+    - data[scope][:data] = @stats[scope]
+  = data.to_json.html_safe

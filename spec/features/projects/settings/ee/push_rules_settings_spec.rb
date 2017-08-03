@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe 'Project settings > [EE] repository', feature: true do
-  include Select2Helper
-
+describe 'Project settings > [EE] repository' do
   let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo) }
 
@@ -41,26 +39,6 @@ describe 'Project settings > [EE] repository', feature: true do
 
       it 'hides push rule settings' do
         expect(page).not_to have_content('Push Rules')
-      end
-    end
-  end
-
-  describe 'mirror settings', :js do
-    let(:user2) { create(:user) }
-
-    before do
-      project.team << [user2, :master]
-
-      visit project_settings_repository_path(project)
-    end
-
-    it 'sets mirror user' do
-      page.within('.project-mirror-settings') do
-        select2(user2.id, from: '#project_mirror_user_id')
-
-        click_button('Save changes')
-
-        expect(find('.select2-chosen')).to have_content(user2.name)
       end
     end
   end

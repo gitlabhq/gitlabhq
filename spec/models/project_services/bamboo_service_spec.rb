@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe BambooService, :use_clean_rails_memory_store_caching, models: true do
+describe BambooService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   let(:bamboo_url) { 'http://gitlab.com/bamboo' }
 
   subject(:service) do
     described_class.create(
-      project: create(:empty_project),
+      project: create(:project),
       properties: {
         bamboo_url: bamboo_url,
         username: 'mic',

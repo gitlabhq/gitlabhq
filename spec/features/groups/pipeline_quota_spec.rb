@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Groups > Pipeline Quota', feature: true do
+feature 'Groups > Pipeline Quota' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
-  let!(:project) { create(:empty_project, namespace: group, shared_runners_enabled: true) }
+  let!(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
 
   before do
     group.add_owner(user)
@@ -33,7 +33,7 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   context 'with no projects using shared runners' do
     let(:group) { create(:group, :with_not_used_build_minutes_limit) }
-    let!(:project) { create(:empty_project, namespace: group, shared_runners_enabled: false) }
+    let!(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
 
     it 'is not linked within the group settings dropdown' do
       visit edit_group_path(group)
@@ -77,7 +77,7 @@ feature 'Groups > Pipeline Quota', feature: true do
 
   context 'minutes over quota' do
     let(:group) { create(:group, :with_used_build_minutes_limit) }
-    let!(:other_project) { create(:empty_project, namespace: group, shared_runners_enabled: false) }
+    let!(:other_project) { create(:project, namespace: group, shared_runners_enabled: false) }
 
     it 'is linked within the group settings tab' do
       visit edit_group_path(group)

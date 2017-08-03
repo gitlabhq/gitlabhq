@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequestPresenter do
   let(:resource) { create :merge_request, source_project: project }
-  let(:project) { create :empty_project }
+  let(:project) { create :project }
   let(:user) { create(:user) }
 
   describe '#ci_status' do
@@ -71,7 +71,7 @@ describe MergeRequestPresenter do
   end
 
   describe '#conflict_resolution_path' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:user) { create :user }
     let(:presenter) { described_class.new(resource, current_user: user) }
     let(:path) { presenter.conflict_resolution_path }
@@ -105,7 +105,7 @@ describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let(:project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
     let(:issue_a) { create(:issue, project: project) }
     let(:issue_b) { create(:issue, project: project) }
 
@@ -392,7 +392,7 @@ describe MergeRequestPresenter do
     before do
       allow(resource).to receive(:source_branch_exists?) { source_branch_exists }
 
-      allow_any_instance_of(::Gitlab::UserAccess)
+      allow_any_instance_of(Gitlab::UserAccess::RequestCacheExtension)
         .to receive(:can_push_to_branch?)
         .with(resource.source_branch)
         .and_return(can_push_to_branch)
@@ -462,7 +462,7 @@ describe MergeRequestPresenter do
       allow(resource).to receive(:rebase_in_progress?) { rebase_in_progress }
       allow(resource).to receive(:should_be_rebased?) { should_be_rebased }
 
-      allow_any_instance_of(::Gitlab::UserAccess)
+      allow_any_instance_of(Gitlab::UserAccess::RequestCacheExtension)
         .to receive(:can_push_to_branch?)
         .with(resource.source_branch)
         .and_return(can_push_to_branch)

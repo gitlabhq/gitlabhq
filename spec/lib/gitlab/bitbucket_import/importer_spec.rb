@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BitbucketImport::Importer, lib: true do
+describe Gitlab::BitbucketImport::Importer do
   include ImportSpecHelper
 
   before do
@@ -52,13 +52,13 @@ describe Gitlab::BitbucketImport::Importer, lib: true do
 
   let(:project) do
     create(
-      :empty_project,
+      :project,
       import_source: project_identifier,
       import_data: ProjectImportData.new(credentials: data)
     )
   end
 
-  let(:importer) { Gitlab::BitbucketImport::Importer.new(project) }
+  let(:importer) { described_class.new(project) }
 
   let(:issues_statuses_sample_data) do
     {

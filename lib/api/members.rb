@@ -102,6 +102,7 @@ module API
           # Ensure the member exists
           source.members.find_by!(user_id: params[:user_id])
 
+          status 204
           ::Members::DestroyService.new(source, current_user, declared_params).execute
         end
       end

@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe SlackSlashCommandsService, :models do
+describe SlackSlashCommandsService do
   it_behaves_like "chat slash commands service"
 
   describe '#trigger' do
     context 'when an auth url is generated' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:params) do
         {
           team_domain: 'http://domain.tld',

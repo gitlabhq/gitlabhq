@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::ProjectRegistry, models: true do
+describe Geo::ProjectRegistry do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
   end
@@ -10,7 +10,7 @@ describe Geo::ProjectRegistry, models: true do
   end
 
   describe '.synced' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:synced_at) { Time.now }
 
     it 'does not return dirty projects' do

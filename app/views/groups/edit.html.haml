@@ -7,7 +7,7 @@
       = form_errors(@group)
       = render 'shared/group_form', f: f
 
-      = render 'repository_size_limit_setting', f: f
+      = render 'shared/repository_size_limit_setting', form: f, type: :group
 
       .form-group
         .col-sm-offset-2.col-sm-10

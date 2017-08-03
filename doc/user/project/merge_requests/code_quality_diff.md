@@ -4,9 +4,12 @@
 
 ## Overview
 
-If you are using [GitLab CI][ci], you can analyze your source code quality using
-the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
-can show the Code Climate report right in the merge request widget area.
+If you are using [GitLab CI/CD][ci], you can analyze your source code quality
+using GitLab Code Quality. Code Quality uses [Code Climate Engines][cc], which are
+free and open source. Code Quality doesn’t require a Code Climate subscription.
+
+Going a step further, GitLab Code Quality can show the Code Climate report right
+in the merge request widget area:
 
 ![Code Quality Widget][quality-widget]
 

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe "Internal Project Snippets Access", feature: true  do
+describe "Internal Project Snippets Access"  do
   include AccessMatchers
 
-  let(:project) { create(:empty_project, :internal) }
+  let(:project) { create(:project, :internal) }
 
   let(:internal_snippet) { create(:project_snippet, :internal, project: project, author: project.owner) }
   let(:private_snippet)  { create(:project_snippet, :private,  project: project, author: project.owner) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Saml::User, lib: true do
+describe Gitlab::Saml::User do
   let(:saml_user) { described_class.new(auth_hash) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }

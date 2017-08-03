@@ -1,8 +1,8 @@
 require('spec_helper')
 
 describe ProjectsController do
-  let(:project) { create(:empty_project) }
-  let(:public_project) { create(:empty_project, :public) }
+  let(:project) { create(:project) }
+  let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -34,7 +34,7 @@ describe ProjectsController do
       end
 
       context "user does not have access to project" do
-        let(:private_project) { create(:empty_project, :private) }
+        let(:private_project) { create(:project, :private) }
 
         it "does not initialize notification setting" do
           get :show, namespace_id: private_project.namespace, id: private_project
@@ -199,7 +199,7 @@ describe ProjectsController do
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
 
       it 'expects an error creating the project' do
         expect(public_project_with_dot_atom).not_to be_valid
@@ -208,7 +208,7 @@ describe ProjectsController do
 
     context 'when the project is pending deletions' do
       it 'renders a 404 error' do
-        project = create(:empty_project, pending_delete: true)
+        project = create(:project, pending_delete: true)
         sign_in(user)
 
         get :show, namespace_id: project.namespace, id: project
@@ -234,31 +234,50 @@ describe ProjectsController do
 
     let(:admin) { create(:admin) }
     let(:project) { create(:project, :repository) }
-    let(:new_path) { 'renamed_path' }
-    let(:project_params) { { path: new_path } }
 
     before do
       sign_in(admin)
     end
 
-    it "sets the repository to the right path after a rename" do
-      controller.instance_variable_set(:@project, project)
+    context 'when only renaming a project path' do
+      it "sets the repository to the right path after a rename" do
+        expect { update_project path: 'renamed_path' }
+          .to change { project.reload.path }
 
+        expect(project.path).to include 'renamed_path'
+        expect(assigns(:repository).path).to include project.path
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project has container repositories with tags' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+      end
+
+      it 'does not allow to rename the project' do
+        expect { update_project path: 'renamed_path' }
+          .not_to change { project.reload.path }
+
+        expect(controller).to set_flash[:alert].to(/container registry tags/)
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    def update_project(**parameters)
       put :update,
-          namespace_id: project.namespace,
-          id: project.id,
-          project: project_params
-
-      expect(project.repository.path).to include(new_path)
-      expect(assigns(:repository).path).to eq(project.repository.path)
-      expect(response).to have_http_status(302)
+          namespace_id: project.namespace.path,
+          id: project.path,
+          project: parameters
     end
   end
 
   describe '#transfer' do
     render_views
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:admin) { create(:admin) }
     let(:new_namespace) { create(:namespace) }
 
@@ -315,8 +334,8 @@ describe ProjectsController do
     end
 
     context "when the project is forked" do
-      let(:project)      { create(:project) }
-      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:project)      { create(:project, :repository) }
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
       let(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
@@ -394,7 +413,7 @@ describe ProjectsController do
       end
 
       context 'with forked project' do
-        let(:project_fork) { create(:project, namespace: user.namespace) }
+        let(:project_fork) { create(:project, :repository, namespace: user.namespace) }
 
         before do
           create(:forked_project_link, forked_to_project: project_fork)
@@ -434,7 +453,7 @@ describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:public_project) { create(:project, :public) }
+    let(:public_project) { create(:project, :public, :repository) }
 
     it "gets a list of branches and tags" do
       get :refs, namespace_id: public_project.namespace, id: public_project

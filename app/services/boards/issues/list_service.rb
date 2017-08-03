@@ -35,19 +35,13 @@ module Boards
       end
 
       def filter_params
-        set_default_scope
         set_parent
         set_state
-
         params
       end
 
-      def set_default_scope
-        params[:scope] = 'all'
-      end
-
       def set_parent
-        params[:project_id] = @parent.id
+        params[:project_id] = project.id
       end
 
       def set_state

@@ -15,7 +15,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'Group "Owned" has a public project "Public-project"' do
     group = owned_group
 
-    @project = create :empty_project, :public,
+    @project = create :project, :public,
                  group: group,
                  name: "Public-project"
   end
@@ -104,7 +104,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see new group "Owned" avatar' do
     expect(owned_group.avatar).to be_instance_of AvatarUploader
-    expect(owned_group.avatar.url).to eq "/uploads/system/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
+    expect(owned_group.avatar.url).to eq "/uploads/-/system/group/avatar/#{Group.find_by(name: "Owned").id}/banana_sample.gif"
   end
 
   step 'I should see the "Remove avatar" button' do
@@ -132,7 +132,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'Group "Owned" has archived project' do
     group = Group.find_by(name: 'Owned')
-    @archived_project = create(:empty_project, :archived, namespace: group, path: "archived-project")
+    @archived_project = create(:project, :archived, namespace: group, path: "archived-project")
   end
 
   step 'I should see "archived" label' do

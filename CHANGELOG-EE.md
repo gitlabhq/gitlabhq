@@ -1,5 +1,90 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.4.3 (2017-07-31)
+
+- Present Related Issues widget for logged-out users when available.
+
+## 9.4.2 (2017-07-28)
+
+- Adds lower bound to pull mirror scheduling feature. !2366
+- Add warning and option toggle when rebuilding authorized_keys. !2508
+- Fix CSS for mini graph with downstream pipeline.
+- Renamed board to boards in new project sidebar.
+- Fix Rebasing not working with Merge Requests.
+- Fixed issue boards focus mode when new navigation is turned on.
+
+## 9.4.1 (2017-07-25)
+
+- Cleans up mirror capacity in project destroy service if project is a scheduled mirror. !2445
+- Fixes unscoping of imposed capacity limit by find_each method on Mirror scheduler. !2460
+- Remove text underline from suggested approvers.
+
+## 9.4.0 (2017-07-22)
+
+- GeoLogCursor is part of a new experimental Geo replication system. !1988
+- Add explicit licensing for Elasticsearch. !2108
+- Add namespace license checks for Service Desk (EEP). !2109
+- Add environment scope to secret variables to specify environments. !2112
+- Namespace license checks for exporting issues (EES). !2164
+- Retry Elasticsearch queries on failure. !2181
+- Introduce namespace license checks for rebase before merge. !2200
+- Geo: fix removal of repositories from disk on secondary nodes. !2210
+- Add license checks for brundown charts. !2219
+- Add namespace license checks for squash before merge. !2249
+- Namespace license checks for fast-forward merge (EES). !2272
+- Empty repository mirror no longer creates master branch with README automatically. !2276
+- Introduce namespace licensing for issue weights (EES). !2291
+- Add namespace license checks for Contribution Analytics. !2302
+- Add license checks for focus mode on the issue board. !2303
+- Add license checks for issue boards with milestones. !2315
+- Add license checks for multiple issue boards. !2317
+- Geo: Fix clone instructions in a secondary node for SSH protocol. !2319
+- Namespace license checks Issue & MR template. !2321
+- Introduce namespace license checks for merge request approvers (EES). !2324
+- Introduce namespace license checks for Push Rules (EES). !2335
+- Geo: Implement alternative to geo_{primary|secondary}_role in gitlab.yml. !2352
+- Geo: Added extra SystemCheck checks. !2354
+- Implement progressive elasticsearch indexing for project mirrors. !2393
+- Fix undefined method quote when database load balancing is used. !2430
+- Improve the performance of the project list API. !12679
+- fix approver placeholder icon in ie11.
+- Add public API for listing, creating and deleting Related Issues.
+- All artifacts are now browsable.
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Geo - Fix RepositorySyncService when cannot obtain a lease to sync a repository.
+- Prevent mirror user to be assigned to users other than the current one.
+- Geo - Makes the projects synchronization faster on secondaries nodes.
+- Only show the LDAP sync banner on first login.
+- Enable service desk be default.
+- Fix creation of push rules via POST API.
+- Fix Geo middleware to work properly with multiple requests.
+- [GitLab.com only] Add Slack applicationq service.
+- Speed up checking for approvers when approvers are specified on the MR.
+- Allows manually adding bi-directional relationships between issues in the issue page (EES feature).
+- Add Geo repository renamed event log.
+- Merge states to allow realtime with deploy boards.
+- Fix 500 error when approvals are enabled and editing an MR conflicts with another edit.
+- add toggle for overriding approvers per MR.
+- Add optional sha param when approving a merge request through the API.
+- Allow updating shared_runners_minutes_limit on admin Namespace API.
+- Allow to Store Artifacts on Object Storage.
+- Adding support for AWS ec2 instance profile credentials with elasticsearch. (Matt Gresko)
+- Fixed edit issue boards milestone action buttons not sticking to bottom of dropdown.
+- Respect the external user setting in Elasticsearch.
+
+## 9.3.9 (2017-07-20)
+
+- No changes.
+
+## 9.3.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
+## 9.3.7 (2017-07-18)
+
+- No changes.
+
 ## 9.3.6 (2017-07-12)
 
 - Geo: Fix clone instructions in a secondary node for SSH protocol. !2319
@@ -68,6 +153,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: /unassign by default unassigns everyone. Implement /reassign command.
 - Speed up checking for approvers remaining.
 
+## 9.2.9 (2017-07-20)
+
+- No changes.
+
+## 9.2.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
+
 ## 9.2.7 (2017-06-21)
 
 - Geo: fixed Dynamic Backoff strategy that was not being used by workers. !2128
@@ -123,6 +217,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix for XSS in project mirror errors caused by Hamlit filter usage.
 - Feature availability check using feature list AND license addons.
 - Disable mirror workers for Geo secondaries.
+
+## 9.1.9 (2017-07-20)
+
+- No changes.
+
+## 9.1.8 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 9.1.7 (2017-06-07)
 
@@ -202,6 +305,15 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove N+1 queries for Groups::AnalyticsController.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
+
+## 9.0.12 (2017-07-20)
+
+- No changes.
+
+## 9.0.11 (2017-07-19)
+
+- Escape symbols in exported CSV columns to prevent command execution in Microsoft Excel.
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 9.0.10 (2017-06-07)
 
@@ -294,6 +406,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Update Elasticsearch to 5.1.
 - [Elasticsearch] More efficient search.
 - Get Geo secondaries nodes statuses over AJAX.
+
+## 8.17.7 (2017-07-19)
+
+- Prevent mirror user to be assigned to users other than the current one.
 
 ## 8.17.6 (2017-05-05)
 

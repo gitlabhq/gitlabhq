@@ -36,9 +36,6 @@ import './shortcuts_find_file';
 import './shortcuts_issuable';
 import './shortcuts_network';
 
-// behaviors
-import './behaviors/';
-
 // templates
 import './templates/issuable_template_selector';
 import './templates/issuable_template_selectors';
@@ -55,6 +52,9 @@ import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
 import './lib/utils/url_utility';
+
+// behaviors
+import './behaviors/';
 
 // u2f
 import './u2f/authenticate';
@@ -86,7 +86,6 @@ import './copy_as_gfm';
 import './copy_to_clipboard';
 import './create_label';
 import './diff';
-import './dispatcher';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
@@ -109,6 +108,7 @@ import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
@@ -144,12 +144,12 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
 import './syntax_highlight';
-import './user';
+
+import './dispatcher';
 
 // EE-only scripts
 import './admin_email_select';
@@ -162,11 +162,15 @@ import './weight_select';
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
 
+Dropzone.autoDiscover = false;
+
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -174,6 +178,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');
@@ -250,6 +259,11 @@ $(function () {
       return $(el).data('placement') || 'bottom';
     }
   });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
+  });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
   // Form submitter
@@ -293,13 +307,7 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', function () {
-    $('.header-content .title, .header-content .navbar-sub-nav').toggle();
-    $('.header-content .header-logo').toggle();
-    $('.header-content .navbar-collapse').toggle();
-    $('.js-navbar-toggle-left, .js-navbar-toggle-right, .title-container').toggle();
-    return $('.navbar-toggle').toggleClass('active');
-  });
+  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);
@@ -359,4 +367,14 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

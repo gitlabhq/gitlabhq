@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Boards::Issues::MoveService, services: true do
+describe Boards::Issues::MoveService do
   describe '#execute' do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:board1)  { create(:board, project: project) }
 
     let(:bug) { create(:label, project: project, name: 'Bug') }
@@ -73,7 +73,7 @@ describe Boards::Issues::MoveService, services: true do
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug, testing)
-        expect(issue).to be_reopened
+        expect(issue).to be_opened
       end
     end
 

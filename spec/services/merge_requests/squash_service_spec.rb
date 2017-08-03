@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::SquashService do
   let(:service) { described_class.new(project, user, {}) }
   let(:user) { project.owner }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   let(:merge_request_with_one_commit) do
     create(:merge_request,
@@ -161,7 +161,7 @@ describe MergeRequests::SquashService do
       end
 
       it 'logs the MR reference and exception' do
-        expect(service).to receive(:log_error).with(a_string_including("#{project.path_with_namespace}#{merge_request.to_reference}"))
+        expect(service).to receive(:log_error).with(a_string_including("#{project.full_path}#{merge_request.to_reference}"))
         expect(service).to receive(:log_error).with(error)
 
         service.execute(merge_request)

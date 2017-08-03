@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Elastic::SearchResults, lib: true do
+describe Gitlab::Elastic::SearchResults do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
     Gitlab::Elastic::Helper.create_empty_index
@@ -12,8 +12,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
   end
 
   let(:user) { create(:user) }
-  let(:project_1) { create(:project) }
-  let(:project_2) { create(:project) }
+  let(:project_1) { create(:project, :repository) }
+  let(:project_2) { create(:project, :repository) }
   let(:limit_project_ids) { [project_1.id] }
 
   describe 'issues' do
@@ -77,8 +77,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
   end
 
   describe 'confidential issues' do
-    let(:project_3) { create(:empty_project) }
-    let(:project_4) { create(:empty_project) }
+    let(:project_3) { create(:project) }
+    let(:project_4) { create(:project) }
     let(:limit_project_ids) { [project_1.id, project_2.id, project_3.id] }
     let(:author) { create(:user) }
     let(:assignee) { create(:user) }
@@ -334,7 +334,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
   describe 'project scoping' do
     it "returns items for project" do
-      project = create :project, name: "term"
+      project = create :project, :repository, name: "term"
 
       # Create issue
       create :issue, title: 'bla-bla term', project: project
@@ -358,7 +358,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::SearchResults.new(user, 'term', [project.id])
+      result = described_class.new(user, 'term', [project.id])
 
       expect(result.issues_count).to eq(2)
       expect(result.merge_requests_count).to eq(2)
@@ -383,7 +383,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
 
     it 'finds blobs from public projects only' do
-      project_2 = create :project, :private
+      project_2 = create :project, :repository, :private
       project_2.repository.index_blobs
       Gitlab::Elastic::Helper.refresh_index
 
@@ -468,7 +468,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
 
     it 'finds wiki blobs from public projects only' do
-      project_2 = create :project, :private
+      project_2 = create :project, :repository, :private
       project_2.wiki.create_page('index_page', 'term')
       project_2.wiki.index_blobs
       Gitlab::Elastic::Helper.refresh_index
@@ -486,7 +486,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
 
     context 'when wiki is disabled' do
-      let(:project_1) { create(:project, :public, :wiki_disabled) }
+      let(:project_1) { create(:project, :public, :repository, :wiki_disabled) }
 
       context 'search by member' do
         let(:limit_project_ids) { [project_1.id] }
@@ -502,7 +502,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
 
     context 'when wiki is internal' do
-      let(:project_1) { create(:project, :public, :wiki_private) }
+      let(:project_1) { create(:project, :public, :repository, :wiki_private) }
 
       context 'search by member' do
         let(:limit_project_ids) { [project_1.id] }
@@ -534,7 +534,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     end
 
     it 'finds commits from public projects only' do
-      project_2 = create :project, :private
+      project_2 = create :project, :private, :repository
       project_2.repository.index_commits
       Gitlab::Elastic::Helper.refresh_index
 
@@ -553,10 +553,10 @@ describe Gitlab::Elastic::SearchResults, lib: true do
   end
 
   describe 'Visibility levels' do
-    let(:internal_project) { create(:project, :internal, description: "Internal project") }
-    let(:private_project1) { create(:project, :private, description: "Private project") }
-    let(:private_project2) { create(:project, :private, description: "Private project where I'm a member") }
-    let(:public_project) { create(:project, :public, description: "Public project") }
+    let(:internal_project) { create(:project, :internal, :repository, description: "Internal project") }
+    let(:private_project1) { create(:project, :private, :repository, description: "Private project") }
+    let(:private_project2) { create(:project, :private, :repository, description: "Private project where I'm a member") }
+    let(:public_project) { create(:project, :public, :repository, description: "Public project") }
     let(:limit_project_ids) { [private_project2.id] }
 
     before do

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Issues::ExportCsvService, services: true do
+describe Issues::ExportCsvService do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let!(:issue)  { create(:issue, project: project, author: user) }
   let(:subject) { described_class.new(Issue.all) }
 
@@ -35,7 +35,7 @@ describe Issues::ExportCsvService, services: true do
       issue.update!(milestone: milestone,
                     assignees: [user],
                     description: 'Issue with details',
-                    state: :reopened,
+                    state: :opened,
                     due_date: DateTime.new(2014, 3, 2),
                     created_at: DateTime.new(2015, 4, 3, 2, 1, 0),
                     updated_at: DateTime.new(2016, 5, 4, 3, 2, 1),

@@ -37,13 +37,7 @@
               = f.label :default_branch, "Default Branch", class: 'label-light'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
-        - if current_user.admin?
-          .form-group
-            = f.label :repository_size_limit, class: 'label-light' do
-              Repository size limit (MB)
-            = f.number_field :repository_size_limit, value: f.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
-            %span.help-block#repository_size_limit_help_block
-              = size_limit_message(@project)
+        = render 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'

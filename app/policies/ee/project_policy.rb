@@ -34,7 +34,7 @@ module EE
         prevent :admin_issue_link
       end
 
-      rule { can?(:guest_access) }.enable :read_issue_link
+      rule { can?(:read_issue) }.enable :read_issue_link
 
       rule { can?(:reporter_access) }.policy do
         enable :admin_board
@@ -60,6 +60,13 @@ module EE
         enable :read_environment
         enable :read_deployment
         enable :read_pages
+      end
+
+      rule { auditor & ~guest }.policy do
+        prevent :create_project
+        prevent :create_issue
+        prevent :create_note
+        prevent :upload_file
       end
 
       rule { ~can?(:push_code) }.prevent :push_code_to_protected_branches

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe RepositoryUpdateRemoteMirrorWorker do
   subject { described_class.new }
 
-  let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
+  let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
   let(:scheduled_time) { Time.now - 5.minutes }
 
   before do

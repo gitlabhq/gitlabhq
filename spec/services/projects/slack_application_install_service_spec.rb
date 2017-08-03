@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::SlackApplicationInstallService, services: true do
+describe Projects::SlackApplicationInstallService do
   let!(:user) { create(:user) }
   let!(:project) { create(:project) }
 

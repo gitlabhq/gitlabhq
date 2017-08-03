@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :feature do
+feature 'Jobs' do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:job) { create(:ci_build, :trace, pipeline: pipeline) }
@@ -354,7 +354,7 @@ feature 'Jobs', :feature do
 
     context 'job project is over shared runners limit' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
-      let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+      let(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
 
       it 'displays a warning message' do
         visit project_job_path(project, job)

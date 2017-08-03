@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Geo, api: true do
+describe API::Geo do
   include ApiHelpers
 
   let(:admin) { create(:admin) }
@@ -208,7 +208,7 @@ describe API::Geo, api: true do
 
   describe 'GET /geo/transfers/file/1' do
     let!(:secondary_node) { create(:geo_node) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:upload) { Upload.find_by(model: project, uploader: 'FileUploader') }
     let(:transfer) { Gitlab::Geo::FileTransfer.new(:file, upload) }
     let(:req_header) { Gitlab::Geo::TransferRequest.new(transfer.request_data).headers }

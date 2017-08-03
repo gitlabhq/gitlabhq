@@ -4,7 +4,7 @@ class SystemHooksService
   end
 
   def execute_hooks(data, hooks_scope = :all)
-    SystemHook.send(hooks_scope).each do |hook|
+    SystemHook.public_send(hooks_scope).find_each do |hook|
       hook.async_execute(data, 'system_hooks')
     end
   end
@@ -24,7 +24,7 @@ class SystemHooksService
         key: model.key,
         id: model.id
       )
- 
+
       if model.user
         data[:username] = model.user.username
       end
@@ -56,7 +56,7 @@ class SystemHooksService
     when GroupMember
       data.merge!(group_member_data(model))
     end
-    
+
     data
   end
 
@@ -79,7 +79,7 @@ class SystemHooksService
     {
       name: model.name,
       path: model.path,
-      path_with_namespace: model.path_with_namespace,
+      path_with_namespace: model.full_path,
       project_id: model.id,
       owner_name: owner.name,
       owner_email: owner.respond_to?(:email) ? owner.email : "",
@@ -93,7 +93,7 @@ class SystemHooksService
     {
       project_name:                 project.name,
       project_path:                 project.path,
-      project_path_with_namespace:  project.path_with_namespace,
+      project_path_with_namespace:  project.full_path,
       project_id:                   project.id,
       user_username:                model.user.username,
       user_name:                    model.user.name,

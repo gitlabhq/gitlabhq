@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature "License Admin", feature: true do
+feature "License Admin" do
   before do
     sign_in(create(:admin))
   end

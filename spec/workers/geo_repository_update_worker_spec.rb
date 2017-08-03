@@ -4,7 +4,7 @@ describe GeoRepositoryUpdateWorker do
   include RepoHelpers
 
   let(:user) { create :user }
-  let(:project) { create :project }
+  let(:project) { create :project, :repository }
 
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:oldrev) { sample_commit.parent_id }

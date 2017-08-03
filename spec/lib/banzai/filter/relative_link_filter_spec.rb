@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::RelativeLinkFilter, lib: true do
+describe Banzai::Filter::RelativeLinkFilter do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,
@@ -26,7 +26,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   let(:project)        { create(:project, :repository) }
-  let(:project_path)   { project.path_with_namespace }
+  let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
   let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
@@ -56,7 +56,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   context 'without a repository' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     include_examples :preserve_unchanged
   end
 

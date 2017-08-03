@@ -4,6 +4,7 @@ namespace :gitlab do
     task compile: [
       'yarn:check',
       'rake:assets:precompile',
+      'gettext:po_to_json',
       'webpack:compile',
       'fix_urls'
     ]

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe "Search", feature: true  do
+describe "Search"  do
   include FilteredSearchHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, assignees: [user]) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
@@ -20,7 +20,7 @@ describe "Search", feature: true  do
 
   context 'search filters', js: true do
     let(:group) { create(:group) }
-    let!(:group_project) { create(:empty_project, group: group) }
+    let!(:group_project) { create(:project, group: group) }
 
     before do
       group.add_owner(user)
@@ -154,7 +154,7 @@ describe "Search", feature: true  do
     end
   end
 
-  describe 'Right header search field', feature: true do
+  describe 'Right header search field' do
     it 'allows enter key to search', js: true do
       visit project_path(project)
       fill_in 'search', with: 'gitlab'

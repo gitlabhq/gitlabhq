@@ -134,6 +134,18 @@ describe('RelatedIssuesRoot', () => {
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
+
+        spyOn(vm, 'processAllReferences').and.callThrough();
+        spyOn(vm.service, 'addRelatedIssues').and.callThrough();
+      });
+
+      it('processes references before submitting', () => {
+        const input = '#123';
+
+        vm.onPendingFormSubmit(input);
+
+        expect(vm.processAllReferences).toHaveBeenCalledWith(input);
+        expect(vm.service.addRelatedIssues).toHaveBeenCalledWith([input]);
       });
 
       it('submit zero pending issue as related issue', (done) => {
@@ -369,19 +381,37 @@ describe('RelatedIssuesRoot', () => {
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
+
+        spyOn(vm, 'processAllReferences');
       });
 
-      it('add valid reference to pending when blurring', () => {
+      it('add any references to pending when blurring', () => {
         const input = '#123';
+
         vm.onBlur(input);
+
+        expect(vm.processAllReferences).toHaveBeenCalledWith(input);
+      });
+    });
+
+    describe('processAllReferences', () => {
+      beforeEach(() => {
+        vm = new RelatedIssuesRoot({
+          propsData: defaultProps,
+        }).$mount();
+      });
+
+      it('add valid reference to pending', () => {
+        const input = '#123';
+        vm.processAllReferences(input);
 
         expect(vm.state.pendingReferences.length).toEqual(1);
         expect(vm.state.pendingReferences[0]).toEqual('#123');
       });
 
-      it('add any valid references to pending when blurring', () => {
+      it('add any valid references to pending', () => {
         const input = 'asdf #123';
-        vm.onBlur(input);
+        vm.processAllReferences(input);
 
         expect(vm.state.pendingReferences.length).toEqual(2);
         expect(vm.state.pendingReferences[0]).toEqual('asdf');

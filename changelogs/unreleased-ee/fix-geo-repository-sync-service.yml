@@ -1,4 +1,0 @@
----
-title: Geo - Fix RepositorySyncService when cannot obtain a lease to sync a repository
-merge_request:
-author:

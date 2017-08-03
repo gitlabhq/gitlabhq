@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', :feature, :js do
+describe 'Dropdown assignee', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }

@@ -23,36 +23,49 @@ $new-sidebar-width: 220px;
     position: fixed;
     height: 100%;
   }
+
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+    padding: 10px 0 15px;
+  }
 }
 
 .context-header {
-  border-bottom: 1px solid $border-color;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  padding: 10px 16px 10px 10px;
-  color: $gl-text-color;
+  position: relative;
+
+  a {
+    border-bottom: 1px solid $border-color;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    padding: 10px 16px 10px 10px;
+    color: $gl-text-color;
+
+    @media (max-width: $screen-xs-max) {
+      padding-right: 30px;
+    }
+
+    &:hover {
+      background-color: $hover-background;
+      color: $hover-color;
+      border-color: $hover-background;
+
+      .avatar-container {
+        border-color: transparent;
+      }
+
+      .settings-avatar {
+        background-color: $indigo-500;
+
+        i {
+          color: $hover-color;
+        }
+      }
+    }
+  }
 
   .avatar-container {
     flex: 0 0 40px;
-  }
-
-  &:hover {
-    background-color: $hover-background;
-    color: $hover-color;
-    border-color: $hover-background;
-
-    .avatar-container {
-      border-color: transparent;
-    }
-
-    .settings-avatar {
-      background-color: $indigo-500;
-
-      i {
-        color: $hover-color;
-      }
-    }
+    background-color: $white-light;
   }
 
   .project-title,
@@ -60,11 +73,36 @@ $new-sidebar-width: 220px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+
+  &:hover {
+    .close-nav-button {
+      color: $white-light;
+    }
+  }
+
+  .close-nav-button {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    background-color: transparent;
+    border: 0;
+    padding: 0 10px;
+
+    @media (max-width: $screen-xs-max) {
+      display: block;
+    }
+
+    &:hover {
+      color: $gl-text-color;
+    }
+  }
 }
 
 .settings-avatar {
   background-color: $white-light;
-  transition: background-color 100ms linear;
 
   i {
     font-size: 20px;
@@ -72,7 +110,6 @@ $new-sidebar-width: 220px;
     color: $gl-text-color-secondary;
     text-align: center;
     align-self: center;
-    transition: color 100ms linear;
   }
 }
 
@@ -80,15 +117,20 @@ $new-sidebar-width: 220px;
   position: fixed;
   z-index: 400;
   width: $new-sidebar-width;
-  transition: width $sidebar-transition-duration;
-  top: 50px;
+  transition: left $sidebar-transition-duration;
+  top: $header-height;
   bottom: 0;
   left: 0;
   overflow: auto;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
 
+  &.nav-sidebar-expanded {
+    left: 0;
+  }
+
   a {
+    transition: none;
     text-decoration: none;
   }
 
@@ -101,10 +143,19 @@ $new-sidebar-width: 220px;
     white-space: nowrap;
 
     a {
-      display: block;
+      display: flex;
+      align-items: center;
       padding: 12px 16px;
       color: $inactive-color;
     }
+
+    svg {
+      fill: $inactive-color;
+    }
+  }
+
+  .nav-item-name {
+    flex: 1;
   }
 
   li.active {
@@ -114,11 +165,29 @@ $new-sidebar-width: 220px;
       color: $active-color;
       font-weight: 700;
     }
+
+    svg {
+      fill: $active-color;
+    }
   }
 
   @media (max-width: $screen-xs-max) {
-    width: 0;
+    left: (-$new-sidebar-width);
   }
+
+  .nav-icon-container {
+    display: flex;
+    margin-right: 8px;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+  }
+}
+
+.with-performance-bar .nav-sidebar {
+  top: $header-height + $performance-bar-height;
 }
 
 .sidebar-sub-level-items {
@@ -127,8 +196,7 @@ $new-sidebar-width: 220px;
 
   > li {
     a {
-      font-size: 12px;
-      padding: 8px 16px 8px 24px;
+      padding: 8px 16px 8px 50px;
 
       &:hover,
       &:focus {
@@ -152,14 +220,93 @@ $new-sidebar-width: 220px;
 
 .sidebar-top-level-items {
   > li {
+    > a {
+      @media (min-width: $screen-sm-min) {
+        margin-right: 2px;
+      }
+
+      &:hover {
+        color: $gl-text-color;
+      }
+    }
+
+    &:not(.active) {
+      > a {
+        margin-left: 1px;
+        margin-right: 3px;
+      }
+
+      .sidebar-sub-level-items {
+        @media (min-width: $screen-sm-min) {
+          position: fixed;
+          top: 0;
+          left: 220px;
+          width: 150px;
+          margin-top: -1px;
+          padding: 8px 1px;
+          background-color: $white-light;
+          box-shadow: 2px 1px 3px $dropdown-shadow-color;
+          border: 1px solid $gray-darker;
+          border-left: 0;
+          border-radius: 0 3px 3px 0;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            bottom: -30px;
+            left: 0;
+            right: -30px;
+            z-index: -1;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 44px;
+            left: -30px;
+            right: 35px;
+            bottom: 0;
+            height: 100%;
+            max-height: 150px;
+            z-index: -1;
+            transform: skew(33deg);
+          }
+
+          &.is-above {
+            margin-top: 1px;
+
+            &::after {
+              top: auto;
+              bottom: 44px;
+              transform: skew(-30deg);
+            }
+          }
+
+          a {
+            padding: 8px 16px;
+            color: $gl-text-color;
+
+            &:hover,
+            &:focus {
+              background-color: $gray-darker;
+            }
+          }
+        }
+      }
+    }
+
     .badge {
-      float: right;
       background-color: $inactive-badge-background;
       color: $inactive-color;
     }
 
     &.active {
       background: $active-background;
+
+      > a {
+        margin-left: 4px;
+      }
 
       .badge {
         color: $active-color;
@@ -171,16 +318,43 @@ $new-sidebar-width: 220px;
       }
     }
 
-    > a:hover {
-      background-color: $hover-background;
-      color: $hover-color;
-
-      .badge {
-        transition: background-color 100ms linear, color 100ms linear;
-        background-color: $indigo-500;
-        color: $hover-color;
-      }
+    &:not(.active):hover > a,
+    > a:hover,
+    &.is-over > a {
+      background-color: $white-light;
     }
+  }
+}
+
+.toggle-mobile-nav {
+  display: none;
+  background-color: transparent;
+  border: 0;
+  padding: 6px 16px;
+  margin: 0 16px 0 -15px;
+  height: 46px;
+  border-right: 1px solid $gl-text-color-quaternary;
+
+  i {
+    font-size: 20px;
+    color: $gl-text-color-secondary;
+  }
+
+  @media (max-width: $screen-xs-max) {
+    display: inline-block;
+  }
+}
+
+.mobile-overlay {
+  display: none;
+
+  &.mobile-nav-open {
+    display: block;
+    position: fixed;
+    background-color: $black-transparent;
+    height: 100%;
+    width: 100%;
+    z-index: 300;
   }
 }
 
@@ -188,14 +362,18 @@ $new-sidebar-width: 220px;
 // Make issue boards full-height now that sub-nav is gone
 
 .boards-list {
-  height: calc(100vh - 50px);
+  height: calc(100vh - #{$header-height});
 
   @media (min-width: $screen-sm-min) {
     height: 475px; // Needed for PhantomJS
     // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 120px);
+    height: calc(100vh - 180px);
     // scss-lint:enable DuplicateProperty
   }
+}
+
+.with-performance-bar .boards-list {
+  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
 }
 
 

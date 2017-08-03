@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ApplicationSetting, models: true do
-  let(:setting) { ApplicationSetting.create_from_defaults }
+describe ApplicationSetting do
+  let(:setting) { described_class.create_from_defaults }
 
   it { expect(setting).to be_valid }
   it { expect(setting.uuid).to be_present }
@@ -20,25 +20,6 @@ describe ApplicationSetting, models: true do
     it { is_expected.to allow_value(http).for(:after_sign_out_path) }
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
-
-    it { is_expected.to allow_value(10).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(0).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_max_delay) }
-
-    it { is_expected.to allow_value(10).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(0).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_max_capacity) }
-
-    it { is_expected.to allow_value(10).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(nil).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(0).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
 
     describe 'disabled_oauth_sign_in_sources validations' do
       before do
@@ -178,10 +159,10 @@ describe ApplicationSetting, models: true do
     context 'redis unavailable' do
       it 'returns an ApplicationSetting' do
         allow(Rails.cache).to receive(:fetch).and_call_original
-        allow(ApplicationSetting).to receive(:last).and_return(:last)
+        allow(described_class).to receive(:last).and_return(:last)
         expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(ArgumentError)
 
-        expect(ApplicationSetting.current).to eq(:last)
+        expect(described_class.current).to eq(:last)
       end
     end
   end

@@ -19,7 +19,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts' do
-        expect(page).to have_text "To register a new Runner"
+        expect(page).to have_text "How to setup"
         expect(page).to have_text "Runners with last contact more than a minute ago: 1"
       end
 
@@ -54,7 +54,7 @@ describe "Admin Runners" do
       end
 
       it 'has all necessary texts including no runner message' do
-        expect(page).to have_text "To register a new Runner"
+        expect(page).to have_text "How to setup"
         expect(page).to have_text "Runners with last contact more than a minute ago: 0"
         expect(page).to have_text 'No runners found'
       end
@@ -65,8 +65,8 @@ describe "Admin Runners" do
     let(:runner) { FactoryGirl.create :ci_runner }
 
     before do
-      @project1 = FactoryGirl.create(:empty_project)
-      @project2 = FactoryGirl.create(:empty_project)
+      @project1 = FactoryGirl.create(:project)
+      @project2 = FactoryGirl.create(:project)
       visit admin_runner_path(runner)
     end
 
@@ -163,12 +163,11 @@ describe "Admin Runners" do
     end
 
     it 'has a registration token' do
-      expect(page).to have_content("Registration token is #{token}")
-      expect(page).to have_selector('#runners-token', text: token)
+      expect(page.find('#registration_token')).to have_content(token)
     end
 
     describe 'reload registration token' do
-      let(:page_token) { find('#runners-token').text }
+      let(:page_token) { find('#registration_token').text }
 
       before do
         click_button 'Reset runners registration token'

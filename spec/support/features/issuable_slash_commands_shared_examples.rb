@@ -5,9 +5,14 @@ shared_examples 'issuable record that supports quick actions in its description 
   include QuickActionsHelpers
 
   let(:master) { create(:user) }
-  let(:assignee) { create(:user, username: 'bob') }
-  let(:guest) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) do
+    case issuable_type
+    when :merge_request
+      create(:project, :public, :repository)
+    when :issue
+      create(:project, :public)
+    end
+  end
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
   let!(:label_bug) { create(:label, project: project, title: 'bug') }
   let!(:label_feature) { create(:label, project: project, title: 'feature') }
@@ -15,8 +20,6 @@ shared_examples 'issuable record that supports quick actions in its description 
 
   before do
     project.team << [master, :master]
-    project.team << [assignee, :developer]
-    project.team << [guest, :guest]
 
     sign_in(master)
   end
@@ -57,6 +60,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
     context 'with a note containing commands' do
       it 'creates a note without the commands and interpret the commands accordingly' do
+        assignee = create(:user, username: 'bob')
         write_note("Awesome!\n/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
 
         expect(page).to have_content 'Awesome!'
@@ -77,6 +81,7 @@ shared_examples 'issuable record that supports quick actions in its description 
 
     context 'with a note containing only commands' do
       it 'does not create a note but interpret the commands accordingly' do
+        assignee = create(:user, username: 'bob')
         write_note("/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
 
         expect(page).not_to have_content '/assign @bob'
@@ -111,8 +116,12 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot close #{issuable_type}" do
         before do
+          guest = create(:user)
+          project.add_guest(guest)
+
           sign_out(:user)
           sign_in(guest)
+
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -146,8 +155,12 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot reopen #{issuable_type}" do
         before do
+          guest = create(:user)
+          project.add_guest(guest)
+
           sign_out(:user)
           sign_in(guest)
+
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
         end
 
@@ -176,6 +189,9 @@ shared_examples 'issuable record that supports quick actions in its description 
 
       context "when current user cannot change title of #{issuable_type}" do
         before do
+          guest = create(:user)
+          project.add_guest(guest)
+
           sign_out(:user)
           sign_in(guest)
           visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
@@ -267,6 +283,8 @@ shared_examples 'issuable record that supports quick actions in its description 
 
   describe "preview of note on #{issuable_type}" do
     it 'removes quick actions from note and explains them' do
+      create(:user, username: 'bob')
+
       visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
 
       page.within('.js-main-target-form') do

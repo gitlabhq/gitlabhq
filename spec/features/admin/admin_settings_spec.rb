@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin updates settings', feature: true do
+feature 'Admin updates settings' do
   include StubENV
 
   before do
@@ -27,6 +27,29 @@ feature 'Admin updates settings', feature: true do
     expect(find('#application_setting_visibility_level_0')).not_to be_checked
     expect(find('#application_setting_visibility_level_10')).not_to be_checked
     expect(find('#application_setting_visibility_level_20')).not_to be_checked
+  end
+
+  describe 'LDAP settings' do
+    context 'with LDAP enabled' do
+      scenario 'Change allow group owners to manage ldap' do
+        allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
+        visit admin_application_settings_path
+
+        find('#application_setting_allow_group_owners_to_manage_ldap').set(false)
+        click_button 'Save'
+
+        expect(page).to have_content('Application settings saved successfully')
+        expect(find('#application_setting_allow_group_owners_to_manage_ldap')).not_to be_checked
+      end
+    end
+
+    context 'with LDAP disabled' do
+      scenario 'Does not show option to allow group owners to manage ldap' do
+        visit admin_application_settings_path
+
+        expect(page).not_to have_css('#application_setting_allow_group_owners_to_manage_ldap')
+      end
+    end
   end
 
   scenario 'Change application settings' do
@@ -67,6 +90,14 @@ feature 'Admin updates settings', feature: true do
     expect(find_field('Webhook').value).to eq 'http://localhost'
     expect(find_field('Username').value).to eq 'test_user'
     expect(find('#service_push_channel').value).to eq '#test_channel'
+  end
+
+  context 'sign-in restrictions', :js do
+    it 'de-activates oauth sign-in source' do
+      find('.btn', text: 'GitLab.com').click
+      
+      expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
+    end
   end
 
   def check_all_events

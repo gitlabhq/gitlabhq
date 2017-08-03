@@ -1,6 +1,7 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
+- full_path = @project.present? ? @project.full_path : @group.full_path
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -22,7 +23,7 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown{ data: { project_full_path: @project.full_path } }
+              .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
@@ -118,7 +119,11 @@
           - if type == :boards
             - if can?(current_user, :admin_list, board.parent)
               .dropdown.prepend-left-10#js-add-list
+<<<<<<< HEAD
                 %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
+=======
+                %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path) } }
+>>>>>>> master
                   Add list
                 .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
                   = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Add list" }
@@ -130,12 +135,3 @@
               #js-toggle-focus-btn.prepend-left-10
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
-
-- unless type === :boards_modal
-  :javascript
-    $(document).off('page:restore').on('page:restore', function (event) {
-      if (gl.FilteredSearchManager) {
-        const filteredSearchManager = new gl.FilteredSearchManager();
-        filteredSearchManager.setup();
-      }
-    });

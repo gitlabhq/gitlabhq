@@ -30,7 +30,7 @@ describe ElasticIndexerWorker, elastic: true do
       project = nil
 
       Sidekiq::Testing.disable! do
-        project = create :empty_project
+        project = create :project
       end
 
       expect do
@@ -97,7 +97,7 @@ describe ElasticIndexerWorker, elastic: true do
       project = nil
 
       Sidekiq::Testing.disable! do
-        project = create :empty_project
+        project = create :project
         subject.perform("index", "Project", project.id)
         project.update(name: "new")
       end
@@ -174,7 +174,7 @@ describe ElasticIndexerWorker, elastic: true do
       project, issue, milestone, note, merge_request = nil
 
       Sidekiq::Testing.disable! do
-        project = create :project
+        project = create :project, :repository
         subject.perform("index", "Project", project.id)
 
         issue = create :issue, project: project

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Merge request approvals', js: true, feature: true do
+feature 'Merge request approvals', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, approvals_before_merge: 1) }
+  let(:project) { create(:project, :public, :repository, approvals_before_merge: 1) }
 
   context 'when editing an MR with a different author' do
     let(:author) { create(:user) }
@@ -30,7 +30,7 @@ feature 'Merge request approvals', js: true, feature: true do
   context 'when creating an MR from a fork' do
     let(:other_user) { create(:user) }
     let(:non_member) { create(:user) }
-    let(:forked_project) { create(:project, :public, creator: user) }
+    let(:forked_project) { create(:project, :public, :repository, creator: user) }
 
     before do
       create(:forked_project_link, forked_to_project: forked_project, forked_from_project: project)
@@ -269,7 +269,7 @@ feature 'Merge request approvals', js: true, feature: true do
 
   context 'when merge when discussions resolved is active', :js do
     let(:project) do
-      create(:project,
+      create(:project, :repository,
         approvals_before_merge: 1,
         only_allow_merge_if_all_discussions_are_resolved: true)
     end

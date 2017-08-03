@@ -1,11 +1,9 @@
 require 'spec_helper'
 
-describe API::Issues do # rubocop:disable RSpec/FilePath
-  include EmailHelpers
-
+describe API::Issues, :mailer do # rubocop:disable RSpec/FilePath
   set(:user) { create(:user) }
   set(:project) do
-    create(:empty_project, :public, creator_id: user.id, namespace: user.namespace)
+    create(:project, :public, creator_id: user.id, namespace: user.namespace)
   end
 
   let(:user2)       { create(:user) }

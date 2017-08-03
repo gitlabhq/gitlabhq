@@ -39,7 +39,7 @@
         Suggestions:
         %code= 'gitlab'
         %code= @project.path # Path contains no spaces, but dashes
-        %code= @project.path_with_namespace
+        %code= @project.full_path
 
   .form-group
     = label_tag :request_url, 'Request URL', class: 'col-sm-2 col-xs-12 control-label'

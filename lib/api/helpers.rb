@@ -27,6 +27,10 @@ module API
       initial_current_user != current_user
     end
 
+    def user_group
+      @group ||= find_group!(params[:id])
+    end
+
     def user_project
       @project ||= find_project!(params[:id])
     end
@@ -350,12 +354,14 @@ module API
       env['warden']
     end
 
+    # Check if the request is GET/HEAD, or if CSRF token is valid.
+    def verified_request?
+      Gitlab::RequestForgeryProtection.verified?(env)
+    end
+
     # Check the Rails session for valid authentication details
-    #
-    # Until CSRF protection is added to the API, disallow this method for
-    # state-changing endpoints
     def find_user_from_warden
-      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
+      warden.try(:authenticate) if verified_request?
     end
 
     def initial_current_user

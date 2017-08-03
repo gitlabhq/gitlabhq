@@ -1,6 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
+import _ from 'underscore';
 
 (function() {
   this.MilestoneSelect = (function() {
@@ -8,7 +9,7 @@
       var _this, $els;
       if (currentProject != null) {
         _this = this;
-        this.currentProject = JSON.parse(currentProject);
+        this.currentProject = typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
       }
 
       $els = $(els);

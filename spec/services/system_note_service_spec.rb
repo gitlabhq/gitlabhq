@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe SystemNoteService, services: true do
+describe SystemNoteService do
   include Gitlab::Routing
 
-  let(:project)  { create(:empty_project) }
+  let(:project)  { create(:project) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
@@ -655,7 +655,7 @@ describe SystemNoteService, services: true do
   end
 
   describe '.noteable_moved' do
-    let(:new_project) { create(:empty_project) }
+    let(:new_project) { create(:project) }
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
@@ -674,7 +674,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.path_with_namespace
+        expect(subject.note).to include new_project.full_path
       end
     end
 
@@ -725,7 +725,7 @@ describe SystemNoteService, services: true do
   describe 'JIRA integration' do
     include JiraServiceHelper
 
-    let(:project)         { create(:jira_project) }
+    let(:project)         { create(:jira_project, :repository) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
     let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
@@ -880,7 +880,7 @@ describe SystemNoteService, services: true do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
 
@@ -1237,6 +1237,56 @@ describe SystemNoteService, services: true do
       diff_id = merge_request.merge_request_diff.id
       line_code = change_position.line_code(project.repository)
       expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+    end
+  end
+
+  describe '.mark_duplicate_issue' do
+    subject { described_class.mark_duplicate_issue(noteable, project, author, canonical_issue) }
+
+    context 'within the same project' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{canonical_issue.to_reference}" }
+    end
+
+    context 'across different projects' do
+      let(:other_project)  { create(:project) }
+      let(:canonical_issue) { create(:issue, project: other_project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{canonical_issue.to_reference(project)}" }
+    end
+  end
+
+  describe '.mark_canonical_issue_of_duplicate' do
+    subject { described_class.mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue) }
+
+    context 'within the same project' do
+      let(:duplicate_issue) { create(:issue, project: project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference} as a duplicate of this issue" }
+    end
+
+    context 'across different projects' do
+      let(:other_project)  { create(:project) }
+      let(:duplicate_issue) { create(:issue, project: other_project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue" }
     end
   end
 end

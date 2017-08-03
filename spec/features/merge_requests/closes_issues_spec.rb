@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge Request closing issues message', feature: true, js: true do
+feature 'Merge Request closing issues message', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:issue_1) { create(:issue, project: project)}
   let(:issue_2) { create(:issue, project: project)}
   let(:merge_request) do
@@ -87,7 +87,7 @@ feature 'Merge Request closing issues message', feature: true, js: true do
       project.team << [user, :developer]
     end
 
-    let(:project) { create(:project, :public, approvals_before_merge: 1) }
+    let(:project) { create(:project, :public, :repository, approvals_before_merge: 1) }
     let(:merge_request_description) { "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'displays closing issue message exactly one time' do

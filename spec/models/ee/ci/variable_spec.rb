@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Variable, models: true do
+describe Ci::Variable do
   subject { build(:ci_variable) }
 
   it { is_expected.to allow_value('*').for(:environment_scope) }

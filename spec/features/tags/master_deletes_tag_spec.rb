@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Master deletes tag', feature: true do
+feature 'Master deletes tag' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
     project.team << [user, :master]

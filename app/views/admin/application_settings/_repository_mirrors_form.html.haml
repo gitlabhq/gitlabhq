@@ -1,9 +1,9 @@
-- if Gitlab.com?
+- if Gitlab.com? && License.feature_available?(:repository_mirrors)
   %fieldset
     %legend Repository mirror settings
     .form-group
       = f.label :mirror_max_delay, class: 'control-label col-sm-2' do
-        Maximum delay (Hours)
+        Maximum delay (Minutes)
       .col-sm-10
         = f.number_field :mirror_max_delay, class: 'form-control', min: 0
         %span.help-block#mirror_max_delay_help_block

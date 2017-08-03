@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Auth, lib: true do
+describe Gitlab::Auth do
   let(:gl_auth) { described_class }
 
   describe 'constants' do
@@ -65,7 +65,7 @@ describe Gitlab::Auth, lib: true do
     end
 
     it 'recognizes other ci services' do
-      project = create(:empty_project)
+      project = create(:project)
       project.create_drone_ci_service(active: true)
       project.drone_ci_service.update(token: 'token')
 

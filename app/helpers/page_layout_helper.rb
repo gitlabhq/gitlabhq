@@ -4,6 +4,10 @@ module PageLayoutHelper
 
     @page_title.push(*titles.compact) if titles.any?
 
+    if show_new_nav? && titles.any? && !defined?(@breadcrumb_title)
+      @breadcrumb_title = @page_title.last
+    end
+
     # Segments are seperated by middot
     @page_title.join(" \u00b7 ")
   end

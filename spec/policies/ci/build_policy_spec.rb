@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::BuildPolicy, :models do
+describe Ci::BuildPolicy do
   let(:user) { create(:user) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -17,7 +17,7 @@ describe Ci::BuildPolicy, :models do
 
   describe '#rules' do
     context 'when user does not have access to the project' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       context 'when public builds are enabled' do
         it 'does not include ability to read build' do
@@ -35,7 +35,7 @@ describe Ci::BuildPolicy, :models do
     end
 
     context 'when anonymous user has access to the project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'when public builds are enabled' do
         it 'includes ability to read build' do
@@ -53,7 +53,7 @@ describe Ci::BuildPolicy, :models do
     end
 
     context 'when team member has access to the project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'team member is a guest' do
         before do
@@ -96,55 +96,57 @@ describe Ci::BuildPolicy, :models do
       end
     end
 
-    describe 'rules for manual actions' do
-      let(:project) { create(:project) }
+    describe 'rules for protected ref' do
+      let(:project) { create(:project, :repository) }
+      let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }
 
       before do
         project.add_developer(user)
       end
 
-      context 'when branch build is assigned to is protected' do
+      context 'when no one can push or merge to the branch' do
         before do
           create(:protected_branch, :no_one_can_push,
-                 name: 'some-ref', project: project)
+                 name: build.ref, project: project)
         end
 
-        context 'when build is a manual action' do
-          let(:build) do
-            create(:ci_build, :manual, ref: 'some-ref', pipeline: pipeline)
-          end
-
-          it 'does not include ability to update build' do
-            expect(policy).to be_disallowed :update_build
-          end
-        end
-
-        context 'when build is not a manual action' do
-          let(:build) do
-            create(:ci_build, ref: 'some-ref', pipeline: pipeline)
-          end
-
-          it 'includes ability to update build' do
-            expect(policy).to be_allowed :update_build
-          end
+        it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :update_build
         end
       end
 
-      context 'when branch build is assigned to is not protected' do
-        context 'when build is a manual action' do
-          let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
-
-          it 'includes ability to update build' do
-            expect(policy).to be_allowed :update_build
-          end
+      context 'when developers can push to the branch' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: build.ref, project: project)
         end
 
-        context 'when build is not a manual action' do
-          let(:build) { create(:ci_build, pipeline: pipeline) }
+        it 'includes ability to update build' do
+          expect(policy).to be_allowed :update_build
+        end
+      end
 
-          it 'includes ability to update build' do
-            expect(policy).to be_allowed :update_build
-          end
+      context 'when no one can create the tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: build.ref, project: project)
+
+          build.update(tag: true)
+        end
+
+        it 'does not include ability to update build' do
+          expect(policy).to be_disallowed :update_build
+        end
+      end
+
+      context 'when no one can create the tag but it is not a tag' do
+        before do
+          create(:protected_tag, :no_one_can_create,
+                 name: build.ref, project: project)
+        end
+
+        it 'includes ability to update build' do
+          expect(policy).to be_allowed :update_build
         end
       end
     end

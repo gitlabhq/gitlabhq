@@ -6,6 +6,7 @@ class License < ActiveRecord::Base
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
   CONTRIBUTION_ANALYTICS_FEATURE = 'GitLab_ContributionAnalytics'.freeze
+  DB_LOAD_BALANCING_FEATURE = 'GitLab_DbLoadBalancing'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
   EXPORT_ISSUES_FEATURE  = 'GitLab_ExportIssues'.freeze
@@ -18,6 +19,8 @@ class License < ActiveRecord::Base
   ISSUE_BOARD_MILESTONE_FEATURE = 'GitLab_IssueBoardMilestone'.freeze
   GROUP_ISSUE_BOARDS_FEATURE =  'GitLab_GroupIssueBoards'.freeze
   ISSUE_WEIGHTS_FEATURE = 'GitLab_IssueWeights'.freeze
+  JENKINS_INTEGRATION_FEATURE = 'GitLab_JenkinsIntegration'.freeze
+  LDAP_EXTRAS_FEATURE = 'GitLab_LdapExtras'.freeze
   MERGE_REQUEST_APPROVERS_FEATURE = 'GitLab_MergeRequestApprovers'.freeze
   MERGE_REQUEST_REBASE_FEATURE = 'GitLab_MergeRequestRebase'.freeze
   MERGE_REQUEST_SQUASH_FEATURE = 'GitLab_MergeRequestSquash'.freeze
@@ -26,17 +29,22 @@ class License < ActiveRecord::Base
   OBJECT_STORAGE_FEATURE = 'GitLab_ObjectStorage'.freeze
   PROTECTED_REFS_FOR_USERS_FEATURE = 'GitLab_RefPermissionsForUsers'.freeze
   PUSH_RULES_FEATURE = 'GitLab_PushRules'.freeze
-  RELATED_ISSUES_FEATURE = 'RelatedIssues'.freeze
+  RELATED_ISSUES_FEATURE = 'GitLab_RelatedIssues'.freeze
+  REPOSITORY_MIRRORS_FEATURE = 'GitLab_RepositoryMirrors'.freeze
+  REPOSITORY_SIZE_LIMIT_FEATURE = 'GitLab_RepositorySizeLimit'.freeze
   SERVICE_DESK_FEATURE = 'GitLab_ServiceDesk'.freeze
   VARIABLE_ENVIRONMENT_SCOPE_FEATURE = 'GitLab_VariableEnvironmentScope'.freeze
 
   FEATURE_CODES = {
     admin_audit_log: ADMIN_AUDIT_LOG_FEATURE,
     auditor_user: AUDITOR_USER_FEATURE,
+    db_load_balancing: DB_LOAD_BALANCING_FEATURE,
     elastic_search: ELASTIC_SEARCH_FEATURE,
     geo: GEO_FEATURE,
+    ldap_extras: LDAP_EXTRAS_FEATURE,
     object_storage: OBJECT_STORAGE_FEATURE,
     related_issues: RELATED_ISSUES_FEATURE,
+    repository_size_limit: REPOSITORY_SIZE_LIMIT_FEATURE,
     service_desk: SERVICE_DESK_FEATURE,
     variable_environment_scope: VARIABLE_ENVIRONMENT_SCOPE_FEATURE,
 
@@ -54,13 +62,15 @@ class License < ActiveRecord::Base
     issue_board_milestone: ISSUE_BOARD_MILESTONE_FEATURE,
     group_issue_boards: GROUP_ISSUE_BOARDS_FEATURE,
     issue_weights: ISSUE_WEIGHTS_FEATURE,
+    jenkins_integration: JENKINS_INTEGRATION_FEATURE,
     merge_request_approvers: MERGE_REQUEST_APPROVERS_FEATURE,
     merge_request_rebase: MERGE_REQUEST_REBASE_FEATURE,
     merge_request_squash: MERGE_REQUEST_SQUASH_FEATURE,
     multiple_issue_assignees: MULTIPLE_ISSUE_ASSIGNEES_FEATURE,
     multiple_issue_boards: MULTIPLE_ISSUE_BOARDS_FEATURE,
     protected_refs_for_users: PROTECTED_REFS_FOR_USERS_FEATURE,
-    push_rules: PUSH_RULES_FEATURE
+    push_rules: PUSH_RULES_FEATURE,
+    repository_mirrors: REPOSITORY_MIRRORS_FEATURE
   }.freeze
 
   STARTER_PLAN = 'starter'.freeze
@@ -80,6 +90,8 @@ class License < ActiveRecord::Base
     { ISSUE_BOARD_FOCUS_MODE_FEATURE => 1 },
     { ISSUE_BOARD_MILESTONE_FEATURE => 1 },
     { ISSUE_WEIGHTS_FEATURE => 1 },
+    { JENKINS_INTEGRATION_FEATURE => 1 },
+    { LDAP_EXTRAS_FEATURE => 1 },
     { MERGE_REQUEST_APPROVERS_FEATURE => 1 },
     { MERGE_REQUEST_REBASE_FEATURE => 1 },
     { MERGE_REQUEST_SQUASH_FEATURE => 1 },
@@ -87,13 +99,16 @@ class License < ActiveRecord::Base
     { MULTIPLE_ISSUE_BOARDS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
-    { RELATED_ISSUES_FEATURE => 1 }
+    { RELATED_ISSUES_FEATURE => 1 },
+    { REPOSITORY_MIRRORS_FEATURE => 1 },
+    { REPOSITORY_SIZE_LIMIT_FEATURE => 1 }
   ].freeze
 
   EEP_FEATURES = [
     *EES_FEATURES,
     { ADMIN_AUDIT_LOG_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
+    { DB_LOAD_BALANCING_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
     { GEO_FEATURE => 1 },
@@ -137,6 +152,7 @@ class License < ActiveRecord::Base
     { OBJECT_STORAGE_FEATURE => 1 },
     { PROTECTED_REFS_FOR_USERS_FEATURE => 1 },
     { PUSH_RULES_FEATURE => 1 },
+    { REPOSITORY_MIRRORS_FEATURE => 1 },
     { SERVICE_DESK_FEATURE => 1 }
   ].freeze
 

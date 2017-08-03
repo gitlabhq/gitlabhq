@@ -2,13 +2,26 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
+  [dir="auto"] {
+    text-align: initial;
+  }
+
   a {
     color: $md-link-color;
   }
 
   img {
-    max-width: 100%;
+    /*max-width: 100%;*/
     margin: 0 0 8px;
+    min-width: 200px;
+    min-height: 100px;
+    background-color: $gray-lightest;
+  }
+
+  img.js-lazy-loaded {
+    min-width: none;
+    min-height: none;
+    background-color: none;
   }
 
   p a:not(.no-attachment-icon) img {
@@ -112,9 +125,12 @@
 
   blockquote p {
     color: $gl-grayish-blue !important;
-    margin: 0;
     font-size: inherit;
     line-height: 1.5;
+
+    &:last-child {
+      margin: 0;
+    }
   }
 
   p {

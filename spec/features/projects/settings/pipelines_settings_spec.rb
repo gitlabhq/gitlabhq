@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature "Pipelines settings", feature: true do
-  let(:project) { create(:empty_project) }
+feature "Pipelines settings" do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 

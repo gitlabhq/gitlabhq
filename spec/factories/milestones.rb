@@ -31,7 +31,7 @@ FactoryGirl.define do
         id = evaluator.parent.id
         evaluator.parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
       else
-        milestone.project = create(:empty_project)
+        milestone.project = create(:project)
       end
     end
 

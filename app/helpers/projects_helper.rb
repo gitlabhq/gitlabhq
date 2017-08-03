@@ -195,7 +195,7 @@ module ProjectsHelper
       controller.controller_name,
       controller.action_name,
       current_application_settings.cache_key,
-      'v2.4'
+      'v2.5'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -417,7 +417,7 @@ module ProjectsHelper
     if project
       import_path = "/Home/Stacks/import"
 
-      repo = project.path_with_namespace
+      repo = project.full_path
       branch ||= project.default_branch
       sha ||= project.commit.short_id
 
@@ -491,7 +491,7 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.path_with_namespace, sha, "readme"].join('-')
+    [@project.full_path, sha, "readme"].join('-')
   end
 
   def current_ref

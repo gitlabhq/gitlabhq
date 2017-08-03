@@ -42,11 +42,6 @@ module EE
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
-      scope :mirrors_to_sync, -> do
-        mirror.joins(:mirror_data).where("next_execution_timestamp <= ? AND import_status NOT IN ('scheduled', 'started')", Time.now)
-          .order_by(:next_execution_timestamp).limit(::Gitlab::Mirror.available_capacity)
-      end
-
       scope :stuck_mirrors, -> do
         mirror.joins(:mirror_data)
           .where("(import_status = 'started' AND project_mirror_data.last_update_started_at < :limit) OR (import_status = 'scheduled' AND project_mirror_data.last_update_scheduled_at < :limit)",
@@ -83,6 +78,11 @@ module EE
         where(visibility_level: ::Gitlab::VisibilityLevel.string_options[level])
       end
     end
+
+    def mirror
+      super && feature_available?(:repository_mirrors)
+    end
+    alias_method :mirror?, :mirror
 
     def mirror_updated?
       mirror? && self.mirror_last_update_at
@@ -140,7 +140,7 @@ module EE
     end
 
     def has_remote_mirror?
-      remote_mirrors.enabled.exists?
+      feature_available?(:repository_mirrors) && remote_mirrors.enabled.exists?
     end
 
     def updating_remote_mirror?
@@ -148,7 +148,9 @@ module EE
     end
 
     def update_remote_mirrors
-      remote_mirrors.each(&:sync)
+      return unless feature_available?(:repository_mirrors)
+
+      remote_mirrors.enabled.each(&:sync)
     end
 
     def mark_stuck_remote_mirrors_as_failed!
@@ -414,6 +416,8 @@ module EE
     end
 
     def size_limit_enabled?
+      return false unless License.feature_available?(:repository_size_limit)
+
       actual_size_limit != 0
     end
 
@@ -437,6 +441,7 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
+    # TODO: check storage type and NOOP when not using Legacy
     def rename_repo
       raise NotImplementedError unless defined?(super)
 
@@ -450,6 +455,27 @@ module EE
         old_path: path_was,
         old_path_with_namespace: old_path_with_namespace
       ).create
+    end
+
+    # Override to reject disabled services
+    def find_or_initialize_services(exceptions: [])
+      available_services = super
+
+      available_services.reject do |service|
+        disabled_services.include?(service.to_param)
+      end
+    end
+
+    def disabled_services
+      return @disabled_services if defined?(@disabled_services)
+
+      @disabled_services = []
+
+      unless feature_available?(:jenkins_integration)
+        @disabled_services.push('jenkins', 'jenkins_deprecated')
+      end
+
+      @disabled_services
     end
 
     private

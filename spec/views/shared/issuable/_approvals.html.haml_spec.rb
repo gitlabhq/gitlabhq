@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'shared/issuable/_approvals.html.haml', :view do
+describe 'shared/issuable/_approvals.html.haml' do
   let(:user) { create(:user) }
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:form) { double('form') }
 

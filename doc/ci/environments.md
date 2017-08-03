@@ -602,14 +602,12 @@ exist, you should see something like:
 >**Notes:**
 >
 - For the monitor dashboard to appear, you need to:
-  - Have enabled the [Kubernetes integration][kube]
-  - Have your app deployed on Kubernetes
   - Have enabled the [Prometheus integration][prom]
+  - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
 - With GitLab 9.2, all deployments to an environment are shown directly on the
   monitoring dashboard
 
-If your application is deployed on Kubernetes and you have enabled Prometheus
-collecting metrics, you can monitor the performance behavior of your app
+If you have enabled Prometheus for collecting metrics, you can monitor the performance behavior of your app
 through the environments.
 
 Once configured, GitLab will attempt to retrieve performance metrics for any

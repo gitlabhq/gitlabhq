@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Profile > Pipeline Quota', feature: true do
+feature 'Profile > Pipeline Quota' do
   let(:user) { create(:user) }
   let(:namespace) { create(:namespace, owner: user) }
-  let!(:project) { create(:empty_project, namespace: namespace, shared_runners_enabled: true) }
+  let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
 
   before do
     gitlab_sign_in(user)
@@ -32,7 +32,7 @@ feature 'Profile > Pipeline Quota', feature: true do
 
   context 'with no projects using shared runners' do
     let(:namespace) { create(:namespace, :with_not_used_build_minutes_limit, owner: user) }
-    let!(:project) { create(:empty_project, namespace: namespace, shared_runners_enabled: false) }
+    let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
 
     it 'shows correct group quota info' do
       visit profile_pipeline_quota_path
@@ -64,7 +64,7 @@ feature 'Profile > Pipeline Quota', feature: true do
 
   context 'minutes over quota' do
     let(:namespace) { create(:namespace, :with_used_build_minutes_limit, owner: user) }
-    let!(:other_project) { create(:empty_project, namespace: namespace, shared_runners_enabled: false) }
+    let!(:other_project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
 
     it 'shows correct group quota and projects info' do
       visit profile_pipeline_quota_path

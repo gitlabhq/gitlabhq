@@ -1,21 +1,29 @@
 - @no_container = true
 - page_title "Labels"
 - hide_class = ''
+- can_admin_label = can?(current_user, :admin_label, @project)
+
+- if show_new_nav? && can?(current_user, :admin_label, @project)
+  - content_for :breadcrumbs_extra do
+    = link_to "New label", new_namespace_project_label_path(@project.namespace, @project), class: "btn btn-new"
+
 = render "shared/mr_head"
 
 - if @labels.exists? || @prioritized_labels.exists?
   %div{ class: container_class }
     .top-area.adjust
       .nav-text
-        Labels can be applied to issues and merge requests. Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+        Labels can be applied to issues and merge requests.
+        - if can_admin_label
+          Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
 
-      .nav-controls
-        - if can?(current_user, :admin_label, @project)
+      - if can_admin_label
+        .nav-controls{ class: ("visible-xs" if show_new_nav?) }
           = link_to new_project_label_path(@project), class: "btn btn-new" do
             New label
 
     .labels
-      - if can?(current_user, :admin_label, @project)
+      - if can_admin_label
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
@@ -28,7 +36,7 @@
 
       - if @labels.present?
         .other-labels
-          - if can?(current_user, :admin_label, @project)
+          - if can_admin_label
             %h5{ class: ('hide' if hide) } Other Labels
           %ul.content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @project, collection: @labels, as: :label

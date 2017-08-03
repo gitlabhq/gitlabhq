@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Group, models: true do
+describe Group do
   let!(:group) { create(:group, :access_requestable) }
 
   describe 'associations' do
@@ -189,7 +189,7 @@ describe Group, models: true do
     let!(:group) { create(:group, :access_requestable, :with_avatar) }
     let(:user) { create(:user) }
     let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-    let(:avatar_path) { "/uploads/system/group/avatar/#{group.id}/dk.png" }
+    let(:avatar_path) { "/uploads/-/system/group/avatar/#{group.id}/dk.png" }
 
     context 'when avatar file is uploaded' do
       before do
@@ -255,6 +255,7 @@ describe Group, models: true do
   describe '#has_owner?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :owner, group: group)
     end
 
     it { expect(group.has_owner?(@members[:owner])).to be_truthy }
@@ -263,11 +264,13 @@ describe Group, models: true do
     it { expect(group.has_owner?(@members[:reporter])).to be_falsey }
     it { expect(group.has_owner?(@members[:guest])).to be_falsey }
     it { expect(group.has_owner?(@members[:requester])).to be_falsey }
+    it { expect(group.has_owner?(nil)).to be_falsey }
   end
 
   describe '#has_master?' do
     before do
       @members = setup_group_members(group)
+      create(:group_member, :invited, :master, group: group)
     end
 
     it { expect(group.has_master?(@members[:owner])).to be_falsey }
@@ -276,6 +279,7 @@ describe Group, models: true do
     it { expect(group.has_master?(@members[:reporter])).to be_falsey }
     it { expect(group.has_master?(@members[:guest])).to be_falsey }
     it { expect(group.has_master?(@members[:requester])).to be_falsey }
+    it { expect(group.has_master?(nil)).to be_falsey }
   end
 
   describe '#lfs_enabled?' do
@@ -372,7 +376,7 @@ describe Group, models: true do
     subject { build(:group, :nested) }
 
     it { is_expected.to be_valid }
-    it { expect(subject.parent).to be_kind_of(Group) }
+    it { expect(subject.parent).to be_kind_of(described_class) }
   end
 
   describe '#members_with_parents', :nested_groups do
@@ -459,7 +463,7 @@ describe Group, models: true do
   end
 
   describe '#secret_variables_for' do
-    let(:project) { create(:empty_project, group: group) }
+    let(:project) { create(:project, group: group) }
 
     let!(:secret_variable) do
       create(:ci_group_variable, value: 'secret', group: group)

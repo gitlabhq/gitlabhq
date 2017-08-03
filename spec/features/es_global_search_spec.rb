@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Global elastic search', feature: true do
+feature 'Global elastic search' do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
@@ -93,6 +93,7 @@ feature 'Global elastic search', feature: true do
       select_filter("Commits")
 
       expect(page).to have_selector('.commit-row-description')
+      expect(page).to have_selector('.project_namespace')
     end
   end
 end

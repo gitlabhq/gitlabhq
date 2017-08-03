@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global Flash */
 
+import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';
@@ -34,7 +35,7 @@ $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
   const ModalStore = gl.issueBoards.ModalStore;
-  const issueBoardsContent = document.querySelector('.js-focus-mode-board');
+  const issueBoardsContent = document.querySelector('.content-wrapper > .js-focus-mode-board');
 
   window.gl = window.gl || {};
 

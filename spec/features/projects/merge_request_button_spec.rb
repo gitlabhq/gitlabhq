@@ -1,25 +1,23 @@
 require 'spec_helper'
 
-feature 'Merge Request button', feature: true do
+feature 'Merge Request button' do
   shared_examples 'Merge request button only shown when allowed' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:forked_project) { create(:project, :public, forked_from_project: project) }
+    let(:project) { create(:project, :public, :repository) }
+    let(:forked_project) { create(:project, :public, :repository, forked_from_project: project) }
 
     context 'not logged in' do
       it 'does not show Create merge request button' do
         visit url
 
-        within("#content-body") do
-          expect(page).not_to have_link(label)
-        end
+        expect(page).not_to have_link(label)
       end
     end
 
     context 'logged in as developer' do
       before do
         sign_in(user)
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'shows Create merge request button' do
@@ -29,7 +27,7 @@ feature 'Merge Request button', feature: true do
 
         visit url
 
-        within("#content-body") do
+        within('#content-body') do
           expect(page).to have_link(label, href: href)
         end
       end
@@ -42,7 +40,7 @@ feature 'Merge Request button', feature: true do
         it 'does not show Create merge request button' do
           visit url
 
-          within("#content-body") do
+          within('#content-body') do
             expect(page).not_to have_link(label)
           end
         end
@@ -57,7 +55,7 @@ feature 'Merge Request button', feature: true do
       it 'does not show Create merge request button' do
         visit url
 
-        within("#content-body") do
+        within('#content-body') do
           expect(page).not_to have_link(label)
         end
       end

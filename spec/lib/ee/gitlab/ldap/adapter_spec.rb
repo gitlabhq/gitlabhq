@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Adapter, lib: true do
+describe Gitlab::LDAP::Adapter do
   include LdapHelpers
 
   it 'includes the EE module' do
-    expect(Gitlab::LDAP::Adapter).to include_module(EE::Gitlab::LDAP::Adapter)
+    expect(described_class).to include_module(EE::Gitlab::LDAP::Adapter)
   end
 
   let(:adapter) { ldap_adapter('ldapmain') }
@@ -43,7 +43,7 @@ describe Gitlab::LDAP::Adapter, lib: true do
   describe '#user_attributes' do
     it 'appends EE-specific attributes' do
       stub_ldap_config(uid: 'uid', sync_ssh_keys: 'sshPublicKey')
-      expect(adapter.user_attributes).to match_array(%w(uid dn cn mail sshPublicKey memberof))
+      expect(adapter.user_attributes).to match_array(%w(uid dn cn email mail memberof sAMAccountName sshPublicKey uid userPrincipalName userid))
     end
   end
 end

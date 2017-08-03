@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService, '#execute', services: true do
+describe Projects::CreateService, '#execute' do
   let(:user) { create :user }
   let(:opts) do
     {

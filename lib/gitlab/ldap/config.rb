@@ -2,6 +2,14 @@
 module Gitlab
   module LDAP
     class Config
+      include ::EE::Gitlab::LDAP::Config
+
+      NET_LDAP_ENCRYPTION_METHOD = {
+        simple_tls: :simple_tls,
+        start_tls:  :start_tls,
+        plain:      nil
+      }.freeze
+
       attr_accessor :provider, :options
 
       InvalidProvider = Class.new(StandardError)
@@ -14,6 +22,12 @@ module Gitlab
         Gitlab.config.ldap.servers.values
       rescue Settingslogic::MissingSetting
         []
+      end
+
+      def self.available_servers
+        return [] unless enabled?
+
+        enabled_extras? ? servers : Array.wrap(servers.first)
       end
 
       def self.providers
@@ -44,7 +58,7 @@ module Gitlab
 
       def adapter_options
         opts = base_options.merge(
-          encryption: encryption
+          encryption: encryption_options
         )
 
         opts.merge!(auth_options) if has_auth?
@@ -55,9 +69,10 @@ module Gitlab
       def omniauth_options
         opts = base_options.merge(
           base: base,
-          method: options['method'],
+          encryption: options['encryption'],
           filter: omniauth_user_filter,
-          name_proc: name_proc
+          name_proc: name_proc,
+          disable_verify_certificates: !options['verify_certificates']
         )
 
         if has_auth?
@@ -66,6 +81,9 @@ module Gitlab
             password: options['password']
           )
         end
+
+        opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
+        opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
 
         opts
       end
@@ -170,15 +188,37 @@ module Gitlab
         base_config.servers.values.find { |server| server['provider_name'] == provider }
       end
 
-      def encryption
-        case options['method'].to_s
-        when 'ssl'
-          :simple_tls
-        when 'tls'
-          :start_tls
-        else
-          nil
-        end
+      def encryption_options
+        method = translate_method(options['encryption'])
+        return nil unless method
+
+        {
+          method: method,
+          tls_options: tls_options(method)
+        }
+      end
+
+      def translate_method(method_from_config)
+        NET_LDAP_ENCRYPTION_METHOD[method_from_config.to_sym]
+      end
+
+      def tls_options(method)
+        return { verify_mode: OpenSSL::SSL::VERIFY_NONE } unless method
+
+        opts = if options['verify_certificates']
+                 OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+               else
+                 # It is important to explicitly set verify_mode for two reasons:
+                 # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
+                 # 2. The net-ldap gem implementation verifies the certificate hostname
+                 #    unless verify_mode is set to VERIFY_NONE.
+                 { verify_mode: OpenSSL::SSL::VERIFY_NONE }
+               end
+
+        opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
+        opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
+
+        opts
       end
 
       def auth_options

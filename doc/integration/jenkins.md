@@ -10,12 +10,25 @@ project service settings. We may remove this in a future release and recommend
 using the new 'Jenkins CI' project service instead which is described in this
 document.
 
-The Jenkins integration includes:
+## Overview
 
-* Trigger a Jenkins build after push to a repository and/or when a merge request
-  is created
-* Show build status on Merge Request page, on each commit and on the project
-  home page
+[Jenkins](https://jenkins.io/) is a great Continuous Integration tool, similar to our built-in
+[GitLab CI](../ci/README.md).
+
+GitLab's Jenkins integration allows you to trigger a Jenkins build when you
+push code to a repository, or when a merge request is created. Additionally,
+it shows the pipeline status on merge requests widgets and on the project's home page.
+
+## Use cases
+
+- Suppose you are new to GitLab, and want to keep using Jenkins until you prepare
+your projects to build with [GitLab CI/CD](../ci/README.md). You set up the
+integration between GitLab and Jenkins, then you migrate to GitLab CI later. While
+you organize yourself and your team to onboard GitLab, you keep your pipelines
+running with Jenkins, but view the results in your project's repository in GitLab.
+- Your team uses [Jenkins Plugins](https://plugins.jenkins.io/) for other proceedings,
+therefore, you opt for keep using Jenkins to build your apps. Show the results of your
+pipelines directly in GitLab.
 
 ## Requirements
 

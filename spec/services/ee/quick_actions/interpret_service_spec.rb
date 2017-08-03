@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe QuickActions::InterpretService, services: true do # rubocop:disable RSpec/FilePath
+describe QuickActions::InterpretService do # rubocop:disable RSpec/FilePath
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
   let(:service) { described_class.new(project, developer) }
 

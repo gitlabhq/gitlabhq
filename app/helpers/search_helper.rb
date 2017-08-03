@@ -137,18 +137,25 @@ module SearchHelper
   end
 
   def search_filter_input_options(type)
-    base_endpoint = @group&.web_url || project_path(@project)
-
-    {
-      id: "filtered-search-#{type}",
-      placeholder: 'Search or filter results...',
-      data: {
-        'project-id' => @project&.try(:id),
-        'group-id' => @group&.try(:id),
-        'username-params' => @users.to_json(only: [:id, :username]),
-        'base-endpoint' => base_endpoint
+    opts =
+      {
+        id: "filtered-search-#{type}",
+        placeholder: 'Search or filter results...',
+        data: {
+          'username-params' => @users.to_json(only: [:id, :username])
+        }
       }
-    }
+
+    if @project.present?
+      opts[:data]['project-id'] = @project.id
+      opts[:data]['base-endpoint'] = project_path(@project)
+    else
+      # Group context
+      opts[:data]['group-id'] = @group.id
+      opts[:data]['base-endpoint'] = group_canonical_path(@group)
+    end
+
+    opts
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the

@@ -16,7 +16,7 @@ module EE
 
       validates :mirror_max_delay,
                 presence: true,
-                numericality: { allow_nil: true, only_integer: true, greater_than: 0 }
+                numericality: { allow_nil: true, only_integer: true, greater_than: :mirror_max_delay_in_minutes }
 
       validates :mirror_max_capacity,
                 presence: true,
@@ -39,7 +39,8 @@ module EE
           repository_size_limit: 0,
           mirror_max_delay: Settings.gitlab['mirror_max_delay'],
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
-          mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold']
+          mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
+          allow_group_owners_to_manage_ldap: true
         )
       end
     end
@@ -49,6 +50,10 @@ module EE
     end
 
     private
+
+    def mirror_max_delay_in_minutes
+      ::Gitlab::Mirror.min_delay_upper_bound / 60
+    end
 
     def mirror_capacity_threshold_less_than
       return unless mirror_max_capacity && mirror_capacity_threshold

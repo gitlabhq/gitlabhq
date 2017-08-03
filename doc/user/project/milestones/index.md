@@ -57,6 +57,10 @@ of that milestone and the issues/merge requests count that it shares across the 
 
 In addition to that you will be able to filter issues or merge requests by group milestones in all projects that belongs to the milestone group.
 
+## Milestone promotion
+
+You will be able to promote a project milestone to a group milestone [in the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/35833).
+
 ## Special milestone filters
 
 In addition to the milestones that exist in the project or group, there are some
@@ -87,3 +91,7 @@ total merge requests and issues.
 are visual representations of the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)
+
+Burndown charts are only available for project milestones currently. They will be available for group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
+
+[Quick actions](../quick_actions.md) are available for assigning and removing project milestones only. [In the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/34778), this will also apply to group milestones.

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Group requester cannot request access to project', feature: true, js: true do
+feature 'Projects > Members > Group requester cannot request access to project', js: true do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }

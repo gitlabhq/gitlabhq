@@ -21,7 +21,7 @@ describe Audit::Details do
     
     context 'project' do
       let(:user_member) { create(:user) }
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:member) { create(:project_member, :developer, user: user_member, project: project) }
       let(:member_access_action) do
         {

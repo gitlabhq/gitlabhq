@@ -9,8 +9,6 @@ class JenkinsDeprecatedService < CiService
 
   validates :project_url, presence: true, if: :activated?
 
-  delegate :execute, to: :service_hook, prefix: nil
-
   after_save :compose_service_hook, if: :activated?
 
   def compose_service_hook
@@ -18,6 +16,12 @@ class JenkinsDeprecatedService < CiService
     jenkins_url = project_url.sub(/job\/.*/, '')
     hook.url = jenkins_url + "/gitlab/build_now"
     hook.save
+  end
+
+  def execute(data, hook_name = 'service_hook')
+    return if project.disabled_services.include?(to_param)
+
+    service_hook.execute(data, hook_name)
   end
 
   def title

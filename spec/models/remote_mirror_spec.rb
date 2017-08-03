@@ -86,7 +86,7 @@ describe RemoteMirror do
   end
 
   context '#sync' do
-    let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
     before do
       Timecop.freeze(Time.now)
@@ -94,6 +94,18 @@ describe RemoteMirror do
 
     after do
       Timecop.return
+    end
+
+    context 'repository mirrors not licensed' do
+      before do
+        stub_licensed_features(repository_mirrors: false)
+      end
+
+      it 'does not schedule RepositoryUpdateRemoteMirrorWorker' do
+        expect(RepositoryUpdateRemoteMirrorWorker).not_to receive(:perform_in)
+
+        remote_mirror.sync
+      end
     end
 
     context 'with remote mirroring enabled' do
@@ -130,7 +142,7 @@ describe RemoteMirror do
   end
 
   context '#updated_since?' do
-    let(:remote_mirror) { create(:project, :remote_mirror).remote_mirrors.first }
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
 
     before do
@@ -180,7 +192,7 @@ describe RemoteMirror do
   end
 
   def create_mirror(params)
-    project = FactoryGirl.create(:project)
+    project = FactoryGirl.create(:project, :repository)
     project.remote_mirrors.create!(params)
   end
 end

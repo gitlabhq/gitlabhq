@@ -14,20 +14,35 @@ describe LdapGroupSyncWorker do
 
   before do
     allow(Sidekiq.logger).to receive(:info)
+    allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
   end
 
   describe '#perform' do
-    it 'syncs a single group when group_id is present' do
-      expect(subject).to receive(:sync_groups).with([group])
+    context 'with the default license key' do
+      it 'syncs a single group when group_id is present' do
+        expect(subject).to receive(:sync_groups).with([group])
 
-      subject.perform(group.id)
+        subject.perform(group.id)
+      end
+
+      it 'creates a proxy for syncing a single provider' do
+        fake_proxy = expect_fake_proxy('the-provider')
+        expect(subject).to receive(:sync_groups).with([group], proxy: fake_proxy)
+
+        subject.perform(group.id, 'the-provider')
+      end
     end
 
-    it 'creates a proxy for syncing a single provider' do
-      fake_proxy = expect_fake_proxy('the-provider')
-      expect(subject).to receive(:sync_groups).with([group], proxy: fake_proxy)
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
 
-      subject.perform(group.id, 'the-provider')
+      it 'does not sync groups' do
+        expect(subject).not_to receive(:sync_groups)
+
+        subject.perform(group.id)
+      end
     end
   end
 

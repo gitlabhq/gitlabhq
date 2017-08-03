@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe AutocompleteController do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
   context 'GET users' do
@@ -135,6 +135,21 @@ describe AutocompleteController do
 
       it { expect(body).to be_kind_of(Array) }
       it { expect(body.size).to eq User.count }
+    end
+
+    context 'user order' do
+      it 'shows exact matches first' do
+        reported_user = create(:user, username: 'reported_user', name: 'Doug')
+        user = create(:user, username: 'user', name: 'User')
+        user1 = create(:user, username: 'user1', name: 'Ian')
+
+        sign_in(user)
+        get(:users, search: 'user')
+
+        response_usernames = JSON.parse(response.body).map { |user| user['username']  }
+
+        expect(response_usernames.take(3)).to match_array([user.username, reported_user.username, user1.username])
+      end
     end
 
     context 'limited users per page' do

@@ -179,6 +179,24 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['external_groups'] = [] if server['external_groups'].nil?
     server['sync_ssh_keys'] = 'sshPublicKey' if server['sync_ssh_keys'].to_s == 'true'
     Settings.ldap['servers'][key] = server
+
+    # For backwards compatibility
+    server['encryption'] ||= server['method']
+    server['encryption'] = 'simple_tls' if server['encryption'] == 'ssl'
+    server['encryption'] = 'start_tls' if server['encryption'] == 'tls'
+
+    # Certificates are not verified for backwards compatibility.
+    # This default should be flipped to true in 9.5.
+    if server['verify_certificates'].nil?
+      server['verify_certificates'] = false
+
+      message = <<-MSG.strip_heredoc
+        LDAP SSL certificate verification is disabled for backwards-compatibility.
+        Please add the "verify_certificates" option to gitlab.yml for each LDAP
+        server. Certificate verification will be enabled by default in GitLab 9.5.
+      MSG
+      Rails.logger.warn(message)
+    end
   end
 end
 
@@ -265,7 +283,7 @@ Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
-Settings.gitlab['mirror_max_delay'] ||= 5
+Settings.gitlab['mirror_max_delay'] ||= 300
 Settings.gitlab['mirror_max_capacity'] ||= 30
 Settings.gitlab['mirror_capacity_threshold'] ||= 15
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
@@ -349,10 +367,6 @@ Settings.pages['external_https']  ||= false unless Settings.pages['external_http
 # Geo
 #
 Settings.gitlab['geo_status_timeout'] ||= 10
-Settings['geo_primary_role'] ||= Settingslogic.new({})
-Settings.geo_primary_role['enabled'] = false if Settings.geo_primary_role['enabled'].nil?
-Settings['geo_secondary_role'] ||= Settingslogic.new({})
-Settings.geo_secondary_role['enabled'] = false if Settings.geo_secondary_role['enabled'].nil?
 
 #
 # Git LFS
@@ -413,10 +427,10 @@ Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
 Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
 Settings.cron_jobs['geo_repository_sync_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_repository_sync_worker']['cron'] ||= '*/5 * * * *'
-Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'GeoRepositorySyncWorker'
+Settings.cron_jobs['geo_repository_sync_worker']['job_class'] ||= 'Geo::RepositorySyncWorker'
 Settings.cron_jobs['geo_file_download_dispatch_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_file_download_dispatch_worker']['cron'] ||= '5 * * * *'
-Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'GeoFileDownloadDispatchWorker'
+Settings.cron_jobs['geo_file_download_dispatch_worker']['job_class'] ||= 'Geo::FileDownloadDispatchWorker'
 Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
@@ -522,10 +536,6 @@ Settings.backup['pg_schema']    = nil
 Settings.backup['path']         = Settings.absolute(Settings.backup['path'] || "tmp/backups/")
 Settings.backup['archive_permissions'] ||= 0600
 Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
-# Convert upload connection settings to use symbol keys, to make Fog happy
-if Settings.backup['upload']['connection']
-  Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
-end
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['storage_class'] ||= nil

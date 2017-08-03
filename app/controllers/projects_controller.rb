@@ -1,6 +1,7 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
+  prepend EE::ProjectsController
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
@@ -50,10 +51,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+
         format.html do
           redirect_to(edit_project_path(@project))
         end
       else
+        flash[:alert] = result[:message]
+
         format.html { render 'edit' }
       end
 
@@ -294,10 +298,10 @@ class ProjectsController < Projects::ApplicationController
 
   def project_params
     params.require(:project)
-      .permit(project_params_ce << project_params_ee)
+      .permit(project_params_attributes)
   end
 
-  def project_params_ce
+  def project_params_attributes
     [
       :avatar,
       :build_allow_git_fetch,
@@ -331,25 +335,6 @@ class ProjectsController < Projects::ApplicationController
         snippets_access_level
         wiki_access_level
       ]
-    ]
-  end
-
-  def project_params_ee
-    %i[
-      approvals_before_merge
-      approvals
-      approver_group_ids
-      approver_ids
-      issues_template
-      merge_method
-      merge_requests_template
-      mirror
-      mirror_trigger_builds
-      mirror_user_id
-      disable_overriding_approvers_per_merge_request
-      repository_size_limit
-      reset_approvals_on_push
-      service_desk_enabled
     ]
   end
 

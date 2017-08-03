@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Issues', feature: true do
+describe 'Issues' do
   include DropzoneHelper
   include IssueHelpers
   include SortingHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   before do
     sign_in(user)
@@ -378,7 +378,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'when I want to reset my incoming email token' do
-    let(:project1) { create(:empty_project, namespace: user.namespace) }
+    let(:project1) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, project: project1) }
 
     before do

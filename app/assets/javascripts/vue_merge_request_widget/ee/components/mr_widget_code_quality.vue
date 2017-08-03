@@ -55,7 +55,7 @@ export default {
       let text = [];
 
       if (this.hasNoneIssues) {
-        text.push('No changes to code quality so far.');
+        text.push('No changes to code quality.');
       } else if (this.hasIssues) {
         if (newIssues.length) {
           newIssuesText = ` degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;

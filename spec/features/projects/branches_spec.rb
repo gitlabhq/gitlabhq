@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'Branches', feature: true do
+describe 'Branches' do
   include ProtectedBranchHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
   context 'logged in as developer' do
@@ -20,7 +20,6 @@ describe 'Branches', feature: true do
         repository.branches_sorted_by(:name).first(20).each do |branch|
           expect(page).to have_content("#{branch.name}")
         end
-        expect(page).to have_content("Protected branches can be managed in project settings")
       end
 
       it 'sorts the branches by name' do
@@ -126,6 +125,14 @@ describe 'Branches', feature: true do
     before do
       sign_in(user)
       project.team << [user, :master]
+    end
+
+    describe 'Initial branches page' do
+      it 'shows description for admin' do
+        visit project_branches_path(project)
+
+        expect(page).to have_content("Protected branches can be managed in project settings")
+      end
     end
 
     describe 'Delete protected branch' do

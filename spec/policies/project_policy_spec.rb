@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectPolicy, models: true do
+describe ProjectPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:dev) { create(:user) }
@@ -8,7 +8,7 @@ describe ProjectPolicy, models: true do
   let(:owner) { create(:user) }
   let(:auditor) { create(:user, :auditor) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
+  let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   let(:guest_permissions) do
     %i[
@@ -94,7 +94,7 @@ describe ProjectPolicy, models: true do
   end
 
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
-    project = create(:empty_project, :private)
+    project = create(:project, :private)
     issue   = create(:issue, project: project)
     user    = issue.author
 
@@ -115,8 +115,50 @@ describe ProjectPolicy, models: true do
     end
   end
 
+  context 'issues feature' do
+    subject { described_class.new(owner, project) }
+
+    context 'when the feature is disabled' do
+      it 'does not include the issues permissions' do
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+
+    context 'when the feature is disabled and external tracker configured' do
+      it 'does not include the issues permissions' do
+        create(:jira_service, project: project)
+
+        project.issues_enabled = false
+        project.save!
+
+        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+      end
+    end
+  end
+
+  context 'when a project has pending invites, and the current user is anonymous' do
+    let(:group) { create(:group, :public) }
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
+    let(:anonymous_permissions) { guest_permissions - user_permissions }
+
+    subject { described_class.new(nil, project) }
+
+    before do
+      create(:group_member, :invited, group: group)
+    end
+
+    it 'does not grant owner access' do
+      expect_allowed(*anonymous_permissions)
+      expect_disallowed(*user_permissions)
+    end
+  end
+
   context 'abilities for non-public projects' do
-    let(:project) { create(:empty_project, namespace: owner.namespace) }
+    let(:project) { create(:project, namespace: owner.namespace) }
 
     subject { described_class.new(current_user, project) }
 
@@ -242,11 +284,28 @@ describe ProjectPolicy, models: true do
     context 'auditor' do
       let(:current_user) { auditor }
 
-      it do
-        is_expected.to be_disallowed(*developer_permissions)
-        is_expected.to be_disallowed(*master_permissions)
-        is_expected.to be_disallowed(*owner_permissions)
-        is_expected.to be_allowed(*auditor_permissions)
+      context 'not a team member' do
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_disallowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
+      end
+
+      context 'team member' do
+        before do
+          project.team << [auditor, :guest]
+        end
+
+        it do
+          is_expected.to be_disallowed(*developer_permissions)
+          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*owner_permissions)
+          is_expected.to be_allowed(*(guest_permissions - auditor_permissions))
+          is_expected.to be_allowed(*auditor_permissions)
+        end
       end
     end
   end

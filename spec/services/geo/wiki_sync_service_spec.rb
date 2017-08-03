@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Geo::WikiSyncService, services: true do
+RSpec.describe Geo::WikiSyncService do
   let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let(:lease) { double(try_obtain: true) }
 
@@ -11,7 +11,7 @@ RSpec.describe Geo::WikiSyncService, services: true do
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
     let(:repository) { project.wiki.repository }
-    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.path_with_namespace}.wiki.git" }
+    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.full_path}.wiki.git" }
 
     before do
       allow(Gitlab::ExclusiveLease).to receive(:new)

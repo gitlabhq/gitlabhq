@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EE::Gitlab::ServiceDesk, lib: true do
+describe EE::Gitlab::ServiceDesk do
   before do
     stub_licensed_features(service_desk: true)
     allow(::Gitlab::IncomingEmail).to receive(:enabled?) { true }

@@ -3,7 +3,6 @@ SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-# ENV['prometheus_multiproc_dir'] = 'tmp/prometheus_multiproc_dir_test'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
@@ -50,7 +49,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
   config.include StubConfiguration
-  config.include EmailHelpers, type: :mailer
+  config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -98,6 +97,10 @@ RSpec.configure do |config|
   config.after(:example, :request_store) do
     RequestStore.end!
     RequestStore.clear!
+  end
+
+  config.before(:example, :mailer) do
+    reset_delivered_emails!
   end
 
   if ENV['CI']
@@ -156,3 +159,10 @@ FactoryGirl::SyntaxRunner.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Geo::RepositoryUpdateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Geo::RepositoryUpdateService do
+  let(:project) { create(:project) }
   let(:clone_url) { project.ssh_url_to_repo }
 
   subject { described_class.new(project, clone_url) }

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
+describe Gitlab::ImportExport::ProjectTreeSaver do
   describe 'saves the project tree into a json object' do
-    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
+    let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
     let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:user) { create(:user) }

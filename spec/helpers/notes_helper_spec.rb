@@ -5,7 +5,7 @@ describe NotesHelper do
 
   let(:owner) { create(:owner) }
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:master) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
@@ -30,7 +30,7 @@ describe NotesHelper do
     end
 
     it 'handles access in different projects' do
-      second_project = create(:empty_project)
+      second_project = create(:project)
       second_project.team << [master, :reporter]
       other_note = create(:note, author: master, project: second_project)
 
@@ -40,7 +40,7 @@ describe NotesHelper do
   end
 
   describe '#discussion_path' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     context 'for a merge request discusion' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
@@ -191,7 +191,7 @@ describe NotesHelper do
 
     it 'return project notes path for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @snippet = create(:project_snippet, project: @project)
       @noteable = @snippet
 
@@ -200,7 +200,7 @@ describe NotesHelper do
 
     it 'return project notes path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @noteable = create(:issue, project: @project)
 
       expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
@@ -216,7 +216,7 @@ describe NotesHelper do
 
     it 'return project notes path for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       note = create(:note_on_project_snippet, project: @project)
 
       expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
@@ -224,7 +224,7 @@ describe NotesHelper do
 
     it 'return project notes path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       note = create(:note_on_issue, project: @project)
 
       expect(helper.note_url(note)).to eq("/nm/test/notes/#{note.id}")
@@ -241,7 +241,7 @@ describe NotesHelper do
 
     it 'returns namespace, project and note for project snippet' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @snippet = create(:project_snippet, project: @project)
       @note = create(:note_on_personal_snippet)
 
@@ -250,7 +250,7 @@ describe NotesHelper do
 
     it 'returns namespace, project and note path for other noteables' do
       namespace = create(:namespace, path: 'nm')
-      @project = create(:empty_project, path: 'test', namespace: namespace)
+      @project = create(:project, path: 'test', namespace: namespace)
       @note = create(:note_on_issue, project: @project)
 
       expect(helper.form_resources).to eq([@project.namespace, @project, @note])
@@ -258,7 +258,7 @@ describe NotesHelper do
   end
 
   describe '#noteable_note_url' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue) { create(:issue, project: project) }
     let(:note) { create(:note_on_issue, noteable: issue, project: project) }
 

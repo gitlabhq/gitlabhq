@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Repository settings', feature: true do
+feature 'Repository settings' do
   let(:project) { create(:project_empty_repo) }
   let(:user) { create(:user) }
   let(:role) { :developer }

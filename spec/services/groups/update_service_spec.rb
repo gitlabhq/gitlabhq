@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::UpdateService, services: true do
+describe Groups::UpdateService do
   let!(:user) { create(:user) }
   let!(:private_group) { create(:group, :private) }
   let!(:internal_group) { create(:group, :internal) }
@@ -13,7 +13,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           public_group.add_user(user, Gitlab::Access::MASTER)
-          create(:empty_project, :public, group: public_group)
+          create(:project, :public, group: public_group)
         end
 
         it "does not change permission level" do
@@ -27,7 +27,7 @@ describe Groups::UpdateService, services: true do
 
         before do
           internal_group.add_user(user, Gitlab::Access::MASTER)
-          create(:empty_project, :internal, group: internal_group)
+          create(:project, :internal, group: internal_group)
         end
 
         it "does not change permission level" do
@@ -94,7 +94,7 @@ describe Groups::UpdateService, services: true do
 
     before do
       internal_group.add_user(user, Gitlab::Access::MASTER)
-      create(:empty_project, :internal, group: internal_group)
+      create(:project, :internal, group: internal_group)
     end
 
     it 'returns true' do

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Projects::Settings::IntegrationsController do
-  let(:project) { create(:empty_project, :public) }
+  let(:namespace) { create(:group, :private) }
+  let(:project) { create(:project, :private, namespace: namespace) }
   let(:user) { create(:user) }
 
   before do
@@ -18,14 +19,31 @@ describe Projects::Settings::IntegrationsController do
     end
   end
 
+  shared_examples 'endpoint with some disabled services' do
+    it 'has some disabled services' do
+      get :show, namespace_id: project.namespace, project_id: project
+
+      expect(active_services).not_to include(*disabled_services)
+    end
+  end
+
+  shared_examples 'endpoint without disabled services' do
+    it 'does not have disabled services' do
+      get :show, namespace_id: project.namespace, project_id: project
+
+      expect(active_services).to include(*disabled_services)
+    end
+  end
+
   context 'Sets correct services list' do
+    let(:active_services) { assigns(:services).map(&:type) }
+    let(:disabled_services) { %w(JenkinsService JenkinsDeprecatedService) }
+
     it 'enables SlackSlashCommandsService and disables GitlabSlackApplication' do
       get :show, namespace_id: project.namespace, project_id: project
 
-      services = assigns(:services).map(&:type)
-
-      expect(services).to include('SlackSlashCommandsService')
-      expect(services).not_to include('GitlabSlackApplicationService')
+      expect(active_services).to include('SlackSlashCommandsService')
+      expect(active_services).not_to include('GitlabSlackApplicationService')
     end
 
     it 'enables GitlabSlackApplication and disables SlackSlashCommandsService' do
@@ -34,10 +52,42 @@ describe Projects::Settings::IntegrationsController do
 
       get :show, namespace_id: project.namespace, project_id: project
 
-      services = assigns(:services).map(&:type)
+      expect(active_services).to include('GitlabSlackApplicationService')
+      expect(active_services).not_to include('SlackSlashCommandsService')
+    end
 
-      expect(services).to include('GitlabSlackApplicationService')
-      expect(services).not_to include('SlackSlashCommandsService')
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'endpoint with some disabled services'
+    end
+
+    context 'with a license key' do
+      context 'when checking of namespace plan is enabled' do
+        before do
+          allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { true }
+        end
+
+        context 'and namespace does not have a plan' do
+          it_behaves_like 'endpoint with some disabled services'
+        end
+
+        context 'and namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'endpoint without disabled services'
+        end
+      end
+
+      context 'when checking of namespace plan is not enabled' do
+        before do
+          allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { false }
+        end
+
+        it_behaves_like 'endpoint without disabled services'
+      end
     end
   end
 end

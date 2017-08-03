@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GroupDestroyWorker do
   let(:group) { create(:group) }
   let(:user) { create(:admin) }
-  let!(:project) { create(:empty_project, namespace: group) }
+  let!(:project) { create(:project, namespace: group) }
 
   subject { described_class.new }
 

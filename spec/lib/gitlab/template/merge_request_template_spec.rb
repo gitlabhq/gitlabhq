@@ -51,7 +51,7 @@ describe Gitlab::Template::MergeRequestTemplate do
     end
 
     context 'when repo is bare or empty' do
-      let(:empty_project) { create(:empty_project) }
+      let(:empty_project) { create(:project) }
 
       before do
         empty_project.add_user(user, Gitlab::Access::MASTER)
@@ -78,7 +78,7 @@ describe Gitlab::Template::MergeRequestTemplate do
     end
 
     context "when repo is empty" do
-      let(:empty_project) { create(:empty_project) }
+      let(:empty_project) { create(:project) }
 
       before do
         empty_project.add_user(user, Gitlab::Access::MASTER)

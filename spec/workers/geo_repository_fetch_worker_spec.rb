@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GeoRepositoryFetchWorker do
   describe '#perform' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     it 'delegates to Geo::RepositoryUpdateService' do
       expect_any_instance_of(Geo::RepositoryUpdateService).to receive(:execute)

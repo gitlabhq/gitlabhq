@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Commit, models: true do
+describe Commit do
   let(:project) { create(:project, :public, :repository) }
   let(:commit)  { project.commit }
 
@@ -19,17 +19,15 @@ describe Commit, models: true do
       expect(commit.author).to eq(user)
     end
 
-    it 'caches the author' do
-      allow(RequestStore).to receive(:active?).and_return(true)
+    it 'caches the author', :request_store do
       user = create(:user, email: commit.author_email)
-      expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
+      expect(User).to receive(:find_by_any_email).and_call_original
 
       expect(commit.author).to eq(user)
-      key = "commit_author:#{commit.author_email}"
+      key = "Commit:author:#{commit.author_email.downcase}"
       expect(RequestStore.store[key]).to eq(user)
 
       expect(commit.author).to eq(user)
-      RequestStore.store.clear
     end
   end
 
@@ -153,7 +151,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create(:empty_project, :public) }
+    let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 
@@ -163,7 +161,7 @@ eos
     end
 
     it 'detects issues that this commit is marked as closing' do
-      ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
+      ext_ref = "#{other_project.full_path}##{other_issue.iid}"
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",

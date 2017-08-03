@@ -6,6 +6,8 @@ module Projects
       @mirror = remote_mirror
       @errors = []
 
+      return success unless remote_mirror.enabled?
+
       begin
         repository.fetch_remote(mirror.ref_name, no_tags: true)
 
@@ -126,7 +128,7 @@ module Projects
 
         remote_ref_id = remote_ref.dereferenced_target.try(:id)
 
-        if remote_ref_id && project.repository.is_ancestor?(remote_ref_id, default_branch_id)
+        if remote_ref_id && project.repository.rugged_is_ancestor?(remote_ref_id, default_branch_id)
           refs_to_delete << name
         end
       end

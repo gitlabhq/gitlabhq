@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Project settings > Merge Requests', feature: true, js: true do
-  let(:project) { create(:empty_project, :public) }
+feature 'Project settings > Merge Requests', :js do
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
   background do

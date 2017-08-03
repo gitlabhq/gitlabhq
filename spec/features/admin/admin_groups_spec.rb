@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin Groups', feature: true do
+feature 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
@@ -166,7 +166,7 @@ feature 'Admin Groups', feature: true do
 
   describe 'shared projects' do
     it 'renders shared project' do
-      empty_project = create(:empty_project)
+      empty_project = create(:project)
       empty_project.project_group_links.create!(
         group_access: Gitlab::Access::MASTER,
         group: group

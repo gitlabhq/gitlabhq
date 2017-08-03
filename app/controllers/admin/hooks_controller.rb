@@ -38,9 +38,9 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def test
-    status, message = hook.execute(sample_hook_data, 'system_hooks')
+    result = TestHooks::SystemService.new(hook, current_user, params[:trigger]).execute
 
-    set_hook_execution_notice(status, message)
+    set_hook_execution_notice(result)
 
     redirect_back_or_default
   end
@@ -65,16 +65,5 @@ class Admin::HooksController < Admin::ApplicationController
       :token,
       :url
     )
-  end
-
-  def sample_hook_data
-    {
-      event_name: "project_create",
-      name: "Ruby",
-      path: "ruby",
-      project_id: 1,
-      owner_name: "Someone",
-      owner_email: "example@gitlabhq.com"
-    }
   end
 end

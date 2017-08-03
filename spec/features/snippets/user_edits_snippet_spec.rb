@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User edits snippet', :js, feature: true do
+feature 'User edits snippet', :js do
   include DropzoneHelper
 
   let(:file_name) { 'test.rb' }
@@ -33,7 +33,7 @@ feature 'User edits snippet', :js, feature: true do
     wait_for_requests
 
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/uploads/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/uploads/system/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})
   end
 
   it 'updates the snippet to make it internal' do

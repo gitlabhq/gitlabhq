@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Project, models: true do
+describe Project do
   describe 'associations' do
     it { is_expected.to delegate_method(:shared_runners_minutes).to(:statistics) }
     it { is_expected.to delegate_method(:shared_runners_seconds).to(:statistics) }
@@ -35,7 +35,7 @@ describe Project, models: true do
   describe "#execute_hooks" do
     context "group hooks" do
       let(:group) { create(:group) }
-      let(:project) { create(:empty_project, namespace: group) }
+      let(:project) { create(:project, namespace: group) }
       let(:group_hook) { create(:group_hook, group: group, push_events: true) }
 
       it 'executes the hook when the feature is enabled' do
@@ -198,7 +198,7 @@ describe Project, models: true do
 
   describe '#mirror_waiting_duration' do
     it 'returns in seconds the time spent in the queue' do
-      project = create(:empty_project, :mirror, :import_scheduled)
+      project = create(:project, :mirror, :import_scheduled)
       mirror_data = project.mirror_data
 
       mirror_data.update_attributes(last_update_started_at: mirror_data.last_update_scheduled_at + 5.minutes)
@@ -209,7 +209,7 @@ describe Project, models: true do
 
   describe '#mirror_update_duration' do
     it 'returns in seconds the time spent updating' do
-      project = create(:empty_project, :mirror, :import_started)
+      project = create(:project, :mirror, :import_started)
 
       project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
 
@@ -217,8 +217,64 @@ describe Project, models: true do
     end
   end
 
+  describe '#has_remote_mirror?' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    subject { project.has_remote_mirror? }
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'returns true when a remote mirror is enabled' do
+      is_expected.to be_truthy
+    end
+
+    it 'returns false when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns false when remote mirror is disabled' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      is_expected.to be_falsy
+    end
+  end
+
+  describe '#update_remote_mirrors' do
+    let(:project) { create(:project, :remote_mirror, :import_started) }
+    delegate :update_remote_mirrors, to: :project
+
+    before do
+      allow_any_instance_of(RemoteMirror).to receive(:refresh_remote)
+    end
+
+    it 'syncs enabled remote mirror' do
+      expect_any_instance_of(RemoteMirror).to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does nothing when unlicensed' do
+      stub_licensed_features(repository_mirrors: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+
+    it 'does not sync disabled remote mirrors' do
+      project.remote_mirrors.first.update_attributes(enabled: false)
+
+      expect_any_instance_of(RemoteMirror).not_to receive(:sync)
+
+      update_remote_mirrors
+    end
+  end
+
   describe '#any_runners_limit' do
-    let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
+    let(:project) { create(:project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
     let(:shared_runner) { create(:ci_runner, :shared) }
 
@@ -240,7 +296,7 @@ describe Project, models: true do
       context 'with used pipeline minutes' do
         let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
         let(:project) do
-          create(:empty_project,
+          create(:project,
             namespace: namespace,
             shared_runners_enabled: shared_runners_enabled)
         end
@@ -258,7 +314,7 @@ describe Project, models: true do
     context 'with used pipeline minutes' do
       let(:namespace) { create(:namespace, :with_used_build_minutes_limit) }
       let(:project) do
-        create(:empty_project,
+        create(:project,
           namespace: namespace,
           shared_runners_enabled: true)
       end
@@ -274,7 +330,7 @@ describe Project, models: true do
   end
 
   describe '#shared_runners_minutes_limit_enabled?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { project.shared_runners_minutes_limit_enabled? }
 
@@ -322,11 +378,53 @@ describe Project, models: true do
     end
   end
 
+  describe '#size_limit_enabled?' do
+    let(:project) { create(:project) }
+
+    context 'when repository_size_limit is not configured' do
+      it 'is disabled' do
+        expect(project.size_limit_enabled?).to be_falsey
+      end
+    end
+
+    context 'when repository_size_limit is configured' do
+      before do
+        project.update_attributes(repository_size_limit: 1024)
+      end
+
+      context 'with an EES license' do
+        let!(:license) { create(:license, plan: License::STARTER_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'with an EEP license' do
+        let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
+
+        it 'is enabled' do
+          expect(project.size_limit_enabled?).to be_truthy
+        end
+      end
+
+      context 'without a License' do
+        before do
+          License.destroy_all
+        end
+
+        it 'is disabled' do
+          expect(project.size_limit_enabled?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#service_desk_enabled?' do
-    let!(:license) { create(:license, data: build(:gitlab_license, restrictions: { plan: License::PREMIUM_PLAN }).export) }
+    let!(:license) { create(:license, plan: License::PREMIUM_PLAN) }
     let(:namespace) { create(:namespace) }
 
-    subject(:project) { build(:empty_project, :private, namespace: namespace, service_desk_enabled: true) }
+    subject(:project) { build(:project, :private, namespace: namespace, service_desk_enabled: true) }
 
     before do
       allow(::Gitlab).to receive(:com?).and_return(true)
@@ -361,7 +459,7 @@ describe Project, models: true do
   end
 
   describe '#service_desk_address' do
-    let(:project) { create(:empty_project, service_desk_enabled: true) }
+    let(:project) { create(:project, service_desk_enabled: true) }
 
     before do
       allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(true)
@@ -375,7 +473,7 @@ describe Project, models: true do
   end
 
   describe '#secret_variables_for' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     let!(:secret_variable) do
       create(:ci_variable, value: 'secret', project: project)
@@ -626,7 +724,7 @@ describe Project, models: true do
       { ff: false, rebase: false, ff_licensed: false, rebase_licensed: false, method: :merge }
     ].each do |spec|
       context spec.inspect do
-        let(:project) { build(:empty_project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
+        let(:project) { build(:project, merge_requests_rebase_enabled: spec[:rebase], merge_requests_ff_only_enabled: spec[:ff]) }
         let(:spec) { spec }
 
         subject { project.merge_method }
@@ -654,21 +752,65 @@ describe Project, models: true do
       it 'logs the Geo::RepositoryRenamedEvent' do
         stub_container_registry_config(enabled: false)
 
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo", "#{project.full_path}")
-          .and_return(true)
-
-        allow(gitlab_shell).to receive(:mv_repository)
-          .ordered
-          .with(project.repository_storage_path, "#{project.namespace.full_path}/foo.wiki", "#{project.full_path}.wiki")
-          .and_return(true)
+        allow(gitlab_shell).to receive(:mv_repository).twice.and_return(true)
 
         expect(Geo::RepositoryRenamedEventStore).to receive(:new)
-          .with(instance_of(Project), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
+          .with(instance_of(described_class), old_path: 'foo', old_path_with_namespace: "#{project.namespace.full_path}/foo")
           .and_call_original
 
         expect { project.rename_repo }.to change(Geo::RepositoryRenamedEvent, :count).by(1)
+      end
+    end
+  end
+
+  shared_examples 'project with disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to match_array(disabled_services)
+    end
+  end
+
+  shared_examples 'project without disabled services' do
+    it 'has some disabled services' do
+      expect(project.disabled_services).to be_empty
+    end
+  end
+
+  describe '#disabled_services' do
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, namespace: namespace) }
+    let(:disabled_services) { %w(jenkins jenkins_deprecated) }
+
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
+
+      it_behaves_like 'project with disabled services'
+    end
+
+    context 'with a license key' do
+      context 'when checking of namespace plan is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'and namespace does not have a plan' do
+          it_behaves_like 'project with disabled services'
+        end
+
+        context 'and namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it_behaves_like 'project without disabled services'
+        end
+      end
+
+      context 'when checking of namespace plan is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'project without disabled services'
       end
     end
   end

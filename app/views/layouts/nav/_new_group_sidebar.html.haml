@@ -1,32 +1,46 @@
 .nav-sidebar
-  = link_to group_path(@group), title: @group.name, class: 'context-header' do
-    .avatar-container.s40.group-avatar
-      = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
-    .group-title
-      = @group.name
+  .context-header
+    = link_to group_path(@group), title: @group.name do
+      .avatar-container.s40.group-avatar
+        = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
+      .group-title
+        = @group.name
+    = button_tag class: 'close-nav-button', type: 'button' do
+      %span.sr-only Close sidebar
+      = icon ('times')
   %ul.sidebar-top-level-items
-    = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
-      = link_to group_path(@group), title: 'Home' do
-        %span
-          Group
+    = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
+      = link_to group_path(@group), title: 'About group' do
+        .nav-icon-container
+          = custom_icon('project')
+        %span.nav-item-name
+          About
 
       %ul.sidebar-sub-level-items
         = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
-          = link_to group_path(@group), title: 'Group Home' do
+          = link_to group_path(@group), title: 'Group details' do
             %span
-              Home
+              Details
 
         = nav_link(path: 'groups#activity') do
           = link_to activity_group_path(@group), title: 'Activity' do
             %span
               Activity
 
+        - if @group.feature_available?(:contribution_analytics)
+          = nav_link(path: 'analytics#show') do
+            = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+              %span
+                Contribution Analytics
+
     = nav_link(path: ['groups#issues', 'groups#boards', 'labels#index', 'milestones#index']) do
       = link_to issues_group_path(@group), title: 'Issues' do
-        %span
-          Issues
+        .nav-icon-container
+          = custom_icon('issues')
+        %span.nav-item-name
           - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
-          %span.badge.count= number_with_delimiter(issues.count)
+          Issues
+        %span.badge.count= number_with_delimiter(issues.count)
 
       %ul.sidebar-sub-level-items
         = nav_link(path: 'groups#issues', html_options: { class: 'home' }) do
@@ -51,18 +65,24 @@
 
     = nav_link(path: 'groups#merge_requests') do
       = link_to merge_requests_group_path(@group), title: 'Merge Requests' do
-        %span
-          Merge Requests
+        .nav-icon-container
+          = custom_icon('mr_bold')
+        %span.nav-item-name
           - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
-          %span.badge.count= number_with_delimiter(merge_requests.count)
+          Merge Requests
+        %span.badge.count= number_with_delimiter(merge_requests.count)
     = nav_link(path: 'group_members#index') do
       = link_to group_group_members_path(@group), title: 'Members' do
-        %span
+        .nav-icon-container
+          = custom_icon('members')
+        %span.nav-item-name
           Members
     - if current_user && can?(current_user, :admin_group, @group)
       = nav_link(path: %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]) do
         = link_to edit_group_path(@group), title: 'Settings' do
-          %span
+          .nav-icon-container
+            = custom_icon('settings')
+          %span.nav-item-name
             Settings
         %ul.sidebar-sub-level-items
           = nav_link(path: 'groups#edit') do

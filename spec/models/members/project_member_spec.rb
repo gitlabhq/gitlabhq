@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectMember, models: true do
+describe ProjectMember do
   describe 'associations' do
     it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end
@@ -24,7 +24,7 @@ describe ProjectMember, models: true do
   describe '.add_user' do
     it 'adds the user as a member' do
       user = create(:user)
-      project = create(:empty_project)
+      project = create(:project)
 
       expect(project.users).not_to include(user)
 
@@ -82,8 +82,8 @@ describe ProjectMember, models: true do
 
   describe '.import_team' do
     before do
-      @project_1 = create(:empty_project)
-      @project_2 = create(:empty_project)
+      @project_1 = create(:project)
+      @project_2 = create(:project)
 
       @user_1 = create :user
       @user_2 = create :user
@@ -112,7 +112,7 @@ describe ProjectMember, models: true do
 
   describe '.add_users_to_projects' do
     it 'adds the given users to the given projects' do
-      projects = create_list(:empty_project, 2)
+      projects = create_list(:project, 2)
       users = create_list(:user, 2)
 
       described_class.add_users_to_projects(
@@ -130,8 +130,8 @@ describe ProjectMember, models: true do
 
   describe '.truncate_teams' do
     before do
-      @project_1 = create(:empty_project)
-      @project_2 = create(:empty_project)
+      @project_1 = create(:project)
+      @project_2 = create(:project)
 
       @user_1 = create :user
       @user_2 = create :user
@@ -139,7 +139,7 @@ describe ProjectMember, models: true do
       @project_1.team << [@user_1, :developer]
       @project_2.team << [@user_2, :reporter]
 
-      ProjectMember.truncate_teams([@project_1.id, @project_2.id])
+      described_class.truncate_teams([@project_1.id, @project_2.id])
     end
 
     it { expect(@project_1.users).to be_empty }

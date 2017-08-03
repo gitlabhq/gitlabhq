@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.string "clientside_sentry_dsn"
     t.boolean "prometheus_metrics_enabled", default: false, null: false
     t.boolean "check_namespace_plan", default: false, null: false
-    t.integer "mirror_max_delay", default: 5, null: false
+    t.integer "mirror_max_delay", default: 300, null: false
     t.integer "mirror_max_capacity", default: 100, null: false
     t.integer "mirror_capacity_threshold", default: 50, null: false
     t.boolean "authorized_keys_enabled", default: true, null: false
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
+    t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -357,6 +358,17 @@ ActiveRecord::Schema.define(version: 20170718190627) do
 
   add_index "ci_pipeline_schedules", ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
   add_index "ci_pipeline_schedules", ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
+
+  create_table "ci_pipeline_variables", force: :cascade do |t|
+    t.string "key", null: false
+    t.text "value"
+    t.text "encrypted_value"
+    t.string "encrypted_value_salt"
+    t.string "encrypted_value_iv"
+    t.integer "pipeline_id", null: false
+  end
+
+  add_index "ci_pipeline_variables", ["pipeline_id", "key"], name: "index_ci_pipeline_variables_on_pipeline_id_and_key", unique: true, using: :btree
 
   create_table "ci_pipelines", force: :cascade do |t|
     t.string "ref"
@@ -691,6 +703,36 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.datetime "updated_at"
   end
 
+  create_table "gpg_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.binary "primary_keyid"
+    t.binary "fingerprint"
+    t.text "key"
+  end
+
+  add_index "gpg_keys", ["fingerprint"], name: "index_gpg_keys_on_fingerprint", unique: true, using: :btree
+  add_index "gpg_keys", ["primary_keyid"], name: "index_gpg_keys_on_primary_keyid", unique: true, using: :btree
+  add_index "gpg_keys", ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
+
+  create_table "gpg_signatures", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "project_id"
+    t.integer "gpg_key_id"
+    t.boolean "valid_signature"
+    t.binary "commit_sha"
+    t.binary "gpg_key_primary_keyid"
+    t.text "gpg_key_user_name"
+    t.text "gpg_key_user_email"
+  end
+
+  add_index "gpg_signatures", ["commit_sha"], name: "index_gpg_signatures_on_commit_sha", unique: true, using: :btree
+  add_index "gpg_signatures", ["gpg_key_id"], name: "index_gpg_signatures_on_gpg_key_id", using: :btree
+  add_index "gpg_signatures", ["gpg_key_primary_keyid"], name: "index_gpg_signatures_on_gpg_key_primary_keyid", using: :btree
+  add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -941,6 +983,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.text "new_path", null: false
     t.text "old_path", null: false
     t.text "diff", null: false
+    t.boolean "binary"
   end
 
   add_index "merge_request_diff_files", ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
@@ -1211,6 +1254,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.datetime "updated_at"
     t.integer "owner_id"
     t.string "owner_type"
+    t.boolean "trusted", default: false, null: false
   end
 
   add_index "oauth_applications", ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type", using: :btree
@@ -1390,6 +1434,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
     t.boolean "disable_overriding_approvers_per_merge_request"
+    t.text "delete_error"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1907,6 +1952,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
+  add_foreign_key "ci_pipeline_variables", "ci_pipelines", column: "pipeline_id", name: "fk_f29c5f4380", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
   add_foreign_key "ci_pipelines", "projects", name: "fk_86635dbd80", on_delete: :cascade
@@ -1934,6 +1980,9 @@ ActiveRecord::Schema.define(version: 20170718190627) do
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
+  add_foreign_key "gpg_keys", "users", on_delete: :cascade
+  add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
+  add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
@@ -1951,6 +2000,7 @@ ActiveRecord::Schema.define(version: 20170718190627) do
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
+  add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
   add_foreign_key "merge_requests", "projects", column: "target_project_id", name: "fk_a6963e8447", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade

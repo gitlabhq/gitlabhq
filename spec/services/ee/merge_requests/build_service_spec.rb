@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::BuildService, services: true do # rubocop:disable RSpec/FilePath
+describe MergeRequests::BuildService do # rubocop:disable RSpec/FilePath
   let(:source_project) { project }
   let(:target_project) { project }
   let(:user) { create(:user) }
@@ -14,7 +14,7 @@ describe MergeRequests::BuildService, services: true do # rubocop:disable RSpec/
   let(:commits) { nil }
 
   let(:service) do
-    MergeRequests::BuildService.new(project, user,
+    described_class.new(project, user,
                                     description: description,
                                     source_branch: source_branch,
                                     target_branch: target_branch,
@@ -28,7 +28,7 @@ describe MergeRequests::BuildService, services: true do # rubocop:disable RSpec/
 
   context 'project default template configured' do
     let(:template) { "I am the template, you fill me in" }
-    let(:project) { create(:empty_project, merge_requests_template: template) }
+    let(:project) { create(:project, merge_requests_template: template) }
 
     context 'issuable default templates feature not available' do
       before do

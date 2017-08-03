@@ -3,6 +3,7 @@ module API
     include APIGuard
 
     allow_access_with_scope :api
+    prefix :api
 
     version %w(v3 v4), using: :path
 
@@ -89,6 +90,9 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
@@ -118,7 +122,8 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::Milestones
+    mount ::API::ProjectMilestones
+    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings

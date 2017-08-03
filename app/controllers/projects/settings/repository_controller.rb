@@ -1,6 +1,8 @@
 module Projects
   module Settings
     class RepositoryController < Projects::ApplicationController
+      include SafeMirrorParams
+
       before_action :authorize_admin_project!
 
       prepend ::EE::Projects::Settings::RepositoryController

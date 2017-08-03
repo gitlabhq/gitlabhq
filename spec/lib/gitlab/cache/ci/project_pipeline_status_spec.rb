@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let(:pipeline_status) { described_class.new(project) }
   let(:cache_key) { "projects/#{project.id}/pipeline_status" }
 
@@ -18,7 +18,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
     let(:sha) { '424d1b73bc0d3cb726eb7dc4ce17a4d48552f8c6' }
     let(:ref) { 'master' }
     let(:pipeline_info) { { sha: sha, status: status, ref: ref } }
-    let!(:project_without_status) { create(:project) }
+    let!(:project_without_status) { create(:project, :repository) }
 
     describe '.load_in_batch_for_projects' do
       it 'preloads pipeline_status on projects' do
@@ -195,7 +195,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
     end
 
     it "doesn't fail for an empty project" do
-      status_for_empty_commit = described_class.new(create(:empty_project))
+      status_for_empty_commit = described_class.new(create(:project))
 
       status_for_empty_commit.load_status
 
@@ -243,7 +243,7 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
     end
 
     it "deletes the cache if the repository doesn't have a head commit" do
-      empty_project = create(:empty_project)
+      empty_project = create(:project)
       Gitlab::Redis::Cache.with do |redis|
         redis.mapped_hmset(cache_key,
                            { sha: 'sha', status: 'pending', ref: 'master' })

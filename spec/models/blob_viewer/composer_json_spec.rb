@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::ComposerJson, model: true do
+describe BlobViewer::ComposerJson do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:project) }
   let(:data) do
     <<-SPEC.strip_heredoc
       {

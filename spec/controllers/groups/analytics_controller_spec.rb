@@ -5,7 +5,7 @@ describe Groups::AnalyticsController do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:group) { create(:group) }
-  let(:project) { create(:project, group: group) }
+  let(:project) { create(:project, :repository, group: group) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:push_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }

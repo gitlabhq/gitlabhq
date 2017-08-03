@@ -33,7 +33,7 @@ describe Projects::BranchesController do
         let(:ref) { "master" }
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.path_with_namespace}/tree/merge_branch")
+            .to redirect_to("/#{project.full_path}/tree/merge_branch")
         end
       end
 
@@ -42,7 +42,7 @@ describe Projects::BranchesController do
         let(:ref) { "master" }
         it 'redirects' do
           expect(subject)
-            .to redirect_to("/#{project.path_with_namespace}/tree/alert('merge');")
+            .to redirect_to("/#{project.full_path}/tree/alert('merge');")
         end
       end
 
@@ -82,7 +82,7 @@ describe Projects::BranchesController do
           issue_iid: issue.iid
 
         expect(subject)
-          .to redirect_to("/#{project.path_with_namespace}/tree/1-feature-branch")
+          .to redirect_to("/#{project.full_path}/tree/1-feature-branch")
       end
 
       it 'posts a system note' do
@@ -96,7 +96,7 @@ describe Projects::BranchesController do
       end
 
       context 'repository-less project' do
-        let(:project) { create :empty_project }
+        let(:project) { create :project }
 
         it 'redirects to newly created branch' do
           result = { status: :success, branch: double(name: branch) }

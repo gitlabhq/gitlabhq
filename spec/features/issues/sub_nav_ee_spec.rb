@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe 'Issues sub nav EE', :feature do
+describe 'Issues sub nav EE' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     project.add_master(user)

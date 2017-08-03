@@ -199,6 +199,7 @@ MergeRequestDiffFile:
 - a_mode
 - b_mode
 - too_large
+- binary
 Ci::Pipeline:
 - id
 - project_id
@@ -412,6 +413,7 @@ Project:
 - service_desk_enabled
 - last_repository_updated_at
 - ci_config_path
+- delete_error
 Author:
 - name
 ProjectFeature:

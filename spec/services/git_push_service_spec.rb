@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitPushService, services: true do
+describe GitPushService do
   include RepoHelpers
 
   let(:user)     { create(:user) }
@@ -15,7 +15,7 @@ describe GitPushService, services: true do
   end
 
   describe 'with remote mirrors' do
-    let(:project)  { create(:project, :remote_mirror) }
+    let(:project)  { create(:project, :repository, :remote_mirror) }
 
     subject do
       described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
@@ -122,7 +122,7 @@ describe GitPushService, services: true do
 
         it { is_expected.to include(id: commit.id) }
         it { is_expected.to include(message: commit.safe_message) }
-        it { is_expected.to include(timestamp: commit.date.xmlschema) }
+        it { expect(subject[:timestamp].in_time_zone).to eq(commit.date.in_time_zone) }
         it do
           is_expected.to include(
             url: [
@@ -192,8 +192,8 @@ describe GitPushService, services: true do
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do
         expect(UpdateMergeRequestsWorker).to receive(:perform_async)
-            .with(project.id, user.id, blankrev, 'newrev', ref)
-        execute_service(project, user, blankrev, 'newrev', ref)
+                                                .with(project.id, user.id, blankrev, 'newrev', ref)
+        execute_service(project, user, blankrev, 'newrev', ref )
       end
     end
 
@@ -271,7 +271,6 @@ describe GitPushService, services: true do
         stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
         create(:protected_branch, :no_one_can_push, :developers_can_merge,
-               :remove_default_access_levels,
                project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
@@ -467,11 +466,12 @@ describe GitPushService, services: true do
         stub_jira_urls("JIRA-1")
 
         allow(closing_commit).to receive_messages({
-                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-                                                    safe_message: message,
-                                                    author_name: commit_author.name,
-                                                    author_email: commit_author.email
-                                                  })
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: message,
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
+
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
@@ -497,7 +497,7 @@ describe GitPushService, services: true do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
         let(:comment_body) do
           {
-            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/commit/#{closing_commit.id}]."
           }.to_json
         end
 
@@ -527,21 +527,57 @@ describe GitPushService, services: true do
           end
         end
 
-        context "using wrong markdown" do
-          let(:message) { "this is some work.\n\ncloses #1" }
+        context "using internal issue reference" do
+          context 'when internal issues are disabled' do
+            before do
+              project.issues_enabled = false
+              project.save!
+            end
+            let(:message) { "this is some work.\n\ncloses #1" }
 
-          it "does not initiates one api call to jira server to close the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+            it "does not initiates one api call to jira server to close the issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref)
 
-            expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+              expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
+            end
+
+            it "does not initiates one api call to jira server to comment on the issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref)
+
+              expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+                body: comment_body
+              ).once
+            end
           end
 
-          it "does not initiates one api call to jira server to comment on the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+          context 'when internal issues are enabled' do
+            let(:issue) { create(:issue, project: project) }
+            let(:message) { "this is some work.\n\ncloses JIRA-1 \n\n closes #{issue.to_reference}" }
 
-            expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
-              body: comment_body
-            ).once
+            it "initiates one api call to jira server to close the jira issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref)
+
+              expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
+            end
+
+            it "initiates one api call to jira server to comment on the jira issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref)
+
+              expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
+                body: comment_body
+              ).once
+            end
+
+            it "closes the internal issue" do
+              execute_service(project, commit_author, oldrev, newrev, ref)
+              expect(issue.reload).to be_closed
+            end
+
+            it "adds a note indicating that the issue is now closed" do
+              expect(SystemNoteService).to receive(:change_status)
+                .with(issue, project, commit_author, "closed", closing_commit)
+              execute_service(project, commit_author, oldrev, newrev, ref)
+            end
           end
         end
       end
@@ -681,6 +717,24 @@ describe GitPushService, services: true do
       expect(ProcessCommitWorker).not_to receive(:perform_async)
 
       service.process_commit_messages
+    end
+  end
+
+  describe '#update_signatures' do
+    let(:service) do
+      described_class.new(
+        project,
+        user,
+        oldrev: oldrev,
+        newrev: newrev,
+        ref: 'refs/heads/master'
+      )
+    end
+
+    it 'calls CreateGpgSignatureWorker.perform_async for each commit' do
+      expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+
+      execute_service(project, user, oldrev, newrev, ref)
     end
   end
 

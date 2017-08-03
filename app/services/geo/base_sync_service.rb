@@ -4,6 +4,8 @@ module Geo
   EmptyCloneUrlPrefixError = Class.new(StandardError)
 
   class BaseSyncService
+    include ::Gitlab::Geo::ProjectLogHelpers
+
     class << self
       attr_accessor :type
     end
@@ -19,9 +21,9 @@ module Geo
 
     def execute
       try_obtain_lease do
-        log("Started #{type} sync")
+        log_info("Started #{type} sync")
         sync_repository
-        log("Finished #{type} sync")
+        log_info("Finished #{type} sync")
       end
     end
 
@@ -46,11 +48,11 @@ module Geo
     end
 
     def try_obtain_lease
-      log("Trying to obtain lease to sync #{type}")
+      log_info("Trying to obtain lease to sync #{type}")
       repository_lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
 
       unless repository_lease
-        log("Could not obtain lease to sync #{type}")
+        log_info("Could not obtain lease to sync #{type}")
         return
       end
 
@@ -59,14 +61,14 @@ module Geo
       # We should release the lease for a repository, only if we have obtained
       # it. If something went wrong when syncing the repository, we should wait
       # for the lease timeout to try again.
-      log("Releasing leases to sync #{type}")
+      log_info("Releasing leases to sync #{type}")
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
     def update_registry(type, started_at: nil, finished_at: nil)
       return unless started_at || finished_at
 
-      log("Updating #{type} sync information")
+      log_info("Updating #{type} sync information")
 
       attrs = {}
 
@@ -82,10 +84,6 @@ module Geo
 
     def type
       self.class.type
-    end
-
-    def log(message)
-      Rails.logger.info("#{self.class.name}: #{message} for project #{project.path_with_namespace} (#{project.id})")
     end
   end
 end

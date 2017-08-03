@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Boards::ListService do
   shared_examples 'boards list service' do
     let(:service) { described_class.new(parent, double) }
-
     before do
       create_list(:board, 2, parent: parent)
     end

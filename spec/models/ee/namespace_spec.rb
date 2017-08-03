@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Namespace, models: true do
+describe Namespace do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_one(:namespace_statistics) }
@@ -143,7 +143,7 @@ describe Namespace, models: true do
     context 'with project' do
       context 'and disabled shared runners' do
         let!(:project) do
-          create(:empty_project,
+          create(:project,
             namespace: namespace,
             shared_runners_enabled: false)
         end
@@ -153,7 +153,7 @@ describe Namespace, models: true do
 
       context 'and enabled shared runners' do
         let!(:project) do
-          create(:empty_project,
+          create(:project,
             namespace: namespace,
             shared_runners_enabled: true)
         end
@@ -196,7 +196,7 @@ describe Namespace, models: true do
 
     context 'with project' do
       let!(:project) do
-        create(:empty_project,
+        create(:project,
           namespace: namespace,
           shared_runners_enabled: true)
       end
@@ -224,7 +224,7 @@ describe Namespace, models: true do
 
     context 'with project' do
       let!(:project) do
-        create(:empty_project,
+        create(:project,
           namespace: namespace,
           shared_runners_enabled: true)
       end

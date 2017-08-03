@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::Elastic::ProjectSearchResults, lib: true do
+describe Gitlab::Elastic::ProjectSearchResults do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:query) { 'hello world' }
 
   before do
@@ -34,8 +34,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
   describe "search" do
     it "returns correct amounts" do
-      project = create :project, :public
-      project1 = create :project, :public
+      project = create :project, :public, :repository
+      project1 = create :project, :public, :repository
 
       project.repository.index_blobs
       project.repository.index_commits
@@ -53,18 +53,18 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, 'term', project.id)
+      result = described_class.new(user, 'term', project.id)
       expect(result.notes_count).to eq(1)
       expect(result.wiki_blobs_count).to eq(1)
       expect(result.blobs_count).to eq(1)
 
-      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id)
+      result1 = described_class.new(user, 'initial', project.id)
       expect(result1.commits_count).to eq(1)
     end
 
     context 'visibility checks' do
       it 'shows wiki for guests' do
-        project = create :empty_project, :public
+        project = create :project, :public
         guest = create :user
         project.add_guest(guest)
 
@@ -74,14 +74,14 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
         Gitlab::Elastic::Helper.refresh_index
 
-        result = Gitlab::Elastic::ProjectSearchResults.new(guest, 'term', project.id)
+        result = described_class.new(guest, 'term', project.id)
         expect(result.wiki_blobs_count).to eq(1)
       end
     end
   end
 
   describe "search for commits in non-default branch" do
-    let(:project) { create(:project, :public, visibility) }
+    let(:project) { create(:project, :public, :repository, visibility) }
     let(:visibility) { :repository_enabled }
     let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
@@ -125,8 +125,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   end
 
   describe 'search for blobs in non-default branch' do
-    let(:project) { create(:project, :public, :repository_private) }
-    let(:result) { Gitlab::Elastic::ProjectSearchResults.new(user, 'initial', project.id, 'test') }
+    let(:project) { create(:project, :public, :repository, :repository_private) }
+    let(:result) { described_class.new(user, 'initial', project.id, 'test') }
 
     subject(:blobs) { result.objects('blobs') }
 

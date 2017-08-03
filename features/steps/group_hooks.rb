@@ -14,12 +14,12 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   end
 
   step 'I own project "Shop" in group "Sourcing"' do
-    @project = create(:project,
+    @project = create(:project, :repository,
                       name: 'Shop', group: @group)
   end
 
   step 'I own empty project "Empty Shop" in group "Sourcing"' do
-    @project = create(:empty_project,
+    @project = create(:project,
                       name: 'Shop', group: @group)
   end
 
@@ -55,7 +55,7 @@ class Spinach::Features::GroupHooks < Spinach::FeatureSteps
   step 'hook should be triggered' do
     expect(current_path).to eq group_hooks_path(@group)
     expect(page).to have_selector '.flash-notice',
-                              text: 'Hook successfully executed.'
+                              text: 'Hook executed successfully: HTTP 200'
   end
 
   step 'I should see hook error message' do

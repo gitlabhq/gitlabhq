@@ -136,35 +136,83 @@ describe JenkinsService do
     end
   end
 
-  describe '#execute' do
-    it 'adds default web hook headers to the request' do
-      user = create(:user, username: 'username')
-      project = create(:project, name: 'project')
-      push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-      jenkins_service = described_class.create(jenkins_params)
-      stub_request(:post, jenkins_hook_url)
-
+  shared_examples 'project with disabled Jenkins service' do
+    it 'does not invoke the Jenkins API' do
       jenkins_service.execute(push_sample_data)
 
-      expect(
-        a_request(:post, jenkins_hook_url)
-          .with(headers: { 'X-Gitlab-Event' => 'Push Hook', 'Authorization' => jenkins_authorization })
-      ).to have_been_made.once
+      expect(a_request(:any, jenkins_hook_url)).not_to have_been_made
+    end
+  end
+
+  shared_examples 'project with enabled Jenkins service' do
+    it 'invokes the Jenkins API' do
+      jenkins_service.execute(push_sample_data)
+
+      expect(a_request(:post, jenkins_hook_url)).to have_been_made.once
+    end
+  end
+
+  describe '#execute' do
+    let(:user) { create(:user, username: 'username') }
+    let(:namespace) { create(:group, :private) }
+    let(:project) { create(:project, :private, name: 'project', namespace: namespace) }
+    let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
+    let(:jenkins_service) { described_class.create(jenkins_params) }
+
+    before do
+      stub_request(:post, jenkins_hook_url)
     end
 
-    it 'request url contains properly serialized username and password' do
-      user = create(:user, username: 'username')
-      project = create(:project, name: 'project')
-      push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-      jenkins_service = described_class.create(jenkins_params)
-      stub_request(:post, jenkins_hook_url)
+    context 'without a license key' do
+      before do
+        License.destroy_all
+      end
 
-      jenkins_service.execute(push_sample_data)
+      it_behaves_like 'project with disabled Jenkins service'
+    end
 
-      expect(
-        a_request(:post, 'http://jenkins.example.com/project/my_project')
-          .with(headers: { 'Authorization' => jenkins_authorization })
-      ).to have_been_made.once
+    context 'with a license key' do
+      context 'when namespace plan check is not enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: false)
+        end
+
+        it_behaves_like 'project with enabled Jenkins service'
+      end
+
+      context 'when namespace plan check is enabled' do
+        before do
+          stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        end
+
+        context 'when namespace does not have a plan' do
+          let(:namespace) { create(:group, :private) }
+
+          it_behaves_like 'project with disabled Jenkins service'
+        end
+
+        context 'when namespace has a plan' do
+          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+
+          it 'adds default web hook headers to the request' do
+            jenkins_service.execute(push_sample_data)
+
+            expect(
+              a_request(:post, jenkins_hook_url)
+                .with(headers: { 'X-Gitlab-Event' => 'Push Hook', 'Authorization' => jenkins_authorization })
+            ).to have_been_made.once
+          end
+
+          it 'request url contains properly serialized username and password' do
+            jenkins_service.execute(push_sample_data)
+
+            expect(
+              a_request(:post, 'http://jenkins.example.com/project/my_project')
+                .with(headers: { 'Authorization' => jenkins_authorization })
+            ).to have_been_made.once
+          end
+        end
+      end
     end
   end
 

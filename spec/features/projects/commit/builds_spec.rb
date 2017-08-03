@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'project commit pipelines', js: true do
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   background do
     user = create(:user)

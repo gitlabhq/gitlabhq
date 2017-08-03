@@ -3,6 +3,8 @@ class LdapGroupSyncWorker
   include DedicatedSidekiqQueue
 
   def perform(group_ids, provider = nil)
+    return unless Gitlab::LDAP::Config.enabled_extras?
+
     groups = Group.where(id: Array(group_ids))
 
     if provider

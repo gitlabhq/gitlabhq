@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Backup::Repository, lib: true do
+describe Backup::Repository do
   let(:progress) { StringIO.new }
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   before do
     allow(progress).to receive(:puts)

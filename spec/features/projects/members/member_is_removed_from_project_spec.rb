@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Member is removed from project', feature: true do
+feature 'Projects > Members > Member is removed from project' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

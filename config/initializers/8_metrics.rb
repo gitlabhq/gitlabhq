@@ -136,6 +136,9 @@ def instrument_classes(instrumentation)
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 
+  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/34509
+  instrumentation.instrument_method(MarkupHelper, :link_to_gfm)
+
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
 end
@@ -145,7 +148,7 @@ Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_
 
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
-  config.middleware.insert(1, Gitlab::Metrics::ConnectionRackMiddleware)
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
 if Gitlab::Metrics.enabled?

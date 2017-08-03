@@ -43,7 +43,7 @@ module Gitlab
             notes: Note.count,
             pages_domains: PagesDomain.count,
             projects: Project.count,
-            projects_prometheus_active: PrometheusService.active.count,
+            projects_imported_from_github: Project.where(import_type: 'github').count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,
@@ -52,7 +52,7 @@ module Gitlab
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-          }.merge(service_desk_counts)
+          }.merge(service_desk_counts).merge(services_usage)
         }
       end
 
@@ -105,6 +105,18 @@ module Gitlab
         else # Older licenses
           'EE'
         end
+      end
+
+      def services_usage
+        types = {
+          JiraService: :projects_jira_active,
+          SlackService: :projects_slack_notifications_active,
+          SlackSlashCommandsService: :projects_slack_slash_active,
+          PrometheusService: :projects_prometheus_active
+        }
+
+        results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
+        results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
       end
     end
   end

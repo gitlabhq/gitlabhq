@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Search::SnippetService, services: true do
+describe Search::SnippetService do
   let(:author) { create(:author) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let!(:public_snippet)   { create(:snippet, :public, content: 'password: XXX') }
   let!(:internal_snippet) { create(:snippet, :internal, content: 'password: XXX') }

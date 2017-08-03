@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
+describe 'Issue Boards', js: true do
   include DragTo
 
-  let(:project) { create(:empty_project, :public) }
+  let(:group) { create(:group, :nested) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:milestone) { create(:milestone, title: "v2.2", project: project) }
   let!(:board)  { create(:board, project: project) }
   let!(:board_with_milestone)  { create(:board, project: project, milestone: milestone) }

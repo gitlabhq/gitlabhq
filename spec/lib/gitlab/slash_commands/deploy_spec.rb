@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::Deploy, service: true do
+describe Gitlab::SlashCommands::Deploy do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
     let(:regex_match) { described_class.match('deploy staging to production') }
 

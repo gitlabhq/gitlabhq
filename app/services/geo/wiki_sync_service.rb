@@ -9,7 +9,7 @@ module Geo
     end
 
     def fetch_wiki_repository
-      log('Fetching wiki repository')
+      log_info('Fetching wiki repository')
       update_registry(:wiki, started_at: DateTime.now)
 
       begin
@@ -21,12 +21,12 @@ module Geo
              Gitlab::Shell::Error,
              ProjectWiki::CouldNotCreateWikiError,
              Geo::EmptyCloneUrlPrefixError => e
-        Rails.logger.error("#{self.class.name}: Error syncing wiki repository for project #{project.path_with_namespace}: #{e}")
+        log_error("Error syncing wiki repository", e)
       end
     end
 
     def ssh_url_to_wiki
-      "#{primary_ssh_path_prefix}#{project.path_with_namespace}.wiki.git"
+      "#{primary_ssh_path_prefix}#{project.full_path}.wiki.git"
     end
   end
 end

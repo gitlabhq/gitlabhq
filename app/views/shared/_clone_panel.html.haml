@@ -11,7 +11,7 @@
         %span
           = default_clone_protocol.upcase
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
+      %ul.dropdown-menu.dropdown-menu-selectable.dropdown-menu-right.clone-options-dropdown
         %li
           = ssh_clone_button(project)
         %li
@@ -25,24 +25,5 @@
     = clipboard_button(target: '#project_clone', title: _("Copy URL to clipboard"), class: "btn-default btn-clipboard")
 
     = geo_button(modal_target: '#modal-geo-info') if Gitlab::Geo.secondary?
-
-:javascript
-  $('ul.clone-options-dropdown a').on('click',function(e){
-    e.preventDefault();
-    var $this = $(this);
-    $('a.clone-dropdown-btn span').text($this.text());
-    $('#project_clone').val($this.attr('href'));
-  });
-
-  // Change URLs in Geo Clone Dialog information text
-  $('ul.clone-options-dropdown a').on('click',function(e){
-    e.preventDefault();
-    var $this = $(this);
-
-    $('#modal-geo-info').data({
-      cloneUrlSecondary: $this.attr('href'),
-      cloneUrlPrimary: $this.data('primaryUrl') || ''
-    });
-  });
 
 = render 'shared/geo_info_modal', project: project if Gitlab::Geo.secondary?
