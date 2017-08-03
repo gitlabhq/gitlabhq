@@ -58,10 +58,11 @@ class Projects::BlobController < Projects::ApplicationController
           simple_viewer: blob.simple_viewer&.class&.partial_name,
           rich_viewer: blob.rich_viewer&.class&.partial_name,
           show_viewer_switcher: !!blob.show_viewer_switcher?,
+          render_error: blob.simple_viewer&.render_error || blob.rich_viewer&.render_error,
           raw_path: project_raw_path(project, @id),
           blame_path: project_blame_path(project, @id),
           commits_path: project_commits_path(project, @id),
-          permalink: project_blob_path(project, File.join(@commit.id, @path)),
+          permalink: project_blob_path(project, File.join(@commit.id, @path))
         )
       end
     end
