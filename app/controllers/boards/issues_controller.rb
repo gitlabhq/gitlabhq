@@ -12,7 +12,7 @@ module Boards
       make_sure_position_is_set(issues) unless Gitlab::Geo.secondary?
 
       render json: {
-        issues: serialize_as_json(issues),
+        issues: serialize_as_json(issues.preload(:project)),
         size: issues.total_count
       }
     end
@@ -78,9 +78,9 @@ module Boards
     end
 
     def serialize_as_json(resource)
-      resource.preload(:project).as_json(
+      resource.as_json(
         labels: true,
-        only: [:id, :iid, :title, :confidential, :due_date, :relative_position],
+        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },

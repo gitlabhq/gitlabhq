@@ -70,7 +70,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
     cardUrl() {
       var baseUrl = this.issueLinkBase;
 
-      if(this.groupId) {
+      if(this.groupId && this.issue.project) {
         baseUrl = this.issueLinkBase.replace(":project_path", this.issue.project.path);
       }
 
