@@ -12,7 +12,7 @@ describe 'Promotions', js: true do
       project.team << [user, :master]
     end
 
-    it 'should show no promotion at all '
+    it 'should show no promotion at all' do
       visit edit_project_path(project)
       expect(page).not_to have_selector('#promote_service_desk')
     end
