@@ -39,7 +39,6 @@ module Gitlab
             parsed_queues
           end
 
-
         @logger.info("Starting cluster with #{queues.length} processes")
 
         @processes = SidekiqCluster.start(queues, @environment, @rails_path)
