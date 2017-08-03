@@ -2,6 +2,8 @@ module Gitlab
   module Git
     module Storage
       class CircuitBreaker
+        FailureInfo = Struct.new(:last_failure, :failure_count)
+
         attr_reader :storage,
                     :hostname,
                     :storage_path,
@@ -9,6 +11,8 @@ module Gitlab
                     :failure_wait_time,
                     :failure_reset_time,
                     :storage_timeout
+
+        delegate :last_failure, :failure_count, to: :failure_info
 
         def self.reset_all!
           pattern = "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}*"
@@ -93,7 +97,7 @@ module Gitlab
         end
 
         def track_storage_inaccessible
-          @failure_info = [Time.now, failure_count + 1]
+          @failure_info = FailureInfo.new(Time.now, failure_count + 1)
 
           Gitlab::Git::Storage.redis.with do |redis|
             redis.pipelined do
@@ -107,7 +111,7 @@ module Gitlab
         def track_storage_accessible
           return if no_failures?
 
-          @failure_info = [nil, 0]
+          @failure_info = FailureInfo.new(nil, 0)
 
           Gitlab::Git::Storage.redis.with do |redis|
             redis.pipelined do
@@ -115,14 +119,6 @@ module Gitlab
               redis.hset(cache_key, :failure_count, 0)
             end
           end
-        end
-
-        def last_failure
-          failure_info.first
-        end
-
-        def failure_count
-          failure_info.last
         end
 
         def failure_info
@@ -136,7 +132,7 @@ module Gitlab
 
           last_failure = Time.at(last_failure.to_i) if last_failure.present?
 
-          [last_failure, failure_count.to_i]
+          FailureInfo.new(last_failure, failure_count.to_i)
         end
 
         def cache_key
