@@ -46,7 +46,7 @@ module Gitlab
             existing = ::Geo::ProjectRegistry.where(project_id: project_ids).pluck(:project_id)
             missing_projects = project_ids - existing
 
-            Gitlab::Geo::Logger.debug(
+            Gitlab::Geo::Logger.info(
               class: self.class.name,
               message: "Missing projects",
               projects: missing_projects,
