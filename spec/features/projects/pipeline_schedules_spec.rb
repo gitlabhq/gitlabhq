@@ -219,6 +219,29 @@ feature 'Pipeline Schedules', :js do
         end
       end
     end
+
+    context 'when active is true and next_run_at is NULL' do
+      background do
+        create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
+          pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
+          pipeline_schedule.reload
+          expect(pipeline_schedule.active).to be_truthy
+          expect(pipeline_schedule.next_run_at).to be_nil
+        end
+
+        visit_pipelines_schedules
+        find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+      end
+
+      scenario 'user edit and recover the problematic pipeline schedule' do
+        expect(find("#schedule_cron").value).to eq('')
+        fill_in 'schedule_cron', with: '* 1 2 3 4'
+        click_button 'Save pipeline schedule'
+        page.within('.pipeline-schedule-table-row:nth-child(1)') do
+          expect(page).to have_css(".next-run-cell time")
+        end
+      end
+    end
   end
 
   context 'logged in as non-member' do
