@@ -1,7 +1,7 @@
 .block.due_date
   .title
     Due date
-    - if can_admin_issue
+    - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
@@ -15,7 +15,7 @@
           \-
           %a.js-remove-due-date{ href: "#", role: "button" }
             remove due date
-  - if can_admin_issue
+  - if can_admin_issue?
     .selectbox
       %input{ type: "hidden",
         name: "issue[due_date]",

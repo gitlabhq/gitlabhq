@@ -1,7 +1,7 @@
 .block.milestone
   .title
     Milestone
-    - if can_admin_issue
+    - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value
@@ -9,7 +9,7 @@
       None
     %span.bold.has-tooltip{ "v-if" => "issue.milestone" }
       {{ issue.milestone.title }}
-  - if can_admin_issue
+  - if can_admin_issue?
     .selectbox
       %input{ type: "hidden",
         ":value" => "issue.milestone.id",

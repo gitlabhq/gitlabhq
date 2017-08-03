@@ -1,7 +1,7 @@
 .block.labels
   .title
     Labels
-    - if can_admin_issue
+    - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
       = link_to "Edit", "#", class: "edit-link pull-right"
   .value.issuable-show-labels
@@ -11,7 +11,7 @@
       "v-for" => "label in issue.labels" }
       %span.label.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
         {{ label.title }}
-  - if can_admin_issue
+  - if can_admin_issue?
     .selectbox
       %input{ type: "hidden",
         name: "issue[label_names][]",

@@ -36,10 +36,6 @@ class ListIssue {
     this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
   }
 
-  updateUrl() {
-    "vsf"
-  }
-
   addLabel (label) {
     if (!this.findLabel(label)) {
       this.labels.push(new ListLabel(label));

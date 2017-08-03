@@ -62,7 +62,7 @@ module BoardsHelper
     @current_board_parent ||= @project || @group
   end
 
-  def can_admin_issue
+  def can_admin_issue?
     can?(current_user, :admin_issue, current_board_parent)
   end
 
