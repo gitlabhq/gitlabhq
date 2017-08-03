@@ -90,3 +90,31 @@
     }
   }
 }
+
+/* Pure CSS License Key Preview Toggle */
+.modal-upload-trial-license {
+  .trial-license-preview,
+  .show-license,
+  .hide-license:target {
+    display: none;
+  }
+
+  .hide-license,
+  .hide-license:target + .show-license,
+  .hide-license:target ~ .trial-license-preview {
+    display: block;
+  }
+
+  .show-license,
+  .hide-license {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 18px;
+    color: $gl-gray-light;
+
+    &:hover {
+      text-decoration: none;
+      color: $gl-gray-dark;
+    }
+  }
+}
