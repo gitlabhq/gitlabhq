@@ -1,29 +1,34 @@
 <script>
 /* global monaco */
 import Store from '../stores/repo_store';
+import Service from '../services/repo_service';
 import Helper from '../helpers/repo_helper';
 
 const RepoEditor = {
   data: () => Store,
 
   mounted() {
-    const monacoInstance = this.monaco.editor.create(this.$el, {
-      model: null,
-      readOnly: true,
-      contextmenu: false,
-    });
+    Service.getRaw(this.activeFile.raw_path)
+    .then((rawResponse) => {
+      Store.blobRaw = rawResponse.data;
 
-    Store.monacoInstance = monacoInstance;
+      const monacoInstance = this.monaco.editor.create(this.$el, {
+        model: null,
+        readOnly: true,
+        contextmenu: false,
+      });
 
-    this.addMonacoEvents();
+      Store.monacoInstance = monacoInstance;
 
-    Helper.getContent().then(() => {
+      this.addMonacoEvents();
+
       const languages = this.monaco.languages.getLanguages();
       const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
       this.showHide();
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
       this.monacoInstance.setModel(newModel);
+
     }).catch(Helper.loadingError);
   },
 
@@ -62,14 +67,6 @@ const RepoEditor = {
     },
 
     editMode() {
-      const readOnly = !this.editMode;
-
-      Store.readOnly = readOnly;
-
-      this.monacoInstance.updateOptions({
-        readOnly,
-      });
-
       if (this.editMode) {
         $('.project-refs-form').addClass('disabled');
         $('.fa-long-arrow-right').show();

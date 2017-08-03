@@ -38,6 +38,10 @@
   @include truncate(250px);
 }
 
+#editable-mode {
+  display: inline-block;
+}
+
 .tree-content-holder {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;

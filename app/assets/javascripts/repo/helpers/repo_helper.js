@@ -160,23 +160,20 @@ const RepoHelper = {
           Store.binaryMimeType = data.mime_type;
           // file might be undefined
           RepoHelper.setBinaryDataAsBase64(data);
-          data.binary = true;
-        } else {
+          const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
+          RepoHelper.setBinaryDataAsBase64(rawUrl, data);
+          Store.setViewToPreview();
+        } else if (!Store.isPreviewView()) {
           Service.getRaw(data.raw_path)
-          .then(response => {
-            Store.blobRaw = response.data;
-          })
-          // Store.blobRaw = data.plain;
-          data.binary = false;
+            .then((rawResponse) => {
+              Store.blobRaw = rawResponse.data;
+              data.plain = rawResponse.data;
+
+              RepoHelper.setFile(data, file);
+            }).catch(RepoHelper.loadingError);
         }
 
-        if (!file.url) file.url = location.pathname;
-
-        data.url = file.url;
-        data.newContent = '';
-
-        Store.addToOpenedFiles(data);
-        Store.setActiveFiles(data);
+        if (Store.isPreviewView()) RepoHelper.setFile(data, file);
 
         // if the file tree is empty
         if (Store.files.length === 0) {
@@ -192,8 +189,18 @@ const RepoHelper = {
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
-    })
-    .catch(RepoHelper.loadingError);
+    }).catch(RepoHelper.loadingError);
+  },
+
+  setFile(data, file) {
+    const newFile = data;
+
+    newFile.url = file.url || location.pathname;
+    newFile.url = file.url;
+    newFile.newContent = '';
+
+    Store.addToOpenedFiles(newFile);
+    Store.setActiveFiles(newFile);
   },
 
   toFA(icon) {
