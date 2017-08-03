@@ -20,6 +20,7 @@ const RepoStore = {
   submodules: [],
   blobRaw: '',
   blobRendered: '',
+  currentBlobView: 'preview',
   openedFiles: [],
   tabSize: 100,
   defaultTabSize: 100,
@@ -209,6 +210,11 @@ const RepoStore = {
     RepoStore.activeFile.changed = RepoStore.activeFile.plain !== RepoStore.activeFile.newContent;
     currentFile.changed = RepoStore.activeFile.changed;
     currentFile.newContent = contents;
+  },
+
+  toggleBlobView() {
+    console.log('toggleBlobView');
+    RepoStore.currentBlobView = RepoStore.currentBlobView === 'preview' ? 'repo-editor' : 'preview';
   },
 
   // getters

@@ -166,6 +166,7 @@ const RepoHelper = {
           const rawUrl = RepoHelper.getRawURLFromBlobURL(file.url || Service.url);
           RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           data.binary = true;
+          Store.currentBlobView = 'preview';
         } else {
           Service.getRaw(data.raw_path)
           .then(response => {

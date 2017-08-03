@@ -21,14 +21,15 @@ export default {
         return;
       }
       this.editMode = !this.editMode;
+      Store.toggleBlobView();
     },
   },
 }
 </script>
 
 <template>
-<a href="#" @click.prevent="editClicked" v-cloak v-if="isCommitable">
+<button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable" :disabled="binary">
   <i :class="buttonIcon"></i>
   <span>{{buttonLabel}}</span>
-</a>
+</button>
 </template>

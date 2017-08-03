@@ -17,14 +17,12 @@ const RepoEditor = {
 
     this.addMonacoEvents();
 
-    Helper.getContent().then(() => {
-      const languages = this.monaco.languages.getLanguages();
-      const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      this.showHide();
-      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
+    const languages = this.monaco.languages.getLanguages();
+    const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
+    this.showHide();
+    const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
-      this.monacoInstance.setModel(newModel);
-    }).catch(Helper.loadingError);
+    this.monacoInstance.setModel(newModel);
   },
 
   methods: {

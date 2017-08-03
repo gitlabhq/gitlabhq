@@ -7,6 +7,7 @@ import RepoBinaryViewer from './repo_binary_viewer.vue';
 import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import Store from '../stores/repo_store';
+import RepoHelper from '../helpers/repo_helper';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
 
 export default {
@@ -20,6 +21,16 @@ export default {
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
     'repo-commit-section': RepoCommitSection,
     'popup-dialog': PopupDialog,
+    preview: { // POC
+      data: () => Store,
+      template: '<div v-html="activeFile.html"></div>',
+    },
+  },
+
+  mounted() {
+    RepoHelper.getContent().then(() => {
+
+    }).catch(RepoHelper.loadingError);
   },
 
   methods: {
@@ -31,6 +42,8 @@ export default {
       this.dialog.open = false;
       this.dialog.status = status;
     },
+
+    toggleBlobView: Store.toggleBlobView,
   },
 };
 </script>
@@ -40,8 +53,8 @@ export default {
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
     <repo-file-buttons/>
-    <repo-editor/>
-    <repo-binary-viewer/>
+    <component :is="currentBlobView"></component>
+    <!-- <repo-binary-viewer/> soon™ -->
   </div>
   <repo-commit-section/>
   <popup-dialog
