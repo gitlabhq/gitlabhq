@@ -200,7 +200,6 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
-        'users',
         'monitoring',
         'burndown_chart',
       ],

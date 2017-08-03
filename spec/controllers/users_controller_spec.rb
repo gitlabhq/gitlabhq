@@ -80,9 +80,9 @@ describe UsersController do
     it 'renders calendar' do
       sign_in(user)
 
-      get :calendar, username: user.username
+      get :calendar, username: user.username, format: :json
 
-      expect(response).to render_template('calendar')
+      expect(response).to have_http_status(200)
     end
 
     context 'forked project' do

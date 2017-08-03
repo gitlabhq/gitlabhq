@@ -771,7 +771,7 @@ describe API::V3::Projects do
         dot_user = create(:user, username: 'dot.user')
         project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
-        get v3_api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+        get v3_api("/projects/#{CGI.escape(project.full_path)}", dot_user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end

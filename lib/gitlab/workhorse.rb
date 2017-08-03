@@ -35,7 +35,10 @@ module Gitlab
                           when 'git_receive_pack'
                             Gitlab::GitalyClient.feature_enabled?(:post_receive_pack)
                           when 'git_upload_pack'
-                            Gitlab::GitalyClient.feature_enabled?(:post_upload_pack)
+                            Gitlab::GitalyClient.feature_enabled?(
+                              :post_upload_pack,
+                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT
+                            )
                           when 'info_refs'
                             true
                           else

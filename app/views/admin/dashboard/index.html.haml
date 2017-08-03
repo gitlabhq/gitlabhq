@@ -175,7 +175,7 @@
           .well-segment.well-centered
             = link_to admin_groups_path do
               %h3.text-center
-                Groups
+                Groups:
                 = number_with_delimiter(Group.count)
             %hr
             = link_to 'New group', new_admin_group_path, class: "btn btn-new"

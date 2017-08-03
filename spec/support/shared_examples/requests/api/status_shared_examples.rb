@@ -9,7 +9,7 @@ shared_examples_for '400 response' do
   end
 
   it 'returns 400' do
-    expect(response).to have_http_status(400)
+    expect(response).to have_gitlab_http_status(400)
   end
 end
 
@@ -20,7 +20,7 @@ shared_examples_for '403 response' do
   end
 
   it 'returns 403' do
-    expect(response).to have_http_status(403)
+    expect(response).to have_gitlab_http_status(403)
   end
 end
 
@@ -32,7 +32,7 @@ shared_examples_for '404 response' do
   end
 
   it 'returns 404' do
-    expect(response).to have_http_status(404)
+    expect(response).to have_gitlab_http_status(404)
     expect(json_response).to be_an Object
 
     if message.present?

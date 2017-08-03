@@ -1,7 +1,7 @@
 module EE
   module Admin
     module ApplicationSettingsController
-      def permitted_application_setting_attributes
+      def visible_application_setting_attributes
         attrs = super
 
         if License.feature_available?(:repository_mirrors)

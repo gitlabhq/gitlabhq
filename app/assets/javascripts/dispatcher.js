@@ -23,6 +23,8 @@
 /* global NamespaceSelects */
 /* global Project */
 /* global ProjectAvatar */
+/* global MergeRequest */
+/* global Compare */
 /* global CompareAutocomplete */
 /* global PathLocks */
 /* global ProjectFindFile */
@@ -72,6 +74,7 @@ import initSettingsPanels from './settings_panels';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
+import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
@@ -255,6 +258,19 @@ import AuditLogs from './audit_logs';
           new gl.IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
+          const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
+          if (mrNewCompareNode) {
+            new Compare({
+              targetProjectUrl: mrNewCompareNode.dataset.targetProjectUrl,
+              sourceBranchUrl: mrNewCompareNode.dataset.sourceBranchUrl,
+              targetBranchUrl: mrNewCompareNode.dataset.targetBranchUrl,
+            });
+          } else {
+            const mrNewSubmitNode = document.querySelector('.js-merge-request-new-submit');
+            new MergeRequest({
+              action: mrNewSubmitNode.dataset.mrSubmitAction,
+            });
+          }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();
@@ -294,6 +310,10 @@ import AuditLogs from './audit_logs';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+          const mrShowNode = document.querySelector('.merge-request');
+          window.mergeRequest = new MergeRequest({
+            action: mrShowNode.dataset.mrAction,
+          });
           initIssuableSidebar();
           initNotes();
           break;
@@ -325,6 +345,7 @@ import AuditLogs from './audit_logs';
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
           new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
           break;
         case 'projects:edit':
           new UsersSelect();
@@ -616,6 +637,13 @@ import AuditLogs from './audit_logs';
             case 'repository':
               shortcut_handler = new ShortcutsNavigation();
           }
+          break;
+        case 'users':
+          const action = path[1];
+          import(/* webpackChunkName: 'user_profile' */ './users')
+            .then(user => user.default(action))
+            .catch(() => {});
+          break;
       }
       // If we haven't installed a custom shortcut handler, install the default one
       if (!shortcut_handler) {

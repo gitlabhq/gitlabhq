@@ -143,7 +143,7 @@ describe Projects::DestroyService do
         it_behaves_like 'handles errors thrown during async destroy', "Failed to remove project repository"
       end
 
-      context 'when `execute` raises any other error' do
+      context 'when `execute` raises expected error' do
         before do
           expect_any_instance_of(Project)
             .to receive(:destroy!).and_raise(StandardError.new("Other error message"))

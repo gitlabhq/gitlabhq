@@ -465,10 +465,6 @@ class Repository
     nil
   end
 
-  def blob_by_oid(oid)
-    Gitlab::Git::Blob.raw(self, oid)
-  end
-
   def root_ref
     if raw_repository
       raw_repository.root_ref

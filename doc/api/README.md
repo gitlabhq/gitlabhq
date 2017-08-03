@@ -341,7 +341,18 @@ URL-encoded.
 For example, `/` is represented by `%2F`:
 
 ```
-/api/v4/projects/diaspora%2Fdiaspora
+GET /api/v4/projects/diaspora%2Fdiaspora
+```
+
+## Branches & tags name encoding
+
+If your branch or tag contains a `/`, make sure the branch/tag name is
+URL-encoded.
+
+For example, `/` is represented by `%2F`:
+
+```
+GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
 ## `id` vs `iid`

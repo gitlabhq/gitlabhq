@@ -118,3 +118,29 @@
     @content;
   }
 }
+
+/*
+ * Mixin for status badges, as used for pipelines and commit signatures
+ */
+@mixin status-color($color-light, $color-main, $color-dark) {
+  color: $color-main;
+  border-color: $color-main;
+
+  &:not(span):hover {
+    background-color: $color-light;
+    color: $color-dark;
+    border-color: $color-dark;
+
+    svg {
+      fill: $color-dark;
+    }
+  }
+
+  svg {
+    fill: $color-main;
+  }
+}
+
+@mixin green-status-color {
+  @include status-color($green-50, $green-500, $green-700);
+}

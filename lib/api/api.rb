@@ -90,6 +90,9 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji

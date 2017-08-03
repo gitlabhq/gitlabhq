@@ -10,7 +10,7 @@
 - cache_key.push(commit.status(ref)) if commit.status(ref)
 
 = cache(cache_key, expires_in: 1.day) do
-  %li.commit.flex-list.js-toggle-container{ id: "commit-#{commit.short_id}" }
+  %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
     .avatar-cell.hidden-xs
       = author_avatar(commit, size: 36)
@@ -40,9 +40,15 @@
             = project.name_with_namespace
 
 
-      .commit-actions.flex-row.hidden-xs
+      .commit-actions.hidden-xs
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
+
+        - if request.xhr?
+          = render partial: 'projects/commit/signature', object: commit.signature
+        - else
+          = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
+
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
