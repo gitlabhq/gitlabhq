@@ -58,11 +58,6 @@ module Gitlab
         end
       end
 
-      # Alias to old method for compatibility
-      def raw
-        rugged
-      end
-
       def rugged
         @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
       rescue Rugged::RepositoryError, Rugged::OSError
