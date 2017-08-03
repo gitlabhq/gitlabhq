@@ -2747,10 +2747,6 @@ describe Project do
   end
 
   describe '#remove_private_deploy_keys' do
-<<<<<<< HEAD
-    it 'removes the private deploy keys of a project' do
-      project = create(:project)
-=======
     let!(:project) { create(:project) }
 
     context 'for a private deploy key' do
@@ -2770,7 +2766,6 @@ describe Project do
           another_project = create(:project)
           create(:deploy_keys_project, deploy_key: key, project: another_project)
         end
->>>>>>> ce/master
 
         it 'does not remove the key' do
           project.remove_private_deploy_keys

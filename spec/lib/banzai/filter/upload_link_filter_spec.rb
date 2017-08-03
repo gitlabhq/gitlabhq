@@ -86,7 +86,6 @@ describe Banzai::Filter::UploadLinkFilter do
 
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to match "#{Gitlab.config.gitlab.url}/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png"
-<<<<<<< HEAD
     end
 
     context 'in a geo secondary node' do
@@ -113,8 +112,6 @@ describe Banzai::Filter::UploadLinkFilter do
         doc = filter(link('http://example.com'))
         expect(doc.at_css('a')['href']).to eq 'http://example.com'
       end
-=======
->>>>>>> ce/master
     end
   end
 

@@ -117,13 +117,10 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
-<<<<<<< HEAD
 - source_pipeline
 - sourced_pipelines
 - triggered_by_pipeline
 - triggered_pipelines
-=======
->>>>>>> ce/master
 pipeline_variables:
 - pipeline
 stages:

@@ -6,10 +6,9 @@ describe API::Boards do
   let(:guest)       { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
-<<<<<<< HEAD
+
+  # EE only
   let(:milestone)   { create(:milestone, project: project) }
-=======
->>>>>>> ce/master
 
   let!(:dev_label) do
     create(:label, title: 'Development', color: '#FFAABB', project: project)

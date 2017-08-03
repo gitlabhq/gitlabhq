@@ -2,13 +2,8 @@ require 'spec_helper'
 
 describe WikiPages::DestroyService do
   let(:project) { create(:project) }
-<<<<<<< HEAD
-  let(:user)    { create(:user) }
-  let(:page)    { create(:wiki_page) }
-=======
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }
->>>>>>> ce/master
 
   subject(:service) { described_class.new(project, user) }
 
