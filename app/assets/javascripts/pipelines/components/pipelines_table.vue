@@ -29,19 +29,24 @@
       class="gl-responsive-table-row table-row-header"
       role="row">
       <div
-        class="table-section section-10 js-pipeline-status pipeline-status"
-        role="rowheader">
-        Status
-      </div>
-      <div
-        class="table-section section-15 js-pipeline-info pipeline-info"
+        class="table-section section-5 js-pipeline-status pipeline-id"
         role="rowheader">
         Pipeline
       </div>
       <div
+        class="table-section section-10 js-pipeline-status pipeline-status"
+        role="rowheader">
+
+      </div>
+      <div
+        class="table-section section-5 js-pipeline-info pipeline-info"
+        role="rowheader">
+
+      </div>
+      <div
         class="table-section section-25 js-pipeline-commit pipeline-commit"
         role="rowheader">
-        Commit
+        
       </div>
       <div
         class="table-section section-15 js-pipeline-stages pipeline-stages"

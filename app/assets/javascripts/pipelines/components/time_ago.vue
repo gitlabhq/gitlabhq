@@ -57,7 +57,7 @@
   };
 </script>
 <template>
-  <div class="table-section section-15 pipelines-time-ago">
+  <div class="table-section section-10 pipelines-time-ago">
     <div
       class="table-mobile-header"
       role="rowheader">

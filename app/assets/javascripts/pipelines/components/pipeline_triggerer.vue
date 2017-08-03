@@ -24,10 +24,18 @@ export default {
 </script>
 <template>
   <div class="table-section section-5 hidden-xs hidden-sm">
-    <a
-      :href="pipeline.path"
-      class="js-pipeline-url-link">
-      <span class="pipeline-id">#{{pipeline.id}}</span>
-    </a>
+    <user-avatar-link
+      v-if="user"
+      class="js-pipeline-url-user"
+      :link-href="pipeline.user.path"
+      :img-src="pipeline.user.avatar_url"
+      :imgSize=32
+      :tooltip-text="pipeline.user.name"
+    />
+    <span
+      v-if="!user"
+      class="js-pipeline-url-api api">
+      API
+    </span>
   </div>
 </template>

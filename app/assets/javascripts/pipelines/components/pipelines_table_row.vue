@@ -6,6 +6,8 @@ import pipelinesArtifactsComponent from './pipelines_artifacts.vue';
 import ciBadge from '../../vue_shared/components/ci_badge_link.vue';
 import pipelineStage from './stage.vue';
 import pipelineUrl from './pipeline_url.vue';
+import pipelineTriggerer from './pipeline_triggerer.vue';
+import pipelineTags from './pipeline_tags.vue';
 import pipelinesTimeago from './time_ago.vue';
 import commitComponent from '../../vue_shared/components/commit.vue';
 
@@ -33,6 +35,8 @@ export default {
     commitComponent,
     pipelineStage,
     pipelineUrl,
+    pipelineTriggerer,
+    pipelineTags,
     ciBadge,
     pipelinesTimeago,
   },
@@ -208,6 +212,8 @@ export default {
 </script>
 <template>
   <div class="commit gl-responsive-table-row">
+    <!-- <pipeline-url :pipeline="pipeline" /> -->
+
     <div class="table-section section-10 commit-link">
       <div class="table-mobile-header"
         role="rowheader">
@@ -218,9 +224,11 @@ export default {
       </div>
     </div>
 
-    <pipeline-url :pipeline="pipeline" />
+    <pipeline-triggerer :pipeline="pipeline" />
 
-    <div class="table-section section-25">
+    <pipeline-tags :pipeline="pipeline" />
+
+    <div class="table-section section-35">
       <div
         class="table-mobile-header"
         role="rowheader">
@@ -262,7 +270,7 @@ export default {
 
     <div
       v-if="displayPipelineActions"
-      class="table-section section-20 table-button-footer pipeline-actions">
+      class="table-section section-15 table-button-footer pipeline-actions">
       <div class="btn-group table-action-buttons">
         <pipelines-actions-component
           v-if="pipeline.details.manual_actions.length"
