@@ -589,13 +589,8 @@ describe API::Groups do
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-<<<<<<< HEAD
-    let(:project) { create(:empty_project) }
-    let(:project_path) { CGI.escape(project.full_path) }
-=======
     let(:project) { create(:project) }
     let(:project_path) { project.full_path.gsub('/', '%2F') }
->>>>>>> upstream/master
 
     before(:each) do
       allow_any_instance_of(Projects::TransferService)

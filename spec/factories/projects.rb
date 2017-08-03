@@ -220,52 +220,7 @@ FactoryGirl.define do
     broken_repo
   end
 
-<<<<<<< HEAD
-  # Project with test repository
-  #
-  # Test repository source can be found at
-  # https://gitlab.com/gitlab-org/gitlab-test
-  factory :project, parent: :empty_project do
-    path { 'gitlabhq' }
-
-    test_repo
-
-    transient do
-      create_template nil
-    end
-
-    after :create do |project, evaluator|
-      if evaluator.create_template
-        args = evaluator.create_template
-
-        project.add_user(args[:user], args[:access])
-
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/bug.md",
-          'something valid',
-          message: 'test 3',
-          branch_name: 'master')
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/template_test.md",
-          'template_test',
-          message: 'test 1',
-          branch_name: 'master')
-        project.repository.create_file(
-          args[:user],
-          ".gitlab/#{args[:path]}/feature_proposal.md",
-          'feature_proposal',
-          message: 'test 2',
-          branch_name: 'master')
-      end
-    end
-  end
-
-  factory :forked_project_with_submodules, parent: :empty_project do
-=======
   factory :forked_project_with_submodules, parent: :project do
->>>>>>> upstream/master
     path { 'forked-gitlabhq' }
 
     after :create do |project|
