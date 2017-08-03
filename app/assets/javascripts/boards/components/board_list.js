@@ -188,6 +188,7 @@ export default {
           :list="list"
           :issue="issue"
           :issue-link-base="issueLinkBase"
+          :group-id="groupId"
           :root-path="rootPath"
           :disabled="disabled"
           :key="issue.id" />

@@ -1,6 +1,14 @@
 module Boards
   module Issues
     class CreateService < BaseService
+      attr_accessor :project
+
+      def initialize(parent, project, user, params = {})
+        @project = project
+
+        super(parent, user, params)
+      end
+
       def execute
         create_issue(params.merge(label_ids: [list.label_id]))
       end
@@ -16,7 +24,7 @@ module Boards
       end
 
       def create_issue(params)
-        ::Issues::CreateService.new(parent, current_user, params).execute
+        ::Issues::CreateService.new(project, current_user, params).execute
       end
     end
   end

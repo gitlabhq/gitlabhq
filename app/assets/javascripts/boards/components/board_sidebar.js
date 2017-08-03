@@ -59,7 +59,11 @@ gl.issueBoards.BoardSidebar = Vue.extend({
         this.list = this.detail.list;
 
         this.$nextTick(() => {
-          this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
+          var issueUrl = this.$refs.assigneeDropdown.dataset.issueUpdate
+
+          issueUrl = issueUrl.replace(":project_path", this.issue.project.path);
+
+          this.endpoint = issueUrl;
         });
       },
       deep: true

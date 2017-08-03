@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars, space-before-function-paren, arrow-body-style, arrow-parens, comma-dangle, max-len */
 /* global ListLabel */
 /* global ListMilestone */
+/* global IssueProject */
 /* global ListAssignee */
 
 import Vue from 'vue';
@@ -19,7 +20,10 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
     this.updateUrl = obj.update_url;
-    this.project_id = obj.project_id;
+
+    if (obj.project) {
+      this.project = new IssueProject(obj.project);
+    }
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
@@ -30,6 +34,10 @@ class ListIssue {
     });
 
     this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
+  }
+
+  updateUrl() {
+    "vsf"
   }
 
   addLabel (label) {

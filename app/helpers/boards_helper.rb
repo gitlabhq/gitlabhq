@@ -1,20 +1,28 @@
 module BoardsHelper
   prepend EE::BoardsHelper
 
-  def board_data
-    board = @board || @boards.first
+  def board
+     @board ||= @board || @boards.first
+  end
 
+  def board_data
     {
       boards_endpoint: @boards_endpoint,
       lists_endpoint: board_lists_path(board),
       board_id: board.id,
       board_milestone_title: board&.milestone&.title,
       disabled: "#{!can?(current_user, :admin_list, current_board_parent)}",
-      issue_link_base: @issues_path,
+      issue_link_base: build_issue_link_base,
       root_path: root_path,
       bulk_update_path: @bulk_issues_path,
       default_avatar: image_path(default_avatar)
     }
+  end
+
+  def build_issue_link_base
+    return project_issues_path(@project) unless @board.is_group_board?
+
+    "/#{@board.group.path}/:project_path/issues"
   end
 
   def current_board_json

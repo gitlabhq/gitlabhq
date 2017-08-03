@@ -31,6 +31,10 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       required: false,
       default: false,
     },
+    groupId: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -64,7 +68,13 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      return `${this.issueLinkBase}/${this.issue.id}`;
+      var baseUrl = this.issueLinkBase;
+
+      if(this.groupId) {
+        baseUrl = this.issueLinkBase.replace(":project_path", this.issue.project.path);
+      }
+
+      return `${baseUrl}/${this.issue.id}`;
     },
     issueId() {
       return `#${this.issue.id}`;
