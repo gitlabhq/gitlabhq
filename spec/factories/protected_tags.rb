@@ -4,13 +4,10 @@ FactoryGirl.define do
     project
 
     transient do
-<<<<<<< HEAD
       # EE
       authorize_user_to_create nil
       authorize_group_to_create nil
 
-=======
->>>>>>> ce/master
       default_access_level true
     end
 
@@ -45,7 +42,6 @@ FactoryGirl.define do
     end
 
     after(:build) do |protected_tag, evaluator|
-<<<<<<< HEAD
       # EE
       if evaluator.authorize_user_to_create
         protected_tag.create_access_levels.new(user: evaluator.authorize_user_to_create)
@@ -54,8 +50,6 @@ FactoryGirl.define do
         protected_tag.create_access_levels.new(group: evaluator.authorize_group_to_create)
       end
 
-=======
->>>>>>> ce/master
       if evaluator.default_access_level
         protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
       end

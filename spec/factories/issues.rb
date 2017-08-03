@@ -14,10 +14,7 @@ FactoryGirl.define do
 
     trait :closed do
       state :closed
-<<<<<<< HEAD
       closed_at Time.now
-=======
->>>>>>> ce/master
     end
 
     factory :closed_issue, traits: [:closed]

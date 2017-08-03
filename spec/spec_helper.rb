@@ -59,12 +59,12 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
-<<<<<<< HEAD
+  config.include StubENV
+
+  # EE only
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
-=======
-  config.include StubENV
->>>>>>> ce/master
+
 
   config.infer_spec_type_from_file_location!
 

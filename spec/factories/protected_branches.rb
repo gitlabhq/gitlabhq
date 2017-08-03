@@ -4,15 +4,12 @@ FactoryGirl.define do
     project
 
     transient do
-<<<<<<< HEAD
       # EE
       authorize_user_to_push nil
       authorize_user_to_merge nil
       authorize_group_to_push nil
       authorize_group_to_merge nil
 
-=======
->>>>>>> ce/master
       default_push_level true
       default_merge_level true
       default_access_level true
@@ -59,7 +56,6 @@ FactoryGirl.define do
     end
 
     after(:build) do |protected_branch, evaluator|
-<<<<<<< HEAD
       # EE
       if user = evaluator.authorize_user_to_push
         protected_branch.push_access_levels.new(user: user)
@@ -75,22 +71,17 @@ FactoryGirl.define do
       end
       next unless protected_branch.merge_access_levels.empty?
 
-=======
->>>>>>> ce/master
       if evaluator.default_access_level && evaluator.default_push_level
         protected_branch.push_access_levels.new(access_level: Gitlab::Access::MASTER)
       end
       if evaluator.default_access_level && evaluator.default_merge_level
         protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MASTER)
-<<<<<<< HEAD
-=======
       end
     end
 
     trait :no_one_can_merge do
       after(:create) do |protected_branch|
         protected_branch.merge_access_levels.first.update!(access_level: Gitlab::Access::NO_ACCESS)
->>>>>>> ce/master
       end
     end
   end
