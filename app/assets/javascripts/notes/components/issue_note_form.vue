@@ -94,7 +94,6 @@
     },
     watch: {
       noteBody() {
-        debugger;
         if (this.note === this.initialNote) {
           this.note = this.noteBody;
         } else {
