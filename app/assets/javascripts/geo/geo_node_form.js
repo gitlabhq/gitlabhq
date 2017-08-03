@@ -9,6 +9,6 @@ export default class GeoNodeForm {
 
   onPrimaryCheckboxChange() {
     this.$namespacesSelect.select2('data', null);
-    this.$namespaces.toggleClass('hidden', this.$primaryCheckbox.is(':checked'))
+    this.$namespaces.toggleClass('hidden', this.$primaryCheckbox.is(':checked'));
   }
 }
