@@ -2,11 +2,8 @@ class IssuableBaseService < BaseService
   private
 
   def create_milestone_note(issuable)
-    milestone = issuable.milestone
-    return if milestone && milestone.is_group_milestone?
-
     SystemNoteService.change_milestone(
-      issuable, issuable.project, current_user, milestone)
+      issuable, issuable.project, current_user, issuable.milestone)
   end
 
   def create_labels_note(issuable, old_labels)
