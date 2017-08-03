@@ -36,7 +36,7 @@ describe API::MergeRequests do
     end
 
     context 'when authenticated' do
-      let!(:project2) { create(:empty_project, :public, namespace: user.namespace) }
+      let!(:project2) { create(:project, :public, namespace: user.namespace) }
       let!(:merge_request2) { create(:merge_request, :simple, author: user, assignee: user, source_project: project2, target_project: project2) }
       let(:user2) { create(:user) }
 
@@ -51,7 +51,7 @@ describe API::MergeRequests do
       end
 
       it 'does not return unauthorized merge requests' do
-        private_project = create(:empty_project, :private)
+        private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
         get api('/merge_requests', user), scope: :all
