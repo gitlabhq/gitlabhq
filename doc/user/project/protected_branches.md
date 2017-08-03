@@ -15,15 +15,10 @@ By default, a protected branch does four simple things:
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
 
-**Note**: A GitLab admin is allowed to push to the protected branches. 
-
+>**Note**:
+A GitLab admin is allowed to push to the protected branches.
 
 See the [Changelog](#changelog) section for changes over time.
-
->
->Additional functionality for GitLab Enterprise Edition:
->
->- Restrict push and merge access to [certain users][ee-restrict]
 
 ## Configuring protected branches
 
@@ -73,7 +68,7 @@ they are set to "Masters" by default.
 
 ## Restricting push and merge access to certain users
 
-> This feature was [introduced][ce-5081] in GitLab Enterprise Edition 8.11.
+> This feature was [introduced][ce-5081] in [GitLab Enterprise Edition Starter][ee] 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
 by choosing a role (Masters, Developers) as well as certain users. From the
@@ -156,3 +151,4 @@ command line or a Git client application.
 [ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
 [ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
 [perm]: ../permissions.md
+[ee]: https://about.gitlab.com/gitlab-ee/
