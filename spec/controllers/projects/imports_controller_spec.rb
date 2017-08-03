@@ -11,6 +11,16 @@ describe Projects::ImportsController do
 
   describe 'GET #show' do
     context 'when repository does not exists' do
+<<<<<<< HEAD
+=======
+      let(:project) { create(:project) }
+
+      before do
+        sign_in(user)
+        project.team << [user, :master]
+      end
+
+>>>>>>> ce/master
       it 'renders template' do
         get :show, namespace_id: project.namespace.to_param, project_id: project
 

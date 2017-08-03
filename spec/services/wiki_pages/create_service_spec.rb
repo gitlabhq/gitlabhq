@@ -2,7 +2,11 @@ require 'spec_helper'
 
 describe WikiPages::CreateService do
   let(:project) { create(:project) }
+<<<<<<< HEAD
   let(:user)    { create(:user) }
+=======
+  let(:user) { create(:user) }
+>>>>>>> ce/master
 
   let(:opts) do
     {

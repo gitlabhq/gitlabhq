@@ -95,6 +95,8 @@ Example response:
 
 ## Protect repository branch
 
+>**Note:** This API endpoint is deprecated in favor of `POST /projects/:id/protected_branches`.
+
 Protects a single project repository branch. This is an idempotent function,
 protecting an already protected repository branch still returns a `200 OK`
 status code.
@@ -142,6 +144,8 @@ Example response:
 ```
 
 ## Unprotect repository branch
+
+>**Note:** This API endpoint is deprecated in favor of `DELETE /projects/:id/protected_branches/:name`
 
 Unprotects a single project repository branch. This is an idempotent function,
 unprotecting an already unprotected repository branch still returns a `200 OK`

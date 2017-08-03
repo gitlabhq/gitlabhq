@@ -269,7 +269,7 @@ module API
       end
 
       expose :protected do |repo_branch, options|
-        ProtectedBranch.protected?(options[:project], repo_branch.name)
+        ::ProtectedBranch.protected?(options[:project], repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
@@ -326,6 +326,19 @@ module API
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+    end
+
+    class ProtectedRefAccess < Grape::Entity
+      expose :access_level
+      expose :access_level_description do |protected_ref_access|
+        protected_ref_access.humanize
+      end
+    end
+
+    class ProtectedBranch < Grape::Entity
+      expose :name
+      expose :push_access_levels, using: Entities::ProtectedRefAccess
+      expose :merge_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
@@ -545,7 +558,7 @@ module API
 
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
-      expose :target_id, :target_type, :author_id
+      expose :target_id, :target_iid, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }

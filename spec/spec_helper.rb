@@ -49,7 +49,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
   config.include StubConfiguration
-  config.include EmailHelpers, type: :mailer
+  config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -59,8 +59,12 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
+<<<<<<< HEAD
   config.include EE::LicenseHelpers
   config.include Rails.application.routes.url_helpers, type: :routing
+=======
+  config.include StubENV
+>>>>>>> ce/master
 
   config.infer_spec_type_from_file_location!
 
@@ -99,6 +103,10 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
+  config.before(:example, :mailer) do
+    reset_delivered_emails!
+  end
+
   if ENV['CI']
     config.around(:each) do |ex|
       ex.run_with_retry retry: 2
@@ -135,10 +143,14 @@ RSpec.configure do |config|
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    ActiveRecord::Base.descendants.each(&:reset_column_information)
   end
 
   config.around(:each, :nested_groups) do |example|

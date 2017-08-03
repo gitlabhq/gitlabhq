@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe Projects::Settings::IntegrationsController do
+<<<<<<< HEAD
   let(:namespace) { create(:group, :private) }
   let(:project) { create(:project, :private, namespace: namespace) }
+=======
+  let(:project) { create(:project, :public) }
+>>>>>>> ce/master
   let(:user) { create(:user) }
 
   before do

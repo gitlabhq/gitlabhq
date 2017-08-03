@@ -3,8 +3,11 @@ module Ci
     def execute
       if trigger_from_token
         create_pipeline_from_trigger(trigger_from_token)
+<<<<<<< HEAD
       elsif job_from_token
         create_pipeline_from_job(job_from_token)
+=======
+>>>>>>> ce/master
       end
     end
 
@@ -27,6 +30,7 @@ module Ci
       end
     end
 
+<<<<<<< HEAD
     def create_pipeline_from_job(job)
       # this check is to not leak the presence of the project if user cannot read it
       return unless can?(job.user, :read_project, project)
@@ -51,18 +55,23 @@ module Ci
       end
     end
 
+=======
+>>>>>>> ce/master
     def trigger_from_token
       return @trigger if defined?(@trigger)
 
       @trigger = Ci::Trigger.find_by_token(params[:token].to_s)
     end
 
+<<<<<<< HEAD
     def job_from_token
       return @job if defined?(@job)
 
       @job = Ci::Build.find_by_token(params[:token].to_s)
     end
 
+=======
+>>>>>>> ce/master
     def create_pipeline_variables!(pipeline)
       return unless params[:variables]
 

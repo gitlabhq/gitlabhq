@@ -1,8 +1,8 @@
-# Build Variables  API
+# Project-level Variables  API
 
 ## List project variables
 
-Get list of a project's build variables.
+Get list of a project's variables.
 
 ```
 GET /projects/:id/variables
@@ -31,7 +31,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/
 
 ## Show variable details
 
-Get the details of a project's specific build variable.
+Get the details of a project's specific variable.
 
 ```
 GET /projects/:id/variables/:key
@@ -55,7 +55,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/
 
 ## Create variable
 
-Create a new build variable.
+Create a new variable.
 
 ```
 POST /projects/:id/variables
@@ -84,7 +84,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitl
 
 ## Update variable
 
-Update a project's build variable.
+Update a project's variable.
 
 ```
 PUT /projects/:id/variables/:key
@@ -113,7 +113,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitla
 
 ## Remove variable
 
-Remove a project's build variable.
+Remove a project's variable.
 
 ```
 DELETE /projects/:id/variables/:key

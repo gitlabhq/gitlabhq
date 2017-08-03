@@ -42,6 +42,10 @@ describe GroupsHelper do
   end
 
   describe 'group_lfs_status' do
+<<<<<<< HEAD
+=======
+    let(:group) { create(:group) }
+>>>>>>> ce/master
     let!(:project) { create(:project, namespace_id: group.id) }
 
     before do

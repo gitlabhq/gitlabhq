@@ -5,6 +5,12 @@ class GitGarbageCollectWorker
 
   sidekiq_options retry: false
 
+  GITALY_MIGRATED_TASKS = {
+    gc: :garbage_collect,
+    full_repack: :repack_full,
+    incremental_repack: :repack_incremental
+  }.freeze
+
   def perform(project_id, task = :gc, lease_key = nil, lease_uuid = nil)
     project = Project.find(project_id)
     task = task.to_sym
@@ -15,8 +21,14 @@ class GitGarbageCollectWorker
 
     Gitlab::GitLogger.info(description)
 
-    output, status = Gitlab::Popen.popen(cmd, repo_path)
-    Gitlab::GitLogger.error("#{description} failed:\n#{output}") unless status.zero?
+    gitaly_migrate(GITALY_MIGRATED_TASKS[task]) do |is_enabled|
+      if is_enabled
+        gitaly_call(task, project.repository.raw_repository)
+      else
+        output, status = Gitlab::Popen.popen(cmd, repo_path)
+        Gitlab::GitLogger.error("#{description} failed:\n#{output}") unless status.zero?
+      end
+    end
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
@@ -25,6 +37,19 @@ class GitGarbageCollectWorker
   end
 
   private
+
+  ## `repository` has to be a Gitlab::Git::Repository
+  def gitaly_call(task, repository)
+    client = Gitlab::GitalyClient::RepositoryService.new(repository)
+    case task
+    when :gc
+      client.garbage_collect(bitmaps_enabled?)
+    when :full_repack
+      client.repack_full(bitmaps_enabled?)
+    when :incremental_repack
+      client.repack_incremental
+    end
+  end
 
   def command(task)
     case task
@@ -54,5 +79,15 @@ class GitGarbageCollectWorker
   def git(write_bitmaps:)
     config_value = write_bitmaps ? 'true' : 'false'
     %W[git -c repack.writeBitmaps=#{config_value}]
+  end
+
+  def gitaly_migrate(method, &block)
+    Gitlab::GitalyClient.migrate(method, &block)
+  rescue GRPC::NotFound => e
+    Gitlab::GitLogger.error("#{method} failed:\nRepository not found")
+    raise Gitlab::Git::Repository::NoRepository.new(e)
+  rescue GRPC::BadStatus => e
+    Gitlab::GitLogger.error("#{method} failed:\n#{e}")
+    raise Gitlab::Git::CommandError.new(e)
   end
 end

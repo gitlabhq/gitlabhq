@@ -1,7 +1,10 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
+<<<<<<< HEAD
   include Elastic::WikiRepositoriesSearch
   include Gitlab::CurrentSettings
+=======
+>>>>>>> ce/master
   include Storage::LegacyProjectWiki
 
   MARKUPS = {
@@ -50,11 +53,14 @@ class ProjectWiki
 
   def http_url_to_repo
     "#{Gitlab.config.gitlab.url}/#{full_path}.git"
+<<<<<<< HEAD
   end
 
   # No need to have a Kerberos Web url. Kerberos URL will be used only to clone
   def kerberos_url_to_repo
     [Gitlab.config.build_gitlab_kerberos_url, '/', full_path, '.git'].join('')
+=======
+>>>>>>> ce/master
   end
 
   def wiki_base_path

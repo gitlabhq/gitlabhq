@@ -28,11 +28,15 @@ module Banzai
       end
 
       def build_url(uri)
+<<<<<<< HEAD
         if Gitlab::Geo.secondary?
           File.join(Gitlab::Geo.primary_node.url, project.full_path, uri)
         else
           File.join(Gitlab.config.gitlab.url, project.full_path, uri)
         end
+=======
+        File.join(Gitlab.config.gitlab.url, project.full_path, uri)
+>>>>>>> ce/master
       end
 
       def project

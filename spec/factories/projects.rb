@@ -113,6 +113,7 @@ FactoryGirl.define do
         # We delete hooks so that gitlab-shell will not try to authenticate with
         # an API that isn't running
         FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
+<<<<<<< HEAD
       end
     end
 
@@ -124,6 +125,8 @@ FactoryGirl.define do
 
       after(:create) do |project, evaluator|
         project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
+=======
+>>>>>>> ce/master
       end
     end
 

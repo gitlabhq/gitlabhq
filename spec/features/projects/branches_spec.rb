@@ -25,7 +25,7 @@ describe 'Branches' do
       it 'sorts the branches by name' do
         visit project_branches_path(project)
 
-        click_button "Name" # Open sorting dropdown
+        click_button "Last updated" # Open sorting dropdown
         click_link "Name"
 
         sorted = repository.branches_sorted_by(:name).first(20).map do |branch|
@@ -37,7 +37,7 @@ describe 'Branches' do
       it 'sorts the branches by last updated' do
         visit project_branches_path(project)
 
-        click_button "Name" # Open sorting dropdown
+        click_button "Last updated" # Open sorting dropdown
         click_link "Last updated"
 
         sorted = repository.branches_sorted_by(:updated_desc).first(20).map do |branch|
@@ -49,7 +49,7 @@ describe 'Branches' do
       it 'sorts the branches by oldest updated' do
         visit project_branches_path(project)
 
-        click_button "Name" # Open sorting dropdown
+        click_button "Last updated" # Open sorting dropdown
         click_link "Oldest updated"
 
         sorted = repository.branches_sorted_by(:updated_asc).first(20).map do |branch|

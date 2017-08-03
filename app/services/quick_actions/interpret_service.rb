@@ -5,6 +5,9 @@ module QuickActions
 
     attr_reader :issuable
 
+    SHRUG = '¯\\＿(ツ)＿/¯'.freeze
+    TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
+
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
@@ -15,6 +18,7 @@ module QuickActions
 
       content, commands = extractor.extract_commands(content, context)
       extract_updates(commands, context)
+
       [content, @updates]
     end
 
@@ -422,6 +426,18 @@ module QuickActions
     end
     command :remove_time_spent do
       @updates[:spend_time] = { duration: :reset, user: current_user }
+    end
+
+    desc "Append the comment with #{SHRUG}"
+    params '<Comment>'
+    substitution :shrug do |comment|
+      "#{comment} #{SHRUG}"
+    end
+
+    desc "Append the comment with #{TABLEFLIP}"
+    params '<Comment>'
+    substitution :tableflip do |comment|
+      "#{comment} #{TABLEFLIP}"
     end
 
     # This is a dummy command, so that it appears in the autocomplete commands

@@ -745,10 +745,10 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
     if (this.options.filterable) {
-      $(':focus').blur();
-
       this.dropdown.one('transitionend', () => {
-        this.filterInput.focus();
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
       });
 
       if (triggerFocus) {

@@ -92,6 +92,10 @@
   overflow: hidden;
   display: flex;
 
+  a {
+    display: flex;
+  }
+
   .avatar {
     border-radius: 0;
     border: none;

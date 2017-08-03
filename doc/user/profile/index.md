@@ -23,7 +23,7 @@ On your profile page, you will see the following information:
 - Personal information
 - Activity stream: see your activity streamline and the history of your contributions
 - Groups: [groups](../group/index.md) you're a member of
-- Contributed projects: projects you contributed to
+- Contributed projects: [projects](../project/index.md) you contributed to
 - Personal projects: your personal projects (respecting the project's visibility level)
 - Snippets: your personal code [snippets](../snippets.md#personal-snippets)
 

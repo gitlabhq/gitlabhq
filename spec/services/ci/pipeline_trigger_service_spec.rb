@@ -1,6 +1,10 @@
 require 'spec_helper'
 
+<<<<<<< HEAD
 describe Ci::PipelineTriggerService, services: true do
+=======
+describe Ci::PipelineTriggerService do
+>>>>>>> ce/master
   let(:project) { create(:project, :repository) }
 
   before do

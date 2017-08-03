@@ -18,9 +18,12 @@ class Project < ActiveRecord::Base
   include SelectForProjectAuthorization
   include Routable
   include Storage::LegacyProject
+<<<<<<< HEAD
 
   # EE specific modules
   prepend EE::Project
+=======
+>>>>>>> ce/master
 
   extend Gitlab::ConfigHelper
 
@@ -1206,7 +1209,18 @@ class Project < ActiveRecord::Base
   end
 
   def remove_private_deploy_keys
-    deploy_keys.where(public: false).delete_all
+    exclude_keys_linked_to_other_projects = <<-SQL
+      NOT EXISTS (
+        SELECT 1
+        FROM deploy_keys_projects dkp2
+        WHERE dkp2.deploy_key_id = deploy_keys_projects.deploy_key_id
+        AND dkp2.project_id != deploy_keys_projects.project_id
+      )
+    SQL
+
+    deploy_keys.where(public: false)
+               .where(exclude_keys_linked_to_other_projects)
+               .delete_all
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?

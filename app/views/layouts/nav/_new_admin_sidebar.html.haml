@@ -109,6 +109,7 @@
         %span.nav-item-name
           Abuse Reports
         %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
+<<<<<<< HEAD
 
     = nav_link(controller: :licenses) do
       = link_to admin_license_path, title: 'License' do
@@ -116,6 +117,8 @@
           = custom_icon('license')
         %span
           License
+=======
+>>>>>>> ce/master
 
     - if akismet_enabled?
       = nav_link(controller: :spam_logs) do

@@ -26,11 +26,14 @@ import Cookies from 'js-cookie';
         $projectCloneField.val(url);
         $cloneBtnText.text($this.text());
 
+<<<<<<< HEAD
         $('#modal-geo-info').data({
           cloneUrlSecondary: $this.attr('href'),
           cloneUrlPrimary: $this.data('primaryUrl') || ''
         });
 
+=======
+>>>>>>> ce/master
         return $('.clone').text(url);
       });
       // Ref switcher
