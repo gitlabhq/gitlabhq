@@ -18,6 +18,10 @@ const RepoService = {
     } });
   },
 
+  getRaw(url) {
+    return axios.get(url);
+  },
+
   buildParams(url = this.url) {
     // shallow clone object without reference
     const params = Object.assign({}, this.options.params);

@@ -167,7 +167,11 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(rawUrl, data);
           data.binary = true;
         } else {
-          Store.blobRaw = data.plain;
+          Service.getRaw(data.raw_path)
+          .then(response => {
+            Store.blobRaw = response.data;
+          })
+          // Store.blobRaw = data.plain;
           data.binary = false;
         }
 
