@@ -6,14 +6,19 @@ describe 'Promotions', js: true do
   let(:developer) { create(:user) }
   let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
 
-  describe 'no promotion shown at all if you have a license', js: true do
-    sign_in(user)
-    project.team << [user, :master]
-    visit edit_project_path(project)
-    expect(page).not_to have_selector('#promote_service_desk')
+  describe 'if you have a license' do
+    before do
+      sign_in(user)
+      project.team << [user, :master]
+    end
+
+    it 'should show no promotion at all '
+      visit edit_project_path(project)
+      expect(page).not_to have_selector('#promote_service_desk')
+    end
   end
 
-  describe 'for project features in general on premise', js: true do
+  describe 'for project features in general on premise' do
     before do
       allow(License).to receive(:current).and_return(nil)
 
