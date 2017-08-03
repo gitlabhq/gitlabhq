@@ -1,6 +1,6 @@
 {
   "allOf": [
-    { "$ref": "../issues.json" },
+    { "$ref": "../../../../../../fixtures/api/schemas/public_api/v4/issues.json" },
     {
       "properties": {
         "weight": { "type": ["integer", "null"] }

@@ -13,7 +13,7 @@ RSpec::Matchers.define :match_response_schema do |schema, dir: '', **options|
   end
 
   failure_message do |response|
-    "didn't match the schema defined by #{schema_path(schema)}" \
+    "didn't match the schema defined by #{SchemaPath.expand(schema, dir)}" \
     " The validation errors were:\n#{@errors.join("\n")}"
   end
 end
