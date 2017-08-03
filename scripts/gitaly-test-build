@@ -1,10 +1,7 @@
 #!/usr/bin/env ruby
 
-<<<<<<< HEAD
-=======
 require 'fileutils'
 
->>>>>>> ce/master
 # This script assumes tmp/tests/gitaly already contains the correct
 # Gitaly version. We just have to compile it and run its 'bundle
 # install'. We have this separate script for that because weird things
@@ -12,9 +9,6 @@ require 'fileutils'
 # called 'bundle install' using a different Gemfile, as happens with
 # gitlab-ce and gitaly.
 
-<<<<<<< HEAD
-abort 'gitaly build failed' unless system('make', chdir: 'tmp/tests/gitaly')
-=======
 dir = 'tmp/tests/gitaly'
 
 abort 'gitaly build failed' unless system('make', chdir: dir)
@@ -23,4 +17,3 @@ abort 'gitaly build failed' unless system('make', chdir: dir)
 # Without this a gitaly executable created in the setup-test-env job
 # will look stale compared to GITALY_SERVER_VERSION.
 FileUtils.touch(File.join(dir, 'gitaly'), mtime: Time.now + (1 << 24))
->>>>>>> ce/master
