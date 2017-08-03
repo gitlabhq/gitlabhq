@@ -10,6 +10,7 @@ import './models/issue';
 import './models/label';
 import './models/list';
 import './models/milestone';
+import './models/project';
 import './models/assignee';
 import './stores/boards_store';
 import './stores/modal_store';

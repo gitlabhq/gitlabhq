@@ -27,7 +27,7 @@
             labels: labels_filter_path(true),
             namespace_path: @project.try(:namespace).try(:full_path),
             project_path: @project.try(:path) },
-          ":data-issue-update" => "'#{@issues_path}/' + issue.id + '.json'" }
+          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.id + '.json'" }
           %span.dropdown-toggle-text
             Label
           = icon('chevron-down')

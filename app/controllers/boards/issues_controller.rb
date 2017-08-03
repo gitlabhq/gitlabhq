@@ -18,7 +18,7 @@ module Boards
     end
 
     def create
-      service = Boards::Issues::CreateService.new(project, current_user, issue_params)
+      service = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params)
       issue = service.execute
 
       if issue.valid?
@@ -64,7 +64,7 @@ module Boards
 
     def project
       @project ||=
-        board.is_group_board? ? Project.find(params[:project_id]) : board.parent
+        board.is_group_board? ? Project.find(issue_params[:project_id]) : board.parent
     end
 
     def move_params
@@ -72,14 +72,17 @@ module Boards
     end
 
     def issue_params
-      params.require(:issue).permit(:title, :milestone_id).merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
+      params.require(:issue).
+        permit(:title, :milestone_id, :project_id).
+        merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
     end
 
     def serialize_as_json(resource)
-      resource.as_json(
+      resource.preload(:project).as_json(
         labels: true,
         only: [:id, :iid, :title, :confidential, :due_date, :relative_position],
         include: {
+          project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
           milestone: { only: [:id, :title] }
         },
