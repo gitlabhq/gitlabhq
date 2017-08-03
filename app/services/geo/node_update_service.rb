@@ -11,7 +11,7 @@ module Geo
     def execute
       return false unless geo_node.update(params)
 
-      if namespaces_changed?(geo_node)
+      if geo_node.secondary? && namespaces_changed?(geo_node)
         Geo::RepositoriesChangedEventStore.new(geo_node).create
       end
 
