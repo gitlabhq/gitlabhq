@@ -339,7 +339,7 @@ module Github
 
     def user_id(user, fallback_id = nil)
       return unless user.present?
-      return cached[:user_ids][user.id] if cached[:user_ids].key?(user.id)
+      return cached[:user_ids][user.id] if cached[:user_ids][user.id].present?
 
       gitlab_user_id = user_id_by_external_uid(user.id) || user_id_by_email(user.email)
 
