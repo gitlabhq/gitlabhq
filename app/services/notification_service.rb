@@ -395,7 +395,7 @@ class NotificationService
     recipients = NotificationRecipientService.notifiable_users(
       recipients, :subscription,
       target: target,
-      acting_user: current_user,
+      acting_user: current_user
     )
 
     label_names = labels.map(&:name)
