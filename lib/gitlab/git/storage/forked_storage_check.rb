@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def timeout_check(path, timeout_seconds)
-          filesystem_check_pid = check_filesystem_in_fork(path)
+          filesystem_check_pid = check_filesystem_in_process(path)
 
           deadline = timeout_seconds.seconds.from_now.utc
           wait_time = 0.01
@@ -31,27 +31,23 @@ module Gitlab
           status
         end
 
-        # This call forks out into a process, that process will then be replaced
-        # With an `exec` call, since we fork out into a shell, we can create a
-        # child process without needing an ActiveRecord-connection.
+        # This will spawn a new 2 processes to do the check:
+        # The outer child (waiter) will spawn another child process (stater).
         #
-        # Inside the shell, we use `& wait` to fork another child. We do this
-        # to prevent leaving a zombie process when the parent gets killed by the
-        # timeout.
-        #
-        # https://stackoverflow.com/questions/27892975/what-causes-activerecord-breaking-postgres-connection-after-forking
-        # https://stackoverflow.com/questions/22012943/activerecordstatementinvalid-runtimeerror-the-connection-cannot-be-reused-in
-        def check_filesystem_in_fork(path)
-          fork do
-            STDOUT.reopen('/dev/null')
-            STDERR.reopen('/dev/null')
-
-            exec("(#{test_script(path)}) & wait %1")
-          end
+        # The stater is the process is performing the actual filesystem check
+        # the check might hang if the filesystem is acting up.
+        # In this case we will send a `KILL` to the waiter, which will still
+        # be responsive while the stater is hanging.
+        def check_filesystem_in_process(path)
+          spawn('ruby', '-e', ruby_check, path, [:out, :err] => '/dev/null')
         end
 
-        def test_script(path)
-          "testpath=$(realpath #{Shellwords.escape(path)}) && stat \"$testpath\""
+        def ruby_check
+          <<~RUBY_FILESYSTEM_CHECK
+          inner_pid = fork { File.stat(ARGV.first) }
+          Process.waitpid(inner_pid)
+          exit $?.exitstatus
+          RUBY_FILESYSTEM_CHECK
         end
       end
     end

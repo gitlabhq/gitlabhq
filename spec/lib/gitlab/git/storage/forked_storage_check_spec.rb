@@ -17,11 +17,20 @@ describe Gitlab::Git::Storage::ForkedStorageCheck, skip_database_cleaner: true d
     end
 
     it 'returns false when the check takes to long' do
-      allow(described_class).to receive(:check_filesystem_in_fork) do
-        fork { sleep 10 }
+      # We're forking a process here that takes too long
+      # It will be killed it's parent process will be killed by it's parent
+      # and waited for inside `Gitlab::Git::Storage::ForkedStorageCheck.timeout_check`
+      allow(described_class).to receive(:check_filesystem_in_process) do
+        Process.spawn("sleep 10")
+      end
+      result = true
+
+      runtime = Benchmark.realtime do
+        result = described_class.storage_available?(existing_path, 0.5)
       end
 
-      expect(described_class.storage_available?(existing_path, 0.5)).to be_falsey
+      expect(result).to be_falsey
+      expect(runtime).to be < 1.0
     end
 
     describe 'when using paths with spaces' do
