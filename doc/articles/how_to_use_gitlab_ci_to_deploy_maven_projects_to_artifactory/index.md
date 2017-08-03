@@ -129,7 +129,7 @@ Caching the .m2/repository folder (where all the Maven files are stored), and th
 by running all Maven phases in a sequential order, therefore, executing `mvn test` will automatically run `mvn compile` if necessary.
 Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the repository.
 
-Deploy to Artifactory is done as defined by the secret variables we set up earlier.
+Deploy to Artifactory is done as defined by the secret variables we have just set up.
 The deployment occurs only if we're pushing or merging to `master` branch, so that the development versions are tested but not published.
 
 Done! Now you have all the changes in the GitLab repo, and a pipeline has already been started for this commit. In the **Pipelines** tab you can see what's happening.
