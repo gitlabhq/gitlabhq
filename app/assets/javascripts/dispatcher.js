@@ -79,10 +79,6 @@ import GpgBadges from './gpg_badges';
 (function() {
   var Dispatcher;
 
-  $(function() {
-    return new Dispatcher();
-  });
-
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -637,4 +633,8 @@ import GpgBadges from './gpg_badges';
 
     return Dispatcher;
   })();
+
+  $(function() {
+    new Dispatcher();
+  });
 }).call(window);
