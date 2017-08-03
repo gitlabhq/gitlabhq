@@ -168,12 +168,14 @@ const RepoHelper = {
           data.binary = true;
           Store.currentBlobView = 'preview';
         } else {
-          Service.getRaw(data.raw_path)
-          .then(response => {
-            Store.blobRaw = response.data;
-          })
-          // Store.blobRaw = data.plain;
           data.binary = false;
+
+          if (Store.currentBlobView !== 'preview') {
+            Service.getRaw(data.raw_path)
+            .then((rawResponse) => {
+              Store.blobRaw = rawResponse.data;
+            }).catch(RepoHelper.loadingError);
+          }
         }
 
         if (!file.url) file.url = location.pathname;
@@ -198,8 +200,7 @@ const RepoHelper = {
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
-    })
-    .catch(RepoHelper.loadingError);
+    }).catch(RepoHelper.loadingError);
   },
 
   toFA(icon) {
