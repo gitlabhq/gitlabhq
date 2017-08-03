@@ -45,12 +45,12 @@ export default RepoFileButtons;
 
 <template>
 <div id="repo-file-buttons" v-if="isMini" :style="{'border-bottom': editableBorder}">
-  <a :href="rawFileURL" target="_blank" class="btn btn-default raw">{{rawDownloadButtonLabel}}</a>
+  <a :href="activeFile.raw_path" target="_blank" class="btn btn-default raw">{{rawDownloadButtonLabel}}</a>
 
   <div class="btn-group" role="group" aria-label="File actions">
-    <a :href="blameFileURL" class="btn btn-default blame">Blame</a>
-    <a :href="historyFileURL" class="btn btn-default history">History</a>
-    <a href="#" class="btn btn-default permalink">Permalink</a>
+    <a :href="activeFile.blame_path" class="btn btn-default blame">Blame</a>
+    <a :href="activeFile.commits_path" class="btn btn-default history">History</a>
+    <a href="activeFile.permalink" class="btn btn-default permalink">Permalink</a>
   </div>
 
   <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>
