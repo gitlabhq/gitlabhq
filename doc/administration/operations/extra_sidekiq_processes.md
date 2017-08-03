@@ -90,7 +90,7 @@ default value is "development".
 
 ## All Queues With Exceptions
 
-You're able to run all queues of "sidekiq_queues.yml" file on a single or 
+You're able to run all queues in `sidekiq_queues.yml` file on a single or 
 multiple processes with exceptions using the `--negate` flag.
 
 For example, say you want to run a single process for all queues, 

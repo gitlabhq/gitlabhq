@@ -101,7 +101,7 @@ module Gitlab
             @rails_path = path
           end
 
-          opt.on('-n', '--negate', 'Run workers for all queues on sidekiq_queues.yml except the given ones') do
+          opt.on('-n', '--negate', 'Run workers for all queues in sidekiq_queues.yml except the given ones') do
             @negate_queues = true
           end
 
