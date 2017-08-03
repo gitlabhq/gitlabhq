@@ -1,8 +1,10 @@
 import $ from 'jquery';
+import Vue from 'vue';
 import Service from './services/repo_service';
 import Store from './stores/repo_store';
-import { initRepoViewModel } from './view_models/repo_view_model';
-import { initRepoEditButtonViewModel } from './view_models/repo_edit_button_view_model';
+import Repo from './components/repo.vue';
+import RepoEditButton from './components/repo_edit_button.vue';
+import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
   $('.project-refs-target-form').hide();
@@ -36,7 +38,25 @@ function setInitialStore(data) {
   Store.checkIsCommitable();
 }
 
-function initRepo() {
+function initRepo(el) {
+  return new Vue({
+    el,
+    components: {
+      repo: Repo,
+    },
+  });
+}
+
+function initRepoEditButton(el) {
+  return new Vue({
+    el,
+    components: {
+      repoEditButton: RepoEditButton,
+    },
+  });
+}
+
+function initRepoBundle() {
   const repo = document.getElementById('repo');
   const editButton = document.getElementById('editable-mode');
 
@@ -44,10 +64,12 @@ function initRepo() {
   addEventsForNonVueEls();
   initDropdowns();
 
-  initRepoViewModel(repo);
-  initRepoEditButtonViewModel(editButton);
+  Vue.use(Translate);
+
+  initRepo(repo);
+  initRepoEditButton(editButton);
 }
 
-$(initRepo);
+$(initRepoBundle);
 
-export default initRepo;
+export default initRepoBundle;
