@@ -483,8 +483,9 @@ a.deploy-project-label {
       height: 24px;
       width: inherit;
       display: block;
-      margin: 2px auto 5px;
+      margin: 0 auto 4px;
       font-size: 24px;
+      top: 0;
     }
 
     @media (max-width: $screen-xs-max) {
