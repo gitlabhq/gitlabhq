@@ -291,6 +291,7 @@ module Gitlab
       #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
       #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
         raw_log(options).map { |c| Commit.decorate(c) }
       end
