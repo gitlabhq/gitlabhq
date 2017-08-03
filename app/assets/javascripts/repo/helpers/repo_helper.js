@@ -289,6 +289,10 @@ const RepoHelper = {
     }
   },
 
+  findOpenedFileFromActive() {
+    return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
+  },
+
   loadingError() {
     Flash('Unable to load the file at this time.');
   },

@@ -11,7 +11,7 @@ const RepoEditor = {
     Service.getRaw(this.activeFile.raw_path)
     .then((rawResponse) => {
       Store.blobRaw = rawResponse.data;
-      this.openedFiles[0].plain = rawResponse.data;
+      Helper.findOpenedFileFromActive().plain = rawResponse.data;
 
       const monacoInstance = this.monaco.editor.create(this.$el, {
         model: null,

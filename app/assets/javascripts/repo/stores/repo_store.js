@@ -1,5 +1,6 @@
 /* global Flash */
 import RepoHelper from '../helpers/repo_helper';
+import RepoService from '../services/repo_service';
 
 const RepoStore = {
   ideEl: {},
@@ -95,8 +96,14 @@ const RepoStore = {
     if (file.binary) {
       RepoStore.blobRaw = file.base64;
       RepoStore.binaryMimeType = file.mime_type;
-    } else {
+    } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
+    } else {
+      RepoService.getRaw(file.raw_path)
+        .then((rawResponse) => {
+          RepoStore.blobRaw = rawResponse.data;
+          RepoHelper.findOpenedFileFromActive().plain = rawResponse.data;
+        }).catch(RepoHelper.loadingError);
     }
 
     if (!file.loading) RepoHelper.toURL(file.url, file.name);
