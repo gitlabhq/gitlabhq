@@ -80,13 +80,13 @@ describe UsersController do
     it 'renders calendar' do
       sign_in(user)
 
-      get :calendar, username: user.username
+      get :calendar, username: user.username, format: :json
 
-      expect(response).to render_template('calendar')
+      expect(response).to have_http_status(200)
     end
 
     context 'forked project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:forked_project) { Projects::ForkService.new(project, user).execute }
 
       before do
@@ -104,7 +104,7 @@ describe UsersController do
   end
 
   describe 'GET #calendar_activities' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
     let(:user) { create(:user) }
 
     before do

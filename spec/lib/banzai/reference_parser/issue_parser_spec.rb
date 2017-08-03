@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::IssueParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
   let(:link)    { empty_html_link }

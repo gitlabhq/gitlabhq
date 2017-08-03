@@ -573,7 +573,7 @@ describe 'Git HTTP requests' do
         context "when a gitlab ci token is provided" do
           let(:project) { create(:project, :repository) }
           let(:build) { create(:ci_build, :running) }
-          let(:other_project) { create(:empty_project) }
+          let(:other_project) { create(:project) }
 
           before do
             build.update!(project: project) # can't associate it on factory create
@@ -622,7 +622,7 @@ describe 'Git HTTP requests' do
               it_behaves_like 'pulls are allowed'
 
               context 'when the repo does not exist' do
-                let(:project) { create(:empty_project) }
+                let(:project) { create(:project) }
 
                 it 'rejects pulls with 403 Forbidden' do
                   clone_get path, env

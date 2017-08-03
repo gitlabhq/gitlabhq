@@ -61,6 +61,8 @@ class GitPushService < BaseService
 
     update_remote_mirrors
     update_caches
+
+    update_signatures
   end
 
   def update_gitattributes
@@ -83,6 +85,12 @@ class GitPushService < BaseService
     end
 
     ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
+  end
+
+  def update_signatures
+    @push_commits.each do |commit|
+      CreateGpgSignatureWorker.perform_async(commit.sha, @project.id)
+    end
   end
 
   # Schedules processing of commit messages.

@@ -166,6 +166,8 @@ document.addEventListener('beforeunload', function () {
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -253,6 +255,11 @@ $(function () {
     placement: function (tip, el) {
       return $(el).data('placement') || 'bottom';
     }
+  });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();

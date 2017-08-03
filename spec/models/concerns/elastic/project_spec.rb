@@ -15,10 +15,10 @@ describe Project, elastic: true do
     project_ids = []
 
     Sidekiq::Testing.inline! do
-      project = create :empty_project, name: 'test1'
-      project1 = create :empty_project, path: 'test2', description: 'awesome project'
-      project2 = create :empty_project
-      create :empty_project, path: 'someone_elses_project'
+      project = create :project, name: 'test1'
+      project1 = create :project, path: 'test2', description: 'awesome project'
+      project2 = create :project
+      create :project, path: 'someone_elses_project'
       project_ids += [project.id, project1.id, project2.id]
 
       Gitlab::Elastic::Helper.refresh_index
@@ -35,8 +35,8 @@ describe Project, elastic: true do
     project_ids = []
 
     Sidekiq::Testing.inline! do
-      project = create :empty_project, name: 'tesla-model-s'
-      project1 = create :empty_project, name: 'tesla_model_s'
+      project = create :project, name: 'tesla-model-s'
+      project1 = create :project, name: 'tesla_model_s'
       project_ids += [project.id, project1.id]
 
       Gitlab::Elastic::Helper.refresh_index
@@ -46,7 +46,7 @@ describe Project, elastic: true do
   end
 
   it "returns json with all needed elements" do
-    project = create :empty_project
+    project = create :project
 
     expected_hash = project.attributes.extract!(
       'id',

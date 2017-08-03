@@ -28,7 +28,7 @@ describe CommitsHelper do
   end
 
   describe '#view_on_environment_button' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:environment) { create(:environment, external_url: 'http://example.com') }
     let(:path) { 'source/file.html' }
     let(:sha) { RepoHelpers.sample_commit.id }

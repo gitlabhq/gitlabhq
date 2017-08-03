@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ElasticCommitIndexerWorker do
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
 
   subject { described_class.new }
 

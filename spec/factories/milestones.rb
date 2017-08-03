@@ -27,7 +27,7 @@ FactoryGirl.define do
       elsif evaluator.project_id
         milestone.project_id = evaluator.project_id
       else
-        milestone.project = create(:empty_project)
+        milestone.project = create(:project)
       end
     end
 

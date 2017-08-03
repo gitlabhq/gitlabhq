@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::UsageData do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:projects) { create_list(:project, 3) }
   let!(:board) { create(:board, project: projects[0]) }
 

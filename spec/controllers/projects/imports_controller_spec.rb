@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::ImportsController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     sign_in(user)

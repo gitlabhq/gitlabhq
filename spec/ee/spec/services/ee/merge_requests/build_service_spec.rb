@@ -28,7 +28,7 @@ describe MergeRequests::BuildService do # rubocop:disable RSpec/FilePath
 
   context 'project default template configured' do
     let(:template) { "I am the template, you fill me in" }
-    let(:project) { create(:empty_project, merge_requests_template: template) }
+    let(:project) { create(:project, merge_requests_template: template) }
 
     context 'issuable default templates feature not available' do
       before do

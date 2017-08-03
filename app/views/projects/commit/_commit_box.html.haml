@@ -1,5 +1,6 @@
 .page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .header-main-content
+    = render partial: 'signature', object: @commit.signature
     %strong
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id

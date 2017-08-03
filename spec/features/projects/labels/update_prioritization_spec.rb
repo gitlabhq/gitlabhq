@@ -5,7 +5,7 @@ feature 'Prioritize labels' do
 
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
-  let(:project)  { create(:empty_project, :public, namespace: group) }
+  let(:project)  { create(:project, :public, namespace: group) }
   let!(:bug)     { create(:label, project: project, title: 'bug') }
   let!(:wontfix) { create(:label, project: project, title: 'wontfix') }
   let!(:feature) { create(:group_label, group: group, title: 'feature') }
@@ -114,6 +114,12 @@ feature 'Prioritize labels' do
         expect(page.all('li').last).to have_content('bug')
       end
     end
+
+    it 'shows a help message about prioritized labels' do
+      visit project_labels_path(project)
+
+      expect(page).to have_content 'Star a label'
+    end
   end
 
   context 'as a guest' do
@@ -128,6 +134,7 @@ feature 'Prioritize labels' do
       expect(page).to have_content 'wontfix'
       expect(page).to have_content 'feature'
       expect(page).not_to have_css('.prioritized-labels')
+      expect(page).not_to have_content 'Star a label'
     end
   end
 
@@ -139,6 +146,7 @@ feature 'Prioritize labels' do
       expect(page).to have_content 'wontfix'
       expect(page).to have_content 'feature'
       expect(page).not_to have_css('.prioritized-labels')
+      expect(page).not_to have_content 'Star a label'
     end
   end
 end

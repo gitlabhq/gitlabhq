@@ -4,7 +4,7 @@ describe 'Issuable counts caching', :use_clean_rails_memory_store_caching do
   let!(:member) { create(:user) }
   let!(:member_2) { create(:user) }
   let!(:non_member) { create(:user) }
-  let!(:project) { create(:empty_project, :public) }
+  let!(:project) { create(:project, :public) }
   let!(:open_issue) { create(:issue, project: project) }
   let!(:confidential_issue) { create(:issue, :confidential, project: project, author: non_member) }
   let!(:closed_issue) { create(:issue, :closed, project: project) }

@@ -398,7 +398,7 @@ describe API::Internal do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       before do
         user.block

@@ -5,7 +5,7 @@ feature 'Projects > Members > Master adds member with expiration date', js: true
   include ActiveSupport::Testing::TimeHelpers
 
   let(:master) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let!(:new_member) { create(:user) }
 
   background do

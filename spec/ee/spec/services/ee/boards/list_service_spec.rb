@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Boards::ListService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:service) { described_class.new(project, double) }
 
   before do

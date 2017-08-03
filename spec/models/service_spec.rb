@@ -23,7 +23,7 @@ describe Service do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:empty_project) }
+        let(:project) { create(:project) }
 
         it 'returns true' do
           expect(service.can_test?).to be true
@@ -46,7 +46,7 @@ describe Service do
       end
 
       context 'when repository is empty' do
-        let(:project) { create(:empty_project) }
+        let(:project) { create(:project) }
 
         it 'test runs execute' do
           expect(service).to receive(:execute).with(data)
@@ -73,7 +73,7 @@ describe Service do
             api_key: '123456789'
           })
       end
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       describe 'is prefilled for projects pushover service' do
         it "has all fields prefilled" do
@@ -92,7 +92,7 @@ describe Service do
   describe "{property}_changed?" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -132,7 +132,7 @@ describe Service do
   describe "{property}_touched?" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -172,7 +172,7 @@ describe Service do
   describe "{property}_was" do
     let(:service) do
       BambooService.create(
-        project: create(:empty_project),
+        project: create(:project),
         properties: {
           bamboo_url: 'http://gitlab.com',
           username: 'mic',
@@ -212,7 +212,7 @@ describe Service do
   describe 'initialize service with no properties' do
     let(:service) do
       GitlabIssueTrackerService.create(
-        project: create(:empty_project),
+        project: create(:project),
         title: 'random title'
       )
     end
@@ -227,7 +227,7 @@ describe Service do
   end
 
   describe "callbacks" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.new(
         project: project,

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateMirrorService do
-  let(:project) { create(:project, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
+  let(:project) { create(:project, :repository, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
 
   describe "#execute" do
     context 'unlicensed' do

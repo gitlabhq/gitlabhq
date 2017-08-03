@@ -17,7 +17,7 @@ describe ProjectMirrorData, type: :model do
 
   describe 'when create' do
     it 'sets next execution timestamp to now' do
-      project = create(:empty_project)
+      project = create(:project)
 
       Timecop.freeze(Time.now) do
         project.create_mirror_data

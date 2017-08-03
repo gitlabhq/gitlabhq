@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Projects::ApproversController do
   describe '#destroy' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     before do

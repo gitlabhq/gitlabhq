@@ -4,7 +4,7 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, :repository, creator_id: user.id, namespace: user.namespace) }
 
   before do
     project.team << [user, :master]

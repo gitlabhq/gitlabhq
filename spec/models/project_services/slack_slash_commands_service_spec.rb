@@ -5,7 +5,7 @@ describe SlackSlashCommandsService do
 
   describe '#trigger' do
     context 'when an auth url is generated' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:params) do
         {
           team_domain: 'http://domain.tld',

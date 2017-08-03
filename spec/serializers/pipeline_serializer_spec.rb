@@ -100,7 +100,7 @@ describe PipelineSerializer do
 
     context 'number of queries' do
       let(:resource) { Ci::Pipeline.all }
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       before do
         Ci::Pipeline::AVAILABLE_STATUSES.each do |status|

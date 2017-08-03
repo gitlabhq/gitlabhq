@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
@@ -208,6 +208,18 @@ describe WikiPage do
         expect(@page.update("more content")).to be_truthy
       end
     end
+
+    context 'with same last commit sha' do
+      it 'returns true' do
+        expect(@page.update('more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
+      end
+    end
+
+    context 'with different last commit sha' do
+      it 'raises exception' do
+        expect { @page.update('more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
+      end
+    end
   end
 
   describe "#destroy" do
@@ -328,6 +340,30 @@ describe WikiPage do
     it 'returns false for updated wiki page' do
       updated_wiki_page = original_wiki_page.update("Updated content")
       expect(original_wiki_page).not_to eq(updated_wiki_page)
+    end
+  end
+
+  describe '#last_commit_sha' do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    it 'returns commit sha' do
+      expect(@page.last_commit_sha).to eq @page.commit.sha
+    end
+
+    it 'is changed after page updated' do
+      last_commit_sha_before_update = @page.last_commit_sha
+
+      @page.update("new content")
+      @page = wiki.find_page("Update")
+
+      expect(@page.last_commit_sha).not_to eq last_commit_sha_before_update
     end
   end
 

@@ -27,7 +27,7 @@ describe Projects::UpdateRepositoryStorageService do
     end
 
     context 'without wiki', skip_gitaly_mock: true do
-      let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
+      let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
@@ -63,7 +63,7 @@ describe Projects::UpdateRepositoryStorageService do
     end
 
     context 'with wiki', skip_gitaly_mock: true do
-      let(:project) { create(:project, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
+      let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
 
       before do
         project.create_wiki

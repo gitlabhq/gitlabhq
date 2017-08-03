@@ -6,8 +6,8 @@ describe ContributedProjectsFinder do
 
   let(:finder) { described_class.new(source_user) }
 
-  let!(:public_project) { create(:empty_project, :public) }
-  let!(:private_project) { create(:empty_project, :private) }
+  let!(:public_project) { create(:project, :public) }
+  let!(:private_project) { create(:project, :private) }
 
   before do
     private_project.add_master(source_user)

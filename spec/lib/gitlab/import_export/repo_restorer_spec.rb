@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Gitlab::ImportExport::RepoRestorer do
   describe 'bundle a project Git repo' do
     let(:user) { create(:user) }
-    let!(:project_with_repo) { create(:project, :test_repo, name: 'test-repo-restorer', path: 'test-repo-restorer') }
-    let!(:project) { create(:empty_project) }
+    let!(:project_with_repo) { create(:project, :repository, name: 'test-repo-restorer', path: 'test-repo-restorer') }
+    let!(:project) { create(:project) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.full_path) }
     let(:bundler) { Gitlab::ImportExport::RepoSaver.new(project: project_with_repo, shared: shared) }

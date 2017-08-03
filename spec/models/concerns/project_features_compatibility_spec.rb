@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ProjectFeaturesCompatibility do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:features) { %w(issues wiki builds merge_requests snippets) }
 
   # We had issues_enabled, snippets_enabled, builds_enabled, merge_requests_enabled and issues_enabled fields on projects table

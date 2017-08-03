@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Notes::CreateService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
   let(:opts) do

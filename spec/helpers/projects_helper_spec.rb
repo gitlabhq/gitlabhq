@@ -46,7 +46,7 @@ describe ProjectsHelper do
   end
 
   describe "readme_cache_key" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       helper.instance_variable_set(:@project, project)
@@ -64,7 +64,7 @@ describe ProjectsHelper do
   end
 
   describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it "includes the route" do
       expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
@@ -105,7 +105,7 @@ describe ProjectsHelper do
 
   describe '#load_pipeline_status' do
     it 'loads the pipeline status in batch' do
-      project = build(:empty_project)
+      project = build(:project)
 
       helper.load_pipeline_status([project])
       # Skip lazy loading of the `pipeline_status` attribute
@@ -193,7 +193,7 @@ describe ProjectsHelper do
 
   describe 'link_to_member' do
     let(:group)   { create(:group) }
-    let(:project) { create(:empty_project, group: group) }
+    let(:project) { create(:project, group: group) }
     let(:user)    { create(:user) }
 
     describe 'using the default options' do
@@ -234,7 +234,7 @@ describe ProjectsHelper do
   end
 
   describe '#license_short_name' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when project.repository has a license_key' do
       it 'returns the nickname of the license if present' do
@@ -260,7 +260,7 @@ describe ProjectsHelper do
   end
 
   describe '#sanitized_import_error' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
@@ -321,7 +321,7 @@ describe ProjectsHelper do
   end
 
   describe "#project_feature_access_select" do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:user)    { create(:user) }
 
     context "when project is internal or public" do
@@ -389,7 +389,7 @@ describe ProjectsHelper do
   end
 
   describe '#get_project_nav_tabs' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user)    { create(:user) }
 
     before do

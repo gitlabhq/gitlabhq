@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PipelineSchedulesFinder do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let!(:active_schedule) { create(:ci_pipeline_schedule, project: project) }
   let!(:inactive_schedule) { create(:ci_pipeline_schedule, :inactive, project: project) }

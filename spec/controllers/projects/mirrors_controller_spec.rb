@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::MirrorsController do
   describe 'setting up a remote mirror' do
     context 'when the current project is a mirror' do
-      let(:project) { create(:project, :mirror) }
+      let(:project) { create(:project, :repository, :mirror) }
 
       before do
         sign_in(project.owner)
@@ -36,7 +36,7 @@ describe Projects::MirrorsController do
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do
-        project = create(:project)
+        project = create(:project, :repository)
         sign_in(project.owner)
 
         expect do
@@ -46,7 +46,7 @@ describe Projects::MirrorsController do
     end
 
     context 'when the current project has a remote mirror' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:remote_mirror) { project.remote_mirrors.create!(enabled: 1, url: 'http://local.dev') }
 
       before do

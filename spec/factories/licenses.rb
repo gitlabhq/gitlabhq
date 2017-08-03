@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :gitlab_license, class: "Gitlab::License" do
+    skip_create
+
     starts_at { Date.today - 1.month }
     expires_at { Date.today + 11.months }
     notify_users_at { |l| l.expires_at }

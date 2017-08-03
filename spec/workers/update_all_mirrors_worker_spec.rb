@@ -15,7 +15,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'does not execute if cannot get the lease' do
-      create(:empty_project, :mirror)
+      create(:project, :mirror)
 
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
 
@@ -35,7 +35,7 @@ describe UpdateAllMirrorsWorker do
     delegate :fail_stuck_mirrors!, to: :worker
 
     it 'ignores records that are not mirrors' do
-      create(:empty_project, :import_started, mirror_last_update_at: 12.hours.ago)
+      create(:project, :import_started, mirror_last_update_at: 12.hours.ago)
 
       expect_any_instance_of(Project).not_to receive(:import_fail)
 
@@ -43,7 +43,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'ignores records without in-progress import' do
-      create(:empty_project, :mirror, :import_finished, mirror_last_update_at: 12.hours.ago)
+      create(:project, :mirror, :import_finished, mirror_last_update_at: 12.hours.ago)
 
       expect_any_instance_of(Project).not_to receive(:import_fail)
 
@@ -51,7 +51,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'ignores records with recently updated mirrors' do
-      create(:empty_project, :mirror, mirror_last_update_at: Time.now)
+      create(:project, :mirror, mirror_last_update_at: Time.now)
 
       expect_any_instance_of(Project).not_to receive(:import_fail)
 
@@ -59,7 +59,7 @@ describe UpdateAllMirrorsWorker do
     end
 
     it 'transitions stuck mirrors to a failed state and updates import_error message' do
-      project = create(:empty_project, :mirror, :import_started)
+      project = create(:project, :mirror, :import_started)
       project.mirror_data.update_attributes(last_update_started_at: 25.minutes.ago)
 
       fail_stuck_mirrors!
@@ -93,7 +93,7 @@ describe UpdateAllMirrorsWorker do
 
     context 'unlicensed' do
       it 'does not schedule when project does not have repository mirrors available' do
-        project = create(:empty_project, :mirror)
+        project = create(:project, :mirror)
 
         stub_licensed_features(repository_mirrors: false)
 
@@ -106,7 +106,7 @@ describe UpdateAllMirrorsWorker do
     context 'licensed' do
       def scheduled_mirror(at:, licensed:)
         namespace = create(:group, :public, plan: (Namespace::BRONZE_PLAN if licensed))
-        project = create(:empty_project, :public, :mirror, namespace: namespace)
+        project = create(:project, :public, :mirror, namespace: namespace)
 
         project.mirror_data.update!(next_execution_timestamp: at)
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)

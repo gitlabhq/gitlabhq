@@ -1,11 +1,11 @@
 FactoryGirl.define do
   factory :service do
-    project factory: :empty_project
+    project
     type 'Service'
   end
 
   factory :custom_issue_tracker_service, class: CustomIssueTrackerService do
-    project factory: :empty_project
+    project
     type 'CustomIssueTrackerService'
     category 'issue_tracker'
     active true
@@ -17,7 +17,7 @@ FactoryGirl.define do
   end
 
   factory :kubernetes_service do
-    project factory: :empty_project
+    project
     active true
     properties({
       api_url: 'https://kubernetes.example.com',
@@ -26,7 +26,7 @@ FactoryGirl.define do
   end
 
   factory :prometheus_service do
-    project factory: :empty_project
+    project
     active true
     properties({
       api_url: 'https://prometheus.example.com/'
@@ -34,7 +34,7 @@ FactoryGirl.define do
   end
 
   factory :jira_service do
-    project factory: :empty_project
+    project
     active true
     properties(
       url: 'https://jira.example.com',
@@ -43,13 +43,13 @@ FactoryGirl.define do
   end
 
   factory :hipchat_service do
-    project factory: :empty_project
+    project
     type 'HipchatService'
     token 'test_token'
   end
 
   factory :gitlab_slack_application_service do
-    project factory: :empty_project
+    project
     type 'GitlabSlackApplicationService'
   end
 end

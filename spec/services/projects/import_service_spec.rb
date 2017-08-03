@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ImportService do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let(:user) { project.creator }
 
   subject { described_class.new(project, user) }

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::Settings::IntegrationsController do
   let(:namespace) { create(:group, :private) }
-  let(:project) { create(:empty_project, :private, namespace: namespace) }
+  let(:project) { create(:project, :private, namespace: namespace) }
   let(:user) { create(:user) }
 
   before do

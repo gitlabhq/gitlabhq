@@ -9,8 +9,8 @@ describe MergeRequestPolicy do
   let(:fork_developer) { create(:user) }
   let(:fork_master) { create(:user) }
 
-  let(:project) { create(:empty_project, :public) }
-  let(:fork_project) { create(:empty_project, :public, forked_from_project: project) }
+  let(:project) { create(:project, :public) }
+  let(:fork_project) { create(:project, :public, forked_from_project: project) }
 
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:fork_merge_request) { create(:merge_request, author: fork_developer, source_project: fork_project, target_project: project) }

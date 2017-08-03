@@ -45,7 +45,12 @@ module Gitlab
             existing = ::Geo::ProjectRegistry.where(project_id: project_ids).pluck(:project_id)
             missing_projects = project_ids - existing
 
-            Rails.logger.debug("Missing projects: #{missing_projects}")
+            Gitlab::Geo::Logger.debug(
+              class: self.class.name,
+              message: "Missing projects",
+              projects: missing_projects,
+              project_count: missing_projects.count)
+
             missing_projects.each do |id|
               ::Geo::ProjectRegistry.create(project_id: id)
             end
@@ -90,6 +95,15 @@ module Gitlab
           when 'wiki'
             registry.resync_wiki = true
           end
+
+          Gitlab::Geo::Logger.info(
+            class: self.class.name,
+            message: "Repository update",
+            cursor_delay_s: (Time.now - updated_event.created_at).to_f.round(3),
+            project_id: updated_event.project_id,
+            source: updated_event.source,
+            resync_repository: registry.resync_repository,
+            resync_wiki: registry.resync_wiki)
 
           registry.save!
         end

@@ -58,6 +58,7 @@ class FilteredSearchDropdownManager {
         extraArguments: {
           endpoint: `${this.baseEndpoint}/labels.json`,
           symbol: '~',
+          preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
         },
         element: this.container.querySelector('#js-dropdown-label'),
       },

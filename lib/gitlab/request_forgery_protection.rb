@@ -1,6 +1,8 @@
-# Protects OmniAuth request phase against CSRF.
+# A module to check CSRF tokens in requests.
+# It's used in API helpers and OmniAuth.
+# Usage: GitLab::RequestForgeryProtection.call(env)
 
-module OmniAuth
+module Gitlab
   module RequestForgeryProtection
     class Controller < ActionController::Base
       protect_from_forgery with: :exception
@@ -16,6 +18,14 @@ module OmniAuth
 
     def self.call(env)
       app.call(env)
+    end
+
+    def self.verified?(env)
+      call(env)
+
+      true
+    rescue ActionController::InvalidAuthenticityToken
+      false
     end
   end
 end

@@ -148,7 +148,6 @@
   padding: 5px 8px;
   color: $gl-text-color;
   line-height: initial;
-  text-overflow: ellipsis;
   border-radius: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -202,11 +201,6 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
-
-  @media (max-width: $screen-sm-min) {
-    width: 100%;
-    min-width: 180px;
-  }
 
   &.dropdown-open-left {
     right: 0;
@@ -288,6 +282,11 @@
     cursor: not-allowed;
     padding: 5px 8px;
     color: $gl-text-color-secondary;
+  }
+
+  .badge + span:not(.badge) {
+    // Expects up to 3 digits on the badge
+    margin-right: 40px;
   }
 }
 
@@ -373,7 +372,6 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     max-width: 280px;
-    width: auto;
   }
 }
 
@@ -723,4 +721,49 @@
 .pika-single.animate-picker.is-bound.is-hidden {
   @include set-invisible;
   overflow: hidden;
+}
+
+// TODO: change global style and remove mixin
+@mixin new-style-dropdown {
+  .dropdown-menu {
+    li {
+      padding: 0 1px;
+
+      &.dropdown-header {
+        padding: 8px 16px;
+      }
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+
+        &.is-active {
+          font-weight: inherit;
+
+          &::before {
+            top: 16px;
+          }
+        }
+      }
+    }
+
+    &.dropdown-menu-selectable {
+      li {
+        a {
+          padding: 8px 40px;
+
+          &.is-active::before {
+            left: 16px;
+          }
+        }
+      }
+    }
+  }
 }

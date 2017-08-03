@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Geo::ProjectSyncWorker do
   describe '#perform' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:repository_sync_service) { spy }
     let(:wiki_sync_service) { spy }
 

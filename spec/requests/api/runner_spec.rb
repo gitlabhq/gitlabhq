@@ -42,7 +42,7 @@ describe API::Runner do
         end
 
         context 'when project token is used' do
-          let(:project) { create(:empty_project) }
+          let(:project) { create(:project) }
 
           it 'creates runner' do
             post api('/runners'), token: project.runners_token
@@ -182,7 +182,7 @@ describe API::Runner do
   end
 
   describe '/api/v4/jobs' do
-    let(:project) { create(:empty_project, shared_runners_enabled: false) }
+    let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
     let(:job) do

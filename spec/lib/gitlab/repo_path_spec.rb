@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ::Gitlab::RepoPath do
   describe '.parse' do
-    set(:project) { create(:project) }
+    set(:project) { create(:project, :repository) }
 
     context 'a repository storage path' do
       it 'parses a full repository path' do
@@ -65,7 +65,7 @@ describe ::Gitlab::RepoPath do
   end
 
   describe '.find_project' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:redirect) { project.route.create_redirect('foo/bar/baz') }
 
     context 'when finding a project by its canonical path' do

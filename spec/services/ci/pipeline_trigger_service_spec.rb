@@ -18,7 +18,7 @@ describe Ci::PipelineTriggerService, services: true do
 
     context 'when trigger belongs to a different project' do
       let(:params) { { token: trigger.token, ref: 'master', variables: nil } }
-      let(:trigger) { create(:ci_trigger, project: create(:empty_project), owner: user) }
+      let(:trigger) { create(:ci_trigger, project: create(:project), owner: user) }
 
       it 'does nothing' do
         expect { result }.not_to change { Ci::Pipeline.count }

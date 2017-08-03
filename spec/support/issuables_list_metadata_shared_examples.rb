@@ -35,7 +35,7 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   end
 
   describe "when given empty collection" do
-    let(:project2) { create(:empty_project, :public) }
+    let(:project2) { create(:project, :public) }
 
     it "doesn't execute any queries with false conditions" do
       get_action =
