@@ -369,13 +369,8 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
-<<<<<<< HEAD
-        case 'projects:edit':
-          new UsersSelect();
-=======
         case 'projects:imports:show':
           new ProjectImport();
->>>>>>> upstream/master
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
