@@ -247,6 +247,10 @@
         width: 100%;
         display: inline-block;
 
+        &:first-child {
+          border-top-left-radius: 2px;
+        }
+
         .title {
           display: inline-block;
           font-size: 10px;
