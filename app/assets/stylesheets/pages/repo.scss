@@ -94,7 +94,7 @@
     }
 
     .blob-viewer-container {
-      height: calc(100vh - 83px);
+      height: calc(100vh - 73px);
       overflow: auto;
     }
 
@@ -102,7 +102,7 @@
       border-bottom: 1px solid $white-normal;
       padding-left: 0;
       margin-bottom: 0;
-      display: inline-block;
+      display: block;
       white-space: nowrap;
       width: 100%;
       overflow-y: hidden;
