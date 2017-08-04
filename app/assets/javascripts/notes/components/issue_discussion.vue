@@ -11,7 +11,7 @@
   import issueNoteForm from './issue_note_form.vue';
   import placeholderNote from './issue_placeholder_note.vue';
   import placeholderSystemNote from './issue_placeholder_system_note.vue';
-  import autosave from '../mixins/autosave';;
+  import autosave from '../mixins/autosave';
 
   export default {
     props: {
