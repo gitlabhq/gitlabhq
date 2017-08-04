@@ -485,7 +485,10 @@ a.deploy-project-label {
       display: block;
       margin: 0 auto 4px;
       font-size: 24px;
-      top: 0;
+
+      @media (min-width: $screen-xs-max) {
+        top: 0;
+      }
     }
 
     @media (max-width: $screen-xs-max) {
@@ -498,15 +501,15 @@ a.deploy-project-label {
     }
 
     .icon-rails path {
-      fill: #C00;
+      fill: $rails;
     }
 
     .icon-node-express path {
-      fill: #353535;
+      fill: $node;
     }
 
     .icon-java-spring path {
-      fill: #70AD51;
+      fill: $java;
     }
 
     > div {
@@ -514,6 +517,10 @@ a.deploy-project-label {
       padding-left: 0;
     }
   }
+}
+
+.project-templates-buttons .btn:last-child {
+  margin-right: 0;
 }
 
 .create-project-options {
@@ -526,7 +533,7 @@ a.deploy-project-label {
   .first-column {
     @media(min-width: $screen-xs-min) {
       max-width: 50%;
-      width: 50%;
+      padding-right: 30px;
     }
 
     @media(max-width: $screen-xs-max) {
@@ -558,7 +565,7 @@ a.deploy-project-label {
     &::before {
       content: "OR";
       position: absolute;
-      left: 0px;
+      left: 0;
       top: 40%;
       z-index: 10;
       padding: 8px 0;
@@ -567,7 +574,7 @@ a.deploy-project-label {
       color: $gl-text-color-tertiary;
       transform: translateX(-50%);
       font-size: 12px;
-      font-weight: bold;;
+      font-weight: bold;
       line-height: 20px;
 
       // Mobile
@@ -575,7 +582,7 @@ a.deploy-project-label {
         left: 50%;
         top: 10px;
         transform: translateY(-50%);
-        padding: 0px 8px;
+        padding: 0 8px;
       }
     }
 
