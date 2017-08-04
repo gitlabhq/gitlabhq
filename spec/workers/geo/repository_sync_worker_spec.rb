@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Geo::RepositorySyncWorker do
-  let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
+  let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
   let!(:secondary) { create(:geo_node, :current) }
-  let(:group)      { create(:group) }
-  let!(:project_1) { create(:project, group: group) }
-  let!(:project_2) { create(:project) }
+  let(:synced_group) { create(:group) }
+  let!(:project_in_synced_group) { create(:project, group: synced_group) }
+  let!(:unsynced_project) { create(:project) }
 
   subject { described_class.new }
 
@@ -22,8 +22,8 @@ describe Geo::RepositorySyncWorker do
     end
 
     it 'performs Geo::ProjectSyncWorker for projects where last attempt to sync failed' do
-      create(:geo_project_registry, :sync_failed, project: project_1)
-      create(:geo_project_registry, :synced, project: project_2)
+      create(:geo_project_registry, :sync_failed, project: project_in_synced_group)
+      create(:geo_project_registry, :synced, project: unsynced_project)
 
       expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
 
@@ -31,8 +31,8 @@ describe Geo::RepositorySyncWorker do
     end
 
     it 'performs Geo::ProjectSyncWorker for synced projects updated recently' do
-      create(:geo_project_registry, :synced, :repository_dirty, project: project_1)
-      create(:geo_project_registry, :synced, project: project_2)
+      create(:geo_project_registry, :synced, :repository_dirty, project: project_in_synced_group)
+      create(:geo_project_registry, :synced, project: unsynced_project)
       create(:geo_project_registry, :synced, :wiki_dirty)
 
       expect(Geo::ProjectSyncWorker).to receive(:perform_in).twice.and_return(spy)
@@ -66,20 +66,26 @@ describe Geo::RepositorySyncWorker do
 
     context 'when node has namespace restrictions' do
       before do
-        secondary.update_attribute(:namespaces, [group])
+        secondary.update_attribute(:namespaces, [synced_group])
       end
 
       it 'does not perform Geo::ProjectSyncWorker for projects that do not belong to selected namespaces to replicate' do
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
+        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
+          .with(300, project_in_synced_group.id, within(1.minute).of(Time.now))
+          .once
+          .and_return(spy)
 
         subject.perform
       end
 
       it 'does not perform Geo::ProjectSyncWorker for synced projects updated recently that do not belong to selected namespaces to replicate' do
-        create(:geo_project_registry, :synced, :repository_dirty, project: project_1)
-        create(:geo_project_registry, :synced, :repository_dirty, project: project_2)
+        create(:geo_project_registry, :synced, :repository_dirty, project: project_in_synced_group)
+        create(:geo_project_registry, :synced, :repository_dirty, project: unsynced_project)
 
-        expect(Geo::ProjectSyncWorker).to receive(:perform_in).once.and_return(spy)
+        expect(Geo::ProjectSyncWorker).to receive(:perform_in)
+          .with(300, project_in_synced_group.id, within(1.minute).of(Time.now))
+          .once
+          .and_return(spy)
 
         subject.perform
       end
