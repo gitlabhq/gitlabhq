@@ -9,14 +9,13 @@ module Geo
     end
 
     def load_pending_resources
-      restricted_project_ids = Gitlab::Geo.current_node.project_ids
-      lfs_object_ids         = find_lfs_object_ids(restricted_project_ids)
-      objects_ids            = find_object_ids(restricted_project_ids)
+      lfs_object_ids = find_lfs_object_ids
+      objects_ids    = find_object_ids
 
       interleave(lfs_object_ids, objects_ids)
     end
 
-    def find_object_ids(restricted_project_ids)
+    def find_object_ids
       downloaded_ids = find_downloaded_ids([:attachment, :avatar, :file])
 
       current_node.uploads
@@ -27,7 +26,7 @@ module Geo
                   .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
     end
 
-    def find_lfs_object_ids(restricted_project_ids)
+    def find_lfs_object_ids
       downloaded_ids = find_downloaded_ids([:lfs])
 
       current_node.lfs_objects
