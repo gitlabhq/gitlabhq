@@ -11,7 +11,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I save project' do
-    click_button 'Save changes'
+    page.within '.general-settings' do
+      click_button 'Save changes'
+    end
   end
 
   step 'I should see project with new settings' do
@@ -32,7 +34,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
       :project_avatar,
       File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
     )
-    click_button 'Save changes'
+    page.within '.general-settings' do
+      click_button 'Save changes'
+    end
     @project.reload
   end
 
@@ -51,7 +55,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
       :project_avatar,
       File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
     )
-    click_button 'Save changes'
+    page.within '.general-settings' do
+      click_button 'Save changes'
+    end
     @project.reload
   end
 
@@ -92,7 +98,9 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'change project default branch' do
     select 'fix', from: 'project_default_branch'
-    click_button 'Save changes'
+    page.within '.general-settings' do
+      click_button 'Save changes'
+    end
   end
 
   step 'I should see project default branch changed' do
