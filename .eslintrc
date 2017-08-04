@@ -31,6 +31,6 @@
     "import/no-commonjs": "error",
     "no-multiple-empty-lines": ["error", { "max": 1 }],
     "promise/catch-or-return": "error",
-    "no-underscore-dangle": ["error", { "allow": ["__"]}],
+    "no-underscore-dangle": ["error", { "allow": ["__"]}]
   }
 }
