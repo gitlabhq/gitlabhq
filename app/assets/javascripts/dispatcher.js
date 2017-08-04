@@ -347,6 +347,8 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:imports:show':
           new ProjectImport();
