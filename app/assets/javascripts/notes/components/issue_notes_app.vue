@@ -94,8 +94,6 @@
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
         this.poll();
-
-        debugger;
       },
       checkLocationHash() {
         const hash = gl.utils.getLocationHash();
