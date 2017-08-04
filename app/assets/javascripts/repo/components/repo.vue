@@ -48,8 +48,8 @@ export default {
 <div class="tree-content-holder">
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
-    <repo-file-buttons/>
     <component :is="currentBlobView" class="blob-viewer-container"></component>
+    <repo-file-buttons/>
     <!-- <repo-binary-viewer/> soon™ -->
   </div>
   <repo-commit-section/>
