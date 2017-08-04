@@ -94,7 +94,7 @@
     }
 
     .blob-viewer-container {
-      height: calc(100vh - 73px);
+      height: calc(100vh - 63px);
       overflow: auto;
     }
 
@@ -165,9 +165,9 @@
     }
 
     #repo-file-buttons {
-      background: $gray-light;
+      background-color: $white-light;
       border-bottom: 1px solid $white-normal;
-      padding: 10px 5px;
+      padding: 5px 10px;
       position: relative;
       border-top: 1px solid $white-normal;
       margin-top: -5px;
