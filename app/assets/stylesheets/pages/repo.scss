@@ -51,6 +51,10 @@
   display: inline-block;
 }
 
+.blob-viewer[data-type="rich"] {
+  margin: 20px;
+}
+
 .tree-content-holder {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
