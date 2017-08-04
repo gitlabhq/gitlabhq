@@ -124,9 +124,9 @@
       = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
         = link_to project_pipelines_path(@project), title: 'CI / CD', class: 'shortcuts-pipelines' do
           .nav-icon-container
-            = custom_icon('CI / CD')
+            = custom_icon('pipeline')
           %span.nav-item-name
-            Pipelines
+            CI / CD
 
         %ul.sidebar-sub-level-items
           - if project_nav_tab? :pipelines
