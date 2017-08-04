@@ -306,6 +306,11 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
+
+        # make sure these users can read the project snippet!
+        project.add_guest(@u_guest_watcher)
+        project.add_guest(@u_guest_custom)
+
         note.project.add_master(note.author)
         reset_delivered_emails!
       end
