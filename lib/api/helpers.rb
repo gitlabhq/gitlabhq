@@ -93,7 +93,7 @@ module API
 
       group = find_group(id)
 
-      if can?(current_user, ability, group)
+      if can?(current_user, :read_group, group)
         group
       else
         not_found!('Group')
