@@ -29,7 +29,7 @@ feature 'Pipelines for Merge Requests', js: true do
         end
         wait_for_requests
 
-        expect(page).to have_selector('.sssssssss')
+        expect(page).to have_selector('.stage-cell')
       end
     end
 
@@ -66,6 +66,7 @@ feature 'Pipelines for Merge Requests', js: true do
         stub_ci_pipeline_to_return_yaml_file
 
         threads = []
+
         threads << Thread.new do
           @merge_request = MergeRequests::CreateService.new(project, user, merge_request_params).execute
         end
@@ -79,6 +80,7 @@ feature 'Pipelines for Merge Requests', js: true do
 
       scenario 'user sees pipeline in merge request widget' do
         visit project_merge_request_path(project, @merge_request)
+
         expect(page.find(".ci-widget")).to have_content(TestEnv::BRANCH_SHA['feature'])
         expect(page.find(".ci-widget")).to have_content("##{@pipeline.id}")
       end
