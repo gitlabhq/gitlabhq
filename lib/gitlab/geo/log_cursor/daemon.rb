@@ -64,6 +64,8 @@ module Gitlab
             # Update repository
             if event.repository_updated_event
               handle_repository_update(event.repository_updated_event)
+            elsif event.repository_deleted_event
+              handle_repository_delete(event.repository_deleted_event)
             end
           end
         end
@@ -106,6 +108,25 @@ module Gitlab
             resync_wiki: registry.resync_wiki)
 
           registry.save!
+        end
+
+        def handle_repository_delete(deleted_event)
+          # Once we remove system hooks we can refactor
+          # GeoRepositoryDestroyWorker to avoid doing this
+          full_path = File.join(deleted_event.repository_storage_path,
+                                deleted_event.deleted_path)
+          job_id = ::GeoRepositoryDestroyWorker.perform_async(
+            deleted_event.project_id,
+            deleted_event.deleted_project_name,
+            full_path)
+          Gitlab::Geo::Logger.info(
+            class: self.class.name,
+            message: "Deleted project",
+            project_id: deleted_event.project_id,
+            full_path: full_path,
+            job_id: job_id)
+          # No need to create a project entry if it doesn't exist
+          ::Geo::ProjectRegistry.where(project_id: deleted_event.project_id).delete_all
         end
 
         def exit?

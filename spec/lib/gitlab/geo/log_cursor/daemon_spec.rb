@@ -22,7 +22,7 @@ describe Gitlab::Geo::LogCursor::Daemon do
     end
 
     context 'when processing a repository updated event' do
-      let(:event_log) { create(:geo_event_log) }
+      let(:event_log) { create(:geo_event_log, :updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_updated_event) { event_log.repository_updated_event }
 
@@ -50,6 +50,33 @@ describe Gitlab::Geo::LogCursor::Daemon do
         subject.run!
 
         expect(registry.reload.resync_wiki).to be true
+      end
+    end
+
+    context 'when processing a repository deleted event' do
+      let(:event_log) { create(:geo_event_log, :deleted_event) }
+      let(:project) { event_log.repository_deleted_event.project }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:repository_deleted_event) { event_log.repository_deleted_event }
+
+      before do
+        allow(subject).to receive(:exit?).and_return(false, true)
+      end
+
+      it 'does not create a new project registry' do
+        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      it 'schedules a GeoRepositoryDestroyWorker' do
+        project_id   = repository_deleted_event.project_id
+        project_name = repository_deleted_event.deleted_project_name
+        full_path    = File.join(repository_deleted_event.repository_storage_path,
+                                 repository_deleted_event.deleted_path)
+
+        expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
+          .with(project_id, project_name, full_path)
+
+        subject.run!
       end
     end
   end
