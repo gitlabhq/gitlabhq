@@ -4,7 +4,7 @@ class PagesWorker
   sidekiq_options queue: :pages, retry: false
 
   def perform(action, *arg)
-    send(action, *arg)
+    send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def deploy(build_id)

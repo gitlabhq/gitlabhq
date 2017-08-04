@@ -234,7 +234,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder")
+    finder ||= public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
     cache_key = finder.state_counter_cache_key
 
     @counts ||= {}

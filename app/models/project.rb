@@ -415,7 +415,7 @@ class Project < ActiveRecord::Base
 
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
-      where("projects.id IN (#{union.to_sql})")
+      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def search_by_title(query)
@@ -825,7 +825,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `build_gitlab_ci_service`
-          public_send("build_#{service_name}_service")
+          public_send("build_#{service_name}_service") # rubocop:disable GitlabSecurity/PublicSend
         else
           Service.build_from_template(id, template)
         end
@@ -1326,7 +1326,7 @@ class Project < ActiveRecord::Base
   end
 
   def append_or_update_attribute(name, value)
-    old_values = public_send(name.to_s)
+    old_values = public_send(name.to_s) # rubocop:disable GitlabSecurity/PublicSend
 
     if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
       update_attribute(name, old_values + value)

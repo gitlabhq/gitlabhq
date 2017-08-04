@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-gitlab-security
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
@@ -1156,3 +1157,35 @@ RSpec/SubjectStub:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# GitlabSecurity ##############################################################
+
+GitlabSecurity/DeepMunge:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/RedirectToParamsUpdate:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/SqlInjection:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/SystemCommandInjection:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
