@@ -1,0 +1,4 @@
+---
+title: Move artifacts instead of coping when using a local filesystem store
+merge_request: 2572
+author:
