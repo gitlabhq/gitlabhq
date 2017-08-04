@@ -349,8 +349,6 @@ import FeatureHelper from './helpers/feature_helper';
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
 
-          if (FeatureHelper.isNewRepo()) break;
-
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           break;

@@ -5,11 +5,6 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
-- if show_new_repo?
-  - content_for :page_specific_javascripts do
-    = webpack_bundle_tag 'common_vue'
-    = webpack_bundle_tag 'repo'
-
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "projects/head"

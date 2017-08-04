@@ -307,6 +307,6 @@ module ApplicationHelper
   end
 
   def show_new_repo?
-    cookies["new_repo"] == "true"
+    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
   end
 end
