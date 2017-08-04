@@ -5,7 +5,7 @@ module Geo
     def initialize(geo_node, params)
       @geo_node = geo_node
       @old_namespace_ids = geo_node.namespace_ids
-      @params = params.except(:geo_node_key_attributes)
+      @params = params.slice(:url, :primary, :namespace_ids)
     end
 
     def execute
