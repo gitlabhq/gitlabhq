@@ -105,6 +105,8 @@ describe 'gitlab:gitaly namespace rake task' do
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
           socket_path = "/path/to/my.socket"
+          [gitlab-shell]
+          dir = "#{Gitlab.config.gitlab_shell.path}"
           [[storage]]
           name = "default"
           path = "/path/to/default"
