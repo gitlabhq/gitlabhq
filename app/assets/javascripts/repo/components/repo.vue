@@ -49,7 +49,7 @@ export default {
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
     <repo-file-buttons/>
-    <component :is="currentBlobView"></component>
+    <component :is="currentBlobView" class="blob-viewer-container"></component>
     <!-- <repo-binary-viewer/> soon™ -->
   </div>
   <repo-commit-section/>
