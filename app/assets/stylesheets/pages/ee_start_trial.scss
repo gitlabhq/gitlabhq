@@ -20,7 +20,7 @@
   display: flex;
   align-content: center;
   justify-content: center;
-  padding: 10px 35px;
+  padding: 15px 35px;
   position: fixed;
   top: 0;
   width: 100%;
@@ -28,6 +28,10 @@
   color: $white-light;
   text-align: center;
   z-index: 400;
+
+  @media (max-width: $screen-md-min) {
+    padding: 10px 35px;
+  }
 
   .close {
     color: $white-dark;
