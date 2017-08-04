@@ -180,8 +180,8 @@ const RepoHelper = {
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
     }).catch((e) => {
-      console.log(e)
-      RepoHelper.loadingError()
+      console.log(e);
+      RepoHelper.loadingError();
     });
   },
 

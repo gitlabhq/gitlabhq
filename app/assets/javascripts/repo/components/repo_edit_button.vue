@@ -37,8 +37,8 @@ export default {
         $('.project-refs-target-form').hide();
       }
     },
-  }
-}
+  },
+};
 </script>
 
 <template>

@@ -36,7 +36,6 @@ const RepoEditor = {
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
       this.monacoInstance.setModel(newModel);
-
     }).catch(Helper.loadingError);
   },
 
@@ -80,7 +79,7 @@ const RepoEditor = {
 
     dialog: {
       handler(obj) {
-        let newObj = obj;
+        const newObj = obj;
         if (newObj.status) {
           newObj.status = false;
           this.openedFiles.map((file) => {

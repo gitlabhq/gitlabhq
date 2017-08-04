@@ -9,7 +9,7 @@ export default {
   computed: {
     html() {
       return this.activeFile.html;
-    }
+    },
   },
 
   watch: {
@@ -17,9 +17,9 @@ export default {
       this.$nextTick(() => {
         $(this.$el).find('.file-content').syntaxHighlight();
       });
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <template>
