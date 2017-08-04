@@ -1173,19 +1173,39 @@ describe NotificationService, :mailer do
       end
     end
 
-    describe '#project_exported' do
-      it do
-        notification.project_exported(project, @u_disabled)
+    context 'user with notifications disabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_disabled)
 
-        should_only_email(@u_disabled)
+          should_not_email_anyone
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_disabled, ['error'])
+
+          should_not_email_anyone
+        end
       end
     end
 
-    describe '#project_not_exported' do
-      it do
-        notification.project_not_exported(project, @u_disabled, ['error'])
+    context 'user with notifications enabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_participating)
 
-        should_only_email(@u_disabled)
+          should_only_email(@u_participating)
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_participating, ['error'])
+
+          should_only_email(@u_participating)
+        end
       end
     end
   end
