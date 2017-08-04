@@ -10,7 +10,7 @@
 - load_pipeline_status(projects)
 
 .js-projects-list-holder
-  - if projects.any?
+  - if any_projects?(projects)
     %ul.projects-list
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
