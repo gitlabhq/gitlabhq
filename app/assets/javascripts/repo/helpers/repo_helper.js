@@ -179,10 +179,7 @@ const RepoHelper = {
         Store.addFilesToDirectory(file, Store.files, newDirectory);
         Store.prevURL = Service.blobURLtoParentTree(Service.url);
       }
-    }).catch((e) => {
-      console.log(e);
-      RepoHelper.loadingError();
-    });
+    }).catch(RepoHelper.loadingError);
   },
 
   setFile(data, file) {
