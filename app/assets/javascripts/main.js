@@ -146,7 +146,6 @@ import './subscription';
 import './subscription_select';
 import './syntax_highlight';
 
-
 // EE-only scripts
 import './admin_email_select';
 import './application_settings';
