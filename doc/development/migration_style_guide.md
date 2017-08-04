@@ -35,6 +35,12 @@ Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
+## Schema Changes
+
+Migrations that make changes to the database schema (e.g. adding a column) can
+only be added in the monthly release, patch releases may only contain data
+migrations _unless_ schema changes are absolutely required to solve a problem.
+
 ## Downtime Tagging
 
 Every migration must specify if it requires downtime or not, and if it should
