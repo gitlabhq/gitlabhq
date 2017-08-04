@@ -63,9 +63,9 @@ describe 'Promotions', js: true do
   end  
 
   describe 'for service desk', js: true do
+    let!(:license) { nil }
+    
     before do
-      let!(:license) { nil }
-
       sign_in(user)
       project.team << [user, :master]
     end
