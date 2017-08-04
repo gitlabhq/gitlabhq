@@ -332,4 +332,8 @@ class Member < ActiveRecord::Base
   def notification_service
     NotificationService.new
   end
+
+  def notifiable?(type, opts={})
+    raise 'abstract'
+  end
 end
