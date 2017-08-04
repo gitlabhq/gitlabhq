@@ -146,7 +146,6 @@ import './subscription';
 import './subscription_select';
 import './syntax_highlight';
 
-import './dispatcher';
 
 // EE-only scripts
 import './admin_email_select';
@@ -155,6 +154,8 @@ import './approvals';
 import './ldap_groups_select';
 import './path_locks';
 import './weight_select';
+
+import './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
