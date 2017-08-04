@@ -93,6 +93,11 @@
       }
     }
 
+    .blob-viewer-container {
+      height: calc(100vh - 83px);
+      overflow: auto;
+    }
+
     #tabs {
       border-bottom: 1px solid $white-normal;
       padding-left: 0;
