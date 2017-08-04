@@ -504,7 +504,7 @@ import GpgBadges from './gpg_badges';
           new gl.DueDateSelectors();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
