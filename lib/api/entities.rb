@@ -863,7 +863,11 @@ module API
 
       # EE
       expose :environment_scope, if: ->(variable, options) {
-        variable.project.feature_available?(:variable_environment_scope)
+        if variable.respond_to?(:projects)
+          variable.project
+        else
+          variable.group
+        end.feature_available?(:variable_environment_scope)
       }
     end
 
