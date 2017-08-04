@@ -11,11 +11,11 @@
       = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
-      = link_to project_path(@project), title: 'About project', class: 'shortcuts-project' do
+      = link_to project_path(@project), title: 'Project overview', class: 'shortcuts-project' do
         .nav-icon-container
           = custom_icon('project')
         %span.nav-item-name
-          About
+          Overview
 
       %ul.sidebar-sub-level-items
         = nav_link(path: 'projects#show') do
