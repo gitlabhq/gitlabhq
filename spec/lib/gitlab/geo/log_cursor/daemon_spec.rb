@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::Geo::LogCursor::Daemon do
   describe '#run!' do
+    let!(:geo_node) { create(:geo_node, :current) }
+
     it 'traps signals' do
       allow(subject).to receive(:exit?) { true }
       expect(subject).to receive(:trap_signals)
@@ -22,7 +24,6 @@ describe Gitlab::Geo::LogCursor::Daemon do
     end
 
     context 'when replaying a repository updated event' do
-      let!(:geo_node) { create(:geo_node, :current) }
       let(:event_log) { create(:geo_event_log, :updated_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_updated_event) { event_log.repository_updated_event }
