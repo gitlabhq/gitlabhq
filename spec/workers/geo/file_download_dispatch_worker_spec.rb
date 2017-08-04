@@ -87,7 +87,7 @@ describe Geo::FileDownloadDispatchWorker do
         secondary.update_attribute(:namespaces, [group_1])
       end
 
-      it 'does not perform GeoFileDownloadWorker for LFS object that do not belong to selected namespaces to replicate' do
+      it 'does not perform GeoFileDownloadWorker for LFS object that does not belong to selected namespaces to replicate' do
         create(:lfs_objects_project, project: project_1)
         create(:lfs_objects_project, project: project_2)
 

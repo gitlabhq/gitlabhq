@@ -12,7 +12,7 @@ describe Geo::RepositoriesCleanUpWorker do
     end
 
     context 'when node has namespace restrictions' do
-      it 'performs GeoRepositoryDestroyWorker for each project that do not belong to selected namespaces to replicate' do
+      it 'performs GeoRepositoryDestroyWorker for each project that does not belong to selected namespaces to replicate' do
         geo_node.update_attribute(:namespaces, [group])
 
         expect(GeoRepositoryDestroyWorker).to receive(:perform_async)
