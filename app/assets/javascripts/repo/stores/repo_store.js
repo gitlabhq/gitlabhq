@@ -5,6 +5,7 @@ import RepoService from '../services/repo_service';
 const RepoStore = {
   ideEl: {},
   monaco: {},
+  monacoLoading: false,
   monacoInstance: {},
   service: '',
   editor: '',

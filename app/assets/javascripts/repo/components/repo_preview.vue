@@ -1,9 +1,11 @@
 <script>
-import RepoStore from '../stores/repo_store';
+import Store from '../stores/repo_store';
 
 export default {
-  data: () => RepoStore,
-  
+  data: () => Store,
+  mounted() {
+    $(this.$el).find('.file-content').syntaxHighlight();
+  },
   computed: {
     html() {
       return this.activeFile.html;
@@ -11,13 +13,11 @@ export default {
   },
 
   watch: {
-
     html() {
       this.$nextTick(() => {
         $(this.$el).find('.file-content').syntaxHighlight();
       });
     }
-
   }
 }
 </script>

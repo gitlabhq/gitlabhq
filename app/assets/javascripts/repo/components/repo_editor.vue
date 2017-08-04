@@ -7,6 +7,13 @@ import Helper from '../helpers/repo_helper';
 const RepoEditor = {
   data: () => Store,
 
+  destroyed() {
+    // this.monacoInstance.getModels().forEach((m) => {
+    //   m.dispose();
+    // });
+    this.monacoInstance.destroy();
+  },
+
   mounted() {
     Service.getRaw(this.activeFile.raw_path)
     .then((rawResponse) => {
@@ -67,26 +74,15 @@ const RepoEditor = {
       });
     },
 
-    editMode() {
-      if (this.editMode) {
-        $('.project-refs-form').addClass('disabled');
-        $('.fa-long-arrow-right').show();
-        $('.project-refs-target-form').show();
-      } else {
-        $('.project-refs-form').removeClass('disabled');
-        $('.fa-long-arrow-right').hide();
-        $('.project-refs-target-form').hide();
-      }
-    },
-
     activeFileLabel() {
       this.showHide();
     },
 
     dialog: {
       handler(obj) {
-        if (obj.status) {
-          obj.status = false; // eslint-disable-line no-param-reassign
+        let newObj = obj;
+        if (newObj.status) {
+          newObj.status = false;
           this.openedFiles.map((file) => {
             const f = file;
             if (f.active) {
