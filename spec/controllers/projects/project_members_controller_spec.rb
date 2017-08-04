@@ -174,22 +174,6 @@ describe Projects::ProjectMembersController do
     end
   end
 
-  describe 'POST request_access' do
-    before do
-      sign_in(user)
-    end
-
-    it 'creates a ProjectAccessRequest' do
-      post :request_access, namespace_id: project.namespace,
-                            project_id: project
-
-      expect(response).to set_flash.to 'Your request for access has been queued for review.'
-      expect(response).to redirect_to(project)
-      expect(project.access_requests.exists?(user_id: user)).to be_truthy
-      expect(project.users).not_to include user
-    end
-  end
-
   describe 'DELETE withdraw_access_request' do
     context 'when the current_user has requested access to the project' do
       let!(:access_request) { project.request_access(user) }

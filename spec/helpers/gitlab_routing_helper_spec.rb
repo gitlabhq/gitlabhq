@@ -5,14 +5,14 @@ describe GitlabRoutingHelper do
   let(:group) { build_stubbed(:group) }
 
   describe 'Project URL helpers' do
+    describe '#project_access_requests_path' do
+      it { expect(project_access_requests_path(project)).to eq project_project_access_requests_path(project) }
+    end
+
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
 
       it { expect(project_member_path(project_member)).to eq project_project_member_path(project_member.source, project_member) }
-    end
-
-    describe '#request_access_project_members_path' do
-      it { expect(request_access_project_members_path(project)).to eq request_access_project_project_members_path(project) }
     end
 
     describe '#leave_project_members_path' do

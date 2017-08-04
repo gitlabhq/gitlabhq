@@ -28,13 +28,6 @@ module MembershipActions
     end
   end
 
-  def request_access
-    membershipable.request_access(current_user)
-
-    redirect_to membershipable,
-                notice: 'Your request for access has been queued for review.'
-  end
-
   def withdraw_access_request
     membershipable.withdraw_access_request(current_user)
 

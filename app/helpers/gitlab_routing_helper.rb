@@ -95,6 +95,15 @@ module GitlabRoutingHelper
     toggle_award_emoji_namespace_project_snippet_path(*args)
   end
 
+  ## Access Requests
+  def project_access_requests_path(project, *args)
+    project_project_access_requests_path(project, *args)
+  end
+
+  def project_access_requests_url(project, *args)
+    project_project_access_requests_url(project, *args)
+  end
+
   ## Members
   def project_members_url(project, *args)
     project_project_members_url(project, *args)
@@ -102,10 +111,6 @@ module GitlabRoutingHelper
 
   def project_member_path(project_member, *args)
     project_project_member_path(project_member.source, project_member)
-  end
-
-  def request_access_project_members_path(project, *args)
-    request_access_project_project_members_path(project)
   end
 
   def withdraw_access_request_project_members_path(project, *args)
