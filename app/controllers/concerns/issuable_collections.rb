@@ -35,7 +35,7 @@ module IssuableCollections
     set_default_state
 
     # Skip irrelevant Rails routing params
-    @filter_params = params.dup.except(:controller, :action, :namespace_id)
+    @filter_params = params.dup.permit!.except(:controller, :action, :namespace_id)
     @filter_params[:sort] ||= default_sort_order
 
     @sort = @filter_params[:sort]
