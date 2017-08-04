@@ -99,10 +99,9 @@
     }
 
     #tabs {
-      border-bottom: 1px solid $white-normal;
       padding-left: 0;
       margin-bottom: 0;
-      display: block;
+      display: flex;
       white-space: nowrap;
       width: 100%;
       overflow-y: hidden;
@@ -116,9 +115,9 @@
         background: $gray-normal;
         display: inline-block;
         padding: 10px 18px;
-        border-right: 1px solid $border-color;
+        border-right: 1px solid $white-normal;
+        border-bottom: 1px solid $white-normal;
         white-space: nowrap;
-        border-radius: 3px 3px 0 0;
 
         &.remove {
           animation: swipeRightDissapear ease-in 0.1s;
@@ -132,6 +131,7 @@
 
         &.active {
           background: $white-light;
+          border-bottom: none;
         }
 
         a {
@@ -160,6 +160,13 @@
 
         i.fa.fa-circle {
           color: $brand-success;
+        }
+
+        &.tabs-divider {
+          width: 100%;
+          background-color: $white-light;
+          border-right: none;
+          border-top-right-radius: 2px;
         }
       }
     }
