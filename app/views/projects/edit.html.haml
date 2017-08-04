@@ -140,6 +140,8 @@
           Check Namespace plan #{ current_application_settings.should_check_namespace_plan? }
         %div
           Show Callout #{ show_callout?('promote_service_desk_dismissed') }
+        %div
+          .com #{ Gitlab.com? }
 
         - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
           %hr
