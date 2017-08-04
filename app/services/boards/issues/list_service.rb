@@ -41,7 +41,7 @@ module Boards
       end
 
       def set_parent
-        params[:project_id] = parent.id
+        params[:project_id] = @parent.id
       end
 
       def set_state

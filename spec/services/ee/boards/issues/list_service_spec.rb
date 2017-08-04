@@ -4,8 +4,8 @@ describe Boards::Issues::ListService, services: true do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, namespace: group) }
-    let(:project1) { create(:empty_project, namespace: group) }
+    let(:project) { create(:project, :empty_repo, namespace: group) }
+    let(:project1) { create(:project, :empty_repo, namespace: group) }
     let(:board)   { create(:board, group: group) }
 
     let(:m1) { create(:milestone, group: group) }
@@ -26,7 +26,7 @@ describe Boards::Issues::ListService, services: true do
 
     let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
     let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
-    let!(:reopened_issue1) { create(:issue, :reopened, project: project, title: 'Issue 3' ) }
+    let!(:reopened_issue1) { create(:issue, state: 'opened', project: project, title: 'Issue 3', closed_at: Time.now ) }
 
     let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, development]) }
     let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }

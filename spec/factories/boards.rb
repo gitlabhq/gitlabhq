@@ -23,7 +23,7 @@ FactoryGirl.define do
         id = evaluator.parent.id
         evaluator.parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
       else
-        board.project = create(:empty_project)
+        board.project = create(:project, :empty_repo)
       end
     end
 

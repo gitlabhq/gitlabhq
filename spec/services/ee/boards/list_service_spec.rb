@@ -23,7 +23,7 @@ describe Boards::ListService do
   end
 
   it_behaves_like 'boards list service' do
-    let(:parent) { create(:empty_project) }
+    let(:parent) { create(:project, :empty_repo) }
   end
 
   it_behaves_like 'boards list service' do

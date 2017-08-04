@@ -15,7 +15,7 @@ class Projects::BoardsController < Projects::ApplicationController
   def show
     @board = project.boards.find(params[:id])
 
-    respond_with_boards
+    respond_with_board
   end
 
   private

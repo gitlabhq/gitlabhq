@@ -65,7 +65,7 @@ describe Boards::CreateService, services: true do
 
   describe '#execute' do
     it_behaves_like 'boards create service' do
-      let(:parent) { create(:empty_project) }
+      let(:parent) { create(:project, :empty_repo) }
     end
 
     it_behaves_like 'boards create service' do
