@@ -381,6 +381,9 @@ import initGroupAnalytics from './init_group_analytics';
           new UsersSelect();
           new GroupsSelect();
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
+          new UsersSelect();
           break;
         case 'projects:imports:show':
           new ProjectImport();

@@ -20,7 +20,10 @@ feature 'Project edit', js: true do
   it 'allows user to change request access settings' do
     find('#project_request_access_enabled').set(true)
 
-    click_button 'Save changes'
+    page.within('.sharing-permissions') do
+      click_button 'Save changes'
+    end
+
     wait_for_requests
 
     expect(find('#project_request_access_enabled')).to be_checked

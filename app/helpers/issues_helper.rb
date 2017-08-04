@@ -1,4 +1,6 @@
 module IssuesHelper
+  include EE::IssuesHelper
+
   def issue_css_classes(issue)
     classes = "issue"
     classes << " closed" if issue.closed?

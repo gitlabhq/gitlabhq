@@ -17,19 +17,19 @@ as much as possible.
 
 Place EE-specific controllers, finders, helpers, mailers, models, policies,
 serializers/entities, services, validators and workers in the top-level
-`EE` module namespace, and in a specific `/ee/` sub-folder:
+`EE` module namespace, and in the `ee/` specific sub-directory:
 
-- `app/controllers/ee/foos_controller.rb`
-- `app/finders/ee/foos_finder.rb`
-- `app/helpers/ee/foos_helper.rb`
-- `app/mailers/ee/foos_mailer.rb`
-- `app/models/ee/foo.rb`
-- `app/policies/ee/foo_policy.rb`
-- `app/serializers/ee/foo_entity.rb`
-- `app/serializers/ee/foo_serializer.rb`
-- `app/services/ee/foo/create_service.rb`
-- `app/validators/ee/foo_attr_validator.rb`
-- `app/workers/ee/foo_worker.rb`
+- `ee/app/controllers/ee/foos_controller.rb`
+- `ee/app/finders/ee/foos_finder.rb`
+- `ee/app/helpers/ee/foos_helper.rb`
+- `ee/app/mailers/ee/foos_mailer.rb`
+- `ee/app/models/ee/foo.rb`
+- `ee/app/policies/ee/foo_policy.rb`
+- `ee/app/serializers/ee/foo_entity.rb`
+- `ee/app/serializers/ee/foo_serializer.rb`
+- `ee/app/services/ee/foo/create_service.rb`
+- `ee/app/validators/ee/foo_attr_validator.rb`
+- `ee/app/workers/ee/foo_worker.rb`
 
 If you modify an existing part of a CE controller, model, service, worker etc.
 one simple solution is to use the `prepend` strategy ([presented below](#overriding-ce-methods)).
@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
 end
 
 module EE
-  class ApplicationController    
+  class ApplicationController
     def after_sign_out_path_for(resource)
       raise NotImplementedError unless defined?(super)
 
@@ -117,7 +117,7 @@ end
 EE-specific models should `extend EE::Model`.
 
 For example, if EE has a specific `Tanuki` model, you would
-place it in `app/models/ee/tanuki.rb`.
+place it in `ee/app/models/ee/tanuki.rb`.
 
 #### Code in `app/views/`
 
@@ -136,7 +136,7 @@ Place EE-specific logic in the top-level `EE` module namespace. Namespace the
 class beneath the `EE` module just as you would normally.
 
 For example, if CE has LDAP classes in `lib/gitlab/ldap/` then you would place
-EE-specific LDAP classes in `lib/ee/gitlab/ldap`.
+EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
 ### Classes vs. Module Mixins
 

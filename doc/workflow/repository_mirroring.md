@@ -1,6 +1,5 @@
 # Repository mirroring
 
->[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
 
 Repository Mirroring is a way to mirror repositories from external sources.
 It can be used to mirror all branches, tags, and commits that you have
@@ -50,6 +49,8 @@ A few things/limitations to consider:
 
 ## Pulling from a remote repository
 
+>[Introduced][ee-51] in GitLab Enterprise Edition 8.2.
+
 You can set up a repository to automatically have its branches, tags, and commits
 updated from an upstream repository. This is useful when a repository you're
 interested in is located on a different server, and you want to be able to
@@ -96,6 +97,8 @@ If the mirror fails (eg: branch diverged from upstream), the project's
 backoff period will be penalized each time it fails up to a maximum amount of time.
 
 ## Pushing to a remote repository
+
+>[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7.
 
 For an existing project, you can set up mirror pushing by visiting your project's
 **Settings ➔ Repository** and searching for the "Push to a remote repository"

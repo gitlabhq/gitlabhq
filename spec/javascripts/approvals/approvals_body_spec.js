@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-import ApprovalsBody from '~/vue_merge_request_widget/ee/components/approvals/approvals_body';
+import ApprovalsBody from 'ee/vue_merge_request_widget/components/approvals/approvals_body';
 
 (() => {
   gl.ApprovalsStore = {
