@@ -21,7 +21,7 @@ describe 'Promotions', js: true do
   describe 'for project features in general on premise' do
     context 'no license installed' do
       before do
-        allow(License).to receive(:current).and_return(nil)
+        allow(License).to receive(:current) { nil }
 
         sign_in(user)
         project.team << [user, :master]
@@ -42,7 +42,8 @@ describe 'Promotions', js: true do
   describe 'for project features in general for .com', js: true do
     context 'for .com' do
       before do
-        allow(Gitlab).to receive(:com?).and_return(true)
+        stub_application_setting(check_namespace_plan: true)
+        allow(Gitlab).to receive(:com?) { true }
       end
 
       it 'should have the Upgrade your plan button' do
@@ -63,6 +64,8 @@ describe 'Promotions', js: true do
 
   describe 'for service desk', js: true do
     before do
+      let!(:license) { nil }
+
       sign_in(user)
       project.team << [user, :master]
     end
