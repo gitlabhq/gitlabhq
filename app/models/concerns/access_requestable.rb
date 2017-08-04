@@ -14,4 +14,8 @@ module AccessRequestable
   def withdraw_access_request(user)
     Members::DestroyAccessRequestService.new(self, user, user).execute
   end
+
+  def deny_access_request(access_requester, user)
+    Members::DestroyAccessRequestService.new(self, access_requester, user).execute
+  end
 end

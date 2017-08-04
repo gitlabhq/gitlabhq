@@ -22,39 +22,6 @@ describe Members::DestroyService do
     it 'destroys the member' do
       expect { described_class.new(source, user, params).execute }.to change { source.members.count }.by(-1)
     end
-
-    context 'when the given member is an access request' do
-      before do
-        source.members.find_by(user_id: member_user).destroy
-        source.update_attributes(request_access_enabled: true)
-        source.request_access(member_user)
-      end
-      let(:access_request) { source.access_requests.find_by(user_id: member_user) }
-
-      it_behaves_like 'a service raising ActiveRecord::RecordNotFound'
-
-      %i[access_requests all].each do |scope|
-        context "and #{scope} scope is passed" do
-          it 'destroys the access request' do
-            expect { described_class.new(source, user, params).execute(scope) }.to change { source.access_requests.count }.by(-1)
-          end
-
-          it 'calls Member#after_decline_request' do
-            expect_any_instance_of(NotificationService).to receive(:decline_access_request).with(access_request)
-
-            described_class.new(source, user, params).execute(scope)
-          end
-
-          context 'when current user is the member' do
-            it 'does not call Member#after_decline_request' do
-              expect_any_instance_of(NotificationService).not_to receive(:decline_access_request).with(access_request)
-
-              described_class.new(source, member_user, params).execute(scope)
-            end
-          end
-        end
-      end
-    end
   end
 
   context 'when no member are found' do

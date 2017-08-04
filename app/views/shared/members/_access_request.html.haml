@@ -42,7 +42,7 @@
             - unless force_mobile_view
               = icon('check inverse', class: 'hidden-xs')
 
-          = link_to access_request.user,
+          = link_to deny_project_access_requests_path(access_request),
                     remote: true,
                     method: :delete,
                     data: { confirm: deny_access_request_message(access_request) },

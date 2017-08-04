@@ -15,10 +15,25 @@ class Projects::ProjectAccessRequestsController < Projects::ApplicationControlle
                 notice: "Your access request to the #{source_type} has been withdrawn."
   end
 
+  def deny
+    access_requester = User.find_by!(username: deny_username)
+
+    access_requestable.deny_access_request(access_requester, current_user)
+
+    respond_to do |format|
+      format.html do
+        redirect_to project_members_path(access_requestable),
+                    notice: "User #{deny_username} was denied access to the #{access_requestable.human_name} #{source_type}."
+      end
+
+      format.js { head :ok }
+    end
+  end
+
   protected
 
-  def access_request_params
-    params.require(:project_access_request).permit(:user_id)
+  def deny_username
+    params.require(:username)
   end
 
   def source_type

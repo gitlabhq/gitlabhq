@@ -16,7 +16,7 @@ module MembershipActions
 
   def destroy
     Members::DestroyService.new(membershipable, current_user, params)
-      .execute(:all)
+      .execute
 
     respond_to do |format|
       format.html do
@@ -36,7 +36,7 @@ module MembershipActions
 
   def leave
     member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
-      .execute(:all)
+      .execute
 
     notice = "You left the \"#{membershipable.human_name}\" #{source_type}."
 

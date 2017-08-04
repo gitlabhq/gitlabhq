@@ -317,6 +317,7 @@ constraints(ProjectUrlConstrainer.new) do
       resources :project_access_requests, only: [:create] do
         collection do
           delete :withdraw
+          delete ':username/deny', action: :deny, as: :deny, constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
         end
       end
 

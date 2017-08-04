@@ -4,18 +4,14 @@ module Members
 
     attr_accessor :source
 
-    ALLOWED_SCOPES = %i[members access_requests all].freeze
-
     def initialize(source, current_user, params = {})
       @source = source
       @current_user = current_user
       @params = params
     end
 
-    def execute(scope = :members)
-      raise "scope :#{scope} is not allowed!" unless ALLOWED_SCOPES.include?(scope)
-
-      member = find_member!(scope)
+    def execute
+      member = find_member!
 
       raise Gitlab::Access::AccessDeniedError unless can_destroy_member?(member)
 
@@ -24,15 +20,9 @@ module Members
 
     private
 
-    def find_member!(scope)
+    def find_member!
       condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
-      case scope
-      when :all
-        source.members.find_by(condition) ||
-          source.access_requests.find_by!(condition)
-      else
-        source.public_send(scope).find_by!(condition)
-      end
+      source.members.find_by!(condition)
     end
 
     def can_destroy_member?(member)

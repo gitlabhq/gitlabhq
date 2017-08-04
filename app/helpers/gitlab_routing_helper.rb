@@ -108,9 +108,17 @@ module GitlabRoutingHelper
     withdraw_project_project_access_requests_path(project)
   end
 
+  def deny_project_access_requests_path(project_access_request, *args)
+    deny_project_project_access_requests_path(project_access_request.source, project_access_request.user.username)
+  end
+
   ## Members
   def project_members_url(project, *args)
     project_project_members_url(project, *args)
+  end
+
+  def project_members_path(project, *args)
+    project_project_members_path(project, *args)
   end
 
   def project_member_path(project_member, *args)

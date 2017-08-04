@@ -15,6 +15,14 @@ describe GitlabRoutingHelper do
       it { expect(withdraw_project_access_requests_path(project)).to eq withdraw_project_project_access_requests_path(project) }
     end
 
+    describe '#deny_project_access_requests_path' do
+      let(:project) { create(:project, :public, :access_requestable) }
+      let(:user) { create(:user) }
+      let(:project_access_request) { project.request_access(user) }
+
+      it { expect(deny_project_access_requests_path(project_access_request)).to eq deny_project_project_access_requests_path(project_access_request.project, project_access_request.user.username) }
+    end
+
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
 
