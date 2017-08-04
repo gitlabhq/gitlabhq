@@ -87,8 +87,8 @@ class ProjectMember < Member
     project.owner == user
   end
 
-  def notifiable?(type, opts={})
-    NotificationRecipientService.notifiable?(user, type, { project: project }.merge(opts))
+  def notifiable_options
+    { project: project }
   end
 
   private

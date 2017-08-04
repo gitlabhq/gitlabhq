@@ -30,8 +30,8 @@ class GroupMember < Member
     'Group'
   end
 
-  def notifiable?(type, opts={})
-    NotificationRecipientService.notifiable?(user, type, { group: group }.merge(opts))
+  def notifiable_options
+    { group: group }
   end
 
   private
