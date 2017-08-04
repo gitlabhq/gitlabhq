@@ -20,8 +20,6 @@ describe('RepoFileOptions', () => {
 
     expect(vm.$el.classList.contains('repo-file-options')).toBeTruthy();
     expect(vm.$el.querySelector('.title').textContent).toEqual(projectName);
-    expect(vm.$el.querySelector('a[title="New File"]')).toBeTruthy();
-    expect(vm.$el.querySelector('a[title="New Folder"]')).toBeTruthy();
   });
 
   it('does not render if isMini is false', () => {
