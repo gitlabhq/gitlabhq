@@ -1006,6 +1006,11 @@ module Gitlab
         end.sort_by(&:name)
       end
 
+      def last_commit_for_path_by_rugged(sha, path)
+        sha = last_commit_id_for_path(sha, path)
+        commit(sha)
+      end
+
       def tags_from_gitaly
         gitaly_ref_client.tags
       end

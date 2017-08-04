@@ -97,6 +97,20 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request).count
       end
 
+      def last_commit_for_path(revision, path)
+        request = Gitaly::LastCommitForPathRequest.new(
+          repository: @gitaly_repo,
+          revision: revision.force_encoding(Encoding::ASCII_8BIT),
+          path: path.to_s.force_encoding(Encoding::ASCII_8BIT)
+        )
+
+        gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
+        return unless gitaly_commit
+
+        commit = GitalyClient::Commit.new(@repository, gitaly_commit)
+        Gitlab::Git::Commit.new(commit)
+      end
+
       def between(from, to)
         request = Gitaly::CommitsBetweenRequest.new(
           repository: @gitaly_repo,
