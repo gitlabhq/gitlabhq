@@ -76,35 +76,39 @@ describe Geo::FileDownloadDispatchWorker do
     end
 
     context 'when node has namespace restrictions' do
-      let(:group_1)    { create(:group) }
-      let!(:project_1) { create(:project, group: group_1) }
-      let!(:project_2) { create(:project) }
+      let(:synced_group) { create(:group) }
+      let!(:project_in_synced_group) { create(:project, group: synced_group) }
+      let!(:unsynced_project) { create(:project) }
 
       before do
         allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
         allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
 
-        secondary.update_attribute(:namespaces, [group_1])
+        secondary.update_attribute(:namespaces, [synced_group])
       end
 
       it 'does not perform GeoFileDownloadWorker for LFS object that does not belong to selected namespaces to replicate' do
-        create(:lfs_objects_project, project: project_1)
-        create(:lfs_objects_project, project: project_2)
+        lfs_objec_in_synced_group = create(:lfs_objects_project, project: project_in_synced_group)
+        create(:lfs_objects_project, project: unsynced_project)
 
-        expect(GeoFileDownloadWorker).to receive(:perform_async).once.and_return(spy)
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with(:lfs, lfs_objec_in_synced_group.lfs_object_id).once.and_return(spy)
 
         subject.perform
       end
 
       it 'does not perform GeoFileDownloadWorker for upload objects that do not belong to selected namespaces to replicate' do
         avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
-        create(:upload, model: group_1, path: avatar)
+        avatar_in_synced_group = create(:upload, model: synced_group, path: avatar)
         create(:upload, model: create(:group), path: avatar)
-        create(:upload, model: project_1, path: avatar)
-        create(:upload, model: project_2, path: avatar)
-        create(:note, :with_attachment)
+        avatar_in_project_in_synced_group = create(:upload, model: project_in_synced_group, path: avatar)
+        create(:upload, model: unsynced_project, path: avatar)
 
-        expect(GeoFileDownloadWorker).to receive(:perform_async).exactly(3).times.and_return(spy)
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with('avatar', avatar_in_project_in_synced_group.id).once.and_return(spy)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with('avatar', avatar_in_synced_group.id).once.and_return(spy)
 
         subject.perform
       end
