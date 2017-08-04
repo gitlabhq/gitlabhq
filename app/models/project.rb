@@ -1424,10 +1424,12 @@ class Project < ActiveRecord::Base
   private
 
   def load_storage
-    if self.storage_version > 1
-      self.class.include Storage::UUIDProject
+    return unless has_attribute?(:storage_version)
+
+    if self.storage_version && self.storage_version >= 1
+      self.extend Storage::HashedProject
     else
-      self.class.include Storage::LegacyProject
+      self.extend Storage::LegacyProject
     end
   end
 

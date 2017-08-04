@@ -2,12 +2,22 @@ module Storage
   module LegacyProject
     extend ActiveSupport::Concern
 
+    # Base directory
+    #
+    # @return [String] directory where repository is stored
+    def base_dir
+      namespace.full_path
+    end
+
+    # Disk path is used to build repository and project's wiki path on disk
+    #
+    # @return [String] combination of base_dir and the repository own name without `.git` or `.wiki.git` extensions
     def disk_path
       full_path
     end
 
     def ensure_storage_path_exist
-      gitlab_shell.add_namespace(repository_storage_path, namespace.full_path)
+      gitlab_shell.add_namespace(repository_storage_path, base_dir)
     end
 
     def rename_repo
