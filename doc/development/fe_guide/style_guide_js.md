@@ -483,7 +483,7 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 
 #### Vue and Boostrap
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
-  ```javascript
+  ```javascript
     // bad
     <span
       class="has-tooltip"
