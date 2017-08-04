@@ -1002,7 +1002,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(master_file_paths).to include("files/html/500.html")
     end
 
-    it "dose not read submodule directory and empty directory of master branch" do
+    it "does not read submodule directory and empty directory of master branch" do
       expect(master_file_paths).not_to include("six")
     end
 
