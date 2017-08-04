@@ -118,7 +118,8 @@
     </div>
     <div class="flash-container timeline-content"></div>
     <form
-      class="edit-note common-note-form js-vue-quick-submit">
+      class="edit-note common-note-form"
+      @submit="handleUpdate">
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
         :markdown-docs="markdownDocsUrl"
@@ -141,8 +142,7 @@
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          type="button"
-          @click="handleUpdate"
+          type="submit"
           :disabled="isDisabled"
           class="btn btn-nr btn-save">
           {{saveButtonTitle}}

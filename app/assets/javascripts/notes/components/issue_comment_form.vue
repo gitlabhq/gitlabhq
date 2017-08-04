@@ -218,8 +218,10 @@
               :img-size="40"
               />
           </div>
-          <div class="js-main-target-form timeline-content timeline-content-form common-note-form">
-            <form>
+          <div >
+            <form
+              class="js-main-target-form timeline-content timeline-content-form common-note-form"
+              @submit="handleSave(true)">
               <markdown-field
                 :markdown-preview-url="markdownPreviewUrl"
                 :markdown-docs="markdownDocsUrl"
@@ -228,7 +230,7 @@
                 <textarea
                   id="note-body"
                   name="note[note]"
-                  class="note-textarea js-gfm-input markdown-area"
+                  class="note-textarea js-gfm-input js-autosize markdown-area"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   v-model="note"
@@ -300,8 +302,7 @@
                   </ul>
                 </div>
                 <button
-                  type="button"
-                  @click="handleSave(true)"
+                  type="submit"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
                   class="btn btn-nr btn-comment btn-comment-and-close">

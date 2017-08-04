@@ -18,8 +18,7 @@ describe('issue placeholder system note component', () => {
   it('should render system note placeholder with plain text', () => {
     const vm = mountComponent('This is a placeholder');
 
-    expect(vm.$el.tagName).toEqua('LI');
-
-    expect(vm.$el.querySelector('.timeline-content i').textContent.trim()).toEqua('This is a placeholder');
+    expect(vm.$el.tagName).toEqual('LI');
+    expect(vm.$el.querySelector('.timeline-content em').textContent.trim()).toEqual('This is a placeholder');
   });
 });
