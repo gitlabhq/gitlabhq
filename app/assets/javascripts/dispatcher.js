@@ -332,8 +332,6 @@ import initGroupAnalytics from './init_group_analytics';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
-          initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:activity':
           new gl.Activities();
