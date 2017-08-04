@@ -367,7 +367,7 @@ class FilteredSearchManager {
       const fragments = searchToken.split(':');
       if (fragments.length > 1) {
         const inputValues = fragments[0].split(' ');
-        const tokenKey = inputValues.last();
+        const tokenKey = _.last(inputValues);
 
         if (inputValues.length > 1) {
           inputValues.pop();

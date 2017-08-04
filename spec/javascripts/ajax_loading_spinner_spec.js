@@ -1,4 +1,3 @@
-import '~/extensions/array';
 import 'jquery';
 import 'jquery-ujs';
 import '~/ajax_loading_spinner';

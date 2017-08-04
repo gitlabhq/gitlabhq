@@ -123,11 +123,11 @@ class DropdownUtils {
 
     if (!allowMultiple && itemInExistingTokens) {
       updatedItem.droplab_hidden = true;
-    } else if (!lastKey || searchInput.split('').last() === ' ') {
+    } else if (!lastKey || _.last(searchInput.split('')) === ' ') {
       updatedItem.droplab_hidden = false;
     } else if (lastKey) {
       const split = lastKey.split(':');
-      const tokenName = split[0].split(' ').last();
+      const tokenName = _.last(split[0].split(' '));
 
       const match = updatedItem.hint.indexOf(tokenName.toLowerCase()) === -1;
       updatedItem.droplab_hidden = tokenName ? match : false;

@@ -217,7 +217,7 @@ window.DropzoneInput = (function() {
         value = e.clipboardData.getData('text/plain');
       }
       value = value.split("\r");
-      return value.first();
+      return value[0];
     };
 
     const showSpinner = function(e) {
