@@ -13,6 +13,10 @@ describe('RepoFileButtons', () => {
     const activeFile = {
       extension: 'md',
       url: 'url',
+      raw_path: 'raw_path',
+      blame_path: 'blame_path',
+      commits_path: 'commits_path',
+      permalink: 'permalink',
     };
     const activeFileLabel = 'activeFileLabel';
     RepoStore.openedFiles = new Array(1);
@@ -27,11 +31,11 @@ describe('RepoFileButtons', () => {
 
     expect(vm.$el.id).toEqual('repo-file-buttons');
     expect(vm.$el.style.borderBottom).toEqual('1px solid rgb(31, 120, 209)');
-    expect(raw.href).toMatch(`/${activeFile.url}`);
+    expect(raw.href).toMatch(`/${activeFile.raw_path}`);
     expect(raw.textContent).toEqual('Raw');
-    expect(blame.href).toMatch(`/${activeFile.url}`);
+    expect(blame.href).toMatch(`/${activeFile.blame_path}`);
     expect(blame.textContent).toEqual('Blame');
-    expect(history.href).toMatch(`/${activeFile.url}`);
+    expect(history.href).toMatch(`/${activeFile.commits_path}`);
     expect(history.textContent).toEqual('History');
     expect(vm.$el.querySelector('.permalink').textContent).toEqual('Permalink');
     expect(vm.$el.querySelector('.preview').textContent).toEqual(activeFileLabel);
