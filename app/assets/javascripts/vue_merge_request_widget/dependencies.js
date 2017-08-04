@@ -1,7 +1,7 @@
 /**
  * This file is the centerpiece of an attempt to reduce potential conflicts
  * between the CE and EE versions of the MR widget. EE additions to the MR widget should
- * be contained in the ./vue_merge_request_widget/ee directory, and should **extend**
+ * be contained in the ee/vue_merge_request_widget directory, and should **extend**
  * rather than mutate CE MR Widget code.
  *
  * This file should be the only source of conflicts between EE and CE. EE-only components should
