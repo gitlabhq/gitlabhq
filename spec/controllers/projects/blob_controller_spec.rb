@@ -50,7 +50,7 @@ describe Projects::BlobController do
         it do
           expect(response).to be_ok
           expect(json_response).to have_key 'html'
-          expect(json_response).to have_key 'plain'
+          expect(json_response).to have_key 'raw_path'
         end
       end
     end
