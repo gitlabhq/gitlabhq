@@ -79,10 +79,8 @@
       },
       cancelReplyForm(shouldConfirm) {
         if (shouldConfirm && this.$refs.noteForm.isDirty) {
-          const msg = 'Are you sure you want to cancel creating this comment?';
           // eslint-disable-next-line no-alert
-          const isConfirmed = confirm(msg);
-          if (!isConfirmed) {
+          if (!confirm('Are you sure you want to cancel creating this comment?')) {
             return;
           }
         }

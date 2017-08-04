@@ -2,6 +2,7 @@
   /* global Flash, Autosave */
 
   import { mapActions, mapGetters } from 'vuex';
+  import _ from 'underscore';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
@@ -11,19 +12,14 @@
 
   export default {
     data() {
-      const { getUserData, getIssueData, getNotesData } = this.$store.getters;
-
       return {
         note: '',
-        markdownDocsUrl: getNotesData.markdownDocs,
-        quickActionsDocsUrl: getNotesData.quickActionsDocs,
-        markdownPreviewUrl: getIssueData.preview_note_path,
         noteType: constants.COMMENT,
-        issueState: getIssueData.state,
-        endpoint: getIssueData.create_note_path,
-        author: getUserData,
-        canUpdateIssue: getIssueData.current_user.can_update,
+        // Can't use mapGetters,
+        // this needs to be in the data object because it belongs to the state
+        issueState: this.$store.getters.getIssueData.state,
         isSubmitting: false,
+        isSubmitButtonDisabled: true,
       };
     },
     components: {
@@ -31,11 +27,28 @@
       markdownField,
       issueNoteSignedOutWidget,
     },
+    watch: {
+      note(newNote) {
+        if (!_.isEmpty(newNote) && !this.isSubmitting) {
+          this.isSubmitButtonDisabled = false;
+        } else {
+          this.isSubmitButtonDisabled = true;
+        }
+      },
+      isSubmitting(newValue) {
+        if (!_.isEmpty(this.note) && !newValue) {
+          this.isSubmitButtonDisabled = false;
+        } else {
+          this.isSubmitButtonDisabled = true;
+        }
+      },
+    },
     computed: {
       ...mapGetters([
         'getCurrentUserLastNote',
         'getUserData',
         'getIssueData',
+        'getNotesData',
       ]),
       isLoggedIn() {
         return this.getUserData !== null;
@@ -63,8 +76,23 @@
           'js-note-target-reopen': !this.isIssueOpen,
         };
       },
-      canSubmit() {
-        return !this.note.length || this.isSubmitting;
+      markdownDocsUrl() {
+        return this.getNotesData.markdownDocs;
+      },
+      quickActionsDocsUrl() {
+        return this.getNotesData.quickActionsDocs;
+      },
+      markdownPreviewUrl() {
+        return this.getIssueData.preview_note_path;
+      },
+      author() {
+        return this.getUserData;
+      },
+      canUpdateIssue() {
+        return this.getIssueData.current_user.can_update;
+      },
+      endpoint() {
+        return this.getIssueData.create_note_path;
       },
     },
     methods: {
@@ -139,6 +167,9 @@
         if (shouldClear) {
           this.note = '';
         }
+
+        // reset autostave
+        this.autosave.reset();
       },
       setNoteType(type) {
         this.noteType = type;
@@ -155,7 +186,7 @@
         }
       },
       initAutoSave() {
-        return new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id]);
+        this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id]);
       },
     },
     mounted() {
@@ -212,13 +243,13 @@
                 <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
                     @click="handleSave()"
-                    :disabled="canSubmit"
+                    :disabled="isSubmitButtonDisabled"
                     class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="button">
                     {{commentButtonTitle}}
                   </button>
                   <button
-                    :disabled="canSubmit"
+                    :disabled="isSubmitButtonDisabled"
                     name="button"
                     type="button"
                     class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
