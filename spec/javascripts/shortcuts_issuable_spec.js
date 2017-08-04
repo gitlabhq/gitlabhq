@@ -24,7 +24,7 @@ import '~/shortcuts_issuable';
         };
       };
       beforeEach(function() {
-        this.selector = 'form.js-main-target-form textarea#note_note';
+        this.selector = 'form.js-main-target-form textarea#note-body';
       });
       describe('with empty selection', function() {
         it('does not return an error', function() {
