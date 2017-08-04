@@ -1,8 +1,8 @@
 <script>
 import GfmAutoComplete from '~/gfm_auto_complete';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import eventHub from '../event_hub';
 import issueToken from './issue_token.vue';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
 export default {
   name: 'AddIssuableForm',

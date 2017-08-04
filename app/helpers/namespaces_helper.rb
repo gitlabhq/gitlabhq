@@ -1,4 +1,6 @@
 module NamespacesHelper
+  include EE::NamespaceHelper
+
   def namespace_id_from(params)
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end

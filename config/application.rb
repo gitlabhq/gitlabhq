@@ -25,19 +25,33 @@ module Gitlab
     # https://github.com/rails/rails/blob/v4.2.6/railties/lib/rails/engine.rb#L687
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
-    config.eager_load_paths.push(*%W(#{config.root}/lib
+    config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
                                      #{config.root}/app/uploaders/concerns
-                                     #{config.root}/app/finders/concerns))
+                                     #{config.root}/app/finders/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
     # EE specific paths.
-    config.eager_load_paths.push("#{config.root}/app/workers/concerns")
+    config.eager_load_paths.push(*%W[
+      #{config.root}/ee/lib
+      #{config.root}/ee/app/controllers
+      #{config.root}/ee/app/helpers
+      #{config.root}/ee/app/mailers
+      #{config.root}/ee/app/models
+      #{config.root}/ee/app/models/concerns
+      #{config.root}/ee/app/policies
+      #{config.root}/ee/app/services
+      #{config.root}/ee/app/workers
+    ])
+
+    config.paths['app/views'].push(*%W[
+      #{config.root}/ee/app/views
+    ])
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import mrWidgetCodeQuality from '~/vue_merge_request_widget/ee/components/mr_widget_code_quality.vue';
-import Store from '~/vue_merge_request_widget/ee/stores/mr_widget_store';
-import Service from '~/vue_merge_request_widget/ee/services/mr_widget_service';
+import mrWidgetCodeQuality from 'ee/vue_merge_request_widget/components/mr_widget_code_quality.vue';
+import Store from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+import Service from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import mockData, { baseIssues, headIssues } from '../mock_data';
 
 describe('Merge Request Code Quality', () => {

@@ -1,5 +1,7 @@
 # Shorter routing method for some project items
 module GitlabRoutingHelper
+  include EE::GitlabRoutingHelper
+
   extend ActiveSupport::Concern
 
   included do
