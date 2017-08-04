@@ -122,9 +122,9 @@
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
-        = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
+        = link_to project_pipelines_path(@project), title: 'CI / CD', class: 'shortcuts-pipelines' do
           .nav-icon-container
-            = custom_icon('pipeline')
+            = custom_icon('CI / CD')
           %span.nav-item-name
             Pipelines
 
@@ -205,9 +205,9 @@
                   Repository
             - if @project.feature_available?(:builds, current_user)
               = nav_link(controller: :ci_cd) do
-                = link_to project_settings_ci_cd_path(@project), title: 'Pipelines' do
+                = link_to project_settings_ci_cd_path(@project), title: 'CI / CD' do
                   %span
-                    Pipelines
+                    CI / CD
             - if Gitlab.config.pages.enabled
               = nav_link(controller: :pages) do
                 = link_to project_pages_path(@project), title: 'Pages' do
