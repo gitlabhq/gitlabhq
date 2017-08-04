@@ -378,4 +378,9 @@ $(function () {
     event.preventDefault();
     gl.utils.visitUrl(`${action}${$(this).serialize()}`);
   });
+
+  /**
+   * EE specific scripts
+   */
+  $('#modal-upload-trial-license').modal('show');
 });
