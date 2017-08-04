@@ -29,7 +29,7 @@ module Ci
           .execute(pipeline)
       end
 
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
+      cancel_pending_pipelines if project.enabled_auto_cancel_pending_pipelines?
 
       pipeline_created_counter.increment(source: source)
 

@@ -281,7 +281,7 @@ class Project < ApplicationRecord
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
 
-  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }, _suffix: true
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
