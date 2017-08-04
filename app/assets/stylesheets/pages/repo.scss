@@ -18,7 +18,7 @@
 
 .modal.popup-dialog {
   display: block;
-
+  background-color: $black-transparent;
 
   @media (min-width: 992px) {
     .modal-dialog {
