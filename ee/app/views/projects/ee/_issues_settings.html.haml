@@ -1,6 +1,6 @@
 - if @project.feature_available?(:issuable_default_templates)
   - expanded = Rails.env.test?
-  %section.settings.issues-features{ style: ("display:none;" if @project.project_feature.send(:issues_access_level) == 0)}
+  %section.settings.issues-feature{ style: ("display:none;" if @project.project_feature.send(:issues_access_level) == 0) }
     .settings-header
       %h4
         Issue settings
