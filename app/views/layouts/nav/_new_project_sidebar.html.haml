@@ -96,19 +96,10 @@
               %span
                 List
 
-            = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Boards' do
-                %span
-                  Boards
-          = nav_link(controller: :issues) do
-            = link_to project_issues_path(@project), title: 'Issues' do
-              %span
-                List
-
           = nav_link(controller: :boards) do
-            = link_to project_boards_path(@project), title: 'Board' do
+            = link_to project_boards_path(@project), title: 'Boards' do
               %span
-                Board
+                Boards
 
           = nav_link(controller: :labels) do
             = link_to project_labels_path(@project), title: 'Labels' do
