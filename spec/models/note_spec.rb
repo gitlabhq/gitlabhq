@@ -46,7 +46,7 @@ describe Note do
     context 'when noteable and note project differ' do
       subject do
         build(:note, noteable: build_stubbed(:issue),
-                     project: build_stubbed(:empty_project))
+                     project: build_stubbed(:project))
       end
 
       it { is_expected.to be_invalid }
@@ -97,8 +97,8 @@ describe Note do
 
   describe 'authorization' do
     before do
-      @p1 = create(:empty_project)
-      @p2 = create(:empty_project)
+      @p1 = create(:project)
+      @p2 = create(:project)
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
@@ -195,10 +195,10 @@ describe Note do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:empty_project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.team << [private_user, :master] } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
-    let(:ext_proj)  { create(:empty_project, :public) }
+    let(:ext_proj)  { create(:project, :public) }
     let(:ext_issue) { create(:issue, project: ext_proj) }
 
     let(:note) do
@@ -241,7 +241,7 @@ describe Note do
 
   describe '#participants' do
     it 'includes the note author' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       issue = create(:issue, project: project)
       note = create(:note_on_issue, noteable: issue, project: project)
 

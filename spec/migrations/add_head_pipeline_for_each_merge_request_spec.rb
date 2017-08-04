@@ -4,7 +4,7 @@ require Rails.root.join('db', 'post_migrate', '20170508170547_add_head_pipeline_
 describe AddHeadPipelineForEachMergeRequest, :truncate do
   let(:migration) { described_class.new }
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:forked_project_link) { create(:forked_project_link, forked_from_project: project) }
   let!(:other_project) { forked_project_link.forked_to_project }
 

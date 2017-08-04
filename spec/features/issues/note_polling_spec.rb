@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Issue notes polling', :js do
   include NoteInteractionHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
 
   describe 'creates' do

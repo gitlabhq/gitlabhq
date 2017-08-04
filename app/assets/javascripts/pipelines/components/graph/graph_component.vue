@@ -1,7 +1,7 @@
 <script>
+  import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import '~/flash';
   import stageColumnComponent from './stage_column_component.vue';
-  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
-  import '../../../flash';
 
   export default {
     props: {

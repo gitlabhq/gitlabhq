@@ -943,8 +943,9 @@ Rails/Date:
   Enabled: false
 
 # Prefer delegate method for delegations.
+# Disabled per https://gitlab.com/gitlab-org/gitlab-ce/issues/35869
 Rails/Delegate:
-  Enabled: true
+  Enabled: false
 
 # This cop checks dynamic `find_by_*` methods.
 Rails/DynamicFindBy:

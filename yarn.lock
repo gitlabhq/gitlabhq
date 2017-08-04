@@ -1409,6 +1409,12 @@ create-hmac@^1.1.0, create-hmac@^1.1.2:
     create-hash "^1.1.0"
     inherits "^2.0.1"
 
+cropper@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/cropper/-/cropper-2.3.0.tgz#607461d4e7aa7a7fe15a26834b14b7f0c2801562"
+  dependencies:
+    jquery ">= 1.9.1"
+
 cryptiles@2.x.x:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/cryptiles/-/cryptiles-2.0.5.tgz#3bdfecdc608147c1c67202fa291e7dca59eaa3b8"
@@ -3169,7 +3175,7 @@ jquery-ujs@^1.2.1:
   dependencies:
     jquery ">=1.8.0"
 
-jquery@>=1.8.0, jquery@^2.2.1:
+"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.1.tgz#3c3e16854ad3d2ac44ac65021b17426d22ad803f"
 

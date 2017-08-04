@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ExpirePipelineCacheWorker do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   subject { described_class.new }
 

@@ -10,9 +10,9 @@ describe CleanupNamespacelessPendingDeleteProjects do
 
   describe '#up' do
     it 'only cleans up pending delete projects' do
-      create(:empty_project)
-      create(:empty_project, pending_delete: true)
-      project = build(:empty_project, pending_delete: true, namespace_id: nil)
+      create(:project)
+      create(:project, pending_delete: true)
+      project = build(:project, pending_delete: true, namespace_id: nil)
       project.save(validate: false)
 
       expect(NamespacelessProjectDestroyWorker).to receive(:bulk_perform_async).with([[project.id]])
@@ -21,8 +21,8 @@ describe CleanupNamespacelessPendingDeleteProjects do
     end
 
     it 'does nothing when no pending delete projects without namespace found' do
-      create(:empty_project)
-      create(:empty_project, pending_delete: true)
+      create(:project)
+      create(:project, pending_delete: true)
 
       expect(NamespacelessProjectDestroyWorker).not_to receive(:bulk_perform_async)
 

@@ -16,7 +16,7 @@ describe SystemHook do
   describe "execute" do
     let(:system_hook) { create(:system_hook) }
     let(:user)        { create(:user) }
-    let(:project)     { create(:empty_project, namespace: user.namespace) }
+    let(:project)     { create(:project, namespace: user.namespace) }
     let(:group)       { create(:group) }
     let(:params) do
       { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: 'mydummypass' }

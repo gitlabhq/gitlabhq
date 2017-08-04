@@ -4,7 +4,7 @@ describe 'Issue Boards', js: true do
   include DragTo
 
   let(:group) { create(:group, :nested) }
-  let(:project) { create(:empty_project, :public, namespace: group) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }

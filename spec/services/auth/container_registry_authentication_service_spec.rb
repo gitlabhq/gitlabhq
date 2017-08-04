@@ -96,7 +96,7 @@ describe Auth::ContainerRegistryAuthenticationService do
   end
 
   describe '#full_access_token' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:token) { described_class.full_access_token(project.full_path) }
 
     subject { { token: token } }
@@ -112,7 +112,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     let(:current_user) { create(:user) }
 
     context 'for private project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       context 'allow to use scope-less authentication' do
         it_behaves_like 'a valid token'
@@ -174,7 +174,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for public project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'allow anyone to pull images' do
         let(:current_params) do
@@ -205,7 +205,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for internal project' do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:project, :internal) }
 
       context 'for internal user' do
         context 'allow anyone to pull images' do
@@ -240,7 +240,7 @@ describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'build authorized as user' do
-    let(:current_project) { create(:empty_project) }
+    let(:current_project) { create(:project) }
     let(:current_user) { create(:user) }
 
     let(:authentication_abilities) do
@@ -274,7 +274,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'allow for public' do
-          let(:project) { create(:empty_project, :public) }
+          let(:project) { create(:project, :public) }
 
           it_behaves_like 'a pullable'
           it_behaves_like 'not a container repository factory'
@@ -296,7 +296,7 @@ describe Auth::ContainerRegistryAuthenticationService do
           end
 
           context 'when you are owner' do
-            let(:project) { create(:empty_project, namespace: current_user.namespace) }
+            let(:project) { create(:project, namespace: current_user.namespace) }
 
             it_behaves_like 'a pullable'
             it_behaves_like 'not a container repository factory'
@@ -304,7 +304,7 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
 
         context 'for private' do
-          let(:project) { create(:empty_project, :private) }
+          let(:project) { create(:project, :private) }
 
           it_behaves_like 'pullable for being team member'
 
@@ -326,7 +326,7 @@ describe Auth::ContainerRegistryAuthenticationService do
             end
 
             context 'when you are owner' do
-              let(:project) { create(:empty_project, namespace: current_user.namespace) }
+              let(:project) { create(:project, namespace: current_user.namespace) }
 
               it_behaves_like 'a pullable'
               it_behaves_like 'not a container repository factory'
@@ -342,7 +342,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
         context 'disallow for all' do
           context 'when you are member' do
-            let(:project) { create(:empty_project, :public) }
+            let(:project) { create(:project, :public) }
 
             before do
               project.team << [current_user, :developer]
@@ -353,7 +353,7 @@ describe Auth::ContainerRegistryAuthenticationService do
           end
 
           context 'when you are owner' do
-            let(:project) { create(:empty_project, :public, namespace: current_user.namespace) }
+            let(:project) { create(:project, :public, namespace: current_user.namespace) }
 
             it_behaves_like 'an inaccessible'
             it_behaves_like 'not a container repository factory'
@@ -363,7 +363,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for project without container registry' do
-      let(:project) { create(:empty_project, :public, container_registry_enabled: false) }
+      let(:project) { create(:project, :public, container_registry_enabled: false) }
 
       before do
         project.update(container_registry_enabled: false)
@@ -396,7 +396,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for private project' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       let(:current_params) do
         { scope: "repository:#{project.full_path}:pull" }
@@ -406,7 +406,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     context 'for public project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'when pulling and pushing' do
         let(:current_params) do

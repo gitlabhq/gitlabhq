@@ -1,11 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, one-var, no-var, one-var-declaration-per-line, no-unused-vars, camelcase, quotes, no-useless-concat, prefer-template, quote-props, comma-dangle, object-shorthand, consistent-return, prefer-arrow-callback */
 /* global Dropzone */
-
+import _ from 'underscore';
 import './preview_markdown';
 
 window.DropzoneInput = (function() {
   function DropzoneInput(form) {
-    Dropzone.autoDiscover = false;
     const divHover = '<div class="div-dropzone-hover"></div>';
     const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
     const $attachButton = form.find('.button-attach-file');
@@ -218,7 +217,7 @@ window.DropzoneInput = (function() {
         value = e.clipboardData.getData('text/plain');
       }
       value = value.split("\r");
-      return value.first();
+      return value[0];
     };
 
     const showSpinner = function(e) {

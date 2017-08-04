@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe PersonalFileUploader do
-  let(:uploader) { described_class.new(build_stubbed(:empty_project)) }
+  let(:uploader) { described_class.new(build_stubbed(:project)) }
   let(:snippet) { create(:personal_snippet) }
 
   describe '.absolute_path' do

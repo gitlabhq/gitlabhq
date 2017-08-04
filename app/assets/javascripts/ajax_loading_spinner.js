@@ -10,7 +10,7 @@ class AjaxLoadingSpinner {
     e.target.setAttribute('disabled', '');
     const iconElement = e.target.querySelector('i');
     // get first fa- icon
-    const originalIcon = iconElement.className.match(/(fa-)([^\s]+)/g).first();
+    const originalIcon = iconElement.className.match(/(fa-)([^\s]+)/g)[0];
     iconElement.dataset.icon = originalIcon;
     AjaxLoadingSpinner.toggleLoadingIcon(iconElement);
     $(e.target).off('ajax:beforeSend', AjaxLoadingSpinner.ajaxBeforeSend);

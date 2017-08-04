@@ -86,8 +86,9 @@
       // This is required to handle non-unicode characters in hash
       hash = decodeURIComponent(hash);
 
-      var fixedTabs = document.querySelector('.js-tabs-affix');
-      var fixedNav = document.querySelector('.navbar-gitlab');
+      const fixedTabs = document.querySelector('.js-tabs-affix');
+      const fixedDiffStats = document.querySelector('.js-diff-files-changed.is-stuck');
+      const fixedNav = document.querySelector('.navbar-gitlab');
 
       var adjustment = 0;
       if (fixedNav) adjustment -= fixedNav.offsetHeight;
@@ -104,6 +105,11 @@
         if (fixedTabs) {
           adjustment -= fixedTabs.offsetHeight;
         }
+
+        if (fixedDiffStats) {
+          adjustment -= fixedDiffStats.offsetHeight;
+        }
+
         window.scrollBy(0, adjustment);
       }
     };

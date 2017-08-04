@@ -54,7 +54,7 @@ module SharedProject
 
   # Create an empty project without caring about the name
   step 'I own an empty project' do
-    @project = create(:empty_project,
+    @project = create(:project,
                       name: 'Empty Project', namespace: @user.namespace)
     @project.team << [@user, :master]
   end
@@ -276,7 +276,7 @@ module SharedProject
   def user_owns_project(user_name:, project_name:, visibility: :private)
     user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)
-    project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
+    project ||= create(:project, visibility, name: project_name, namespace: user.namespace)
     project.team << [user, :master]
   end
 end
