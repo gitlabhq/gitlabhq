@@ -314,11 +314,11 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
-  gem 'fuubar', '~> 2.0.0'
+  gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.7.0'
-  gem 'rspec-rails', '~> 3.5.0'
+  gem 'rspec-rails', '~> 3.6.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
