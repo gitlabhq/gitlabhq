@@ -11,7 +11,7 @@
   import issueNoteForm from './issue_note_form.vue';
   import placeholderNote from './issue_placeholder_note.vue';
   import placeholderSystemNote from './issue_placeholder_system_note.vue';
-  import '../../autosave';
+  import autosave from '../mixins/autosave';;
 
   export default {
     props: {
@@ -36,6 +36,9 @@
       placeholderNote,
       placeholderSystemNote,
     },
+    mixins: [
+      autosave,
+    ],
     computed: {
       ...mapGetters([
         'getIssueData',
@@ -85,6 +88,7 @@
           }
         }
 
+        this.resetAutoSave();
         this.isReplying = false;
       },
       saveReply(noteText) {
@@ -103,11 +107,9 @@
         this.saveNote(replyData)
           .then(() => {
             this.isReplying = false;
+            this.resetAutoSave();
           })
           .catch(() => Flash('Something went wrong while adding your reply. Please try again.'));
-      },
-      initAutoSave() {
-        return new Autosave($(this.$refs.noteForm.$refs.textarea), ['Note', 'Issue', this.note.id]);
       },
     },
     mounted() {
@@ -117,7 +119,11 @@
     },
     updated() {
       if (this.isReplying) {
-        this.initAutoSave();
+        if (!this.autosave) {
+          this.initAutoSave();
+        } else {
+          this.setAutoSave();
+        }
       }
     },
   };

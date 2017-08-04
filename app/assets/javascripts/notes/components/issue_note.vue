@@ -90,6 +90,7 @@
             this.isEditing = false;
             // TODO: this could be moved down, by setting a prop
             $(this.$refs.noteBody.$el).renderGFM();
+            this.$refs.noteBody.resetAutoSave();
           })
           .catch(() => Flash(
             'Something went wrong while editing your comment. Please try again.',
@@ -102,7 +103,7 @@
           // eslint-disable-next-line no-alert
           if (!confirm('Are you sure you want to cancel editing this comment?')) return;
         }
-
+        this.$refs.noteBody.resetAutoSave();
         this.isEditing = false;
       },
     },
