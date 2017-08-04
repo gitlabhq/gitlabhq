@@ -122,11 +122,14 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    shell_needs_update = component_needs_update?(Gitlab.config.gitlab_shell.path,
+    gitlab_shell_dir = File.dirname(Gitlab.config.gitlab_shell.path)
+    shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
     unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      raise 'Can`t clone gitlab-shell'
+      puts "rm -rf #{gitlab_shell_dir}"
+      FileUtils.rm_rf(gitlab_shell_dir)
+      raise "Can't install gitlab-shell"
     end
   end
 
@@ -136,14 +139,16 @@ module TestEnv
 
     if gitaly_dir_stale?(gitaly_dir)
       puts "rm -rf #{gitaly_dir}"
-      FileUtils.rm_rf(gitaly_dir) 
+      FileUtils.rm_rf(gitaly_dir)
     end
 
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
     unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      raise "Can't clone gitaly"
+      puts "rm -rf #{gitaly_dir}"
+      FileUtils.rm_rf(gitaly_dir)
+      raise "Can't install gitaly"
     end
 
     start_gitaly(gitaly_dir)
