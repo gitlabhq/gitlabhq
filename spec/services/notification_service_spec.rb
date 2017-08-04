@@ -458,7 +458,7 @@ describe NotificationService, :mailer do
     context "merge request diff note" do
       let(:project) { create(:project, :repository) }
       let(:user) { create(:user) }
-      let(:merge_request) { create(:merge_request, source_project: project, assignee: user) }
+      let(:merge_request) { create(:merge_request, source_project: project, assignee: user, author: create(:user)) }
       let(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
 
       before do
@@ -469,11 +469,13 @@ describe NotificationService, :mailer do
 
       describe '#new_note' do
         it "records sent notifications" do
-          # Ensure create SentNotification by noteable = merge_request 6 times, not noteable = note
+          # 3 SentNotification are sent: the MR assignee and author, and the @u_watcher
           expect(SentNotification).to receive(:record_note).with(note, any_args).exactly(3).times.and_call_original
 
           notification.new_note(note)
 
+          expect(SentNotification.last(3).map(&:recipient).map(&:id))
+            .to contain_exactly(merge_request.assignee.id, merge_request.author.id, @u_watcher.id)
           expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
       end

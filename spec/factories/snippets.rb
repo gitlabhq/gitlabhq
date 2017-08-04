@@ -21,6 +21,7 @@ FactoryBot.define do
 
   factory :project_snippet, parent: :snippet, class: :ProjectSnippet do
     project
+    author { project.creator }
   end
 
   factory :personal_snippet, parent: :snippet, class: :PersonalSnippet do
