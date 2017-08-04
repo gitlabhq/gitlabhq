@@ -38,19 +38,19 @@ import '~/behaviors/quick_submit';
       return expect(this.spies.submit).not.toHaveBeenTriggered();
     });
     it('disables input of type submit', function() {
-      const submitButton = $('.js-quick-submit input[type=submit]');
+      const submitButton = $('.js-vue-quick-submit input[type=submit]');
       this.textarea.trigger(keydownEvent());
 
       expect(submitButton).toBeDisabled();
     });
     it('disables button of type submit', function() {
-      const submitButton = $('.js-quick-submit input[type=submit]');
+      const submitButton = $('.js-vue-quick-submit input[type=submit]');
       this.textarea.trigger(keydownEvent());
 
       expect(submitButton).toBeDisabled();
     });
     it('only clicks one submit', function() {
-      const existingSubmit = $('.js-quick-submit input[type=submit]');
+      const existingSubmit = $('.js-vue-quick-submit input[type=submit]');
       // Add an extra submit button
       const newSubmit = $('<button type="submit">Submit it</button>');
       newSubmit.insertAfter(this.textarea);

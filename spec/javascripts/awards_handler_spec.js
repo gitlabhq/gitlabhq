@@ -28,6 +28,7 @@ import '~/lib/utils/common_utils';
     preloadFixtures('issues/issue_with_comment.html.raw');
     beforeEach(function(done) {
       loadFixtures('issues/issue_with_comment.html.raw');
+      $('body').data('page', 'projects:issues:show');
       loadAwardsHandler(true).then((obj) => {
         awardsHandler = obj;
         spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
