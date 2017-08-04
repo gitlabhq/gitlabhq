@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :event do
     project
-    author factory: :user
+    author(factory: :user) { project.creator }
     action Event::JOINED
 
     trait(:created)   { action Event::CREATED }
