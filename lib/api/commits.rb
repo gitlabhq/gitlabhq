@@ -63,7 +63,8 @@ module API
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs[:branch_name] = declared_params.delete(:branch)
+        attrs = declared_params
+        attrs[:branch_name] = attrs.delete(:branch)
         attrs[:start_branch] ||= attrs[:branch_name]
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
