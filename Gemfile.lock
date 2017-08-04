@@ -383,10 +383,11 @@ GEM
       ffi (>= 1.0.1)
     haml (4.0.7)
       tilt
-    haml_lint (0.21.0)
-      haml (~> 4.0)
+    haml_lint (0.26.0)
+      haml (>= 4.0, < 5.1)
+      rainbow
       rake (>= 10, < 13)
-      rubocop (>= 0.47.0)
+      rubocop (>= 0.49.0)
       sysexits (~> 1.1)
     hamlit (2.6.1)
       temple (~> 0.7.6)
@@ -1025,7 +1026,7 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.0.0)
   gssapi
-  haml_lint (~> 0.21.0)
+  haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
