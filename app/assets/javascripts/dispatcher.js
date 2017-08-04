@@ -575,7 +575,7 @@ import initGroupAnalytics from './init_group_analytics';
           initGroupAnalytics();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;

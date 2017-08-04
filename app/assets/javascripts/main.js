@@ -16,9 +16,6 @@ import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
 
-// extensions
-import './extensions/array';
-
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
