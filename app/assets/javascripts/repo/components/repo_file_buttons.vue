@@ -21,18 +21,6 @@ const RepoFileButtons = {
     canPreview() {
       return Helper.isKindaBinary();
     },
-
-    rawFileURL() {
-      return Helper.getRawURLFromBlobURL(this.activeFile.url);
-    },
-
-    blameFileURL() {
-      return Helper.getBlameURLFromBlobURL(this.activeFile.url);
-    },
-
-    historyFileURL() {
-      return Helper.getHistoryURLFromBlobURL(this.activeFile.url);
-    },
   },
 
   methods: {
@@ -50,7 +38,7 @@ export default RepoFileButtons;
   <div class="btn-group" role="group" aria-label="File actions">
     <a :href="activeFile.blame_path" class="btn btn-default blame">Blame</a>
     <a :href="activeFile.commits_path" class="btn btn-default history">History</a>
-    <a href="activeFile.permalink" class="btn btn-default permalink">Permalink</a>
+    <a :href="activeFile.permalink" class="btn btn-default permalink">Permalink</a>
   </div>
 
   <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>

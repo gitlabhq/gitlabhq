@@ -67,14 +67,6 @@ const RepoHelper = {
     return okExts.indexOf(Store.activeFile.extension) > -1;
   },
 
-  getBlameURLFromBlobURL(url) {
-    return url.replace('blob', 'blame');
-  },
-
-  getHistoryURLFromBlobURL(url) {
-    return url.replace('blob', 'commits');
-  },
-
   setBinaryDataAsBase64(file) {
     Service.getBase64Content(file.raw_path)
     .then((response) => {
