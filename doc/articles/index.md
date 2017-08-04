@@ -80,7 +80,7 @@ Install, upgrade, integrate, migrate to GitLab:
 | :------------ | :------: | --------------: |
 | [Video Tutorial: Idea to Production on Google Container Engine (GKE)](https://about.gitlab.com/2017/01/23/video-tutorial-idea-to-production-on-google-container-engine-gke/) | Tutorial | 2017/01/23 |
 | [How to Setup a GitLab Instance on Microsoft Azure](https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/) | Tutorial | 2016/07/13 |
-| [Get started with OpenShift Origin 3 and GitLab](https://docs.gitlab.com/ee/articles/openshift_and_gitlab/) | Tutorial | 2016/06/28 |
+| [Get started with OpenShift Origin 3 and GitLab](openshift_and_gitlab/index.md) | Tutorial | 2016/06/28 |
 | [Getting started with GitLab and DigitalOcean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/) | Tutorial | 2016/04/27 |
 
 ## Software development
