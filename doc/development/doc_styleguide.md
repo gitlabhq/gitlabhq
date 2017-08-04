@@ -194,6 +194,11 @@ You can combine one or more of the following:
 
 ## Images
 
+- You can use the [Nimbus screenshot][nimbus] browser add-on which available for
+  Firefox, Chrome and Opera. Read their [quick guide][nimbus-guide] to
+  get you started.
+- Capture only the relevant parts of a feature, do not include the
+  navigation sidebar unless absolutely necessary.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
@@ -556,3 +561,5 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "domain
 [ce-3349]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3349 "Documentation restructure"
 [graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
 [gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
+[nimbus]: https://nimbus.everhelper.me/screenshot.php
+[nimbus-guide]: https://everhelper.desk.com/customer/en/portal/articles/1180411-nimbus-screenshot---quick-guide
