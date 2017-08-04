@@ -632,7 +632,11 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_left
-    projects_limit - personal_projects.count
+    projects_limit - personal_projects_count
+  end
+
+  def personal_projects_count
+    @personal_projects_count ||= personal_projects.count
   end
 
   def projects_limit_percent
