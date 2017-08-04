@@ -52,8 +52,8 @@ feature 'Pipelines for Merge Requests', js: true do
     given(:build_push_data) { { ref: 'feature', checkout_sha: TestEnv::BRANCH_SHA['feature'] } }
 
     given(:merge_request_params) do
-       { "source_branch" => "feature", "source_project_id" => project.id,
-         "target_branch" => "master", "target_project_id" => project.id, "title" => "A" }
+      { "source_branch" => "feature", "source_project_id" => project.id,
+        "target_branch" => "master", "target_project_id" => project.id, "title" => "A" }
     end
 
     background do
