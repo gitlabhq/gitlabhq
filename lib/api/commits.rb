@@ -53,16 +53,18 @@ module API
         detail 'This feature was introduced in GitLab 8.13'
       end
       params do
-        requires :branch, type: String, desc: 'The name of branch'
+        requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
         requires :commit_message, type: String, desc: 'Commit message'
         requires :actions, type: Array[Hash], desc: 'Actions to perform in commit'
+        optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
       end
       post ":id/repository/commits" do
         authorize! :push_code, user_project
 
-        attrs = declared_params.merge(start_branch: declared_params[:branch], branch_name: declared_params[:branch])
+        attrs[:branch_name] = declared_params.delete(:branch)
+        attrs[:start_branch] ||= attrs[:branch_name]
 
         result = ::Files::MultiService.new(user_project, current_user, attrs).execute
 
