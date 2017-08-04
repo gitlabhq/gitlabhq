@@ -28,13 +28,6 @@ module MembershipActions
     end
   end
 
-  def withdraw_access_request
-    membershipable.withdraw_access_request(current_user)
-
-    redirect_to membershipable,
-                notice: "Your access request to the #{source_type} has been withdrawn."
-  end
-
   def approve_access_request
     Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
 

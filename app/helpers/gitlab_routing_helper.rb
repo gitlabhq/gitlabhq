@@ -104,6 +104,10 @@ module GitlabRoutingHelper
     project_project_access_requests_url(project, *args)
   end
 
+  def withdraw_project_access_requests_path(project, *args)
+    withdraw_project_project_access_requests_path(project)
+  end
+
   ## Members
   def project_members_url(project, *args)
     project_project_members_url(project, *args)
@@ -111,10 +115,6 @@ module GitlabRoutingHelper
 
   def project_member_path(project_member, *args)
     project_project_member_path(project_member.source, project_member)
-  end
-
-  def withdraw_access_request_project_members_path(project, *args)
-    withdraw_access_request_project_project_members_path(project)
   end
 
   def leave_project_members_path(project, *args)

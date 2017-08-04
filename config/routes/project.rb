@@ -314,7 +314,11 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :project_access_requests, only: [:create]
+      resources :project_access_requests, only: [:create] do
+        collection do
+          delete :withdraw
+        end
+      end
 
       resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
         collection do

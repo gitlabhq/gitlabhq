@@ -9,6 +9,12 @@ describe GitlabRoutingHelper do
       it { expect(project_access_requests_path(project)).to eq project_project_access_requests_path(project) }
     end
 
+    describe '#withdraw_project_access_requests_path' do
+      let(:project) { build_stubbed(:project) }
+
+      it { expect(withdraw_project_access_requests_path(project)).to eq withdraw_project_project_access_requests_path(project) }
+    end
+
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
 
