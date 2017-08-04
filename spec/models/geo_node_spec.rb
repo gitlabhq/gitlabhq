@@ -317,10 +317,10 @@ describe GeoNode, type: :model do
     end
   end
 
-  describe '#project_ids' do
+  describe '#restricted_project_ids' do
     context 'without namespace restriction' do
       it 'returns nil' do
-        expect(node.project_ids).to be_nil
+        expect(node.restricted_project_ids).to be_nil
       end
     end
 
@@ -335,7 +335,7 @@ describe GeoNode, type: :model do
 
         node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
 
-        expect(node.project_ids).to match_array([project_1.id, project_2.id, project_3.id])
+        expect(node.restricted_project_ids).to match_array([project_1.id, project_2.id, project_3.id])
       end
     end
   end

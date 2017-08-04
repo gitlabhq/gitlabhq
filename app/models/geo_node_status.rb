@@ -54,7 +54,7 @@ class GeoNodeStatus
     @lfs_objects_synced_count ||= begin
       relation = Geo::FileRegistry.where(file_type: :lfs)
 
-      if Gitlab::Geo.current_node.project_ids
+      if Gitlab::Geo.current_node.restricted_project_ids
         relation = relation.where(file_id: lfs_objects.pluck(:id))
       end
 

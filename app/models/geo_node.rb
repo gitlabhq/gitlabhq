@@ -108,7 +108,7 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def project_ids
+  def restricted_project_ids
     return unless namespaces.presence
 
     relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
@@ -119,34 +119,34 @@ class GeoNode < ActiveRecord::Base
   end
 
   def lfs_objects
-    if project_ids
-      LfsObject.joins(:projects).where(projects: { id: project_ids })
+    if restricted_project_ids
+      LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
     else
       LfsObject.all
     end
   end
 
   def projects
-    if project_ids
-      Project.where(id: project_ids)
+    if restricted_project_ids
+      Project.where(id: restricted_project_ids)
     else
       Project.all
     end
   end
 
   def project_registries
-    if project_ids
-      Geo::ProjectRegistry.where(project_id: project_ids)
+    if restricted_project_ids
+      Geo::ProjectRegistry.where(project_id: restricted_project_ids)
     else
       Geo::ProjectRegistry.all
     end
   end
 
   def uploads
-    if project_ids
+    if restricted_project_ids
       uploads_table   = Upload.arel_table
       group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
-      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(project_ids))
+      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
       other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
 
       Upload.where(group_uploads.or(project_uploads).or(other_uploads))

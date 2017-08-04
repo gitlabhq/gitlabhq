@@ -11,7 +11,7 @@ module Geo
       try_obtain_lease do
         geo_node = GeoNode.find(geo_node_id)
 
-        restricted_project_ids = geo_node.project_ids
+        restricted_project_ids = geo_node.restricted_project_ids
         return unless restricted_project_ids
 
         Project.where.not(id: restricted_project_ids).find_in_batches(batch_size: BATCH_SIZE) do |batch|

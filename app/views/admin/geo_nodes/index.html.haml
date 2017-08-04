@@ -33,7 +33,7 @@
               %span.help-block Primary node
             - else
               = status_loading_icon
-              - if node.project_ids
+              - if node.restricted_project_ids
                 %p
                   %span.help-block
                     Namespaces to replicate:
