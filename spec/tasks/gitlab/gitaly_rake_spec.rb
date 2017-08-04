@@ -41,7 +41,7 @@ describe 'gitlab:gitaly namespace rake task' do
     end
 
     describe 'gmake/make' do
-      let(:command_preamble) { %w[/usr/bin/env -u BUNDLE_GEMFILE -u RUBYOPT] }
+      let(:command_preamble) { %w[/usr/bin/env -u RUBYOPT] }
 
       before(:all) do
         @old_env_ci = ENV.delete('CI')
