@@ -45,7 +45,7 @@ const RepoHelper = {
   },
 
   getFilePathFromFullPath(fullPath, branch) {
-    return fullPath.split(branch)[1];
+    return fullPath.split(`${Store.projectUrl}/blob/${branch}`)[1];
   },
 
   findLanguage(ext, langs) {
