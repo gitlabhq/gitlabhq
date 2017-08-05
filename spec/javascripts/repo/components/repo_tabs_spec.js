@@ -25,9 +25,10 @@ describe('RepoTabs', () => {
 
     expect(vm.$el.id).toEqual('tabs');
     expect(vm.$el.classList.contains('overflown')).toBeTruthy();
-    expect(tabs.length).toEqual(2);
+    expect(tabs.length).toEqual(3);
     expect(tabs[0].classList.contains('active')).toBeTruthy();
     expect(tabs[1].classList.contains('active')).toBeFalsy();
+    expect(tabs[2].classList.contains('tabs-divider')).toBeTruthy();
   });
 
   it('does not render a tabs list if not isMini', () => {
