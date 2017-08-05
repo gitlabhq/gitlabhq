@@ -85,6 +85,7 @@ import Cookies from 'js-cookie';
           filterable: true,
           filterRemote: true,
           filterByText: true,
+          inputFieldName: $dropdown.data('input-field-name'),
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var li = refListItem.cloneNode(false);

@@ -30,7 +30,7 @@ GitLabDropdownInput = (function() {
       }
     })
     .on('input', function(e) {
-      var val = e.currentTarget.value || 'new-branch';
+      var val = e.currentTarget.value || _this.options.inputFieldName;
       val = val.split(' ').join('-') // replaces space with dash
         .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
         .replace(/(-)\1+/g, '-'); // replace repeated dashes
