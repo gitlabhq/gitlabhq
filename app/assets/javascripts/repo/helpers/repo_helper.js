@@ -11,7 +11,7 @@ const RepoHelper = {
       extension: '',
       html: '',
       mime_type: '',
-      name: 'loading...',
+      name: '',
       plain: '',
       size: 0,
       url: '',
