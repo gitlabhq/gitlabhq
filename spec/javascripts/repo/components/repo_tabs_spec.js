@@ -2,7 +2,7 @@ import Vue from 'vue';
 import RepoStore from '~/repo/stores/repo_store';
 import repoTabs from '~/repo/components/repo_tabs.vue';
 
-fdescribe('RepoTabs', () => {
+describe('RepoTabs', () => {
   const openedFiles = [{
     id: 0,
     active: true,
