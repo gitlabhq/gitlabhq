@@ -189,6 +189,7 @@ module Backup
     end
 
     def empty_repo?(project_or_wiki)
+      project_or_wiki.repository.expire_exists_cache # protect backups from stale cache
       project_or_wiki.repository.empty_repo?
     rescue => e
       progress.puts "Ignoring repository error and continuing backing up project: #{project_or_wiki.full_path} - #{e.message}".color(:orange)

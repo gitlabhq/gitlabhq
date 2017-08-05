@@ -696,17 +696,6 @@ describe NotificationService, :mailer do
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
-      it "emails subscribers of the issue's added labels only" do
-        notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
-
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
-      end
-
       it "emails the current user if they've opted into notifications about their activity" do
         subscriber_to_label_2.notified_of_own_activity = true
         notification.relabeled_issue(issue, [group_label_2, label_2], subscriber_to_label_2)
@@ -723,6 +712,12 @@ describe NotificationService, :mailer do
       it "doesn't send email to anyone but subscribers of the given labels" do
         notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
 
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
         should_not_email(issue.assignees.first)
         should_not_email(issue.author)
         should_not_email(@u_watcher)
@@ -732,12 +727,6 @@ describe NotificationService, :mailer do
         should_not_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
       end
 
       context 'confidential issues' do
@@ -880,11 +869,6 @@ describe NotificationService, :mailer do
     end
 
     describe '#new_merge_request' do
-      before do
-        update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
-        update_custom_notification(:new_merge_request, @u_custom_global)
-      end
-
       it do
         notification.new_merge_request(merge_request, @u_disabled)
 
@@ -1045,7 +1029,7 @@ describe NotificationService, :mailer do
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
-      it "emails subscribers of the merge request's added labels only" do
+      it "doesn't send email to anyone but subscribers of the given labels" do
         notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
 
         should_not_email(subscriber_to_label_1)
@@ -1054,11 +1038,6 @@ describe NotificationService, :mailer do
         should_email(subscriber_1_to_group_label_2)
         should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
-      end
-
-      it "doesn't send email to anyone but subscribers of the given labels" do
-        notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
-
         should_not_email(merge_request.assignee)
         should_not_email(merge_request.author)
         should_not_email(@u_watcher)
@@ -1068,12 +1047,6 @@ describe NotificationService, :mailer do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_lazy_participant)
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
       end
     end
 
@@ -1118,12 +1091,12 @@ describe NotificationService, :mailer do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
-        should_email(@u_guest_watcher)
-        should_email(@u_custom_global)
-        should_email(@u_guest_custom)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)

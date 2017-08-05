@@ -185,3 +185,28 @@
     text-overflow: ellipsis;
   }
 }
+
+// TODO: fallback to global style
+.atwho-view {
+  .atwho-view-ul {
+    padding: 8px 1px;
+
+    li {
+      padding: 8px 16px;
+      border: 0;
+
+      &.cur {
+        background-color: $gray-darker;
+        color: $gl-text-color;
+
+        small {
+          color: inherit;
+        }
+      }
+
+      strong {
+        color: $gl-text-color;
+      }
+    }
+  }
+}

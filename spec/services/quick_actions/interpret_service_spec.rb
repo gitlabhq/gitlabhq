@@ -9,6 +9,7 @@ describe QuickActions::InterpretService do
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
+  let(:service) { described_class.new(project, developer) }
 
   before do
     stub_licensed_features(multiple_issue_assignees: false)
@@ -17,7 +18,6 @@ describe QuickActions::InterpretService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -286,6 +286,22 @@ describe QuickActions::InterpretService do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(canonical_issue_id: issue_duplicate.id)
+      end
+    end
+
+    shared_examples 'shrug command' do
+      it 'appends ¯\_(ツ)_/¯ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::SHRUG)
+      end
+    end
+
+    shared_examples 'tableflip command' do
+      it 'appends (╯°□°)╯︵ ┻━┻ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::TABLEFLIP)
       end
     end
 
@@ -848,6 +864,30 @@ describe QuickActions::InterpretService do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
         end
+      end
+    end
+
+    context '/shrug command' do
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug people are people' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug' }
+        let(:issuable) { issue }
+      end
+    end
+
+    context '/tableflip command' do
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip curse your sudden but enviable betrayal' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip' }
+        let(:issuable) { issue }
       end
     end
 

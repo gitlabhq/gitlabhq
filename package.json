@@ -22,6 +22,7 @@
     "clipboard": "^1.6.1",
     "compression-webpack-plugin": "^0.3.2",
     "core-js": "^2.4.1",
+    "cropper": "^2.3.0",
     "css-loader": "^0.28.0",
     "d3": "^3.5.11",
     "deckar01-task_list": "^2.0.0",

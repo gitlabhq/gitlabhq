@@ -2,7 +2,7 @@
 
 resource :repository, only: [:create] do
   member do
-    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }
+    get ':ref/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, ref: /.+/ }, action: 'archive', as: 'archive'
   end
 end
 

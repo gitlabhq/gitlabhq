@@ -1,4 +1,3 @@
-import '~/extensions/array';
 import '~/filtered_search/filtered_search_visual_tokens';
 import '~/filtered_search/filtered_search_tokenizer';
 import '~/filtered_search/filtered_search_dropdown_manager';

@@ -44,12 +44,14 @@ Shortcuts to GitLab's most visited docs:
 
 ### Projects and groups
 
-- [Create a project](gitlab-basics/create-project.md)
-- [Fork a project](gitlab-basics/fork-project.md)
-- [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+- [Projects](user/project/index.md):
+  - [Create a project](gitlab-basics/create-project.md)
+  - [Fork a project](gitlab-basics/fork-project.md)
+  - [Importing and exporting projects between instances](user/project/settings/import_export.md).
+  - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+  - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
-  - [Subgroups](user/group/subgroups/index.md): nest groups in subgroups.
+  - [Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.

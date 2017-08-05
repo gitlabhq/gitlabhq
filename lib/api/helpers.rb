@@ -18,6 +18,8 @@ module API
 
       @current_user = initial_current_user
 
+      Gitlab::I18n.locale = @current_user&.preferred_language
+
       sudo!
 
       @current_user

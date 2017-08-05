@@ -16,9 +16,6 @@ import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
 
-// extensions
-import './extensions/array';
-
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
@@ -149,8 +146,6 @@ import './subscription';
 import './subscription_select';
 import './syntax_highlight';
 
-import './dispatcher';
-
 // EE-only scripts
 import './admin_email_select';
 import './application_settings';
@@ -158,6 +153,8 @@ import './approvals';
 import './ldap_groups_select';
 import './path_locks';
 import './weight_select';
+
+import './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');

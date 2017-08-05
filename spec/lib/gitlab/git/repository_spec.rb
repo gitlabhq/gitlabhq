@@ -361,20 +361,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#commit_count' do
-    shared_examples 'counting commits' do
+    shared_examples 'simple commit counting' do
       it { expect(repository.commit_count("master")).to eq(25) }
       it { expect(repository.commit_count("feature")).to eq(9) }
     end
 
     context 'when Gitaly commit_count feature is enabled' do
-      it_behaves_like 'counting commits'
+      it_behaves_like 'simple commit counting'
       it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
         subject { repository.commit_count('master') }
       end
     end
 
     context 'when Gitaly commit_count feature is disabled', skip_gitaly_mock: true  do
-      it_behaves_like 'counting commits'
+      it_behaves_like 'simple commit counting'
     end
   end
 
@@ -797,28 +797,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#count_commits' do
-    context 'with after timestamp' do
-      it 'returns the number of commits after timestamp' do
-        options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+    shared_examples 'extended commit counting' do
+      context 'with after timestamp' do
+        it 'returns the number of commits after timestamp' do
+          options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
-        expect(repository.count_commits(options)).to eq(25)
+          expect(repository.count_commits(options)).to eq(25)
+        end
+      end
+
+      context 'with before timestamp' do
+        it 'returns the number of commits before timestamp' do
+          options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+
+          expect(repository.count_commits(options)).to eq(9)
+        end
+      end
+
+      context 'with path' do
+        it 'returns the number of commits with path ' do
+          options = { ref: 'master', limit: nil, path: "encoding" }
+
+          expect(repository.count_commits(options)).to eq(2)
+        end
       end
     end
 
-    context 'with before timestamp' do
-      it 'returns the number of commits after timestamp' do
-        options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
-
-        expect(repository.count_commits(options)).to eq(9)
-      end
+    context 'when Gitaly count_commits feature is enabled' do
+      it_behaves_like 'extended commit counting'
     end
 
-    context 'with path' do
-      it 'returns the number of commits with path ' do
-        options = { ref: 'master', limit: nil, path: "encoding" }
-
-        expect(repository.count_commits(options)).to eq(2)
-      end
+    context 'when Gitaly count_commits feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'extended commit counting'
     end
   end
 

@@ -168,12 +168,17 @@ module Gitlab
         username ||= auth_hash.username
         email ||= auth_hash.email
 
+        valid_username = ::Namespace.clean_path(username)
+
+        uniquify = Uniquify.new
+        valid_username = uniquify.string(valid_username) { |s| !DynamicPathValidator.valid_user_path?(s) }
+
         name = auth_hash.name
-        name = ::Namespace.clean_path(username) if name.strip.empty?
+        name = valid_username if name.strip.empty?
 
         {
           name:                       name,
-          username:                   ::Namespace.clean_path(username),
+          username:                   valid_username,
           email:                      email,
           password:                   auth_hash.password,
           password_confirmation:      auth_hash.password,

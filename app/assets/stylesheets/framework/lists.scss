@@ -375,6 +375,10 @@ ul.indent-list {
       background-color: $row-hover;
       cursor: pointer;
     }
+
+    .avatar-container > a {
+      width: 100%;
+    }
   }
 }
 

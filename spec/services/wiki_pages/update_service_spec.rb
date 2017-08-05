@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe WikiPages::UpdateService do
   let(:project) { create(:project) }
-  let(:user)    { create(:user) }
-  let(:page)    { create(:wiki_page) }
+  let(:user) { create(:user) }
+  let(:page) { create(:wiki_page) }
 
   let(:opts) do
     {

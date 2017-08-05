@@ -86,6 +86,7 @@
       position: absolute;
       right: 0;
       left: 0;
+      top: 0;
     }
 
     .truncated-info {
@@ -310,9 +311,7 @@
     }
 
     .dropdown-menu {
-      right: $gl-padding;
-      left: $gl-padding;
-      width: auto;
+      margin-top: -$gl-padding;
     }
 
     svg {

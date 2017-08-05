@@ -348,6 +348,7 @@ header.navbar-gitlab-new {
 
 .breadcrumbs-links {
   flex: 1;
+  min-width: 0;
   align-self: center;
   color: $gl-text-color-quaternary;
 
@@ -366,7 +367,7 @@ header.navbar-gitlab-new {
   }
 
   .title {
-    white-space: nowrap;
+    display: inline-block;
 
     > a {
       &:last-of-type:not(:first-child) {

@@ -19,9 +19,9 @@
   }
 
   img.js-lazy-loaded {
-    min-width: none;
-    min-height: none;
-    background-color: none;
+    min-width: inherit;
+    min-height: inherit;
+    background-color: inherit;
   }
 
   p a:not(.no-attachment-icon) img {

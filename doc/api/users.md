@@ -244,27 +244,27 @@ POST /users
 
 Parameters:
 
-- `email` (required)            - Email
-- `password` (optional)         - Password
-- `reset_password` (optional)   - Send user password reset link - true or false(default)
-- `username` (required)         - Username
-- `name` (required)             - Name
-- `skype` (optional)            - Skype ID
-- `linkedin` (optional)         - LinkedIn
-- `twitter` (optional)          - Twitter account
-- `website_url` (optional)      - Website URL
-- `organization` (optional)     - Organization name
-- `projects_limit` (optional)   - Number of projects user can create
-- `extern_uid` (optional)       - External UID
-- `provider` (optional)         - External provider name
-- `bio` (optional)              - User's biography
-- `location` (optional)         - User's location
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
-- `confirm` (optional)          - Require confirmation - true (default) or false
-- `external` (optional)         - Flags the user as external - true or false(default)
+- `email` (required)             - Email
+- `password` (optional)          - Password
+- `reset_password` (optional)    - Send user password reset link - true or false(default)
+- `username` (required)          - Username
+- `name` (required)              - Name
+- `skype` (optional)             - Skype ID
+- `linkedin` (optional)          - LinkedIn
+- `twitter` (optional)           - Twitter account
+- `website_url` (optional)       - Website URL
+- `organization` (optional)      - Organization name
+- `projects_limit` (optional)    - Number of projects user can create
+- `extern_uid` (optional)        - External UID
+- `provider` (optional)          - External provider name
+- `bio` (optional)               - User's biography
+- `location` (optional)          - User's location
+- `admin` (optional)             - User is admin - true or false (default)
+- `can_create_group` (optional)  - User can create groups - true or false
+- `skip_confirmation` (optional) - Skip confirmation - true or false (default)
+- `external` (optional)          - Flags the user as external - true or false(default)
+- `avatar` (optional)            - Image file for user's avatar
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
-- `avatar` (optional)           - Image file for user's avatar
 
 ## User modification
 

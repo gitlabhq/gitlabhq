@@ -4,6 +4,8 @@
  */
 
 header {
+  @include new-style-dropdown;
+
   transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
@@ -313,6 +315,10 @@ header {
   .impersonation i {
     color: $red-500;
   }
+}
+
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
 }
 
 .with-performance-bar header.navbar-gitlab {
