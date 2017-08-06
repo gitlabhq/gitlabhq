@@ -18,7 +18,7 @@ const RepoTabs = {
       return this.$el.scrollWidth > this.$el.offsetWidth;
     },
 
-    xclicked(file) {
+    xClicked(file) {
       Store.removeFromOpenedFiles(file);
     },
   },
