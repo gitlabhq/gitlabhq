@@ -58,9 +58,10 @@ const RepoEditor = {
     },
 
     onMonacoEditorMouseUp(e) {
+      const lineNumber = e.target.position.lineNumber;
       if (e.target.element.className === 'line-numbers') {
-        location.hash = `L${e.target.position.lineNumber}`;
-        Store.activeLine = e.target.position.lineNumber;
+        location.hash = `L${lineNumber}`;
+        Store.activeLine = lineNumber;
       }
     },
   },
