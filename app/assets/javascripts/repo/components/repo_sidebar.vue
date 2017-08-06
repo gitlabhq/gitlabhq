@@ -56,9 +56,7 @@ const RepoSidebar = {
         // go back
         url = file;
         Service.url = url;
-        Helper.getContent(null, () => {
-          Helper.scrollTabsRight();
-        });
+        Helper.getContent(null, () => Helper.scrollTabsRight());
       }
     },
   },

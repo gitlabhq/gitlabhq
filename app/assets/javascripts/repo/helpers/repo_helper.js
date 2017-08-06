@@ -216,7 +216,6 @@ const RepoHelper = {
 
   serializeRepoEntity(type, entity) {
     const { url, name, icon, last_commit } = entity;
-    console.log('entity', JSON.stringify(entity));
     return {
       type,
       name,
