@@ -130,9 +130,8 @@
           display: inline-block;
           width: 100px;
           text-align: center;
-          overflow: hidden;
-          text-overflow: ellipsis;
           vertical-align: middle;
+          @include str-truncated(100px);
 
           &.close {
             width: auto;
