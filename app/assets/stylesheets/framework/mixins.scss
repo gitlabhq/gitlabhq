@@ -119,13 +119,6 @@
   }
 }
 
-@mixin truncate($width: 250px) {
-  width: $width;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /*
  * Mixin for status badges, as used for pipelines and commit signatures
  */

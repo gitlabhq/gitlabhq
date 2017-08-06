@@ -44,7 +44,7 @@
 }
 
 .commit-message {
-  @include truncate(250px);
+  @include str-truncated(250px);
 }
 
 #editable-mode {
