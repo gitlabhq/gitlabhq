@@ -39,6 +39,12 @@ if app.config.serve_static_files
         proxy_host: dev_server.host,
         proxy_port: dev_server.port
       )
+      app.config.middleware.insert_before 0, "Rack::Cors" do
+        allow do
+          origins '*'
+          resource '*', :headers => :any, :methods => [:get]
+        end
+      end
     end
 
     app.config.webpack.dev_server.merge!(settings)
