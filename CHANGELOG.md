@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.3.9 (2017-07-20)
+
+- Fix an infinite loop when handling user-supplied regular expressions.
+
+## 9.3.8 (2017-07-19)
+
+- Improve support for external issue references. !12485
+- Renders 404 if given project is not readable by the user on Todos dashboard.
+- Use uploads/system directory for personal snippets.
+- Remove uploads/appearance symlink. A leftover from a previous migration.
+
 ## 9.3.7 (2017-07-18)
 
 - Prevent bad data being added to application settings when Redis is unavailable. !12750
