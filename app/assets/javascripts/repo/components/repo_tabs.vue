@@ -37,7 +37,7 @@ export default RepoTabs;
 
 <template>
 <ul id="tabs" v-if="isMini" v-cloak :class="{'overflown': tabsOverflow}">
-  <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}" @xclicked="xclicked"/>
+  <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}" @xclicked="xClicked"/>
   <li class="tabs-divider" />
 </ul>
 </template>
