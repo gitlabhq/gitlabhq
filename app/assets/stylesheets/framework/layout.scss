@@ -124,3 +124,7 @@ of the body element here, we negate cascading side effects but allow momentum sc
 .with-performance-bar .page-with-sidebar {
   margin-top: $header-height + $performance-bar-height;
 }
+
+[v-cloak] {
+  display: none;
+}
