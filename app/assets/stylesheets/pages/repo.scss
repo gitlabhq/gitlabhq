@@ -16,7 +16,7 @@
   display: block;
   background-color: $black-transparent;
 
-  @media (min-width: 992px) {
+  @media (min-width: $screen-md-min) {
     .modal-dialog {
       width: 600px;
       margin: 30px auto;
