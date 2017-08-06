@@ -16,6 +16,10 @@ const RepoCommitSection = {
       return this.changedFiles.map(f => Helper.getFilePathFromFullPath(f.url, branch));
     },
 
+    cantCommitYet() {
+      return !commitMessage || submitCommitsLoading;
+    },
+
     filePluralize() {
       return this.changedFiles.length > 1 ? 'files' : 'file';
     },
@@ -84,7 +88,7 @@ export default RepoCommitSection;
         </div>
       </div>
       <div class="col-md-offset-4 col-md-4">
-        <button type="submit" :disabled="!commitMessage || submitCommitsLoading" class="btn btn-success submit-commit" @click.prevent="makeCommit">
+        <button type="submit" :disabled="cantCommitYet" class="btn btn-success submit-commit" @click.prevent="makeCommit">
           <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
           <span class="commit-summary">Commit {{changedFiles.length}} {{filePluralize}}</span>
         </button>
