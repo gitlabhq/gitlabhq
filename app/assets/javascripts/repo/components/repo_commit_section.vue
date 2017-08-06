@@ -1,9 +1,9 @@
 <script>
 /* global Flash */
 import Store from '../stores/repo_store';
-import Api from '../../api';
 import RepoMixin from '../mixins/repo_mixin';
 import Helper from '../helpers/repo_helper';
+import Service from '../services/repo_service';
 
 const RepoCommitSection = {
   data: () => Store,
@@ -17,7 +17,7 @@ const RepoCommitSection = {
     },
 
     cantCommitYet() {
-      return !commitMessage || submitCommitsLoading;
+      return !this.commitMessage || this.submitCommitsLoading;
     },
 
     filePluralize() {
@@ -41,9 +41,8 @@ const RepoCommitSection = {
         actions,
       };
       Store.submitCommitsLoading = true;
-      Api.commitMultiple(Store.projectId, payload, (data) => {
+      Service.commitFiles(payload, () => {
         Store.submitCommitsLoading = false;
-        Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
         this.changedFiles = [];
         this.openedFiles = [];
         this.commitMessage = '';
