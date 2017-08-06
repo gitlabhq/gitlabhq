@@ -50,15 +50,15 @@ describe 'Promotions', js: true do
       it 'should have the Upgrade your plan button' do
         sign_in(user)
         project.team << [user, :master]
-
+        visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
 
       it 'should have the contact owner line' do
         sign_in(developer)
         project.team << [developer, :developer]
-
-        expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
+        visit edit_project_path(project)
+        expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
     end
   end  
