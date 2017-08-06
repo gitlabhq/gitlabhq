@@ -76,7 +76,7 @@ import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
-import FeatureHelper from './helpers/feature_helper';
+import UserFeatureHelper from './helpers/user_feature_helper';
 
 (function() {
   var Dispatcher;
@@ -413,7 +413,7 @@ import FeatureHelper from './helpers/feature_helper';
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
 
-          if (FeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepo()) break;
 
           new TreeView();
           new BlobViewer();
@@ -433,7 +433,7 @@ import FeatureHelper from './helpers/feature_helper';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (FeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepo()) break;
           new BlobViewer();
           initBlob();
           break;

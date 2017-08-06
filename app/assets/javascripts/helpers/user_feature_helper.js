@@ -4,8 +4,8 @@ function isNewRepo() {
   return Cookies.get('new_repo') === 'true';
 }
 
-const FeatureHelper = {
+const UserFeatureHelper = {
   isNewRepo,
 };
 
-export default FeatureHelper;
+export default UserFeatureHelper;
