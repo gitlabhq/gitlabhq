@@ -21,13 +21,14 @@ describe 'Promotions', js: true do
   describe 'for project features in general on premise' do
     context 'no license installed' do
       before do
-        stub_application_setting_on_object(project, should_check_namespace_plan: true)
+        License.destroy_all
 
         sign_in(user)
         project.team << [user, :master]
       end
 
       it 'should have the contact admin line' do
+        visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact your Administrator to upgrade your license.'
       end
       
@@ -43,9 +44,7 @@ describe 'Promotions', js: true do
     context 'for .com' do
       before do
         stub_application_setting(check_namespace_plan: true)
-        allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { true }
         allow(Gitlab).to receive(:com?) { true }
-        License.destroy_all
       end
 
       it 'should have the Upgrade your plan button' do
