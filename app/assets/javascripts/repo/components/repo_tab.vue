@@ -1,5 +1,5 @@
 <script>
-import RepoStore from '../stores/repo_store';
+import Store from '../stores/repo_store';
 
 const RepoTab = {
   props: {
@@ -20,7 +20,7 @@ const RepoTab = {
   },
 
   methods: {
-    tabClicked: RepoStore.setActiveFiles,
+    tabClicked: Store.setActiveFiles,
 
     xClicked(file) {
       if (file.changed) return;

@@ -1,6 +1,6 @@
 /* global Flash */
-import RepoHelper from '../helpers/repo_helper';
-import RepoService from '../services/repo_service';
+import Helper from '../helpers/repo_helper';
+import Service from '../services/repo_service';
 
 const RepoStore = {
   ideEl: {},
@@ -35,7 +35,7 @@ const RepoStore = {
     title: '',
     status: false,
   },
-  activeFile: RepoHelper.getDefaultActiveFile(),
+  activeFile: Helper.getDefaultActiveFile(),
   activeFileIndex: 0,
   activeLine: 0,
   activeFileLabel: 'Raw',
@@ -79,7 +79,7 @@ const RepoStore = {
   },
 
   addFilesToDirectory(inDirectory, currentList, newList) {
-    RepoStore.files = RepoHelper.getNewMergedList(inDirectory, currentList, newList);
+    RepoStore.files = Helper.getNewMergedList(inDirectory, currentList, newList);
   },
 
   toggleRawPreview() {
@@ -100,14 +100,14 @@ const RepoStore = {
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
     } else {
-      RepoService.getRaw(file.raw_path)
+      Service.getRaw(file.raw_path)
         .then((rawResponse) => {
           RepoStore.blobRaw = rawResponse.data;
-          RepoHelper.findOpenedFileFromActive().plain = rawResponse.data;
-        }).catch(RepoHelper.loadingError);
+          Helper.findOpenedFileFromActive().plain = rawResponse.data;
+        }).catch(Helper.loadingError);
     }
 
-    if (!file.loading) RepoHelper.toURL(file.url, file.name);
+    if (!file.loading) Helper.toURL(file.url, file.name);
     RepoStore.binary = file.binary;
   },
 
@@ -182,7 +182,7 @@ const RepoStore = {
   },
 
   addPlaceholderFile() {
-    const randomURL = RepoHelper.Time.now();
+    const randomURL = Helper.Time.now();
     const newFakeFile = {
       active: false,
       binary: true,

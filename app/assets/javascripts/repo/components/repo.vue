@@ -8,7 +8,7 @@ import RepoPreview from './repo_preview.vue';
 import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import Store from '../stores/repo_store';
-import RepoHelper from '../helpers/repo_helper';
+import Helper from '../helpers/repo_helper';
 import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
 
 export default {
@@ -26,7 +26,7 @@ export default {
   },
 
   mounted() {
-    RepoHelper.getContent().catch(RepoHelper.loadingError);
+    Helper.getContent().catch(Helper.loadingError);
   },
 
   methods: {

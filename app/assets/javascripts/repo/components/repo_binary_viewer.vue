@@ -1,6 +1,6 @@
 <script>
 import Store from '../stores/repo_store';
-import RepoHelper from '../helpers/repo_helper';
+import Helper from '../helpers/repo_helper';
 
 const RepoBinaryViewer = {
   data: () => Store,
@@ -41,7 +41,7 @@ const RepoBinaryViewer = {
   watch: {
     blobRaw() {
       Store.resetBinaryTypes();
-      if (RepoHelper.isKindaBinary()) {
+      if (Helper.isKindaBinary()) {
         this.activeFile.raw = false;
         // counts as binaryish so we use the binary viewer in this case.
         this.binary = true;
