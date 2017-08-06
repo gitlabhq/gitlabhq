@@ -68,7 +68,6 @@ import VersionCheckImage from './version_check_image';
 import Wikis from './wikis';
 import ZenMode from './zen_mode';
 import initSettingsPanels from './settings_panels';
-import ScrollHelper from './helpers/scroll_helper';
 import initExperimentalFlags from './experimental_flags';
 import OAuthRememberMe from './oauth_remember_me';
 import PerformanceBar from './performance_bar';
@@ -98,8 +97,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
       if (!page) {
         return false;
       }
-
-      ScrollHelper.setScrollWidth();
 
       path = page.split(':');
       shortcut_handler = null;
