@@ -92,6 +92,11 @@ describe ObjectStoreUploader do
       it "uploader is of a described_class" do
         expect(uploader).to be_a(described_class)
       end
+
+      it 'moves files locally' do
+        expect(uploader.move_to_store).to be(true)
+        expect(uploader.move_to_cache).to be(true)
+      end
     end
 
     context 'when store is null' do

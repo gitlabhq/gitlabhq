@@ -110,10 +110,14 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   end
 
   def move_to_store
+    return true if object_store == LOCAL_STORE
+
     file.try(:storage) == storage
   end
 
   def move_to_cache
+    return true if object_store == LOCAL_STORE
+
     file.try(:storage) == cache_storage
   end
 
@@ -126,6 +130,13 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def exists?
     file.try(:exists?)
+  end
+
+  # Override this if you don't want to save local files by default to the Rails.root directory
+  def work_dir
+    # Default path set by CarrierWave:
+    # https://github.com/carrierwaveuploader/carrierwave/blob/v1.1.0/lib/carrierwave/uploader/cache.rb#L182
+    CarrierWave.tmp_path
   end
 
   private
@@ -151,5 +162,15 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def local_storage
     CarrierWave::Storage::File.new(self)
+  end
+
+  # To prevent files in local storage from moving across filesystems, override
+  # the default implementation:
+  # http://github.com/carrierwaveuploader/carrierwave/blob/v1.1.0/lib/carrierwave/uploader/cache.rb#L181-L183
+  def workfile_path(for_file = original_filename)
+    # To be safe, keep this directory outside of the the cache directory
+    # because calling CarrierWave.clean_cache_files! will remove any files in
+    # the cache directory.
+    File.join(work_dir, @cache_id, version_name.to_s, for_file)
   end
 end
