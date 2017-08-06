@@ -56,11 +56,6 @@
   border-radius: $border-radius-default;
   color: $almost-black;
 
-  header {
-    background: $gray-light;
-    padding: 10px 15px;
-  }
-
   .panel-right {
     display: inline-block;
     width: 80%;
@@ -143,6 +138,7 @@
             width: auto;
             font-size: 15px;
             opacity: 1;
+            margin-right: -6px;
           }
         }
 
