@@ -10,11 +10,11 @@
       = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
-      = link_to group_path(@group), title: 'About group' do
+      = link_to group_path(@group), title: 'Group overview' do
         .nav-icon-container
           = custom_icon('project')
         %span.nav-item-name
-          About
+          Overview
 
       %ul.sidebar-sub-level-items
         = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
