@@ -5,12 +5,12 @@ import monacoLoader from '../monaco_loader';
 
 function repoEditorLoader() {
   Store.monacoLoading = true;
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     monacoLoader(['vs/editor/editor.main'], () => {
       Store.monaco = monaco;
       Store.monacoLoading = false;
       resolve(RepoEditor);
-    });
+    }, reject);
   });
 }
 
