@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateRepositoryStorageService do
+  include StubConfiguration
+
   subject { described_class.new(project) }
 
   describe "#execute" do
@@ -15,7 +17,7 @@ describe Projects::UpdateRepositoryStorageService do
         'a' => { 'path' => 'tmp/tests/storage_a' },
         'b' => { 'path' => 'tmp/tests/storage_b' }
       }
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      stub_storage_settings(storages)
       allow(subject).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       allow(Time).to receive(:now).and_return(time)

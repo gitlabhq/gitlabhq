@@ -140,12 +140,13 @@ class Repository
     ref ||= root_ref
 
     args = %W(
-      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
+      log #{ref} --pretty=%H --skip #{offset}
       --max-count #{limit} --grep=#{query} --regexp-ignore-case
     )
     args = args.concat(%W(-- #{path})) if path.present?
 
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
+    git_log_results = run_git(args).first.lines
+
     git_log_results.map { |c| commit(c.chomp) }.compact
   end
 
@@ -694,8 +695,8 @@ class Repository
   end
 
   def refs_contains_sha(ref_type, sha)
-    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
+    args = %W(#{ref_type} --contains #{sha})
+    names = run_git(args).first
 
     if names.respond_to?(:split)
       names = names.split("\n").map(&:strip)
@@ -1040,15 +1041,17 @@ class Repository
     return [] if empty_repo? || query.blank?
 
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
-    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+    args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+
+    run_git(args).first.scrub.split(/^--$/)
   end
 
   def search_files_by_name(query, ref)
     return [] if empty_repo? || query.blank?
 
-    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
-    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
+    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+
+    run_git(args).first.lines.map(&:strip)
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
@@ -1093,8 +1096,8 @@ class Repository
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
+    args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+    run_git(args)
   end
 
   def create_ref(ref, ref_path)
@@ -1181,6 +1184,12 @@ class Repository
 
   private
 
+  def run_git(args)
+    circuit_breaker.perform do
+      Gitlab::Popen.popen([Gitlab.config.git.bin_path, *args], path_to_repo)
+    end
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1190,7 +1199,9 @@ class Repository
   end
 
   def refs_directory_exists?
-    File.exist?(File.join(path_to_repo, 'refs'))
+    circuit_breaker.perform do
+      File.exist?(File.join(path_to_repo, 'refs'))
+    end
   end
 
   def cache
@@ -1238,8 +1249,8 @@ class Repository
   end
 
   def last_commit_id_for_path_by_shelling_out(sha, path)
-    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-    Gitlab::Popen.popen(args, path_to_repo).first.strip
+    args = %W(rev-list --max-count=1 #{sha} -- #{path})
+    run_git(args).first.strip
   end
 
   def repository_storage_path
@@ -1248,5 +1259,9 @@ class Repository
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+  end
+
+  def circuit_breaker
+    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 end
