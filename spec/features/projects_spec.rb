@@ -36,7 +36,7 @@ feature 'Project' do
 
   describe 'remove forked relationship', js: true do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     before do
       sign_in user
@@ -57,7 +57,7 @@ feature 'Project' do
 
   describe 'removal', js: true do
     let(:user)    { create(:user, username: 'test', name: 'test') }
-    let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
+    let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 
     before do
       sign_in(user)
@@ -76,7 +76,7 @@ feature 'Project' do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     before do
       sign_in(user)
@@ -92,8 +92,8 @@ feature 'Project' do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
-    let(:project2) { create(:empty_project, namespace: user.namespace, path: 'test') }
+    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
     let(:issue) { create(:issue, project: project) }
 
     context 'on issues page', js: true do

@@ -36,7 +36,7 @@ describe API::MergeRequests do
     end
 
     context 'when authenticated' do
-      let!(:project2) { create(:empty_project, :public, namespace: user.namespace) }
+      let!(:project2) { create(:project, :public, namespace: user.namespace) }
       let!(:merge_request2) { create(:merge_request, :simple, author: user, assignee: user, source_project: project2, target_project: project2) }
       let(:user2) { create(:user) }
 
@@ -51,7 +51,7 @@ describe API::MergeRequests do
       end
 
       it 'does not return unauthorized merge requests' do
-        private_project = create(:empty_project, :private)
+        private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
         get api('/merge_requests', user), scope: :all
@@ -291,6 +291,26 @@ describe API::MergeRequests do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
+      end
+
+      it 'returns an array of labeled merge requests that are merged for a milestone' do
+        bug_label = create(:label, title: 'bug', color: '#FFAABB', project: project)
+
+        mr1 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone)
+        mr2 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
+        mr3 = create(:merge_request, state: "closed", source_project: project, target_project: project, milestone: milestone1)
+        _mr = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
+
+        create(:label_link, label: bug_label, target: mr1)
+        create(:label_link, label: bug_label, target: mr2)
+        create(:label_link, label: bug_label, target: mr3)
+
+        get api("/projects/#{project.id}/merge_requests?labels=#{bug_label.title}&milestone=#{milestone1.title}&state=merged", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(mr2.id)
       end
 
       context "with ordering" do
@@ -557,8 +577,8 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporter]
@@ -887,7 +907,7 @@ describe API::MergeRequests do
     end
 
     it 'handles external issues' do
-      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      jira_project = create(:jira_project, :public, :repository, name: 'JIR_EXT1')
       ext_issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
       issue = create(:issue, project: jira_project)
       description = "Closes #{ext_issue.to_reference(jira_project)}\ncloses #{issue.to_reference}"
@@ -909,7 +929,7 @@ describe API::MergeRequests do
     end
 
     it 'returns 403 if the user has no access to the merge request' do
-      project = create(:empty_project, :private)
+      project = create(:project, :private)
       merge_request = create(:merge_request, :simple, source_project: project)
       guest = create(:user)
       project.team << [guest, :guest]

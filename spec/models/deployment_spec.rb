@@ -91,7 +91,7 @@ describe Deployment do
   end
 
   describe '#additional_metrics' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:deployment) { create(:deployment, project: project) }
 
     subject { deployment.additional_metrics }

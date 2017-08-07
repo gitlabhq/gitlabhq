@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe GitlabRoutingHelper do
-  let(:project) { build_stubbed(:empty_project) }
+  let(:project) { build_stubbed(:project) }
   let(:group) { build_stubbed(:group) }
 
   describe 'Project URL helpers' do

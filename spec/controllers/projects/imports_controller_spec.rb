@@ -5,7 +5,7 @@ describe Projects::ImportsController do
 
   describe 'GET #show' do
     context 'when repository does not exists' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       before do
         sign_in(user)

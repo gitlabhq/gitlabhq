@@ -1,5 +1,6 @@
 - type = local_assigns.fetch(:type)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
+- full_path = @project.present? ? @project.full_path : @group.full_path
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -18,7 +19,7 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown{ data: { project_full_path: @project.full_path } }
+              .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled

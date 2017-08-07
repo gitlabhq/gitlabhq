@@ -1,5 +1,3 @@
-# Gitaly note: JV: needs 1 RPC for #load_blame.
-
 module Gitlab
   module Git
     class Blame
@@ -26,13 +24,27 @@ module Gitlab
 
       private
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/376
       def load_blame
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
-        # Read in binary mode to ensure ASCII-8BIT
-        raw_output = IO.popen(cmd, 'rb') {|io| io.read }
+        raw_output = @repo.gitaly_migrate(:blame) do |is_enabled|
+          if is_enabled
+            load_blame_by_gitaly
+          else
+            load_blame_by_shelling_out
+          end
+        end
+
         output = encode_utf8(raw_output)
         process_raw_blame output
+      end
+
+      def load_blame_by_gitaly
+        @repo.gitaly_commit_client.raw_blame(@sha, @path)
+      end
+
+      def load_blame_by_shelling_out
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{@repo.path} blame -p #{@sha} -- #{@path})
+        # Read in binary mode to ensure ASCII-8BIT
+        IO.popen(cmd, 'rb') {|io| io.read }
       end
 
       def process_raw_blame(output)

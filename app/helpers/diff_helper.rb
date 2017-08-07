@@ -148,6 +148,24 @@ module DiffHelper
     options
   end
 
+  def diff_file_changed_icon(diff_file)
+    if diff_file.deleted_file? || diff_file.renamed_file?
+      "minus"
+    elsif diff_file.new_file?
+      "plus"
+    else
+      "adjust"
+    end
+  end
+
+  def diff_file_changed_icon_color(diff_file)
+    if diff_file.deleted_file?
+      "cred"
+    elsif diff_file.new_file?
+      "cgreen"
+    end
+  end
+
   private
 
   def diff_btn(title, name, selected)

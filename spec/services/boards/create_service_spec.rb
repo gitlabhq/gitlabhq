@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Boards::CreateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject(:service) { described_class.new(project, double) }
 

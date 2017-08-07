@@ -21,7 +21,7 @@ namespace :gitlab do
         create_gitaly_configuration
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
-          Bundler.with_original_env { run_command!(%w[/usr/bin/env -u BUNDLE_GEMFILE] + [command]) }
+          Bundler.with_original_env { run_command!([command]) }
         end
       end
     end

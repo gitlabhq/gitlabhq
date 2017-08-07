@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Issue Boards add issue modal filtering', :js do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:board) { create(:board, project: project) }
   let(:planning) { create(:label, project: project, name: 'Planning') }
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }

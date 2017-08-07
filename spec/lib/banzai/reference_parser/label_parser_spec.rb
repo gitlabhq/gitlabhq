@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::ReferenceParser::LabelParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:label) { create(:label, project: project) }
   subject { described_class.new(project, user) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe WikiPages::DestroyService do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }
 

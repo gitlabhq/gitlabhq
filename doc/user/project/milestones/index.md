@@ -27,6 +27,10 @@ of that milestone and the issues/merge requests count that it shares across the 
 
 In addition to that you will be able to filter issues or merge requests by group milestones in all projects that belongs to the milestone group.
 
+## Milestone promotion
+
+You will be able to promote a project milestone to a group milestone [in the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/35833).
+
 ## Special milestone filters
 
 In addition to the milestones that exist in the project or group, there are some
@@ -49,3 +53,7 @@ is calculated as; closed and merged merge requests plus all closed issues divide
 total merge requests and issues.
 
 ![Milestone statistics](img/progress.png)
+
+## Quick actions
+
+[Quick actions](../quick_actions.md) are available for assigning and removing project milestones only. [In the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/34778), this will also apply to group milestones.

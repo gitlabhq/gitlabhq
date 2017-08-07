@@ -1,13 +1,11 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService do
-  include EmailHelpers
-
+describe Issues::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
 

@@ -79,10 +79,6 @@ import GpgBadges from './gpg_badges';
 (function() {
   var Dispatcher;
 
-  $(function() {
-    return new Dispatcher();
-  });
-
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -139,6 +135,8 @@ import GpgBadges from './gpg_badges';
           .init();
       }
 
+      const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
+
       switch (page) {
         case 'profiles:preferences:show':
           initExperimentalFlags();
@@ -155,7 +153,7 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+          if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
@@ -183,10 +181,16 @@ import GpgBadges from './gpg_badges';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:issues':
         case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
+          break;
+        case 'groups:issues':
+          if (filteredSearchEnabled) {
+            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            filteredSearchManager.setup();
+          }
+          new ProjectSelect();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -344,6 +348,8 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:imports:show':
           new ProjectImport();
@@ -500,7 +506,7 @@ import GpgBadges from './gpg_badges';
           new gl.DueDateSelectors();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
@@ -629,4 +635,8 @@ import GpgBadges from './gpg_badges';
 
     return Dispatcher;
   })();
+
+  $(function() {
+    new Dispatcher();
+  });
 }).call(window);

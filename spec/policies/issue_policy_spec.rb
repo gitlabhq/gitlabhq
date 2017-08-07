@@ -14,7 +14,7 @@ describe IssuePolicy do
 
   context 'a private project' do
     let(:non_member) { create(:user) }
-    let(:project) { create(:empty_project, :private) }
+    let(:project) { create(:project, :private) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 
@@ -109,7 +109,7 @@ describe IssuePolicy do
   end
 
   context 'a public project' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:issue) { create(:issue, project: project, assignees: [assignee], author: author) }
     let(:issue_no_assignee) { create(:issue, project: project) }
 
