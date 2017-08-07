@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'Related issues', :js do
+  let(:user) { create(:user) }
   let(:project) { create(:project_empty_repo, :public) }
   let(:project_b) { create(:project_empty_repo, :public) }
   let(:project_unauthorized) { create(:project_empty_repo, :public) }
@@ -10,7 +11,6 @@ describe 'Related issues', :js do
   let(:issue_d) { create(:issue, project: project) }
   let(:issue_project_b_a) { create(:issue, project: project_b) }
   let(:issue_project_unauthorized_a) { create(:issue, project: project_unauthorized) }
-  let(:user) { create(:user) }
 
   context 'widget visibility' do
     before do
@@ -43,6 +43,7 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
       end
     end
 
@@ -58,6 +59,7 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
       end
 
       it 'does not show widget when private project' do
@@ -76,10 +78,21 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+      end
+
+      it 'shows widget on their own public issue' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project, author: user
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
       end
     end
 
-    context 'when logged in and a member' do
+    context 'when logged in and a guest' do
       before do
         gitlab_sign_in(user)
       end
@@ -92,6 +105,7 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
       end
 
       it 'shows widget when private project' do
@@ -102,6 +116,7 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
       end
 
       it 'shows widget when public project' do
@@ -112,55 +127,95 @@ describe 'Related issues', :js do
         visit project_issue_path(project, issue)
 
         expect(page).to have_css('.related-issues-block')
+        expect(page).not_to have_selector('.js-issue-count-badge-add-button')
+      end
+    end
+
+    context 'when logged in and a reporter' do
+      before do
+        gitlab_sign_in(user)
+      end
+
+      it 'shows widget when internal project' do
+        project = create :project_empty_repo, :internal
+        issue = create :issue, project: project
+        project.add_reporter(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_selector('.js-issue-count-badge-add-button')
+      end
+
+      it 'shows widget when private project' do
+        project = create :project_empty_repo, :private
+        issue = create :issue, project: project
+        project.add_reporter(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_selector('.js-issue-count-badge-add-button')
+      end
+
+      it 'shows widget when public project' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project
+        project.add_reporter(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_selector('.js-issue-count-badge-add-button')
+      end
+
+      it 'shows widget on their own public issue' do
+        project = create :project_empty_repo, :public
+        issue = create :issue, project: project, author: user
+        project.add_reporter(user)
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('.related-issues-block')
+        expect(page).to have_selector('.js-issue-count-badge-add-button')
       end
     end
   end
 
-  context 'when user has no permission to update related issues' do
+  context 'when user has no permission to manage related issues' do
+    let!(:issue_link_b) { create :issue_link, source: issue_a, target: issue_b }
+    let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
+
     before do
+      stub_licensed_features(related_issues: true)
       project.add_guest(user)
       gitlab_sign_in(user)
     end
 
-    context 'with related_issues enabled' do
+    context 'visiting some issue someone else created' do
       before do
-        stub_licensed_features(related_issues: true)
+        visit project_issue_path(project, issue_a)
+        wait_for_requests
       end
 
-      context 'with existing related issues' do
-        let!(:issue_link_b) { create :issue_link, source: issue_a, target: issue_b }
-        let!(:issue_link_c) { create :issue_link, source: issue_a, target: issue_c }
+      it 'shows related issues count' do
+        expect(find('.js-related-issues-header-issue-count')).to have_content('2')
+      end
+    end
 
-        context 'visiting issue_a' do
-          before do
-            visit project_issue_path(project, issue_a)
-            wait_for_requests
-          end
+    context 'visiting issue_b which was targeted by issue_a' do
+      before do
+        visit project_issue_path(project, issue_b)
+        wait_for_requests
+      end
 
-          it 'shows related issues count' do
-            expect(find('.js-related-issues-header-issue-count')).to have_content('2')
-          end
-
-          it 'does not show add related issue badge button' do
-            expect(page).not_to have_selector('.js-issue-count-badge-add-button')
-          end
-        end
-
-        context 'visiting issue_b which was targeted by issue_a' do
-          before do
-            visit project_issue_path(project, issue_b)
-            wait_for_requests
-          end
-
-          it 'shows related issues count' do
-            expect(find('.js-related-issues-header-issue-count')).to have_content('1')
-          end
-        end
+      it 'shows related issues count' do
+        expect(find('.js-related-issues-header-issue-count')).to have_content('1')
       end
     end
   end
 
-  context 'when user has permission to update related issues' do
+  context 'when user has permission to manage related issues' do
     before do
       project.add_master(user)
       project_b.add_master(user)
@@ -194,10 +249,6 @@ describe 'Related issues', :js do
 
         it 'shows related issues count' do
           expect(find('.js-related-issues-header-issue-count')).to have_content('0')
-        end
-
-        it 'shows add related issue badge button' do
-          expect(page).to have_selector('.js-issue-count-badge-add-button')
         end
 
         it 'add related issue' do
