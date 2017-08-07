@@ -89,7 +89,7 @@ _The artifacts are stored by default in
 
 >**Notes:**
 - [Introduced][ee-1762] in [GitLab Enterprise Edition Premium][eep] 9.4.
-- For version 9.5, artifacts are [browsable], when object storage is enabled. 
+- Since version 9.5, artifacts are [browsable], when object storage is enabled. 
   9.4 lacks this feature.
 
 If you don't want to use the local disk where GitLab is installed to store the
