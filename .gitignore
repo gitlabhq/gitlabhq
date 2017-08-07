@@ -64,3 +64,4 @@ eslint-report.html
 /webpack-report/
 /locale/**/LC_MESSAGES
 /.rspec
+/package-lock.json
