@@ -102,7 +102,7 @@ module Gitlab
             if is_enabled
               repo.gitaly_commit_client.between(base, head)
             else
-              repo.commits_between(base, head).map { |c| decorate(c) }
+              repo.rugged_commits_between(base, head).map { |c| decorate(c) }
             end
           end
         rescue Rugged::ReferenceError
