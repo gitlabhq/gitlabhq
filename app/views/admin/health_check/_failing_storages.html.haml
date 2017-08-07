@@ -1,0 +1,15 @@
+- if failing_storages.any?
+  = _('There are problems accessing Git storage: ')
+  %ul
+    - failing_storages.each do |storage_health|
+      %li
+        = failing_storage_health_message(storage_health)
+        %ul
+          - storage_health.failing_circuit_breakers.each do |circuit_breaker|
+            %li
+              #{circuit_breaker.hostname}: #{message_for_circuit_breaker(circuit_breaker)}
+
+  = _("Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again.")
+  .prepend-top-10
+    = button_to _("Reset git storage health information"), reset_storage_health_admin_health_check_path,
+      method: :post, class: 'btn btn-default'

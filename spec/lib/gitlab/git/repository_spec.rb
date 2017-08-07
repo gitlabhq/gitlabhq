@@ -55,6 +55,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#rugged" do
+    describe 'when storage is broken', broken_storage: true  do
+      it 'raises a storage exception when storage is not available' do
+        broken_repo = described_class.new('broken', 'a/path.git')
+
+        expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
+      end
+    end
+
+    it 'raises a no repository exception when there is no repo' do
+      broken_repo = described_class.new('default', 'a/path.git')
+
+      expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
+
     context 'with no Git env stored' do
       before do
         expect(Gitlab::Git::Env).to receive(:all).and_return({})

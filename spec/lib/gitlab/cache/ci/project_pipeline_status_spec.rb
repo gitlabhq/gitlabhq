@@ -48,8 +48,9 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
           described_class.load_in_batch_for_projects([project_without_status])
         end
 
-        it 'only connects to redis_cache twice' do
-          # Once to load, once to store in the cache
+        it 'only connects to redis twice' do
+          # Stub circuitbreaker so it doesn't count the redis connections in there
+          stub_circuit_breaker(project_without_status)
           expect(Gitlab::Redis::Cache).to receive(:with).exactly(2).and_call_original
 
           described_class.load_in_batch_for_projects([project_without_status])
@@ -300,5 +301,14 @@ describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cache do
         expect(key_exists).to be_falsy
       end
     end
+  end
+
+  def stub_circuit_breaker(project)
+    fake_circuitbreaker = double
+    allow(fake_circuitbreaker).to receive(:perform).and_yield
+    allow(project.repository.raw_repository)
+      .to receive(:circuit_breaker).and_return(fake_circuitbreaker)
+    allow(project.repository)
+      .to receive(:circuit_breaker).and_return(fake_circuitbreaker)
   end
 end
