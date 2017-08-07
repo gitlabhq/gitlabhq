@@ -275,6 +275,7 @@ class ApplicationController < ActionController::Base
   def event_filter
     # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
     filters = cookies['event_filter'].split(',')[0] if cookies['event_filter'].present?
+    filters = params[:event_filter].split(',')[0] if params[:event_filter].present?
     @event_filter ||= EventFilter.new(filters)
   end
 
