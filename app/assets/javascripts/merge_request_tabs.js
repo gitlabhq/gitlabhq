@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import './breakpoints';
 import './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
-import stickyMonitor from './lib/utils/sticky';
+import initChangesDropdown from './init_changes_dropdown';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -267,9 +267,7 @@ import stickyMonitor from './lib/utils/sticky';
           const $container = $('#diffs');
           $container.html(data.html);
 
-          this.initChangesDropdown();
-
-          stickyMonitor(document.querySelector('.js-diff-files-changed'));
+          initChangesDropdown();
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
@@ -316,13 +314,6 @@ import stickyMonitor from './lib/utils/sticky';
             anchor.addClass('target');
           }
         },
-      });
-    }
-
-    initChangesDropdown() {
-      $('.js-diff-stats-dropdown').glDropdown({
-        filterable: true,
-        remoteFilter: false,
       });
     }
 
