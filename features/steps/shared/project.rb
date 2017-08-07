@@ -103,7 +103,7 @@ module SharedProject
   step 'I should see project settings' do
     expect(current_path).to eq edit_project_path(@project)
     expect(page).to have_content("Project name")
-    expect(page).to have_content("Sharing & Permissions")
+    expect(page).to have_content("Sharing and permissions")
   end
 
   def current_project

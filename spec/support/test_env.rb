@@ -63,6 +63,8 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
+    Rake.application.rake_require 'tasks/gitlab/helpers'
+    Rake::Task.define_task :environment
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -122,11 +124,14 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    shell_needs_update = component_needs_update?(Gitlab.config.gitlab_shell.path,
+    gitlab_shell_dir = File.dirname(Gitlab.config.gitlab_shell.path)
+    gitlab_shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
-    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      raise 'Can`t clone gitlab-shell'
+    Rake.application.rake_require 'tasks/gitlab/shell'
+    unless !gitlab_shell_needs_update || Rake.application.invoke_task('gitlab:shell:install')
+      FileUtils.rm_rf(gitlab_shell_dir)
+      raise "Can't install gitlab-shell"
     end
   end
 
@@ -142,8 +147,10 @@ module TestEnv
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
-    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      raise "Can't clone gitaly"
+    Rake.application.rake_require 'tasks/gitlab/gitaly'
+    unless !gitaly_needs_update || Rake.application.invoke_task("gitlab:gitaly:install[#{gitaly_dir}]")
+      FileUtils.rm_rf(gitaly_dir)
+      raise "Can't install gitaly"
     end
 
     start_gitaly(gitaly_dir)
@@ -222,7 +229,6 @@ module TestEnv
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
   def eager_load_driver_server
-    return unless ENV['CI']
     return unless defined?(Capybara)
 
     puts "Starting the Capybara driver server..."

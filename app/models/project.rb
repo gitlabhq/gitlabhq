@@ -941,7 +941,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo
-    repository.raw
+    repository.rugged
   end
 
   def url_to_repo

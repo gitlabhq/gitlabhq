@@ -8,7 +8,7 @@ describe Auth::ContainerRegistryAuthenticationService do
   let(:payload) { JWT.decode(subject[:token], rsa_key).first }
 
   let(:authentication_abilities) do
-    [:read_container_image, :create_container_image]
+    [:read_container_image, :create_container_image, :admin_container_image]
   end
 
   subject do
@@ -57,6 +57,12 @@ describe Auth::ContainerRegistryAuthenticationService do
   shared_examples 'an inaccessible' do
     it_behaves_like 'a valid token'
     it { expect(payload).to include('access' => []) }
+  end
+
+  shared_examples 'a deletable' do
+    it_behaves_like 'an accessible' do
+      let(:actions) { ['*'] }
+    end
   end
 
   shared_examples 'a pullable' do
@@ -120,7 +126,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
       context 'allow developer to push images' do
         before do
-          project.team << [current_user, :developer]
+          project.add_developer(current_user)
         end
 
         let(:current_params) do
@@ -131,9 +137,22 @@ describe Auth::ContainerRegistryAuthenticationService do
         it_behaves_like 'container repository factory'
       end
 
+      context 'disallow developer to delete images' do
+        before do
+          project.add_developer(current_user)
+        end
+
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:*" }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
       context 'allow reporter to pull images' do
         before do
-          project.team << [current_user, :reporter]
+          project.add_reporter(current_user)
         end
 
         context 'when pulling from root level repository' do
@@ -146,9 +165,22 @@ describe Auth::ContainerRegistryAuthenticationService do
         end
       end
 
+      context 'disallow reporter to delete images' do
+        before do
+          project.add_reporter(current_user)
+        end
+
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:*" }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
       context 'return a least of privileges' do
         before do
-          project.team << [current_user, :reporter]
+          project.add_reporter(current_user)
         end
 
         let(:current_params) do
@@ -161,11 +193,24 @@ describe Auth::ContainerRegistryAuthenticationService do
 
       context 'disallow guest to pull or push images' do
         before do
-          project.team << [current_user, :guest]
+          project.add_guest(current_user)
         end
 
         let(:current_params) do
           { scope: "repository:#{project.full_path}:pull,push" }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
+      context 'disallow guest to delete images' do
+        before do
+          project.add_guest(current_user)
+        end
+
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -188,6 +233,15 @@ describe Auth::ContainerRegistryAuthenticationService do
       context 'disallow anyone to push images' do
         let(:current_params) do
           { scope: "repository:#{project.full_path}:push" }
+        end
+
+        it_behaves_like 'an inaccessible'
+        it_behaves_like 'not a container repository factory'
+      end
+
+      context 'disallow anyone to delete images' do
+        let(:current_params) do
+          { scope: "repository:#{project.path_with_namespace}:*" }
         end
 
         it_behaves_like 'an inaccessible'
@@ -225,16 +279,62 @@ describe Auth::ContainerRegistryAuthenticationService do
           it_behaves_like 'an inaccessible'
           it_behaves_like 'not a container repository factory'
         end
+
+        context 'disallow anyone to delete images' do
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:*" }
+          end
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+        end
       end
 
       context 'for external user' do
-        let(:current_user) { create(:user, external: true) }
-        let(:current_params) do
-          { scope: "repository:#{project.full_path}:pull,push" }
+        context 'disallow anyone to pull or push images' do
+          let(:current_user) { create(:user, external: true) }
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:pull,push" }
+          end
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
         end
 
-        it_behaves_like 'an inaccessible'
-        it_behaves_like 'not a container repository factory'
+        context 'disallow anyone to delete images' do
+          let(:current_user) { create(:user, external: true) }
+          let(:current_params) do
+            { scope: "repository:#{project.path_with_namespace}:*" }
+          end
+
+          it_behaves_like 'an inaccessible'
+          it_behaves_like 'not a container repository factory'
+        end
+      end
+    end
+  end
+
+  context 'delete authorized as master' do
+    let(:current_project) { create(:project) }
+    let(:current_user) { create(:user) }
+
+    let(:authentication_abilities) do
+      [:admin_container_image]
+    end
+
+    before do
+      current_project.add_master(current_user)
+    end
+
+    it_behaves_like 'a valid token'
+
+    context 'allow to delete images' do
+      let(:current_params) do
+        { scope: "repository:#{current_project.path_with_namespace}:*" }
+      end
+
+      it_behaves_like 'a deletable' do
+        let(:project) { current_project }
       end
     end
   end
@@ -248,7 +348,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     before do
-      current_project.team << [current_user, :developer]
+      current_project.add_developer(current_user)
     end
 
     it_behaves_like 'a valid token'
@@ -263,6 +363,16 @@ describe Auth::ContainerRegistryAuthenticationService do
       end
 
       it_behaves_like 'container repository factory' do
+        let(:project) { current_project }
+      end
+    end
+
+    context 'disallow to delete images' do
+      let(:current_params) do
+        { scope: "repository:#{current_project.path_with_namespace}:*" }
+      end
+
+      it_behaves_like 'an inaccessible' do
         let(:project) { current_project }
       end
     end
@@ -288,7 +398,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
           context 'when you are member' do
             before do
-              project.team << [current_user, :developer]
+              project.add_developer(current_user)
             end
 
             it_behaves_like 'a pullable'
@@ -318,7 +428,7 @@ describe Auth::ContainerRegistryAuthenticationService do
 
             context 'when you are member' do
               before do
-                project.team << [current_user, :developer]
+                project.add_developer(current_user)
               end
 
               it_behaves_like 'a pullable'
@@ -345,7 +455,7 @@ describe Auth::ContainerRegistryAuthenticationService do
             let(:project) { create(:project, :public) }
 
             before do
-              project.team << [current_user, :developer]
+              project.add_developer(current_user)
             end
 
             it_behaves_like 'an inaccessible'

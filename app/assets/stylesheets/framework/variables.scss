@@ -207,7 +207,6 @@ $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
 
-
 /*
 * Common component specific colors
 */
@@ -315,6 +314,12 @@ $btn-white-active: #848484;
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
+
+/*
+ *  Status icons
+ */
+$status-icon-size: 22px;
+$status-icon-margin: $gl-btn-padding;
 
 /*
  *  Award emoji
