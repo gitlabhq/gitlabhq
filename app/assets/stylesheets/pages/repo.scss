@@ -75,6 +75,9 @@
     }
 
     &.edit-mode {
+      .blob-viewer-container {
+        overflow: hidden;
+      }
       .monaco-editor.vs {
         .cursor {
           background: $black;
