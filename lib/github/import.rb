@@ -68,6 +68,8 @@ module Github
       fetch_pull_requests
       puts 'Fetching issues...'.color(:aqua) if verbose
       fetch_issues
+      puts 'Fetching releases...'.color(:aqua) if verbose
+      fetch_releases
       puts 'Cloning wiki repository...'.color(:aqua) if verbose
       fetch_wiki_repository
       puts 'Expiring repository cache...'.color(:aqua) if verbose
