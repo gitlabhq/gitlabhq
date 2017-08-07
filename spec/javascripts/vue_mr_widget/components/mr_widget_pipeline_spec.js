@@ -83,13 +83,12 @@ describe('MRWidgetPipeline', () => {
       expect(el.querySelectorAll('.ci-status-icon.ci-status-icon-success').length).toEqual(1);
       expect(el.querySelector('.pipeline-id').textContent).toContain(`#${pipeline.id}`);
       expect(el.innerText).toContain('passed');
-      expect(el.innerText).toContain('with stages');
       expect(el.querySelector('.pipeline-id').getAttribute('href')).toEqual(pipeline.path);
       expect(el.querySelectorAll('.stage-container').length).toEqual(2);
       expect(el.querySelector('.js-ci-error')).toEqual(null);
       expect(el.querySelector('.js-commit-link').getAttribute('href')).toEqual(pipeline.commit.commit_path);
       expect(el.querySelector('.js-commit-link').textContent).toContain(pipeline.commit.short_id);
-      expect(el.querySelector('.js-mr-coverage').textContent).toContain(`Coverage ${pipeline.coverage}%.`);
+      expect(el.querySelector('.js-mr-coverage').textContent).toContain(`Coverage ${pipeline.coverage}%`);
     });
 
     it('should list single stage', (done) => {
@@ -97,7 +96,6 @@ describe('MRWidgetPipeline', () => {
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.stage-container button').length).toEqual(1);
-        expect(el.innerText).toContain('with stage');
         done();
       });
     });

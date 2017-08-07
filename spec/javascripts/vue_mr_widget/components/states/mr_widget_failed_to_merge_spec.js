@@ -94,7 +94,7 @@ describe('MRWidgetFailedToMerge', () => {
       expect(el.querySelector('button').innerText).toContain('Merge');
       expect(el.querySelector('.js-refresh-button').innerText).toContain('Refresh now');
       expect(el.querySelector('.js-refresh-label')).toEqual(null);
-      expect(el.innerText).not.toContain('Refreshing now...');
+      expect(el.innerText).not.toContain('Refreshing now');
       setTimeout(() => {
         expect(el.innerText).toContain('Refreshing in 9 seconds');
         done();
@@ -115,7 +115,7 @@ describe('MRWidgetFailedToMerge', () => {
       vm.refresh();
       Vue.nextTick(() => {
         expect(el.innerText).not.toContain('Merge failed. Refreshing');
-        expect(el.innerText).toContain('Refreshing now...');
+        expect(el.innerText).toContain('Refreshing now');
       });
     });
   });

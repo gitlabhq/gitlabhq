@@ -2,6 +2,7 @@
 
 import simplePoll from '~/lib/utils/simple_poll';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
 
 export default {
   props: {
@@ -14,10 +15,27 @@ export default {
       required: true,
     },
   },
+  components: {
+    statusIcon,
+  },
   data() {
     return {
       isMakingRequest: false,
     };
+  },
+  computed: {
+    status() {
+      if (this.mr.rebaseInProgress || this.isMakingRequest) {
+        return 'loading';
+      }
+      if (!this.mr.canPushToSourceBranch && !this.mr.rebaseInProgress) {
+        return 'failed';
+      }
+      return 'success';
+    },
+    showDisabledButton() {
+      return ['failed', 'loading'].includes(this.status);
+    },
   },
   methods: {
     rebase() {
@@ -48,38 +66,24 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
-      <div class="rebase-state-find-class-convention">
+    <div class="mr-widget-body media">
+      <status-icon :status="status" :showDisabledButton="showDisabledButton" />
+      <div class="rebase-state-find-class-convention media media-body space-children">
         <template v-if="mr.rebaseInProgress || isMakingRequest">
-          <button
-            type="button"
-            class="btn btn-success btn-small"
-            disabled="true">
-            Merge
-          </button>
           <span class="bold">
-            <i
-              class="fa fa-spinner fa-spin"
-              aria-hidden="true" />
-            Rebase in progress. This merge request is in the process of being rebased.
+            Rebase in progress
           </span>
         </template>
         <template v-if="!mr.rebaseInProgress && !mr.canPushToSourceBranch">
-          <button
-            type="button"
-            class="btn btn-success btn-small"
-            disabled="true">
-            Merge
-          </button>
           <span class="bold">
             Fast-forward merge is not possible.
             Rebase the source branch onto
             <span class="label-branch">{{mr.targetBranch}}</span>
-            to allow this merge request to be merged.
+            to allow this merge request to be merged
           </span>
         </template>
         <template v-if="!mr.rebaseInProgress && mr.canPushToSourceBranch && !isMakingRequest">
-          <div class="accept-merge-holder clearfix js-toggle-container accept-action">
+          <div class="accept-merge-holder clearfix js-toggle-container accept-action media space-children">
             <button
               class="btn btn-small btn-reopen btn-success"
               :disabled="isMakingRequest"
@@ -93,7 +97,7 @@ export default {
             <span class="bold">
               Fast-forward merge is not possible.
               Rebase the source branch onto the target branch or merge target
-              branch into source branch to allow this merge request to be merged.
+              branch into source branch to allow this merge request to be merged
             </span>
           </div>
         </template>

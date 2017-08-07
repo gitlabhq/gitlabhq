@@ -35,12 +35,12 @@ export default {
         <a
           href="#modal_merge_info"
           data-toggle="modal"
-          class="btn inline btn-grouped btn-sm">
+          class="btn inline btn-grouped">
           Check out branch
         </a>
-        <span class="dropdown inline prepend-left-5">
+        <span class="dropdown inline prepend-left-10">
           <a
-            class="btn btn-sm dropdown-toggle"
+            class="btn dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             role="button">

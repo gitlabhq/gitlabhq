@@ -26,17 +26,11 @@ feature 'Merge Request closing issues message', js: true do
     wait_for_requests
   end
 
-  context 'not closing or mentioning any issue' do
-    it 'does not display closing issue message' do
-      expect(page).not_to have_css('.mr-widget-footer')
-    end
-  end
-
   context 'closing issues but not mentioning any other issue' do
     let(:merge_request_description) { "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}")
+      expect(page).to have_content("Closes #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -44,7 +38,7 @@ feature 'Merge Request closing issues message', js: true do
     let(:merge_request_description) { "Description\n\nRefers to #{issue_1.to_reference} and #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Issues #{issue_1.to_reference} and #{issue_2.to_reference} are mentioned but will not be closed.")
+      expect(page).to have_content("Mentions #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -52,8 +46,8 @@ feature 'Merge Request closing issues message', js: true do
     let(:merge_request_title) { "closes #{issue_1.to_reference}\n\n refers to #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Closes issue #{issue_1.to_reference}.")
-      expect(page).to have_content("Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+      expect(page).to have_content("Closes #{issue_1.to_reference}")
+      expect(page).to have_content("Mentions #{issue_2.to_reference}")
     end
   end
 
@@ -61,7 +55,7 @@ feature 'Merge Request closing issues message', js: true do
     let(:merge_request_title) { "closing #{issue_1.to_reference}, #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}")
+      expect(page).to have_content("Closes #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -69,7 +63,7 @@ feature 'Merge Request closing issues message', js: true do
     let(:merge_request_title) { "Refers to #{issue_1.to_reference} and #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Issues #{issue_1.to_reference} and #{issue_2.to_reference} are mentioned but will not be closed.")
+      expect(page).to have_content("Mentions #{issue_1.to_reference} and #{issue_2.to_reference}")
     end
   end
 
@@ -77,8 +71,8 @@ feature 'Merge Request closing issues message', js: true do
     let(:merge_request_title) { "closes #{issue_1.to_reference}\n\n refers to #{issue_2.to_reference}" }
 
     it 'does not display closing issue message' do
-      expect(page).to have_content("Closes issue #{issue_1.to_reference}. Issue #{issue_2.to_reference} is mentioned but will not be closed.")
-      expect(page).to have_content("Issue #{issue_2.to_reference} is mentioned but will not be closed.")
+      expect(page).to have_content("Closes #{issue_1.to_reference}")
+      expect(page).to have_content("Mentions #{issue_2.to_reference}")
     end
   end
 
@@ -92,7 +86,7 @@ feature 'Merge Request closing issues message', js: true do
 
     it 'displays closing issue message exactly one time' do
       wait_for_requests
-      expect(page).to have_content("Closes issues #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
+      expect(page).to have_content("Closes #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
     end
   end
 end
