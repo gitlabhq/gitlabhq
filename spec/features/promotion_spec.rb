@@ -22,12 +22,11 @@ describe 'Promotions', js: true do
     context 'no license installed' do
       before do
         License.destroy_all
-
-        sign_in(user)
         project.team << [user, :master]
       end
 
       it 'should have the contact admin line' do
+        sign_in(user)
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact your Administrator to upgrade your license.'
       end
@@ -45,18 +44,18 @@ describe 'Promotions', js: true do
       before do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
+        project.team << [developer, :developer]
+        project.team << [user, :master]
       end
 
       it 'should have the Upgrade your plan button' do
-        sign_in(user)
-        project.team << [user, :master]
+        sign_in(user)        
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
 
       it 'should have the contact owner line' do
-        sign_in(developer)
-        project.team << [developer, :developer]
+        sign_in(developer)        
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
