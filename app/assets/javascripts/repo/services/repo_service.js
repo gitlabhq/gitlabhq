@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Store from '../stores/repo_store';
+import Api from '../../api';
 
 const RepoService = {
   url: '',
@@ -67,6 +68,13 @@ const RepoService = {
     if (blobIndex > -1) urlArray[blobIndex] = 'tree';
 
     return urlArray.join('/');
+  },
+
+  commitFiles(payload, cb) {
+    Api.commitMultiple(Store.projectId, payload, (data) => {
+      Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      cb();
+    });
   },
 };
 
