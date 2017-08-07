@@ -390,6 +390,16 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+# SSH host key support
+gem 'net-ssh', '~> 4.1.0'
+
+# Required for ED25519 SSH host key support
+group :ed25519 do
+  gem 'rbnacl-libsodium'
+  gem 'rbnacl', '~> 3.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
+end
+
 # Gitaly GRPC client
 gem 'gitaly', '~> 0.24.0'
 
