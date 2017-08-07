@@ -1283,12 +1283,16 @@ class Project < ActiveRecord::Base
     status.zero?
   end
 
+  def full_path_slug
+    Gitlab::Utils.slugify(full_path.to_s)
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
