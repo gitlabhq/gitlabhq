@@ -58,7 +58,7 @@ module EE
     end
 
     def auditor?
-      license_allows_auditor_user? && self.auditor
+      self.auditor && license_allows_auditor_user?
     end
 
     def access_level
