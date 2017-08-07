@@ -6,9 +6,6 @@
         = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
       .project-title
         = @project.name
-    = button_tag class: 'close-nav-button', type: 'button' do
-      %span.sr-only Close sidebar
-      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
       = link_to project_path(@project), title: 'Project overview', class: 'shortcuts-project' do

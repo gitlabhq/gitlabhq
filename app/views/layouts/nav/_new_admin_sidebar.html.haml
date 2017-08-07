@@ -4,9 +4,6 @@
       .avatar-container.s40.settings-avatar
         = icon('wrench')
       .project-title Admin Area
-    = button_tag class: 'close-nav-button', type: 'button' do
-      %span.sr-only Close sidebar
-      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
