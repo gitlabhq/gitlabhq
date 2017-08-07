@@ -175,7 +175,7 @@ class List {
   }
 
   findIssue (id) {
-    return this.issues.filter(issue => issue.id === id)[0];
+    return this.issues.find(issue => issue.id === id);
   }
 
   removeIssue (removeIssue) {

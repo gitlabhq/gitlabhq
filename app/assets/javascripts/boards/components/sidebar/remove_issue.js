@@ -33,7 +33,7 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
       }
 
       // Post the remove data
-      gl.boardService.bulkUpdate([issue.globalId], data).catch(() => {
+      gl.boardService.bulkUpdate([issue.id], data).catch(() => {
         new Flash('Failed to remove issue from board, please try again.', 'alert');
 
         lists.forEach((list) => {

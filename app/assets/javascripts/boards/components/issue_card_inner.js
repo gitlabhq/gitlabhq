@@ -68,16 +68,19 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return this.issue.assignees.length > this.numberOverLimit;
     },
     cardUrl() {
-      var baseUrl = this.issueLinkBase;
+      let baseUrl = this.issueLinkBase;
 
-      if(this.groupId && this.issue.project) {
-        baseUrl = this.issueLinkBase.replace(":project_path", this.issue.project.path);
+      if (this.groupId && this.issue.project) {
+        baseUrl = this.issueLinkBase.replace(':project_path', this.issue.project.path);
       }
 
-      return `${baseUrl}/${this.issue.id}`;
+      return `${baseUrl}/${this.issue.iid}`;
     },
     issueId() {
-      return `#${this.issue.id}`;
+      if (this.issue.iid) {
+        return `#${this.issue.iid}`;
+      }
+      return false;
     },
     showLabelFooter() {
       return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
@@ -154,7 +157,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             :title="issue.title">{{ issue.title }}</a>
           <span
             class="card-number"
-            v-if="issue.id"
+            v-if="issueId"
           >
             {{ issueId }}
           </span>

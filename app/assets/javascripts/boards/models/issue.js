@@ -8,8 +8,8 @@ import Vue from 'vue';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
-    this.globalId = obj.id;
-    this.id = obj.iid;
+    this.id = obj.id;
+    this.iid = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
     this.dueDate = obj.due_date;
