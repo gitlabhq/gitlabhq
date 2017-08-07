@@ -12,7 +12,7 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    @project = ::Projects::GitlabProjectsImporterService.new(current_user, project_params).execute
+    @project = ::Projects::GitlabProjectsImportService.new(current_user, project_params).execute
 
     if @project.saved?
       redirect_to(
