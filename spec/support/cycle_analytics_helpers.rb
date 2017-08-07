@@ -41,7 +41,9 @@ module CycleAnalyticsHelpers
       target_branch: 'master'
     }
 
-    MergeRequests::CreateService.new(project, user, opts).execute
+    mr = MergeRequests::CreateService.new(project, user, opts).execute
+    NewMergeRequestWorker.new.perform(mr, user)
+    mr
   end
 
   def merge_merge_requests_closing_issue(issue)

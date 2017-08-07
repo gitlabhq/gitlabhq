@@ -15,11 +15,14 @@ module Issues
     def before_create(issue)
       spam_check(issue, current_user)
       issue.move_to_end
+
+      user = current_user
+      issue.run_after_commit do
+        NewIssueWorker.perform_async(issue.id, user.id)
+      end
     end
 
     def after_create(issuable)
-      event_service.open_issue(issuable, current_user)
-      notification_service.new_issue(issuable, current_user)
       todo_service.new_issue(issuable, current_user)
       user_agent_detail_service.create
       resolve_discussions_with_issue(issuable)
