@@ -8,6 +8,7 @@ class MergeRequest < ActiveRecord::Base
   include CreatedAtFilterable
 
   ignore_column :position
+  ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
