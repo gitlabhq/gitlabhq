@@ -3,7 +3,7 @@ export const notesDataMock = {
   lastFetchedAt: '1501862675',
   markdownDocs: '/help/user/markdown',
   newSessionPath: '/users/sign_in?redirect_to_referer=yes',
-  notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes?full_data=1',
+  notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes?view=full_data',
   quickActionsDocs: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
 };

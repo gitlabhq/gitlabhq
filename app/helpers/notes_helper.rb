@@ -93,11 +93,13 @@ module NotesHelper
     end
   end
 
-  def notes_url
+  def notes_url(extra_params = {})
     if @snippet.is_a?(PersonalSnippet)
-      snippet_notes_path(@snippet)
+      snippet_notes_path(@snippet, extra_params)
     else
-      project_noteable_notes_path(@project, target_id: @noteable.id, target_type: @noteable.class.name.underscore)
+      params = { target_id: @noteable.id, target_type: @noteable.class.name.underscore }
+
+      project_noteable_notes_path(@project, params.merge(extra_params))
     end
   end
 

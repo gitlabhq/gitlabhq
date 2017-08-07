@@ -105,7 +105,7 @@
             endpoint: this.endpoint,
             flashContainer: this.$el,
             data: {
-              full_data: true,
+              view: 'full_data',
               note: {
                 noteable_type: 'Issue',
                 noteable_id: this.getIssueData.id,

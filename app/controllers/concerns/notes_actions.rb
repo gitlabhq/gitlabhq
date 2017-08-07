@@ -18,7 +18,8 @@ module NotesActions
     @notes = prepare_notes_for_rendering(@notes)
 
     notes_json[:notes] =
-      if params[:full_data]
+      case params[:view]
+      when 'full_data'
         note_serializer.represent(@notes)
       else
         @notes.map { |note| note_json(note) }
@@ -87,7 +88,8 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if params[:full_data]
+      case params[:view]
+      when 'full_data'
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(

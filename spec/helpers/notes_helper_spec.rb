@@ -205,6 +205,14 @@ describe NotesHelper do
 
       expect(helper.notes_url).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes")
     end
+
+    it 'adds extra params' do
+      namespace = create(:namespace, path: 'nm')
+      @project = create(:project, path: 'test', namespace: namespace)
+      @noteable = create(:issue, project: @project)
+
+      expect(helper.notes_url(view: 'full_data')).to eq("/nm/test/noteable/issue/#{@noteable.id}/notes?view=full_data")
+    end
   end
 
   describe '#note_url' do
