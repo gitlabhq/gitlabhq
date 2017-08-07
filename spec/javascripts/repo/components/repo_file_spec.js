@@ -119,4 +119,18 @@ describe('RepoFile', () => {
 
     expect(vm.linkClicked).toHaveBeenCalledWith(file);
   });
+
+  describe('methods', () => {
+    describe('linkClicked', () => {
+      const vm = jasmine.createSpyObj('vm', ['$emit']);
+
+      it('$emits linkclicked with file obj', () => {
+        const theFile = {};
+
+        repoFile.methods.linkClicked.call(vm, theFile);
+
+        expect(vm.$emit).toHaveBeenCalledWith('linkclicked', theFile);
+      });
+    });
+  });
 });
