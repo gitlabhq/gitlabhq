@@ -1,5 +1,5 @@
 module Boards
-  class DestroyService < BaseService
+  class DestroyService < Boards::BaseService
     def execute(board)
       return false if parent.boards.size == 1
 

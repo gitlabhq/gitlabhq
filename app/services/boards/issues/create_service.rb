@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class CreateService < BaseService
+    class CreateService < Boards::BaseService
       attr_accessor :project
 
       def initialize(parent, project, user, params = {})

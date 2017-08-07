@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class ListService < BaseService
+    class ListService < Boards::BaseService
       prepend EE::Boards::Issues::ListService
 
       def execute
@@ -41,7 +41,7 @@ module Boards
       end
 
       def set_parent
-        params[:project_id] = @parent.id
+        params[:project_id] = parent.id
       end
 
       def set_state
