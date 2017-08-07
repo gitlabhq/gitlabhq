@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable" :disabled="binary">
+<button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
   <i :class="buttonIcon"></i>
   <span>{{buttonLabel}}</span>
 </button>

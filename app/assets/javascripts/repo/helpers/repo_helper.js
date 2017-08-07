@@ -154,16 +154,19 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView()) {
-          Service.getRaw(data.raw_path)
+          if(!data.render_error){
+            Service.getRaw(data.raw_path)
             .then((rawResponse) => {
               Store.blobRaw = rawResponse.data;
               data.plain = rawResponse.data;
-
               RepoHelper.setFile(data, file);
             }).catch(RepoHelper.loadingError);
+          }
         }
 
-        if (Store.isPreviewView()) RepoHelper.setFile(data, file);
+        if (Store.isPreviewView()){
+          RepoHelper.setFile(data, file);
+        }
 
         // if the file tree is empty
         if (Store.files.length === 0) {
@@ -187,6 +190,9 @@ const RepoHelper = {
 
     newFile.url = file.url || location.pathname;
     newFile.url = file.url;
+    if(newFile.render_error === 'too_large'){
+      newFile.tooLarge = true;
+    }
     newFile.newContent = '';
 
     Store.addToOpenedFiles(newFile);

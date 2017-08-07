@@ -369,6 +369,13 @@
   }
 }
 
+.render-error {
+  min-height: calc(100vh - 63px);
+  p {
+    width: 100%;
+  }
+}
+
 @keyframes blockTextShine {
   0% {
     transform: translateX(-468px);

@@ -128,3 +128,11 @@ of the body element here, we negate cascading side effects but allow momentum sc
 [v-cloak] {
   display: none;
 }
+
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+}
