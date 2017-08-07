@@ -67,9 +67,12 @@ module LicenseHelper
     uri.to_s
   end
 
-  # Temporary URL for promotions - later `group_billings_path(group)` or `profile_billings_path`
   def upgrade_plan_url
-    'https://about.gitlab.com/gitlab-com/'
+    if (@project.owner.present? && @project.owner == @current_user) 
+      profile_billings_path
+    else @project.group&.has_owner?(@current_user)
+      group_billings_path(@project.group)
+    end
   end
 
   def show_promotions?

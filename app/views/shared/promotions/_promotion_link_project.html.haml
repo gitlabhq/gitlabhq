@@ -7,7 +7,11 @@
     - owner = @project.namespace.owner
     %p Contact owner #{ link_to(simple_sanitize(owner.name), user_path(owner)) } to upgrade the license.
 - elsif current_user.admin?
-  = link_to License.current&.expired? ? 'Buy GitLab Enterprise Edition' : 'Start GitLab Enterprise Edition trial', new_trial_url, class: 'btn btn-primary'
+  = 'URL ' + upgrade_plan_url
+  - if License.current&.expired?
+    = link_to 'Buy GitLab Enterprise Edition', Gitlab::SUBSCRIPTIONS_PLANS_URL, class: 'btn btn-primary'
+  - else
+    = link_to 'Start GitLab Enterprise Edition trial', new_trial_url, class: 'btn btn-primary'
 - else
   %p
     Contact your Administrator to upgrade your license.
