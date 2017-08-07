@@ -67,14 +67,6 @@ module LicenseHelper
     uri.to_s
   end
 
-  def new_trial_url
-    return_to_url = URI.encode(Gitlab.config.gitlab.url)
-    uri = URI.parse(Gitlab::SUBSCRIPTIONS_URL)
-    uri.path = '/trials/new'
-    uri.query = "return_to=#{return_to_url}"
-    uri.to_s
-  end
-
   # Temporary URL for promotions - later `group_billings_path(group)` or `profile_billings_path`
   def upgrade_plan_url
     'https://about.gitlab.com/gitlab-com/'
