@@ -17,8 +17,10 @@ describe API::Jobs do
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
+  let(:cross_project_pipeline_enabled) { true }
 
   before do
+    stub_licensed_features(cross_project_pipelines: cross_project_pipeline_enabled)
     project.add_developer(user)
   end
 
@@ -261,6 +263,15 @@ describe API::Jobs do
           expect(response).to have_http_status(404)
         end
       end
+
+      context 'feature is disabled for EES' do
+        let(:api_user) { user }
+        let(:cross_project_pipeline_enabled) { false }
+
+        it 'disallows access to the artifacts' do
+          expect(response).to have_http_status(404)
+        end
+      end
     end
   end
 
@@ -380,7 +391,7 @@ describe API::Jobs do
           get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
         end
 
-        context 'when user is eporter' do
+        context 'when user is reporter' do
           it_behaves_like 'a valid file'
         end
 

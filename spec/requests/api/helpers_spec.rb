@@ -209,7 +209,7 @@ describe API::Helpers do
       let(:route_authentication_setting) { { job_token_allowed: true } }
 
       before do
-        allow_any_instance_of(API::Helpers).to receive(:doorkeeper_guard).and_return(nil)
+        allow_any_instance_of(described_class).to receive(:doorkeeper_guard).and_return(nil)
       end
 
       it "returns nil for an invalid token" do
