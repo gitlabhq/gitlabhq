@@ -25,6 +25,7 @@ in your GitLab instance, and who gave them that permission level.
 |--------------------------------|--------------------------------------------------------------------------------------------------|
 | User added to group or project | Notes the author of the change, target user                                                      |
 | User permission changed        | Notes the author of the change, original permission and new permission, target user              |
+| User login failed              | Notes the target username and IP address                                                         |
 
 ## Audit events in project
 
