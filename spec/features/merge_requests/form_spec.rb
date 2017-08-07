@@ -41,7 +41,7 @@ describe 'New/edit merge request', :js do
           expect(page).to have_content user2.name
         end
 
-        click_link 'Assign to me'
+        find('a', text: 'Assign to me').trigger('click')
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name
