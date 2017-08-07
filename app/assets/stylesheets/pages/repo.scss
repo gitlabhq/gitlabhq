@@ -51,7 +51,7 @@
   margin: 20px;
 }
 
-.tree-content-holder {
+.repository-view.tree-content-holder {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   color: $almost-black;
@@ -78,6 +78,7 @@
       .blob-viewer-container {
         overflow: hidden;
       }
+
       .monaco-editor.vs {
         .cursor {
           background: $black;
@@ -374,6 +375,7 @@
 
 .render-error {
   min-height: calc(100vh - 63px);
+
   p {
     width: 100%;
   }

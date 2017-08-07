@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-<div class="tree-content-holder">
+<div class="repository-view tree-content-holder">
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
     <component :is="currentBlobView" class="blob-viewer-container"></component>
