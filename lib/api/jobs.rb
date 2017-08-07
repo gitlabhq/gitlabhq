@@ -77,8 +77,10 @@ module API
       params do
         requires :job_id, type: Integer, desc: 'The ID of a job'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/jobs/:job_id/artifacts' do
         authorize_read_builds!
+        check_cross_project_pipelines_feature!
 
         build = get_build!(params[:job_id])
 
@@ -92,9 +94,11 @@ module API
         requires :ref_name, type: String, desc: 'The ref from repository'
         requires :job,      type: String, desc: 'The name for the job'
       end
+      route_setting :authentication, job_token_allowed: true
       get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_read_builds!
+        check_cross_project_pipelines_feature!
 
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
@@ -241,6 +245,10 @@ module API
 
       def authorize_update_builds!
         authorize! :update_build, user_project
+      end
+
+      def check_cross_project_pipelines_feature!
+        not_found!('Project') if job_token_authentication? && !@project.feature_available?(:cross_project_pipelines)
       end
     end
   end
