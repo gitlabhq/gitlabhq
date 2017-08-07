@@ -33,7 +33,7 @@
               %span
                 Contribution Analytics
 
-    = nav_link(path: ['groups#issues', 'groups#boards', 'labels#index', 'milestones#index']) do
+    = nav_link(path: ['groups#issues', 'boards#index', 'labels#index', 'milestones#index']) do
       = link_to issues_group_path(@group), title: 'Issues' do
         .nav-icon-container
           = custom_icon('issues')
@@ -48,7 +48,7 @@
             %span
               List
 
-        = nav_link(path: 'groups#boards') do
+        = nav_link(path: 'boards#index') do
           = link_to group_boards_path(@group), title: 'Boards' do
             %span
               Boards
