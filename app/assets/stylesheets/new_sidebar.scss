@@ -383,6 +383,7 @@ $new-sidebar-collapsed-width: 50px;
 
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
+    padding: 16px 18px;
 
     .collapse-text,
     .fa-angle-double-left {
