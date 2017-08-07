@@ -141,13 +141,14 @@ module DeclarativePolicy
       end
 
       steps = Set.new(@steps)
+      remaining_enablers = steps.count { |s| s.enable? }
 
       loop do
         return if steps.empty?
 
         # if the permission hasn't yet been enabled and we only have
         # prevent steps left, we short-circuit the state here
-        @state.prevent! if !@state.enabled? && steps.all?(&:prevent?)
+        @state.prevent! if !@state.enabled? && remaining_enablers == 0
 
         lowest_score = Float::INFINITY
         next_step = nil
@@ -161,6 +162,8 @@ module DeclarativePolicy
         end
 
         steps.delete(next_step)
+
+        remaining_enablers -= 1 if next_step.enable?
 
         yield next_step, lowest_score
       end
