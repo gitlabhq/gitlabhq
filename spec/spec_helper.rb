@@ -146,13 +146,13 @@ RSpec.configure do |config|
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
 
-    ActiveRecord::Base.descendants.each(&:reset_column_information)
+    reset_column_in_migration_models
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
 
-    ActiveRecord::Base.descendants.each(&:reset_column_information)
+    reset_column_in_migration_models
   end
 
   config.around(:each, :nested_groups) do |example|
