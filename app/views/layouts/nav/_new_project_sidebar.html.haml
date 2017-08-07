@@ -222,6 +222,8 @@
           %span
             Members
 
+    = render 'shared/sidebar_toggle_button'
+
     -# Shortcut to Project > Activity
     %li.hidden
       = link_to activity_project_path(@project), title: 'Activity', class: 'shortcuts-project-activity' do

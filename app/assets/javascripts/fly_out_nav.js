@@ -23,6 +23,7 @@ export const showSubLevelItems = (el) => {
   const top = calculateTop(boundingRect, subItems.offsetHeight);
   const isAbove = top < boundingRect.top;
 
+  subItems.classList.add('fly-out-list');
   subItems.style.transform = `translate3d(0, ${Math.floor(top)}px, 0)`;
 
   if (isAbove) {
