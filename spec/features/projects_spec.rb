@@ -11,14 +11,14 @@ feature 'Project' do
     end
 
     it "allows creation from templates" do
-      fill_in("project_template_name", with: template.title)
+      page.choose(template.name)
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
         click_button "Create project"
       end
 
-      expect(page).to have_content 'Import in progress'
+      expect(page).to have_content 'This project Loading..'
     end
   end
 
