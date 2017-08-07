@@ -100,7 +100,7 @@ module Github
     def fetch_wiki_repository
       return if project.wiki.repository_exists?
 
-      wiki_path = "#{project.path_with_namespace}.wiki"
+      wiki_path = "#{project.disk_path}.wiki"
       gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
     rescue Gitlab::Shell::Error => e
       # GitHub error message when the wiki repo has not been created,
