@@ -41,14 +41,16 @@ const RepoCommitSection = {
         actions,
       };
       Store.submitCommitsLoading = true;
-      Service.commitFiles(payload, () => {
-        Store.submitCommitsLoading = false;
-        this.changedFiles = [];
-        this.openedFiles = [];
-        this.commitMessage = '';
-        this.editMode = false;
-        $('html, body').animate({ scrollTop: 0 }, 'fast');
-      });
+      Service.commitFiles(payload, this.resetCommitState);
+    },
+
+    resetCommitState() {
+      this.submitCommitsLoading = false;
+      this.changedFiles = [];
+      this.openedFiles = [];
+      this.commitMessage = '';
+      this.editMode = false;
+      $('html, body').animate({ scrollTop: 0 }, 'fast');
     },
   },
 };

@@ -133,4 +133,26 @@ describe('RepoCommitSection', () => {
       });
     });
   });
+
+  fdescribe('methods', () => {
+    describe('resetCommitState', () => {
+      it('should reset store vars and scroll to top', () => {
+        const vm = {
+          submitCommitsLoading: true,
+          changedFiles: new Array(10),
+          openedFiles: new Array(10),
+          commitMessage: 'commitMessage',
+          editMode: true,
+        };
+
+        repoCommitSection.methods.resetCommitState.call(vm);
+
+        expect(vm.submitCommitsLoading).toEqual(false);
+        expect(vm.changedFiles).toEqual([]);
+        expect(vm.openedFiles).toEqual([]);
+        expect(vm.commitMessage).toEqual('');
+        expect(vm.editMode).toEqual(false);
+      });
+    });
+  });
 });
