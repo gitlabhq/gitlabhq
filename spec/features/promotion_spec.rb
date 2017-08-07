@@ -4,7 +4,7 @@ describe 'Promotions', js: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
-  let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, path: 'gitlab', name: 'sample') }
 
   describe 'if you have a license' do
     before do
