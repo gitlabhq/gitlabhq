@@ -20,8 +20,16 @@ describe RedirectRoute do
     let!(:redirect4) { group.redirect_routes.create(path: 'gitlabb/test/foo/bar') }
     let!(:redirect5) { group.redirect_routes.create(path: 'gitlabb/test/baz') }
 
-    it 'returns correct routes' do
-      expect(described_class.matching_path_and_descendants('gitlabb/test')).to match_array([redirect2, redirect3, redirect4, redirect5])
+    context 'when the redirect route matches with same casing' do
+      it 'returns correct routes' do
+        expect(described_class.matching_path_and_descendants('gitlabb/test')).to match_array([redirect2, redirect3, redirect4, redirect5])
+      end
+    end
+
+    context 'when the redirect route matches with different casing' do
+      it 'returns correct routes' do
+        expect(described_class.matching_path_and_descendants('GitLABB/test')).to match_array([redirect2, redirect3, redirect4, redirect5])
+      end
     end
   end
 end

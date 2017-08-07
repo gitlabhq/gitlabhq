@@ -145,45 +145,71 @@ describe Route do
 
   describe '#delete_conflicting_redirects' do
     context 'when a redirect route with the same path exists' do
-      let!(:redirect1) { route.create_redirect(route.path) }
+      context 'when the redirect route has matching case' do
+        let!(:redirect1) { route.create_redirect(route.path) }
 
-      it 'deletes the redirect' do
-        route.delete_conflicting_redirects
-        expect(route.conflicting_redirects).to be_empty
+        it 'deletes the redirect' do
+          expect do
+            route.delete_conflicting_redirects
+          end.to change{RedirectRoute.count}.by(-1)
+        end
+
+        context 'when redirect routes with paths descending from the route path exists' do
+          let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
+          let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
+          let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
+          let!(:other_redirect) { route.create_redirect("other") }
+
+          it 'deletes all redirects with paths that descend from the route path' do
+            expect do
+              route.delete_conflicting_redirects
+            end.to change{RedirectRoute.count}.by(-4)
+          end
+        end
       end
 
-      context 'when redirect routes with paths descending from the route path exists' do
-        let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
-        let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
-        let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
-        let!(:other_redirect) { route.create_redirect("other") }
+      context 'when the redirect route is differently cased' do
+        let!(:redirect1) { route.create_redirect(route.path.upcase) }
 
-        it 'deletes all redirects with paths that descend from the route path' do
-          route.delete_conflicting_redirects
-          expect(route.conflicting_redirects).to be_empty
+        it 'deletes the redirect' do
+          expect do
+            route.delete_conflicting_redirects
+          end.to change{RedirectRoute.count}.by(-1)
         end
       end
     end
   end
 
   describe '#conflicting_redirects' do
-    context 'when a redirect route with the same path exists' do
-      let!(:redirect1) { route.create_redirect(route.path) }
+    it 'returns an ActiveRecord::Relation' do
+      expect(route.conflicting_redirects).to be_an(ActiveRecord::Relation)
+    end
 
-      it 'returns the redirect route' do
-        expect(route.conflicting_redirects).to be_an(ActiveRecord::Relation)
-        expect(route.conflicting_redirects).to match_array([redirect1])
+    context 'when a redirect route with the same path exists' do
+      context 'when the redirect route has matching case' do
+        let!(:redirect1) { route.create_redirect(route.path) }
+
+        it 'returns the redirect route' do
+          expect(route.conflicting_redirects).to match_array([redirect1])
+        end
+
+        context 'when redirect routes with paths descending from the route path exists' do
+          let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
+          let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
+          let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
+          let!(:other_redirect) { route.create_redirect("other") }
+
+          it 'returns the redirect routes' do
+            expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3, redirect4])
+          end
+        end
       end
 
-      context 'when redirect routes with paths descending from the route path exists' do
-        let!(:redirect2) { route.create_redirect("#{route.path}/foo") }
-        let!(:redirect3) { route.create_redirect("#{route.path}/foo/bar") }
-        let!(:redirect4) { route.create_redirect("#{route.path}/baz/quz") }
-        let!(:other_redirect) { route.create_redirect("other") }
+      context 'when the redirect route is differently cased' do
+        let!(:redirect1) { route.create_redirect(route.path.upcase) }
 
-        it 'returns the redirect routes' do
-          expect(route.conflicting_redirects).to be_an(ActiveRecord::Relation)
-          expect(route.conflicting_redirects).to match_array([redirect1, redirect2, redirect3, redirect4])
+        it 'returns the redirect route' do
+          expect(route.conflicting_redirects).to match_array([redirect1])
         end
       end
     end
