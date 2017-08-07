@@ -1,4 +1,4 @@
-.nav-sidebar
+.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .context-header
     = link_to group_path(@group), title: @group.name do
       .avatar-container.s40.group-avatar
