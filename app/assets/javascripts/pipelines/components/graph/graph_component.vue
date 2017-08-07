@@ -1,10 +1,7 @@
 <script>
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-<<<<<<< HEAD
-  import linkedPipelinesColumn from './linked_pipelines_column.vue';
-=======
   import '~/flash';
->>>>>>> ce-com/master
+  import linkedPipelinesColumn from './linked_pipelines_column.vue';
   import stageColumnComponent from './stage_column_component.vue';
 
   export default {
