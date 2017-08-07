@@ -4,15 +4,15 @@ describe 'Promotions', js: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
-  let(:project) { create(:project, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
 
   describe 'if you have a license' do
     before do
-      sign_in(user)
       project.team << [user, :master]
     end
 
     it 'should show no promotion at all' do
+      sign_in(user)
       visit edit_project_path(project)
       expect(page).not_to have_selector('#promote_service_desk')
     end
@@ -22,6 +22,7 @@ describe 'Promotions', js: true do
     context 'no license installed' do
       before do
         License.destroy_all
+        stub_application_setting(check_namespace_plan: false)
         project.team << [user, :master]
       end
 
@@ -39,23 +40,23 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for project features in general for .com', js: true do
+  describe 'for project features in general', js: true do
     context 'for .com' do
       before do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
-        project.team << [developer, :developer]
         project.team << [user, :master]
+        project.team << [developer, :developer]
       end
 
       it 'should have the Upgrade your plan button' do
-        sign_in(user)        
+        sign_in(user)
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
 
       it 'should have the contact owner line' do
-        sign_in(developer)        
+        sign_in(developer)
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end

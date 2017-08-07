@@ -1,3 +1,4 @@
+= current_application_settings.should_check_namespace_plan?
 - if current_application_settings.should_check_namespace_plan?
   - if (@project.owner.present? && @project.owner == @current_user) || @project.group&.has_owner?(@current_user)
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'
@@ -7,7 +8,6 @@
     - owner = @project.namespace.owner
     %p Contact owner #{ link_to(simple_sanitize(owner.name), user_path(owner)) } to upgrade the license.
 - elsif current_user.admin?
-  = 'URL ' + upgrade_plan_url
   - if License.current&.expired?
     = link_to 'Buy GitLab Enterprise Edition', Gitlab::SUBSCRIPTIONS_PLANS_URL, class: 'btn btn-primary'
   - else
