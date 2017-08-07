@@ -1,13 +1,10 @@
 - page_title "General"
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
-<<<<<<< HEAD
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
   = webpack_bundle_tag('service_desk')
-=======
->>>>>>> ce-com/master
 
 = render "projects/settings/head"
 
@@ -52,10 +49,6 @@
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.help-block Separate tags with commas.
-<<<<<<< HEAD
-=======
-        %fieldset.features
->>>>>>> ce-com/master
           %h5.prepend-top-0
             Project avatar
           .form-group
@@ -123,8 +116,6 @@
                   %span.help-block Share code pastes with others out of Git repository
                 .col-md-4
                   = project_feature_access_select(:snippets_access_level)
-<<<<<<< HEAD
-
               .row
                 .col-md-8.project-feature
                   = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
@@ -191,59 +182,6 @@
           enabled: "#{@project.service_desk_enabled}",
           incoming_email: (@project.service_desk_address if @project.service_desk_enabled) } }
 
-=======
-
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
-                  %span.help-block Lightweight issue tracking system for this project
-                .col-md-4
-                  = project_feature_access_select(:issues_access_level)
-
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
-                  %span.help-block Pages for project documentation
-                .col-md-4
-                  = project_feature_access_select(:wiki_access_level)
-        .form-group
-          = render 'shared/allow_request_access', form: f
-        - if Gitlab.config.lfs.enabled && current_user.admin?
-          .row.js-lfs-enabled.form-group.sharing-and-permissions
-            .col-md-8
-              = f.label :lfs_enabled, 'Git Large File Storage', class: 'label-light'
-              = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
-              %span.help-block Manages large files such as audio, video and graphics files.
-            .col-md-4
-              .select-wrapper
-                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select select-control', data: { field: 'lfs_enabled' }
-                = icon('chevron-down')
-        - if Gitlab.config.registry.enabled
-          .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
-            .checkbox
-              = f.label :container_registry_enabled do
-                = f.check_box :container_registry_enabled
-                %strong Container Registry
-                %br
-                %span.descr Enable Container Registry for this project
-                = link_to icon('question-circle'), help_page_path('user/project/container_registry'), target: '_blank'
-        = f.submit 'Save changes', class: "btn btn-save"
-
-
-  %section.settings.merge-requests-feature{ style: ("display: none;" if @project.project_feature.send(:merge_requests_access_level) == 0) }
-    .settings-header
-      %h4
-        Merge request settings
-      %button.btn.js-settings-toggle
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-        Customize your merge request restrictions.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
-        = render 'merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save"
-
->>>>>>> ce-com/master
   %section.settings
     .settings-header
       %h4
