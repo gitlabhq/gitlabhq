@@ -313,7 +313,7 @@ module Github
           next unless representation.valid?
 
           release = ::Release.find_or_initialize_by(project_id: project.id, tag: representation.tag)
-          next unless relese.new_record?
+          next unless release.new_record?
 
           begin
             release.description = representation.description
