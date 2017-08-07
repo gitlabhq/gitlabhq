@@ -299,6 +299,21 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
+        default_options = {
+          limit: 10,
+          offset: 0,
+          path: nil,
+          follow: false,
+          skip_merges: false,
+          disable_walk: false,
+          after: nil,
+          before: nil
+        }
+
+        options = default_options.merge(options)
+        options[:limit] ||= 0
+        options[:offset] ||= 0
+
         raw_log(options).map { |c| Commit.decorate(c) }
       end
 
@@ -712,20 +727,6 @@ module Gitlab
       end
 
       def raw_log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          follow: false,
-          skip_merges: false,
-          disable_walk: false,
-          after: nil,
-          before: nil
-        }
-
-        options = default_options.merge(options)
-        options[:limit] ||= 0
-        options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
           sha = sha_from_ref(actual_ref)
