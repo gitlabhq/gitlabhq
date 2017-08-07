@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'GlobalSearch' do
-  let(:features) { %i(issues merge_requests repository builds wiki) }
+  let(:features) { %i(issues merge_requests repository builds wiki snippets) }
   let(:admin) { create :user, admin: true }
   let(:auditor) {create :user, auditor: true }
   let(:non_member) { create :user }
@@ -151,7 +151,8 @@ describe 'GlobalSearch' do
       create :merge_request, title: 'term', target_project: project, source_project: project
       project.wiki.create_page('index_page', 'term')
 
-      project.project_feature.update!(feature_settings) if feature_settings
+      # Going through the project ensures its elasticsearch document is updated
+      project.update!(project_feature_attributes: feature_settings) if feature_settings
 
       project.repository.index_blobs
       project.repository.index_commits
