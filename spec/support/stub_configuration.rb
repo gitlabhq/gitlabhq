@@ -38,6 +38,17 @@ module StubConfiguration
     allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
   end
 
+  def stub_storage_settings(messages)
+    messages.each do |storage_name, storage_settings|
+      storage_settings['failure_count_threshold'] ||= 10
+      storage_settings['failure_wait_time'] ||= 30
+      storage_settings['failure_reset_time'] ||= 1800
+      storage_settings['storage_timeout'] ||= 5
+    end
+
+    allow(Gitlab.config.repositories).to receive(:storages).and_return(messages)
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions
