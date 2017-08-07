@@ -16,6 +16,9 @@
           To migrate an SVN repository, check out #{link_to "this document", help_page_path('workflow/importing/migrating_from_svn')}.
         %li
           The Git LFS objects will <strong>not</strong> be imported.
+        %li
+          Once imported, repositories can be mirrored over SSH. Read more
+          = link_to 'here', help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')
 
 .form-group
   .col-sm-offset-2.col-sm-10

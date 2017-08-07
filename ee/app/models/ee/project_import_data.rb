@@ -1,0 +1,65 @@
+module EE
+  module ProjectImportData
+    SSH_PRIVATE_KEY_OPTS = {
+      type: 'RSA',
+      bits: 4096
+    }.freeze
+
+    extend ActiveSupport::Concern
+
+    included do
+      validates :auth_method, inclusion: { in: %w[password ssh_public_key] }, allow_blank: true
+
+      # We should generate a key even if there's no SSH URL present
+      before_validation :generate_ssh_private_key!, if: ->(data) do
+        regenerate_ssh_private_key || ( auth_method == 'ssh_public_key' && ssh_private_key.blank? )
+      end
+    end
+
+    attr_accessor :regenerate_ssh_private_key
+
+    def ssh_key_auth?
+      ssh_import? && auth_method == 'ssh_public_key'
+    end
+
+    def ssh_import?
+      project&.import_url&.start_with?('ssh://')
+    end
+
+    %i[auth_method user password ssh_private_key ssh_known_hosts ssh_known_hosts_verified_at ssh_known_hosts_verified_by_id].each do |name|
+      define_method(name) do
+        credentials[name] if credentials.present?
+      end
+
+      define_method("#{name}=") do |value|
+        self.credentials ||= {}
+        self.credentials[name] = value
+      end
+    end
+
+    def ssh_known_hosts_verified_by
+      @ssh_known_hosts_verified_by ||= ::User.find_by(id: ssh_known_hosts_verified_by_id)
+    end
+
+    def ssh_known_hosts_fingerprints
+      ::SshHostKey.fingerprint_host_keys(ssh_known_hosts)
+    end
+
+    def auth_method
+      auth_method = credentials.fetch(:auth_method, nil) if credentials.present?
+
+      auth_method.presence || 'password'
+    end
+
+    def ssh_public_key
+      return nil if ssh_private_key.blank?
+
+      comment = "git@#{::Gitlab.config.gitlab.host}"
+      ::SSHKey.new(ssh_private_key, comment: comment).ssh_public_key
+    end
+
+    def generate_ssh_private_key!
+      self.ssh_private_key = ::SSHKey.generate(SSH_PRIVATE_KEY_OPTS).private_key
+    end
+  end
+end

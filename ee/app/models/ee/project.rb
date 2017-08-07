@@ -381,6 +381,27 @@ module EE
       end
     end
 
+    def username_only_import_url
+      bare_url = read_attribute(:import_url)
+      return bare_url unless ::Gitlab::UrlSanitizer.valid?(bare_url)
+      ::Gitlab::UrlSanitizer.new(bare_url, credentials: { user: import_data&.user }).full_url
+    end
+
+    def username_only_import_url=(value)
+      unless ::Gitlab::UrlSanitizer.valid?(value)
+        self.import_url = value
+        return
+      end
+
+      url = ::Gitlab::UrlSanitizer.new(value)
+      creds = url.credentials.slice(:user) if url.credentials[:user].present?
+
+      write_attribute(:import_url, url.sanitized_url)
+      create_or_update_import_data(credentials: creds)
+
+      username_only_import_url
+    end
+
     def mark_remote_mirrors_for_removal
       remote_mirrors.each(&:mark_for_delete_if_blank_url)
     end
