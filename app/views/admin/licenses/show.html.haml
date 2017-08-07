@@ -1,7 +1,10 @@
 - page_title "License"
 %h3.page-title
   Your License
-  = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
+  - if current_license.trial?
+    = render "upload_buy_license"
+  - else
+    = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
 
 %hr
 
@@ -32,11 +35,12 @@
               Expired:
             - else
               Expires:
-          %strong
-            - if @license.will_expire?
-              = time_ago_with_tooltip @license.expires_at
-            - else
-              Never
+          - if @license.will_expire? && @license.active?
+            %strong= time_ago_with_tooltip(@license.expires_at)
+            - if @license.trial?
+              %span Free trial will expire in #{pluralize(@license.remaining_days, 'day')}
+          - else
+            %strong Never
 
           - if @license.expired?
             %span.label.label-danger.pull-right

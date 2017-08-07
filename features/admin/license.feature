@@ -8,12 +8,6 @@ Feature: Admin license
     And I visit admin license page
     Then I should see to whom the license is licensed
 
-  Scenario: Viewing license when there is none
-    Given There is no license
-    And I visit admin license page
-    Then I should see a warning telling me there is no license
-    And I should be redirected to the license upload page
-
   Scenario: Viewing expired license
     Given there is a license
     And the current license is expired

@@ -1,11 +1,15 @@
 class Admin::LicensesController < Admin::ApplicationController
   before_action :license, only: [:show, :download, :destroy]
-  before_action :require_license, only: [:show, :download, :destroy]
+  before_action :require_license, only: [:download, :destroy]
 
   respond_to :html
 
   def show
-    @previous_licenses = License.previous
+    if @license.blank?
+      render :missing
+    else
+      @previous_licenses = License.previous
+    end
   end
 
   def download
@@ -13,7 +17,7 @@ class Admin::LicensesController < Admin::ApplicationController
   end
 
   def new
-    @license = License.new
+    build_license
   end
 
   def create
@@ -60,6 +64,10 @@ class Admin::LicensesController < Admin::ApplicationController
 
     flash.keep
     redirect_to new_admin_license_path
+  end
+
+  def build_license
+    @license ||= License.new(data: params[:trial_key])
   end
 
   def license_params

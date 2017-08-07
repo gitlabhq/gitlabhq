@@ -14,10 +14,6 @@ class Spinach::Features::AdminLicense < Spinach::FeatureSteps
     License.destroy_all
   end
 
-  step 'I should see a warning telling me there is no license' do
-    expect(page).to have_content "No GitLab Enterprise Edition license has been provided yet."
-  end
-
   step 'I should be redirected to the license upload page' do
     expect(current_path).to eq(new_admin_license_path)
   end
@@ -27,7 +23,7 @@ class Spinach::Features::AdminLicense < Spinach::FeatureSteps
   end
 
   step 'I should see a warning telling me the license has expired' do
-    expect(page).to have_content "The GitLab Enterprise Edition license expired"
+    expect(page).to have_content "Your Enterprise Edition license expired"
   end
 
   step 'the current license blocks changes' do

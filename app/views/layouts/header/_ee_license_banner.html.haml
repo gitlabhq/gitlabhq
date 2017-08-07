@@ -1,0 +1,8 @@
+- if license_message.present?
+  .alert.alert-dismissible.gitlab-ee-license-banner.hidden.js-gitlab-ee-license-banner{ role: 'alert', data: { license_expiry: current_license.expires_at } }
+    -# Show dismiss button only when license expiry is about trial license
+    - if current_license.trial?
+      %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-label' => 'Dismiss banner' }
+        = icon('times', 'aria-hidden' => 'true')
+    %p
+      = license_message

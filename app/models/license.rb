@@ -185,7 +185,7 @@ class License < ActiveRecord::Base
       end
     end
 
-    delegate :feature_available?, to: :current, allow_nil: true
+    delegate :block_changes?, :feature_available?, to: :current, allow_nil: true
 
     def reset_current
       RequestStore.delete(:current_license)
@@ -196,10 +196,6 @@ class License < ActiveRecord::Base
       feature = FEATURE_CODES.fetch(code)
 
       features[feature].to_i > 0
-    end
-
-    def block_changes?
-      !current || current.block_changes?
     end
 
     def load_license
@@ -272,6 +268,8 @@ class License < ActiveRecord::Base
   end
 
   def feature_available?(code)
+    return false if trial? && expired?
+
     feature = FEATURE_CODES.fetch(code)
     add_ons[feature].to_i > 0
   end
@@ -300,6 +298,16 @@ class License < ActiveRecord::Base
 
   def trial?
     restricted_attr(:trial)
+  end
+
+  def active?
+    !expired?
+  end
+
+  def remaining_days
+    return 0 if expired?
+
+    (expires_at - Date.today).to_i
   end
 
   private
