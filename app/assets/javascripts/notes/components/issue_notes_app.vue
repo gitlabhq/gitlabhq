@@ -114,10 +114,12 @@
       this.fetchNotes();
       this.initPolling();
 
-      this.$el.parentElement.addEventListener('toggleAward', (event) => {
-        const { awardName, noteId } = event.detail;
-        this.actionToggleAward({ awardName, noteId });
-      });
+      if (this.$el.parentElement) {
+        this.$el.parentElement.addEventListener('toggleAward', (event) => {
+          const { awardName, noteId } = event.detail;
+          this.actionToggleAward({ awardName, noteId });
+        });
+      }
     },
   };
 </script>
@@ -126,7 +128,7 @@
   <div id="notes">
     <div
       v-if="isLoading"
-      class="loading">
+      class="js-loading loading">
       <loading-icon />
     </div>
 

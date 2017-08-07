@@ -134,7 +134,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 };
 
 const pollSuccessCallBack = (resp, commit, state, getters) => {
-  if (resp.notes.length) {
+  if (resp.notes && resp.notes.length) {
     const { notesById } = getters;
 
     resp.notes.forEach((note) => {

@@ -2,11 +2,6 @@
 import AccessorUtilities from './lib/utils/accessor';
 
 window.Autosave = (function() {
-  /**
-   *
-   * @param {*} field the textarea
-   * @param {Array} key Array with: ['Note', type, id, ]
-   */
   function Autosave(field, key) {
     this.field = field;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
