@@ -3,7 +3,7 @@
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-We offer three different products for you and your company:
+GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans:
 
 - **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
