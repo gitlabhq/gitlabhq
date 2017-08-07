@@ -383,7 +383,10 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
+<<<<<<< HEAD
           new UsersSelect();
+=======
+>>>>>>> ce-com/master
           break;
         case 'projects:imports:show':
           new ProjectImport();

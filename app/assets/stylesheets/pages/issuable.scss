@@ -328,9 +328,17 @@
       margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
+      svg {
+        fill: $issuable-sidebar-color;
+      }
+
       &:hover,
       &:hover .todo-undone {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
 
       span {
