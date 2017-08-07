@@ -3,7 +3,6 @@ require 'spec_helper'
 describe 'Promotions', js: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:developer) { create(:user) }
   let(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
 
   describe 'if you have a license' do
@@ -42,6 +41,8 @@ describe 'Promotions', js: true do
 
   describe 'for project features in general', js: true do
     context 'for .com' do
+      let(:developer) { create(:user) }
+
       before do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
