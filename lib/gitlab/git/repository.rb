@@ -282,7 +282,14 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = popen(%w(du -sk), path).first.strip.to_i
+        size = gitaly_migrate(:repository_size) do |is_enabled|
+          if is_enabled
+            size_by_gitaly
+          else
+            size_by_shelling_out
+          end
+        end
+
         (size.to_f / 1024).round(2)
       end
 
@@ -941,6 +948,14 @@ module Gitlab
 
       def tags_from_gitaly
         gitaly_ref_client.tags
+      end
+
+      def size_by_shelling_out
+        popen(%w(du -sk), path).first.strip.to_i
+      end
+
+      def size_by_gitaly
+        gitaly_repository_client.repository_size
       end
 
       def count_commits_by_gitaly(options)

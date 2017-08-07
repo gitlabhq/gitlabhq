@@ -401,7 +401,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.24.0'
+gem 'gitaly', '~> 0.26.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
