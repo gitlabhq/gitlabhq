@@ -65,7 +65,7 @@ describe('RepoTab', () => {
     expect(vm.$el.querySelector('.close .fa-circle')).toBeTruthy();
   });
 
-  fdescribe('methods', () => {
+  describe('methods', () => {
     describe('xClicked', () => {
       const vm = jasmine.createSpyObj('vm', ['$emit']);
 

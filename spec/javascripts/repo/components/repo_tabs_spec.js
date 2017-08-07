@@ -47,4 +47,18 @@ describe('RepoTabs', () => {
 
     expect(vm.$el.classList.contains('overflown')).toBeFalsy();
   });
+
+  fdescribe('methods', () => {
+    describe('xClicked', () => {
+      it('calls removeFromOpenedFiles with file obj', () => {
+        const file = {};
+
+        spyOn(RepoStore, 'removeFromOpenedFiles');
+
+        repoTabs.methods.xClicked(file);
+
+        expect(RepoStore.removeFromOpenedFiles).toHaveBeenCalledWith(file);
+      });
+    });
+  });
 });
