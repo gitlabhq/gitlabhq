@@ -6,21 +6,27 @@ import Cookies from 'js-cookie';
 (function() {
   this.Project = (function() {
     function Project() {
-      $('ul.clone-options-dropdown a').click(function() {
-        var url;
-        if ($(this).hasClass('active')) {
-          return;
-        }
-        $('.active').not($(this)).removeClass('active');
-        $(this).toggleClass('active');
-        url = $("#project_clone").val();
-        $('#project_clone').val(url);
+      const $cloneOptions = $('ul.clone-options-dropdown');
+      const $projectCloneField = $('#project_clone');
+      const $cloneBtnText = $('a.clone-dropdown-btn span');
+
+      const selectedCloneOption = $cloneBtnText.text().trim();
+      if (selectedCloneOption.length > 0) {
+        $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
+      }
+
+      $('a', $cloneOptions).on('click', (e) => {
+        const $this = $(e.currentTarget);
+        const url = $this.attr('href');
+
+        e.preventDefault();
+
+        $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+        $this.toggleClass('is-active');
+        $projectCloneField.val(url);
+        $cloneBtnText.text($this.text());
+
         return $('.clone').text(url);
-      // Git protocol switcher
-      // Remove the active class for all buttons (ssh, http, kerberos if shown)
-      // Add the active class for the clicked button
-      // Update the input field
-      // Update the command line instructions
       });
       // Ref switcher
       this.initRefSwitcher();

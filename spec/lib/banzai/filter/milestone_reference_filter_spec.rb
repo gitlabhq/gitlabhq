@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
+describe Banzai::Filter::MilestoneReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let(:reference) { milestone.to_reference }
 
@@ -150,9 +150,9 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
   describe 'cross-project / cross-namespace complete reference' do
     let(:namespace)       { create(:namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
-    let(:reference)       { "#{another_project.path_with_namespace}%#{milestone.iid}" }
+    let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
@@ -164,14 +164,14 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See (#{reference}.)")
 
       expect(doc.css('a').first.text)
-        .to eq("#{milestone.name} in #{another_project.path_with_namespace}")
+        .to eq("#{milestone.name} in #{another_project.full_path}")
     end
 
     it 'has valid text' do
       doc = reference_filter("See (#{reference}.)")
 
       expect(doc.text)
-        .to eq("See (#{milestone.name} in #{another_project.path_with_namespace}.)")
+        .to eq("See (#{milestone.name} in #{another_project.full_path}.)")
     end
 
     it 'escapes the name attribute' do
@@ -180,16 +180,16 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
       doc = reference_filter("See #{reference}")
 
       expect(doc.css('a').first.text)
-        .to eq "#{milestone.name} in #{another_project.path_with_namespace}"
+        .to eq "#{milestone.name} in #{another_project.full_path}"
     end
   end
 
   describe 'cross-project / same-namespace complete reference' do
     let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:empty_project, :public, namespace: namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:project)         { create(:project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
-    let(:reference)       { "#{another_project.path_with_namespace}%#{milestone.iid}" }
+    let(:reference)       { "#{another_project.full_path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
 
     it 'points to referenced project milestone page' do
@@ -223,8 +223,8 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
   describe 'cross project shorthand reference' do
     let(:namespace)       { create(:namespace) }
-    let(:project)         { create(:empty_project, :public, namespace: namespace) }
-    let(:another_project) { create(:empty_project, :public, namespace: namespace) }
+    let(:project)         { create(:project, :public, namespace: namespace) }
+    let(:another_project) { create(:project, :public, namespace: namespace) }
     let(:milestone)       { create(:milestone, project: another_project) }
     let(:reference)       { "#{another_project.path}%#{milestone.iid}" }
     let!(:result)         { reference_filter("See #{reference}") }
@@ -255,6 +255,30 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
       expect(doc.css('a').first.text)
         .to eq "#{milestone.name} in #{another_project.path}"
+    end
+  end
+
+  describe 'cross project milestone references' do
+    let(:another_project)  { create(:project, :public) }
+    let(:project_path) { another_project.full_path }
+    let(:milestone) { create(:milestone, project: another_project) }
+    let(:reference) { milestone.to_reference(project) }
+
+    let!(:result) { reference_filter("See #{reference}") }
+
+    it 'points to referenced project milestone page' do
+      expect(result.css('a').first.attr('href')).to eq urls
+        .project_milestone_url(another_project, milestone)
+    end
+
+    it 'contains cross project content' do
+      expect(result.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
+    end
+
+    it 'escapes the name attribute' do
+      allow_any_instance_of(Milestone).to receive(:title).and_return(%{"></a>whatever<a title="})
+      doc = reference_filter("See #{reference}")
+      expect(doc.css('a').first.text).to eq "#{milestone.name} in #{project_path}"
     end
   end
 end

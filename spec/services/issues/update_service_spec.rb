@@ -1,13 +1,11 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService, services: true do
-  include EmailHelpers
-
+describe Issues::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
 
@@ -488,7 +486,28 @@ describe Issues::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { issue }
-      include_examples 'updating mentions', Issues::UpdateService
+      include_examples 'updating mentions', described_class
+    end
+
+    context 'duplicate issue' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      context 'invalid canonical_issue_id' do
+        it 'does not call the duplicate service' do
+          expect(Issues::DuplicateService).not_to receive(:new)
+
+          update_issue(canonical_issue_id: 123456789)
+        end
+      end
+
+      context 'valid canonical_issue_id' do
+        it 'calls the duplicate service with both issues' do
+          expect_any_instance_of(Issues::DuplicateService)
+            .to receive(:execute).with(issue, canonical_issue)
+
+          update_issue(canonical_issue_id: canonical_issue.id)
+        end
+      end
     end
 
     include_examples 'issuable update service' do

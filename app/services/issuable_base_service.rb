@@ -58,6 +58,7 @@ class IssuableBaseService < BaseService
       params.delete(:assignee_ids)
       params.delete(:assignee_id)
       params.delete(:due_date)
+      params.delete(:canonical_issue_id)
     end
 
     filter_assignee(issuable)
@@ -287,7 +288,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
-      todo_service.mark_todos_as_done([todo], current_user) if todo
+      todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
 

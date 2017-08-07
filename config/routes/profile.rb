@@ -23,6 +23,11 @@ resource :profile, only: [:show, :update] do
     end
     resource :preferences, only: [:show, :update]
     resources :keys, only: [:index, :show, :create, :destroy]
+    resources :gpg_keys, only: [:index, :create, :destroy] do
+      member do
+        put :revoke
+      end
+    end
     resources :emails, only: [:index, :create, :destroy]
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::CloseService, services: true do
+describe Issues::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }

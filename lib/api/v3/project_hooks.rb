@@ -56,7 +56,9 @@ module API
           use :project_hook_properties
         end
         post ":id/hooks" do
-          hook = user_project.hooks.new(declared_params(include_missing: false))
+          attrs = declared_params(include_missing: false)
+          attrs[:job_events] = attrs.delete(:build_events) if attrs.key?(:build_events)
+          hook = user_project.hooks.new(attrs)
 
           if hook.save
             present hook, with: ::API::V3::Entities::ProjectHook
@@ -77,7 +79,9 @@ module API
         put ":id/hooks/:hook_id" do
           hook = user_project.hooks.find(params.delete(:hook_id))
 
-          if hook.update_attributes(declared_params(include_missing: false))
+          attrs = declared_params(include_missing: false)
+          attrs[:job_events] = attrs.delete(:build_events) if attrs.key?(:build_events)
+          if hook.update_attributes(attrs)
             present hook, with: ::API::V3::Entities::ProjectHook
           else
             error!("Invalid url given", 422) if hook.errors[:url].present?

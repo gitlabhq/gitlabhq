@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::ActivityService, services: true do
+describe Users::ActivityService do
   include UserActivitiesHelpers
 
   let(:user) { create(:user) }

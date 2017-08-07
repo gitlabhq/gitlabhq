@@ -44,7 +44,7 @@ describe TurnNestedGroupsIntoRegularGroupsForMysql do
     end
 
     it 'renames projects of the nested group' do
-      expect(updated_project.path_with_namespace)
+      expect(updated_project.full_path)
         .to eq("#{parent_group.name}-#{child_group.name}/#{updated_project.path}")
     end
 

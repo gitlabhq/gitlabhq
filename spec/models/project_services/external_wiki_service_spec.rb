@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExternalWikiService, models: true do
+describe ExternalWikiService do
   include ExternalWikiHelper
   describe "Associations" do
     it { is_expected.to belong_to :project }
@@ -27,7 +27,7 @@ describe ExternalWikiService, models: true do
   end
 
   describe 'External wiki' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when it is active' do
       before do

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::Podspec, model: true do
+describe BlobViewer::Podspec do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:project) }
   let(:data) do
     <<-SPEC.strip_heredoc
       Pod::Spec.new do |spec|

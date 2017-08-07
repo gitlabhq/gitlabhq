@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe SlackService, models: true do
+describe SlackService do
   it_behaves_like "slack or mattermost notifications"
 end

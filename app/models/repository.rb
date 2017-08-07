@@ -4,7 +4,7 @@ class Repository
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
-  attr_accessor :path_with_namespace, :project
+  attr_accessor :full_path, :disk_path, :project
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -52,13 +52,14 @@ class Repository
     end
   end
 
-  def initialize(path_with_namespace, project)
-    @path_with_namespace = path_with_namespace
+  def initialize(full_path, project, disk_path: nil)
+    @full_path = full_path
+    @disk_path = disk_path || full_path
     @project = project
   end
 
   def raw_repository
-    return nil unless path_with_namespace
+    return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
@@ -66,7 +67,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, disk_path + '.git')
     )
   end
 
@@ -457,10 +458,6 @@ class Repository
     nil
   end
 
-  def blob_by_oid(oid)
-    Gitlab::Git::Blob.raw(self, oid)
-  end
-
   def root_ref
     if raw_repository
       raw_repository.root_ref
@@ -471,8 +468,17 @@ class Repository
   end
   cache_method :root_ref
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    refs_directory_exists?
+    return false unless full_path
+
+    Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+      if enabled
+        raw_repository.exists?
+      else
+        refs_directory_exists?
+      end
+    end
   end
   cache_method :exists?
 
@@ -607,17 +613,26 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    sha = last_commit_id_for_path(sha, path)
-    commit(sha)
+    raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+      if is_enabled
+        last_commit_for_path_by_gitaly(sha, path)
+      else
+        last_commit_for_path_by_rugged(sha, path)
+      end
+    end
   end
 
-  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/383
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-      Gitlab::Popen.popen(args, path_to_repo).first.strip
+      raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+        if is_enabled
+          last_commit_for_path_by_gitaly(sha, path).id
+        else
+          last_commit_id_for_path_by_shelling_out(sha, path)
+        end
+      end
     end
   end
 
@@ -938,7 +953,7 @@ class Repository
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
       else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+        rugged_is_ancestor?(ancestor_id, descendant_id)
       end
     end
   end
@@ -1000,7 +1015,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
@@ -1095,13 +1110,12 @@ class Repository
   end
 
   def refs_directory_exists?
-    return false unless path_with_namespace
-
     File.exist?(File.join(path_to_repo, 'refs'))
   end
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
+    # TODO: should we use UUIDs here? We could move repositories without clearing this cache
+    @cache ||= RepositoryCache.new(full_path, @project.id)
   end
 
   def tags_sorted_by_committed_date
@@ -1124,7 +1138,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
   def create_commit(params = {})
@@ -1133,11 +1147,26 @@ class Repository
     Rugged::Commit.create(rugged, params)
   end
 
+  def last_commit_for_path_by_gitaly(sha, path)
+    c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
+    commit(c)
+  end
+
+  def last_commit_for_path_by_rugged(sha, path)
+    sha = last_commit_id_for_path_by_shelling_out(sha, path)
+    commit(sha)
+  end
+
+  def last_commit_id_for_path_by_shelling_out(sha, path)
+    args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
+    Gitlab::Popen.popen(args, path_to_repo).first.strip
+  end
+
   def repository_storage_path
     @project.repository_storage_path
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
   end
 end

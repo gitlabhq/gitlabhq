@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Pipeline Schedules', :feature, js: true do
+feature 'Pipeline Schedules', :js do
   include PipelineSchedulesHelper
 
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project, :repository) }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
@@ -216,6 +216,25 @@ feature 'Pipeline Schedules', :feature, js: true do
         page.within('.pipeline-variable-list') do
           expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
           expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
+        end
+      end
+    end
+
+    context 'when active is true and next_run_at is NULL' do
+      background do
+        create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
+          pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
+        end
+      end
+
+      scenario 'user edit and recover the problematic pipeline schedule' do
+        visit_pipelines_schedules
+        find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+        fill_in 'schedule_cron', with: '* 1 2 3 4'
+        click_button 'Save pipeline schedule'
+
+        page.within('.pipeline-schedule-table-row:nth-child(1)') do
+          expect(page).to have_css(".next-run-cell time")
         end
       end
     end

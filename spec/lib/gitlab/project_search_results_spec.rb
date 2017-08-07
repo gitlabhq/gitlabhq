@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::ProjectSearchResults, lib: true do
+describe Gitlab::ProjectSearchResults do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:query) { 'hello world' }
 
   describe 'initialize with empty ref' do
@@ -154,7 +154,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:admin) { create(:admin) }
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
     let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
     let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
@@ -226,7 +226,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
 
   describe 'notes search' do
     it 'lists notes' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       note = create(:note, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -235,7 +235,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list issue notes when access is restricted" do
-      project = create(:empty_project, :public, :issues_private)
+      project = create(:project, :public, :issues_private)
       note = create(:note_on_issue, project: project)
 
       results = described_class.new(user, project, note.note)
@@ -244,7 +244,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     end
 
     it "doesn't list merge_request notes when access is restricted" do
-      project = create(:empty_project, :public, :merge_requests_private)
+      project = create(:project, :public, :merge_requests_private)
       note = create(:note_on_merge_request, project: project)
 
       results = described_class.new(user, project, note.note)

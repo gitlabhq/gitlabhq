@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > List members', feature: true do
+feature 'Groups > Members > List members' do
   include Select2Helper
 
   let(:user1) { create(:user, name: 'John Doe') }

@@ -2,6 +2,43 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.3 (2017-07-31)
+
+- Fix Prometheus client PID reuse bug. !13130
+- Improve deploy environment chatops slash command. !13150
+- Fix asynchronous javascript paths when GitLab is installed under a relative URL. !13165
+- Fix LDAP authentication to Git repository or container registry.
+- Fixed new navigation breadcrumb title on help pages.
+- Ensure filesystem metrics test files are deleted.
+- Properly affixes nav bar in job view in microsoft edge.
+
+## 9.4.2 (2017-07-28)
+
+- Fix job merge request link to a forked source project. !12965
+- Improve redirect route query performance. !13062
+- Allow admin to read_users_list even if it's restricted. !13066
+- Fixes 500 error caused by pending delete projects in admin dashboard. !13067
+- Add instrumentation to MarkupHelper#link_to_gfm. !13069
+- Pending delete projects should not show in deploy keys. !13088
+- Fix sizing of custom header logo in new navigation.
+- Fix crash on /help/ui.
+- Fix creating merge request diffs when diff contains bytes that are invalid in UTF-8.
+- fix vertical alignment of New Project button.
+- Add LDAP SSL certificate verification option.
+- Fix vertical alignment in firefox and safari for pipeline mini graph.
+
+## 9.4.1 (2017-07-25)
+
+- Fix pipeline_schedules pages throwing error 500 (when ref is empty). !12983
+- Fix editing project with container images present. !13028
+- Fix some invalid entries in PO files. !13032
+- Fix cross site request protection when logging in as a regular user when LDAP is enabled. !13049
+- Fix bug causing metrics files to be truncated. !35420
+- Fix anonymous access to public projects in groups with pending invites.
+- Fixed issue boards sidebar close icon size.
+- Fixed duplicate new milestone buttons when new navigation is turned on.
+- Fix margins in the mini graph for pipeline in commits box.
+
 ## 9.4.0 (2017-07-22)
 
 - Add blame view age mapping. !7198 (Jeff Stubler)
@@ -1671,8 +1708,6 @@ entry.
 
 ## 8.16.7 (2017-02-27)
 
-- No changes.
-- No changes.
 - Fix MR changes tab size count when there are over 100 files in the diff.
 
 ## 8.16.6 (2017-02-17)
@@ -1885,6 +1920,14 @@ entry.
 - Fix XSS vulnerability in SVG attachments.
 - Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
 - Patch XSS vulnerability in RDOC support.
+
+## 8.15.5 (2017-01-20)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
 
 ## 8.15.4 (2017-01-09)
 
@@ -2168,6 +2211,14 @@ entry.
 - Speed up group milestone index by passing group_id to IssuesFinder. !8363
 - Ensure issuable state changes only fire webhooks once.
 
+## 8.14.7 (2017-01-21)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
+
 ## 8.14.6 (2017-01-10)
 
 - Update the gitlab-markup gem to the version 1.5.1. !8509
@@ -2449,6 +2500,14 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.12 (2017-01-21)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
 
 ## 8.13.11 (2017-01-10)
 

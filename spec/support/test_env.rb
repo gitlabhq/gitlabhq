@@ -5,6 +5,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
+    'signed-commits'                     => '5d4a1cb',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -41,7 +42,8 @@ module TestEnv
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '93ee732',
-    'add-pdf-file'                       => 'e774ebd'
+    'add-pdf-file'                       => 'e774ebd',
+    'add-pdf-text-binary'                => '79faa7b'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -61,6 +63,8 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
+    Rake.application.rake_require 'tasks/gitlab/helpers'
+    Rake::Task.define_task :environment
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -120,32 +124,51 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    shell_needs_update = component_needs_update?(Gitlab.config.gitlab_shell.path,
+    gitlab_shell_dir = File.dirname(Gitlab.config.gitlab_shell.path)
+    gitlab_shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
-    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      raise 'Can`t clone gitlab-shell'
+    Rake.application.rake_require 'tasks/gitlab/shell'
+    unless !gitlab_shell_needs_update || Rake.application.invoke_task('gitlab:shell:install')
+      FileUtils.rm_rf(gitlab_shell_dir)
+      raise "Can't install gitlab-shell"
     end
   end
 
   def setup_gitaly
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+
+    if gitaly_dir_stale?(gitaly_dir)
+      puts "rm -rf #{gitaly_dir}"
+      FileUtils.rm_rf(gitaly_dir) 
+    end
+
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
-    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      raise "Can't clone gitaly"
+    Rake.application.rake_require 'tasks/gitlab/gitaly'
+    unless !gitaly_needs_update || Rake.application.invoke_task("gitlab:gitaly:install[#{gitaly_dir}]")
+      FileUtils.rm_rf(gitaly_dir)
+      raise "Can't install gitaly"
     end
 
     start_gitaly(gitaly_dir)
   end
 
+  def gitaly_dir_stale?(dir)
+    gitaly_executable = File.join(dir, 'gitaly')
+    !File.exist?(gitaly_executable) || (File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION')))
+  end
+
   def start_gitaly(gitaly_dir)
-    gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    gitaly_config = File.join(gitaly_dir, 'config.toml')
-    log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file)
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
+    end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
   end
 
   def stop_gitaly
@@ -206,7 +229,6 @@ module TestEnv
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
   def eager_load_driver_server
-    return unless ENV['CI']
     return unless defined?(Capybara)
 
     puts "Starting the Capybara driver server..."

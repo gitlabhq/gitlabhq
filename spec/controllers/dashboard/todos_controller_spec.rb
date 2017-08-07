@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Dashboard::TodosController do
   let(:user) { create(:user) }
   let(:author)  { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:todo_service) { TodoService.new }
 
   before do
@@ -14,7 +14,7 @@ describe Dashboard::TodosController do
   describe 'GET #index' do
     context 'project authorization' do
       it 'renders 404 when user does not have read access on given project' do
-        unauthorized_project = create(:empty_project, :private)
+        unauthorized_project = create(:project, :private)
 
         get :index, project_id: unauthorized_project.id
 
@@ -34,7 +34,7 @@ describe Dashboard::TodosController do
       end
 
       it 'renders 200 when user has access on given project' do
-        authorized_project = create(:empty_project, :public)
+        authorized_project = create(:project, :public)
 
         get :index, project_id: authorized_project.id
 

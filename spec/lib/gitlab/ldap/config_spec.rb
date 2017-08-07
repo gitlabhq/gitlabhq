@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Config, lib: true do
+describe Gitlab::LDAP::Config do
   include LdapHelpers
 
-  let(:config) { Gitlab::LDAP::Config.new('ldapmain') }
+  let(:config) { described_class.new('ldapmain') }
 
-  describe '#initalize' do
+  describe '#initialize' do
     it 'requires a provider' do
-      expect{ Gitlab::LDAP::Config.new }.to raise_error ArgumentError
+      expect{ described_class.new }.to raise_error ArgumentError
     end
 
     it 'works' do
@@ -15,7 +15,7 @@ describe Gitlab::LDAP::Config, lib: true do
     end
 
     it 'raises an error if a unknown provider is used' do
-      expect{ Gitlab::LDAP::Config.new 'unknown' }.to raise_error(RuntimeError)
+      expect{ described_class.new 'unknown' }.to raise_error(RuntimeError)
     end
   end
 
@@ -23,9 +23,9 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'constructs basic options' do
       stub_ldap_config(
         options: {
-          'host'    => 'ldap.example.com',
-          'port'    => 386,
-          'method'  => 'plain'
+          'host'       => 'ldap.example.com',
+          'port'       => 386,
+          'encryption' => 'plain'
         }
       )
 
@@ -39,24 +39,140 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'includes authentication options when auth is configured' do
       stub_ldap_config(
         options: {
-          'host'      => 'ldap.example.com',
-          'port'      => 686,
-          'method'    => 'ssl',
-          'bind_dn'   => 'uid=admin,dc=example,dc=com',
-          'password'  => 'super_secret'
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'simple_tls',
+          'verify_certificates' => true,
+          'bind_dn'             => 'uid=admin,dc=example,dc=com',
+          'password'            => 'super_secret'
         }
       )
 
-      expect(config.adapter_options).to eq(
-        host: 'ldap.example.com',
-        port: 686,
-        encryption: :simple_tls,
+      expect(config.adapter_options).to include({
         auth: {
           method: :simple,
           username: 'uid=admin,dc=example,dc=com',
           password: 'super_secret'
         }
+      })
+    end
+
+    it 'sets encryption method to simple_tls when configured as simple_tls' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'simple_tls'
+        }
       )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :simple_tls })
+    end
+
+    it 'sets encryption method to start_tls when configured as start_tls' do
+      stub_ldap_config(
+        options: {
+          'host'                => 'ldap.example.com',
+          'port'                => 686,
+          'encryption'          => 'start_tls'
+        }
+      )
+
+      expect(config.adapter_options[:encryption]).to include({ method: :start_tls })
+    end
+
+    context 'when verify_certificates is enabled' do
+      it 'sets tls_options to OpenSSL defaults' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true
+          }
+        )
+
+        expect(config.adapter_options[:encryption]).to include({ tls_options: OpenSSL::SSL::SSLContext::DEFAULT_PARAMS })
+      end
+    end
+
+    context 'when verify_certificates is disabled' do
+      it 'sets verify_mode to OpenSSL VERIFY_NONE' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => false
+          }
+        )
+
+        expect(config.adapter_options[:encryption]).to include({
+          tls_options: {
+            verify_mode: OpenSSL::SSL::VERIFY_NONE
+          }
+        })
+      end
+    end
+
+    context 'when ca_file is specified' do
+      it 'passes it through in tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ca_file'             => '/etc/ca.pem'
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).to include({ ca_file: '/etc/ca.pem' })
+      end
+    end
+
+    context 'when ca_file is a blank string' do
+      it 'does not add the ca_file key to tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ca_file'             => ' '
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).not_to have_key(:ca_file)
+      end
+    end
+
+    context 'when ssl_version is specified' do
+      it 'passes it through in tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ssl_version'         => 'TLSv1_2'
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).to include({ ssl_version: 'TLSv1_2' })
+      end
+    end
+
+    context 'when ssl_version is a blank string' do
+      it 'does not add the ssl_version key to tls_options' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'ssl_version'         => ' '
+          }
+        )
+
+        expect(config.adapter_options[:encryption][:tls_options]).not_to have_key(:ssl_version)
+      end
     end
   end
 
@@ -64,11 +180,11 @@ describe Gitlab::LDAP::Config, lib: true do
     it 'constructs basic options' do
       stub_ldap_config(
         options: {
-          'host'    => 'ldap.example.com',
-          'port'    => 386,
-          'base'    => 'ou=users,dc=example,dc=com',
-          'method'  => 'plain',
-          'uid'     => 'uid'
+          'host'       => 'ldap.example.com',
+          'port'       => 386,
+          'base'       => 'ou=users,dc=example,dc=com',
+          'encryption' => 'plain',
+          'uid'        => 'uid'
         }
       )
 
@@ -76,7 +192,7 @@ describe Gitlab::LDAP::Config, lib: true do
         host: 'ldap.example.com',
         port: 386,
         base: 'ou=users,dc=example,dc=com',
-        method: 'plain',
+        encryption: 'plain',
         filter: '(uid=%{username})'
       )
       expect(config.omniauth_options.keys).not_to include(:bind_dn, :password)
@@ -97,6 +213,100 @@ describe Gitlab::LDAP::Config, lib: true do
         bind_dn: 'uid=admin,dc=example,dc=com',
         password: 'super_secret'
       )
+    end
+
+    context 'when verify_certificates is enabled' do
+      it 'specifies disable_verify_certificates as false' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true
+          }
+        )
+
+        expect(config.omniauth_options).to include({ disable_verify_certificates: false })
+      end
+    end
+
+    context 'when verify_certificates is disabled' do
+      it 'specifies disable_verify_certificates as true' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => false
+          }
+        )
+
+        expect(config.omniauth_options).to include({ disable_verify_certificates: true })
+      end
+    end
+
+    context 'when ca_file is present' do
+      it 'passes it through' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ca_file'             => '/etc/ca.pem'
+          }
+        )
+
+        expect(config.omniauth_options).to include({ ca_file: '/etc/ca.pem' })
+      end
+    end
+
+    context 'when ca_file is blank' do
+      it 'does not include the ca_file option' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ca_file'             => ' '
+          }
+        )
+
+        expect(config.omniauth_options).not_to have_key(:ca_file)
+      end
+    end
+
+    context 'when ssl_version is present' do
+      it 'passes it through' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ssl_version'         => 'TLSv1_2'
+          }
+        )
+
+        expect(config.omniauth_options).to include({ ssl_version: 'TLSv1_2' })
+      end
+    end
+
+    context 'when ssl_version is blank' do
+      it 'does not include the ssl_version option' do
+        stub_ldap_config(
+          options: {
+            'host'                => 'ldap.example.com',
+            'port'                => 686,
+            'encryption'          => 'simple_tls',
+            'verify_certificates' => true,
+            'ssl_version'         => ' '
+          }
+        )
+
+        expect(config.omniauth_options).not_to have_key(:ssl_version)
+      end
     end
   end
 

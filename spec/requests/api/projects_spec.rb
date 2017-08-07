@@ -8,8 +8,8 @@ describe API::Projects do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -33,7 +33,7 @@ describe API::Projects do
     access_level: ProjectMember::MASTER)
   end
   let(:project4) do
-    create(:empty_project,
+    create(:project,
     name: 'third_project',
     path: 'third_project',
     creator_id: user4.id,
@@ -61,7 +61,7 @@ describe API::Projects do
         if defined?(additional_project)
           additional_project
         else
-          create(:empty_project, :public)
+          create(:project, :public)
         end
 
         expect do
@@ -70,7 +70,7 @@ describe API::Projects do
       end
     end
 
-    let!(:public_project) { create(:empty_project, :public, name: 'public_project') }
+    let!(:public_project) { create(:project, :public, name: 'public_project') }
     before do
       project
       project2
@@ -103,12 +103,12 @@ describe API::Projects do
 
       context 'when some projects are in a group' do
         before do
-          create(:empty_project, :public, group: create(:group))
+          create(:project, :public, group: create(:group))
         end
 
         it_behaves_like 'projects response without N + 1 queries' do
           let(:current_user) { user }
-          let(:additional_project) { create(:empty_project, :public, group: create(:group)) }
+          let(:additional_project) { create(:project, :public, group: create(:group)) }
         end
       end
 
@@ -268,7 +268,7 @@ describe API::Projects do
       end
 
       context 'and with starred=true' do
-        let(:public_project) { create(:empty_project, :public) }
+        let(:public_project) { create(:project, :public) }
 
         before do
           project_member
@@ -286,11 +286,11 @@ describe API::Projects do
       end
 
       context 'and with all query parameters' do
-        let!(:project5) { create(:empty_project, :public, path: 'gitlab5', namespace: create(:namespace)) }
-        let!(:project6) { create(:empty_project, :public, path: 'project6', namespace: user.namespace) }
-        let!(:project7) { create(:empty_project, :public, path: 'gitlab7', namespace: user.namespace) }
-        let!(:project8) { create(:empty_project, path: 'gitlab8', namespace: user.namespace) }
-        let!(:project9) { create(:empty_project, :public, path: 'gitlab9') }
+        let!(:project5) { create(:project, :public, path: 'gitlab5', namespace: create(:namespace)) }
+        let!(:project6) { create(:project, :public, path: 'project6', namespace: user.namespace) }
+        let!(:project7) { create(:project, :public, path: 'gitlab7', namespace: user.namespace) }
+        let!(:project8) { create(:project, path: 'gitlab8', namespace: user.namespace) }
+        let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
           user.update_attributes(starred_projects: [project5, project7, project8, project9])
@@ -539,7 +539,7 @@ describe API::Projects do
   end
 
   describe 'GET /users/:user_id/projects/' do
-    let!(:public_project) { create(:empty_project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
+    let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
       get api('/users/9999/projects/')
@@ -682,7 +682,7 @@ describe API::Projects do
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
       it 'returns the public projects' do
-        public_project = create(:empty_project, :public)
+        public_project = create(:project, :public)
 
         get api("/projects/#{public_project.id}")
 
@@ -766,9 +766,9 @@ describe API::Projects do
 
       it 'handles users with dots' do
         dot_user = create(:user, username: 'dot.user')
-        project = create(:empty_project, creator_id: dot_user.id, namespace: dot_user.namespace)
+        project = create(:project, creator_id: dot_user.id, namespace: dot_user.namespace)
 
-        get api("/projects/#{dot_user.namespace.name}%2F#{project.path}", dot_user)
+        get api("/projects/#{CGI.escape(project.full_path)}", dot_user)
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq(project.name)
       end
@@ -815,6 +815,38 @@ describe API::Projects do
         expect(json_response).not_to include("import_error")
       end
 
+      context 'links exposure' do
+        it 'exposes related resources full URIs' do
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+          expect(links['issues']).to end_with("/api/v4/projects/#{project.id}/issues")
+          expect(links['merge_requests']).to end_with("/api/v4/projects/#{project.id}/merge_requests")
+          expect(links['repo_branches']).to end_with("/api/v4/projects/#{project.id}/repository/branches")
+          expect(links['labels']).to end_with("/api/v4/projects/#{project.id}/labels")
+          expect(links['events']).to end_with("/api/v4/projects/#{project.id}/events")
+          expect(links['members']).to end_with("/api/v4/projects/#{project.id}/members")
+        end
+
+        it 'filters related URIs when their feature is not enabled' do
+          project = create(:project, :public,
+                           :merge_requests_disabled,
+                           :issues_disabled,
+                           creator_id: user.id,
+                           namespace: user.namespace)
+
+          get api("/projects/#{project.id}", user)
+
+          links = json_response['_links']
+
+          expect(links.has_key?('merge_requests')).to be_falsy
+          expect(links.has_key?('issues')).to be_falsy
+          expect(links['self']).to end_with("/api/v4/projects/#{project.id}")
+        end
+      end
+
       describe 'permissions' do
         context 'all projects' do
           before do
@@ -844,7 +876,7 @@ describe API::Projects do
         end
 
         context 'group project' do
-          let(:project2) { create(:empty_project, group: create(:group)) }
+          let(:project2) { create(:project, group: create(:group)) }
 
           before do
             project2.group.add_owner(user)
@@ -884,7 +916,7 @@ describe API::Projects do
 
     context 'when unauthenticated' do
       it_behaves_like 'project users response' do
-        let(:project) { create(:empty_project, :public) }
+        let(:project) { create(:project, :public) }
         let(:current_user) { nil }
       end
     end
@@ -1004,11 +1036,11 @@ describe API::Projects do
   end
 
   describe 'fork management' do
-    let(:project_fork_target) { create(:empty_project) }
-    let(:project_fork_source) { create(:empty_project, :public) }
+    let(:project_fork_target) { create(:project) }
+    let(:project_fork_source) { create(:project, :public) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
-      let(:new_project_fork_source) { create(:empty_project, :public) }
+      let(:new_project_fork_source) { create(:project, :public) }
 
       it "is not available for non admin users" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
@@ -1049,7 +1081,7 @@ describe API::Projects do
       end
 
       context 'when users belong to project group' do
-        let(:project_fork_target) { create(:empty_project, group: create(:group)) }
+        let(:project_fork_target) { create(:project, group: create(:group)) }
 
         before do
           project_fork_target.group.add_owner user

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Milestone, models: true do
+describe Milestone do
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
@@ -21,7 +21,7 @@ describe Milestone, models: true do
     it { is_expected.to have_many(:issues) }
   end
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
@@ -37,13 +37,13 @@ describe Milestone, models: true do
   describe "unique milestone title" do
     context "per project" do
       it "does not accept the same title in a project twice" do
-        new_milestone = Milestone.new(project: milestone.project, title: milestone.title)
+        new_milestone = described_class.new(project: milestone.project, title: milestone.title)
         expect(new_milestone).not_to be_valid
       end
 
       it "accepts the same title in another project" do
-        project = create(:empty_project)
-        new_milestone = Milestone.new(project: project, title: milestone.title)
+        project = create(:project)
+        new_milestone = described_class.new(project: project, title: milestone.title)
 
         expect(new_milestone).to be_valid
       end
@@ -58,7 +58,7 @@ describe Milestone, models: true do
       end
 
       it "does not accept the same title in a group twice" do
-        new_milestone = Milestone.new(group: group, title: milestone.title)
+        new_milestone = described_class.new(group: group, title: milestone.title)
 
         expect(new_milestone).not_to be_valid
       end
@@ -66,7 +66,7 @@ describe Milestone, models: true do
       it "does not accept the same title of a child project milestone" do
         create(:milestone, project: group.projects.first)
 
-        new_milestone = Milestone.new(group: group, title: milestone.title)
+        new_milestone = described_class.new(group: group, title: milestone.title)
 
         expect(new_milestone).not_to be_valid
       end
@@ -197,9 +197,9 @@ describe Milestone, models: true do
   end
 
   describe '.upcoming_ids_by_projects' do
-    let(:project_1) { create(:empty_project) }
-    let(:project_2) { create(:empty_project) }
-    let(:project_3) { create(:empty_project) }
+    let(:project_1) { create(:project) }
+    let(:project_2) { create(:project) }
+    let(:project_3) { create(:project) }
     let(:projects) { [project_1, project_2, project_3] }
 
     let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.now - 1.day) }
@@ -214,7 +214,7 @@ describe Milestone, models: true do
 
     # The call to `#try` is because this returns a relation with a Postgres DB,
     # and an array of IDs with a MySQL DB.
-    let(:milestone_ids) { Milestone.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
+    let(:milestone_ids) { described_class.upcoming_ids_by_projects(projects).map { |id| id.try(:id) || id } }
 
     it 'returns the next upcoming open milestone ID for each project' do
       expect(milestone_ids).to contain_exactly(current_milestone_project_1.id, current_milestone_project_2.id)
@@ -230,7 +230,7 @@ describe Milestone, models: true do
   end
 
   describe '#to_reference' do
-    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:project) { build(:project, name: 'sample-project') }
     let(:milestone) { build(:milestone, iid: 1, project: project) }
 
     it 'returns a String reference to the object' do
@@ -238,13 +238,13 @@ describe Milestone, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(milestone.to_reference(another_project)).to eq "sample-project%1"
     end
   end
 
   describe '#participants' do
-    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:project) { build(:project, name: 'sample-project') }
     let(:milestone) { build(:milestone, iid: 1, project: project) }
 
     it 'returns participants without duplicates' do

@@ -11,6 +11,7 @@ newline-per-chained-call, no-useless-escape, class-methods-use-this */
 /* global mrRefreshWidgetUrl */
 
 import $ from 'jquery';
+import _ from 'underscore';
 import Cookies from 'js-cookie';
 import autosize from 'vendor/autosize';
 import Dropzone from 'dropzone';
@@ -529,6 +530,7 @@ export default class Notes {
     form.find('#note_line_code').remove();
     form.find('#note_position').remove();
     form.find('#note_type').val('');
+    form.find('#note_project_id').remove();
     form.find('#in_reply_to_discussion_id').remove();
     form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
     this.parentTimeline = form.parents('.timeline');
@@ -556,6 +558,7 @@ export default class Notes {
       form.find('#note_noteable_id').val(),
       form.find('#note_commit_id').val(),
       form.find('#note_type').val(),
+      form.find('#note_project_id').val(),
       form.find('#in_reply_to_discussion_id').val(),
 
       // LegacyDiffNote
@@ -847,6 +850,8 @@ export default class Notes {
       form.attr('data-discussion-id', discussionID);
       form.find('#in_reply_to_discussion_id').val(discussionID);
     }
+
+    form.find('#note_project_id').val(dataHolder.data('discussionProjectId'));
 
     form.attr('data-line-code', dataHolder.data('lineCode'));
     form.find('#line_type').val(dataHolder.data('lineType'));

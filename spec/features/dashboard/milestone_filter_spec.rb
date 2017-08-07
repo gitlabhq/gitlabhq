@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > milestone filter', :feature, :js do
+feature 'Dashboard > milestone filter', :js do
   include FilterItemSelectHelper
 
   let(:user) { create(:user) }

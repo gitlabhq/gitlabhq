@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Triggers', feature: true, js: true do
+feature 'Triggers', js: true do
   let(:trigger_title) { 'trigger desc' }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -9,7 +9,7 @@ feature 'Triggers', feature: true, js: true do
   before do
     sign_in(user)
 
-    @project = create(:empty_project)
+    @project = create(:project)
     @project.team << [user, :master]
     @project.team << [user2, :master]
     @project.team << [guest_user, :guest]

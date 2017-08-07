@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Private Group access', feature: true do
+describe 'Private Group access' do
   include AccessMatchers
 
   let(:group)   { create(:group, :private) }
@@ -49,6 +49,7 @@ describe 'Private Group access', feature: true do
   end
 
   describe 'GET /groups/:path/merge_requests' do
+    let(:project) { create(:project, :private, :repository, group: group) }
     subject { merge_requests_group_path(group) }
 
     it { is_expected.to be_allowed_for(:admin) }

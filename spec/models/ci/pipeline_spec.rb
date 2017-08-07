@@ -1,10 +1,8 @@
 require 'spec_helper'
 
-describe Ci::Pipeline, models: true do
-  include EmailHelpers
-
+describe Ci::Pipeline, :mailer do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, status: :created, project: project)
@@ -17,6 +15,7 @@ describe Ci::Pipeline, models: true do
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
+  it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
   it { is_expected.to have_many(:auto_canceled_pipelines) }
   it { is_expected.to have_many(:auto_canceled_jobs) }
@@ -92,7 +91,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "coverage" do
-    let(:project) { create(:empty_project, build_coverage_regex: "/.*/") }
+    let(:project) { create(:project, build_coverage_regex: "/.*/") }
     let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
     it "calculates average when there are two builds with coverage" do
@@ -734,6 +733,8 @@ describe Ci::Pipeline, models: true do
 
     context 'on failure and build retry' do
       before do
+        stub_not_protect_default_branch
+
         build.drop
         project.add_developer(user)
 
@@ -999,6 +1000,8 @@ describe Ci::Pipeline, models: true do
     let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
 
     before do
+      stub_not_protect_default_branch
+
       project.add_developer(user)
     end
 
@@ -1142,7 +1145,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
     it "returns merge requests whose `diff_head_sha` matches the pipeline's SHA" do
@@ -1167,7 +1170,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe "#all_merge_requests" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
     it "returns all merge requests having the same source branch" do
@@ -1242,8 +1245,6 @@ describe Ci::Pipeline, models: true do
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)
-
-      reset_delivered_emails!
 
       perform_enqueued_jobs do
         pipeline.enqueue

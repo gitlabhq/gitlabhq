@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::Database::MigrationHelpers, lib: true do
+describe Gitlab::Database::MigrationHelpers do
   let(:model) do
     ActiveRecord::Migration.new.extend(
-      Gitlab::Database::MigrationHelpers
+      described_class
     )
   end
 
@@ -276,7 +276,7 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
 
-        create_list(:empty_project, 5)
+        create_list(:project, 5)
       end
 
       it 'updates all the rows in a table' do

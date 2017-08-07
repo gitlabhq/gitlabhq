@@ -234,7 +234,7 @@ describe Projects::IssuesController do
     end
 
     context 'when moving issue to another private project' do
-      let(:another_project) { create(:empty_project, :private) }
+      let(:another_project) { create(:project, :private) }
 
       context 'when user has access to move issue' do
         before do
@@ -594,7 +594,7 @@ describe Projects::IssuesController do
   describe 'POST #create' do
     def post_new_issue(issue_attrs = {}, additional_params = {})
       sign_in(user)
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       project.team << [user, :developer]
 
       post :create, {
@@ -817,7 +817,7 @@ describe Projects::IssuesController do
     context "when the user is owner" do
       let(:owner)     { create(:user) }
       let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:empty_project, namespace: namespace) }
+      let(:project)   { create(:project, namespace: namespace) }
 
       before do
         sign_in(owner)
@@ -827,7 +827,7 @@ describe Projects::IssuesController do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
 
         expect(response).to have_http_status(302)
-        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
       it 'delegates the update of the todos count cache to TodoService' do

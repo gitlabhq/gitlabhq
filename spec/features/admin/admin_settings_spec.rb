@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin updates settings', feature: true do
+feature 'Admin updates settings' do
   include StubENV
 
   before do
@@ -67,6 +67,14 @@ feature 'Admin updates settings', feature: true do
     expect(find_field('Webhook').value).to eq 'http://localhost'
     expect(find_field('Username').value).to eq 'test_user'
     expect(find('#service_push_channel').value).to eq '#test_channel'
+  end
+
+  context 'sign-in restrictions', :js do
+    it 'de-activates oauth sign-in source' do
+      find('.btn', text: 'GitLab.com').click
+      
+      expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
+    end
   end
 
   def check_all_events

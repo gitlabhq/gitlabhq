@@ -55,6 +55,9 @@ class Projects::WikisController < Projects::ApplicationController
     else
       render 'edit'
     end
+  rescue WikiPage::PageChangedError
+    @conflict = true
+    render 'edit'
   end
 
   def create
@@ -119,6 +122,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def wiki_params
-    params.require(:wiki).permit(:title, :content, :format, :message)
+    params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)
   end
 end

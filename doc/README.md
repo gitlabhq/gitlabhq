@@ -11,14 +11,10 @@ self-hosted, free to use. Every feature available in GitLab CE is also available
 self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
 - **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
 
-**GitLab EE** contains all features available in **GitLab CE**,
+> **GitLab EE** contains all features available in **GitLab CE**,
 plus premium features available in each version: **Enterprise Edition Starter**
 (**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
 **EES** is also available in **EEP**.
-
-**Note:** _We are unifying the documentation for CE and EE. To check if certain feature is
-available in CE or EE, look for a note right below the page title containing the GitLab
-version which introduced that feature._
 
 ----
 
@@ -40,26 +36,29 @@ Shortcuts to GitLab's most visited docs:
 
 ### User account
 
-- [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
-- [Profile settings](profile/README.md): Manage your profile settings, two factor authentication and more.
+- [User documentation](user/index.md): Learn how to use GitLab and explore its features
+- [User account](user/profile/index.md): Manage your account
+  - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
+  - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
 - [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 
 ### Projects and groups
 
-- [Create a project](gitlab-basics/create-project.md)
-- [Fork a project](gitlab-basics/fork-project.md)
-- [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+- [Projects](user/project/index.md):
+  - [Create a project](gitlab-basics/create-project.md)
+  - [Fork a project](gitlab-basics/fork-project.md)
+  - [Importing and exporting projects between instances](user/project/settings/import_export.md).
+  - [Project access](public_access/public_access.md): Setting up your project's visibility to public, internal, or private.
+  - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
-  - [GitLab Subgroups](user/group/subgroups/index.md)
+  - [Subgroups](user/group/subgroups/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
 - [Snippets](user/snippets.md): Snippets allow you to create little bits of code.
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
-- [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 
 ### Repository
 
-Manage files and branches from the UI (user interface):
+Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
 - Files
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
@@ -92,6 +91,7 @@ Manage files and branches from the UI (user interface):
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
+- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 

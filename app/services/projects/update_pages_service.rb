@@ -130,7 +130,11 @@ module Projects
     end
 
     def max_size
-      current_application_settings.max_pages_size.megabytes || MAX_SIZE
+      max_pages_size = current_application_settings.max_pages_size.megabytes
+
+      return MAX_SIZE if max_pages_size.zero?
+
+      [max_pages_size, MAX_SIZE].min
     end
 
     def tmp_path

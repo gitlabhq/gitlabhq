@@ -66,16 +66,18 @@ stages:
     - mysql:latest
     - redis:alpine
 
-.only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
+.only-if-want-mysql: &only-if-want-mysql
   only:
     - /mysql/
     - /-stable/
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
     - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
     - tags@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ee
     - tags@gitlab/gitlabhq
-    - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitlab-ee
+    - tags@gitlab/gitlab-ee
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
@@ -96,6 +98,7 @@ stages:
     - export KNAPSACK_GENERATE_REPORT=true
     - export CACHE_CLASSES=true
     - cp ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
     - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
@@ -113,7 +116,7 @@ stages:
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
+  <<: *only-if-want-mysql
   <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
@@ -145,7 +148,7 @@ stages:
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
+  <<: *only-if-want-mysql
   <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters
@@ -221,6 +224,7 @@ setup-test-env:
     - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build # Do not use 'bundle exec' here
   artifacts:
     expire_in: 7d
     paths:
@@ -486,6 +490,7 @@ karma:
     BABEL_ENV: "coverage"
     CHROME_LOG_FILE: "chrome_debug.log"
   script:
+    - scripts/gitaly-test-spawn
     - bundle exec rake gettext:po_to_json
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Milestone', feature: true do
+feature 'Milestone' do
   let(:group) { create(:group, :public) }
-  let(:project) { create(:empty_project, :public, namespace: group) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:user)   { create(:user) }
 
   before do

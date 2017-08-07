@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe BlobViewer::GitlabCiYml, model: true do
+describe BlobViewer::GitlabCiYml do
   include FakeBlobHelpers
 
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:project) }
   let(:data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
   let(:blob) { fake_blob(path: '.gitlab-ci.yml', data: data) }
   subject { described_class.new(blob) }

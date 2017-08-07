@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::OtherMarkup, lib: true do
+describe Gitlab::OtherMarkup do
   let(:context) { {} }
 
   context "XSS Checks" do

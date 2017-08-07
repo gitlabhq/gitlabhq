@@ -85,13 +85,30 @@ module Gitlab
         end
       end
 
-      def commit_count(ref)
+      def commit_count(ref, options = {})
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
           revision: ref
         )
+        request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
+        request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
+        request.path = options[:path] if options[:path].present?
 
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request).count
+      end
+
+      def last_commit_for_path(revision, path)
+        request = Gitaly::LastCommitForPathRequest.new(
+          repository: @gitaly_repo,
+          revision: revision.force_encoding(Encoding::ASCII_8BIT),
+          path: path.to_s.force_encoding(Encoding::ASCII_8BIT)
+        )
+
+        gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
+        return unless gitaly_commit
+
+        commit = GitalyClient::Commit.new(@repository, gitaly_commit)
+        Gitlab::Git::Commit.new(commit)
       end
 
       def between(from, to)
@@ -116,6 +133,24 @@ module Gitlab
 
         response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request)
         consume_commits_response(response)
+      end
+
+      def languages(ref = nil)
+        request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: ref || '')
+        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request)
+
+        response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
+      end
+
+      def raw_blame(revision, path)
+        request = Gitaly::RawBlameRequest.new(
+          repository: @gitaly_repo,
+          revision: revision,
+          path: path
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
+        response.reduce("") { |memo, msg| memo << msg.data }
       end
 
       private

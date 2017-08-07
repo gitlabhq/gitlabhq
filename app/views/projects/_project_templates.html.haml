@@ -9,14 +9,3 @@
       %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: template.name }
       = custom_icon(template.logo)
       = template.title
-
-  -# TODO: Remove this once the templates are generated on the backend.
-  %div.btn
-    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "node" }
-    = custom_icon("node_express")
-    Node Express
-
-  %div.btn
-    %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: "java" }
-    = custom_icon("java_spring")
-    Java Spring

@@ -4,6 +4,9 @@ module QuickActions
 
     attr_reader :issuable
 
+    SHRUG = '¯\\＿(ツ)＿/¯'.freeze
+    TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
+
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
@@ -14,6 +17,7 @@ module QuickActions
 
       content, commands = extractor.extract_commands(content, context)
       extract_updates(commands, context)
+
       [content, @updates]
     end
 
@@ -423,6 +427,18 @@ module QuickActions
       @updates[:spend_time] = { duration: :reset, user: current_user }
     end
 
+    desc "Append the comment with #{SHRUG}"
+    params '<Comment>'
+    substitution :shrug do |comment|
+      "#{comment} #{SHRUG}"
+    end
+
+    desc "Append the comment with #{TABLEFLIP}"
+    params '<Comment>'
+    substitution :tableflip do |comment|
+      "#{comment} #{TABLEFLIP}"
+    end
+
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
@@ -468,6 +484,24 @@ module QuickActions
         @updates[:remove_label_ids] =
           issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
         @updates[:add_label_ids] = [label_id]
+      end
+    end
+
+    desc 'Mark this issue as a duplicate of another issue'
+    explanation do |duplicate_reference|
+      "Marks this issue as a duplicate of #{duplicate_reference}."
+    end
+    params '#issue'
+    condition do
+      issuable.is_a?(Issue) &&
+        issuable.persisted? &&
+        current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
+    end
+    command :duplicate do |duplicate_param|
+      canonical_issue = extract_references(duplicate_param, :issue).first
+
+      if canonical_issue.present?
+        @updates[:canonical_issue_id] = canonical_issue.id
       end
     end
 

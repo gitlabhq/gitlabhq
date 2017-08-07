@@ -691,8 +691,10 @@
 }
 
 .mr-version-controls {
+  position: relative;
   background: $gray-light;
   color: $gl-text-color;
+  z-index: 199;
 
   .mr-version-menus-container {
     display: -webkit-flex;
@@ -757,6 +759,10 @@
   .nav-links {
     border: 0;
   }
+}
+
+.with-performance-bar .merge-request-tabs-holder {
+  top: $header-height + $performance-bar-height;
 }
 
 .merge-request-tabs {

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::UserAccess, lib: true do
-  let(:access) { Gitlab::UserAccess.new(user, project: project) }
-  let(:project) { create(:project) }
+describe Gitlab::UserAccess do
+  let(:access) { described_class.new(user, project: project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   describe '#can_push_to_branch?' do
@@ -28,7 +28,7 @@ describe Gitlab::UserAccess, lib: true do
 
     describe 'push to empty project' do
       let(:empty_project) { create(:project_empty_repo) }
-      let(:project_access) { Gitlab::UserAccess.new(user, project: empty_project) }
+      let(:project_access) { described_class.new(user, project: empty_project) }
 
       it 'returns true if user is master' do
         empty_project.team << [user, :master]

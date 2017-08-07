@@ -85,11 +85,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
-      @diffs_no_whitespace ||=
-        Gitlab::Git::Compare.new(
-          repository.raw_repository,
-          safe_start_commit_sha,
-          head_commit_sha).diffs(options)
+      @diffs_no_whitespace ||= compare.diffs(options)
     else
       @raw_diffs ||= {}
       @raw_diffs[options] ||= load_diffs(options)
@@ -236,10 +232,21 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def create_merge_request_diff_files(diffs)
     rows = diffs.map.with_index do |diff, index|
-      diff.to_hash.merge(
+      diff_hash = diff.to_hash.merge(
+        binary: false,
         merge_request_diff_id: self.id,
         relative_order: index
       )
+
+      # Compatibility with old diffs created with Psych.
+      diff_hash.tap do |hash|
+        diff_text = hash[:diff]
+
+        if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
+          hash[:binary] = true
+          hash[:diff] = [diff_text].pack('m0')
+        end
+      end
     end
 
     Gitlab::Database.bulk_insert('merge_request_diff_files', rows)
@@ -268,9 +275,7 @@ class MergeRequestDiff < ActiveRecord::Base
           st_diffs
         end
       elsif merge_request_diff_files.present?
-        merge_request_diff_files
-          .as_json(only: Gitlab::Git::Diff::SERIALIZE_KEYS)
-          .map(&:with_indifferent_access)
+        merge_request_diff_files.map(&:to_hash)
       end
   end
 

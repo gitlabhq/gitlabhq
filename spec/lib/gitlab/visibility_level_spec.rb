@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::VisibilityLevel, lib: true do
+describe Gitlab::VisibilityLevel do
   describe '.level_value' do
     it 'converts "public" to integer value' do
       expect(described_class.level_value('public')).to eq(Gitlab::VisibilityLevel::PUBLIC)

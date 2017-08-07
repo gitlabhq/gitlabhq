@@ -259,10 +259,39 @@ module API
         expose :job_events, as: :build_events
       end
 
-      class Issue < ::API::Entities::Issue
+      class ProjectEntity < Grape::Entity
+        expose :id, :iid
+        expose(:project_id) { |entity| entity&.project.try(:id) }
+        expose :title, :description
+        expose :state, :created_at, :updated_at
+      end
+
+      class IssueBasic < ProjectEntity
+        expose :label_names, as: :labels
+        expose :milestone, using: ::API::Entities::Milestone
+        expose :assignees, :author, using: ::API::Entities::UserBasic
+
+        expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+          issue.assignees.first
+        end
+
+        expose :user_notes_count
+        expose :upvotes, :downvotes
+        expose :due_date
+        expose :confidential
+
+        expose :web_url do |issue, options|
+          Gitlab::UrlBuilder.build(issue)
+        end
+      end
+
+      class Issue < IssueBasic
         unexpose :assignees
         expose :assignee do |issue, options|
           ::API::Entities::UserBasic.represent(issue.assignees.first, options)
+        end
+        expose :subscribed do |issue, options|
+          issue.subscribed?(options[:current_user], options[:project] || issue.project)
         end
       end
     end

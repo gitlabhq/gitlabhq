@@ -135,10 +135,10 @@ describe('IntegrationSettingsForm', () => {
 
       integrationSettingsForm.testSettings(formData);
 
-      deferred.resolve({ error: true, message: errorMessage });
+      deferred.resolve({ error: true, message: errorMessage, service_response: 'some error' });
 
       const $flashContainer = $('.flash-container');
-      expect($flashContainer.find('.flash-text').text()).toEqual(errorMessage);
+      expect($flashContainer.find('.flash-text').text()).toEqual('Test failed. some error');
       expect($flashContainer.find('.flash-action')).toBeDefined();
       expect($flashContainer.find('.flash-action').text()).toEqual('Save anyway');
     });

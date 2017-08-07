@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 
-describe Issues::ResolveDiscussions, services: true do
+describe Issues::ResolveDiscussions do
   class DummyService < Issues::BaseService
     include ::Issues::ResolveDiscussions
 

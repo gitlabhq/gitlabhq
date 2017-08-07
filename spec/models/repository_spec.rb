@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Repository, models: true do
+describe Repository do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
@@ -139,24 +139,44 @@ describe Repository, models: true do
   end
 
   describe '#last_commit_for_path' do
-    subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
+    shared_examples 'getting last commit for path' do
+      subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
-    it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+      it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+    end
+
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit for path'
+    end
+
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit for path'
+    end
   end
 
   describe '#last_commit_id_for_path' do
-    subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
+    shared_examples 'getting last commit ID for path' do
+      subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
 
-    it "returns last commit id for a given path" do
-      is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      it "returns last commit id for a given path" do
+        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      end
+
+      it "caches last commit id for a given path" do
+        cache = repository.send(:cache)
+        key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+
+        expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
+        is_expected.to eq('c1acaa5')
+      end
     end
 
-    it "caches last commit id for a given path" do
-      cache = repository.send(:cache)
-      key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit ID for path'
+    end
 
-      expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
-      is_expected.to eq('c1acaa5')
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit ID for path'
     end
   end
 
@@ -300,7 +320,7 @@ describe Repository, models: true do
     end
 
     context "when committing to another project" do
-      let(:forked_project) { create(:project) }
+      let(:forked_project) { create(:project, :repository) }
 
       it "creates a fork and commit to the forked project" do
         expect do
@@ -515,7 +535,7 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
@@ -543,7 +563,7 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
 
       results = repository.search_files_by_name('test', 'master')
 
@@ -942,7 +962,7 @@ describe Repository, models: true do
       end
 
       it 'expires creation and branch cache' do
-        empty_repository = create(:empty_project, :empty_repo).repository
+        empty_repository = create(:project, :empty_repo).repository
 
         expect(empty_repository).to receive(:expire_exists_cache)
         expect(empty_repository).to receive(:expire_root_ref_cache)
@@ -956,21 +976,25 @@ describe Repository, models: true do
     end
   end
 
-  describe '#exists?' do
+  shared_examples 'repo exists check' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to eq(true)
     end
 
-    it 'returns false when a repository does not exist' do
-      allow(repository).to receive(:refs_directory_exists?).and_return(false)
+    it 'returns false if no full path can be constructed' do
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
+  end
 
-    it 'returns false when there is no namespace' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+  describe '#exists?' do
+    context 'when repository_exists is disabled' do
+      it_behaves_like 'repo exists check'
+    end
 
-      expect(repository.exists?).to eq(false)
+    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+      it_behaves_like 'repo exists check'
     end
   end
 
@@ -1800,7 +1824,7 @@ describe Repository, models: true do
   end
 
   describe '#commit_count_for_ref' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     context 'with a non-existing repository' do
       it 'returns 0' do

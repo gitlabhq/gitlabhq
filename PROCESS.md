@@ -128,7 +128,7 @@ information, see
 
 ### After the 7th
 
-Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
+Once the stable branch is frozen, only fixes for [regressions](#regressions)
 and security issues will be cherry-picked into the stable branch.
 Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
 These fixes will be shipped in the next RC for that release if it is before the 22nd.
@@ -157,6 +157,24 @@ release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set, so that release managers can find and pick them.
 Merge requests without a milestone and this label will
 not be merged into any stable branches.
+
+### Regressions
+
+A regression for a particular monthly release is a bug that exists in that
+release, but wasn't present in the release before. This includes bugs in
+features that were only added in that monthly release. Every regression **must**
+have the milestone of the release it was introduced in - if a regression doesn't
+have a milestone, it might be 'just' a bug!
+
+For instance, if 10.5.0 adds a feature, and that feature doesn't work correctly,
+then this is a regression in 10.5. If 10.5.1 then fixes that, but 10.5.3 somehow
+reintroduces the bug, then this bug is still a regression in 10.5.
+
+Because GitLab.com runs release candidates of new releases, a regression can be
+reported in a release before its 'official' release date on the 22nd of the
+month. When we say 'the most recent monthly release', this can refer to either
+the version currently running on GitLab.com, or the most recent version
+available in the package repositories.
 
 ## Release retrospective and kickoff
 

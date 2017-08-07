@@ -41,6 +41,14 @@ describe 'gitlab:gitaly namespace rake task' do
     end
 
     describe 'gmake/make' do
+      before(:all) do
+        @old_env_ci = ENV.delete('CI')
+      end
+
+      after(:all) do
+        ENV['CI'] = @old_env_ci if @old_env_ci
+      end
+
       before do
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original

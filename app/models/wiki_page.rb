@@ -1,4 +1,6 @@
 class WikiPage
+  PageChangedError = Class.new(StandardError)
+
   include ActiveModel::Validations
   include ActiveModel::Conversion
   include StaticModel
@@ -136,6 +138,10 @@ class WikiPage
     versions.first
   end
 
+  def last_commit_sha
+    commit&.sha
+  end
+
   # Returns the Date that this latest version was
   # created on.
   def created_at
@@ -182,16 +188,21 @@ class WikiPage
 
   # Updates an existing Wiki Page, creating a new version.
   #
-  # new_content - The raw markup content to replace the existing.
-  # format      - Optional symbol representing the content format.
-  #               See ProjectWiki::MARKUPS Hash for available formats.
-  # message     - Optional commit message to set on the new version.
+  # new_content     - The raw markup content to replace the existing.
+  # format          - Optional symbol representing the content format.
+  #                   See ProjectWiki::MARKUPS Hash for available formats.
+  # message         - Optional commit message to set on the new version.
+  # last_commit_sha - Optional last commit sha to validate the page unchanged.
   #
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
-  def update(new_content = "", format = :markdown, message = nil)
+  def update(new_content, format: :markdown, message: nil, last_commit_sha: nil)
     @attributes[:content] = new_content
     @attributes[:format] = format
+
+    if last_commit_sha && last_commit_sha != self.last_commit_sha
+      raise PageChangedError.new("You are attempting to update a page that has changed since you started editing it.")
+    end
 
     save :update_page, @page, content, format, message
   end

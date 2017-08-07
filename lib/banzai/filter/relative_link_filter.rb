@@ -51,7 +51,7 @@ module Banzai
 
         uri.path = [
           relative_url_root,
-          context[:project].path_with_namespace,
+          context[:project].full_path,
           uri_type(file_path),
           Addressable::URI.escape(ref),
           Addressable::URI.escape(file_path)

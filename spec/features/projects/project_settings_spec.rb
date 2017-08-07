@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe 'Edit Project Settings', feature: true do
+describe 'Edit Project Settings' do
   include Select2Helper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, namespace: user.namespace, path: 'gitlab', name: 'sample') }
 
   before do
     sign_in(user)
@@ -14,7 +14,9 @@ describe 'Edit Project Settings', feature: true do
     it 'shows errors for invalid project name' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'foo&bar'
-      click_button 'Save changes'
+      page.within('.general-settings') do
+        click_button 'Save changes'
+      end
       expect(page).to have_field 'project_name_edit', with: 'foo&bar'
       expect(page).to have_content "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
       expect(page).to have_button 'Save changes'
@@ -23,7 +25,9 @@ describe 'Edit Project Settings', feature: true do
     it 'shows a successful notice when the project is updated' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'hello world'
-      click_button 'Save changes'
+      page.within('.general-settings') do
+        click_button 'Save changes'
+      end
       expect(page).to have_content "Project 'hello world' was successfully updated."
     end
   end
@@ -55,8 +59,7 @@ describe 'Edit Project Settings', feature: true do
     end
 
     context 'when changing project path' do
-      # Not using empty project because we need a repo to exist
-      let(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
+      let(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
 
       before(:context) do
         TestEnv.clean_test_path
@@ -87,7 +90,7 @@ describe 'Edit Project Settings', feature: true do
         it 'overrides the redirect' do
           old_path = project_path(project)
           rename_project(project, path: 'bar')
-          new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
+          new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
           visit old_path
           expect(current_path).to eq(old_path)
           expect(find('h1.title')).to have_content(new_project.name)
@@ -97,8 +100,7 @@ describe 'Edit Project Settings', feature: true do
   end
 
   describe 'Transfer project section', js: true do
-    # Not using empty project because we need a repo to exist
-    let!(:project) { create(:project, namespace: user.namespace, name: 'gitlabhq') }
+    let!(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
     let!(:group) { create(:group) }
 
     before(:context) do
@@ -134,7 +136,7 @@ describe 'Edit Project Settings', feature: true do
       it 'overrides the redirect' do
         old_path = project_path(project)
         transfer_project(project, group)
-        new_project = create(:empty_project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
+        new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
         expect(current_path).to eq(old_path)
         expect(find('h1.title')).to have_content(new_project.name)

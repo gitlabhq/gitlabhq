@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpamService, services: true do
+describe SpamService do
   describe '#when_recaptcha_verified' do
     def check_spam(issue, request, recaptcha_verified)
       described_class.new(issue, request).when_recaptcha_verified(recaptcha_verified) do
@@ -15,7 +15,7 @@ describe SpamService, services: true do
     end
 
     context 'when recaptcha was not verified' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue)   { create(:issue, project: project) }
       let(:request) { double(:request, env: {}) }
 

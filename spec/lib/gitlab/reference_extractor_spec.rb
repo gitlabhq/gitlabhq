@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::ReferenceExtractor, lib: true do
-  let(:project) { create(:empty_project) }
+describe Gitlab::ReferenceExtractor do
+  let(:project) { create(:project) }
 
   before do
     project.team << [project.creator, :developer]
   end
 
-  subject { Gitlab::ReferenceExtractor.new(project, project.creator) }
+  subject { described_class.new(project, project.creator) }
 
   it 'accesses valid user objects' do
     @u_foo = create(:user, username: 'foo')
@@ -215,7 +215,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   context 'with a project with an underscore' do
-    let(:other_project) { create(:empty_project, path: 'test_project') }
+    let(:other_project) { create(:project, path: 'test_project') }
     let(:issue) { create(:issue, project: other_project) }
 
     before do

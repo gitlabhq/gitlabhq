@@ -34,7 +34,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I own project "Website"' do
-    @project = create(:empty_project, name: "Website", namespace: @user.namespace)
+    @project = create(:project, name: "Website", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -68,7 +68,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   step 'I share project with group "OpenSource"' do
     project = Project.find_by(name: 'Shop')
     os_group = create(:group, name: 'OpenSource')
-    create(:empty_project, group: os_group)
+    create(:project, group: os_group)
     @os_user1 = create(:user)
     @os_user2 = create(:user)
     os_group.add_owner(@os_user1)

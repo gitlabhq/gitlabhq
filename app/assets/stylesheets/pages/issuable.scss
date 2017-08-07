@@ -211,6 +211,10 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  &.affix-top .issuable-sidebar {
+    height: 100%;
+  }
+
   &.right-sidebar-expanded {
     width: $gutter_width;
 
@@ -324,9 +328,17 @@
       margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
+      svg {
+        fill: $issuable-sidebar-color;
+      }
+
       &:hover,
       &:hover .todo-undone {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
 
       span {
@@ -438,6 +450,14 @@
 
   .open .dropdown-menu {
     width: 100%;
+  }
+}
+
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
 }
 

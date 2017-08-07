@@ -1,5 +1,8 @@
 - page_title "GitLab Import"
 - header_title "Projects", root_path
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'project_import_gl'
+
 %h3.page-title
   = icon('gitlab')
   Import an exported GitLab project
@@ -45,7 +48,3 @@
     .form-actions
       = f.submit 'Import project', class: 'btn btn-create'
       = link_to 'Cancel', new_project_path, class: 'btn btn-cancel'
-
-:javascript
-  // get the path url and append it in the inputS
-  $('.js-path-name').val(gl.utils.getParameterValues('path'));

@@ -1409,6 +1409,12 @@ create-hmac@^1.1.0, create-hmac@^1.1.2:
     create-hash "^1.1.0"
     inherits "^2.0.1"
 
+cropper@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/cropper/-/cropper-2.3.0.tgz#607461d4e7aa7a7fe15a26834b14b7f0c2801562"
+  dependencies:
+    jquery ">= 1.9.1"
+
 cryptiles@2.x.x:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/cryptiles/-/cryptiles-2.0.5.tgz#3bdfecdc608147c1c67202fa291e7dca59eaa3b8"
@@ -3169,7 +3175,7 @@ jquery-ujs@^1.2.1:
   dependencies:
     jquery ">=1.8.0"
 
-jquery@>=1.8.0, jquery@^2.2.1:
+"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.1.tgz#3c3e16854ad3d2ac44ac65021b17426d22ad803f"
 
@@ -3765,10 +3771,6 @@ nested-error-stacks@^1.0.0:
   dependencies:
     inherits "~2.0.1"
 
-node-ensure@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/node-ensure/-/node-ensure-0.0.0.tgz#ecae764150de99861ec5c810fd5d096b183932a7"
-
 node-libs-browser@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/node-libs-browser/-/node-libs-browser-1.1.1.tgz#2a38243abedd7dffcd07a97c9aca5668975a6fea"
@@ -4178,13 +4180,6 @@ pbkdf2@^3.0.3:
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.9.tgz#f2c4b25a600058b3c3773c086c37dbbee1ffe693"
   dependencies:
     create-hmac "^1.1.2"
-
-pdfjs-dist@^1.8.252:
-  version "1.8.252"
-  resolved "https://registry.yarnpkg.com/pdfjs-dist/-/pdfjs-dist-1.8.252.tgz#2477245695341f7fe096824dacf327bc324c0f52"
-  dependencies:
-    node-ensure "^0.0.0"
-    worker-loader "^0.8.0"
 
 pify@^2.0.0:
   version "2.3.0"
@@ -5921,12 +5916,6 @@ wordwrap@^1.0.0, wordwrap@~1.0.0:
 wordwrap@~0.0.2:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-0.0.3.tgz#a3d5da6cd5c0bc0008d37234bbaf1bed63059107"
-
-worker-loader@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/worker-loader/-/worker-loader-0.8.0.tgz#13582960dcd7d700dc829d3fd252a7561696167e"
-  dependencies:
-    loader-utils "^1.0.2"
 
 wrap-ansi@^2.0.0:
   version "2.1.0"

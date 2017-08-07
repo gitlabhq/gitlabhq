@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Milestones::CreateService, services: true do
-  let(:project) { create(:empty_project) }
+describe Milestones::CreateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#execute' do
@@ -14,7 +14,7 @@ describe Milestones::CreateService, services: true do
           description: 'Patch release to fix security issue'
         }
 
-        @milestone = Milestones::CreateService.new(project, user, opts).execute
+        @milestone = described_class.new(project, user, opts).execute
       end
 
       it { expect(@milestone).to be_valid }
