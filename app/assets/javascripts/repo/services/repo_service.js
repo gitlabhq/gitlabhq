@@ -63,7 +63,7 @@ const RepoService = {
   blobURLtoParentTree(url) {
     const urlArray = url.split('/');
     urlArray.pop();
-    const blobIndex = urlArray.indexOf('blob');
+    const blobIndex = urlArray.lastIndexOf('blob');
 
     if (blobIndex > -1) urlArray[blobIndex] = 'tree';
 

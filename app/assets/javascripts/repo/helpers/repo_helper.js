@@ -216,15 +216,21 @@ const RepoHelper = {
 
   serializeRepoEntity(type, entity) {
     const { url, name, icon, last_commit } = entity;
-    return {
+    let returnObj = {
       type,
       name,
       url,
-      lastCommitUrl: `${Store.projectUrl}/commit/${last_commit.id}`,
       icon: RepoHelper.toFA(icon),
       level: 0,
       loading: false,
     };
+
+    if(entity.last_commit){
+      returnObj.lastCommitUrl = `${Store.projectUrl}/commit/${last_commit.id}`;
+    } else {
+      returnObj.lastCommitUrl = '';
+    }
+    return returnObj;
   },
 
   scrollTabsRight() {
@@ -283,7 +289,7 @@ const RepoHelper = {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError() {
+  loadingError(e) {
     Flash('Unable to load the file at this time.');
   },
 };
