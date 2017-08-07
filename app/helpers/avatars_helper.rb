@@ -19,7 +19,8 @@ module AvatarsHelper
       class: %W[avatar has-tooltip s#{avatar_size}].push(*options[:css_class]),
       alt: "#{user_name}'s avatar",
       title: user_name,
-      data: data_attributes
+      data: data_attributes,
+      lazy: true
     )
   end
 
