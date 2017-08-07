@@ -31,11 +31,11 @@ describe('Merge Request Code Quality', () => {
     });
 
     it('should render loading indicator', () => {
-      expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report.');
+      expect(vm.$el.textContent.trim()).toEqual('Loading codeclimate report');
     });
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     const interceptor = (request, next) => {
       if (request.url === 'head.json') {
         next(request.respondWith(JSON.stringify(headIssues), {
@@ -66,8 +66,8 @@ describe('Merge Request Code Quality', () => {
     it('should render provided data', (done) => {
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
-        ).toEqual('Code quality improved on 1 point and degraded on 1 point.');
+          vm.$el.querySelector('.js-code-text').textContent.trim(),
+        ).toEqual('Code quality improved on 1 point and degraded on 1 point');
         done();
       }, 0);
     });
@@ -79,8 +79,8 @@ describe('Merge Request Code Quality', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
-            ).toEqual('Code quality improved on 1 point.');
+              vm.$el.querySelector('.js-code-text').textContent.trim(),
+            ).toEqual('Code quality improved on 1 point');
             done();
           });
         }, 0);
@@ -89,11 +89,10 @@ describe('Merge Request Code Quality', () => {
       it('should only render information about added issues', (done) => {
         setTimeout(() => {
           vm.mr.codeclimateMetrics.resolvedIssues = [];
-
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
-            ).toEqual('Code quality degraded on 1 point.');
+              vm.$el.querySelector('.js-code-text').textContent.trim(),
+            ).toEqual('Code quality degraded on 1 point');
             done();
           });
         }, 0);
@@ -130,7 +129,7 @@ describe('Merge Request Code Quality', () => {
     });
   });
 
-  describe('with empty successfull request', () => {
+  describe('with empty successful request', () => {
     const emptyInterceptor = (request, next) => {
       if (request.url === 'head.json') {
         next(request.respondWith(JSON.stringify([]), {
@@ -161,8 +160,8 @@ describe('Merge Request Code Quality', () => {
     it('should render provided data', (done) => {
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('span:nth-child(2)').textContent.trim(),
-        ).toEqual('No changes to code quality.');
+          vm.$el.querySelector('.js-code-text').textContent.trim(),
+        ).toEqual('No changes to code quality');
         done();
       }, 0);
     });
@@ -198,7 +197,7 @@ describe('Merge Request Code Quality', () => {
 
     it('should render error indicator', (done) => {
       setTimeout(() => {
-        expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report.');
+        expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
         done();
       }, 0);
     });

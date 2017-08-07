@@ -1,5 +1,6 @@
 /* global Flash */
 
+import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
 import ApprovalsBody from './approvals_body';
 import ApprovalsFooter from './approvals_footer';
 
@@ -23,6 +24,15 @@ export default {
   components: {
     'approvals-body': ApprovalsBody,
     'approvals-footer': ApprovalsFooter,
+    statusIcon,
+  },
+  computed: {
+    status() {
+      if (this.mr.approvals.approvals_left > 0) {
+        return 'failed';
+      }
+      return 'success';
+    },
   },
   created() {
     const flashErrorMessage = 'An error occured while retrieving approval data for this merge request.';
@@ -37,18 +47,23 @@ export default {
   template: `
     <div
       v-if="mr.approvalsRequired"
-      class="mr-widget-approvals-container mr-widget-body">
+      class="mr-widget-approvals-container mr-widget-body mr-widget-section media">
+      <div
+        v-if="fetchingApprovals"
+        class="mr-widget-icon">
+        <i class="fa fa-spinner fa-spin" />
+      </div>
+      <status-icon v-else :status="status" />
       <div
         v-show="fetchingApprovals"
-        class="mr-approvals-loading-state">
-        <span class="approvals-loading-text bold">
-          Checking approval status for this merge request.
+        class="mr-approvals-loading-state media-body">
+        <span class="approvals-loading-text">
+          Checking approval status
         </span>
-        <i class="fa fa-spinner fa-spin" />
       </div>
       <div
         v-if="!fetchingApprovals"
-        class="approvals-components">
+        class="approvals-components media-body">
         <approvals-body
           :mr="mr"
           :service="service"

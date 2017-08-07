@@ -70,7 +70,7 @@ export default {
     },
   },
   template: `
-    <div class="approvals-body">
+    <div class="approvals-body space-children">
       <span v-if="showApproveButton" class="approvals-approve-button-wrap">
         <button
           :disabled="approving"

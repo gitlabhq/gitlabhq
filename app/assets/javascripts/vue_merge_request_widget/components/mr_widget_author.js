@@ -8,8 +8,8 @@ export default {
   template: `
     <a
       :href="author.webUrl || author.web_url"
-      class="author-link"
-      :class="{ 'has-tooltip': showAuthorTooltip }"
+      class="author-link inline"
+      :v-tooltip="showAuthorTooltip"
       :title="author.name">
       <img
         :src="author.avatarUrl || author.avatar_url"

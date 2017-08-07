@@ -40,14 +40,18 @@ export default {
         :mr="mr"
         :service="service"
         />
-      <component
-        :is="componentName"
-        :mr="mr"
-        :service="service" />
-      <mr-widget-related-links
-        v-if="shouldRenderRelatedLinks"
-        :related-links="mr.relatedLinks" />
-      <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
+      <div class="mr-widget-section">
+        <component
+          :is="componentName"
+          :mr="mr"
+          :service="service" />
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :related-links="mr.relatedLinks" />
+      </div>
+      <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
+        <mr-widget-merge-help />
+      </div>
     </div>
   `,
 };
