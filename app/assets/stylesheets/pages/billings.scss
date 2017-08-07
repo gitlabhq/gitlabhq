@@ -1,0 +1,156 @@
+.billing-plan-header {
+  border-bottom: 0;
+
+  .billing-plan-logo svg {
+    height: 100px;
+  }
+
+  p {
+    margin: 0;
+
+    &:first-of-type {
+      margin-top: 16px;
+    }
+
+    &:last-of-type {
+      margin-bottom: 16px;
+    }
+  }
+}
+
+.billing-plans-alert {
+  margin: 0;
+}
+
+.billing-plans {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+    width: 100%;
+    border: 0;
+
+    &:first-of-type {
+      margin-left: 0;
+    }
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      width: 290px;
+    }
+
+    .panel-heading,
+    .panel-body {
+      border-left: 1px solid $list-border;
+      border-right: 1px solid $list-border;
+    }
+
+    .panel-heading {
+      background-color: $blue-500;
+      color: $white-light;
+      border: 0;
+      border-radius: 4px 4px 0 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .panel-body {
+      flex-grow: 1;
+      border-radius: 0 0 4px 4px;
+      border-bottom: 1px solid $list-border;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+
+      .price-per-month {
+        display: flex;
+        flex-direction: row;
+        color: $blue-500;
+        padding: 16px;
+        padding-bottom: 0;
+        justify-content: center;
+        font-size: 50px;
+        font-weight: 700;
+
+        .billing-conditions {
+          list-style: none;
+          font-size: 20px;
+          font-weight: 600;
+          margin: auto 0;
+          line-height: 20px;
+          padding: 0;
+        }
+      }
+
+      .price-per-year {
+        color: $blue-500;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        padding-bottom: 16px;
+        height: 32px;
+      }
+
+      .feature-list {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+
+        li {
+          background-color: $gray-light;
+
+          &:first-child {
+            border-top: 1px solid $list-border;
+          }
+
+          &:last-child {
+            border-bottom: 1px solid $list-border;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+
+            &:hover {
+              background-color: $gray-light;
+            }
+          }
+        }
+      }
+
+      .plan-action {
+        padding: 16px;
+
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+
+    &.current {
+      .panel-heading {
+        background-color: $blue-600;
+      }
+
+      .panel-body {
+        border-color: $blue-600;
+        border-width: 2px;
+
+        .price-per-month,
+        .price-per-year {
+          color: $blue-600;
+        }
+      }
+    }
+  }
+}

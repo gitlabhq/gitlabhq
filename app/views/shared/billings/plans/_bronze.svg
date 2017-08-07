@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106 110" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <path id="a" d="M10,0 L14,0 L14,0 C19.5228475,-1.01453063e-15 24,4.4771525 24,10 L24,37 L24,37 C24,39.7614237 21.7614237,42 19,42 L5,42 L5,42 C2.23857625,42 1.2263553e-15,39.7614237 8.8817842e-16,37 L0,10 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z"/>
+    <path id="b" d="M10,0 L14,0 L14,0 C19.5228475,-1.01453063e-15 24,4.4771525 24,10 L24,37 L24,37 C24,39.7614237 21.7614237,42 19,42 L5,42 L5,42 C2.23857625,42 1.2263553e-15,39.7614237 8.8817842e-16,37 L0,10 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z"/>
+    <rect id="c" width="46" height="20" x="8" y="9" rx="10"/>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <rect width="106" height="106" x="1" y="4" fill="#F9F9F9" rx="12"/>
+    <rect width="106" height="106" fill="#FFFFFF" rx="10"/>
+    <path fill="#EEEEEE" fill-rule="nonzero" d="M10,4 C6.6862915,4 4,6.6862915 4,10 L4,96 C4,99.3137085 6.6862915,102 10,102 L96,102 C99.3137085,102 102,99.3137085 102,96 L102,10 C102,6.6862915 99.3137085,4 96,4 L10,4 Z M10,0 L96,0 C101.522847,-1.01453063e-15 106,4.4771525 106,10 L106,96 C106,101.522847 101.522847,106 96,106 L10,106 C4.4771525,106 6.76353751e-16,101.522847 0,96 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z"/>
+    <g transform="translate(22 23)">
+      <path fill="#FFFFFF" stroke="#EEEEEE" stroke-width="4" d="M13,5 L49,5 L49,5 C54.5228475,5 59,9.4771525 59,15 L59,28 L59,28 C59,30.7614237 56.7614237,33 54,33 L8,33 L8,33 C5.23857625,33 3,30.7614237 3,28 L3,15 L3,15 C3,9.4771525 7.4771525,5 13,5 Z"/>
+      <g transform="translate(38)">
+        <path fill="#FFFFFF" stroke="#EFEDF8" stroke-width="4" d="M6,38 L18,38 L18,44 L18,44 C18,45.1045695 17.1045695,46 16,46 L8,46 L8,46 C6.8954305,46 6,45.1045695 6,44 L6,38 Z"/>
+        <use fill="#FFFFFF" xlink:href="#a"/>
+        <path stroke="#E1DBF1" stroke-width="4" d="M10,2 C5.581722,2 2,5.581722 2,10 L2,37 C2,38.6568542 3.34314575,40 5,40 L19,40 C20.6568542,40 22,38.6568542 22,37 L22,10 C22,5.581722 18.418278,2 14,2 L10,2 Z"/>
+        <g transform="translate(3 51)">
+          <rect width="10" height="3" x="4" fill="#FC6D26" rx="1.5"/>
+          <rect width="14" height="3" x="2" y="5" fill="#FDC4A8" rx="1.5"/>
+          <rect width="18" height="3" y="10" fill="#FEE1D3" rx="1.5"/>
+          <rect width="18" height="3" y="15" fill="#FEF0E8" rx="1.5"/>
+        </g>
+      </g>
+      <path fill="#FFFFFF" stroke="#EFEDF8" stroke-width="4" d="M6,38 L18,38 L18,44 L18,44 C18,45.1045695 17.1045695,46 16,46 L8,46 L8,46 C6.8954305,46 6,45.1045695 6,44 L6,38 Z"/>
+      <use fill="#FFFFFF" xlink:href="#b"/>
+      <path stroke="#E1DBF1" stroke-width="4" d="M10,2 C5.581722,2 2,5.581722 2,10 L2,37 C2,38.6568542 3.34314575,40 5,40 L19,40 C20.6568542,40 22,38.6568542 22,37 L22,10 C22,5.581722 18.418278,2 14,2 L10,2 Z"/>
+      <g transform="translate(3 51)">
+        <rect width="10" height="3" x="4" fill="#FC6D26" rx="1.5"/>
+        <rect width="14" height="3" x="2" y="5" fill="#FDC4A8" rx="1.5"/>
+        <rect width="18" height="3" y="10" fill="#FEE1D3" rx="1.5"/>
+        <rect width="18" height="3" y="15" fill="#FEF0E8" rx="1.5"/>
+      </g>
+      <g>
+        <use fill="#FFFFFF" xlink:href="#c"/>
+        <rect width="42" height="16" x="10" y="11" stroke="#6B4FBB" stroke-width="4" rx="8"/>
+      </g>
+      <circle cx="26" cy="19" r="2" fill="#6B4FBB"/>
+      <circle cx="36" cy="19" r="2" fill="#6B4FBB"/>
+    </g>
+  </g>
+</svg>

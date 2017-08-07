@@ -104,6 +104,10 @@ class ApplicationController < ActionController::Base
     sessionless_sign_in(user)
   end
 
+  def verify_namespace_plan_check_enabled
+    render_404 unless current_application_settings.should_check_namespace_plan?
+  end
+
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 

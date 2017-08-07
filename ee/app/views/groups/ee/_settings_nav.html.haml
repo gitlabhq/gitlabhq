@@ -21,3 +21,9 @@
     = link_to group_pipeline_quota_path(@group), title: 'Pipelines quota' do
       %span
         Pipelines quota
+
+- if current_application_settings.should_check_namespace_plan?
+  = nav_link(path: 'billings#index') do
+    = link_to group_billings_path(@group), title: 'Billing' do
+      %span
+        Billing
