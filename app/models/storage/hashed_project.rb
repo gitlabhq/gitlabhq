@@ -1,6 +1,11 @@
 module Storage
-  module HashedProject
-    extend ActiveSupport::Concern
+  class HashedProject
+    attr_accessor :project
+    delegate :namespace, :gitlab_shell, :repository_storage_path, to: :project
+
+    def initialize(project)
+      @project = project
+    end
 
     # Base directory
     #
@@ -22,13 +27,13 @@ module Storage
 
     def rename_repo
       # TODO: We cannot wipe most of this method until we provide migration path for Container Registries
-      path_was = previous_changes['path'].first
+      path_was = project.previous_changes['path'].first
       old_path_with_namespace = File.join(namespace.full_path, path_was)
-      new_path_with_namespace = File.join(namespace.full_path, path)
+      new_path_with_namespace = File.join(namespace.full_path, project.path)
 
       Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
-      if has_container_registry_tags?
+      if project.has_container_registry_tags?
         Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present!"
 
         # we currently doesn't support renaming repository if it contains images in container registry
@@ -37,14 +42,14 @@ module Storage
 
       begin
         # TODO: we can avoid cache expiration if cache is based on UUID or just project_id
-        expire_caches_before_rename(old_path_with_namespace)
-        expires_full_path_cache
+        project.expire_caches_before_rename(old_path_with_namespace)
+        project.expires_full_path_cache
 
-        send_move_instructions(old_path_with_namespace)
+        project.send_move_instructions(old_path_with_namespace)
 
         @old_path_with_namespace = old_path_with_namespace
 
-        SystemHooksService.new.execute_hooks_for(self, :rename)
+        SystemHooksService.new.execute_hooks_for(project, :rename)
 
         @repository = nil
       rescue => e
@@ -57,8 +62,8 @@ module Storage
       Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
       # TODO: When we move Uploads and Pages to use UUID we can disable this transfers as well
-      Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.full_path)
-      Gitlab::PagesTransfer.new.rename_project(path_was, path, namespace.full_path)
+      Gitlab::UploadsTransfer.new.rename_project(path_was, project.path, namespace.full_path)
+      Gitlab::PagesTransfer.new.rename_project(path_was, project.path, namespace.full_path)
     end
 
     private
@@ -66,7 +71,7 @@ module Storage
     # Generates the hash for the project path and name on disk
     # If you need to refer to the repository on disk, use the `#disk_path`
     def disk_hash
-      @disk_hash ||= Digest::SHA2.hexdigest(self.id.to_s) if self.id
+      @disk_hash ||= Digest::SHA2.hexdigest(project.id.to_s) if project.id
     end
   end
 end

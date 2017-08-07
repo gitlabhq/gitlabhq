@@ -32,6 +32,8 @@ class Project < ActiveRecord::Base
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
+  delegate :base_dir, :disk_path, :ensure_storage_path_exist, :rename_repo, to: :storage
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
@@ -59,7 +61,7 @@ class Project < ActiveRecord::Base
   after_validation :check_pending_delete
 
   # Storage specific hooks
-  after_initialize :load_storage
+  after_initialize :use_hashed_storage
   after_create :ensure_storage_path_exist
   after_save :ensure_storage_path_exist, if: :namespace_id_changed?
 
@@ -1424,16 +1426,20 @@ class Project < ActiveRecord::Base
 
   private
 
-  def load_storage
-    return unless has_attribute?(:storage_version)
+  def storage
+    @storage ||=
+      if !has_attribute?(:storage_version) # during migration
+        Storage::LegacyProject.new(self)
+      elsif self.storage_version && self.storage_version >= 1
+        Storage::HashedProject.new(self)
+      else
+        Storage::LegacyProject.new(self)
+      end
+  end
 
-    if self.storage_version && self.storage_version >= 1
-      self.extend Storage::HashedProject
-    elsif !self.persisted? && current_application_settings.hashed_storage_enabled
+  def use_hashed_storage
+    if !self.persisted? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
-      self.extend Storage::HashedProject
-    else
-      self.extend Storage::LegacyProject
     end
   end
 

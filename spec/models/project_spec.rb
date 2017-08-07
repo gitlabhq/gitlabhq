@@ -2395,11 +2395,12 @@ describe Project do
   end
 
   context 'hashed storage' do
-    let(:project) { create(:project, :repository, :hashed) }
+    let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
 
     before do
+      stub_application_setting(hashed_storage_enabled: true)
       allow(Digest::SHA2).to receive(:hexdigest) { hash }
     end
 

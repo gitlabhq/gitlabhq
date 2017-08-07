@@ -8,7 +8,6 @@ class AddStorageFieldsToProject < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    # rubocop:disable Migration/AddColumnWithDefaultToLargeTable
     add_column :projects, :storage_version, :integer, limit: 2
     add_concurrent_index :projects, :storage_version
   end
