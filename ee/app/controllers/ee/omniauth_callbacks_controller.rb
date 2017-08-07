@@ -5,18 +5,10 @@ module EE
     def fail_login
       log_failed_login(@user.username, oauth['provider'])
 
-      error_message = @user.errors.full_messages.to_sentence
-
-      return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
+      super
     end
 
-    def fail_ldap_login
-      log_failed_login(@user.username, oauth['provider'])
-
-      flash[:alert] = 'Access denied for your LDAP account.'
-
-      redirect_to new_user_session_path
-    end
+    alias_method :fail_ldap_login, :fail_login
 
     private
 
