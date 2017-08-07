@@ -9,7 +9,7 @@
 %hr
 
 - if Gitlab::Geo.license_allows?
-  = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal' } do |f|
+  = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal js-geo-node-form' } do |f|
     = render partial: 'form', locals: { form: f, geo_node: @node }
     .form-actions
       = f.submit 'Add Node', class: 'btn btn-create'
@@ -33,6 +33,12 @@
               %span.help-block Primary node
             - else
               = status_loading_icon
+              - if node.restricted_project_ids
+                %p
+                  %span.help-block
+                    Namespaces to replicate:
+                    %strong.node-info
+                      = node_selected_namespaces_to_replicate(node)
               .js-geo-node-status{ style: 'display: none' }
                 - if node.enabled?
                   %p

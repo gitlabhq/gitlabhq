@@ -38,14 +38,15 @@ module Gitlab
           # Projects without corresponding ProjectRegistry in the DR database
           # See: https://robots.thoughtbot.com/postgres-foreign-data-wrapper (requires PG 9.6)
           $stdout.print 'Searching for non replicated projects...'
-          Project.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
+
+          Gitlab::Geo.current_node.projects.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
             $stdout.print '.'
 
             project_ids = batch.map(&:id)
             existing = ::Geo::ProjectRegistry.where(project_id: project_ids).pluck(:project_id)
             missing_projects = project_ids - existing
 
-            Gitlab::Geo::Logger.debug(
+            Gitlab::Geo::Logger.info(
               class: self.class.name,
               message: "Missing projects",
               projects: missing_projects,
@@ -60,12 +61,15 @@ module Gitlab
         end
 
         def handle_events(batch)
-          batch.each do |event|
-            # Update repository
-            if event.repository_updated_event
-              handle_repository_update(event.repository_updated_event)
-            elsif event.repository_deleted_event
-              handle_repository_delete(event.repository_deleted_event)
+          batch.each do |event_log|
+            next unless can_replay?(event_log)
+
+            if event_log.repository_updated_event
+              handle_repository_update(event_log.repository_updated_event)
+            elsif event_log.repository_deleted_event
+              handle_repository_delete(event_log.repository_deleted_event)
+            elsif event_log.repositories_changed_event
+              handle_repositories_changed(event_log.repositories_changed_event)
             end
           end
         end
@@ -86,6 +90,17 @@ module Gitlab
           $stdout.puts 'Exiting...'
 
           @exit = true
+        end
+
+        def exit?
+          @exit
+        end
+
+        def can_replay?(event_log)
+          return true if event_log.project_id.nil?
+          return true if Gitlab::Geo.current_node.restricted_project_ids.nil?
+
+          Gitlab::Geo.current_node.restricted_project_ids.include?(event_log.project_id)
         end
 
         def handle_repository_update(updated_event)
@@ -129,8 +144,24 @@ module Gitlab
           ::Geo::ProjectRegistry.where(project_id: deleted_event.project_id).delete_all
         end
 
-        def exit?
-          @exit
+        def handle_repositories_changed(changed_event)
+          return unless Gitlab::Geo.current_node.id == changed_event.geo_node_id
+
+          job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, changed_event.geo_node_id)
+
+          if job_id
+            log_info('Scheduled repositories clean up for Geo node', geo_node_id: changed_event.geo_node_id, job_id: job_id)
+          else
+            log_error('Could not schedule repositories clean up for Geo node', geo_node_id: changed_event.geo_node_id)
+          end
+        end
+
+        def log_info(message, params = {})
+          Gitlab::Geo::Logger.info({ class: self.class.name, message: message }.merge(params))
+        end
+
+        def log_error(message, params = {})
+          Gitlab::Geo::Logger.error({ class: self.class.name, message: message }.merge(params))
         end
       end
     end

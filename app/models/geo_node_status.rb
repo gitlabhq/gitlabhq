@@ -15,7 +15,7 @@ class GeoNodeStatus
   end
 
   def repositories_count
-    @repositories_count ||= Project.count
+    @repositories_count ||= repositories.count
   end
 
   def repositories_count=(value)
@@ -23,7 +23,7 @@ class GeoNodeStatus
   end
 
   def repositories_synced_count
-    @repositories_synced_count ||= Geo::ProjectRegistry.synced.count
+    @repositories_synced_count ||= project_registries.synced.count
   end
 
   def repositories_synced_count=(value)
@@ -35,7 +35,7 @@ class GeoNodeStatus
   end
 
   def repositories_failed_count
-    @repositories_failed_count ||= Geo::ProjectRegistry.failed.count
+    @repositories_failed_count ||= project_registries.failed.count
   end
 
   def repositories_failed_count=(value)
@@ -43,7 +43,7 @@ class GeoNodeStatus
   end
 
   def lfs_objects_count
-    @lfs_objects_count ||= LfsObject.count
+    @lfs_objects_count ||= lfs_objects.count
   end
 
   def lfs_objects_count=(value)
@@ -51,7 +51,15 @@ class GeoNodeStatus
   end
 
   def lfs_objects_synced_count
-    @lfs_objects_synced_count ||= Geo::FileRegistry.where(file_type: :lfs).count
+    @lfs_objects_synced_count ||= begin
+      relation = Geo::FileRegistry.where(file_type: :lfs)
+
+      if Gitlab::Geo.current_node.restricted_project_ids
+        relation = relation.where(file_id: lfs_objects.pluck(:id))
+      end
+
+      relation.count
+    end
   end
 
   def lfs_objects_synced_count=(value)
@@ -63,7 +71,7 @@ class GeoNodeStatus
   end
 
   def attachments_count
-    @attachments_count ||= Upload.count
+    @attachments_count ||= attachments.count
   end
 
   def attachments_count=(value)
@@ -72,7 +80,7 @@ class GeoNodeStatus
 
   def attachments_synced_count
     @attachments_synced_count ||= begin
-      upload_ids = Upload.pluck(:id)
+      upload_ids = attachments.pluck(:id)
       synced_ids = Geo::FileRegistry.where(file_type: [:attachment, :avatar, :file]).pluck(:file_id)
 
       (synced_ids & upload_ids).length
@@ -93,5 +101,21 @@ class GeoNodeStatus
     return 0 if total.zero?
 
     (synced.to_f / total.to_f) * 100.0
+  end
+
+  def attachments
+    @attachments ||= Gitlab::Geo.current_node.uploads
+  end
+
+  def lfs_objects
+    @lfs_objects ||= Gitlab::Geo.current_node.lfs_objects
+  end
+
+  def project_registries
+    @project_registries ||= Gitlab::Geo.current_node.project_registries
+  end
+
+  def repositories
+    @repositories ||= Gitlab::Geo.current_node.projects
   end
 end
