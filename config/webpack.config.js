@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
-var StatsPlugin = require('stats-webpack-plugin');
+var StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -127,12 +127,18 @@ var config = {
   plugins: [
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
-    new StatsPlugin('manifest.json', {
-      chunkModules: false,
-      source: false,
-      chunks: false,
-      modules: false,
-      assets: true
+    new StatsWriterPlugin({
+      filename: 'manifest.json',
+      transform: function(data, opts) {
+        var stats = opts.compiler.getStats().toJson({
+          chunkModules: false,
+          source: false,
+          chunks: false,
+          modules: false,
+          assets: true
+        });
+        return JSON.stringify(stats, null, 2);
+      }
     }),
 
     // prevent pikaday from including moment.js
