@@ -142,6 +142,10 @@
                     %a{ href: "#", data: { id: weight, none: weight == Issue::WEIGHT_NONE }, class: ("is-active" if params[:weight] == weight.to_s) }
                       = weight
 
+      - if issuable.has_attribute?(:confidential)
+        %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
+        #js-confidential-entry-point
+
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
         - subscribed = issuable.subscribed?(current_user, @project)

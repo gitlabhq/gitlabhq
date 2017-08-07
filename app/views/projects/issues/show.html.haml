@@ -22,7 +22,8 @@
       = icon('angle-double-left')
 
     .issuable-meta
-      = confidential_icon(@issue)
+      - if @issue.confidential
+        = icon('eye-slash', class: 'is-confidential')
       = issuable_meta(@issue, @project, "Issue")
 
   .issuable-actions

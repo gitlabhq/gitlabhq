@@ -5,6 +5,30 @@
   margin-right: auto;
 }
 
+.is-confidential {
+  color: $orange-600;
+  background-color: $orange-50;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 0 3px 0 -4px;
+}
+
+.is-not-confidential {
+  border-radius: 3px;
+  padding: 5px;
+  margin: 0 3px 0 -4px;
+}
+
+.confidentiality {
+  .is-not-confidential {
+    margin: auto;
+  }
+
+  .is-confidential {
+    margin: auto;
+  }
+}
+
 .limit-container-width {
   .detail-page-header,
   .page-content-header,
