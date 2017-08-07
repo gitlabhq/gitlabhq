@@ -51,18 +51,17 @@ module Gitlab
         end
 
         # Returns an array of Blob instances, specified in blob_references as
-        # [[commit_sha, path], [commit_sha, path], ...]. If limit < 0 then the
-        # full blob contents are returned. If limit >= 0 then each blob will
+        # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
+        # full blob contents are returned. If blob_size_limit >= 0 then each blob will
         # contain no more than limit bytes in its data attribute.
         # 
         # Keep in mind that this method may allocate a lot of memory. It is up
-        # to the caller to limit the number of blobs and/or the content limit
-        # for the individual blobs.
+        # to the caller to limit the number of blobs and blob_size_limit.
         #
-        def batch(repository, blob_references, limit: nil)
-          limit ||= MAX_DATA_DISPLAY_SIZE
+        def batch(repository, blob_references, blob_size_limit: nil)
+          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
           blob_references.map do |sha, path|
-            find_by_rugged(repository, sha, path, limit: limit)
+            find_by_rugged(repository, sha, path, limit: blob_size_limit)
           end
         end
 

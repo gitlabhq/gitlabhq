@@ -181,10 +181,10 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
 
     context 'limiting' do
-      subject { described_class.batch(repository, blob_references, limit: limit) }
+      subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
 
       context 'default' do
-        let(:limit) { nil }
+        let(:blob_size_limit) { nil }
 
         it 'limits to MAX_DATA_DISPLAY_SIZE' do
           stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
@@ -194,19 +194,19 @@ describe Gitlab::Git::Blob, seed_helper: true do
       end
 
       context 'positive' do
-        let(:limit) { 10 }
+        let(:blob_size_limit) { 10 }
 
         it { expect(subject.first.data.size).to eq(10) }
       end
 
       context 'zero' do
-        let(:limit) { 0 }
+        let(:blob_size_limit) { 0 }
 
         it { expect(subject.first.data).to eq('') }
       end
 
       context 'negative' do
-        let(:limit) { -1 }
+        let(:blob_size_limit) { -1 }
 
         it 'ignores MAX_DATA_DISPLAY_SIZE' do
           stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
