@@ -134,7 +134,7 @@ describe('RepoCommitSection', () => {
     });
   });
 
-  fdescribe('methods', () => {
+  describe('methods', () => {
     describe('resetCommitState', () => {
       it('should reset store vars and scroll to top', () => {
         const vm = {

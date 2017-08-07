@@ -48,7 +48,7 @@ describe('RepoTabs', () => {
     expect(vm.$el.classList.contains('overflown')).toBeFalsy();
   });
 
-  fdescribe('methods', () => {
+  describe('methods', () => {
     describe('xClicked', () => {
       it('calls removeFromOpenedFiles with file obj', () => {
         const file = {};
