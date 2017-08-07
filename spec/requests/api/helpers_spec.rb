@@ -13,9 +13,12 @@ describe API::Helpers do
   let(:env) { { 'REQUEST_METHOD' => 'GET' } }
   let(:request) { Rack::Request.new(env) }
   let(:header) { }
+  let(:route_authentication_setting) { {} }
 
   before do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
+    allow_any_instance_of(self.class).to receive(:route_authentication_setting)
+      .and_return(route_authentication_setting)
   end
 
   def set_env(user_or_token, identifier)
@@ -202,11 +205,15 @@ describe API::Helpers do
     end
 
     describe "when authenticating using a job token" do
-      let(:job) { create(:ci_build) }
-  
+      let(:job) { create(:ci_build, user: current_user) }
+      let(:route_authentication_setting) { { job_token_allowed: true } }
+
+      before do
+        allow_any_instance_of(API::Helpers).to receive(:doorkeeper_guard).and_return(nil)
+      end
+
       it "returns nil for an invalid token" do
         env[API::APIGuard::JOB_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
 
         expect(current_user).to be_nil
       end
@@ -223,13 +230,6 @@ describe API::Helpers do
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
 
         expect(current_user).to be_nil
-      end
-
-      it "authenticates as user when route is allowed" do
-        env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
-        route_setting(:authentication) = { job_token_allowed: true }
-
-        expect(current_user).to eq(user)
       end
     end
 

@@ -207,7 +207,6 @@ describe API::Jobs do
     context 'normal authentication' do
       before do
         stub_artifacts_object_storage
-        job
         get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
       end
 
@@ -248,16 +247,16 @@ describe API::Jobs do
       before do
         get api("/projects/#{project.id}/jobs/#{job.id}/artifacts"), job_token: job.token
       end
-      
+
       context 'user is developer' do
         let(:api_user) { user }
-      
+
         it_behaves_like 'downloads artifact'
       end
 
       context 'user is admin, but not member' do
         let(:api_user) { create(:admin) }
-      
+
         it 'does not allow to see that artfiact is present' do
           expect(response).to have_http_status(404)
         end
@@ -267,7 +266,7 @@ describe API::Jobs do
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter }
-    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+    let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
 
     before do
       stub_artifacts_object_storage
@@ -338,7 +337,7 @@ describe API::Jobs do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline, user: api_user) }
 
           it 'returns location redirect' do
             expect(response).to have_http_status(302)
@@ -381,7 +380,7 @@ describe API::Jobs do
           get api("/projects/#{project.id}/jobs/artifacts/master/download"), job: job.name, job_token: job.token
         end
 
-        context 'when user is reporter' do
+        context 'when user is eporter' do
           it_behaves_like 'a valid file'
         end
 

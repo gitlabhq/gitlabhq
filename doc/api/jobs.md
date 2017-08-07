@@ -328,7 +328,7 @@ Example requests:
 - Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
 
     ```
-    curl --header -form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    curl --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
     ```
 
 Response:
@@ -380,7 +380,7 @@ Example requests:
 - Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
 
     ```
-    curl --header -form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    curl --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
     ```
 
 Example response:

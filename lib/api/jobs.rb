@@ -248,7 +248,7 @@ module API
       end
 
       def check_cross_project_pipelines_feature!
-        not_found!('Project') if job_token_authentication? && project.feature_available?(:cross_project_pipelines)
+        not_found!('Project') if job_token_authentication? && @project.feature_available?(:cross_project_pipelines)
       end
     end
   end
