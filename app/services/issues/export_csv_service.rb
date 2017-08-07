@@ -21,7 +21,7 @@ module Issues
 
     def csv_builder
       @csv_builder ||=
-        CsvBuilder.new(@issues.includes(:author, :assignees), header_to_value_hash)
+        CsvBuilder.new(@issues.includes(:author, :assignees, :timelogs), header_to_value_hash)
     end
 
     private
@@ -43,7 +43,9 @@ module Issues
        'Updated At (UTC)' => -> (issue) { issue.updated_at&.to_s(:csv) },
        'Closed At (UTC)' => -> (issue) { issue.closed_at&.to_s(:csv) },
        'Milestone' => -> (issue) { issue.milestone&.title },
-       'Labels' => -> (issue) { @labels[issue.id].sort.join(',').presence }
+       'Labels' => -> (issue) { @labels[issue.id].sort.join(',').presence },
+       'Time Estimate' => ->(issue) { issue.time_estimate.to_s(:csv) },
+       'Time Spent' => -> (issue) { issue.timelogs.map(&:time_spent).inject(0, :+)}
       }
     end
   end
