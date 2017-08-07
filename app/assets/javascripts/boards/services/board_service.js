@@ -71,12 +71,12 @@ class BoardService {
     return this.issues.get(data);
   }
 
-  moveIssue (id, from_list_id = null, to_list_id = null, move_before_iid = null, move_after_iid = null) {
+  moveIssue (id, from_list_id = null, to_list_id = null, move_before_id = null, move_after_id = null) {
     return this.issue.update({ id }, {
       from_list_id,
       to_list_id,
-      move_before_iid,
-      move_after_iid,
+      move_before_id,
+      move_after_id,
     });
   }
 

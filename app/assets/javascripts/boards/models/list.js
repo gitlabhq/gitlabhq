@@ -110,12 +110,12 @@ class List {
     return gl.boardService.newIssue(this.id, issue)
       .then(resp => resp.json())
       .then((data) => {
-        issue.id = data.iid;
+        issue.id = data.id;
         issue.milestone = data.milestone;
 
         if (this.issuesSize > 1) {
-          const moveBeforeIid = this.issues[1].id;
-          gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeIid);
+          const moveBeforeId = this.issues[1].id;
+          gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeId);
         }
       });
   }
@@ -127,19 +127,19 @@ class List {
   }
 
   addIssue (issue, listFrom, newIndex) {
-    let moveBeforeIid = null;
-    let moveAfterIid = null;
+    let moveBeforeId = null;
+    let moveAfterId = null;
 
     if (!this.findIssue(issue.id)) {
       if (newIndex !== undefined) {
         this.issues.splice(newIndex, 0, issue);
 
         if (this.issues[newIndex - 1]) {
-          moveBeforeIid = this.issues[newIndex - 1].id;
+          moveBeforeId = this.issues[newIndex - 1].id;
         }
 
         if (this.issues[newIndex + 1]) {
-          moveAfterIid = this.issues[newIndex + 1].id;
+          moveAfterId = this.issues[newIndex + 1].id;
         }
       } else {
         this.issues.push(issue);
@@ -152,23 +152,23 @@ class List {
       if (listFrom) {
         this.issuesSize += 1;
 
-        this.updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid);
+        this.updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId);
       }
     }
   }
 
-  moveIssue (issue, oldIndex, newIndex, moveBeforeIid, moveAfterIid) {
+  moveIssue (issue, oldIndex, newIndex, moveBeforeId, moveAfterId) {
     this.issues.splice(oldIndex, 1);
     this.issues.splice(newIndex, 0, issue);
 
-    gl.boardService.moveIssue(issue.id, null, null, moveBeforeIid, moveAfterIid)
+    gl.boardService.moveIssue(issue.id, null, null, moveBeforeId, moveAfterId)
       .catch(() => {
         // TODO: handle request error
       });
   }
 
-  updateIssueLabel(issue, listFrom, moveBeforeIid, moveAfterIid) {
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeIid, moveAfterIid)
+  updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId) {
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId)
       .catch(() => {
         // TODO: handle request error
       });

@@ -12,6 +12,7 @@ export default {
     groupId: {
       type: Number,
       required: false,
+      default: 0,
     },
     disabled: {
       type: Boolean,
