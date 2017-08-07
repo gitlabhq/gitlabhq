@@ -126,12 +126,12 @@
         }
 
         a {
+          @include str-truncated(100px);
           color: $black;
           display: inline-block;
           width: 100px;
           text-align: center;
           vertical-align: middle;
-          @include str-truncated(100px);
 
           &.close {
             width: auto;

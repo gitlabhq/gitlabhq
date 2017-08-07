@@ -6,20 +6,24 @@ import Api from '~/api';
 
 describe('RepoCommitSection', () => {
   const branch = 'master';
+  const projectUrl = 'projectUrl';
   const openedFiles = [{
     id: 0,
     changed: true,
-    url: `${branch}/url0`,
+    url: `/namespace/${projectUrl}/blob/${branch}/dir/file0.ext`,
     newContent: 'a',
   }, {
     id: 1,
     changed: true,
-    url: `${branch}/url1`,
+    url: `/namespace/${projectUrl}/blob/${branch}/dir/file1.ext`,
     newContent: 'b',
   }, {
     id: 2,
+    url: `/namespace/${projectUrl}/blob/${branch}/dir/file2.ext`,
     changed: false,
   }];
+
+  RepoStore.projectUrl = projectUrl;
 
   function createComponent() {
     const RepoCommitSection = Vue.extend(repoCommitSection);
@@ -126,6 +130,28 @@ describe('RepoCommitSection', () => {
           .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[1].url, branch));
 
         done();
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('resetCommitState', () => {
+      it('should reset store vars and scroll to top', () => {
+        const vm = {
+          submitCommitsLoading: true,
+          changedFiles: new Array(10),
+          openedFiles: new Array(10),
+          commitMessage: 'commitMessage',
+          editMode: true,
+        };
+
+        repoCommitSection.methods.resetCommitState.call(vm);
+
+        expect(vm.submitCommitsLoading).toEqual(false);
+        expect(vm.changedFiles).toEqual([]);
+        expect(vm.openedFiles).toEqual([]);
+        expect(vm.commitMessage).toEqual('');
+        expect(vm.editMode).toEqual(false);
       });
     });
   });
