@@ -30,7 +30,6 @@ describe('RepoFileButtons', () => {
     const history = vm.$el.querySelector('.history');
 
     expect(vm.$el.id).toEqual('repo-file-buttons');
-    expect(vm.$el.style.borderBottom).toEqual('1px solid rgb(31, 120, 209)');
     expect(raw.href).toMatch(`/${activeFile.raw_path}`);
     expect(raw.textContent).toEqual('Raw');
     expect(blame.href).toMatch(`/${activeFile.blame_path}`);
@@ -39,20 +38,6 @@ describe('RepoFileButtons', () => {
     expect(history.textContent).toEqual('History');
     expect(vm.$el.querySelector('.permalink').textContent).toEqual('Permalink');
     expect(vm.$el.querySelector('.preview').textContent).toEqual(activeFileLabel);
-  });
-
-  it('renders a white border if not editMode', () => {
-    const activeFile = {
-      extension: 'md',
-      url: 'url',
-    };
-    RepoStore.openedFiles = new Array(1);
-    RepoStore.activeFile = activeFile;
-    RepoStore.editMode = false;
-
-    const vm = createComponent();
-
-    expect(vm.$el.style.borderBottom).toEqual('1px solid rgb(240, 240, 240)');
   });
 
   it('triggers rawPreviewToggle on preview click', () => {
