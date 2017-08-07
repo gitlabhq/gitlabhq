@@ -47,7 +47,7 @@ describe 'Promotions', js: true do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
         project.team << [user, :master]
-        project.team << [developer, :developer]
+        project.team << [user, :developer]
       end
 
       it 'should have the Upgrade your plan button' do
