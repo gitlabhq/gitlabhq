@@ -315,7 +315,7 @@ describe Auth::ContainerRegistryAuthenticationService do
   end
 
   context 'delete authorized as master' do
-    let(:current_project) { create(:empty_project) }
+    let(:current_project) { create(:project) }
     let(:current_user) { create(:user) }
 
     let(:authentication_abilities) do

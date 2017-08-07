@@ -104,7 +104,7 @@ module Auth
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
       when '*'
-        user_can_delete?(requested_project)
+        user_can_admin?(requested_project)
       else
         false
       end
@@ -122,7 +122,7 @@ module Auth
         (requested_project == project || can?(current_user, :build_read_container_image, requested_project))
     end
 
-    def user_can_delete?(requested_project)
+    def user_can_admin?(requested_project)
       has_authentication_ability?(:admin_container_image) &&
         can?(current_user, :admin_container_image, requested_project)
     end
