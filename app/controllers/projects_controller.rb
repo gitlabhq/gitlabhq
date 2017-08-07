@@ -26,13 +26,9 @@ class ProjectsController < Projects::ApplicationController
     render 'edit'
   end
 
+
   def create
-    @project =
-      if project_from_template?
-        ::Projects::CreateFromTemplateService.new(current_user, project_params).execute
-      else
-        ::Projects::CreateService.new(current_user, project_params).execute
-      end
+    @project = ::Projects::CreateService.new(current_user, project_params).execute
 
     if @project.saved?
       cookies[:issue_board_welcome_hidden] = { path: project_path(@project), value: nil, expires: Time.at(0) }
@@ -349,10 +345,6 @@ class ProjectsController < Projects::ApplicationController
     project.repository.expire_exists_cache
 
     false
-  end
-
-  def project_from_template?
-    project_params[:template_name]&.present?
   end
 
   def project_view_files?

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-feature 'Project', feature: true do
+feature 'Project' do
   describe 'creating from template' do
     let(:user)    { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
@@ -23,9 +22,6 @@ feature 'Project', feature: true do
     end
   end
 
-=======
-feature 'Project' do
->>>>>>> master
   describe 'description' do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }

@@ -24,16 +24,17 @@ namespace :gitlab do
         path: template.title,
         skip_wiki: true
       }
+
       puts "Creating project for #{template.name}"
-      project = Projects::CreateService.new(admin, project).execute
+      project = Projects::CreateService.new(admin, params).execute
 
       loop do
-        if project.import_status == "finished"
+        if project.finished?
           puts "Import finished for #{template.name}"
           break
         end
 
-        if project.import_status == "failed"
+        if project.failed?
           puts "Failed to import from #{project_params[:import_url]}".red
           exit(1)
         end

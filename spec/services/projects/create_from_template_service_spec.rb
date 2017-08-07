@@ -5,7 +5,7 @@ describe Projects::CreateFromTemplateService do
   let(:project_params) do
     {
       path: user.to_param,
-      template_title: 'rails'
+      template_name: 'rails'
     }
   end
 
@@ -21,6 +21,6 @@ describe Projects::CreateFromTemplateService do
     project = subject.execute
 
     expect(project).to be_saved
-    expect(project.import_status).to eq('scheduled')
+    expect(project.scheduled?).to be(true)
   end
 end

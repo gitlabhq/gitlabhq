@@ -31,7 +31,7 @@ describe Gitlab::ProjectTemplate do
   describe 'instance methods' do
     subject { described_class.new('phoenix', 'Phoenix Framework') }
 
-    it { is_expected.to respond_to(:logo_path, :file, :archive_path) }
+    it { is_expected.to respond_to(:logo, :file, :archive_path) }
   end
 
   describe 'validate all templates' do
