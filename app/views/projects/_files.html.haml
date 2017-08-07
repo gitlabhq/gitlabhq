@@ -1,7 +1,7 @@
 - commit = local_assigns.fetch(:commit) { @repository.commit }
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
-#tree-holder.tree-holder.clearfix
+.tree-holder.clearfix
   .nav-block
     = render 'projects/tree/tree_header', tree: @tree
 
