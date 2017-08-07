@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe NotificationService do
-  include EmailHelpers
-
+describe NotificationService, :mailer do
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
@@ -14,7 +12,6 @@ describe NotificationService do
 
   shared_examples 'notifications for new mentions' do
     def send_notifications(*new_mentions)
-      reset_delivered_emails!
       notification.send(notification_method, mentionable, new_mentions, @u_disabled)
     end
 
@@ -137,11 +134,10 @@ describe NotificationService do
       describe '#new_note' do
         it do
           add_users_with_subscription(note.project, issue)
+          reset_delivered_emails!
 
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
-
-          reset_delivered_emails!
 
           notification.new_note(note)
 
@@ -165,8 +161,9 @@ describe NotificationService do
 
         it "emails the note author if they've opted into notifications about their activity" do
           add_users_with_subscription(note.project, issue)
-          note.author.notified_of_own_activity = true
           reset_delivered_emails!
+
+          note.author.notified_of_own_activity = true
 
           notification.new_note(note)
 
@@ -309,6 +306,11 @@ describe NotificationService do
 
       before do
         build_team(note.project)
+
+        # make sure these users can read the project snippet!
+        project.add_guest(@u_guest_watcher)
+        project.add_guest(@u_guest_custom)
+
         note.project.add_master(note.author)
         reset_delivered_emails!
       end

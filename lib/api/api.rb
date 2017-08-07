@@ -95,6 +95,7 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
+    mount ::API::CircuitBreakers
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys

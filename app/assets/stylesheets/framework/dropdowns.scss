@@ -574,6 +574,7 @@
 
 .dropdown-input-field,
 .default-dropdown-input {
+  display: block;
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -721,4 +722,58 @@
 .pika-single.animate-picker.is-bound.is-hidden {
   @include set-invisible;
   overflow: hidden;
+}
+
+// TODO: change global style and remove mixin
+@mixin new-style-dropdown {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    .divider {
+      margin: 6px 0;
+    }
+
+    li {
+      padding: 0 1px;
+
+      &.dropdown-header {
+        padding: 8px 16px;
+      }
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+
+        &.is-active {
+          font-weight: inherit;
+
+          &::before {
+            top: 16px;
+          }
+        }
+      }
+    }
+
+    &.dropdown-menu-selectable {
+      li {
+        a {
+          padding: 8px 40px;
+
+          &.is-active::before {
+            left: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  .dropdown-menu-align-right {
+    margin-top: 2px;
+  }
 }

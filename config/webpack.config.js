@@ -112,9 +112,12 @@ var config = {
         options: { limit: 2048 },
       },
       {
-        test: /\.(worker\.js|pdf|bmpr)$/,
+        test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,
         exclude: /node_modules/,
         loader: 'file-loader',
+        options: {
+          name: '[name].[hash].[ext]',
+        }
       },
       {
         test: /locale\/\w+\/(.*)\.js$/,

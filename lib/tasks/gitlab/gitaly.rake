@@ -21,7 +21,7 @@ namespace :gitlab do
         create_gitaly_configuration
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
-          Bundler.with_original_env { run_command!(%w[/usr/bin/env -u BUNDLE_GEMFILE] + [command]) }
+          Bundler.with_original_env { run_command!([command]) }
         end
       end
     end
@@ -66,6 +66,7 @@ namespace :gitlab do
       config = { socket_path: address.sub(%r{\Aunix:}, ''), storage: storages }
       config[:auth] = { token: 'secret' } if Rails.env.test?
       config[:'gitaly-ruby'] = { dir: File.join(Dir.pwd, 'ruby') } if gitaly_ruby
+      config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
       TOML.dump(config)
     end
 

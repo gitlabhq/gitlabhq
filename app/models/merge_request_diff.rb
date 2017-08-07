@@ -85,11 +85,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
-      @diffs_no_whitespace ||=
-        Gitlab::Git::Compare.new(
-          repository.raw_repository,
-          safe_start_commit_sha,
-          head_commit_sha).diffs(options)
+      @diffs_no_whitespace ||= compare.diffs(options)
     else
       @raw_diffs ||= {}
       @raw_diffs[options] ||= load_diffs(options)

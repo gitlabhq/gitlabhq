@@ -1976,4 +1976,28 @@ describe User do
       expect(user.allow_password_authentication?).to be_falsey
     end
   end
+
+  describe '#personal_projects_count' do
+    it 'returns the number of personal projects using a single query' do
+      user = build(:user)
+      projects = double(:projects, count: 1)
+
+      expect(user).to receive(:personal_projects).once.and_return(projects)
+
+      2.times do
+        expect(user.personal_projects_count).to eq(1)
+      end
+    end
+  end
+
+  describe '#projects_limit_left' do
+    it 'returns the number of projects that can be created by the user' do
+      user = build(:user)
+
+      allow(user).to receive(:projects_limit).and_return(10)
+      allow(user).to receive(:personal_projects_count).and_return(5)
+
+      expect(user.projects_limit_left).to eq(5)
+    end
+  end
 end

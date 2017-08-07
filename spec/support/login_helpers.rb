@@ -1,3 +1,5 @@
+require_relative 'devise_helpers'
+
 module LoginHelpers
   include DeviseHelpers
 

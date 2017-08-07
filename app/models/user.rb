@@ -47,6 +47,11 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
+  # devise overrides #inspect, so we manually use the Referable one
+  def inspect
+    referable_inspect
+  end
+
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
@@ -627,7 +632,11 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_left
-    projects_limit - personal_projects.count
+    projects_limit - personal_projects_count
+  end
+
+  def personal_projects_count
+    @personal_projects_count ||= personal_projects.count
   end
 
   def projects_limit_percent
@@ -641,16 +650,14 @@ class User < ActiveRecord::Base
     events = events.where(project_id: project_ids) if project_ids
 
     # Use the latest event that has not been pushed or merged recently
-    events.recent.find do |event|
-      project = Project.find_by_id(event.project_id)
-      next unless project
+    events.includes(:project).recent.find do |event|
+      next unless event.project.repository.branch_exists?(event.branch_name)
 
-      if project.repository.branch_exists?(event.branch_name)
-        merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
-          .where(source_project_id: project.id,
-                 source_branch: event.branch_name)
-        merge_requests.empty?
-      end
+      merge_requests = MergeRequest.where("created_at >= ?", event.created_at)
+        .where(source_project_id: event.project.id,
+               source_branch: event.branch_name)
+
+      merge_requests.empty?
     end
   end
 

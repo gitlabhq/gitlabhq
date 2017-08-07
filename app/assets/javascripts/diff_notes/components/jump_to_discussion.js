@@ -94,7 +94,7 @@ const JumpToDiscussion = Vue.extend({
             hasDiscussionsToJumpTo = false;
           }
         }
-      } else if (activeTab !== 'notes') {
+      } else if (activeTab !== 'show') {
         // If we are on the commits or builds tabs,
         // there are no discussions to jump to.
         hasDiscussionsToJumpTo = false;
@@ -103,12 +103,12 @@ const JumpToDiscussion = Vue.extend({
       if (!hasDiscussionsToJumpTo) {
         // If there are no discussions to jump to on the current page,
         // switch to the notes tab and jump to the first disucssion there.
-        window.mrTabs.activateTab('notes');
-        activeTab = 'notes';
+        window.mrTabs.activateTab('show');
+        activeTab = 'show';
         jumpToFirstDiscussion = true;
       }
 
-      if (activeTab === 'notes') {
+      if (activeTab === 'show') {
         discussionsSelector = '.discussion[data-discussion-id]';
         discussionIdsInScope = discussionIdsForElements($(discussionsSelector));
       }
@@ -156,7 +156,7 @@ const JumpToDiscussion = Vue.extend({
 
       let $target = $(`${discussionsSelector}[data-discussion-id="${nextUnresolvedDiscussionId}"]`);
 
-      if (activeTab === 'notes') {
+      if (activeTab === 'show') {
         $target = $target.closest('.note-discussion');
 
         // If the next discussion is closed, toggle it open.

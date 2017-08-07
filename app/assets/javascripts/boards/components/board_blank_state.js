@@ -1,5 +1,6 @@
 /* global ListLabel */
 
+import _ from 'underscore';
 import Cookies from 'js-cookie';
 
 const Store = gl.issueBoards.BoardsStore;

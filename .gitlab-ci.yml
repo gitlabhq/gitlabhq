@@ -66,16 +66,18 @@ stages:
     - mysql:latest
     - redis:alpine
 
-.only-master-and-ee-or-mysql: &only-master-and-ee-or-mysql
+.only-if-want-mysql: &only-if-want-mysql
   only:
     - /mysql/
     - /-stable/
     - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
     - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
     - tags@gitlab-org/gitlab-ce
+    - tags@gitlab-org/gitlab-ee
     - tags@gitlab/gitlabhq
-    - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitlab-ee
+    - tags@gitlab/gitlab-ee
 
 # Skip all jobs except the ones that begin with 'docs/'.
 # Used for commits including ONLY documentation changes.
@@ -114,7 +116,7 @@ stages:
 .rspec-knapsack-mysql: &rspec-knapsack-mysql
   <<: *rspec-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
+  <<: *only-if-want-mysql
   <<: *except-docs
 
 .spinach-knapsack: &spinach-knapsack
@@ -146,7 +148,7 @@ stages:
 .spinach-knapsack-mysql: &spinach-knapsack-mysql
   <<: *spinach-knapsack
   <<: *use-mysql
-  <<: *only-master-and-ee-or-mysql
+  <<: *only-if-want-mysql
   <<: *except-docs
 
 .only-canonical-masters: &only-canonical-masters

@@ -80,10 +80,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
 (function() {
   var Dispatcher;
 
-  $(function() {
-    return new Dispatcher();
-  });
-
   Dispatcher = (function() {
     function Dispatcher() {
       this.initSearch();
@@ -338,7 +334,6 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
@@ -351,6 +346,8 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:edit':
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
           break;
         case 'projects:imports:show':
           new ProjectImport();
@@ -511,7 +508,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           new gl.DueDateSelectors();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
@@ -640,4 +637,8 @@ import UserFeatureHelper from './helpers/user_feature_helper';
 
     return Dispatcher;
   })();
+
+  $(function() {
+    new Dispatcher();
+  });
 }).call(window);
