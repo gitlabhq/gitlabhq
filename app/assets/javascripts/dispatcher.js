@@ -332,7 +332,6 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
