@@ -580,7 +580,6 @@ import GpgBadges from './gpg_badges';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
-              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();
