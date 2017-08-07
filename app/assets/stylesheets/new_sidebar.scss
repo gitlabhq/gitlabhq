@@ -8,8 +8,8 @@ $active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
-$hover-background: $indigo-700;
-$hover-color: $white-light;
+$hover-background: $white-light;
+$hover-color: $gl-text-color;
 $inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
 
@@ -31,6 +31,7 @@ $new-sidebar-width: 220px;
 
 .context-header {
   position: relative;
+  margin-right: 2px;
 
   a {
     border-bottom: 1px solid $border-color;
@@ -43,22 +44,16 @@ $new-sidebar-width: 220px;
     @media (max-width: $screen-xs-max) {
       padding-right: 30px;
     }
+  }
 
-    &:hover {
-      background-color: $hover-background;
-      color: $hover-color;
-      border-color: $hover-background;
+  &:hover,
+  a:hover {
+    background-color: $hover-background;
+    color: $hover-color;
 
-      .avatar-container {
-        border-color: transparent;
-      }
-
-      .settings-avatar {
-        background-color: $indigo-500;
-
-        i {
-          color: $hover-color;
-        }
+    .settings-avatar {
+      i {
+        color: $hover-color;
       }
     }
   }
@@ -74,13 +69,6 @@ $new-sidebar-width: 220px;
     text-overflow: ellipsis;
   }
 
-
-  &:hover {
-    .close-nav-button {
-      color: $white-light;
-    }
-  }
-
   .close-nav-button {
     display: none;
     position: absolute;
@@ -90,6 +78,7 @@ $new-sidebar-width: 220px;
     background-color: transparent;
     border: 0;
     padding: 0 10px;
+    color: $gl-text-color-secondary;
 
     @media (max-width: $screen-xs-max) {
       display: block;
@@ -233,7 +222,7 @@ $new-sidebar-width: 220px;
     &:not(.active) {
       > a {
         margin-left: 1px;
-        margin-right: 3px;
+        margin-right: 2px;
       }
 
       .sidebar-sub-level-items {
