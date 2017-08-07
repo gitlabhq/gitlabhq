@@ -8,5 +8,5 @@ class RedirectRoute < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  scope :matching_path_and_descendants, -> (path) { where('redirect_routes.path = ? OR redirect_routes.path LIKE ?', path, "#{sanitize_sql_like(path)}/%") }
+  scope :matching_path_and_descendants, -> (path) { where('LOWER(redirect_routes.path) = LOWER(?) OR LOWER(redirect_routes.path) LIKE LOWER(?)', path, "#{sanitize_sql_like(path)}/%") }
 end
