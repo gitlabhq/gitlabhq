@@ -68,6 +68,20 @@ module EE
       self
     end
 
+    def for_failed_login
+      ip = @details[:ip_address]
+      auth = @details[:with] || 'STANDARD'
+
+      @details = {
+        failed_login: auth.upcase,
+        author_name: @author,
+        target_details: @author,
+        ip_address: ip
+      }
+
+      self
+    end
+
     def security_event
       if admin_audit_log_enabled?
         add_security_event_admin_details!
@@ -91,6 +105,19 @@ module EE
 
     def admin_audit_log_enabled?
       License.feature_available?(:admin_audit_log)
+    end
+
+    def unauth_security_event
+      return unless audit_events_enabled?
+
+      @details.delete(:ip_address) unless admin_audit_log_enabled?
+
+      SecurityEvent.create(
+        author_id: -1,
+        entity_id: -1,
+        entity_type: 'User',
+        details: @details
+      )
     end
   end
 end

@@ -152,6 +152,14 @@ feature 'Login' do
         enter_code(user.current_otp)
         expect(current_path).to eq root_path
       end
+
+      it 'creates a security event after failed OAuth login' do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
+        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
+        gitlab_sign_in_via('saml', user, 'wrong-uid')
+
+        expect(SecurityEvent.where(entity_id: -1).count).to eq(1)
+      end
     end
   end
 
@@ -173,6 +181,8 @@ feature 'Login' do
 
       gitlab_sign_in(user)
       expect(page).to have_content('Invalid Login or password.')
+
+      expect(SecurityEvent.where(entity_id: -1).count).to eq(1)
     end
   end
 

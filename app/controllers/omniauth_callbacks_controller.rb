@@ -1,6 +1,7 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
+  prepend EE::OmniauthCallbacksController
 
   protect_from_forgery except: [:kerberos, :saml, :cas3]
 
@@ -34,14 +35,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if @user.two_factor_enabled?
         prompt_for_two_factor(@user)
       else
-        log_audit_event(@user, with: :ldap)
+        log_audit_event(@user, with: oauth['provider'])
         # The counter only gets incremented in `sign_in_and_redirect`
         show_ldap_sync_flash if @user.sign_in_count == 0
         sign_in_and_redirect(@user)
       end
     else
-      flash[:alert] = "Access denied for your LDAP account."
-      redirect_to new_user_session_path
+      fail_ldap_login
     end
   end
 
@@ -136,9 +136,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         sign_in_and_redirect(@user)
       end
     else
-      error_message = @user.errors.full_messages.to_sentence
-
-      return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
+      fail_login
     end
   end
 
@@ -157,6 +155,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def oauth
     @oauth ||= request.env['omniauth.auth']
+  end
+
+  def fail_login
+    error_message = @user.errors.full_messages.to_sentence
+
+    return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
+  end
+
+  def fail_ldap_login
+    flash[:alert] = 'Access denied for your LDAP account.'
+
+    redirect_to new_user_session_path
   end
 
   def log_audit_event(user, options = {})
