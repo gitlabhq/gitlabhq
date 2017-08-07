@@ -44,7 +44,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     describe '#readiness' do
       subject { described_class.readiness }
 
-      context 'storage has a tripped circuitbreaker' do
+      context 'storage has a tripped circuitbreaker', broken_storage: true do
         let(:repository_storages) { ['broken'] }
         let(:storages_paths) do
           Gitlab.config.repositories.storages
