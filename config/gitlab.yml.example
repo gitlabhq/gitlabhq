@@ -506,6 +506,11 @@ production: &base
         path: /home/git/repositories/
         gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
         # gitaly_token: 'special token' # Optional: override global gitaly.token for this storage.
+        failure_count_threshold: 10 # number of failures before stopping attempts
+        failure_wait_time: 30 # Seconds after an access failure before allowing access again
+        failure_reset_time: 1800 # Time in seconds to expire failures
+        storage_timeout: 5 # Time in seconds to wait before aborting a storage access attempt
+
 
   ## Backup settings
   backup:
@@ -638,6 +643,10 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+      broken:
+        path: tmp/tests/non-existent-repositories
+        gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+
   gitaly:
     enabled: true
     token: secret

@@ -107,6 +107,20 @@ describe ProjectsController do
       end
     end
 
+    context 'when the storage is not available', broken_storage: true do
+      let(:project) { create(:project, :broken_storage) }
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'renders a 503' do
+        get :show, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(503)
+      end
+    end
+
     context "project with empty repo" do
       let(:empty_project) { create(:project_empty_repo, :public) }
 

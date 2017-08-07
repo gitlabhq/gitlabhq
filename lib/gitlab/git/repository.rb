@@ -59,9 +59,15 @@ module Gitlab
       end
 
       def rugged
-        @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
+        @rugged ||= circuit_breaker.perform do
+          Rugged::Repository.new(path, alternates: alternate_object_directories)
+        end
       rescue Rugged::RepositoryError, Rugged::OSError
         raise NoRepository.new('no repository for such path')
+      end
+
+      def circuit_breaker
+        @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
 
       # Returns an Array of branch names
