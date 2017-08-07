@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
     head :forbidden, retry_after: Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window
   end
 
-  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable do |exception|
+  rescue_from Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable, Gitlab::Git::CommandError do |exception|
     Raven.capture_exception(exception) if sentry_enabled?
     log_exception(exception)
 

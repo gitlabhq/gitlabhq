@@ -30,7 +30,8 @@ describe Repository, models: true do
 
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
-      expect(exception.class).to be_in([Gitlab::Git::Storage::Inaccessible, GRPC::Unavailable])
+      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      expect(exception.class).to be_in(storage_exceptions)
     end
   end
 
@@ -158,6 +159,14 @@ describe Repository, models: true do
       subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
       it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
+          end
+        end
+      end
     end
 
     context 'when Gitaly feature last_commit_for_path is enabled' do
@@ -166,14 +175,6 @@ describe Repository, models: true do
 
     context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
       it_behaves_like 'getting last commit for path'
-    end
-    
-    describe 'when storage is broken', broken_storage: true  do
-      it 'should raise a storage error' do
-        expect_to_raise_storage_error do
-          broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
-        end
-      end
     end
   end
 
@@ -192,6 +193,14 @@ describe Repository, models: true do
         expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
         is_expected.to eq('c1acaa5')
       end
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
+          end
+        end
+      end
     end
 
     context 'when Gitaly feature last_commit_for_path is enabled' do
@@ -200,14 +209,6 @@ describe Repository, models: true do
 
     context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
       it_behaves_like 'getting last commit ID for path'
-    end
-
-    describe 'when storage is broken', broken_storage: true  do
-      it 'should raise a storage error' do
-        expect_to_raise_storage_error do
-          broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
-        end
-      end
     end
   end
 
