@@ -27,6 +27,19 @@ describe CommitsHelper do
     end
   end
 
+  describe 'commit_to_html' do
+    include Devise::Test::ControllerHelpers
+
+    let(:project) { create(:project, :repository) }
+    let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
+    let(:commit) { project.repository.commit(ref) }
+
+    it 'contains a GPG status' do
+      html = helper.commit_to_html(commit, ref, project)
+      expect(html).to have_css('.gpg-status-box.invalid')
+    end
+  end
+
   describe '#view_on_environment_button' do
     let(:project) { create(:project) }
     let(:environment) { create(:environment, external_url: 'http://example.com') }

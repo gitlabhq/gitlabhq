@@ -32,6 +32,28 @@ describe 'projects/tree/show' do
       render
       expect(rendered).to have_css('.js-project-refs-dropdown .dropdown-toggle-text', text: ref)
       expect(rendered).to have_css('.readme-holder')
+      expect(rendered).not_to have_css('.gpg-status-box')
+    end
+  end
+
+  context 'with last commit being signed' do
+    let(:ref) { GpgHelpers::SIGNED_COMMIT_SHA }
+    let(:commit) { repository.commit(ref) }
+    let(:path) { '' }
+    let(:tree) { repository.tree(commit.id, path) }
+
+    before do
+      assign(:commit, commit)
+      assign(:id, File.join(ref, path))
+      assign(:ref, ref)
+      assign(:path, path)
+      assign(:last_commit, commit)
+      assign(:tree, tree)
+    end
+
+    it 'displays GPG status' do
+      render
+      expect(rendered).to have_css('.gpg-status-box.invalid')
     end
   end
 end
