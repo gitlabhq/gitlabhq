@@ -2,7 +2,7 @@
 
 $(function() {
   $('.reveal-variables').off('click').on('click', function() {
-    $('.js-build').toggle().niceScroll();
+    $('.js-build-variables').toggle();
     $(this).hide();
   });
 });

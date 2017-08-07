@@ -1,6 +1,5 @@
 /* global Breakpoints */
 
-import 'vendor/jquery.nicescroll';
 import './breakpoints';
 
 export default class Wikis {
@@ -8,7 +7,6 @@ export default class Wikis {
     this.bp = Breakpoints.get();
     this.sidebarEl = document.querySelector('.js-wiki-sidebar');
     this.sidebarExpanded = false;
-    $(this.sidebarEl).niceScroll();
 
     const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
     for (let i = 0; i < sidebarToggles.length; i += 1) {
