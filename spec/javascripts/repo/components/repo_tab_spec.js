@@ -64,4 +64,25 @@ describe('RepoTab', () => {
 
     expect(vm.$el.querySelector('.close .fa-circle')).toBeTruthy();
   });
+
+  fdescribe('methods', () => {
+    describe('xClicked', () => {
+      const vm = jasmine.createSpyObj('vm', ['$emit']);
+
+      it('returns undefined and does not $emit if file is changed', () => {
+        const file = { changed: true };
+        const returnVal = repoTab.methods.xClicked.call(vm, file);
+
+        expect(returnVal).toBeUndefined();
+        expect(vm.$emit).not.toHaveBeenCalled();
+      });
+
+      it('$emits xclicked event with file obj', () => {
+        const file = { changed: false };
+        repoTab.methods.xClicked.call(vm, file);
+
+        expect(vm.$emit).toHaveBeenCalledWith('xclicked', file);
+      });
+    });
+  });
 });
