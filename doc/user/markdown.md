@@ -248,7 +248,7 @@ GFM will recognize the following:
 | `~123`                     | label by ID                     |
 | `~bug`                     | one-word label by name          |
 | `~"feature request"`       | multi-word label by name        |
-| `%123`                     | milestone by ID                 |
+| `%123`                     | project milestone by ID         |
 | `%v1.23`                   | one-word milestone by name      |
 | `%"release candidate"`     | multi-word milestone by name    |
 | `9ba12248`                 | specific commit                 |
@@ -262,7 +262,7 @@ GFM also recognizes certain cross-project references:
 |:----------------------------------------|:------------------------|
 | `namespace/project#123`                 | issue                   |
 | `namespace/project!123`                 | merge request           |
-| `namespace/project%123`                 | milestone               |
+| `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
@@ -274,7 +274,7 @@ It also has a shorthand version to reference other projects from the same namesp
 |:------------------------------|:------------------------|
 | `project#123`                 | issue                   |
 | `project!123`                 | merge request           |
-| `project%123`                 | milestone               |
+| `project%123`                 | project milestone       |
 | `project$123`                 | snippet                 |
 | `project@9ba12248`            | specific commit         |
 | `project@9ba12248...b19a04f5` | commit range comparison |
