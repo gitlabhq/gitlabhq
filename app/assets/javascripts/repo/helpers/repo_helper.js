@@ -154,7 +154,7 @@ const RepoHelper = {
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
         } else if (!Store.isPreviewView()) {
-          if(!data.render_error){
+          if (!data.render_error) {
             Service.getRaw(data.raw_path)
             .then((rawResponse) => {
               Store.blobRaw = rawResponse.data;
@@ -164,7 +164,7 @@ const RepoHelper = {
           }
         }
 
-        if (Store.isPreviewView()){
+        if (Store.isPreviewView()) {
           RepoHelper.setFile(data, file);
         }
 
@@ -190,7 +190,7 @@ const RepoHelper = {
 
     newFile.url = file.url || location.pathname;
     newFile.url = file.url;
-    if(newFile.render_error === 'too_large'){
+    if (newFile.render_error === 'too_large') {
       newFile.tooLarge = true;
     }
     newFile.newContent = '';
