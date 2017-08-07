@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::Boards::IssuesController do
+describe Boards::IssuesController do
   let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
@@ -162,8 +162,7 @@ describe Projects::Boards::IssuesController do
     def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
-      post :create, namespace_id: project.namespace.to_param,
-                    project_id: project,
+      post :create, project_id: project,
                     board_id: board.to_param,
                     list_id: list.to_param,
                     issue: { title: title },

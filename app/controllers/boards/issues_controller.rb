@@ -1,6 +1,7 @@
 module Boards
   class IssuesController < Boards::ApplicationController
     include EE::BoardsResponses
+    prepend EE::Boards::IssuesController
 
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
@@ -47,7 +48,7 @@ module Boards
     end
 
     def issue
-      @issue ||= issues_finder.execute.where(iid: params[:id]).first!
+      @issue ||= issues_finder.execute.where(id: params[:id]).first!
     end
 
     def filter_params
@@ -55,16 +56,11 @@ module Boards
     end
 
     def issues_finder
-      if board.is_group_board?
-        IssuesFinder.new(current_user, group_id: board_parent.id)
-      else
-        IssuesFinder.new(current_user, project_id: board_parent.id)
-      end
+      IssuesFinder.new(current_user, project_id: board_parent.id)
     end
 
     def project
-      @project ||=
-        board.is_group_board? ? Project.find(issue_params[:project_id]) : board.parent
+      @project ||= Project.find(issue_params[:project_id])
     end
 
     def move_params
