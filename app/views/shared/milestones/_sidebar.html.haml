@@ -67,7 +67,7 @@
       .block.issues
         .sidebar-collapsed-icon
           %strong
-            = icon('hashtag', 'aria-hidden': 'true')
+            = custom_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           Issues

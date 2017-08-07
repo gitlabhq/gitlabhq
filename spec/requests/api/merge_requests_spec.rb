@@ -294,6 +294,26 @@ describe API::MergeRequests do
         expect(json_response.length).to eq(0)
       end
 
+      it 'returns an array of labeled merge requests that are merged for a milestone' do
+        bug_label = create(:label, title: 'bug', color: '#FFAABB', project: project)
+
+        mr1 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone)
+        mr2 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
+        mr3 = create(:merge_request, state: "closed", source_project: project, target_project: project, milestone: milestone1)
+        _mr = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
+
+        create(:label_link, label: bug_label, target: mr1)
+        create(:label_link, label: bug_label, target: mr2)
+        create(:label_link, label: bug_label, target: mr3)
+
+        get api("/projects/#{project.id}/merge_requests?labels=#{bug_label.title}&milestone=#{milestone1.title}&state=merged", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(mr2.id)
+      end
+
       context "with ordering" do
         before do
           @mr_later = mr_with_later_created_and_updated_at_time

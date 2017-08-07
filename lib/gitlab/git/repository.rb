@@ -683,6 +683,14 @@ module Gitlab
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
       end
 
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
       private
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
@@ -998,6 +1006,11 @@ module Gitlab
         end.sort_by(&:name)
       end
 
+      def last_commit_for_path_by_rugged(sha, path)
+        sha = last_commit_id_for_path(sha, path)
+        commit(sha)
+      end
+
       def tags_from_gitaly
         gitaly_ref_client.tags
       end
@@ -1016,14 +1029,6 @@ module Gitlab
         raw_output = IO.popen(cmd) { |io| io.read }
 
         raw_output.to_i
-      end
-
-      def gitaly_migrate(method, &block)
-        Gitlab::GitalyClient.migrate(method, &block)
-      rescue GRPC::NotFound => e
-        raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       end
     end
   end

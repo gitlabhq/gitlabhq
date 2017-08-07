@@ -40,7 +40,7 @@
                   = icon('tachometer fw')
             %li
               = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('hashtag fw')
+                = custom_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
