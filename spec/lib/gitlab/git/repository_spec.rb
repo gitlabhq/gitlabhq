@@ -22,7 +22,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "Respond to" do
     subject { repository }
 
-    it { is_expected.to respond_to(:raw) }
     it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
@@ -771,13 +770,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#commits_between" do
+  describe "#rugged_commits_between" do
     context 'two SHAs' do
       let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
       let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
 
       it 'returns the number of commits between' do
-        expect(repository.commits_between(first_sha, second_sha).count).to eq(3)
+        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
       end
     end
 
@@ -786,11 +785,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch) { 'master' }
 
       it 'returns the number of commits between a sha and a branch' do
-        expect(repository.commits_between(sha, branch).count).to eq(5)
+        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
       end
 
       it 'returns the number of commits between a branch and a sha' do
-        expect(repository.commits_between(branch, sha).count).to eq(0) # sha is before branch
+        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
       end
     end
 
@@ -799,7 +798,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:second_branch) { 'master' }
 
       it 'returns the number of commits between' do
-        expect(repository.commits_between(first_branch, second_branch).count).to eq(17)
+        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
       end
     end
   end

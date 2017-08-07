@@ -342,7 +342,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.49.1', require: false
   gem 'rubocop-rspec', '~> 1.15.1', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
-  gem 'haml_lint', '~> 0.21.0', require: false
+  gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -391,7 +391,7 @@ gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.23.0'
+gem 'gitaly', '~> 0.24.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

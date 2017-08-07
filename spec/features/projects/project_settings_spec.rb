@@ -14,7 +14,9 @@ describe 'Edit Project Settings' do
     it 'shows errors for invalid project name' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'foo&bar'
-      click_button 'Save changes'
+      page.within('.general-settings') do
+        click_button 'Save changes'
+      end
       expect(page).to have_field 'project_name_edit', with: 'foo&bar'
       expect(page).to have_content "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
       expect(page).to have_button 'Save changes'
@@ -23,7 +25,9 @@ describe 'Edit Project Settings' do
     it 'shows a successful notice when the project is updated' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'hello world'
-      click_button 'Save changes'
+      page.within('.general-settings') do
+        click_button 'Save changes'
+      end
       expect(page).to have_content "Project 'hello world' was successfully updated."
     end
   end

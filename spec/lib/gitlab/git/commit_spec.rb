@@ -114,7 +114,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '.find' do
       it "should return first head commit if without params" do
         expect(Gitlab::Git::Commit.last(repository).id).to eq(
-          repository.raw.head.target.oid
+          repository.rugged.head.target.oid
         )
       end
 

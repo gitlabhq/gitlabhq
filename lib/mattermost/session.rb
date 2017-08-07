@@ -36,11 +36,12 @@ module Mattermost
 
     def with_session
       with_lease do
-        raise Mattermost::NoSessionError unless create
+        create
 
         begin
           yield self
-        rescue Errno::ECONNREFUSED
+        rescue Errno::ECONNREFUSED => e
+          Rails.logger.error(e.message + "\n" + e.backtrace.join("\n"))
           raise Mattermost::NoSessionError
         ensure
           destroy
@@ -85,10 +86,12 @@ module Mattermost
     private
 
     def create
-      return unless oauth_uri
-      return unless token_uri
+      raise Mattermost::NoSessionError unless oauth_uri
+      raise Mattermost::NoSessionError unless token_uri
 
       @token = request_token
+      raise Mattermost::NoSessionError unless @token
+
       @headers = {
         Authorization: "Bearer #{@token}"
       }
@@ -106,10 +109,15 @@ module Mattermost
       @oauth_uri = nil
 
       response = get("/api/v3/oauth/gitlab/login", follow_redirects: false)
-      return unless 300 <= response.code && response.code < 400
+      return unless (300...400) === response.code
 
       redirect_uri = response.headers['location']
       return unless redirect_uri
+
+      oauth_cookie = parse_cookie(response)
+      @headers = {
+        Cookie: oauth_cookie.to_cookie_string
+      }
 
       @oauth_uri = URI.parse(redirect_uri)
     end
@@ -124,7 +132,7 @@ module Mattermost
     def request_token
       response = get(token_uri, follow_redirects: false)
 
-      if 200 <= response.code && response.code < 400
+      if (200...400) === response.code
         response.headers['token']
       end
     end
@@ -155,6 +163,12 @@ module Mattermost
       raise Mattermost::ConnectionError.new(e.message)
     rescue Errno::ECONNREFUSED => e
       raise Mattermost::ConnectionError.new(e.message)
+    end
+
+    def parse_cookie(response)
+      cookie_hash = CookieHash.new
+      response.get_fields('Set-Cookie').each { |c| cookie_hash.add_cookies(c) }
+      cookie_hash
     end
   end
 end

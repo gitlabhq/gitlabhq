@@ -22,12 +22,14 @@ describe Gitlab::ContributionsCalendar do
     end
   end
 
-  let(:today) { Time.now.to_date }
+  let(:today) { Time.now.utc.to_date }
+  let(:yesterday) { today - 1.day }
+  let(:tomorrow)  { today + 1.day }
   let(:last_week) { today - 7.days }
   let(:last_year) { today - 1.year }
 
   before do
-    travel_to today
+    travel_to Time.now.utc.end_of_day
   end
 
   after do
@@ -38,7 +40,7 @@ describe Gitlab::ContributionsCalendar do
     described_class.new(contributor, current_user)
   end
 
-  def create_event(project, day)
+  def create_event(project, day, hour = 0)
     @targets ||= {}
     @targets[project] ||= create(:issue, project: project, author: contributor)
 
@@ -47,7 +49,7 @@ describe Gitlab::ContributionsCalendar do
       action: Event::CREATED,
       target: @targets[project],
       author: contributor,
-      created_at: day
+      created_at: DateTime.new(day.year, day.month, day.day, hour)
     )
   end
 
@@ -67,6 +69,34 @@ describe Gitlab::ContributionsCalendar do
       expect(calendar.activity_dates[today]).to eq(0)
       expect(calendar(user).activity_dates[today]).to eq(0)
       expect(calendar(contributor).activity_dates[today]).to eq(2)
+    end
+
+    context "when events fall under different dates depending on the time zone" do
+      before do
+        create_event(public_project, today, 1)
+        create_event(public_project, today, 4)
+        create_event(public_project, today, 10)
+        create_event(public_project, today, 16)
+        create_event(public_project, today, 23)
+      end
+
+      it "renders correct event counts within the UTC timezone" do
+        Time.use_zone('UTC') do
+          expect(calendar.activity_dates).to eq(today => 5)
+        end
+      end
+
+      it "renders correct event counts within the Sydney timezone" do
+        Time.use_zone('Sydney') do
+          expect(calendar.activity_dates).to eq(today => 3, tomorrow => 2)
+        end
+      end
+
+      it "renders correct event counts within the US Central timezone" do
+        Time.use_zone('Central Time (US & Canada)') do
+          expect(calendar.activity_dates).to eq(yesterday => 2, today => 3)
+        end
+      end
     end
   end
 

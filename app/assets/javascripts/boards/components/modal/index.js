@@ -1,8 +1,8 @@
 /* global ListIssue */
 
 import Vue from 'vue';
-import queryData from '../../utils/query_data';
-import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import queryData from '~/boards/utils/query_data';
+import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import './header';
 import './list';
 import './footer';
