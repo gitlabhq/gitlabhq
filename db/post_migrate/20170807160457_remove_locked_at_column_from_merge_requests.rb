@@ -6,6 +6,6 @@ class RemoveLockedAtColumnFromMergeRequests < ActiveRecord::Migration
   end
 
   def down
-    add_column :merge_requests, :locked_at, :datetime_with_timezone
+    # nothing to do to recover the values
   end
 end
