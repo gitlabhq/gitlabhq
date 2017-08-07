@@ -54,9 +54,9 @@ module Banzai
         self.class.references_in(*args, &block)
       end
 
+      # Implement in child class
+      # Example: project.merge_requests.find
       def find_object(project, id)
-        # Implement in child class
-        # Example: project.merge_requests.find
       end
 
       # Override if the link reference pattern produces a different ID (global
@@ -65,47 +65,31 @@ module Banzai
         find_object(project, id)
       end
 
-      def find_object_cached(project, id)
-        if RequestStore.active?
-          cache = find_objects_cache[object_class][project.id]
+      # Implement in child class
+      # Example: project_merge_request_url
+      def url_for_object(object, project)
+      end
 
-          get_or_set_cache(cache, id) { find_object(project, id) }
-        else
+      def find_object_cached(project, id)
+        cached_call(:banzai_find_object, id, path: [object_class, project.id]) do
           find_object(project, id)
         end
       end
 
       def find_object_from_link_cached(project, id)
-        if RequestStore.active?
-          cache = find_objects_from_link_cache[object_class][project.id]
-
-          get_or_set_cache(cache, id) { find_object_from_link(project, id) }
-        else
+        cached_call(:banzai_find_object_from_link, id, path: [object_class, project.id]) do
           find_object_from_link(project, id)
         end
       end
 
       def project_from_ref_cached(ref)
-        if RequestStore.active?
-          cache = project_refs_cache
-
-          get_or_set_cache(cache, ref) { project_from_ref(ref) }
-        else
+        cached_call(:banzai_project_refs, ref) do
           project_from_ref(ref)
         end
       end
 
-      def url_for_object(object, project)
-        # Implement in child class
-        # Example: project_merge_request_url
-      end
-
       def url_for_object_cached(object, project)
-        if RequestStore.active?
-          cache = url_for_object_cache[object_class][project.id]
-
-          get_or_set_cache(cache, object) { url_for_object(object, project) }
-        else
+        cached_call(:banzai_url_for_object, object, path: [object_class, project.id]) do
           url_for_object(object, project)
         end
       end
@@ -324,21 +308,17 @@ module Banzai
         RequestStore[:banzai_project_refs] ||= {}
       end
 
-      def find_objects_cache
-        RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
-          hash[key] = Hash.new { |h, k| h[k] = {} }
-        end
-      end
+      def cached_call(request_store_key, cache_key, path: [])
+        if RequestStore.active?
+          cache = RequestStore[request_store_key] ||= Hash.new do |hash, key|
+            hash[key] = Hash.new { |h, k| h[k] = {} }
+          end
 
-      def find_objects_from_link_cache
-        RequestStore[:banzai_find_objects_from_link_cache] ||= Hash.new do |hash, key|
-          hash[key] = Hash.new { |h, k| h[k] = {} }
-        end
-      end
+          cache = cache.dig(*path) if path.any?
 
-      def url_for_object_cache
-        RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
-          hash[key] = Hash.new { |h, k| h[k] = {} }
+          get_or_set_cache(cache, cache_key) { yield }
+        else
+          yield
         end
       end
 
