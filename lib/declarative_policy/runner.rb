@@ -76,6 +76,8 @@ module DeclarativePolicy
       @state = State.new
 
       steps_by_score do |step, score|
+        return if !debug && @state.prevented?
+
         passed = nil
         case step.action
         when :enable then
@@ -93,10 +95,7 @@ module DeclarativePolicy
           # been prevented.
           unless @state.prevented?
             passed = step.pass?
-            if passed
-              @state.prevent!
-              return unless debug
-            end
+            @state.prevent! if passed
           end
 
           debug << inspect_step(step, score, passed) if debug
