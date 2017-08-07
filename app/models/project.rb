@@ -24,6 +24,7 @@ class Project < ActiveRecord::Base
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
+  LATEST_STORAGE_VERSION = 1
 
   cache_markdown_field :description, pipeline: :description
 
@@ -1427,6 +1428,9 @@ class Project < ActiveRecord::Base
     return unless has_attribute?(:storage_version)
 
     if self.storage_version && self.storage_version >= 1
+      self.extend Storage::HashedProject
+    elsif !self.persisted? && current_application_settings.hashed_storage_enabled
+      self.storage_version = LATEST_STORAGE_VERSION
       self.extend Storage::HashedProject
     else
       self.extend Storage::LegacyProject

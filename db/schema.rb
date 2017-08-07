@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
     t.boolean "project_export_enabled", default: true, null: false
+    t.boolean "hashed_storage_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
