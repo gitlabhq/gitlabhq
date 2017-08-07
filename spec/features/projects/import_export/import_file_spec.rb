@@ -61,17 +61,6 @@ feature 'Import/Export - project import integration test', js: true do
         expect(page).to have_content('Project could not be imported')
       end
     end
-
-    scenario 'project with no name' do
-      create(:project, namespace: namespace)
-
-      visit new_project_path
-
-      select2(namespace.id, from: '#project_namespace_id')
-
-      # Check for tooltip disabled import button
-      expect(find('.import_gitlab_project')['title']).to eq('Please enter a valid project name.')
-    end
   end
 
   context 'when limited to the default user namespace' do

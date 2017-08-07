@@ -8,11 +8,10 @@
   Import an exported GitLab project
 %hr
 
-= form_tag import_gitlab_project_path, html: { class: 'new_project' }, multipart: true do
+= form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
   .row
     .form-group.col-xs-12.col-sm-6
-      .span
-        = label_tag :namespace_id, 'Project path', class: 'label-light'
+      = label_tag :namespace_id, 'Project path', class: 'label-light'
       .form-group
         .input-group
           - if current_user.can_select_namespace?
