@@ -966,7 +966,7 @@ class Repository
 
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
-    fetch_remote(Repository::MIRROR_REMOTE)
+    fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
   end
 
   def fetch_geo_mirror(url)
@@ -1088,8 +1088,8 @@ class Repository
     false
   end
 
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

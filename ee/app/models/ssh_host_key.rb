@@ -54,8 +54,9 @@ class SshHostKey
 
   def as_json(*)
     {
-      known_hosts: known_hosts,
-      fingerprints: fingerprints
+      changes_project_import_data: changes_project_import_data?,
+      fingerprints: fingerprints,
+      known_hosts: known_hosts
     }
   end
 
@@ -65,6 +66,17 @@ class SshHostKey
 
   def fingerprints
     @fingerprints ||= self.class.fingerprint_host_keys(known_hosts)
+  end
+
+  # Returns true if the known_hosts data differs from that currently set for
+  # `project.import_data.ssh_known_hosts`. Ordering is ignored.
+  #
+  # Ordering is ignored
+  def changes_project_import_data?
+    our_known_hosts = known_hosts
+    project_known_hosts = project.import_data&.ssh_known_hosts
+
+    cleanup(our_known_hosts.to_s) != cleanup(project_known_hosts.to_s)
   end
 
   def error

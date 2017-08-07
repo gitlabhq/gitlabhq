@@ -44,7 +44,17 @@ class Projects::MirrorsController < Projects::ApplicationController
       flash[:alert] = @project.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to_repository_settings(@project)
+    respond_to do |format|
+      format.html { redirect_to_repository_settings(@project) }
+
+      format.json do
+        if @project.errors.present?
+          render json: @project.errors, status: :unprocessable_entity
+        else
+          render json: ProjectMirrorSerializer.new.represent(@project)
+        end
+      end
+    end
   end
 
   def update_now
@@ -66,13 +76,35 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def mirror_params
-    params.require(:project).permit(:mirror, :import_url, :mirror_user_id,
-                                    :mirror_trigger_builds, remote_mirrors_attributes: [:url, :id, :enabled])
+    params.require(:project)
+      .permit(
+        :mirror,
+        :import_url,
+        :username_only_import_url,
+        :mirror_user_id,
+        :mirror_trigger_builds,
+        import_data_attributes: [:id, :auth_method, :password, :ssh_known_hosts, :regenerate_ssh_private_key],
+        remote_mirrors_attributes: [:url, :id, :enabled]
+      )
   end
 
   def safe_mirror_params
-    return mirror_params if valid_mirror_user?(mirror_params)
+    params = mirror_params
 
-    mirror_params.merge(mirror_user_id: current_user.id)
+    params[:mirror_user_id] = current_user.id unless valid_mirror_user?(params)
+
+    import_data = params[:import_data_attributes]
+    if import_data.present?
+      # Prevent Rails from destroying the existing import data
+      import_data[:id] ||= project.import_data&.id
+
+      # If the known hosts data is being set, store details about who and when
+      if import_data[:ssh_known_hosts].present?
+        import_data[:ssh_known_hosts_verified_at] = Time.now
+        import_data[:ssh_known_hosts_verified_by_id] = current_user.id
+      end
+    end
+
+    params
   end
 end

@@ -128,9 +128,84 @@ describe Projects::MirrorsController do
     end
   end
 
+  describe '#update' do
+    let(:project) { create(:project, :repository, :mirror, :remote_mirror) }
+
+    before do
+      sign_in(project.owner)
+    end
+
+    around(:each) do |example|
+      Sidekiq::Testing.fake! { example.run }
+    end
+
+    context 'JSON' do
+      it 'processes a successful update' do
+        do_put(project, { import_url: 'https://updated.example.com' }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['import_url']).to eq('https://updated.example.com')
+      end
+
+      it 'processes an unsuccessful update' do
+        do_put(project, { import_url: 'ftp://invalid.invalid' }, format: :json)
+
+        expect(response).to have_http_status(422)
+        expect(json_response['import_url'].first).to match /valid URL/
+      end
+
+      it "preserves the import_data object when the ID isn't in the request" do
+        import_data_id = project.import_data.id
+
+        do_put(project, { import_data_attributes: { password: 'update' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(project.import_data(true).id).to eq(import_data_id)
+      end
+
+      it 'sets ssh_known_hosts_verified_at and verified_by when the update sets known hosts' do
+        do_put(project, { import_data_attributes: { ssh_known_hosts: 'update' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+
+        import_data = project.import_data(true)
+        expect(import_data.ssh_known_hosts_verified_at).to be_within(1.minute).of(Time.now)
+        expect(import_data.ssh_known_hosts_verified_by).to eq(project.owner)
+      end
+
+      it 'unsets ssh_known_hosts_verified_at and verified_by when the update unsets known hosts' do
+        project.import_data.update!(ssh_known_hosts: 'foo')
+
+        do_put(project, { import_data_attributes: { ssh_known_hosts: '' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+
+        import_data = project.import_data(true)
+        expect(import_data.ssh_known_hosts_verified_at).to be_nil
+        expect(import_data.ssh_known_hosts_verified_by).to be_nil
+      end
+    end
+
+    context 'HTML' do
+      it 'processes a successful update' do
+        do_put(project, import_url: 'https://updated.example.com')
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:notice]).to match(/successfully updated/)
+      end
+
+      it 'processes an unsuccessful update' do
+        do_put(project, import_url: 'ftp://invalid.invalid')
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:alert]).to match(/valid URL/)
+      end
+    end
+  end
+
   describe '#ssh_host_keys', use_clean_rails_memory_store_caching: true do
     let(:project) { create(:project) }
-    let(:cache) { SshHostKey.new(project_id: project.id, url: "ssh://example.com:22") }
+    let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
 
     before do
       sign_in(project.owner)
@@ -176,7 +251,7 @@ describe Projects::MirrorsController do
         do_get(project)
 
         expect(response).to have_http_status(200)
-        expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys])
+        expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys], 'changes_project_import_data' => true)
       end
     end
 
@@ -185,8 +260,8 @@ describe Projects::MirrorsController do
     end
   end
 
-  def do_put(project, options)
-    attrs = { namespace_id: project.namespace.to_param, project_id: project.to_param }
+  def do_put(project, options, extra_attrs = {})
+    attrs = extra_attrs.merge(namespace_id: project.namespace.to_param, project_id: project.to_param)
     attrs[:project] = options
 
     put :update, attrs

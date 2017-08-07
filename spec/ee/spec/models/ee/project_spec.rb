@@ -814,4 +814,48 @@ describe Project do
       end
     end
   end
+
+  describe '#username_only_import_url' do
+    def build_project(username: 'user', password: 'password')
+      build(:project, import_url: 'http://example.com').tap do |project|
+        project.build_import_data(credentials: { user: username, password: password })
+      end
+    end
+
+    it 'shows the bare url when no username is present' do
+      project = build_project(username: nil)
+
+      expect(project.username_only_import_url).to eq('http://example.com')
+    end
+
+    it 'shows the URL with username when present' do
+      project = build_project(password: nil)
+
+      expect(project.username_only_import_url).to eq('http://user@example.com')
+    end
+
+    it 'excludes the pasword when present' do
+      project = build_project
+
+      expect(project.username_only_import_url).to eq('http://user@example.com')
+    end
+  end
+
+  describe '#username_only_import_url=' do
+    it 'sets the import url and username' do
+      project = build(:project, import_url: 'http://user@example.com')
+
+      expect(project.import_url).to eq('http://user@example.com')
+      expect(project.import_data.user).to eq('user')
+    end
+
+    it 'does not unset the password' do
+      project = build(:project, import_url: 'http://olduser:pass@old.example.com')
+      project.username_only_import_url = 'http://user@example.com'
+
+      expect(project.username_only_import_url).to eq('http://user@example.com')
+      expect(project.import_url).to eq('http://user:pass@example.com')
+      expect(project.import_data.password).to eq('pass')
+    end
+  end
 end
