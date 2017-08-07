@@ -100,7 +100,7 @@
             target_type: 'issue',
             target_id: this.discussion.noteable_id,
             note: { note: noteText },
-            full_data: true,
+            view: 'full_data',
           },
         };
 

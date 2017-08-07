@@ -9,7 +9,7 @@
   new_session_path: new_session_path(:user, redirect_to_referer: 'yes'),
   markdown_docs: help_page_path('user/markdown'),
   quick_actions_docs: help_page_path('user/project/quick_actions'),
-  notes_path: "#{notes_url}?full_data=1",
+  notes_path: notes_url(view: 'full_data'),
   last_fetched_at: Time.now.to_i,
   issue_data: serialize_issuable(@issue),
   current_user_data: UserSerializer.new.represent(current_user).to_json }}
