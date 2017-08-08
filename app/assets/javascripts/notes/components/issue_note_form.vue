@@ -56,7 +56,7 @@
         return this.getNotesDataByProp('markdownDocs');
       },
       quickActionsDocsUrl() {
-        return this.getNotesDataByProp('quickActionsDocs');
+        return !this.isEditing ? this.getNotesDataByProp('quickActionsDocs') : undefined;
       },
       currentUserId() {
         return this.getUserDataByProp('id');
@@ -134,15 +134,15 @@
           ref="textarea"
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
-          @keydown.meta.enter="handleUpdate"
-          @keydown.up="editMyLastNote"
+          @keydown.meta.enter="handleUpdate()"
+          @keydown.up="editMyLastNote()"
           @keydown.esc="cancelHandler(true)">
         </textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
           type="submit"
-          @click="handleUpdate"
+          @click="handleUpdate()"
           :disabled="isDisabled"
           class="js-vue-issue-save btn btn-save">
           {{saveButtonTitle}}

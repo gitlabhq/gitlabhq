@@ -97,11 +97,11 @@
       },
       checkLocationHash() {
         const hash = gl.utils.getLocationHash();
-        const $el = $(`#${hash}`);
+        const element = document.getElementById(hash);
 
-        if (hash && $el) {
+        if (hash && element) {
           this.setTargetNoteHash(hash);
-          this.scrollToNoteIfNeeded($el);
+          this.scrollToNoteIfNeeded($(element));
         }
       },
     },

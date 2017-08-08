@@ -175,7 +175,6 @@
         this.noteType = type;
       },
       editCurrentUserLastNote() {
-        console.log('editCurrentUserLastNote')
         if (this.note === '') {
           const lastNote = this.getCurrentUserLastNote(window.gon.current_user_id);
 
@@ -254,7 +253,7 @@
                     :disabled="isSubmitButtonDisabled"
                     name="button"
                     type="button"
-                    class="btn btn-nr comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
+                    class="btn comment-btn note-type-toggle js-note-new-discussion dropdown-toggle"
                     data-toggle="dropdown"
                     aria-label="Open comment type dropdown">
                     <i
@@ -305,7 +304,7 @@
                   type="submit"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
-                  class="btn btn-nr btn-comment btn-comment-and-close">
+                  class="btn btn-comment btn-comment-and-close">
                   {{issueActionButtonTitle}}
                 </button>
                 <button
