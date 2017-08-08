@@ -10,7 +10,9 @@ module Gitlab
         def readiness
           repository_storages.map do |storage_name|
             begin
-              if !storage_stat_test(storage_name)
+              if !storage_circuitbreaker_test(storage_name)
+                HealthChecks::Result.new(false, 'circuitbreaker tripped', shard: storage_name)
+              elsif !storage_stat_test(storage_name)
                 HealthChecks::Result.new(false, 'cannot stat storage', shard: storage_name)
               else
                 with_temp_file(storage_name) do |tmp_file_path|
@@ -36,7 +38,8 @@ module Gitlab
             [
               storage_stat_metrics(storage_name),
               storage_write_metrics(storage_name),
-              storage_read_metrics(storage_name)
+              storage_read_metrics(storage_name),
+              storage_circuitbreaker_metrics(storage_name)
             ].flatten
           end
         end
@@ -121,6 +124,12 @@ module Gitlab
           file_contents == RANDOM_STRING
         end
 
+        def storage_circuitbreaker_test(storage_name)
+          Gitlab::Git::Storage::CircuitBreaker.new(storage_name).perform { "OK" }
+        rescue Gitlab::Git::Storage::Inaccessible
+          nil
+        end
+
         def storage_stat_metrics(storage_name)
           operation_metrics(:filesystem_accessible, :filesystem_access_latency_seconds, shard: storage_name) do
             with_timing { storage_stat_test(storage_name) }
@@ -141,6 +150,14 @@ module Gitlab
               storage_write_test(tmp_file_path) # writes data used by read test
               with_timing { storage_read_test(tmp_file_path) }
             end
+          end
+        end
+
+        def storage_circuitbreaker_metrics(storage_name)
+          operation_metrics(:filesystem_circuitbreaker,
+                            :filesystem_circuitbreaker_latency_seconds,
+                            shard: storage_name) do
+            with_timing { storage_circuitbreaker_test(storage_name) }
           end
         end
       end

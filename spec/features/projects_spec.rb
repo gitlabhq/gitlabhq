@@ -1,6 +1,27 @@
 require 'spec_helper'
 
 feature 'Project' do
+  describe 'creating from template' do
+    let(:user)    { create(:user) }
+    let(:template) { Gitlab::ProjectTemplate.find(:rails) }
+
+    before do
+      sign_in user
+      visit new_project_path
+    end
+
+    it "allows creation from templates" do
+      page.choose(template.name)
+      fill_in("project_path", with: template.name)
+
+      page.within '#content-body' do
+        click_button "Create project"
+      end
+
+      expect(page).to have_content 'This project Loading..'
+    end
+  end
+
   describe 'description' do
     let(:project) { create(:project, :repository) }
     let(:path)    { project_path(project) }
@@ -143,6 +164,21 @@ feature 'Project' do
       click_link('645f6c4c')
 
       expect(page.status_code).to eq(200)
+    end
+  end
+
+  describe 'activity view' do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    before do
+      project.team << [user, :master]
+      sign_in user
+      visit project_path(project)
+    end
+
+    it 'loads activity', :js do
+      expect(page).to have_selector('.event-item')
     end
   end
 

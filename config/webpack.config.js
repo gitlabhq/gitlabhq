@@ -3,7 +3,8 @@
 var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
-var StatsPlugin = require('stats-webpack-plugin');
+var StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 var CompressionPlugin = require('compression-webpack-plugin');
 var NameAllModulesPlugin = require('name-all-modules-plugin');
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -61,10 +62,12 @@ var config = {
     pipelines_details:    './pipelines/pipeline_details_bundle.js',
     pipelines_times:      './pipelines/pipelines_times.js',
     profile:              './profile/profile_bundle.js',
+    project_import_gl:    './projects/project_import_gitlab_project.js',
     project_new:          './projects/project_new.js',
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
+    repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
@@ -122,18 +125,33 @@ var config = {
         test: /locale\/\w+\/(.*)\.js$/,
         loader: 'exports-loader?locales',
       },
-    ]
+      {
+        test: /monaco-editor\/\w+\/vs\/loader\.js$/,
+        use: [
+          { loader: 'exports-loader', options: 'l.global' },
+          { loader: 'imports-loader', options: 'l=>{},this=>l,AMDLoader=>this,module=>undefined' },
+        ],
+      }
+    ],
+
+    noParse: [/monaco-editor\/\w+\/vs\//],
   },
 
   plugins: [
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
-    new StatsPlugin('manifest.json', {
-      chunkModules: false,
-      source: false,
-      chunks: false,
-      modules: false,
-      assets: true
+    new StatsWriterPlugin({
+      filename: 'manifest.json',
+      transform: function(data, opts) {
+        var stats = opts.compiler.getStats().toJson({
+          chunkModules: false,
+          source: false,
+          chunks: false,
+          modules: false,
+          assets: true
+        });
+        return JSON.stringify(stats, null, 2);
+      }
     }),
 
     // prevent pikaday from including moment.js
@@ -182,6 +200,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'repo',
         'schedule_form',
         'schedules_index',
         'sidebar',
@@ -205,6 +224,26 @@ var config = {
     new webpack.optimize.CommonsChunkPlugin({
       names: ['main', 'locale', 'common', 'webpack_runtime'],
     }),
+
+    // copy pre-compiled vendor libraries verbatim
+    new CopyWebpackPlugin([
+      {
+        from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
+        to: 'monaco-editor/vs',
+        transform: function(content, path) {
+          if (/\.js$/.test(path) && !/worker/i.test(path)) {
+            return (
+              '(function(){\n' +
+              'var define = this.define, require = this.require;\n' +
+              'window.define = define; window.require = require;\n' +
+              content +
+              '\n}.call(window.__monaco_context__ || (window.__monaco_context__ = {})));'
+            );
+          }
+          return content;
+        }
+      }
+    ]),
   ],
 
   resolve: {
@@ -253,6 +292,7 @@ if (IS_DEV_SERVER) {
   config.devServer = {
     host: DEV_SERVER_HOST,
     port: DEV_SERVER_PORT,
+    disableHostCheck: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
     stats: 'errors-only',
     hot: DEV_SERVER_LIVERELOAD,

@@ -29,15 +29,16 @@ describe('MRWidgetConflicts', () => {
   describe('template', () => {
     it('should have correct elements', () => {
       const el = createComponent().$el;
-      const resolveButton = el.querySelectorAll('.btn-group .btn')[0];
-      const mergeLocallyButton = el.querySelectorAll('.btn-group .btn')[1];
+      const resolveButton = el.querySelector('.js-resolve-conflicts-button');
+      const mergeButton = el.querySelector('.mr-widget-body .btn');
+      const mergeLocallyButton = el.querySelector('.js-merge-locally-button');
 
-      expect(el.textContent).toContain('There are merge conflicts.');
+      expect(el.textContent).toContain('There are merge conflicts');
       expect(el.textContent).not.toContain('ask someone with write access');
       expect(el.querySelector('.btn-success').disabled).toBeTruthy();
-      expect(el.querySelectorAll('.btn-group .btn').length).toBe(2);
       expect(resolveButton.textContent).toContain('Resolve conflicts');
       expect(resolveButton.getAttribute('href')).toEqual(path);
+      expect(mergeButton.textContent).toContain('Merge');
       expect(mergeLocallyButton.textContent).toContain('Merge locally');
     });
 
@@ -59,8 +60,8 @@ describe('MRWidgetConflicts', () => {
       it('should not have action buttons', (done) => {
         Vue.nextTick(() => {
           expect(vm.$el.querySelectorAll('.btn').length).toBe(1);
-          expect(vm.$el.querySelector('a.js-resolve-conflicts-button')).toEqual(null);
-          expect(vm.$el.querySelector('a.js-merge-locally-button')).toEqual(null);
+          expect(vm.$el.querySelector('.js-resolve-conflicts-button')).toEqual(null);
+          expect(vm.$el.querySelector('.js-merge-locally-button')).toEqual(null);
           done();
         });
       });

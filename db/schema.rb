@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170803130232) do
+ActiveRecord::Schema.define(version: 20170807160457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -451,6 +451,16 @@ ActiveRecord::Schema.define(version: 20170803130232) do
     t.float "instance_service_desk_issues", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "percentage_boards", default: 0.0, null: false
+    t.float "percentage_ci_pipelines", default: 0.0, null: false
+    t.float "percentage_deployments", default: 0.0, null: false
+    t.float "percentage_environments", default: 0.0, null: false
+    t.float "percentage_issues", default: 0.0, null: false
+    t.float "percentage_merge_requests", default: 0.0, null: false
+    t.float "percentage_milestones", default: 0.0, null: false
+    t.float "percentage_notes", default: 0.0, null: false
+    t.float "percentage_projects_prometheus_active", default: 0.0, null: false
+    t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
@@ -840,7 +850,6 @@ ActiveRecord::Schema.define(version: 20170803130232) do
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"
-    t.datetime "locked_at"
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
@@ -858,6 +867,7 @@ ActiveRecord::Schema.define(version: 20170803130232) do
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
+    t.string "merge_jid"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

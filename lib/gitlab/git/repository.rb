@@ -58,15 +58,16 @@ module Gitlab
         end
       end
 
-      # Alias to old method for compatibility
-      def raw
-        rugged
-      end
-
       def rugged
-        @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
+        @rugged ||= circuit_breaker.perform do
+          Rugged::Repository.new(path, alternates: alternate_object_directories)
+        end
       rescue Rugged::RepositoryError, Rugged::OSError
         raise NoRepository.new('no repository for such path')
+      end
+
+      def circuit_breaker
+        @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
 
       # Returns an Array of branch names
@@ -281,7 +282,14 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = popen(%w(du -sk), path).first.strip.to_i
+        size = gitaly_migrate(:repository_size) do |is_enabled|
+          if is_enabled
+            size_by_gitaly
+          else
+            size_by_shelling_out
+          end
+        end
+
         (size.to_f / 1024).round(2)
       end
 
@@ -296,8 +304,24 @@ module Gitlab
       #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
       #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
-        raw_log(options).map { |c| Commit.decorate(c) }
+        default_options = {
+          limit: 10,
+          offset: 0,
+          path: nil,
+          follow: false,
+          skip_merges: false,
+          disable_walk: false,
+          after: nil,
+          before: nil
+        }
+
+        options = default_options.merge(options)
+        options[:limit] ||= 0
+        options[:offset] ||= 0
+
+        raw_log(options).map { |c| Commit.decorate(self, c) }
       end
 
       def count_commits(options)
@@ -324,7 +348,9 @@ module Gitlab
       # Return a collection of Rugged::Commits between the two revspec arguments.
       # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
       # a detailed list of valid arguments.
-      def commits_between(from, to)
+      #
+      # Gitaly note: JV: to be deprecated in favor of Commit.between
+      def rugged_commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
         walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
@@ -708,20 +734,6 @@ module Gitlab
       end
 
       def raw_log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          follow: false,
-          skip_merges: false,
-          disable_walk: false,
-          after: nil,
-          before: nil
-        }
-
-        options = default_options.merge(options)
-        options[:limit] ||= 0
-        options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
           sha = sha_from_ref(actual_ref)
@@ -857,46 +869,6 @@ module Gitlab
         submodule_data.select { |path, data| data['id'] }
       end
 
-      # Returns true if +commit+ introduced changes to +path+, using commit
-      # trees to make that determination.  Uses the history simplification
-      # rules that `git log` uses by default, where a commit is omitted if it
-      # is TREESAME to any parent.
-      #
-      # If the +follow+ option is true and the file specified by +path+ was
-      # renamed, then the path value is set to the old path.
-      def commit_touches_path?(commit, path, follow, walker)
-        entry = tree_entry(commit, path)
-
-        if commit.parents.empty?
-          # This is the root commit, return true if it has +path+ in its tree
-          return !entry.nil?
-        end
-
-        num_treesame = 0
-        commit.parents.each do |parent|
-          parent_entry = tree_entry(parent, path)
-
-          # Only follow the first TREESAME parent for merge commits
-          if num_treesame > 0
-            walker.hide(parent)
-            next
-          end
-
-          if entry.nil? && parent_entry.nil?
-            num_treesame += 1
-          elsif entry && parent_entry && entry[:oid] == parent_entry[:oid]
-            num_treesame += 1
-          end
-        end
-
-        case num_treesame
-        when 0
-          detect_rename(commit, commit.parents.first, path) if follow
-          true
-        else false
-        end
-      end
-
       # Find the entry for +path+ in the tree for +commit+
       def tree_entry(commit, path)
         pathname = Pathname.new(path)
@@ -922,43 +894,6 @@ module Gitlab
         end
 
         tmp_entry
-      end
-
-      # Compare +commit+ and +parent+ for +path+.  If +path+ is a file and was
-      # renamed in +commit+, then set +path+ to the old filename.
-      def detect_rename(commit, parent, path)
-        diff = parent.diff(commit, paths: [path], disable_pathspec_match: true)
-
-        # If +path+ is a filename, not a directory, then we should only have
-        # one delta.  We don't need to follow renames for directories.
-        return nil if diff.each_delta.count > 1
-
-        delta = diff.each_delta.first
-        if delta.added?
-          full_diff = parent.diff(commit)
-          full_diff.find_similar!
-
-          full_diff.each_delta do |full_delta|
-            if full_delta.renamed? && path == full_delta.new_file[:path]
-              # Look for the old path in ancestors
-              path.replace(full_delta.old_file[:path])
-            end
-          end
-        end
-      end
-
-      # Returns true if the index entry has the special file mode that denotes
-      # a submodule.
-      def submodule?(index_entry)
-        index_entry[:mode] == 57344
-      end
-
-      # Return a Rugged::Index that has read from the tree at +ref_name+
-      def populated_index(ref_name)
-        commit = rev_parse_target(ref_name)
-        index = rugged.index
-        index.read_tree(commit.tree)
-        index
       end
 
       # Return the Rugged patches for the diff between +from+ and +to+.
@@ -1013,6 +948,14 @@ module Gitlab
 
       def tags_from_gitaly
         gitaly_ref_client.tags
+      end
+
+      def size_by_shelling_out
+        popen(%w(du -sk), path).first.strip.to_i
+      end
+
+      def size_by_gitaly
+        gitaly_repository_client.repository_size
       end
 
       def count_commits_by_gitaly(options)

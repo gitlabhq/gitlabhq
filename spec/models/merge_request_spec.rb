@@ -1369,6 +1369,32 @@ describe MergeRequest do
     end
   end
 
+  describe '#merge_ongoing?' do
+    it 'returns true when merge process is ongoing for merge_jid' do
+      merge_request = create(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(1)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when no merge process running for merge_jid' do
+      merge_request = build(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(0)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build(:merge_request, merge_jid: nil)
+
+      expect(Gitlab::SidekiqStatus).not_to receive(:num_running)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+  end
+
   describe "#closed_without_fork?" do
     let(:project)      { create(:project) }
     let(:fork_project) { create(:project, forked_from_project: project) }

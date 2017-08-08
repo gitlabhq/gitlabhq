@@ -8,20 +8,25 @@ $active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
-$hover-background: $indigo-700;
-$hover-color: $white-light;
+$hover-background: $white-light;
+$hover-color: $gl-text-color;
 $inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
+$new-sidebar-collapsed-width: 50px;
 
 .page-with-new-sidebar {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: $screen-md-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
+
+  @media (min-width: $screen-lg-min) {
     padding-left: $new-sidebar-width;
   }
 
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: 100%;
+    height: calc(100% - #{$header-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -29,8 +34,15 @@ $new-sidebar-width: 220px;
   }
 }
 
+.page-with-icon-sidebar {
+  @media (min-width: $screen-sm-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
+}
+
 .context-header {
   position: relative;
+  margin-right: 2px;
 
   a {
     border-bottom: 1px solid $border-color;
@@ -39,26 +51,16 @@ $new-sidebar-width: 220px;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
+  }
 
-    @media (max-width: $screen-xs-max) {
-      padding-right: 30px;
-    }
+  &:hover,
+  a:hover {
+    background-color: $hover-background;
+    color: $hover-color;
 
-    &:hover {
-      background-color: $hover-background;
-      color: $hover-color;
-      border-color: $hover-background;
-
-      .avatar-container {
-        border-color: transparent;
-      }
-
-      .settings-avatar {
-        background-color: $indigo-500;
-
-        i {
-          color: $hover-color;
-        }
+    .settings-avatar {
+      i {
+        color: $hover-color;
       }
     }
   }
@@ -72,32 +74,6 @@ $new-sidebar-width: 220px;
   .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-
-  &:hover {
-    .close-nav-button {
-      color: $white-light;
-    }
-  }
-
-  .close-nav-button {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    background-color: transparent;
-    border: 0;
-    padding: 0 10px;
-
-    @media (max-width: $screen-xs-max) {
-      display: block;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-    }
   }
 }
 
@@ -124,6 +100,16 @@ $new-sidebar-width: 220px;
   overflow: auto;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
+
+  &.sidebar-icons-only {
+    width: $new-sidebar-collapsed-width;
+
+    .nav-item-name,
+    .badge,
+    .project-title {
+      display: none;
+    }
+  }
 
   &.nav-sidebar-expanded {
     left: 0;
@@ -219,6 +205,8 @@ $new-sidebar-width: 220px;
 }
 
 .sidebar-top-level-items {
+  margin-bottom: 60px;
+
   > li {
     > a {
       @media (min-width: $screen-sm-min) {
@@ -233,15 +221,15 @@ $new-sidebar-width: 220px;
     &:not(.active) {
       > a {
         margin-left: 1px;
-        margin-right: 3px;
+        margin-right: 2px;
       }
 
       .sidebar-sub-level-items {
         @media (min-width: $screen-sm-min) {
           position: fixed;
           top: 0;
-          left: 220px;
-          width: 150px;
+          left: $new-sidebar-width;
+          min-width: 150px;
           margin-top: -1px;
           padding: 8px 1px;
           background-color: $white-light;
@@ -326,6 +314,95 @@ $new-sidebar-width: 220px;
   }
 }
 
+
+// Collapsed nav
+
+.toggle-sidebar-button,
+.close-nav-button {
+  width: $new-sidebar-width - 2px;
+  position: fixed;
+  bottom: 0;
+  padding: 16px;
+  background-color: $gray-normal;
+  border: 0;
+  border-top: 2px solid $border-color;
+  color: $gl-text-color-secondary;
+  display: flex;
+  align-items: center;
+
+  i {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+
+  .fa-angle-double-right {
+    display: none;
+  }
+
+  &:hover {
+    background-color: $border-color;
+    color: $gl-text-color;
+  }
+}
+
+.toggle-sidebar-button {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
+
+.sidebar-icons-only {
+  .context-header {
+    height: 60px;
+
+    a {
+      padding: 10px 4px;
+    }
+  }
+
+  li a {
+    padding: 12px 15px;
+  }
+
+  .sidebar-top-level-items > li {
+    &.active a {
+      padding-left: 12px;
+    }
+
+    .sidebar-sub-level-items {
+      @media (min-width: $screen-sm-min) {
+        left: $new-sidebar-collapsed-width;
+      }
+
+      &:not(.flyout-list) {
+        display: none;
+      }
+    }
+  }
+
+  .toggle-sidebar-button {
+    width: $new-sidebar-collapsed-width - 2px;
+    padding: 16px 18px;
+
+    .collapse-text,
+    .fa-angle-double-left {
+      display: none;
+    }
+
+    .fa-angle-double-right {
+      display: block;
+    }
+  }
+}
+
+
+// Mobile nav
+
+.close-nav-button {
+  display: none;
+}
+
 .toggle-mobile-nav {
   display: none;
   background-color: transparent;
@@ -342,6 +419,12 @@ $new-sidebar-width: 220px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .close-nav-button {
+    display: flex;
   }
 }
 

@@ -117,7 +117,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iids` | Array[integer] | no | Return the request having the given `iid` |
+| `iids[]` | Array[integer] | no | Return the request having the given `iid` |
 | `state`   | string  | no    | Return all merge requests or just those that are `opened`, `closed`, or `merged`|
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |

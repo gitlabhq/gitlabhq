@@ -5,7 +5,7 @@ module Gitlab
         include QueryAdditionalMetrics
 
         def query(environment_id)
-          Environment.find_by(id: environment_id).try do |environment|
+          ::Environment.find_by(id: environment_id).try do |environment|
             query_metrics(
               common_query_context(environment, timeframe_start: 8.hours.ago.to_f, timeframe_end: Time.now.to_f)
             )

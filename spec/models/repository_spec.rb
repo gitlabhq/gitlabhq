@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe Repository do
+describe Repository, models: true do
   include RepoHelpers
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
+  let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
 
   let(:commit_options) do
@@ -27,12 +28,27 @@ describe Repository do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  def expect_to_raise_storage_error
+    expect { yield }.to raise_error do |exception|
+      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      expect(exception.class).to be_in(storage_exceptions)
+    end
+  end
+
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
 
     it { is_expected.to include('master') }
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.branch_names_contains(sample_commit.id)
+        end
+      end
+    end
   end
 
   describe '#tag_names_contains' do
@@ -143,6 +159,14 @@ describe Repository do
       subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
       it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
+          end
+        end
+      end
     end
 
     context 'when Gitaly feature last_commit_for_path is enabled' do
@@ -168,6 +192,14 @@ describe Repository do
 
         expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
         is_expected.to eq('c1acaa5')
+      end
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
+          end
+        end
       end
     end
 
@@ -202,19 +234,37 @@ describe Repository do
   end
 
   describe '#find_commits_by_message' do
-    it 'returns commits with messages containing a given string' do
-      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    shared_examples 'finding commits by message' do
+      it 'returns commits with messages containing a given string' do
+        commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      expect(commit_ids).to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
-      expect(commit_ids).to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
-      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+        expect(commit_ids).to include(
+          '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+          '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+          'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
+        )
+        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      end
+
+      it 'is case insensitive' do
+        commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+
+        expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      end
     end
 
-    it 'is case insensitive' do
-      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+    context 'when Gitaly commits_by_message feature is enabled' do
+      it_behaves_like 'finding commits by message'
+    end
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding commits by message'
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
+      end
     end
   end
 
@@ -541,6 +591,14 @@ describe Repository do
       expect(results).to match_array([])
     end
 
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.search_files_by_content('feature', 'master')
+        end
+      end
+    end
+
     describe 'result' do
       subject { results.first }
 
@@ -568,6 +626,22 @@ describe Repository do
       results = repository.search_files_by_name('test', 'master')
 
       expect(results).to match_array([])
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe '#fetch_ref' do
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        path = broken_repository.path_to_repo
+
+        expect_to_raise_storage_error { broken_repository.fetch_ref(path, '1', '2') }
+      end
     end
   end
 
@@ -985,6 +1059,12 @@ describe Repository do
       allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
+    end
+
+    context 'with broken storage', broken_storage: true do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.exists? }
+      end
     end
   end
 

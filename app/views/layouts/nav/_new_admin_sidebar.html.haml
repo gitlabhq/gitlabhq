@@ -1,12 +1,9 @@
-.nav-sidebar
+.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   .context-header
     = link_to admin_root_path, title: 'Admin Overview' do
       .avatar-container.s40.settings-avatar
         = icon('wrench')
       .project-title Admin Area
-    = button_tag class: 'close-nav-button', type: 'button' do
-      %span.sr-only Close sidebar
-      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
@@ -149,3 +146,5 @@
           = custom_icon('settings')
         %span.nav-item-name
           Settings
+
+  = render 'shared/sidebar_toggle_button'

@@ -54,6 +54,12 @@ FactoryGirl.define do
       avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
+    trait :broken_storage do
+      after(:create) do |project|
+        project.update_column(:repository_storage, 'broken')
+      end
+    end
+
     # Test repository - https://gitlab.com/gitlab-org/gitlab-test
     trait :repository do
       path { 'gitlabhq' }

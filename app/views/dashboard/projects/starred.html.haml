@@ -9,7 +9,7 @@
 %div{ class: container_class }
   = render 'dashboard/projects_head'
 
-  - if @projects.any? || params[:filter_projects]
+  - if params[:filter_projects] || any_projects?(@projects)
     = render 'projects'
   - else
     %h3 You don't have starred projects yet

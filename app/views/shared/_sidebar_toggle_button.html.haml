@@ -1,0 +1,8 @@
+%a.toggle-sidebar-button.js-toggle-sidebar{ role: "button", type: "button", title: "Toggle sidebar" }
+  = icon('angle-double-left')
+  = icon('angle-double-right')
+  %span.collapse-text Collapse sidebar
+
+= button_tag class: 'close-nav-button', type: 'button' do
+  = icon ('times')
+  %span.collapse-text Close sidebar
