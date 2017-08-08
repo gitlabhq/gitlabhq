@@ -257,7 +257,7 @@ describe 'Issue Boards', js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 2)
+      expect(card).to have_selector('.label', count: 3)
       expect(card).to have_content(bug.title)
     end
 
@@ -283,7 +283,7 @@ describe 'Issue Boards', js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_selector('.label', count: 4)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end
@@ -308,7 +308,7 @@ describe 'Issue Boards', js: true do
         end
       end
 
-      expect(card).not_to have_selector('.label')
+      expect(card).to have_selector('.label', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
   end

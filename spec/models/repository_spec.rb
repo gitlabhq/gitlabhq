@@ -234,19 +234,31 @@ describe Repository, models: true do
   end
 
   describe '#find_commits_by_message' do
-    it 'returns commits with messages containing a given string' do
-      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    shared_examples 'finding commits by message' do
+      it 'returns commits with messages containing a given string' do
+        commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      expect(commit_ids).to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
-      expect(commit_ids).to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
-      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+        expect(commit_ids).to include(
+          '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+          '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+          'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
+        )
+        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      end
+
+      it 'is case insensitive' do
+        commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+
+        expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      end
     end
 
-    it 'is case insensitive' do
-      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+    context 'when Gitaly commits_by_message feature is enabled' do
+      it_behaves_like 'finding commits by message'
+    end
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding commits by message'
     end
 
     describe 'when storage is broken', broken_storage: true  do

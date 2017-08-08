@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Create Branch/Merge Request Dropdown on issue page', js: true do
+feature 'Create Branch/Merge Request Dropdown on issue page', :feature, :js do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
@@ -14,10 +14,14 @@ feature 'Create Branch/Merge Request Dropdown on issue page', js: true do
     it 'allows creating a merge request from the issue page' do
       visit project_issue_path(project, issue)
 
-      select_dropdown_option('create-mr')
-      
-      expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-      expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
+      perform_enqueued_jobs do
+        select_dropdown_option('create-mr')
+
+        expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+        expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
+
+        wait_for_requests
+      end
 
       visit project_issue_path(project, issue)
 

@@ -11,7 +11,7 @@ describe Gitlab::Metrics::InfluxSampler do
     it 'runs once and gathers a sample at a given interval' do
       expect(sampler).to receive(:sleep).with(a_kind_of(Numeric)).twice
       expect(sampler).to receive(:sample).once
-      expect(sampler).to receive(:running).and_return(false, true, false)
+      expect(sampler).to receive(:running).and_return(true, false)
 
       sampler.start.join
     end

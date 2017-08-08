@@ -282,7 +282,14 @@ module Gitlab
 
       # Return repo size in megabytes
       def size
-        size = popen(%w(du -sk), path).first.strip.to_i
+        size = gitaly_migrate(:repository_size) do |is_enabled|
+          if is_enabled
+            size_by_gitaly
+          else
+            size_by_shelling_out
+          end
+        end
+
         (size.to_f / 1024).round(2)
       end
 
@@ -299,6 +306,21 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
+        default_options = {
+          limit: 10,
+          offset: 0,
+          path: nil,
+          follow: false,
+          skip_merges: false,
+          disable_walk: false,
+          after: nil,
+          before: nil
+        }
+
+        options = default_options.merge(options)
+        options[:limit] ||= 0
+        options[:offset] ||= 0
+
         raw_log(options).map { |c| Commit.decorate(c) }
       end
 
@@ -712,20 +734,6 @@ module Gitlab
       end
 
       def raw_log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          follow: false,
-          skip_merges: false,
-          disable_walk: false,
-          after: nil,
-          before: nil
-        }
-
-        options = default_options.merge(options)
-        options[:limit] ||= 0
-        options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
           sha = sha_from_ref(actual_ref)
@@ -940,6 +948,14 @@ module Gitlab
 
       def tags_from_gitaly
         gitaly_ref_client.tags
+      end
+
+      def size_by_shelling_out
+        popen(%w(du -sk), path).first.strip.to_i
+      end
+
+      def size_by_gitaly
+        gitaly_repository_client.repository_size
       end
 
       def count_commits_by_gitaly(options)

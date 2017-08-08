@@ -15,7 +15,9 @@ $new-sidebar-width: 220px;
 $new-sidebar-collapsed-width: 50px;
 
 .page-with-new-sidebar {
-  padding-left: $new-sidebar-collapsed-width;
+  @media (min-width: $screen-md-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
 
   @media (min-width: $screen-lg-min) {
     padding-left: $new-sidebar-width;
@@ -24,7 +26,7 @@ $new-sidebar-collapsed-width: 50px;
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: 100%;
+    height: calc(100% - #{$header-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -49,10 +51,6 @@ $new-sidebar-collapsed-width: 50px;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
-
-    @media (max-width: $screen-xs-max) {
-      padding-right: 30px;
-    }
   }
 
   &:hover,
@@ -76,26 +74,6 @@ $new-sidebar-collapsed-width: 50px;
   .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .close-nav-button {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    background-color: transparent;
-    border: 0;
-    padding: 0 10px;
-    color: $gl-text-color-secondary;
-
-    @media (max-width: $screen-xs-max) {
-      display: block;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-    }
   }
 }
 
@@ -339,20 +317,18 @@ $new-sidebar-collapsed-width: 50px;
 
 // Collapsed nav
 
-.toggle-sidebar-button {
+.toggle-sidebar-button,
+.close-nav-button {
   width: $new-sidebar-width - 2px;
   position: fixed;
   bottom: 0;
   padding: 16px;
   background-color: $gray-normal;
+  border: 0;
   border-top: 2px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
-
-  @media (max-width: $screen-xs-max) {
-    display: none;
-  }
 
   i {
     font-size: 20px;
@@ -368,6 +344,13 @@ $new-sidebar-collapsed-width: 50px;
     color: $gl-text-color;
   }
 }
+
+.toggle-sidebar-button {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
 
 .sidebar-icons-only {
   .context-header {
@@ -400,6 +383,7 @@ $new-sidebar-collapsed-width: 50px;
 
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
+    padding: 16px 18px;
 
     .collapse-text,
     .fa-angle-double-left {
@@ -414,6 +398,10 @@ $new-sidebar-collapsed-width: 50px;
 
 
 // Mobile nav
+
+.close-nav-button {
+  display: none;
+}
 
 .toggle-mobile-nav {
   display: none;
@@ -431,6 +419,12 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .close-nav-button {
+    display: flex;
   }
 }
 

@@ -8,7 +8,7 @@ module Gitlab
     ImportSource = Struct.new(:name, :title, :importer)
 
     ImportTable = [
-      ImportSource.new('github',         'GitHub',        Gitlab::GithubImport::Importer),
+      ImportSource.new('github',         'GitHub',        Github::Import),
       ImportSource.new('bitbucket',      'Bitbucket',     Gitlab::BitbucketImport::Importer),
       ImportSource.new('gitlab',         'GitLab.com',    Gitlab::GitlabImport::Importer),
       ImportSource.new('google_code',    'Google Code',   Gitlab::GoogleCodeImport::Importer),

@@ -56,7 +56,7 @@ describe Gitlab::ImportSources do
 
   describe '.importer' do
     import_sources = {
-      'github' => Gitlab::GithubImport::Importer,
+      'github' => Github::Import,
       'bitbucket' => Gitlab::BitbucketImport::Importer,
       'gitlab' => Gitlab::GitlabImport::Importer,
       'google_code' => Gitlab::GoogleCodeImport::Importer,

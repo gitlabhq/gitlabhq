@@ -337,6 +337,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
+      :template_name,
 
       project_feature_attributes: %i[
         builds_access_level

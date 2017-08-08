@@ -152,6 +152,77 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
+  describe '.batch' do
+    let(:blob_references) do
+      [
+        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
+        [SeedRepo::Commit::ID, 'six']
+      ]
+    end
+
+    subject { described_class.batch(repository, blob_references) }
+
+    it { expect(subject.size).to eq(blob_references.size) }
+
+    context 'first blob' do
+      let(:blob) { subject[0] }
+
+      it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
+      it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
+      it { expect(blob.path).to eq("files/ruby/popen.rb") }
+      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
+      it { expect(blob.size).to eq(669) }
+      it { expect(blob.mode).to eq("100644") }
+    end
+
+    context 'second blob' do
+      let(:blob) { subject[1] }
+
+      it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
+      it { expect(blob.data).to eq('') }
+      it 'does not mark the blob as binary' do
+        expect(blob).not_to be_binary
+      end
+    end
+
+    context 'limiting' do
+      subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
+
+      context 'default' do
+        let(:blob_size_limit) { nil }
+
+        it 'limits to MAX_DATA_DISPLAY_SIZE' do
+          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+          expect(subject.first.data.size).to eq(100)
+        end
+      end
+
+      context 'positive' do
+        let(:blob_size_limit) { 10 }
+
+        it { expect(subject.first.data.size).to eq(10) }
+      end
+
+      context 'zero' do
+        let(:blob_size_limit) { 0 }
+
+        it { expect(subject.first.data).to eq('') }
+      end
+
+      context 'negative' do
+        let(:blob_size_limit) { -1 }
+
+        it 'ignores MAX_DATA_DISPLAY_SIZE' do
+          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+          expect(subject.first.data.size).to eq(669)
+        end
+      end
+    end
+  end
+
   describe 'encoding' do
     context 'file with russian text' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "encoding/russian.rb") }
