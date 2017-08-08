@@ -26,12 +26,10 @@ describe RepositoryUpdateMirrorWorker do
     end
 
     context 'with another worker already running' do
-      it 'raises UpdateAlreadyInProgressError' do
+      it 'returns nil' do
         mirror = create(:project, :repository, :mirror, :import_started)
 
-        expect do
-          subject.perform(mirror.id)
-        end.to raise_error(RepositoryUpdateMirrorWorker::UpdateAlreadyInProgressError)
+        expect(subject.perform(mirror.id)).to be nil
       end
     end
 

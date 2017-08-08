@@ -42,12 +42,6 @@ module EE
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
-      scope :stuck_mirrors, -> do
-        mirror.joins(:mirror_data)
-          .where("(import_status = 'started' AND project_mirror_data.last_update_started_at < :limit) OR (import_status = 'scheduled' AND project_mirror_data.last_update_scheduled_at < :limit)",
-                { limit: 20.minutes.ago })
-      end
-
       scope :mirror, -> { where(mirror: true) }
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
       scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
@@ -214,17 +208,11 @@ module EE
         super
       elsif mirror?
         ::Gitlab::Mirror.increment_metric(:mirrors_scheduled, 'Mirrors scheduled count')
-        Rails.logger.info("Mirror update for #{full_path} was scheduled.")
-
         job_id = RepositoryUpdateMirrorWorker.perform_async(self.id)
 
-        if job_id
-          update(import_jid: job_id)
+        log_import_activity(job_id, type: :mirror)
 
-          Rails.logger.info("Mirror job created for #{full_path} with job ID #{job_id}.")
-        else
-          Rails.logger.error("Mirror job failed to create for #{full_path}.")
-        end
+        job_id
       end
     end
 
