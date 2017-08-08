@@ -8,6 +8,10 @@ FactoryGirl.define do
     confirmation_token { nil }
     can_create_group true
 
+    after(:stub) do |user|
+      user.notification_email = user.email
+    end
+
     before(:create) do |user|
       user.ensure_rss_token
     end
