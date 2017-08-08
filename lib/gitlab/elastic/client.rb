@@ -10,7 +10,11 @@ module Gitlab
       # Takes a hash as returned by `ApplicationSetting#elasticsearch_config`,
       # and configures itself based on those parameters
       def self.build(config)
-        base_config = { urls: config[:url], retry_on_failure: true }
+        base_config = {
+          urls: config[:url],
+          randomize_hosts: true,
+          retry_on_failure: true
+        }
 
         if config[:aws]
           creds = resolve_aws_credentials(config)
