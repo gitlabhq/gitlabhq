@@ -8,5 +8,13 @@ class RedirectRoute < ActiveRecord::Base
     presence: true,
     uniqueness: { case_sensitive: false }
 
-  scope :matching_path_and_descendants, -> (path) { where('LOWER(redirect_routes.path) = LOWER(?) OR LOWER(redirect_routes.path) LIKE LOWER(?)', path, "#{sanitize_sql_like(path)}/%") }
+  scope :matching_path_and_descendants, -> (path) do
+    wheres = if Gitlab::Database.postgresql?
+               'LOWER(redirect_routes.path) = LOWER(?) OR LOWER(redirect_routes.path) LIKE LOWER(?)'
+             else
+               'redirect_routes.path = ? OR redirect_routes.path LIKE ?'
+             end
+             
+    where(wheres, path, "#{sanitize_sql_like(path)}/%")
+  end
 end
