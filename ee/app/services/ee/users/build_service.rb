@@ -13,7 +13,9 @@ module EE
           :password,
           :username,
           :email_opted_in,
-          :email_opted_in_ip
+          :email_opted_in_ip,
+          :email_opted_in_source,
+          :email_opted_in_at
         ]
       end
     end

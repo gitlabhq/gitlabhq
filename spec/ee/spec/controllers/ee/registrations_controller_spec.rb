@@ -7,20 +7,26 @@ describe RegistrationsController do
     context 'when the user opted-in' do
       let(:email_opted_in) { '1' }
 
-      it 'sets email_opted_in_ip to an IP' do
+      it 'sets the rest of the email_opted_in fields' do
         post :create, user_params
         user = User.find_by_username('new_username')
+        expect(user.email_opted_in).to be_truthy
         expect(user.email_opted_in_ip).to be_present
+        expect(user.email_opted_in_source).to eq('GitLab.com')
+        expect(user.email_opted_in_at).not_to be_nil
       end
     end
 
     context 'when the user opted-out' do
       let(:email_opted_in) { '0' }
 
-      it 'sets email_opted_in_ip to nil' do
+      it 'does not set the rest of the email_opted_in fields' do
         post :create, user_params
         user = User.find_by_username('new_username')
-        expect(user.email_opted_in_ip).to be_nil
+        expect(user.email_opted_in).to be_falsey
+        expect(user.email_opted_in_ip).to be_blank
+        expect(user.email_opted_in_source).to be_blank
+        expect(user.email_opted_in_at).to be_nil
       end
     end
   end

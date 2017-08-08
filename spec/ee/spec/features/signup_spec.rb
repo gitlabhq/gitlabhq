@@ -23,6 +23,8 @@ feature 'Signup on EE' do
         user = User.find_by_username!(user.username)
         expect(user.email_opted_in).to be_truthy
         expect(user.email_opted_in_ip).to be_present
+        expect(user.email_opted_in_source).to eq('GitLab.com')
+        expect(user.email_opted_in_at).not_to be_nil
       end
     end
 
@@ -41,7 +43,9 @@ feature 'Signup on EE' do
 
         user = User.find_by_username!(user.username)
         expect(user.email_opted_in).to be_falsey
-        expect(user.email_opted_in_ip).to be_nil
+        expect(user.email_opted_in_ip).to be_blank
+        expect(user.email_opted_in_source).to be_blank
+        expect(user.email_opted_in_at).to be_nil
       end
     end
   end
@@ -67,7 +71,9 @@ feature 'Signup on EE' do
 
       user = User.find_by_username!(user.username)
       expect(user.email_opted_in).to be_falsey
-      expect(user.email_opted_in_ip).to be_nil
+      expect(user.email_opted_in_ip).to be_blank
+      expect(user.email_opted_in_source).to be_blank
+      expect(user.email_opted_in_at).to be_nil
     end
   end
 end

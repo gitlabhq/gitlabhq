@@ -7,7 +7,11 @@ module EE
     def sign_up_params
       clean_params = params.require(:user).permit(:username, :email, :email_confirmation, :name, :password, :email_opted_in)
 
-      clean_params[:email_opted_in_ip] = clean_params[:email_opted_in] == '1' ? request.remote_ip : nil
+      if clean_params[:email_opted_in] == '1'
+        clean_params[:email_opted_in_ip] = request.remote_ip
+        clean_params[:email_opted_in_source] = 'GitLab.com'
+        clean_params[:email_opted_in_at] = Time.zone.now
+      end
 
       clean_params
     end
