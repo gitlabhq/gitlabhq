@@ -4,6 +4,7 @@ module Gitlab
   module Git
     class Ref
       include Gitlab::EncodingHelper
+      include Gitlab::Git::Local::Ref
 
       # Branch or tag name
       # without "refs/tags|heads" prefix
@@ -24,13 +25,6 @@ module Gitlab
       #   Ref.extract_branch_name('refs/heads/master') #=> 'master'
       def self.extract_branch_name(str)
         str.gsub(/\Arefs\/heads\//, '')
-      end
-
-      # Gitaly: this method will probably be migrated indirectly via its call sites.
-      def self.dereference_object(object)
-        object = object.target while object.is_a?(Rugged::Tag::Annotation)
-
-        object
       end
 
       def initialize(repository, name, target, derefenced_target)
