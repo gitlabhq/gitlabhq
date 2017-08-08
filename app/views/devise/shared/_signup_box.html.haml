@@ -22,6 +22,10 @@
         = f.label :password
         = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
         %p.gl-field-hint Minimum length is #{@minimum_password_length} characters
+      - if Gitlab.com?
+        .form-group
+          = f.check_box :email_opted_in
+          = f.label :email_opted_in, "I'd like to receive updates via email about GitLab"
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags

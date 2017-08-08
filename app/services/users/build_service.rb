@@ -74,7 +74,8 @@ module Users
         :password_automatically_set,
         :name,
         :password,
-        :username
+        :username,
+        :email_opted_in
       ]
     end
 
