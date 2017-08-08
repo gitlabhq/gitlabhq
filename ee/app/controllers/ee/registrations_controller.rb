@@ -11,7 +11,7 @@ module EE
 
       if clean_params[:email_opted_in] == '1'
         clean_params[:email_opted_in_ip] = request.remote_ip
-        clean_params[:email_opted_in_source] = 'GitLab.com'
+        clean_params[:email_opted_in_source_id] = User::EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM
         clean_params[:email_opted_in_at] = Time.zone.now
       end
 

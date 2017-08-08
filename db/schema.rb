@@ -1906,7 +1906,7 @@ ActiveRecord::Schema.define(version: 20170808163512) do
     t.string "email_provider"
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
-    t.string "email_opted_in_source"
+    t.integer "email_opted_in_source_id"
     t.datetime_with_timezone "email_opted_in_at"
   end
 
