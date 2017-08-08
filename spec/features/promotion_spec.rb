@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Promotions', js: true do
-  let(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:developer) { create(:user) }  
@@ -46,8 +46,6 @@ describe 'Promotions', js: true do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
         project.team << [user, :master]
-        project.team << [developer, :developer]
-        project.add_developer(developer)
       end
 
       it 'should have the Upgrade your plan button' do
@@ -58,6 +56,8 @@ describe 'Promotions', js: true do
 
       it 'should have the contact owner line' do
         sign_in(developer)
+        project.team << [developer, :developer]
+        project.add_developer(developer)
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
