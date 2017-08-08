@@ -4,13 +4,11 @@ module EE
       private
 
       def signup_params
+        super + email_opted_in_params
+      end
+
+      def email_opted_in_params
         [
-          :email,
-          :email_confirmation,
-          :password_automatically_set,
-          :name,
-          :password,
-          :username,
           :email_opted_in,
           :email_opted_in_ip,
           :email_opted_in_source_id,

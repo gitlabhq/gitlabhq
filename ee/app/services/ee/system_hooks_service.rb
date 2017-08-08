@@ -5,15 +5,7 @@ module EE
     private
 
     def user_data(model)
-      raise NotImplementedError unless defined?(super)
-
-      data = {
-        name: model.name,
-        email: model.email,
-        user_id: model.id,
-        username: model.username
-      }
-
+      data = super
       data.merge!(email_opted_in_data(model)) if ::Gitlab.com?
       data
     end

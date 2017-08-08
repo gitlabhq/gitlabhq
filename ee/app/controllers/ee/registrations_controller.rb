@@ -5,8 +5,6 @@ module EE
     private
 
     def sign_up_params
-      raise NotImplementedError unless defined?(super)
-
       clean_params = params.require(:user).permit(:username, :email, :email_confirmation, :name, :password, :email_opted_in)
 
       if clean_params[:email_opted_in] == '1'
