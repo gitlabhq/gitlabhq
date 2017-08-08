@@ -44,6 +44,7 @@ const RepoStore = {
   binary: false,
   currentBranch: '',
   targetBranch: 'new-branch',
+  isTargetBranchNew: true,
   commitMessage: '',
   binaryMimeType: '',
   // scroll bar space for windows

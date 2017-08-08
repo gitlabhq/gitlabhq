@@ -13,7 +13,9 @@ function initDropdowns() {
 
 function addEventsForNonVueEls() {
   $(document).on('change', '.dropdown', () => {
-    Store.targetBranch = $('.project-refs-target-form input[name="ref"]').val();
+    const $hiddenInput = $('.project-refs-target-form input[name="ref"]');
+    Store.targetBranch = $hiddenInput.val();
+    Store.isTargetBranchNew = !!$hiddenInput.attr('data-input');
   });
 
   window.onbeforeunload = function confirmUnload(e) {

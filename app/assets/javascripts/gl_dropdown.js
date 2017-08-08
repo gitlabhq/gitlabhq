@@ -13,6 +13,9 @@ GitLabDropdownInput = (function() {
     this.options = options;
     this.fieldName = this.options.fieldName || 'field-name';
     $inputContainer = this.input.parent();
+    if(this.options.defaultInputFieldText) {
+      this.input.val(this.options.defaultInputFieldText);
+    }
     $clearButton = $inputContainer.find('.js-dropdown-input-clear');
     $clearButton.on('click', (function(_this) {
       // Clear click
@@ -35,7 +38,7 @@ GitLabDropdownInput = (function() {
       val = val.split(' ').join('-') // replaces space with dash
         .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
         .replace(/(-)\1+/g, '-'); // replace repeated dashes
-      _this.cb(_this.options.fieldName, val, {}, true);
+      _this.cb(_this.options.fieldName, val, {}, true, 'input');
       _this.input.closest('.dropdown')
         .find('.dropdown-toggle-text')
         .text(val);
@@ -804,7 +807,7 @@ GitLabDropdown = (function() {
     }
   };
 
-  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
+  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single, custom) {
     var $input;
     // Create hidden input for form
     if (single) {
@@ -812,6 +815,10 @@ GitLabDropdown = (function() {
     }
 
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
+    if(custom) {
+      $input.attr('data-'+custom, true);
+    }
+
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
     }

@@ -91,10 +91,10 @@ import Cookies from 'js-cookie';
           filterRemote: true,
           filterByText: true,
           inputFieldName: $dropdown.data('input-field-name'),
+          defaultInputFieldText: $dropdown.data('default-input-field-text'),
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var li = refListItem.cloneNode(false);
-
             if (ref.header != null) {
               li.className = 'dropdown-header';
               li.textContent = ref.header;
