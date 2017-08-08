@@ -3,7 +3,7 @@
 .info-well.hidden-xs
   .well-segment
     %ul.blob-commit-info
-      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref
+      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref, load_signature_async: false
 
   = render "projects/blob/auxiliary_viewer", blob: blob
 

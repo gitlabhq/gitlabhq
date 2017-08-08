@@ -19,7 +19,8 @@ module CommitsHelper
     render 'projects/commits/commit',
       commit: commit,
       ref: ref,
-      project: project
+      project: project,
+      load_signature_async: false
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
