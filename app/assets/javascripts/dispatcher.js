@@ -343,6 +343,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
+          if ($('.project-show-activity').length) new gl.Activities();
           break;
         case 'projects:edit':
           setupProjectEdit();
