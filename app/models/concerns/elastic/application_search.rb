@@ -79,7 +79,7 @@ module Elastic
       # them to raise exceptions. When this happens, we still want the remainder
       # of the object to be saved, so silently swallow the errors
       def safely_read_attribute_for_elasticsearch(attr_name)
-        send(attr_name)
+        send(attr_name) # rubocop:disable GitlabSecurity/PublicSend
       rescue => err
         logger.warn("Elasticsearch failed to read #{attr_name} for #{self.class} #{self.id}: #{err}")
         nil

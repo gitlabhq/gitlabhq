@@ -319,7 +319,7 @@ module Gitlab
 
       def to_hash
         serialize_keys.map.with_object({}) do |key, hash|
-          hash[key] = send(key)
+          hash[key] = send(key) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 
@@ -412,7 +412,7 @@ module Gitlab
         raw_commit = hash.symbolize_keys
 
         serialize_keys.each do |key|
-          send("#{key}=", raw_commit[key])
+          send("#{key}=", raw_commit[key]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

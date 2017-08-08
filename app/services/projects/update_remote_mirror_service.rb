@@ -119,8 +119,8 @@ module Projects
     end
 
     def refs_to_delete(type)
-      remote_refs       = send("remote_#{type}")
-      local_refs        = send("local_#{type}")
+      remote_refs       = send("remote_#{type}") # rubocop:disable GitlabSecurity/PublicSend
+      local_refs        = send("local_#{type}") # rubocop:disable GitlabSecurity/PublicSend
       default_branch_id = project.commit.id
 
       remote_refs.each_with_object([]) do |(name, remote_ref), refs_to_delete|
