@@ -44,8 +44,6 @@ namespace :gitlab do
   end
 
   namespace :gitlab_shell do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of GitLab Shell"
     task check: :environment  do
       warn_user_is_not_gitlab
@@ -252,8 +250,6 @@ namespace :gitlab do
   end
 
   namespace :sidekiq do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of Sidekiq"
     task check: :environment  do
       warn_user_is_not_gitlab
@@ -312,8 +308,6 @@ namespace :gitlab do
   end
 
   namespace :incoming_email do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the configuration of Reply by email"
     task check: :environment  do
       warn_user_is_not_gitlab
@@ -447,8 +441,6 @@ namespace :gitlab do
   end
 
   namespace :ldap do
-    include SystemCheck::Helpers
-
     task :check, [:limit] => :environment do |_, args|
       # Only show up to 100 results because LDAP directories can be very big.
       # This setting only affects the `rake gitlab:check` script.
@@ -504,8 +496,6 @@ namespace :gitlab do
   end
 
   namespace :repo do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
       Gitlab.config.repositories.storages.each do |name, repository_storage|
@@ -520,8 +510,6 @@ namespace :gitlab do
   end
 
   namespace :user do
-    include SystemCheck::Helpers
-
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
       username = args[:username] || prompt("Check repository integrity for fsername? ".color(:blue))

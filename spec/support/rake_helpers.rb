@@ -5,11 +5,15 @@ module RakeHelpers
   end
 
   def stub_warn_user_is_not_gitlab
-    allow_any_instance_of(Object).to receive(:warn_user_is_not_gitlab)
+    allow(main_object).to receive(:warn_user_is_not_gitlab)
   end
 
   def silence_output
-    allow($stdout).to receive(:puts)
-    allow($stdout).to receive(:print)
+    allow(main_object).to receive(:puts)
+    allow(main_object).to receive(:print)
+  end
+
+  def main_object
+    @main_object ||= TOPLEVEL_BINDING.eval('self')
   end
 end
