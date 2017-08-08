@@ -699,7 +699,7 @@ module API
     class RepoTag < Grape::Entity
       expose :name, :message
 
-      expose :commit do |repo_tag, options|
+      expose :commit, using: Entities::RepoCommit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
