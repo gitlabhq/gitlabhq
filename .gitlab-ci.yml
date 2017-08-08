@@ -290,6 +290,8 @@ rake karma:
   variables:
     BABEL_ENV: "coverage"
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
@@ -387,6 +389,8 @@ lint:javascript:
   stage: test
   before_script: []
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - yarn run eslint
 
 lint:javascript:report:
