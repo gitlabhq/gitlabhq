@@ -371,7 +371,8 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:edit':
           new UsersSelect();
-          new UserCallout();
+          new UserCallout('js-service-desk-callout');
+          new UserCallout('js-mr-approval-callout');
           break;
         case 'projects:imports:show':
           new ProjectImport();

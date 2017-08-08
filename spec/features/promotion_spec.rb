@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe 'Promotions', js: true do
   let(:project) { create(:project, :repository) }
+  let(:otherproject) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:standarddeveloper) { create(:user) }  
@@ -47,7 +48,8 @@ describe 'Promotions', js: true do
         project.add_developer(standarddeveloper)
         project.team << [user, :master]
         
-        stub_application_setting(check_namespace_plan: true)       
+        stub_application_setting(check_namespace_plan: true)
+        allow(Gitlab).to receive(:com?) { true }
       end
 
       it 'should have the Upgrade your plan button' do
@@ -57,8 +59,8 @@ describe 'Promotions', js: true do
       end
 
       it 'should have the contact owner line' do
-        sign_in(standarddeveloper)
-        visit edit_project_path(project)
+        sign_in(user)
+        visit edit_project_path(otherproject)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
     end
@@ -127,20 +129,20 @@ describe 'Promotions', js: true do
     end
 
     it 'should appear in repository settings page' do
-      visit repository_settings(project)
+      visit project_settings_repository_path(project)
       
       expect(find('#promote_repository_features')).to have_content 'Improve repositories with GitLab Enterprise Edition'
       expect(find('#promote_repository_features')).to have_content 'Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.'
     end
 
     it 'does not show when cookie is set' do
-      visit repository_settings(project)
+      visit project_settings_repository_path(project)
 
       within('#promote_repository_features') do
         find('.close').trigger('click')
       end
 
-      visit repository_settings(project)
+      visit project_settings_repository_path(project)
 
       expect(page).not_to have_selector('#promote_repository_features')
     end
