@@ -25,7 +25,7 @@
       - if Gitlab.com?
         .form-group
           = f.check_box :email_opted_in
-          = f.label :email_opted_in, "I'd like to receive updates via email about GitLab"
+          = f.label :email_opted_in, "I'd like to receive updates via email about GitLab."
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
