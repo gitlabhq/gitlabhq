@@ -5,6 +5,7 @@ describe Gitlab::ImportExport::FileImporter, lib: true do
   let(:export_path) { "#{Dir::tmpdir}/file_importer_spec" }
   let(:valid_file) { "#{shared.export_path}/valid.json" }
   let(:symlink_file) { "#{shared.export_path}/invalid.json" }
+  let(:hidden_symlink_file) { "#{shared.export_path}/.hidden" }
   let(:subfolder_symlink_file) { "#{shared.export_path}/subfolder/invalid.json" }
 
   before do
@@ -23,6 +24,10 @@ describe Gitlab::ImportExport::FileImporter, lib: true do
 
   it 'removes symlinks in root folder' do
     expect(File.exist?(symlink_file)).to be false
+  end
+
+  it 'removes hidden symlinks in root folder' do
+    expect(File.exist?(hidden_symlink_file)).to be false
   end
 
   it 'removes symlinks in subfolders' do
