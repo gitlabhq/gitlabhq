@@ -1046,13 +1046,18 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
-    repository.before_change_head
-    repository.rugged.references.create('HEAD',
-                                        "refs/heads/#{branch}",
-                                        force: true)
-    repository.copy_gitattributes(branch)
-    repository.after_change_head
-    reload_default_branch
+    if repository.branch_exists?(branch)
+      repository.before_change_head
+      repository.rugged.references.create('HEAD',
+                                          "refs/heads/#{branch}",
+                                          force: true)
+      repository.copy_gitattributes(branch)
+      repository.after_change_head
+      reload_default_branch
+    else
+      errors.add(:base, "Could not change HEAD: branch '#{branch}' does not exist")
+      false
+    end
   end
 
   def forked_from?(project)
