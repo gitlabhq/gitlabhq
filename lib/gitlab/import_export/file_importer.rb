@@ -55,7 +55,7 @@ module Gitlab
       end
 
       def extracted_files
-        Dir["#{@shared.export_path}/**/*", File::FNM_DOTMATCH] - %w[. ..]
+        Dir.glob("#{@shared.export_path}/**/*", File::FNM_DOTMATCH).reject { |f| f =~ /.*\/\.{1,2}$/ }
       end
     end
   end
