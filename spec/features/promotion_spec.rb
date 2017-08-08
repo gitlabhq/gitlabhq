@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe 'Promotions', js: true do
+  let(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, path: 'gitlab', name: 'sample') }
+  let(:developer) { create(:user) }  
 
   describe 'if you have a license' do
     before do
@@ -41,13 +42,12 @@ describe 'Promotions', js: true do
 
   describe 'for project features in general', js: true do
     context 'for .com' do
-      let(:developer) { create(:user) }
-
       before do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
         project.team << [user, :master]
         project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it 'should have the Upgrade your plan button' do
