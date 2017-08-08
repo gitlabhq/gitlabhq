@@ -63,8 +63,6 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
-    Rake.application.rake_require 'tasks/gitlab/helpers'
-    Rake::Task.define_task :environment
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
@@ -124,41 +122,50 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    gitlab_shell_dir = File.dirname(Gitlab.config.gitlab_shell.path)
-    gitlab_shell_needs_update = component_needs_update?(gitlab_shell_dir,
+    puts "\n==> Setting up Gitlab Shell..."
+    start = Time.now
+    gitlab_shell_dir = Gitlab.config.gitlab_shell.path
+    shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
-    Rake.application.rake_require 'tasks/gitlab/shell'
-    unless !gitlab_shell_needs_update || Rake.application.invoke_task('gitlab:shell:install')
+    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
+      puts "\nGitLab Shell failed to install, cleaning up #{gitlab_shell_dir}!\n"
       FileUtils.rm_rf(gitlab_shell_dir)
-      raise "Can't install gitlab-shell"
+      exit 1
     end
+
+    puts "    GitLab Shell setup in #{Time.now - start} seconds...\n"
   end
 
   def setup_gitaly
+    puts "\n==> Setting up Gitaly..."
+    start = Time.now
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
     if gitaly_dir_stale?(gitaly_dir)
-      puts "rm -rf #{gitaly_dir}"
-      FileUtils.rm_rf(gitaly_dir) 
+      puts "    Gitaly is outdated, cleaning up #{gitaly_dir}!"
+      FileUtils.rm_rf(gitaly_dir)
     end
 
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
-    Rake.application.rake_require 'tasks/gitlab/gitaly'
-    unless !gitaly_needs_update || Rake.application.invoke_task("gitlab:gitaly:install[#{gitaly_dir}]")
+    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+      puts "\nGitaly failed to install, cleaning up #{gitaly_dir}!\n"
       FileUtils.rm_rf(gitaly_dir)
-      raise "Can't install gitaly"
+      exit 1
     end
 
     start_gitaly(gitaly_dir)
+    puts "    Gitaly setup in #{Time.now - start} seconds...\n"
   end
 
   def gitaly_dir_stale?(dir)
     gitaly_executable = File.join(dir, 'gitaly')
-    !File.exist?(gitaly_executable) || (File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION')))
+    return false unless File.exist?(gitaly_executable)
+
+    File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION'))
   end
 
   def start_gitaly(gitaly_dir)
