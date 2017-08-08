@@ -135,8 +135,9 @@ import './project_select';
 import './project_show';
 import './project_variables';
 import './projects_list';
-import './render_gfm';
+import './syntax_highlight';
 import './render_math';
+import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
@@ -144,7 +145,6 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
-import './syntax_highlight';
 
 // EE-only scripts
 import './admin_email_select';
