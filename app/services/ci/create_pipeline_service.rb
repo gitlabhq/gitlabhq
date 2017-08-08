@@ -47,6 +47,10 @@ module Ci
     private
 
     def validate(triggering_user, ignore_skip_ci:, save_on_errors:)
+      if current_user&.blocked?
+        return error('Blocked user can not create a new pipeline')
+      end
+
       unless project.builds_enabled?
         return error('Pipeline is disabled')
       end
