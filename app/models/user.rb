@@ -158,6 +158,7 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
+  before_validation :set_email_opted_in_ip, if: :email_opted_in_changed?
 
   after_update :update_emails_with_primary_email, if: :email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
@@ -734,6 +735,10 @@ class User < ActiveRecord::Base
     if public_email.blank? || !all_emails.include?(public_email)
       self.public_email = ''
     end
+  end
+
+  def set_email_opted_in_ip
+    self.email_opted_in_ip = email_opted_in? ? current_sign_in_ip : nil
   end
 
   def update_secondary_emails!

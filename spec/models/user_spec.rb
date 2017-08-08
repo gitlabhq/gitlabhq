@@ -2000,4 +2000,53 @@ describe User do
       expect(user.projects_limit_left).to eq(5)
     end
   end
+
+  describe '#set_email_opted_in_ip' do
+    context 'when the user did not change email_opted_in' do
+      context 'when email_opted_in is falsey' do
+        let!(:user) { create(:user, email_opted_in: nil, current_sign_in_ip: '1.1.1.1') }
+
+        it 'does not change email_opted_in_ip' do
+          user.touch
+          expect(user.email_opted_in_ip).to be_nil
+        end
+      end
+
+      context 'when email_opted_in is truthy' do
+        let(:existing_ip) { '1.1.1.1' }
+        let!(:user) { create(:user, email_opted_in: true, current_sign_in_ip: existing_ip) }
+
+        it 'does not change email_opted_in_ip' do
+          user.update_attribute(:current_sign_in_ip, '2.2.2.2')
+          expect(user.email_opted_in_ip).to eq(existing_ip)
+        end
+      end
+
+    end
+
+    context 'when the user just changed to opted-in' do
+      let!(:user) { create(:user, email_opted_in: nil, current_sign_in_ip: '1.1.1.1') }
+      let(:new_ip) { '2.2.2.2' }
+
+      before do
+        user.update_attributes(email_opted_in: true, current_sign_in_ip: new_ip)
+      end
+
+      it 'sets email_opted_in_ip to current_sign_in_ip' do
+        expect(user.email_opted_in_ip).to eq(new_ip)
+      end
+    end
+
+    context 'when the user just changed to opted-out' do
+      let!(:user) { create(:user, email_opted_in: true, current_sign_in_ip: '1.1.1.1') }
+
+      before do
+        user.update_attributes(email_opted_in: false, current_sign_in_ip: '2.2.2.2')
+      end
+
+      it 'sets email_opted_in_ip to nil' do
+        expect(user.email_opted_in_ip).to be_nil
+      end
+    end
+  end
 end
