@@ -22,14 +22,9 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   private
 
   def milestones
-    group_milestones = current_user
-      .groups
-      .map do |group_id|
-        group_params = params.merge(group_ids: group_id)
-
-        MilestonesFinder.new(group_params).execute
-      end
-      .flatten
+    group_milestones = MilestonesFinder.new(
+      group_ids: current_user.groups.pluck(:id)
+    ).execute
 
     project_milestones = DashboardMilestone.build_collection(@projects, params)
 
