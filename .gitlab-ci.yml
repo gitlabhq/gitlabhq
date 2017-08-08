@@ -290,6 +290,8 @@ static-analysis:
   <<: *except-docs
   stage: test
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - scripts/static-analysis
 
 # Documentation checks:
@@ -424,6 +426,8 @@ rake karma:
   variables:
     BABEL_ENV: "coverage"
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
