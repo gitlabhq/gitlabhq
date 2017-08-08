@@ -6,7 +6,7 @@ import Vue from 'vue';
 import milestoneSelect from '~/boards/components/milestone_select';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Milestone select component', () => {
   let selectMilestoneSpy;
@@ -16,7 +16,7 @@ describe('Milestone select component', () => {
     const MilestoneComp = Vue.extend(milestoneSelect);
 
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
     selectMilestoneSpy = jasmine.createSpy('selectMilestone').and.callFake((milestone) => {

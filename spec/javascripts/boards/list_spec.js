@@ -15,14 +15,19 @@ import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('List model', () => {
   let list;
 
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService({
+      boardsEndpoint: '/test/issue-boards/board',
+      listsEndpoint: '/boards/1',
+      bulkUpdatePath: '/test/issue-boards/board/1/lists',
+      boardId: '1',
+    });
     gl.issueBoards.BoardsStore.create();
 
     list = new List(listObj);

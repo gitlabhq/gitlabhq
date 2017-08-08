@@ -3,11 +3,11 @@
 import Vue from 'vue';
 
 class BoardService {
-  constructor (root, listsEndpoint, bulkUpdatePath, boardId) {
-    this.boards = Vue.resource(`${root}{/id}.json`, {}, {
+  constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
+    this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
         method: 'GET',
-        url: `/boards/${boardId}/issues.json`
+        url: `/boards/${boardId}/issues.json`,
       }
     });
     this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {

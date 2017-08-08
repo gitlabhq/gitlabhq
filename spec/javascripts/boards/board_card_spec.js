@@ -12,15 +12,15 @@ import '~/boards/models/list';
 import '~/boards/models/label';
 import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
-describe('Issue card', () => {
+fdescribe('Board card', () => {
   let vm;
 
   beforeEach((done) => {
     Vue.http.interceptors.push(boardsMockInterceptor);
 
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.issueBoards.BoardsStore.detail.issue = {};
 

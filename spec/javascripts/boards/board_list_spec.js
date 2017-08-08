@@ -12,7 +12,7 @@ import '~/boards/mixins/sortable_default_options';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 window.Sortable = Sortable;
 
@@ -24,7 +24,7 @@ describe('Board list component', () => {
 
     document.body.appendChild(el);
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 

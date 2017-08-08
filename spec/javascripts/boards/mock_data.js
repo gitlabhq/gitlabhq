@@ -1,3 +1,4 @@
+/* global BoardService */
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
 const boardObj = {
   id: 1,
@@ -36,6 +37,7 @@ const BoardsMockData = {
     '/test/issue-boards/board/1/lists{/id}/issues': {
       issues: [{
         title: 'Testing',
+        id: 1,
         iid: 1,
         confidential: false,
         labels: [],
@@ -72,3 +74,13 @@ window.listObj = listObj;
 window.listObjDuplicate = listObjDuplicate;
 window.BoardsMockData = BoardsMockData;
 window.boardsMockInterceptor = boardsMockInterceptor;
+
+// eslint-disable-next-line import/prefer-default-export
+export function mockBoardService() {
+  return new BoardService({
+    boardsEndpoint: '/test/issue-boards/board',
+    listsEndpoint: '/test/boards/1',
+    bulkUpdatePath: '',
+    boardId: '1',
+  });
+}

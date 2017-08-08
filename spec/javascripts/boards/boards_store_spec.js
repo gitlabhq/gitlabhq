@@ -15,12 +15,12 @@ import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Store', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
 
     spyOn(gl.boardService, 'moveIssue').and.callFake(() => new Promise((resolve) => {

@@ -7,7 +7,7 @@ import Vue from 'vue';
 import boardNewIssue from '~/boards/components/board_new_issue';
 
 import '~/boards/models/list';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Issue boards new issue form', () => {
   let vm;
@@ -33,7 +33,7 @@ describe('Issue boards new issue form', () => {
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
     Vue.http.interceptors.push(boardsMockInterceptor);
-    gl.boardService = new BoardService('/test/issue-boards/board', '', '1');
+    gl.boardService = mockBoardService();
     gl.issueBoards.BoardsStore.create();
     gl.IssueBoardsApp = new Vue();
 
