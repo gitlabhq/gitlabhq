@@ -46,21 +46,21 @@ export default RepoFile;
 </script>
 
 <template>
-<tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}">
-  <td @click.prevent="linkClicked(file)">
-    <i class="fa file-icon" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
-  </td>
+  <tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}">
+    <td @click.prevent="linkClicked(file)">
+      <i class="fa file-icon" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
+      <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}" aria-label="loading" />
+      <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
+    </td>
 
-  <td v-if="!isMini" class="hidden-sm hidden-xs">
-    <div class="commit-message">
-      <a :href="file.lastCommitUrl">{{file.lastCommitMessage}}</a>
-    </div>
-  </td>
+    <td v-if="!isMini" class="hidden-sm hidden-xs">
+      <div class="commit-message">
+        <a :href="file.lastCommitUrl">{{file.lastCommitMessage}}</a>
+      </div>
+    </td>
 
-  <td v-if="!isMini" class="hidden-xs">
-    <span class="commit-update" :title="tooltipTitle(file.lastCommitUpdate)">{{timeFormated(file.lastCommitUpdate)}}</span>
-  </td>
-</tr>
+    <td v-if="!isMini" class="hidden-xs">
+      <span class="commit-update" :title="tooltipTitle(file.lastCommitUpdate)">{{timeFormated(file.lastCommitUpdate)}}</span>
+    </td>
+  </tr>
 </template>

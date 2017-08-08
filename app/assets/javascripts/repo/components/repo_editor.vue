@@ -131,5 +131,5 @@ export default RepoEditor;
 </script>
 
 <template>
-<div id="ide"></div>
+  <div id="ide" />
 </template>

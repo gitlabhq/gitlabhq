@@ -66,39 +66,43 @@ export default RepoSidebar;
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak>
-  <table class="table">
-    <thead v-if="!isMini">
-      <tr>
-        <th class="name">Name</th>
-        <th class="hidden-sm hidden-xs last-commit">Last Commit</th>
-        <th class="hidden-xs last-update">Last Update</th>
-      </tr>
-    </thead>
-    <tbody>
-      <repo-file-options
-        :is-mini="isMini"
-        :project-name="projectName"/>
-      <repo-previous-directory
-        v-if="isRoot"
-        :prev-url="prevURL"
-        @linkclicked="linkClicked(prevURL)"/>
-      <repo-loading-file
-        v-for="n in 5"
-        :key="n"
-        :loading="loading"
-        :has-files="!!files.length"
-        :is-mini="isMini"/>
-      <repo-file
-        v-for="file in files"
-        :key="file.id"
-        :file="file"
-        :is-mini="isMini"
-        @linkclicked="linkClicked(file)"
-        :is-tree="isTree"
-        :has-files="!!files.length"
-        :active-file="activeFile"/>
-    </tbody>
-  </table>
-</div>
+  <div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak>
+    <table class="table">
+      <thead v-if="!isMini">
+        <tr>
+          <th class="name">Name</th>
+          <th class="hidden-sm hidden-xs last-commit">Last Commit</th>
+          <th class="hidden-xs last-update">Last Update</th>
+        </tr>
+      </thead>
+      <tbody>
+        <repo-file-options
+          :is-mini="isMini"
+          :project-name="projectName"
+        />
+        <repo-previous-directory
+          v-if="isRoot"
+          :prev-url="prevURL"
+          @linkclicked="linkClicked(prevURL)"
+        />
+        <repo-loading-file
+          v-for="n in 5"
+          :key="n"
+          :loading="loading"
+          :has-files="!!files.length"
+          :is-mini="isMini"
+        />
+        <repo-file
+          v-for="file in files"
+          :key="file.id"
+          :file="file"
+          :is-mini="isMini"
+          @linkclicked="linkClicked(file)"
+          :is-tree="isTree"
+          :has-files="!!files.length"
+          :active-file="activeFile"
+        />
+      </tbody>
+    </table>
+  </div>
 </template>

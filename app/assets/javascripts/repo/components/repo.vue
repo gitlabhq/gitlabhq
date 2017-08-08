@@ -43,21 +43,22 @@ export default {
 </script>
 
 <template>
-<div class="repository-view tree-content-holder">
-  <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
-    <repo-tabs/>
-    <component :is="currentBlobView" class="blob-viewer-container"></component>
-    <repo-file-buttons/>
+  <div class="repository-view tree-content-holder">
+    <!-- Purposely place both elements side by side to prevent whitespace -->
+    <repo-sidebar /><div class="panel-right" :class="{'edit-mode': editMode}">
+      <repo-tabs />
+      <component :is="currentBlobView" class="blob-viewer-container" />
+      <repo-file-buttons />
+    </div>
+    <repo-commit-section />
+    <popup-dialog
+      :primary-button-label="__('Discard changes')"
+      :open="dialog.open"
+      kind="warning"
+      :title="__('Are you sure?')"
+      :body="__('Are you sure you want to discard your changes?')"
+      @toggle="dialogToggled"
+      @submit="dialogSubmitted"
+    />
   </div>
-  <repo-commit-section/>
-  <popup-dialog
-    :primary-button-label="__('Discard changes')"
-    :open="dialog.open"
-    kind="warning"
-    :title="__('Are you sure?')"
-    :body="__('Are you sure you want to discard your changes?')"
-    @toggle="dialogToggled"
-    @submit="dialogSubmitted"
-  />
-</div>
 </template>
