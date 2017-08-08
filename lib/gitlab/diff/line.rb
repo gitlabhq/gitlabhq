@@ -21,7 +21,7 @@ module Gitlab
 
       def to_hash
         hash = {}
-        serialize_keys.each { |key| hash[key] = send(key) }
+        serialize_keys.each { |key| hash[key] = send(key) } # rubocop:disable GitlabSecurity/PublicSend
         hash
       end
 

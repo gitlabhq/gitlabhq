@@ -37,7 +37,7 @@ module Labels
 
       union = Gitlab::SQL::Union.new(label_ids)
 
-      Label.where("labels.id IN (#{union.to_sql})").reorder(nil).uniq
+      Label.where("labels.id IN (#{union.to_sql})").reorder(nil).uniq # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def group_labels_applied_to_issues
