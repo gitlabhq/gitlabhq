@@ -44,7 +44,7 @@ export default {
 
 <template>
   <div class="repository-view tree-content-holder">
-    <!-- Purposely place both elements side by side to prevent whitespace -->
+    <!-- Place both elements side by side to prevent whitespace -->
     <repo-sidebar /><div class="panel-right" :class="{'edit-mode': editMode}">
       <repo-tabs />
       <component :is="currentBlobView" class="blob-viewer-container" />
