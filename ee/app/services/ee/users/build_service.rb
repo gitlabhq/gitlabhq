@@ -3,7 +3,7 @@ module EE
     module BuildService
 
       private
-      
+
       def signup_params
         [
           :email,
@@ -12,7 +12,8 @@ module EE
           :name,
           :password,
           :username,
-          :email_opted_in
+          :email_opted_in,
+          :email_opted_in_ip
         ]
       end
     end

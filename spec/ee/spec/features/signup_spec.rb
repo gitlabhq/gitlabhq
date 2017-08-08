@@ -22,6 +22,7 @@ feature 'Signup on EE' do
 
         user = User.find_by_username!(user.username)
         expect(user.email_opted_in).to be_truthy
+        expect(user.email_opted_in_ip).to be_present
       end
     end
 
@@ -40,6 +41,7 @@ feature 'Signup on EE' do
 
         user = User.find_by_username!(user.username)
         expect(user.email_opted_in).to be_falsey
+        expect(user.email_opted_in_ip).to be_nil
       end
     end
   end
@@ -65,6 +67,7 @@ feature 'Signup on EE' do
 
       user = User.find_by_username!(user.username)
       expect(user.email_opted_in).to be_falsey
+      expect(user.email_opted_in_ip).to be_nil
     end
   end
 end
