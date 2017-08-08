@@ -1,5 +1,7 @@
 module Users
   class BuildService < BaseService
+    prepend ::EE::Users::BuildService
+
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
