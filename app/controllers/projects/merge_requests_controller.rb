@@ -67,11 +67,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
-        if @merge_request.locked_long_ago?
-          @merge_request.unlock_mr
-          @merge_request.close
-        end
-
         labels
 
         set_pipeline_variables

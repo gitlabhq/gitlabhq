@@ -395,6 +395,10 @@ Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
 Settings.cron_jobs['remove_old_web_hook_logs_worker']['job_class'] = 'RemoveOldWebHookLogsWorker'
 
+Settings.cron_jobs['stuck_merge_jobs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['stuck_merge_jobs_worker']['cron'] ||= '0 */2 * * *'
+Settings.cron_jobs['stuck_merge_jobs_worker']['job_class'] = 'StuckMergeJobsWorker'
+
 #
 # GitLab Shell
 #
