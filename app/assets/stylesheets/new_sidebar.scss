@@ -218,9 +218,8 @@ $new-sidebar-collapsed-width: 50px;
       }
     }
 
-    &:not(.active) {
+    &.is-showing-fly-out {
       > a {
-        margin-left: 1px;
         margin-right: 2px;
       }
 
@@ -268,6 +267,14 @@ $new-sidebar-collapsed-width: 50px;
               top: auto;
               bottom: 44px;
               transform: skew(-30deg);
+            }
+          }
+
+          > .active {
+            box-shadow: none;
+
+            > a {
+              background-color: transparent;
             }
           }
 
