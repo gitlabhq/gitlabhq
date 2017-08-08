@@ -1,7 +1,7 @@
 import statusIcon from '../mr_widget_status_icon';
 
 export default {
-  name: 'MRWidgetLocked',
+  name: 'MRWidgetMerging',
   props: {
     mr: { type: Object, required: true },
   },
@@ -13,7 +13,7 @@ export default {
       <status-icon status="loading" />
       <div class="media-body">
         <h4>
-          This merge request is in the process of being merged, during which time it is locked and cannot be closed
+          This merge request is in the process of being merged
         </h4>
         <section class="mr-info-list">
           <p>

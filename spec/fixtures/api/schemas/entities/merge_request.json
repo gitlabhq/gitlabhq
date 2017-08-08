@@ -19,7 +19,6 @@
     "human_time_estimate": { "type": ["integer", "null"] },
     "human_total_time_spent": { "type": ["integer", "null"] },
     "in_progress_merge_commit_sha": { "type": ["string", "null"] },
-    "locked_at": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
     "merge_commit_sha": { "type": ["string", "null"] },
     "merge_params": { "type": ["object", "null"] },
@@ -94,6 +93,8 @@
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
+    "commits_count": { "type": "integer" },
+    "merge_ongoing": { "type": "boolean" },
     "remove_source_branch": { "type": ["boolean", "null"] },
     // EE-specific
     "rebase_commit_sha": { "type": ["string", "null"] },
