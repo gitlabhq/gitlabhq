@@ -4,7 +4,7 @@ module EE
       module CreateService
         def available_labels_for(board)
           if board.is_group_board?
-            parent.labels.find(params[:label_id])
+            parent.labels
           else
             super
           end

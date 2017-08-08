@@ -5,9 +5,8 @@ module Boards
 
       def execute(board)
         List.transaction do
-          label    = available_labels_for(board)
+          label    = available_labels_for(board).find(params[:label_id])
           position = next_position(board)
-
           create_list(board, label, position)
         end
       end

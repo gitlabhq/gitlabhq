@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::Boards::ListsController do
+describe Boards::ListsController do
   let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
