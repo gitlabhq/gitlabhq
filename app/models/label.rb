@@ -1,10 +1,10 @@
 class Label < ActiveRecord::Base
+  # EE specific
+  prepend EE::Label
+
   include CacheMarkdownField
   include Referable
   include Subscribable
-
-  # EE specific
-  prepend EE::Label
 
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.

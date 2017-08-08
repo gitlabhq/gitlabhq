@@ -94,4 +94,7 @@ are visual representations of the progress of completing a milestone.
 
 Burndown charts are only available for project milestones currently. They will be available for group milestones [in the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/3064).
 
-[Quick actions](../quick_actions.md) are available for assigning and removing project milestones only. [In the future](https://gitlab.com/gitlab-org/gitlab-ce/issues/34778), this will also apply to group milestones.
+## Quick actions
+
+[Quick actions](../quick_actions.md) are available for assigning and removing
+project and group milestones.

@@ -58,15 +58,16 @@ module Gitlab
         end
       end
 
-      # Alias to old method for compatibility
-      def raw
-        rugged
-      end
-
       def rugged
-        @rugged ||= Rugged::Repository.new(path, alternates: alternate_object_directories)
+        @rugged ||= circuit_breaker.perform do
+          Rugged::Repository.new(path, alternates: alternate_object_directories)
+        end
       rescue Rugged::RepositoryError, Rugged::OSError
         raise NoRepository.new('no repository for such path')
+      end
+
+      def circuit_breaker
+        @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(storage)
       end
 
       # Returns an Array of branch names
@@ -297,20 +298,32 @@ module Gitlab
       #   )
       #
       def log(options)
-        raw_log(options).map { |c| Commit.decorate(c) }
+        default_options = {
+          limit: 10,
+          offset: 0,
+          path: nil,
+          follow: false,
+          skip_merges: false,
+          disable_walk: false,
+          after: nil,
+          before: nil
+        }
+
+        options = default_options.merge(options)
+        options[:limit] ||= 0
+        options[:offset] ||= 0
+
+        raw_log(options).map { |c| Commit.decorate(self, c) }
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/382
       def count_commits(options)
-        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-        cmd += %W[--count #{options[:ref]}]
-        cmd += %W[-- #{options[:path]}] if options[:path].present?
-
-        raw_output = IO.popen(cmd) { |io| io.read }
-
-        raw_output.to_i
+        gitaly_migrate(:count_commits) do |is_enabled|
+          if is_enabled
+            count_commits_by_gitaly(options)
+          else
+            count_commits_by_shelling_out(options)
+          end
+        end
       end
 
       def sha_from_ref(ref)
@@ -327,7 +340,9 @@ module Gitlab
       # Return a collection of Rugged::Commits between the two revspec arguments.
       # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
       # a detailed list of valid arguments.
-      def commits_between(from, to)
+      #
+      # Gitaly note: JV: to be deprecated in favor of Commit.between
+      def rugged_commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
         walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
@@ -686,6 +701,14 @@ module Gitlab
         @gitaly_repository_client ||= Gitlab::GitalyClient::RepositoryService.new(self)
       end
 
+      def gitaly_migrate(method, &block)
+        Gitlab::GitalyClient.migrate(method, &block)
+      rescue GRPC::NotFound => e
+        raise NoRepository.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
+      end
+
       private
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
@@ -703,20 +726,6 @@ module Gitlab
       end
 
       def raw_log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          follow: false,
-          skip_merges: false,
-          disable_walk: false,
-          after: nil,
-          before: nil
-        }
-
-        options = default_options.merge(options)
-        options[:limit] ||= 0
-        options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
           sha = sha_from_ref(actual_ref)
@@ -1001,16 +1010,29 @@ module Gitlab
         end.sort_by(&:name)
       end
 
+      def last_commit_for_path_by_rugged(sha, path)
+        sha = last_commit_id_for_path(sha, path)
+        commit(sha)
+      end
+
       def tags_from_gitaly
         gitaly_ref_client.tags
       end
 
-      def gitaly_migrate(method, &block)
-        Gitlab::GitalyClient.migrate(method, &block)
-      rescue GRPC::NotFound => e
-        raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
+      def count_commits_by_gitaly(options)
+        gitaly_commit_client.commit_count(options[:ref], options)
+      end
+
+      def count_commits_by_shelling_out(options)
+        cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} rev-list]
+        cmd << "--after=#{options[:after].iso8601}" if options[:after]
+        cmd << "--before=#{options[:before].iso8601}" if options[:before]
+        cmd += %W[--count #{options[:ref]}]
+        cmd += %W[-- #{options[:path]}] if options[:path].present?
+
+        raw_output = IO.popen(cmd) { |io| io.read }
+
+        raw_output.to_i
       end
     end
   end

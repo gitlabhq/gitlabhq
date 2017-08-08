@@ -42,7 +42,7 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 
 For example, consider a user called John:
 
-1. John creates his account on GitLab.com with the username `jonh`;
+1. John creates his account on GitLab.com with the username `john`;
 his profile will be accessed under `https://gitlab.example.com/john`
 1. John creates a group for his team with the groupname `john-team`;
 his group and its projects will be accessed under `https://gitlab.example.com/john-team`

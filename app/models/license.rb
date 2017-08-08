@@ -6,6 +6,7 @@ class License < ActiveRecord::Base
   AUDITOR_USER_FEATURE = 'GitLab_Auditor_User'.freeze
   BURNDOWN_CHARTS_FEATURE = 'GitLab_BurndownCharts'.freeze
   CONTRIBUTION_ANALYTICS_FEATURE = 'GitLab_ContributionAnalytics'.freeze
+  CROSS_PROJECT_PIPELINES_FEATURE = 'GitLab_CrossProjectPipelines'.freeze
   DB_LOAD_BALANCING_FEATURE = 'GitLab_DbLoadBalancing'.freeze
   DEPLOY_BOARD_FEATURE = 'GitLab_DeployBoard'.freeze
   ELASTIC_SEARCH_FEATURE = 'GitLab_ElasticSearch'.freeze
@@ -52,6 +53,7 @@ class License < ActiveRecord::Base
     audit_events: AUDIT_EVENTS_FEATURE,
     burndown_charts: BURNDOWN_CHARTS_FEATURE,
     contribution_analytics: CONTRIBUTION_ANALYTICS_FEATURE,
+    cross_project_pipelines: CROSS_PROJECT_PIPELINES_FEATURE,
     deploy_board: DEPLOY_BOARD_FEATURE,
     export_issues: EXPORT_ISSUES_FEATURE,
     fast_forward_merge: FAST_FORWARD_MERGE_FEATURE,
@@ -108,6 +110,7 @@ class License < ActiveRecord::Base
     *EES_FEATURES,
     { ADMIN_AUDIT_LOG_FEATURE => 1 },
     { AUDITOR_USER_FEATURE => 1 },
+    { CROSS_PROJECT_PIPELINES_FEATURE => 1 },
     { DB_LOAD_BALANCING_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { FILE_LOCKS_FEATURE => 1 },
@@ -134,6 +137,7 @@ class License < ActiveRecord::Base
     { AUDITOR_USER_FEATURE => 1 },
     { BURNDOWN_CHARTS_FEATURE => 1 },
     { CONTRIBUTION_ANALYTICS_FEATURE => 1 },
+    { CROSS_PROJECT_PIPELINES_FEATURE => 1 },
     { DEPLOY_BOARD_FEATURE => 1 },
     { EXPORT_ISSUES_FEATURE => 1 },
     { FAST_FORWARD_MERGE_FEATURE => 1 },
@@ -188,7 +192,7 @@ class License < ActiveRecord::Base
       end
     end
 
-    delegate :feature_available?, to: :current, allow_nil: true
+    delegate :block_changes?, :feature_available?, to: :current, allow_nil: true
 
     def reset_current
       RequestStore.delete(:current_license)
@@ -199,10 +203,6 @@ class License < ActiveRecord::Base
       feature = FEATURE_CODES.fetch(code)
 
       features[feature].to_i > 0
-    end
-
-    def block_changes?
-      !current || current.block_changes?
     end
 
     def load_license
@@ -275,6 +275,8 @@ class License < ActiveRecord::Base
   end
 
   def feature_available?(code)
+    return false if trial? && expired?
+
     feature = FEATURE_CODES.fetch(code)
     add_ons[feature].to_i > 0
   end
@@ -303,6 +305,16 @@ class License < ActiveRecord::Base
 
   def trial?
     restricted_attr(:trial)
+  end
+
+  def active?
+    !expired?
+  end
+
+  def remaining_days
+    return 0 if expired?
+
+    (expires_at - Date.today).to_i
   end
 
   private

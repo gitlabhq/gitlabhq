@@ -189,6 +189,7 @@ constraints(ProjectUrlConstrainer.new) do
       ## EE-specific
       resource :mirror, only: [:show, :update] do
         member do
+          get :ssh_host_keys, constraints: { format: :json }
           post :update_now
         end
       end

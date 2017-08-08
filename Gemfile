@@ -326,11 +326,11 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
-  gem 'fuubar', '~> 2.0.0'
+  gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.7.0'
-  gem 'rspec-rails', '~> 3.5.0'
+  gem 'rspec-rails', '~> 3.6.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'spinach-rails', '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
@@ -351,10 +351,10 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.47.1', require: false
-  gem 'rubocop-rspec', '~> 1.15.0', require: false
+  gem 'rubocop', '~> 0.49.1', require: false
+  gem 'rubocop-rspec', '~> 1.15.1', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
-  gem 'haml_lint', '~> 0.21.0', require: false
+  gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -405,8 +405,19 @@ gem 'sys-filesystem', '~> 1.1.6'
 # NTP client
 gem 'net-ntp'
 
+# SSH host key support
+gem 'net-ssh', '~> 4.1.0'
+gem 'sshkey', '~> 1.9.0'
+
+# Required for ED25519 SSH host key support
+group :ed25519 do
+  gem 'rbnacl-libsodium'
+  gem 'rbnacl', '~> 3.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
+end
+
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.21.0'
+gem 'gitaly', '~> 0.24.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

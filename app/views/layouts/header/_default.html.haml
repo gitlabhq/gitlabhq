@@ -1,4 +1,5 @@
-%header.navbar.navbar-gitlab{ class: nav_header_class }
+= render "layouts/header/ee_license_banner"
+%header.navbar.navbar-gitlab.js-navbar-gitlab{ class: nav_header_class }
   .navbar-border
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
@@ -44,7 +45,7 @@
                   = icon('tachometer fw')
             %li
               = link_to assigned_issues_dashboard_path, title: 'Issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-                = icon('hashtag fw')
+                = custom_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)

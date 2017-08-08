@@ -1,0 +1,8 @@
+- page_title "Billing"
+= render "groups/settings_head"
+
+- if @top_most_group
+  - top_most_group_plan = subscription_plan_info(@plans_data, @top_most_group.actual_plan)
+  = render 'shared/billings/billing_plan_header', namespace: @group, plan: top_most_group_plan, parent_group: @top_most_group
+- else
+  = render 'shared/billings/billing_plans', plans_data: @plans_data, namespace: @group

@@ -48,3 +48,23 @@
     font-size: 14px;
   }
 }
+
+/* EE-specific Styles */
+@media (min-width: $screen-md-min) {
+  .blank-state-parent-container.has-start-trial-container {
+    display: flex;
+  }
+}
+
+.section-ee-trial {
+  .section-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .blank-state {
+      padding: 20px;
+      text-align: center;
+    }
+  }
+}

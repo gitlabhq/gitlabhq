@@ -227,8 +227,11 @@ References should be parseable even inside _<%= merge_request.to_reference %>_ e
 - Milestone in another project: <%= xmilestone.to_reference(project) %>
 - Ignored in code: `<%= simple_milestone.to_reference %>`
 - Ignored in links: [Link to <%= simple_milestone.to_reference %>](#milestone-link)
-- Milestone by URL: <%= urls.project_milestone_url(milestone.project, milestone) %>
+- Milestone by URL: <%= urls.milestone_url(milestone) %>
 - Link to milestone by URL: [Milestone](<%= milestone.to_reference %>)
+- Group milestone by name: <%= Milestone.reference_prefix %><%= group_milestone.name %>
+- Group milestone by name in quotes: <%= group_milestone.to_reference(format: :name) %>
+- Group milestone by URL is ignore: <%= urls.milestone_url(group_milestone) %>
 
 ### Task Lists
 

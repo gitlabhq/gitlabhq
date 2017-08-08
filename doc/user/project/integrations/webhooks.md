@@ -463,7 +463,6 @@ X-Gitlab-Event: Note Hook
     "iid": 1,
     "description": "Et voluptas corrupti assumenda temporibus. Architecto cum animi eveniet amet asperiores. Vitae numquam voluptate est natus sit et ad id.",
     "position": 0,
-    "locked_at": null,
     "source":{
       "name":"Gitlab Test",
       "description":"Aut reprehenderit ut est.",

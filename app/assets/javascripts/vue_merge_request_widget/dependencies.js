@@ -1,7 +1,7 @@
 /**
  * This file is the centerpiece of an attempt to reduce potential conflicts
  * between the CE and EE versions of the MR widget. EE additions to the MR widget should
- * be contained in the ./vue_merge_request_widget/ee directory, and should **extend**
+ * be contained in the ee/vue_merge_request_widget directory, and should **extend**
  * rather than mutate CE MR Widget code.
  *
  * This file should be the only source of conflicts between EE and CE. EE-only components should
@@ -19,14 +19,14 @@ export { default as WidgetRelatedLinks } from './components/mr_widget_related_li
 export { default as MergedState } from './components/states/mr_widget_merged';
 export { default as FailedToMerge } from './components/states/mr_widget_failed_to_merge';
 export { default as ClosedState } from './components/states/mr_widget_closed';
-export { default as LockedState } from './components/states/mr_widget_locked';
+export { default as MergingState } from './components/states/mr_widget_merging';
 export { default as WipState } from './components/states/mr_widget_wip';
 export { default as ArchivedState } from './components/states/mr_widget_archived';
 export { default as ConflictsState } from './components/states/mr_widget_conflicts';
 export { default as NothingToMergeState } from './components/states/mr_widget_nothing_to_merge';
 export { default as MissingBranchState } from './components/states/mr_widget_missing_branch';
 export { default as NotAllowedState } from './components/states/mr_widget_not_allowed';
-export { default as ReadyToMergeState } from './ee/components/states/mr_widget_ready_to_merge';
+export { default as ReadyToMergeState } from 'ee/vue_merge_request_widget/components/states/mr_widget_ready_to_merge';
 export { default as SHAMismatchState } from './components/states/mr_widget_sha_mismatch';
 export { default as UnresolvedDiscussionsState } from './components/states/mr_widget_unresolved_discussions';
 export { default as PipelineBlockedState } from './components/states/mr_widget_pipeline_blocked';
@@ -34,11 +34,11 @@ export { default as PipelineFailedState } from './components/states/mr_widget_pi
 export { default as MergeWhenPipelineSucceedsState } from './components/states/mr_widget_merge_when_pipeline_succeeds';
 export { default as AutoMergeFailed } from './components/states/mr_widget_auto_merge_failed';
 export { default as CheckingState } from './components/states/mr_widget_checking';
-export { default as MRWidgetStore } from './ee/stores/mr_widget_store';
-export { default as MRWidgetService } from './ee/services/mr_widget_service';
+export { default as MRWidgetStore } from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+export { default as MRWidgetService } from 'ee/vue_merge_request_widget/services/mr_widget_service';
 export { default as eventHub } from './event_hub';
-export { default as getStateKey } from './ee/stores/get_state_key';
-export { default as mrWidgetOptions } from './ee/mr_widget_options';
-export { default as stateMaps } from './ee/stores/state_maps';
-export { default as SquashBeforeMerge } from './ee/components/states/mr_widget_squash_before_merge';
+export { default as getStateKey } from 'ee/vue_merge_request_widget/stores/get_state_key';
+export { default as mrWidgetOptions } from 'ee/vue_merge_request_widget/mr_widget_options';
+export { default as stateMaps } from 'ee/vue_merge_request_widget/stores/state_maps';
+export { default as SquashBeforeMerge } from 'ee/vue_merge_request_widget/components/states/mr_widget_squash_before_merge';
 export { default as notify } from '../lib/utils/notify';

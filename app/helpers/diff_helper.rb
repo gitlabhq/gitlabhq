@@ -15,7 +15,7 @@ module DiffHelper
   def diff_view
     @diff_view ||= begin
       diff_views = %w(inline parallel)
-      diff_view = cookies[:diff_view]
+      diff_view = params[:view] || cookies[:diff_view]
       diff_view = diff_views.first unless diff_views.include?(diff_view)
       diff_view.to_sym
     end
@@ -146,6 +146,24 @@ module DiffHelper
     options << link_to('view the blob', blob_url)
 
     options
+  end
+
+  def diff_file_changed_icon(diff_file)
+    if diff_file.deleted_file? || diff_file.renamed_file?
+      "minus"
+    elsif diff_file.new_file?
+      "plus"
+    else
+      "adjust"
+    end
+  end
+
+  def diff_file_changed_icon_color(diff_file)
+    if diff_file.deleted_file?
+      "cred"
+    elsif diff_file.new_file?
+      "cgreen"
+    end
   end
 
   private

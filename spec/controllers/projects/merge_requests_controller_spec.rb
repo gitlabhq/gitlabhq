@@ -106,7 +106,7 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET index' do
-    let!(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+    let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
     def get_merge_requests(page = nil)
       get :index,
@@ -150,6 +150,8 @@ describe Projects::MergeRequestsController do
     context 'when filtering by opened state' do
       context 'with opened merge requests' do
         it 'lists those merge requests' do
+          expect(merge_request).to be_persisted
+
           get_merge_requests
 
           expect(assigns(:merge_requests)).to include(merge_request)

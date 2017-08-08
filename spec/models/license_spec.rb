@@ -302,8 +302,24 @@ describe License do
           allow(described_class).to receive(:current).and_return(nil)
         end
 
-        it "returns true" do
-          expect(described_class.block_changes?).to be_truthy
+        it "returns false" do
+          expect(described_class.block_changes?).to be_falsey
+        end
+      end
+
+      context 'with an expired trial license' do
+        let!(:license) { create(:license, trial: true) }
+
+        it 'returns false' do
+          expect(described_class.block_changes?).to be_falsey
+        end
+      end
+
+      context 'with an expired normal license' do
+        let!(:license) { create(:license, expired: true) }
+
+        it 'returns true' do
+          expect(described_class.block_changes?).to eq(true)
         end
       end
 
@@ -450,6 +466,19 @@ describe License do
         license = build_license_with_add_ons({})
 
         expect { license.feature_available?(:invalid) }.to raise_error(KeyError)
+      end
+
+      context 'with an expired trial license' do
+        before(:all) do
+          described_class.destroy_all
+          create(:license, trial: true, expired: true)
+        end
+
+        ::License::FEATURE_CODES.keys do |feature_code|
+          it "returns false for #{feature_code}" do
+            expect(license.feature_available?(feature_code)).to eq(false)
+          end
+        end
       end
     end
 

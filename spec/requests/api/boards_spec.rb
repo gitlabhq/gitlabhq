@@ -6,6 +6,8 @@ describe API::Boards do
   let(:guest)       { create(:user) }
   let(:admin)       { create(:user, :admin) }
   let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+
+  # EE only
   let(:milestone)   { create(:milestone, project: project) }
 
   let!(:dev_label) do

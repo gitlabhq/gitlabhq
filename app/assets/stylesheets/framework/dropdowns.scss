@@ -574,6 +574,7 @@
 
 .dropdown-input-field,
 .default-dropdown-input {
+  display: block;
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -725,7 +726,12 @@
 
 // TODO: change global style and remove mixin
 @mixin new-style-dropdown {
-  .dropdown-menu {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    .divider {
+      margin: 6px 0;
+    }
+
     li {
       padding: 0 1px;
 
@@ -765,5 +771,9 @@
         }
       }
     }
+  }
+
+  .dropdown-menu-align-right {
+    margin-top: 2px;
   }
 }

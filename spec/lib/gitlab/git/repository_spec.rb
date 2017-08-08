@@ -22,7 +22,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "Respond to" do
     subject { repository }
 
-    it { is_expected.to respond_to(:raw) }
     it { is_expected.to respond_to(:rugged) }
     it { is_expected.to respond_to(:root_ref) }
     it { is_expected.to respond_to(:tags) }
@@ -55,6 +54,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#rugged" do
+    describe 'when storage is broken', broken_storage: true  do
+      it 'raises a storage exception when storage is not available' do
+        broken_repo = described_class.new('broken', 'a/path.git')
+
+        expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Storage::Inaccessible)
+      end
+    end
+
+    it 'raises a no repository exception when there is no repo' do
+      broken_repo = described_class.new('default', 'a/path.git')
+
+      expect { broken_repo.rugged }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    end
+
     context 'with no Git env stored' do
       before do
         expect(Gitlab::Git::Env).to receive(:all).and_return({})
@@ -361,20 +374,20 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#commit_count' do
-    shared_examples 'counting commits' do
+    shared_examples 'simple commit counting' do
       it { expect(repository.commit_count("master")).to eq(25) }
       it { expect(repository.commit_count("feature")).to eq(9) }
     end
 
     context 'when Gitaly commit_count feature is enabled' do
-      it_behaves_like 'counting commits'
+      it_behaves_like 'simple commit counting'
       it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
         subject { repository.commit_count('master') }
       end
     end
 
     context 'when Gitaly commit_count feature is disabled', skip_gitaly_mock: true  do
-      it_behaves_like 'counting commits'
+      it_behaves_like 'simple commit counting'
     end
   end
 
@@ -492,17 +505,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#log" do
-    commit_with_old_name = nil
-    commit_with_new_name = nil
-    rename_commit = nil
+    let(:commit_with_old_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
+    end
+    let(:commit_with_new_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_new_name_id)
+    end
+    let(:rename_commit) do
+      Gitlab::Git::Commit.decorate(repository, @rename_commit_id)
+    end
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
       repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
-
-      commit_with_old_name = Gitlab::Git::Commit.decorate(new_commit_edit_old_file(repo))
-      rename_commit = Gitlab::Git::Commit.decorate(new_commit_move_file(repo))
-      commit_with_new_name = Gitlab::Git::Commit.decorate(new_commit_edit_new_file(repo))
+      @commit_with_old_name_id = new_commit_edit_old_file(repo)
+      @rename_commit_id = new_commit_move_file(repo)
+      @commit_with_new_name_id = new_commit_edit_new_file(repo)
     end
 
     after(:context) do
@@ -741,7 +759,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
       def commit_files(commit)
-        commit.diff_from_parent.deltas.flat_map do |delta|
+        commit.rugged_diff_from_parent.deltas.flat_map do |delta|
           [delta.old_file[:path], delta.new_file[:path]].uniq.compact
         end
       end
@@ -757,13 +775,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#commits_between" do
+  describe "#rugged_commits_between" do
     context 'two SHAs' do
       let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
       let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
 
       it 'returns the number of commits between' do
-        expect(repository.commits_between(first_sha, second_sha).count).to eq(3)
+        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
       end
     end
 
@@ -772,11 +790,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch) { 'master' }
 
       it 'returns the number of commits between a sha and a branch' do
-        expect(repository.commits_between(sha, branch).count).to eq(5)
+        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
       end
 
       it 'returns the number of commits between a branch and a sha' do
-        expect(repository.commits_between(branch, sha).count).to eq(0) # sha is before branch
+        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
       end
     end
 
@@ -785,7 +803,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:second_branch) { 'master' }
 
       it 'returns the number of commits between' do
-        expect(repository.commits_between(first_branch, second_branch).count).to eq(17)
+        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
       end
     end
   end
@@ -797,28 +815,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#count_commits' do
-    context 'with after timestamp' do
-      it 'returns the number of commits after timestamp' do
-        options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+    shared_examples 'extended commit counting' do
+      context 'with after timestamp' do
+        it 'returns the number of commits after timestamp' do
+          options = { ref: 'master', limit: nil, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
-        expect(repository.count_commits(options)).to eq(25)
+          expect(repository.count_commits(options)).to eq(25)
+        end
+      end
+
+      context 'with before timestamp' do
+        it 'returns the number of commits before timestamp' do
+          options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+
+          expect(repository.count_commits(options)).to eq(9)
+        end
+      end
+
+      context 'with path' do
+        it 'returns the number of commits with path ' do
+          options = { ref: 'master', limit: nil, path: "encoding" }
+
+          expect(repository.count_commits(options)).to eq(2)
+        end
       end
     end
 
-    context 'with before timestamp' do
-      it 'returns the number of commits after timestamp' do
-        options = { ref: 'feature', limit: nil, before: Time.iso8601('2015-03-03T20:15:01+00:00') }
-
-        expect(repository.count_commits(options)).to eq(9)
-      end
+    context 'when Gitaly count_commits feature is enabled' do
+      it_behaves_like 'extended commit counting'
     end
 
-    context 'with path' do
-      it 'returns the number of commits with path ' do
-        options = { ref: 'master', limit: nil, path: "encoding" }
-
-        expect(repository.count_commits(options)).to eq(2)
-      end
+    context 'when Gitaly count_commits feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'extended commit counting'
     end
   end
 

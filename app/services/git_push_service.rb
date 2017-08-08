@@ -45,6 +45,7 @@ class GitPushService < BaseService
     elsif push_to_existing_branch?
       # Collect data for this git push
       @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
+
       process_commit_messages
 
       # Update the bare repositories info/attributes file using the contents of the default branches
@@ -71,15 +72,21 @@ class GitPushService < BaseService
 
   def update_caches
     if is_default_branch?
-      paths = Set.new
+      if push_to_new_branch?
+        # If this is the initial push into the default branch, the file type caches
+        # will already be reset as a result of `Project#change_head`.
+        types = []
+      else
+        paths = Set.new
 
-      @push_commits.each do |commit|
-        commit.raw_deltas.each do |diff|
-          paths << diff.new_path
+        @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+          commit.raw_deltas.each do |diff|
+            paths << diff.new_path
+          end
         end
-      end
 
-      types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+        types = Gitlab::FileDetector.types_in_paths(paths.to_a)
+      end
     else
       types = []
     end
@@ -97,7 +104,7 @@ class GitPushService < BaseService
   def process_commit_messages
     default = is_default_branch?
 
-    push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+    @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
       if commit.matches_cross_reference_regex?
         ProcessCommitWorker
           .perform_async(project.id, current_user.id, commit.to_hash, default)
@@ -125,7 +132,7 @@ class GitPushService < BaseService
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push, mirror_update: mirror_update)
-    
+
     SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
@@ -145,7 +152,10 @@ class GitPushService < BaseService
   end
 
   def process_default_branch
-    @push_commits = project.repository.commits(params[:newrev])
+    @push_commits_count = project.repository.commit_count_for_ref(params[:ref])
+
+    offset = [@push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
+    @push_commits = project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
 
     # Ensure HEAD points to the default branch in case it is not master
     project.change_head(branch_name)
@@ -174,7 +184,8 @@ class GitPushService < BaseService
       params[:oldrev],
       params[:newrev],
       params[:ref],
-      push_commits)
+      @push_commits,
+      commits_count: @push_commits_count)
   end
 
   def push_to_existing_branch?

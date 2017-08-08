@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe GitlabRoutingHelper do
+  let(:project) { build_stubbed(:project) }
+  let(:group) { build_stubbed(:group) }
+
   describe 'Project URL helpers' do
     describe '#project_member_path' do
       let(:project_member) { create(:project_member) }
@@ -9,14 +12,10 @@ describe GitlabRoutingHelper do
     end
 
     describe '#request_access_project_members_path' do
-      let(:project) { build_stubbed(:project) }
-
       it { expect(request_access_project_members_path(project)).to eq request_access_project_project_members_path(project) }
     end
 
     describe '#leave_project_members_path' do
-      let(:project) { build_stubbed(:project) }
-
       it { expect(leave_project_members_path(project)).to eq leave_project_project_members_path(project) }
     end
 
@@ -35,8 +34,6 @@ describe GitlabRoutingHelper do
 
   describe 'Group URL helpers' do
     describe '#group_members_url' do
-      let(:group) { build_stubbed(:group) }
-
       it { expect(group_members_url(group)).to eq group_group_members_url(group) }
     end
 
@@ -47,14 +44,10 @@ describe GitlabRoutingHelper do
     end
 
     describe '#request_access_group_members_path' do
-      let(:group) { build_stubbed(:group) }
-
       it { expect(request_access_group_members_path(group)).to eq request_access_group_group_members_path(group) }
     end
 
     describe '#leave_group_members_path' do
-      let(:group) { build_stubbed(:group) }
-
       it { expect(leave_group_members_path(group)).to eq leave_group_group_members_path(group) }
     end
 

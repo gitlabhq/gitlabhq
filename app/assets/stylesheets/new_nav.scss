@@ -309,6 +309,29 @@ header.navbar-gitlab-new {
       outline: 0;
     }
   }
+
+  // TODO: fallback to global style
+  .dropdown-menu {
+    .divider {
+      margin: 6px 0;
+    }
+
+    li {
+      padding: 0 1px;
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+      }
+    }
+  }
 }
 
 .breadcrumbs-container {
@@ -325,6 +348,7 @@ header.navbar-gitlab-new {
 
 .breadcrumbs-links {
   flex: 1;
+  min-width: 0;
   align-self: center;
   color: $gl-text-color-quaternary;
 
@@ -343,7 +367,7 @@ header.navbar-gitlab-new {
   }
 
   .title {
-    white-space: nowrap;
+    display: inline-block;
 
     > a {
       &:last-of-type:not(:first-child) {

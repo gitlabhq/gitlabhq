@@ -650,7 +650,7 @@ describe API::V3::Groups do
 
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
-    let(:project_path) { "#{project.namespace.path}%2F#{project.path}" }
+    let(:project_path) { CGI.escape(project.full_path) }
 
     before(:each) do
       allow_any_instance_of(Projects::TransferService)

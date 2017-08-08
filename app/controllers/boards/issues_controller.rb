@@ -52,7 +52,8 @@ module Boards
     end
 
     def filter_params
-      params.merge(board_id: params[:board_id], id: params[:list_id]).compact
+      params.merge(board_id: params[:board_id], id: params[:list_id])
+        .reject { |_, value| value.nil? }
     end
 
     def issues_finder

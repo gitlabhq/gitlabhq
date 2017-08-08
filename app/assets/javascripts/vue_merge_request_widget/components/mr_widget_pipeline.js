@@ -44,71 +44,68 @@ export default {
   },
   template: `
     <div class="mr-widget-heading">
-      <div class="ci-widget">
+      <div class="ci-widget media">
         <template v-if="hasCIError">
-          <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error">
-            <span class="js-icon-link icon-link">
-              <span
-                v-html="svg"
-                aria-hidden="true"></span>
-            </span>
+          <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-10">
+            <span
+              v-html="svg"
+              aria-hidden="true"></span>
           </div>
-          <span>Could not connect to the CI server. Please check your settings and try again.</span>
+          <div class="media-body">
+            Could not connect to the CI server. Please check your settings and try again
+          </div>
         </template>
         <template v-else>
-          <div>
+          <div class="ci-status-icon append-right-10">
             <a
               class="icon-link"
               :href="this.status.details_path">
               <ci-icon :status="status" />
             </a>
           </div>
-          <span>
-            Pipeline
-            <a
-              :href="mr.pipeline.path"
-              class="pipeline-id">#{{mr.pipeline.id}}</a>
-            {{mr.pipeline.details.status.label}}
-          </span>
-          <span
-            v-if="mr.pipeline.details.stages.length > 0">
-            with {{stageText}}
-          </span>
-          <div class="mr-widget-pipeline-graph">
-            <div class="stage-cell">
-              <linked-pipelines-mini-list
-                v-if="triggeredBy.length"
-                :triggered-by="triggeredBy"
-                />
+          <div class="media-body">
+            <span>
+              Pipeline
+              <a
+                :href="mr.pipeline.path"
+                class="pipeline-id">#{{mr.pipeline.id}}</a>
+            </span>
+            <span class="mr-widget-pipeline-graph">
+              <span class="stage-cell">
+                <linked-pipelines-mini-list
+                  v-if="triggeredBy.length"
+                  :triggered-by="triggeredBy"
+                  />
 
-              <div
-                v-if="mr.pipeline.details.stages.length > 0"
-                v-for="(stage, index) in mr.pipeline.details.stages"
-                class="stage-container dropdown js-mini-pipeline-graph"
-                :class="{
-                  'has-downstream': index === mr.pipeline.details.stages.length - 1 && triggered.length
-                }">
-                <pipeline-stage :stage="stage" />
-              </div>
+                <div
+                  v-if="mr.pipeline.details.stages.length > 0"
+                  v-for="(stage, index) in mr.pipeline.details.stages"
+                  class="stage-container dropdown js-mini-pipeline-graph"
+                  :class="{
+                    'has-downstream': index === mr.pipeline.details.stages.length - 1 && triggered.length
+                  }">
+                  <pipeline-stage :stage="stage" />
+                </div>
 
-              <linked-pipelines-mini-list
-                v-if="triggered.length"
-                :triggered="triggered"
-                />
-            </div>
+                <linked-pipelines-mini-list
+                  v-if="triggered.length"
+                  :triggered="triggered"
+                  />
+              </span>
+            </span>
+            <span>
+              {{mr.pipeline.details.status.label}} for
+              <a
+                :href="mr.pipeline.commit.commit_path"
+                class="commit-sha js-commit-link">
+                {{mr.pipeline.commit.short_id}}</a>.
+            </span>
+            <span
+              v-if="mr.pipeline.coverage"
+              class="js-mr-coverage">
+              Coverage {{mr.pipeline.coverage}}%
+            </span>
           </div>
-          <span>
-            for
-            <a
-              :href="mr.pipeline.commit.commit_path"
-              class="commit-sha js-commit-link">
-              {{mr.pipeline.commit.short_id}}</a>.
-          </span>
-          <span
-            v-if="mr.pipeline.coverage"
-            class="js-mr-coverage">
-            Coverage {{mr.pipeline.coverage}}%.
-          </span>
         </template>
       </div>
     </div>

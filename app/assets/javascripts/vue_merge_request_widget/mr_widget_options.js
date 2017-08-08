@@ -8,7 +8,7 @@ import {
   WidgetRelatedLinks,
   MergedState,
   ClosedState,
-  LockedState,
+  MergingState,
   WipState,
   ArchivedState,
   ConflictsState,
@@ -35,8 +35,13 @@ import {
 export default {
   el: '#js-vue-mr-widget',
   name: 'MRWidget',
+  props: {
+    mrData: {
+      type: Object,
+    },
+  },
   data() {
-    const store = new MRWidgetStore(gl.mrWidgetData);
+    const store = new MRWidgetStore(this.mrData || window.gl.mrWidgetData);
     const service = this.createService(store);
     return {
       mr: store,
@@ -204,7 +209,7 @@ export default {
     'mr-widget-related-links': WidgetRelatedLinks,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
-    'mr-widget-locked': LockedState,
+    'mr-widget-merging': MergingState,
     'mr-widget-failed-to-merge': FailedToMerge,
     'mr-widget-wip': WipState,
     'mr-widget-archived': ArchivedState,
@@ -232,14 +237,19 @@ export default {
         v-if="shouldRenderDeployments"
         :mr="mr"
         :service="service" />
-      <component
-        :is="componentName"
-        :mr="mr"
-        :service="service" />
-      <mr-widget-related-links
-        v-if="shouldRenderRelatedLinks"
-        :related-links="mr.relatedLinks" />
-      <mr-widget-merge-help v-if="shouldRenderMergeHelp" />
+      <div class="mr-widget-section">
+        <component
+          :is="componentName"
+          :mr="mr"
+          :service="service" />
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :state="mr.state"
+          :related-links="mr.relatedLinks" />
+      </div>
+      <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
+        <mr-widget-merge-help />
+      </div>
     </div>
   `,
 };

@@ -5,6 +5,9 @@ class GeoNode < ActiveRecord::Base
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
   belongs_to :system_hook, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
+  has_many :geo_node_namespace_links
+  has_many :namespaces, through: :geo_node_namespace_links
+
   default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },
                  port: lambda { Gitlab.config.gitlab.port },
@@ -102,6 +105,53 @@ class GeoNode < ActiveRecord::Base
     if clone_url_prefix_changed?
       Rails.logger.info "Geo: modified clone_url_prefix to #{clone_url_prefix}"
       update_column(:clone_url_prefix, clone_url_prefix)
+    end
+  end
+
+  def restricted_project_ids
+    return unless namespaces.presence
+
+    relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
+
+    Project.unscoped
+       .from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
+       .pluck(:id)
+  end
+
+  def lfs_objects
+    if restricted_project_ids
+      LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+    else
+      LfsObject.all
+    end
+  end
+
+  def projects
+    if restricted_project_ids
+      Project.where(id: restricted_project_ids)
+    else
+      Project.all
+    end
+  end
+
+  def project_registries
+    if restricted_project_ids
+      Geo::ProjectRegistry.where(project_id: restricted_project_ids)
+    else
+      Geo::ProjectRegistry.all
+    end
+  end
+
+  def uploads
+    if restricted_project_ids
+      uploads_table   = Upload.arel_table
+      group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
+      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
+      other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
+
+      Upload.where(group_uploads.or(project_uploads).or(other_uploads))
+    else
+      Upload.all
     end
   end
 

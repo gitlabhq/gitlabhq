@@ -20,6 +20,11 @@
           = custom_icon('account')
         %span.nav-item-name
           Account
+    - if current_application_settings.should_check_namespace_plan?
+      = nav_link(controller: :billings) do
+        = link_to profile_billings_path, title: 'Billing' do
+          %span
+            Billing
     - if current_application_settings.user_oauth_applications?
       = nav_link(controller: 'oauth/applications') do
         = link_to applications_profile_path, title: 'Applications' do
@@ -67,7 +72,9 @@
           SSH Keys
     = nav_link(controller: :gpg_keys) do
       = link_to profile_gpg_keys_path, title: 'GPG Keys' do
-        %span
+        .nav-icon-container
+          = custom_icon('key_2')
+        %span.nav-item-name
           GPG Keys
     = nav_link(controller: :preferences) do
       = link_to profile_preferences_path, title: 'Preferences' do
@@ -81,3 +88,5 @@
           = custom_icon('authentication_log')
         %span.nav-item-name
           Authentication log
+
+  = render 'shared/sidebar_toggle_button'

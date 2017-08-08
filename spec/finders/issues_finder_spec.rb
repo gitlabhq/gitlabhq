@@ -331,8 +331,6 @@ describe IssuesFinder do
   describe '#with_confidentiality_access_check' do
     let(:guest) { create(:user) }
     set(:authorized_user) { create(:user) }
-    let(:admin_user) { create(:user, :admin) }
-    let(:auditor_user) { create(:user, :auditor) }
     set(:project) { create(:project, namespace: authorized_user.namespace) }
     set(:public_issue) { create(:issue, project: project) }
     set(:confidential_issue) { create(:issue, project: project, confidential: true) }
@@ -380,6 +378,8 @@ describe IssuesFinder do
       end
 
       context 'for an auditor' do
+        let(:auditor_user) { create(:user, :auditor) }
+
         subject { described_class.new(auditor_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
@@ -388,6 +388,8 @@ describe IssuesFinder do
       end
 
       context 'for an admin' do
+        let(:admin_user) { create(:user, :admin) }
+
         subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
@@ -463,6 +465,8 @@ describe IssuesFinder do
       end
 
       context 'for an auditor' do
+        let(:auditor_user) { create(:user, :auditor) }
+
         subject { described_class.new(auditor_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
@@ -477,7 +481,9 @@ describe IssuesFinder do
       end
 
       context 'for an admin' do
-        subject { described_class.new(auditor_user, params).with_confidentiality_access_check }
+        let(:admin_user) { create(:user, :auditor) }
+
+        subject { described_class.new(admin_user, params).with_confidentiality_access_check }
 
         it 'returns all issues' do
           expect(subject).to include(public_issue, confidential_issue)

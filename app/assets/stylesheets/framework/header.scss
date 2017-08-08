@@ -4,6 +4,8 @@
  */
 
 header {
+  @include new-style-dropdown;
+
   transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
@@ -319,13 +321,17 @@ header {
   top: $performance-bar-height;
 }
 
+.with-performance-bar header.navbar-gitlab {
+  top: $performance-bar-height;
+}
+
 .navbar-nav {
   li {
     .badge {
       position: inherit;
-      top: -3px;
+      top: -8px;
       font-weight: normal;
-      margin-left: -12px;
+      margin-left: -11px;
       font-size: 11px;
       color: $white-light;
       padding: 1px 5px 2px;

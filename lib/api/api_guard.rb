@@ -8,6 +8,8 @@ module API
 
     PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
     PRIVATE_TOKEN_PARAM = :private_token
+    JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
+    JOB_TOKEN_PARAM = :job_token
 
     included do |base|
       # OAuth2 Resource Server Authentication
@@ -87,11 +89,25 @@ module API
         find_user_by_authentication_token(token_string) || find_user_by_personal_access_token(token_string, scopes)
       end
 
+      def find_user_by_job_token
+        return @user_by_job_token if defined?(@user_by_job_token)
+
+        @user_by_job_token =
+          if route_authentication_setting[:job_token_allowed]
+            token_string = params[JOB_TOKEN_PARAM].presence || env[JOB_TOKEN_HEADER].presence
+            Ci::Build.find_by_token(token_string)&.user if token_string
+          end
+      end
+
       def current_user
         @current_user
       end
 
       private
+
+      def route_authentication_setting
+        route_setting(:authentication) || {}
+      end
 
       def find_user_by_authentication_token(token_string)
         User.find_by_authentication_token(token_string)

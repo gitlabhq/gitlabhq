@@ -80,7 +80,7 @@ describe Gitlab::SlashCommands::Command do
 
           it 'returns error' do
             expect(subject[:response_type]).to be(:ephemeral)
-            expect(subject[:text]).to include('Too many actions defined')
+            expect(subject[:text]).to include("Couldn't find a deployment manual action.")
           end
         end
       end

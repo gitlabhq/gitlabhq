@@ -1,4 +1,5 @@
 import eventHub from '../../event_hub';
+import statusIcon from '../mr_widget_status_icon';
 
 export default {
   name: 'MRWidgetAutoMergeFailed',
@@ -10,6 +11,9 @@ export default {
       isRefreshing: false,
     };
   },
+  components: {
+    statusIcon,
+  },
   methods: {
     refreshWidget() {
       this.isRefreshing = true;
@@ -19,18 +23,16 @@ export default {
     },
   },
   template: `
-    <div class="mr-widget-body">
-      <button
-        class="btn btn-success btn-small"
-        disabled="true"
-        type="button">
-        Merge
-      </button>
-      <span class="bold danger">
-        This merge request failed to be merged automatically.
+    <div class="mr-widget-body media">
+      <status-icon status="failed" />
+      <div class="media-body space-children">
+        <span class="bold">
+          <template v-if="mr.mergeError">{{mr.mergeError}}.</template>
+          This merge request failed to be merged automatically
+        </span>
         <button
           @click="refreshWidget"
-          :class="{ disabled: isRefreshing }"
+          :disabled="isRefreshing"
           type="button"
           class="btn btn-xs btn-default">
           <i
@@ -39,9 +41,6 @@ export default {
             aria-hidden="true" />
           Refresh
         </button>
-      </span>
-      <div class="merge-error-text danger bold">
-        {{mr.mergeError}}
       </div>
     </div>
   `,

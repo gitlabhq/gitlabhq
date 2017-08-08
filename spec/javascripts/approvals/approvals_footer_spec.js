@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 import pendingAvatarSvg from 'icons/_icon_dotted_circle.svg';
-import ApprovalsFooter from '~/vue_merge_request_widget/ee/components/approvals/approvals_footer';
+import ApprovalsFooter from 'ee/vue_merge_request_widget/components/approvals/approvals_footer';
 
 (() => {
   gl.ApprovalsStore = {

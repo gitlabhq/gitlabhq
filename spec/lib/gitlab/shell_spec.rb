@@ -509,20 +509,94 @@ describe Gitlab::Shell do
     end
 
     describe '#fetch_remote' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800'],
-                nil, popen_vars).and_return([nil, 0])
+      def fetch_remote(ssh_auth = nil)
+        gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage', ssh_auth: ssh_auth)
+      end
 
-        expect(gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage')).to be true
+      def expect_popen(vars = {})
+        popen_args = [
+          projects_path,
+          'fetch-remote',
+          'current/storage',
+          'project/path.git',
+          'new/storage',
+          Gitlab.config.gitlab_shell.git_timeout.to_s
+        ]
+
+        expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars))
+      end
+
+      def build_ssh_auth(opts = {})
+        defaults = {
+          ssh_import?: true,
+          ssh_key_auth?: false,
+          ssh_known_hosts: nil,
+          ssh_private_key: nil
+        }
+
+        double(:ssh_auth, defaults.merge(opts))
+      end
+
+      it 'returns true when the command succeeds' do
+        expect_popen.and_return([nil, 0])
+
+        expect(fetch_remote).to be_truthy
       end
 
       it 'raises an exception when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-        .with([projects_path, 'fetch-remote', 'current/storage', 'project/path.git', 'new/storage', '800'],
-              nil, popen_vars).and_return(["error", 1])
+        expect_popen.and_return(["error", 1])
 
-        expect { gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage') }.to raise_error(Gitlab::Shell::Error, "error")
+        expect { fetch_remote }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+
+      context 'SSH auth' do
+        it 'passes the SSH key if specified' do
+          expect_popen('GITLAB_SHELL_SSH_KEY' => 'foo').and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass an empty SSH key' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass the key unless SSH key auth is to be used' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'passes the known_hosts data if specified' do
+          expect_popen('GITLAB_SHELL_KNOWN_HOSTS' => 'foo').and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass empty known_hosts data' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_known_hosts: '')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass known_hosts data unless SSH is to be used' do
+          expect_popen(popen_vars).and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
       end
     end
 

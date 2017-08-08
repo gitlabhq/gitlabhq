@@ -414,13 +414,16 @@
   background-color: $dropdown-hover-color;
   color: $white-light;
   text-decoration: none;
+  outline: 0;
 
   .avatar {
     border-color: $white-light;
   }
 }
 
-.filter-dropdown-item {
+.droplab-dropdown .dropdown-menu .filter-dropdown-item {
+  padding: 0;
+
   .btn {
     border: none;
     width: 100%;
@@ -455,14 +458,11 @@
   }
 
   .dropdown-user {
-    display: -webkit-flex;
     display: flex;
   }
 
   .dropdown-user-details {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
 
     > span {

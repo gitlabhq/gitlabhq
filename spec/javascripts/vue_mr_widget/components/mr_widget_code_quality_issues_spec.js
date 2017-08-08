@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import mrWidgetCodeQualityIssues from '~/vue_merge_request_widget/ee/components/mr_widget_code_quality_issues.vue';
+import mrWidgetCodeQualityIssues from 'ee/vue_merge_request_widget/components/mr_widget_code_quality_issues.vue';
 
 describe('Merge Request Code Quality Issues', () => {
   let vm;

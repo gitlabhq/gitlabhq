@@ -1,6 +1,6 @@
 module Audit
   class Details
-    CRUD_ACTIONS = %i[add remove change].freeze
+    ACTIONS = %i[add remove failed_login change].freeze
     
     def self.humanize(*args)
       new(*args).humanize
@@ -14,21 +14,23 @@ module Audit
       if @details[:with]
         "Signed in with #{@details[:with].upcase} authentication"
       else
-        crud_action_text
+        action_text
       end
     end
     
     private
     
-    def crud_action_text
-      action = @details.slice(*CRUD_ACTIONS)
+    def action_text
+      action = @details.slice(*ACTIONS)
       value = @details.values.first.tr('_', ' ')
-      
+
       case action.keys.first
       when :add
-        "Added #{value}#{@details[:as] ? " as #{@details[:as]}" : ""}"
+        "Added #{value}#{@details[:as] ? " as #{@details[:as]}" : ''}"
       when :remove
         "Removed #{value}"
+      when :failed_login
+        "Failed to login with #{Gitlab::OAuth::Provider.label_for(value).upcase} authentication"
       else
         "Changed #{value} from #{@details[:from]} to #{@details[:to]}"
       end

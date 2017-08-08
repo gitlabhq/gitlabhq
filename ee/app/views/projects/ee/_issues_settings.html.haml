@@ -1,0 +1,20 @@
+- if @project.feature_available?(:issuable_default_templates)
+  - expanded = Rails.env.test?
+  %section.settings.issues-feature{ style: ("display:none;" if @project.project_feature.send(:issues_access_level) == 0) }
+    .settings-header
+      %h4
+        Issue settings
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        Customize your issue restrictions.
+    .settings-content.no-animate{ class: ('expanded' if expanded) }
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "issue-settings-form" }, authenticity_token: true do |f|
+        .form-group
+          = f.label :issues_template, class: 'label-light' do
+            Default description template for issues
+            = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
+          = f.text_area :issues_template, class: "form-control", rows: 3
+          .hint
+            Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
+        = f.submit 'Save changes', class: "btn btn-save"

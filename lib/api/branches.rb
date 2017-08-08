@@ -37,6 +37,7 @@ module API
         present branch, with: Entities::RepoBranch, project: user_project
       end
 
+      # Note: This API will be deprecated in favor of the protected branches API.
       # Note: The internal data model moved from `developers_can_{merge,push}` to `allowed_to_{merge,push}`
       # in `gitlab-org/gitlab-ce!5081`. The API interface has not been changed (to maintain compatibility),
       # but it works with the changed data model to infer `developers_can_merge` and `developers_can_push`.
@@ -65,9 +66,9 @@ module API
         service_args = [user_project, current_user, protected_branch_params]
 
         protected_branch = if protected_branch
-                             ProtectedBranches::ApiUpdateService.new(*service_args).execute(protected_branch)
+                             ::ProtectedBranches::ApiUpdateService.new(*service_args).execute(protected_branch)
                            else
-                             ProtectedBranches::ApiCreateService.new(*service_args).execute
+                             ::ProtectedBranches::ApiCreateService.new(*service_args).execute
                            end
 
         if protected_branch.valid?
@@ -77,6 +78,7 @@ module API
         end
       end
 
+      # Note: This API will be deprecated in favor of the protected branches API.
       desc 'Unprotect a single branch' do
         success Entities::RepoBranch
       end

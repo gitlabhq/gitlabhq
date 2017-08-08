@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170726111039) do
+ActiveRecord::Schema.define(version: 20170807160457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -315,19 +315,6 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
 
-  create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
-    t.string "key", null: false
-    t.text "value"
-    t.text "encrypted_value"
-    t.string "encrypted_value_salt"
-    t.string "encrypted_value_iv"
-    t.integer "pipeline_schedule_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "ci_pipeline_schedule_variables", ["pipeline_schedule_id", "key"], name: "index_ci_pipeline_schedule_variables_on_schedule_id_and_key", unique: true, using: :btree
-
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -341,6 +328,19 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   end
 
   add_index "ci_group_variables", ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
+
+  create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
+    t.string "key", null: false
+    t.text "value"
+    t.text "encrypted_value"
+    t.string "encrypted_value_salt"
+    t.string "encrypted_value_iv"
+    t.integer "pipeline_schedule_id", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ci_pipeline_schedule_variables", ["pipeline_schedule_id", "key"], name: "index_ci_pipeline_schedule_variables_on_schedule_id_and_key", unique: true, using: :btree
 
   create_table "ci_pipeline_schedules", force: :cascade do |t|
     t.string "description"
@@ -526,6 +526,16 @@ ActiveRecord::Schema.define(version: 20170726111039) do
     t.float "instance_service_desk_issues", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "percentage_boards", default: 0.0, null: false
+    t.float "percentage_ci_pipelines", default: 0.0, null: false
+    t.float "percentage_deployments", default: 0.0, null: false
+    t.float "percentage_environments", default: 0.0, null: false
+    t.float "percentage_issues", default: 0.0, null: false
+    t.float "percentage_merge_requests", default: 0.0, null: false
+    t.float "percentage_milestones", default: 0.0, null: false
+    t.float "percentage_notes", default: 0.0, null: false
+    t.float "percentage_projects_prometheus_active", default: 0.0, null: false
+    t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
@@ -631,9 +641,20 @@ ActiveRecord::Schema.define(version: 20170726111039) do
     t.integer "repository_updated_event_id", limit: 8
     t.integer "repository_deleted_event_id", limit: 8
     t.integer "repository_renamed_event_id", limit: 8
+    t.integer "repositories_changed_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
+
+  create_table "geo_node_namespace_links", force: :cascade do |t|
+    t.integer "geo_node_id", null: false
+    t.integer "namespace_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "geo_node_namespace_links", ["geo_node_id", "namespace_id"], name: "index_geo_node_namespace_links_on_geo_node_id_and_namespace_id", unique: true, using: :btree
+  add_index "geo_node_namespace_links", ["geo_node_id"], name: "index_geo_node_namespace_links_on_geo_node_id", using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
@@ -654,6 +675,12 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
+
+  create_table "geo_repositories_changed_events", id: :bigserial, force: :cascade do |t|
+    t.integer "geo_node_id", null: false
+  end
+
+  add_index "geo_repositories_changed_events", ["geo_node_id"], name: "index_geo_repositories_changed_events_on_geo_node_id", using: :btree
 
   create_table "geo_repository_deleted_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
@@ -818,12 +845,13 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
-  add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
-  add_index "issues", ["due_date"], name: "index_issues_on_due_date", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
+  add_index "issues", ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
+  add_index "issues", ["project_id", "due_date", "id", "state"], name: "index_issues_on_project_id_and_due_date_and_id_and_state", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
+  add_index "issues", ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state", using: :btree
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
@@ -1033,7 +1061,6 @@ ActiveRecord::Schema.define(version: 20170726111039) do
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"
-    t.datetime "locked_at"
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
@@ -1054,6 +1081,7 @@ ActiveRecord::Schema.define(version: 20170726111039) do
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
+    t.string "merge_jid"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1197,7 +1225,6 @@ ActiveRecord::Schema.define(version: 20170726111039) do
     t.integer "level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "events"
     t.boolean "new_note"
     t.boolean "new_issue"
     t.boolean "reopen_issue"
@@ -1948,8 +1975,8 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_a2141b1522", on_delete: :nullify
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
-  add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
+  add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
   add_foreign_key "ci_pipeline_variables", "ci_pipelines", column: "pipeline_id", name: "fk_f29c5f4380", on_delete: :cascade
@@ -1974,9 +2001,13 @@ ActiveRecord::Schema.define(version: 20170726111039) do
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
+  add_foreign_key "geo_event_log", "geo_repositories_changed_events", column: "repositories_changed_event_id", name: "fk_4a99ebfd60", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
+  add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
+  add_foreign_key "geo_repositories_changed_events", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_updated_events", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade

@@ -71,6 +71,8 @@ class Repository
     @raw_repository ||= initialize_raw_repository
   end
 
+  alias_method :raw, :raw_repository
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
@@ -140,12 +142,13 @@ class Repository
     ref ||= root_ref
 
     args = %W(
-      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
+      log #{ref} --pretty=%H --skip #{offset}
       --max-count #{limit} --grep=#{query} --regexp-ignore-case
     )
     args = args.concat(%W(-- #{path})) if path.present?
 
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
+    git_log_results = run_git(args).first.lines
+
     git_log_results.map { |c| commit(c.chomp) }.compact
   end
 
@@ -620,17 +623,26 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    sha = last_commit_id_for_path(sha, path)
-    commit(sha)
+    raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+      if is_enabled
+        last_commit_for_path_by_gitaly(sha, path)
+      else
+        last_commit_for_path_by_rugged(sha, path)
+      end
+    end
   end
 
-  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/383
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-      Gitlab::Popen.popen(args, path_to_repo).first.strip
+      raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+        if is_enabled
+          last_commit_for_path_by_gitaly(sha, path).id
+        else
+          last_commit_id_for_path_by_shelling_out(sha, path)
+        end
+      end
     end
   end
 
@@ -685,8 +697,8 @@ class Repository
   end
 
   def refs_contains_sha(ref_type, sha)
-    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
+    args = %W(#{ref_type} --contains #{sha})
+    names = run_git(args).first
 
     if names.respond_to?(:split)
       names = names.split("\n").map(&:strip)
@@ -764,7 +776,7 @@ class Repository
       index = Gitlab::Git::Index.new(raw_repository)
 
       if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
+        index.read_tree(start_commit.rugged_commit.tree)
         parents = [start_commit.sha]
       else
         parents = []
@@ -957,7 +969,7 @@ class Repository
 
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
-    fetch_remote(Repository::MIRROR_REMOTE)
+    fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
   end
 
   def fetch_geo_mirror(url)
@@ -1018,7 +1030,7 @@ class Repository
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
       else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+        rugged_is_ancestor?(ancestor_id, descendant_id)
       end
     end
   end
@@ -1031,15 +1043,17 @@ class Repository
     return [] if empty_repo? || query.blank?
 
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
-    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+    args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+
+    run_git(args).first.scrub.split(/^--$/)
   end
 
   def search_files_by_name(query, ref)
     return [] if empty_repo? || query.blank?
 
-    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
-    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
+    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+
+    run_git(args).first.lines.map(&:strip)
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
@@ -1079,13 +1093,13 @@ class Repository
     false
   end
 
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
+    args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+    run_git(args)
   end
 
   def create_ref(ref, ref_path)
@@ -1172,6 +1186,12 @@ class Repository
 
   private
 
+  def run_git(args)
+    circuit_breaker.perform do
+      Gitlab::Popen.popen([Gitlab.config.git.bin_path, *args], path_to_repo)
+    end
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1181,7 +1201,9 @@ class Repository
   end
 
   def refs_directory_exists?
-    File.exist?(File.join(path_to_repo, 'refs'))
+    circuit_breaker.perform do
+      File.exist?(File.join(path_to_repo, 'refs'))
+    end
   end
 
   def cache
@@ -1218,11 +1240,30 @@ class Repository
     Rugged::Commit.create(rugged, params)
   end
 
+  def last_commit_for_path_by_gitaly(sha, path)
+    c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
+    commit(c)
+  end
+
+  def last_commit_for_path_by_rugged(sha, path)
+    sha = last_commit_id_for_path_by_shelling_out(sha, path)
+    commit(sha)
+  end
+
+  def last_commit_id_for_path_by_shelling_out(sha, path)
+    args = %W(rev-list --max-count=1 #{sha} -- #{path})
+    run_git(args).first.strip
+  end
+
   def repository_storage_path
     @project.repository_storage_path
   end
 
   def initialize_raw_repository
     Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+  end
+
+  def circuit_breaker
+    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
 end

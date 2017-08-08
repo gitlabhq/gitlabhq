@@ -167,7 +167,7 @@ class Project < ActiveRecord::Base
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :import_data, class_name: 'ProjectImportData'
+  has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature
   has_one :statistics, class_name: 'ProjectStatistics'
 
@@ -196,6 +196,7 @@ class Project < ActiveRecord::Base
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
+  accepts_nested_attributes_for :import_data
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
@@ -587,8 +588,6 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
-
-    project_import_data.save
   end
 
   def import?
@@ -1206,7 +1205,18 @@ class Project < ActiveRecord::Base
   end
 
   def remove_private_deploy_keys
-    deploy_keys.where(public: false).delete_all
+    exclude_keys_linked_to_other_projects = <<-SQL
+      NOT EXISTS (
+        SELECT 1
+        FROM deploy_keys_projects dkp2
+        WHERE dkp2.deploy_key_id = deploy_keys_projects.deploy_key_id
+        AND dkp2.project_id != deploy_keys_projects.project_id
+      )
+    SQL
+
+    deploy_keys.where(public: false)
+               .where(exclude_keys_linked_to_other_projects)
+               .delete_all
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?

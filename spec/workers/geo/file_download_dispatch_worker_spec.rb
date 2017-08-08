@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe Geo::FileDownloadDispatchWorker do
+  let!(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
+  let!(:secondary) { create(:geo_node, :current) }
+
   before do
-    @primary = create(:geo_node, :primary, host: 'primary-geo-node')
-    @secondary = create(:geo_node, :current)
     allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
     allow_any_instance_of(Gitlab::ExclusiveLease)
       .to receive(:try_obtain).and_return(true)
@@ -28,8 +29,8 @@ describe Geo::FileDownloadDispatchWorker do
     it 'does not schedule anything when node is disabled' do
       create(:lfs_object, :with_file)
 
-      @secondary.enabled = false
-      @secondary.save
+      secondary.enabled = false
+      secondary.save
 
       expect(GeoFileDownloadWorker).not_to receive(:perform_async)
 
@@ -70,6 +71,45 @@ describe Geo::FileDownloadDispatchWorker do
       expect(subject).to receive(:load_pending_resources).exactly(3).times.and_call_original
 
       Sidekiq::Testing.inline! do
+        subject.perform
+      end
+    end
+
+    context 'when node has namespace restrictions' do
+      let(:synced_group) { create(:group) }
+      let!(:project_in_synced_group) { create(:project, group: synced_group) }
+      let!(:unsynced_project) { create(:project) }
+
+      before do
+        allow(ProjectCacheWorker).to receive(:perform_async).and_return(true)
+        allow_any_instance_of(described_class).to receive(:over_time?).and_return(false)
+
+        secondary.update_attribute(:namespaces, [synced_group])
+      end
+
+      it 'does not perform GeoFileDownloadWorker for LFS object that does not belong to selected namespaces to replicate' do
+        lfs_objec_in_synced_group = create(:lfs_objects_project, project: project_in_synced_group)
+        create(:lfs_objects_project, project: unsynced_project)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with(:lfs, lfs_objec_in_synced_group.lfs_object_id).once.and_return(spy)
+
+        subject.perform
+      end
+
+      it 'does not perform GeoFileDownloadWorker for upload objects that do not belong to selected namespaces to replicate' do
+        avatar = fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'))
+        avatar_in_synced_group = create(:upload, model: synced_group, path: avatar)
+        create(:upload, model: create(:group), path: avatar)
+        avatar_in_project_in_synced_group = create(:upload, model: project_in_synced_group, path: avatar)
+        create(:upload, model: unsynced_project, path: avatar)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with('avatar', avatar_in_project_in_synced_group.id).once.and_return(spy)
+
+        expect(GeoFileDownloadWorker).to receive(:perform_async)
+          .with('avatar', avatar_in_synced_group.id).once.and_return(spy)
+
         subject.perform
       end
     end

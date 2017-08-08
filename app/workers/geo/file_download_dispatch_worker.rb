@@ -9,30 +9,32 @@ module Geo
     end
 
     def load_pending_resources
-      lfs_object_ids = find_lfs_object_ids(db_retrieve_batch_size)
-      objects_ids    = find_object_ids(db_retrieve_batch_size)
+      lfs_object_ids = find_lfs_object_ids
+      objects_ids    = find_object_ids
 
       interleave(lfs_object_ids, objects_ids)
     end
 
-    def find_object_ids(limit)
+    def find_object_ids
       downloaded_ids = find_downloaded_ids([:attachment, :avatar, :file])
 
-      Upload.where.not(id: downloaded_ids)
-            .order(created_at: :desc)
-            .limit(limit)
-            .pluck(:id, :uploader)
-            .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
+      current_node.uploads
+                  .where.not(id: downloaded_ids)
+                  .order(created_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id, :uploader)
+                  .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').downcase] }
     end
 
-    def find_lfs_object_ids(limit)
+    def find_lfs_object_ids
       downloaded_ids = find_downloaded_ids([:lfs])
 
-      LfsObject.where.not(id: downloaded_ids)
-               .order(created_at: :desc)
-               .limit(limit)
-               .pluck(:id)
-               .map { |id| [id, :lfs] }
+      current_node.lfs_objects
+                  .where.not(id: downloaded_ids)
+                  .order(created_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id)
+                  .map { |id| [id, :lfs] }
     end
 
     def find_downloaded_ids(file_types)

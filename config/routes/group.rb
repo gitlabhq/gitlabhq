@@ -60,6 +60,7 @@ scope(path: 'groups/*group_id',
     end
 
     resources :variables, only: [:index, :show, :update, :create, :destroy]
+    resources :billings, only: [:index]
   end
 
   ## EE-specific

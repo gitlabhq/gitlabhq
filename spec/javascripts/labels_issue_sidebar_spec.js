@@ -4,7 +4,6 @@
 
 import '~/gl_dropdown';
 import 'select2';
-import 'vendor/jquery.nicescroll';
 import '~/api';
 import '~/create_label';
 import '~/issuable_context';

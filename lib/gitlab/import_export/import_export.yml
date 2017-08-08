@@ -105,6 +105,7 @@ excluded_attributes:
   merge_requests:
     - :milestone_id
     - :ref_fetched
+    - :merge_jid
   award_emoji:
     - :awardable_id
   statuses:

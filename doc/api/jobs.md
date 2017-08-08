@@ -294,9 +294,12 @@ Example of response
 
 ## Get job artifacts
 
-> [Introduced][ce-2893] in GitLab 8.5
+> **Notes**:
+- [Introduced][ce-2893] in GitLab 8.5.
+- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
+  in [GitLab Enterprise Edition Premium][ee] 9.5.
 
-Get job artifacts of a project
+Get job artifacts of a project.
 
 ```
 GET /projects/:id/jobs/:job_id/artifacts
@@ -306,10 +309,27 @@ GET /projects/:id/jobs/:job_id/artifacts
 |------------|---------|----------|---------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `job_id` | integer | yes      | The ID of a job   |
+| `job_token` | string  | no       | To be used with [triggers] for multi-project pipelines. Is should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
 
-```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/8/artifacts"
-```
+Example requests:
+
+- Using the `PRIVATE-TOKEN` header:
+
+    ```
+    curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
+
+- Using the `JOB-TOKEN` header (only inside `.gitlab-ci.yml`):
+
+    ```
+    curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
+
+- Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
+
+    ```
+    curl --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
 
 Response:
 
@@ -322,7 +342,10 @@ Response:
 
 ## Download the artifacts file
 
-> [Introduced][ce-5347] in GitLab 8.10.
+> **Notes**:
+- [Introduced][ce-5347] in GitLab 8.10.
+- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
+  in [GitLab Enterprise Edition Premium][ee] 9.5.
 
 Download the artifacts file from the given reference name and job provided the
 job finished successfully.
@@ -338,12 +361,27 @@ Parameters
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user       |
 | `ref_name`  | string  | yes      | The ref from a repository |
 | `job`       | string  | yes      | The name of the job       |
+| `job_token` | string  | no       | To be used with [triggers] for multi-project pipelines. Is should be invoked only inside `.gitlab-ci.yml`. Its value is always `$CI_JOB_TOKEN`. |
 
-Example request:
+Example requests:
 
-```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
-```
+- Using the `PRIVATE-TOKEN` header:
+
+    ```
+    curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
+
+- Using the `JOB-TOKEN` header (only inside `.gitlab-ci.yml`):
+
+    ```
+    curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
+
+- Using the `job_token` parameter (only inside `.gitlab-ci.yml`):
+
+    ```
+    curl --header --form "job-token=$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+    ```
 
 Example response:
 
@@ -615,3 +653,7 @@ Example of response
   "user": null
 }
 ```
+
+[ee]: https://about.gitlab.com/gitlab-ee/
+[ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
+[triggers]: ../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline

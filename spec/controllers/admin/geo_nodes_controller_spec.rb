@@ -132,14 +132,20 @@ describe Admin::GeoNodesController, :postgresql do
     context 'with add-on license' do
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
-        go
       end
 
       it 'updates the node without changing the key' do
-        geo_node.reload
+        go
 
+        geo_node.reload
         expect(geo_node.url.chomp('/')).to eq(geo_node_attributes[:url])
         expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
+      end
+
+      it 'delegates the update of the Geo node to Geo::NodeUpdateService' do
+        expect_any_instance_of(Geo::NodeUpdateService).to receive(:execute).once
+
+        go
       end
     end
   end
@@ -260,7 +266,8 @@ describe Admin::GeoNodesController, :postgresql do
           lfs_objects_count: 256,
           lfs_objects_synced_count: 123,
           repositories_count: 10,
-          repositories_synced_count: 5
+          repositories_synced_count: 5,
+          repositories_failed_count: 0
         )
       end
 

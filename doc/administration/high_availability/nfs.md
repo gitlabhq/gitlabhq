@@ -46,6 +46,10 @@ GitLab does not recommend using EFS with GitLab.
   many small files are written in a serialized manner are not well-suited for EFS.
   EBS with an NFS server on top will perform much better.
 
+In addition, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
+because this will also affect performance. We recommend that the log files be
+stored on a local volume.
+
 For more details on another person's experience with EFS, see
 [Amazon's Elastic File System: Burst Credits](https://www.rawkode.io/2017/04/amazons-elastic-file-system-burst-credits/)
 

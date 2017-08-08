@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Settings::IntegrationsController do
-  let(:namespace) { create(:group, :private) }
-  let(:project) { create(:project, :private, namespace: namespace) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
   before do
@@ -65,6 +64,9 @@ describe Projects::Settings::IntegrationsController do
     end
 
     context 'with a license key' do
+      let(:namespace) { create(:group, :private) }
+      let(:project) { create(:project, :private, namespace: namespace) }
+
       context 'when checking of namespace plan is enabled' do
         before do
           allow_any_instance_of(Project).to receive_message_chain(:current_application_settings, :should_check_namespace_plan?) { true }

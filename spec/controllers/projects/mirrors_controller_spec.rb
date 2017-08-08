@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MirrorsController do
+  include ReactiveCachingHelpers
+
   describe 'setting up a remote mirror' do
     context 'when the current project is a mirror' do
       let(:project) { create(:project, :repository, :mirror) }
@@ -126,8 +128,152 @@ describe Projects::MirrorsController do
     end
   end
 
-  def do_put(project, options)
-    attrs = { namespace_id: project.namespace.to_param, project_id: project.to_param }
+  describe '#update' do
+    let(:project) { create(:project, :repository, :mirror, :remote_mirror) }
+
+    before do
+      sign_in(project.owner)
+    end
+
+    around(:each) do |example|
+      Sidekiq::Testing.fake! { example.run }
+    end
+
+    context 'JSON' do
+      it 'processes a successful update' do
+        do_put(project, { import_url: 'https://updated.example.com' }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['import_url']).to eq('https://updated.example.com')
+      end
+
+      it 'processes an unsuccessful update' do
+        do_put(project, { import_url: 'ftp://invalid.invalid' }, format: :json)
+
+        expect(response).to have_http_status(422)
+        expect(json_response['import_url'].first).to match /valid URL/
+      end
+
+      it "preserves the import_data object when the ID isn't in the request" do
+        import_data_id = project.import_data.id
+
+        do_put(project, { import_data_attributes: { password: 'update' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(project.import_data(true).id).to eq(import_data_id)
+      end
+
+      it 'sets ssh_known_hosts_verified_at and verified_by when the update sets known hosts' do
+        do_put(project, { import_data_attributes: { ssh_known_hosts: 'update' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+
+        import_data = project.import_data(true)
+        expect(import_data.ssh_known_hosts_verified_at).to be_within(1.minute).of(Time.now)
+        expect(import_data.ssh_known_hosts_verified_by).to eq(project.owner)
+      end
+
+      it 'unsets ssh_known_hosts_verified_at and verified_by when the update unsets known hosts' do
+        project.import_data.update!(ssh_known_hosts: 'foo')
+
+        do_put(project, { import_data_attributes: { ssh_known_hosts: '' } }, format: :json)
+
+        expect(response).to have_http_status(200)
+
+        import_data = project.import_data(true)
+        expect(import_data.ssh_known_hosts_verified_at).to be_nil
+        expect(import_data.ssh_known_hosts_verified_by).to be_nil
+      end
+
+      it 'only allows the current user to be the mirror user' do
+        mirror_user = project.mirror_user
+
+        other_user = create(:user)
+        project.add_master(other_user)
+
+        do_put(project, { mirror_user_id: other_user.id }, format: :json)
+
+        expect(response).to have_http_status(200)
+        expect(project.mirror_user(true)).to eq(mirror_user)
+      end
+    end
+
+    context 'HTML' do
+      it 'processes a successful update' do
+        do_put(project, import_url: 'https://updated.example.com')
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:notice]).to match(/successfully updated/)
+      end
+
+      it 'processes an unsuccessful update' do
+        do_put(project, import_url: 'ftp://invalid.invalid')
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:alert]).to match(/valid URL/)
+      end
+    end
+  end
+
+  describe '#ssh_host_keys', use_clean_rails_memory_store_caching: true do
+    let(:project) { create(:project) }
+    let(:cache) { SshHostKey.new(project: project, url: "ssh://example.com:22") }
+
+    before do
+      sign_in(project.owner)
+    end
+
+    context 'invalid URL' do
+      it 'returns an error with a 400 response' do
+        do_get(project, 'INVALID URL')
+
+        expect(response).to have_http_status(400)
+        expect(json_response).to eq('message' => 'Invalid URL')
+      end
+    end
+
+    context 'no data in cache' do
+      it 'requests the cache to be filled and returns a 204 response' do
+        expect(ReactiveCachingWorker).to receive(:perform_async).with(cache.class, cache.id).at_least(:once)
+
+        do_get(project)
+
+        expect(response).to have_http_status(204)
+      end
+    end
+
+    context 'error in the cache' do
+      it 'returns the error with a 400 response' do
+        stub_reactive_cache(cache, error: 'An error')
+
+        do_get(project)
+
+        expect(response).to have_http_status(400)
+        expect(json_response).to eq('message' => 'An error')
+      end
+    end
+
+    context 'data in the cache' do
+      let(:ssh_key) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' }
+      let(:ssh_fp) { { type: 'ED25519', bits: 256, fingerprint: '2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16', index: 0 } }
+
+      it 'returns the data with a 200 response' do
+        stub_reactive_cache(cache, known_hosts: ssh_key)
+
+        do_get(project)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq('known_hosts' => ssh_key, 'fingerprints' => [ssh_fp.stringify_keys], 'changes_project_import_data' => true)
+      end
+    end
+
+    def do_get(project, url = 'ssh://example.com')
+      get :ssh_host_keys, namespace_id: project.namespace, project_id: project, ssh_url: url
+    end
+  end
+
+  def do_put(project, options, extra_attrs = {})
+    attrs = extra_attrs.merge(namespace_id: project.namespace.to_param, project_id: project.to_param)
     attrs[:project] = options
 
     put :update, attrs

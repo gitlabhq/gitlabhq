@@ -1,4 +1,5 @@
 /* global Flash */
+import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
 
 export default {
@@ -28,21 +29,21 @@ export default {
         });
     },
   },
+  components: {
+    statusIcon,
+  },
   template: `
-    <div class="mr-widget-body">
-      <button
-        type="button"
-        class="btn btn-success btn-small"
-        disabled="true">
-        Merge</button>
-      <span class="bold">
-        This merge request is currently Work In Progress and therefore unable to merge
-      </span>
-      <template v-if="mr.removeWIPPath">
-        <i
-          class="fa fa-question-circle has-tooltip"
-          title="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged." />
+    <div class="mr-widget-body media">
+      <status-icon status="failed" :showDisabledButton="Boolean(mr.removeWIPPath)" />
+      <div class="media-body space-children">
+        <span class="bold">
+          This is a Work in Progress
+          <i
+            class="fa fa-question-circle has-tooltip"
+            title="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged." />
+        </span>
         <button
+          v-if="mr.removeWIPPath"
           @click="removeWIP"
           :disabled="isMakingRequest"
           type="button"
@@ -53,7 +54,7 @@ export default {
             aria-hidden="true" />
             Resolve WIP status
         </button>
-      </template>
+      </div>
     </div>
   `,
 };

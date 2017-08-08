@@ -1,0 +1,41 @@
+.panel{ class: ('current' if current_plan?(plan)) }
+  .panel-heading
+    = plan.name
+
+  .panel-body
+    .price-per-month
+      .append-right-5
+        = number_to_plan_currency(plan.price_per_month)
+
+      %ul.billing-conditions
+        %li= s_("BillingPlans|per user")
+        %li= s_("BillingPlans|monthly")
+    .price-per-year
+      - if plan.price_per_year > 0
+        - price_per_year = number_to_plan_currency(plan.price_per_year)
+        = s_("BillingPlans|paid annually at %{price_per_year}") % { price_per_year: price_per_year }
+
+    %ul.feature-list.bordered-list
+      - plan.features.each do |feature|
+        %li
+          - if feature.highlight
+            %strong= feature.title
+          - else
+            = feature.title
+      %li
+        - if plan.about_page_href
+          = link_to s_("BillingPlans|See all %{plan_name} features") % { plan_name: plan.name }, plan.about_page_href
+
+    - purchase_link = plan.purchase_link
+
+    - if purchase_link
+      .plan-action
+        - href = purchase_link.href
+
+        - case purchase_link.action
+        - when 'downgrade'
+          = plan_purchase_link(href, s_("Billinglans|Downgrade"))
+        - when 'current_plan'
+          = plan_purchase_link(href, s_("BillingPlans|Current plan"))
+        - when 'upgrade'
+          = plan_purchase_link(href, s_("BillingPlans|Upgrade"))

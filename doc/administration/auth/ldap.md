@@ -110,7 +110,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   #
   #   Example: '/etc/ca.pem'
   #
-  ca_cert: ''
+  ca_file: ''
 
   # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
   # is not appropriate.

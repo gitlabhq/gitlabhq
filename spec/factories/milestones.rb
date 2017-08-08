@@ -18,7 +18,7 @@ FactoryGirl.define do
       state "closed"
     end
 
-    after(:build) do |milestone, evaluator|
+    after(:build, :stub) do |milestone, evaluator|
       if evaluator.group
         milestone.group = evaluator.group
       elsif evaluator.group_id

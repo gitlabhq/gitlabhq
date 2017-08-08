@@ -21,6 +21,8 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
+/* global NewCommitForm */
+/* global NewBranchForm */
 /* global Project */
 /* global ProjectAvatar */
 /* global MergeRequest */
@@ -55,6 +57,7 @@ import UserCallout from './user_callout';
 import ShortcutsWiki from './shortcuts_wiki';
 import Pipelines from './pipelines';
 import BlobViewer from './blob/viewer/index';
+import GeoNodeForm from './geo/geo_node_form';
 import GeoNodes from './geo_nodes';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import UsersSelect from './users_select';
@@ -229,7 +232,6 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'explore:groups:index':
           new GroupsList();
-
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(
@@ -323,12 +325,14 @@ import initGroupAnalytics from './init_group_analytics';
           new gl.Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
+
+          initIssuableSidebar();
+          initNotes();
+
           const mrShowNode = document.querySelector('.merge-request');
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
-          initIssuableSidebar();
-          initNotes();
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -378,6 +382,12 @@ import initGroupAnalytics from './init_group_analytics';
           new UsersSelect();
           new GroupsSelect();
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
+          new UsersSelect();
+          break;
+        case 'projects:imports:show':
+          new ProjectImport();
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
@@ -567,7 +577,7 @@ import initGroupAnalytics from './init_group_analytics';
           initGroupAnalytics();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
@@ -602,6 +612,7 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'geo_nodes':
               new GeoNodes($('.geo-nodes'));
+              new GeoNodeForm($('.js-geo-node-form'));
               break;
           }
           break;

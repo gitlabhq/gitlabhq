@@ -13,5 +13,20 @@ module Geo
     belongs_to :repository_renamed_event,
       class_name: 'Geo::RepositoryRenamedEvent',
       foreign_key: :repository_renamed_event_id
+
+    belongs_to :repositories_changed_event,
+      class_name: 'Geo::RepositoriesChangedEvent',
+      foreign_key: :repositories_changed_event_id
+
+    def event
+      repository_updated_event ||
+        repository_deleted_event ||
+        repository_renamed_event ||
+        repositories_changed_event
+    end
+
+    def project_id
+      event.try(:project_id)
+    end
   end
 end

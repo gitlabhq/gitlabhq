@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
+  include StubConfiguration
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
@@ -148,7 +150,7 @@ describe Projects::UpdateService, '#execute' do
         'a' => { 'path' => 'tmp/tests/storage_a' },
         'b' => { 'path' => 'tmp/tests/storage_b' }
       }
-      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      stub_storage_settings(storages)
     end
 
     after do

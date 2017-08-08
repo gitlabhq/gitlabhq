@@ -282,7 +282,7 @@ describe 'Commits' do
       end
 
       # verified and the gpg user has a gitlab profile
-      click_on 'Verified'
+      click_on 'Verified', match: :first
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature.'
         expect(page).to have_content 'Nannie Bernhard'
@@ -295,7 +295,7 @@ describe 'Commits' do
 
       visit project_commits_path(project, :'signed-commits')
 
-      click_on 'Verified'
+      click_on 'Verified', match: :first
       within '.popover' do
         expect(page).to have_content 'This commit was signed with a verified signature.'
         expect(page).to have_content 'Nannie Bernhard'

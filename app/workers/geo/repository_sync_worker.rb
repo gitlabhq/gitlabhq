@@ -23,17 +23,19 @@ module Geo
     end
 
     def find_project_ids_not_synced
-      Project.where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
-             .order(last_repository_updated_at: :desc)
-             .limit(db_retrieve_batch_size)
-             .pluck(:id)
+      current_node.projects
+                  .where.not(id: Geo::ProjectRegistry.synced.pluck(:project_id))
+                  .order(last_repository_updated_at: :desc)
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:id)
     end
 
     def find_project_ids_updated_recently
-      Geo::ProjectRegistry.dirty
-                          .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
-                          .limit(db_retrieve_batch_size)
-                          .pluck(:project_id)
+      current_node.project_registries
+                  .dirty
+                  .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
+                  .limit(db_retrieve_batch_size)
+                  .pluck(:project_id)
     end
   end
 end

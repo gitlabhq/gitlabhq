@@ -1,5 +1,7 @@
 # Shorter routing method for some project items
 module GitlabRoutingHelper
+  include EE::GitlabRoutingHelper
+
   extend ActiveSupport::Concern
 
   included do
@@ -45,10 +47,6 @@ module GitlabRoutingHelper
 
   def pipeline_path(pipeline, *args)
     project_pipeline_path(pipeline.project, pipeline.id, *args)
-  end
-
-  def milestone_path(entity, *args)
-    project_milestone_path(entity.project, entity, *args)
   end
 
   def issue_url(entity, *args)

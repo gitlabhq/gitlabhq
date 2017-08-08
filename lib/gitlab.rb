@@ -3,6 +3,8 @@ require_dependency 'gitlab/git'
 module Gitlab
   SUBDOMAIN_REGEX = %r{\Ahttps://[a-z0-9]+\.gitlab\.com\z}
   COM_URL = 'https://gitlab.com'.freeze
+  SUBSCRIPTIONS_URL = 'https://customers.gitlab.com'.freeze
+  SUBSCRIPTIONS_PLANS_URL = "#{SUBSCRIPTIONS_URL}/plans".freeze
 
   def self.com?
     # Check `gl_subdomain?` as well to keep parity with gitlab.com
@@ -11,5 +13,9 @@ module Gitlab
 
   def self.gl_subdomain?
     SUBDOMAIN_REGEX === Gitlab.config.gitlab.url
+  end
+
+  def self.dev_env_or_com?
+    Rails.env.development? || com?
   end
 end

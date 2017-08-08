@@ -11,7 +11,8 @@ following locations:
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Broadcast Messages](broadcast_messages.md)
-- [Build Variables](build_variables.md)
+- [Project-level Variables](project_level_variables.md)
+- [Group-level Variables](group_level_variables.md)
 - [Commits](commits.md)
 - [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
@@ -43,6 +44,7 @@ following locations:
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
+- [Protected Branches](protected_branches.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
@@ -75,6 +77,38 @@ controller-specific endpoints. GraphQL has a number of benefits:
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
+
+## Basic usage
+
+API requests should be prefixed with `api` and the API version. The API version
+is defined in [`lib/api.rb`][lib-api-url]. For example, the root of the v4 API
+is at `/api/v4`.
+
+For endpoints that require [authentication](#authentication), you need to pass
+a `private_token` parameter via query string or header. If passed as a header,
+the header name must be `PRIVATE-TOKEN` (uppercase and with a dash instead of
+an underscore).
+
+Example of a valid API request:
+
+```
+GET /projects?private_token=9koXpg98eAheJpvBs5tK
+```
+
+Example of a valid API request using cURL and authentication via header:
+
+```shell
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
+```
+
+Example of a valid API request using cURL and authentication via a query string:
+
+```shell
+curl "https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK"
+```
+
+The API uses JSON to serialize data. You don't need to specify `.json` at the
+end of an API URL.
 
 ## Authentication
 
@@ -205,37 +239,6 @@ GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
 ```shell
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "SUDO: 23" "https://gitlab.example.com/api/v4/projects"
 ```
-
-## Basic usage
-
-API requests should be prefixed with `api` and the API version. The API version
-is defined in [`lib/api.rb`][lib-api-url].
-
-For endpoints that require [authentication](#authentication), you need to pass
-a `private_token` parameter via query string or header. If passed as a header,
-the header name must be `PRIVATE-TOKEN` (uppercase and with a dash instead of
-an underscore).
-
-Example of a valid API request:
-
-```
-GET /projects?private_token=9koXpg98eAheJpvBs5tK
-```
-
-Example of a valid API request using cURL and authentication via header:
-
-```shell
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects"
-```
-
-Example of a valid API request using cURL and authentication via a query string:
-
-```shell
-curl "https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK"
-```
-
-The API uses JSON to serialize data. You don't need to specify `.json` at the
-end of an API URL.
 
 ## Status codes
 
