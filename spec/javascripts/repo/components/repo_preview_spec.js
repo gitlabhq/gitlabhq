@@ -18,6 +18,6 @@ describe('RepoPreview', () => {
     const vm = createComponent();
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.innerHTML).toEqual(activeFile.html);
+    expect(vm.$el.innerHTML).toContain(activeFile.html);
   });
 });
