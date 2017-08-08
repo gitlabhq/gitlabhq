@@ -343,6 +343,9 @@ import UserFeatureHelper from './helpers/user_feature_helper';
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:edit':
           setupProjectEdit();
