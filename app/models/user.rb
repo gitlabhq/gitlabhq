@@ -528,7 +528,7 @@ class User < ActiveRecord::Base
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-    Group.where("namespaces.id IN (#{union.to_sql})")
+    Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -719,8 +719,8 @@ class User < ActiveRecord::Base
 
   def sanitize_attrs
     %w[username skype linkedin twitter].each do |attr|
-      value = public_send(attr)
-      public_send("#{attr}=", Sanitize.clean(value)) if value.present?
+      value = public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
+      public_send("#{attr}=", Sanitize.clean(value)) if value.present? # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -779,7 +779,7 @@ class User < ActiveRecord::Base
 
   def with_defaults
     User.defaults.each do |k, v|
-      public_send("#{k}=", v)
+      public_send("#{k}=", v) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     self
@@ -919,7 +919,7 @@ class User < ActiveRecord::Base
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject
-        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})")
+        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
         .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end
