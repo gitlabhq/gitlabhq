@@ -11,6 +11,7 @@ describe('RepoEditButton', () => {
 
   it('renders an edit button that toggles the view state', (done) => {
     RepoStore.isCommitable = true;
+    RepoStore.changedFiles = [];
 
     const vm = createComponent();
 
