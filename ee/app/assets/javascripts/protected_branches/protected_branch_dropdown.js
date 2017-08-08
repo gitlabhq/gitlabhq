@@ -86,5 +86,3 @@ export default class ProtectedBranchDropdown {
     this.$dropdownFooter.toggleClass('hidden', toggleState);
   }
 }
-
-window.ProtectedBranchDropdown = ProtectedBranchDropdown;
