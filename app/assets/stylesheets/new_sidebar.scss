@@ -104,10 +104,13 @@ $new-sidebar-collapsed-width: 50px;
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
 
-    .nav-item-name,
     .badge,
     .project-title {
       display: none;
+    }
+
+    .nav-item-name {
+      opacity: 0;
     }
   }
 
@@ -361,7 +364,7 @@ $new-sidebar-collapsed-width: 50px;
 
 .sidebar-icons-only {
   .context-header {
-    height: 60px;
+    height: 61px;
 
     a {
       padding: 10px 4px;
