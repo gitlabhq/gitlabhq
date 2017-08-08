@@ -1047,7 +1047,7 @@ RSpec/BeforeAfterAll:
 RSpec/DescribeClass:
   Enabled: false
 
-# Use `described_class` for tested class / module.
+# Checks that the second argument to `describe` specifies a method.
 RSpec/DescribeMethod:
   Enabled: false
 
@@ -1055,8 +1055,7 @@ RSpec/DescribeMethod:
 RSpec/DescribeSymbol:
   Enabled: true
 
-# Checks that the second argument to top level describe is the tested method
-# name.
+# Checks that tests use `described_class`.
 RSpec/DescribedClass:
   Enabled: true
 
