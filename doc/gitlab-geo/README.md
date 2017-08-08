@@ -130,6 +130,21 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 
 Read more in the [Geo FAQ](faq.md).
 
+## Log files
+
+Since GitLab 9.5, Geo stores structured log messages in a `geo.log` file. For
+Omnibus installations, this file can be found in
+`/var/log/gitlab/gitlab-rails/geo.log`. This file contains information about
+when Geo attempts to sync repositories and files. Each line in the file contains a
+separate JSON entry that can be ingested into Elasticsearch, Splunk, etc. For
+example:
+
+```json
+{"severity":"INFO","time":"2017-08-06T05:40:16.104Z","message":"Repository update","project_id":1,"source":"repository","resync_repository":true,"resync_wiki":true,"class":"Gitlab::Geo::LogCursor::Daemon","cursor_delay_s":0.038}
+```
+
+This message shows that Geo detected that a repository update was needed for project 1.
+
 ## Troubleshooting
 
 Read the [troubleshooting document](troubleshooting.md).
