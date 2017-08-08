@@ -47,7 +47,7 @@ describe 'Promotions', js: true do
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
         project.team << [user, :master]
-        project.team << [user, :developer]
+        project.team << [developer, :developer]
       end
 
       it 'should have the Upgrade your plan button' do
@@ -62,7 +62,7 @@ describe 'Promotions', js: true do
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
     end
-  end  
+  end
 
   describe 'for service desk', js: true do
     let!(:license) { nil }
