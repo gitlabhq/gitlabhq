@@ -58,11 +58,6 @@ module Gitlab
         end
       end
 
-      # Alias to old method for compatibility
-      def raw
-        rugged
-      end
-
       def rugged
         @rugged ||= circuit_breaker.perform do
           Rugged::Repository.new(path, alternates: alternate_object_directories)
@@ -303,7 +298,22 @@ module Gitlab
       #   )
       #
       def log(options)
-        raw_log(options).map { |c| Commit.decorate(c) }
+        default_options = {
+          limit: 10,
+          offset: 0,
+          path: nil,
+          follow: false,
+          skip_merges: false,
+          disable_walk: false,
+          after: nil,
+          before: nil
+        }
+
+        options = default_options.merge(options)
+        options[:limit] ||= 0
+        options[:offset] ||= 0
+
+        raw_log(options).map { |c| Commit.decorate(self, c) }
       end
 
       def count_commits(options)
@@ -330,7 +340,9 @@ module Gitlab
       # Return a collection of Rugged::Commits between the two revspec arguments.
       # See http://git-scm.com/docs/git-rev-parse.html#_specifying_revisions for
       # a detailed list of valid arguments.
-      def commits_between(from, to)
+      #
+      # Gitaly note: JV: to be deprecated in favor of Commit.between
+      def rugged_commits_between(from, to)
         walker = Rugged::Walker.new(rugged)
         walker.sorting(Rugged::SORT_NONE | Rugged::SORT_REVERSE)
 
@@ -714,20 +726,6 @@ module Gitlab
       end
 
       def raw_log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          follow: false,
-          skip_merges: false,
-          disable_walk: false,
-          after: nil,
-          before: nil
-        }
-
-        options = default_options.merge(options)
-        options[:limit] ||= 0
-        options[:offset] ||= 0
         actual_ref = options[:ref] || root_ref
         begin
           sha = sha_from_ref(actual_ref)
