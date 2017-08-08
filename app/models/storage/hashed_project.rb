@@ -47,11 +47,11 @@ module Storage
 
         project.send_move_instructions(old_path_with_namespace)
 
-        @old_path_with_namespace = old_path_with_namespace
+        project.old_path_with_namespace = old_path_with_namespace
 
         SystemHooksService.new.execute_hooks_for(project, :rename)
 
-        @repository = nil
+        project.reload_repository!
       rescue => e
         Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
         # Returning false does not rollback after_* transaction but gives

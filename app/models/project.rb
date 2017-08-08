@@ -478,6 +478,10 @@ class Project < ActiveRecord::Base
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
   end
 
+  def reload_repository!
+    @repository = nil
+  end
+
   def container_registry_url
     if Gitlab.config.registry.enabled
       "#{Gitlab.config.registry.host_port}/#{full_path.downcase}"
