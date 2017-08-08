@@ -64,6 +64,8 @@ class Repository
     @raw_repository ||= initialize_raw_repository
   end
 
+  alias_method :raw, :raw_repository
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
@@ -763,7 +765,7 @@ class Repository
       index = Gitlab::Git::Index.new(raw_repository)
 
       if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
+        index.read_tree(start_commit.rugged_commit.tree)
         parents = [start_commit.sha]
       else
         parents = []

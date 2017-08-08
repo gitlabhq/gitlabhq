@@ -505,17 +505,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#log" do
-    commit_with_old_name = nil
-    commit_with_new_name = nil
-    rename_commit = nil
+    let(:commit_with_old_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
+    end
+    let(:commit_with_new_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_new_name_id)
+    end
+    let(:rename_commit) do
+      Gitlab::Git::Commit.decorate(repository, @rename_commit_id)
+    end
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
       repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
-
-      commit_with_old_name = Gitlab::Git::Commit.decorate(new_commit_edit_old_file(repo))
-      rename_commit = Gitlab::Git::Commit.decorate(new_commit_move_file(repo))
-      commit_with_new_name = Gitlab::Git::Commit.decorate(new_commit_edit_new_file(repo))
+      @commit_with_old_name_id = new_commit_edit_old_file(repo)
+      @rename_commit_id = new_commit_move_file(repo)
+      @commit_with_new_name_id = new_commit_edit_new_file(repo)
     end
 
     after(:context) do
@@ -754,7 +759,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
       def commit_files(commit)
-        commit.diff_from_parent.deltas.flat_map do |delta|
+        commit.rugged_diff_from_parent.deltas.flat_map do |delta|
           [delta.old_file[:path], delta.new_file[:path]].uniq.compact
         end
       end
