@@ -229,7 +229,7 @@ $new-sidebar-collapsed-width: 50px;
           position: fixed;
           top: 0;
           left: $new-sidebar-width;
-          width: 150px;
+          min-width: 150px;
           margin-top: -1px;
           padding: 8px 1px;
           background-color: $white-light;
