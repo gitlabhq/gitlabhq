@@ -64,10 +64,13 @@ describe Gitlab::EncodingHelper do
         index.read_tree(repo.head.target.tree) unless repo.empty?
 
         index.add(path: path, oid: oid, mode: 0100644)
+        user = { name: 'Test', email: 'test@example.com' }
 
         Rugged::Commit.create(
           repo,
           tree: index.write_tree(repo),
+          author: user,
+          committer: user,
           message: "Update #{path}",
           parents: repo.empty? ? [] : [repo.head.target].compact,
           update_ref: 'HEAD'
