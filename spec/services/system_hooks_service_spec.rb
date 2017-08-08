@@ -10,8 +10,8 @@ describe SystemHooksService do
   let(:group_member)   { create(:group_member) }
 
   context 'event data' do
-    it { expect(event_data(user, :create)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :email_opted_in) }
-    it { expect(event_data(user, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :email_opted_in) }
+    it { expect(event_data(user, :create)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username) }
+    it { expect(event_data(user, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username) }
     it { expect(event_data(project, :create)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
     it { expect(event_data(project, :update)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
     it { expect(event_data(project, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }

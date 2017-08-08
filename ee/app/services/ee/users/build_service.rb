@@ -1,7 +1,6 @@
 module EE
   module Users
     module BuildService
-
       private
 
       def signup_params
