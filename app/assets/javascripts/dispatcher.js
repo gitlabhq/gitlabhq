@@ -290,6 +290,7 @@ import initGroupAnalytics from './init_group_analytics';
               action: mrNewSubmitNode.dataset.mrSubmitAction,
             });
           }
+          new UserCallout();
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
           new gl.Diff();

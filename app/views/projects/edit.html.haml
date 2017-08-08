@@ -167,6 +167,9 @@
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
+  - if !@project.feature_available?(:fast_forward_merge) && show_promotions? && show_callout?('promote_mr_approval_dismissed')
+    = render 'shared/promotions/promote_mr_approval'
+
   - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
     %section.settings.js-service-desk-setting-wrapper
       .settings-header

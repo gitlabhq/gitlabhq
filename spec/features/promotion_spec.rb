@@ -4,7 +4,7 @@ describe 'Promotions', js: true do
   let(:project) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:developer) { create(:user) }  
+  let(:standarddeveloper) { create(:user) }  
 
   describe 'if you have a license' do
     before do
@@ -43,9 +43,11 @@ describe 'Promotions', js: true do
   describe 'for project features in general', js: true do
     context 'for .com' do
       before do
-        stub_application_setting(check_namespace_plan: true)
-        allow(Gitlab).to receive(:com?) { true }
+        project.team << [standarddeveloper, :developer]
+        project.add_developer(standarddeveloper)
         project.team << [user, :master]
+        
+        stub_application_setting(check_namespace_plan: true)       
       end
 
       it 'should have the Upgrade your plan button' do
@@ -55,9 +57,7 @@ describe 'Promotions', js: true do
       end
 
       it 'should have the contact owner line' do
-        sign_in(developer)
-        project.team << [developer, :developer]
-        project.add_developer(developer)
+        sign_in(standarddeveloper)
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
@@ -88,6 +88,88 @@ describe 'Promotions', js: true do
       visit edit_project_path(project)
 
       expect(page).not_to have_selector('#promote_service_desk')
+    end
+  end
+
+  describe 'for merge request improve', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+      project.team << [user, :master]
+    end
+
+    it 'should appear in project edit page' do
+      visit edit_project_path(project)
+      expect(find('#promote_mr_approval')).to have_content 'Improve Merge Request and customer support'
+      expect(find('#promote_mr_approval')).to have_content 'Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project.'
+    end
+
+    it 'does not show when cookie is set' do
+      visit edit_project_path(project)
+
+      within('#promote_mr_approval') do
+        find('.close').trigger('click')
+      end
+
+      visit edit_project_path(project)
+
+      expect(page).not_to have_selector('#promote_mr_approval')
+    end
+  end
+
+  describe 'for repository features', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+      project.team << [user, :master]
+    end
+
+    it 'should appear in repository settings page' do
+      visit repository_settings(project)
+      
+      expect(find('#promote_repository_features')).to have_content 'Improve repositories with GitLab Enterprise Edition'
+      expect(find('#promote_repository_features')).to have_content 'Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.'
+    end
+
+    it 'does not show when cookie is set' do
+      visit repository_settings(project)
+
+      within('#promote_repository_features') do
+        find('.close').trigger('click')
+      end
+
+      visit repository_settings(project)
+
+      expect(page).not_to have_selector('#promote_repository_features')
+    end
+  end
+
+  describe 'for squash commits', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+      project.team << [user, :master]
+    end
+
+    it 'should appear in new MR page' do
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+      expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with squash commit'
+      expect(find('#promote_squash_commits')).to have_content 'Squashing lets you tidy up the commit history of a branch when accepting a merge request.'
+    end
+
+    it 'does not show when cookie is set' do
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+
+      within('#promote_squash_commits') do
+        find('.close').trigger('click')
+      end
+
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
+
+      expect(page).not_to have_selector('#promote_squash_commits')
     end
   end
 end

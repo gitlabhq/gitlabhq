@@ -1,4 +1,3 @@
-= current_application_settings.should_check_namespace_plan?
 - if current_application_settings.should_check_namespace_plan?
   - if (@project.owner.present? && @project.owner == @current_user) || @project.group&.has_owner?(@current_user)
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'

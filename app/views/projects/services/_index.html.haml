@@ -4,6 +4,10 @@
       Project services
     %p Project services allow you to integrate GitLab with other applications
   .col-lg-8
+
+    - if show_promotions? && show_callout?('promote_webhooks_dismissed')
+      = render 'shared/promotions/promote_webhooks'
+
     %table.table
       %colgroup
         %col

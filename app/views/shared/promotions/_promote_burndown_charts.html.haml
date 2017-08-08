@@ -1,0 +1,15 @@
+.user-callout.promotion-callout{ id: 'promote_burndown_charts', data: { uid: 'promote_burndown_charts_dismissed' } }
+  .bordered-box.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss burndown charts promotion' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .user-callout-copy
+      %h4
+        - if current_application_settings.should_check_namespace_plan?
+          Upgrade your plan to improve milestone with Burndown Charts.
+        - else
+          Improve milestone with Burndown Charts.
+      %p
+        Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress.
+        %a{ href: '/help/user/project/milestones/burndown_charts.html', target: '_blank' } Read more
+
+      = render 'shared/promotions/promotion_link_project'

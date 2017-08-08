@@ -1,0 +1,15 @@
+.user-callout.promotion-callout{ id: 'promote_webhooks', data: { uid: 'promote_webhooks_dismissed' } }
+  .bordered-box.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss webhooks promotion' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .user-callout-copy
+      %h4
+        - if current_application_settings.should_check_namespace_plan?
+          Upgrade your plan to activate Webhooks.
+        - else
+          Improve project with Webhooks and GitLab Enterprise Edition.  
+      %p
+        Project webhooks allow you to trigger a URL if for example new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the webhook URL.
+        %a{ href: '/help/user/project/integrations/webhooks.html', target: '_blank' } Read more
+
+      = render 'shared/promotions/promotion_link_project'

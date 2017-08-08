@@ -1,0 +1,27 @@
+.user-callout.promotion-callout{ id: 'promote_repository_features', data: { uid: 'promote_repository_features_dismissed' } }
+  .bordered-box.content-block
+    %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss repository features promotion' }
+      = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .svg-container
+      = custom_icon('icon_push_rules')
+    .user-callout-copy
+      %h4
+        - if current_application_settings.should_check_namespace_plan?
+          Upgrade your plan improve repositories.
+        - else
+          Improve repositories with GitLab Enterprise Edition.
+      %ul
+        %li
+          %a{ href: '/help/push_rules/push_rules.md#push-rules', target: '_blank' } Push Rules
+          %p
+            Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.
+        %li
+          %a{ href: '/help/workflow/repository_mirroring.html', target: '_blank' } Repository Mirroring
+          %p
+            Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository.
+        %li
+          %a{ href: '/help/user/project/protected_branches.html', target: '_blank' } Protected Branches
+          %p
+            Permissions in GitLab are fundamentally defined around the idea of having read or write permission to the repository and branches. To prevent people from messing with history or pushing code without review, we've created protected branches.
+
+      = render 'shared/promotions/promotion_link_project'
