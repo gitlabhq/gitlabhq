@@ -273,6 +273,8 @@ rake karma:
   <<: *use-db
   <<: *dedicated-runner
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - bundle exec rake karma
   artifacts:
     name: coverage-javascript
@@ -350,6 +352,8 @@ lint:javascript:
   stage: test
   before_script: []
   script:
+    - rm -r node_modules
+    - yarn install --pure-lockfile
     - yarn run eslint
 
 lint:javascript:report:
