@@ -250,6 +250,14 @@ module TestEnv
     "#{forked_repo_path}_bare"
   end
 
+  def with_empty_bare_repository(name = nil)
+    path = Rails.root.join('tmp/tests', name || 'empty-bare-repository').to_s
+
+    yield(Rugged::Repository.init_at(path, :bare))
+  ensure
+    FileUtils.rm_rf(path)
+  end
+
   private
 
   def factory_repo_path
