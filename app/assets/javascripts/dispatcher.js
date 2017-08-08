@@ -547,6 +547,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:settings:repository:show':
           new UsersSelect();
+          new UserCallout();
           // Initialize expandable settings panels
           initSettingsPanels();
           break;

@@ -47,6 +47,7 @@ describe 'Promotions', js: true do
         project.team << [standarddeveloper, :developer]
         project.add_developer(standarddeveloper)
         project.team << [user, :master]
+        otherproject.team << [user, :developer]
         
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
@@ -174,4 +175,6 @@ describe 'Promotions', js: true do
       expect(page).not_to have_selector('#promote_squash_commits')
     end
   end
+
+
 end
