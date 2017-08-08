@@ -51,14 +51,12 @@ import ProjectSelectComboButton from './project_select_combo_button';
       });
       $('.ajax-project-select').each(function (i, select) {
         var placeholder;
-        var idAttribute;
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
         this.allProjects = $(select).data('allprojects') || false;
         this.orderBy = $(select).data('order-by') || 'id';
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
-        idAttribute = $(select).data('idattribute') || 'web_url';
 
         placeholder = "Search for project";
         if (this.includeGroups) {

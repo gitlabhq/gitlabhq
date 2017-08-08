@@ -33,9 +33,6 @@ export default {
         });
     },
   },
-  components: {
-    statusIcon,
-  },
   template: `
     <div class="mr-widget-body media">
       <status-icon status="failed" :showDisabledButton="Boolean(mr.removeWIPPath)" />

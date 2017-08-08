@@ -169,18 +169,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     redirect_to new_user_session_path
   end
 
-  def fail_login
-    error_message = @user.errors.full_messages.to_sentence
-
-    return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
-  end
-
-  def fail_ldap_login
-    flash[:alert] = 'Access denied for your LDAP account.'
-
-    redirect_to new_user_session_path
-  end
-
   def log_audit_event(user, options = {})
     AuditEventService.new(user, user, options)
       .for_authentication.security_event
