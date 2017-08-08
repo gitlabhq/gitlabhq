@@ -637,7 +637,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
     return Dispatcher;
   })();
 
-  $(function() {
+  $(window).on('load', function() {
     new Dispatcher();
   });
 }).call(window);
