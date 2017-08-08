@@ -11,6 +11,7 @@ export default {
     groupId: {
       type: Number,
       required: false,
+      default: 0,
     },
     list: {
       type: Object,
@@ -32,6 +33,12 @@ export default {
   computed: {
     selectedProjectName() {
       return this.selectedProject.name || 'Select a project';
+    },
+    disabled() {
+      if (this.groupId) {
+        return this.title === '' || !this.selectedProject.name;
+      }
+      return this.title === '';
     },
   },
   methods: {
@@ -157,7 +164,7 @@ export default {
         <div class="clearfix prepend-top-10">
           <button class="btn btn-success pull-left"
             type="submit"
-            :disabled="title === ''"
+            :disabled="disabled"
             ref="submit-button">
             Submit issue
           </button>
