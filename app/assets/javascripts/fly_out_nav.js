@@ -135,6 +135,9 @@ export const documentMouseMove = (e) => {
 
 export default () => {
   const sidebar = document.querySelector('.sidebar-top-level-items');
+
+  if (!sidebar) return;
+
   const items = [...sidebar.querySelectorAll('.sidebar-top-level-items > li')];
 
   sidebar.addEventListener('mouseleave', () => {
