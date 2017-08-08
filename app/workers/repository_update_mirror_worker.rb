@@ -1,20 +1,19 @@
 class RepositoryUpdateMirrorWorker
   UpdateError = Class.new(StandardError)
-  UpdateAlreadyInProgressError = Class.new(StandardError)
 
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
   include DedicatedSidekiqQueue
 
   # Retry not neccessary. It will try again at the next update interval.
-  sidekiq_options retry: false
+  sidekiq_options retry: false, status_expiration: StuckImportJobsWorker::MIRROR_EXPIRATION
 
   attr_accessor :project, :repository, :current_user
 
   def perform(project_id)
     project = Project.find(project_id)
 
-    raise UpdateAlreadyInProgressError if project.import_started?
+    raise UpdateError, "Project was in inconsistent state: #{project.import_status}" unless project.import_scheduled?
     start_mirror(project)
 
     @current_user = project.mirror_user || project.creator
@@ -23,8 +22,6 @@ class RepositoryUpdateMirrorWorker
     raise UpdateError, result[:message] if result[:status] == :error
 
     finish_mirror(project)
-  rescue UpdateAlreadyInProgressError
-    raise
   rescue UpdateError => ex
     fail_mirror(project, ex.message)
     raise

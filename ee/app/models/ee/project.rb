@@ -216,7 +216,15 @@ module EE
         ::Gitlab::Mirror.increment_metric(:mirrors_scheduled, 'Mirrors scheduled count')
         Rails.logger.info("Mirror update for #{full_path} was scheduled.")
 
-        RepositoryUpdateMirrorWorker.perform_async(self.id)
+        job_id = RepositoryUpdateMirrorWorker.perform_async(self.id)
+
+        if job_id
+          update(import_jid: job_id)
+
+          Rails.logger.info("Mirror job created for #{full_path} with job ID #{job_id}.")
+        else
+          Rails.logger.error("Mirror job failed to create for #{full_path}.")
+        end
       end
     end
 

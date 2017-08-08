@@ -360,7 +360,7 @@ class Project < ActiveRecord::Base
     end
 
     event :import_fail do
-      transition [:scheduled, :started] => :failed
+      transition [:scheduled, :started, :failed, :finished] => :failed
     end
 
     state :scheduled
@@ -532,6 +532,7 @@ class Project < ActiveRecord::Base
       end
 
     if job_id
+      update(import_jid: job_id)
       Rails.logger.info "Import job started for #{full_path} with job ID #{job_id}"
     else
       Rails.logger.error "Import job failed to start for #{full_path}"
@@ -543,6 +544,7 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    update(import_error: nil)
     remove_import_data
   end
 

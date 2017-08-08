@@ -3,6 +3,8 @@ class StuckImportJobsWorker
   include CronjobQueue
 
   IMPORT_EXPIRATION = 15.hours.to_i
+  FORK_EXPIRATION = 15.hours.to_i
+  MIRROR_EXPIRATION = 20.minutes.to_i
 
   def perform
     stuck_projects.find_in_batches(batch_size: 500) do |group|
@@ -12,9 +14,11 @@ class StuckImportJobsWorker
       completed_jids = Gitlab::SidekiqStatus.completed_jids(jids)
 
       if completed_jids.any?
-        completed_ids = group.select { |project| completed_jids.include?(project.import_jid) }.map(&:id)
+        group.each do |project|
+          project.mark_import_as_failed(error_message) if completed_jids.include(project.import_jid)
+        end
 
-        fail_batch!(completed_jids, completed_ids)
+        Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_jids.join(', ')}")
       end
     end
   end
@@ -22,13 +26,7 @@ class StuckImportJobsWorker
   private
 
   def stuck_projects
-    Project.select('id, import_jid').with_import_status(:started).where.not(import_jid: nil)
-  end
-
-  def fail_batch!(completed_jids, completed_ids)
-    Project.where(id: completed_ids).update_all(import_status: 'failed', import_error: error_message)
-
-    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_jids.join(', ')}")
+    Project.with_import_status(:started).where.not(import_jid: nil)
   end
 
   def error_message

@@ -12,13 +12,12 @@ class RepositoryImportWorker
     @project = Project.find(project_id)
     @current_user = @project.creator
 
+    raise ImportError, "Project was in inconsistent state: #{project.import_status}" unless project.import_scheduled?
     project.import_start
 
     Gitlab::Metrics.add_event(:import_repository,
                               import_url: @project.import_url,
                               path: @project.full_path)
-
-    project.update_columns(import_jid: self.jid, import_error: nil)
 
     result = Projects::ImportService.new(project, current_user).execute
     raise ImportError, result[:message] if result[:status] == :error
