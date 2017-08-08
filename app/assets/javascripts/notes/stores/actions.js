@@ -87,7 +87,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       const commandsChanges = res.commands_changes;
 
       if (hasQuickActions && Object.keys(errors).length) {
-        dispatch('poll');
+        dispatch('fetchData');
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
         Flash('Commands applied', 'notice', $(noteData.flashContainer));
@@ -184,6 +184,15 @@ export const poll = ({ commit, state, getters }) => {
       eTagPoll.stop();
     }
   });
+};
+
+export const fetchData = ({ commit, state, getters }) => {
+  const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
+
+  service.poll(requestData)
+    .then(resp => resp.json)
+    .then(data => pollSuccessCallBack(data, commit, state, getters))
+    .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
 export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, noteId }) => {

@@ -113,9 +113,11 @@
     mounted() {
       this.fetchNotes();
       this.initPolling();
+      const parentElement = this.$el.parentElement;
 
-      if (this.$el.parentElement) {
-        this.$el.parentElement.addEventListener('toggleAward', (event) => {
+      if (parentElement &&
+        parentElement.classList.contains('js-vue-notes-event')) {
+        parentElement.addEventListener('toggleAward', (event) => {
           const { awardName, noteId } = event.detail;
           this.actionToggleAward({ awardName, noteId });
         });

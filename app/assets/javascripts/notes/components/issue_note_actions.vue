@@ -37,14 +37,6 @@
         type: Boolean,
         required: true,
       },
-      editHandler: {
-        type: Function,
-        required: true,
-      },
-      deleteHandler: {
-        type: Function,
-        required: true,
-      },
     },
     directives: {
       tooltip,
@@ -76,6 +68,14 @@
         return this.getUserDataByProp('id');
       },
     },
+    methods: {
+      onEdit() {
+        this.$emit('editHandler');
+      },
+      onDelete() {
+        this.$emit('deleteHandler');
+      }
+    }
   };
 </script>
 
@@ -125,7 +125,7 @@
         <template v-if="canEdit">
           <li>
             <button
-              @click="editHandler"
+              @click="onEdit"
               type="button"
               class="btn btn-transparent js-note-edit">
               Edit comment
@@ -140,7 +140,7 @@
         </li>
         <li v-if="canEdit">
           <button
-            @click.prevent="deleteHandler"
+            @click.prevent="onDelete"
             class="btn btn-transparent js-note-delete js-note-delete"
             type="button">
             <span class="text-danger">

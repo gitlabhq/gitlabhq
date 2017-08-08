@@ -175,6 +175,7 @@
         this.noteType = type;
       },
       editCurrentUserLastNote() {
+        console.log('editCurrentUserLastNote')
         if (this.note === '') {
           const lastNote = this.getCurrentUserLastNote(window.gon.current_user_id);
 
@@ -228,9 +229,8 @@
                 :quick-actions-docs="quickActionsDocsUrl"
                 :add-spacing-classes="false">
                 <textarea
-                  id="note-body"
                   name="note[note]"
-                  class="note-textarea js-gfm-input js-autosize markdown-area"
+                  class="note-textarea js-vue-comment-form js-gfm-input js-autosize markdown-area"
                   data-supports-quick-actions="true"
                   aria-label="Description"
                   v-model="note"

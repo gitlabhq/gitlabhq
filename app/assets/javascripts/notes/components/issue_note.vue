@@ -60,10 +60,9 @@
       },
       deleteHandler() {
         // eslint-disable-next-line no-alert
-        const isConfirmed = confirm('Are you sure you want to delete this list?');
-
-        if (isConfirmed) {
+        if (confirm('Are you sure you want to delete this list?')) {
           this.isDeleting = true;
+
           this.deleteNote(this.note)
             .then(() => {
               this.isDeleting = false;
@@ -149,8 +148,8 @@
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"
-            :edit-handler="editHandler"
-            :delete-handler="deleteHandler"
+            @editHandler="editHandler"
+            @deleteHandler="deleteHandler"
             />
         </div>
         <issue-note-body

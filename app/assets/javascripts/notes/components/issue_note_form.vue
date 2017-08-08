@@ -118,8 +118,7 @@
     </div>
     <div class="flash-container timeline-content"></div>
     <form
-      class="edit-note common-note-form"
-      @submit="handleUpdate">
+      class="edit-note common-note-form">
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
         :markdown-docs="markdownDocsUrl"
@@ -128,7 +127,7 @@
         <textarea
           id="note-body"
           name="note[note]"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
+          class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"
           v-model="note"
@@ -143,8 +142,9 @@
       <div class="note-form-actions clearfix">
         <button
           type="submit"
+          @click="handleUpdate"
           :disabled="isDisabled"
-          class="btn btn-nr btn-save">
+          class="js-vue-issue-save btn btn-save">
           {{saveButtonTitle}}
         </button>
         <button

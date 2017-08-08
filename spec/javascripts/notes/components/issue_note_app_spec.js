@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import issueNotesApp from '~/notes/components/issue_notes_app.vue';
+import service from '~/notes/services/issue_notes_service';
+import { keyboardDownEvent } from '../../issue_show/helpers';
 import * as mockData from '../mock_data';
 
-fdescribe('issue_note_app', () => {
+describe('issue_note_app', () => {
   let mountComponent;
 
   beforeEach(() => {
@@ -52,7 +54,7 @@ fdescribe('issue_note_app', () => {
     });
   });
 
-  fdescribe('render', () => {
+  describe('render', () => {
     let vm;
 
     const responseInterceptor = (request, next) => {
@@ -73,8 +75,18 @@ fdescribe('issue_note_app', () => {
     afterEach(() => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, responseInterceptor);
     });
-    it('should render list of notes', () => {
-      console.log(vm);
+
+    it('should render list of notes', (done) => {
+      const note = mockData.discussionResponse[0].notes[0];
+
+      setTimeout(() => {
+        expect(
+          vm.$el.querySelector('.main-notes-list .note-header-author-name').textContent.trim(),
+        ).toEqual(note.author.name);
+
+        expect(vm.$el.querySelector('.main-notes-list .note-text').innerHTML).toEqual(note.note_html);
+        done();
+      }, 0);
     });
 
     it('should render form', () => {
@@ -109,28 +121,43 @@ fdescribe('issue_note_app', () => {
 
   describe('update note', () => {
     describe('individual note', () => {
-      describe('shortup up key', () => {
-        it('shows correct editing form when user clicks up', () => {
+      let vm;
+
+      const responseInterceptor = (request, next) => {
+        next(request.respondWith(JSON.stringify(mockData.discussionResponse), {
+          status: 200,
+        }));
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(responseInterceptor);
+
+        vm = mountComponent({
+          issueData: mockData.issueDataMock,
+          notesData: mockData.notesDataMock,
+          userData: mockData.userDataMock,
         });
+
       });
 
-      describe('dropdown', () => {
-        it('renders edit form', () => {
-        });
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, responseInterceptor);
+      });
+
+      it('renders edit form', () => {
+        setTimeout(() => {
+          vm.$el.querySelector('.js-note-edit').click();
+          Vue.nextTick(() => {
+            expect(vm.$el.querySelector('.js-vue-issue-note-form')).toBeDefined();
+          });
+        }, 0);
       });
 
       it('updates the note and resets the edit form', () => {});
     });
 
     describe('dicussion note note', () => {
-      describe('shortup up key', () => {
-        it('shows correct editing form when user clicks up', () => {
-        });
-      });
-
-      describe('dropdown', () => {
-        it('renders edit form', () => {
-        });
+      it('renders edit form', () => {
       });
 
       it('updates the note and resets the edit form', () => {});
