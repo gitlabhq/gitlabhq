@@ -75,6 +75,7 @@ import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
+import UserFeatureHelper from './helpers/user_feature_helper';
 
 (function() {
   var Dispatcher;
@@ -92,6 +93,7 @@ import GpgBadges from './gpg_badges';
       if (!page) {
         return false;
       }
+
       path = page.split(':');
       shortcut_handler = null;
 
@@ -338,12 +340,9 @@ import GpgBadges from './gpg_badges';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          if ($('#tree-slider').length) {
-            new TreeView();
-          }
-          if ($('.blob-viewer').length) {
-            new BlobViewer();
-          }
+
+          if ($('#tree-slider').length) new TreeView();
+          if ($('.blob-viewer').length) new BlobViewer();
           break;
         case 'projects:edit':
           setupProjectEdit();
@@ -407,6 +406,9 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
+
+          if (UserFeatureHelper.isNewRepo()) break;
+
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
@@ -425,6 +427,7 @@ import GpgBadges from './gpg_badges';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
+          if (UserFeatureHelper.isNewRepo()) break;
           new BlobViewer();
           initBlob();
           break;

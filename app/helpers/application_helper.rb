@@ -309,4 +309,8 @@ module ApplicationHelper
   def collapsed_sidebar?
     cookies["sidebar_collapsed"] == "true"
   end
+
+  def show_new_repo?
+    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
+  end
 end

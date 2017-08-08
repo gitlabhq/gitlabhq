@@ -88,6 +88,7 @@ $indigo-950: #1a1a40;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
@@ -617,6 +618,13 @@ Convdev Index
 $color-high-score: $green-400;
 $color-average-score: $orange-400;
 $color-low-score: $red-400;
+
+/*
+Repo editor
+*/
+$repo-editor-grey: #f6f7f9;
+$repo-editor-grey-darker: #e9ebee;
+$repo-editor-linear-gradient: linear-gradient(to right, $repo-editor-grey 0%, $repo-editor-grey-darker, 20%, $repo-editor-grey 40%, $repo-editor-grey 100%);
 
 /*
 Performance Bar

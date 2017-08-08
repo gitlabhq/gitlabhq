@@ -35,6 +35,26 @@ describe Projects::BlobController do
       end
     end
 
+    context 'with file path and JSON format' do
+      context "valid branch, valid file" do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'raw_path'
+        end
+      end
+    end
+
     context 'with tree path' do
       before do
         get(:show,

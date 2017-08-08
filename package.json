@@ -12,6 +12,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.2.1",
     "babel-loader": "^7.1.1",
@@ -20,6 +21,7 @@
     "babel-preset-stage-2": "^6.22.0",
     "bootstrap-sass": "^3.3.6",
     "compression-webpack-plugin": "^0.3.2",
+    "copy-webpack-plugin": "^4.0.1",
     "core-js": "^2.4.1",
     "cropper": "^2.3.0",
     "css-loader": "^0.28.0",
@@ -31,6 +33,7 @@
     "eslint-plugin-html": "^2.0.1",
     "exports-loader": "^0.6.4",
     "file-loader": "^0.11.1",
+    "imports-loader": "^0.7.1",
     "jed": "^1.1.1",
     "jquery": "^2.2.1",
     "jquery-ujs": "^1.2.1",
@@ -38,6 +41,7 @@
     "jszip": "^3.1.3",
     "jszip-utils": "^0.0.2",
     "marked": "^0.3.6",
+    "monaco-editor": "0.8.3",
     "mousetrap": "^1.4.6",
     "name-all-modules-plugin": "^1.0.1",
     "pikaday": "^1.5.1",
