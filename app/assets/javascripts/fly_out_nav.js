@@ -49,7 +49,8 @@ export const hideSubLevelItems = (el) => {
 
   el.classList.remove('is-showing-fly-out');
   el.classList.remove('is-over');
-  subItems.style.display = 'none';
+  subItems.style.display = '';
+  subItems.style.transform = '';
   subItems.classList.remove('is-above');
 };
 
