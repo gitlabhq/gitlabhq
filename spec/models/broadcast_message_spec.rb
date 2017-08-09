@@ -20,7 +20,7 @@ describe BroadcastMessage do
     it { is_expected.not_to allow_value('000').for(:font) }
   end
 
-  describe '.current' do
+  describe '.current', :use_clean_rails_memory_store_caching do
     it 'returns message if time match' do
       message = create(:broadcast_message)
 
@@ -44,6 +44,14 @@ describe BroadcastMessage do
       create(:broadcast_message, :expired)
 
       expect(described_class.current).to be_empty
+    end
+
+    it 'caches the output of the query' do
+      create(:broadcast_message)
+
+      expect(described_class).to receive(:where).and_call_original.once
+
+      2.times { described_class.current }
     end
   end
 
@@ -100,6 +108,16 @@ describe BroadcastMessage do
       travel_to(3.days.ago) do
         expect(message).not_to be_ended
       end
+    end
+  end
+
+  describe '#flush_redis_cache' do
+    it 'flushes the Redis cache' do
+      message = create(:broadcast_message)
+
+      expect(Rails.cache).to receive(:delete).with(described_class::CACHE_KEY)
+
+      message.flush_redis_cache
     end
   end
 end
