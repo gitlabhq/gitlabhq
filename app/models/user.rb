@@ -825,7 +825,7 @@ class User < ActiveRecord::Base
     {
       name: name,
       username: username,
-      avatar_url: avatar_url
+      avatar_url: avatar_url(only_path: false)
     }
   end
 
