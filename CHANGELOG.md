@@ -508,6 +508,11 @@ entry.
 - Remove foreigh key on ci_trigger_schedules only if it exists.
 - Allow translation of Pipeline Schedules.
 
+## 9.2.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.2.9 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
