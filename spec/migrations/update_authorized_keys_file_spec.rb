@@ -2,6 +2,10 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170626202753_update_authorized_keys_file.rb')
 
 describe UpdateAuthorizedKeysFile, :migration do
+  class ApplicationSetting < ActiveRecord::Base
+    self.table_name = 'application_settings'
+  end
+
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -11,7 +15,7 @@ describe UpdateAuthorizedKeysFile, :migration do
         ActiveRecord::Base.connection.change_column_null :application_settings, :authorized_keys_enabled, true
         ActiveRecord::Base.connection.change_column :application_settings, :authorized_keys_enabled, :boolean, default: nil
 
-        ApplicationSetting.create!(authorized_keys_enabled: nil, mirror_max_delay: 300)
+        ApplicationSetting.create!(authorized_keys_enabled: nil)
       end
 
       it 'sets authorized_keys_enabled to true' do
@@ -83,11 +87,11 @@ describe UpdateAuthorizedKeysFile, :migration do
       end
 
       context 'when is a record in application_settings table' do
-        before do
-          ApplicationSetting.create!(authorized_keys_enabled: true, mirror_max_delay: 300)
-        end
-
         context 'when authorized_keys_enabled is true' do
+          before do
+            ApplicationSetting.create!(authorized_keys_enabled: true)
+          end
+
           it { is_expected.to be_truthy }
         end
 
@@ -97,7 +101,7 @@ describe UpdateAuthorizedKeysFile, :migration do
             ActiveRecord::Base.connection.change_column_null :application_settings, :authorized_keys_enabled, true
             ActiveRecord::Base.connection.change_column :application_settings, :authorized_keys_enabled, :boolean, default: nil
 
-            ApplicationSetting.first.update(authorized_keys_enabled: nil, mirror_max_delay: 300)
+            ApplicationSetting.create!(authorized_keys_enabled: nil)
           end
 
           it { is_expected.to be_truthy }
@@ -105,7 +109,7 @@ describe UpdateAuthorizedKeysFile, :migration do
 
         context 'when authorized_keys_enabled is explicitly false' do
           before do
-            ApplicationSetting.first.update!(authorized_keys_enabled: false, mirror_max_delay: 300)
+            ApplicationSetting.create!(authorized_keys_enabled: false)
           end
 
           it { is_expected.to be_falsey }
