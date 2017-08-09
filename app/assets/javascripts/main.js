@@ -7,7 +7,6 @@
 import jQuery from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
@@ -20,7 +19,6 @@ import 'vendor/fuzzaldrin-plus';
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
