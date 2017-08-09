@@ -318,6 +318,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show user cohorts data when usage ping is enabled.
 - Visualise Canary Deployments.
 
+## 9.0.13 (2017-08-09)
+
+- No changes.
+
 ## 9.0.12 (2017-07-20)
 
 - No changes.
