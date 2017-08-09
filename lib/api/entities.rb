@@ -69,7 +69,6 @@ module API
       expose :job_events
     end
 
-<<<<<<< HEAD
     class ProjectPushRule < Grape::Entity
       expose :id, :project_id, :created_at
       expose :commit_message_regex, :branch_name_regex, :deny_delete_tag
@@ -77,15 +76,6 @@ module API
       expose :file_name_regex, :max_file_size
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id
-      expose :http_url_to_repo, :web_url
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
-    end
-
-=======
->>>>>>> upstream/master
     class SharedGroup < Grape::Entity
       expose :group_id
       expose :group_name do |group_link, options|
@@ -103,7 +93,7 @@ module API
       expose :created_at, :last_activity_at
     end
 
-    class Project < BasicProjectDetails 
+    class Project < BasicProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose :_links do
