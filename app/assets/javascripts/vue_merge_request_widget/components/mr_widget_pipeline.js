@@ -72,7 +72,6 @@ export default {
             </span>
             <span class="mr-widget-pipeline-graph">
               <span class="stage-cell">
-<<<<<<< HEAD
                 <linked-pipelines-mini-list
                   v-if="triggeredBy.length"
                   :triggered-by="triggeredBy"
@@ -92,14 +91,6 @@ export default {
                   v-if="triggered.length"
                   :triggered="triggered"
                   />
-=======
-                <div
-                  v-if="mr.pipeline.details.stages.length > 0"
-                  v-for="stage in mr.pipeline.details.stages"
-                  class="stage-container dropdown js-mini-pipeline-graph">
-                  <pipeline-stage :stage="stage" />
-                </div>
->>>>>>> upstream/master
               </span>
             </span>
             <span>

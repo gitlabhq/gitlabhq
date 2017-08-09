@@ -500,20 +500,7 @@ $status-icon-margin: $gl-btn-padding;
   align-items: center;
   background-color: $gray-light;
   border-radius: $border-radius-default $border-radius-default 0 0;
-<<<<<<< HEAD
-  padding: $gl-padding-top $gl-padding;
-
-  .pull-right {
-    margin-top: -2px;
-  }
-
-  .btn-clipboard {
-    margin-left: 0;
-    padding-left: 0;
-  }
-=======
   padding: $gl-padding / 2 $gl-padding;
->>>>>>> upstream/master
 
   .dropdown-toggle .fa {
     color: $gl-text-color;
