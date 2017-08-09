@@ -185,7 +185,7 @@ $new-sidebar-collapsed-width: 50px;
 
   > li {
     a {
-      padding: 8px 16px 8px 50px;
+      padding: 8px 16px 8px 40px;
 
       &:hover,
       &:focus {
@@ -304,6 +304,7 @@ $new-sidebar-collapsed-width: 50px;
 
       > a {
         margin-left: 4px;
+        padding-left: 12px;
       }
 
       .badge {
