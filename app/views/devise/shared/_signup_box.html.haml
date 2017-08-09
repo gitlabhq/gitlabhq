@@ -22,6 +22,7 @@
         = f.label :password
         = f.password_field :password, class: "form-control bottom", required: true, pattern: ".{#{@minimum_password_length},}", title: "Minimum length is #{@minimum_password_length} characters."
         %p.gl-field-hint Minimum length is #{@minimum_password_length} characters
+      = render 'devise/shared/ee/email_opted_in', f: f
       %div
       - if Gitlab::Recaptcha.enabled?
         = recaptcha_tags
