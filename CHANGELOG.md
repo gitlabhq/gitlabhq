@@ -763,6 +763,11 @@ entry.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
 
+## 9.1.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.1.9 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
