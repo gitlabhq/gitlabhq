@@ -12,7 +12,7 @@ const RepoCommitSection = {
 
   computed: {
     branchPaths() {
-      const branch = Helper.getBranch();
+      const branch = this.currentBranch;
       return this.changedFiles.map(f => Helper.getFilePathFromFullPath(f.url, branch));
     },
 

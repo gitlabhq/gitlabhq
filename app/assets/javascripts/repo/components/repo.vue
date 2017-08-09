@@ -46,17 +46,19 @@ export default {
 <div class="repository-view tree-content-holder">
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
-    <component :is="currentBlobView" class="blob-viewer-container"/>
+    <component
+      :is="currentBlobView"
+      class="blob-viewer-container"/>
     <repo-file-buttons/>
   </div>
   <repo-commit-section/>
   <popup-dialog
+    v-show="dialog.open"
     :primary-button-label="__('Discard changes')"
-    :open="dialog.open"
     kind="warning"
     :title="__('Are you sure?')"
     :body="__('Are you sure you want to discard your changes?')"
-    @toggle="dialogToggled"
+    @toggle="toggleDialogOpen"
     @submit="dialogSubmitted"
   />
 </div>

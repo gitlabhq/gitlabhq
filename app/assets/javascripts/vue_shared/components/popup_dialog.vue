@@ -3,7 +3,6 @@ const PopupDialog = {
   name: 'popup-dialog',
 
   props: {
-    open: Boolean,
     title: String,
     body: String,
     kind: {
@@ -47,7 +46,7 @@ const PopupDialog = {
 export default PopupDialog;
 </script>
 <template>
-<div class="modal popup-dialog" tabindex="-1" v-show="open" role="dialog">
+<div class="modal popup-dialog" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
