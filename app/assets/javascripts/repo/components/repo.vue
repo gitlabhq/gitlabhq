@@ -33,7 +33,7 @@ export default {
     },
 
     dialogSubmitted(status) {
-      this.dialog.open = false;
+      this.toggleDialogOpen(false);
       this.dialog.status = status;
     },
 
