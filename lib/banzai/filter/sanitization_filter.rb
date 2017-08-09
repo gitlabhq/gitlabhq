@@ -43,6 +43,9 @@ module Banzai
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
 
+        # Disallow `name` attribute globally
+        whitelist[:attributes][:all].delete('name')
+
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
 
