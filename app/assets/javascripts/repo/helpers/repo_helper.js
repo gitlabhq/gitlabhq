@@ -296,7 +296,7 @@ const RepoHelper = {
   },
 
   loadingError() {
-    Flash('Unable to load the file at this time.');
+    Flash('Unable to load this content at this time.');
   },
 };
 
