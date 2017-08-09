@@ -11,6 +11,11 @@ const RepoCommitSection = {
   mixins: [RepoMixin],
 
   computed: {
+
+    showCommitable() {
+      return isCommitable && changedFiles.length;
+    },
+
     branchPaths() {
       const branch = this.currentBranch;
       return this.changedFiles.map(f => f.path);
@@ -49,7 +54,7 @@ const RepoCommitSection = {
     resetCommitState() {
       this.submitCommitsLoading = false;
       this.changedFiles = [];
-      this.openedFiles = [];
+      // this.openedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
       window.scrollTo(0,0);
@@ -61,7 +66,7 @@ export default RepoCommitSection;
 </script>
 
 <template>
-<div id="commit-area" v-if="isCommitable && changedFiles.length" >
+<div id="commit-area" v-if="showCommitable">
   <form class="form-horizontal">
     <fieldset>
       <div class="form-group">
