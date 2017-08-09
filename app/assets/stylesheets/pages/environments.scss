@@ -255,16 +255,29 @@
   }
 }
 
-.deploy-board-icon i {
-  cursor: pointer;
-  color: $layout-link-gray;
-  padding-right: 10px;
+.deploy-board-icon {
+  display: none;
+
+  @media (min-width: $screen-md-min) {
+    float: left;
+    display: block;
+  }
+
+  i {
+    cursor: pointer;
+    color: $layout-link-gray;
+    padding-right: 10px;
+  }
 }
 
 .deploy-board {
   padding: 10px;
   background-color: $gray-light;
   min-height: 20px;
+
+  @media (max-width: $screen-sm-max) {
+    display: none;
+  }
 
   .fa-spinner {
     margin: 0 auto;
