@@ -118,7 +118,7 @@ class MergeRequest < ActiveRecord::Base
   scope :unassigned, -> { where("assignee_id IS NULL") }
   scope :assigned_to, ->(u) { where(assignee_id: u.id)}
 
-  participant :approvers_left
+  participant :participant_approvers
   participant :assignee
 
   after_save :keep_around_commit
@@ -206,6 +206,10 @@ class MergeRequest < ActiveRecord::Base
 
   def assignee_or_author?(user)
     author_id == user.id || assignee_id == user.id
+  end
+
+  def participant_approvers
+    requires_approve? ? approvers_left : []
   end
 
   # `from` argument can be a Namespace or Project.
