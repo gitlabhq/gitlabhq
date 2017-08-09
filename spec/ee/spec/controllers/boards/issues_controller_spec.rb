@@ -1,20 +1,22 @@
 require 'spec_helper'
 
 describe Boards::IssuesController do
-  let(:project) { create(:project) }
-  let(:board)   { create(:board, project: project) }
-  let(:user)    { create(:user) }
-  let(:guest)   { create(:user) }
+  let(:group) { create(:group) }
+  let(:project_1) { create(:project, namespace: group) }
+  let(:project_2) { create(:project, namespace: group) }
+  let(:board) { create(:board, group: group) }
+  let(:user)  { create(:user) }
+  let(:guest) { create(:user) }
 
-  let(:planning)    { create(:label, project: project, name: 'Planning') }
-  let(:development) { create(:label, project: project, name: 'Development') }
+  let(:planning)    { create(:group_label, group: group, name: 'Planning') }
+  let(:development) { create(:group_label, group: group, name: 'Development') }
 
   let!(:list1) { create(:list, board: board, label: planning, position: 0) }
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    project.team << [user, :master]
-    project.team << [guest, :guest]
+    group.add_master(user)
+    group.add_guest(guest)
   end
 
   describe 'GET index' do
@@ -31,11 +33,11 @@ describe Boards::IssuesController do
     context 'when list id is present' do
       context 'with valid list id' do
         it 'returns issues that have the list label applied' do
-          issue = create(:labeled_issue, project: project, labels: [planning])
-          create(:labeled_issue, project: project, labels: [planning])
-          create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
-          create(:labeled_issue, project: project, labels: [development], assignees: [johndoe])
-          issue.subscribe(johndoe, project)
+          issue = create(:labeled_issue, project: project_1, labels: [planning])
+          create(:labeled_issue, project: project_1, labels: [planning])
+          create(:labeled_issue, project: project_2, labels: [development], due_date: Date.tomorrow)
+          create(:labeled_issue, project: project_2, labels: [development], assignees: [johndoe])
+          issue.subscribe(johndoe, project_1)
 
           list_issues user: user, board: board, list: list2
 
@@ -58,11 +60,11 @@ describe Boards::IssuesController do
 
     context 'when list id is missing' do
       it 'returns opened issues without board labels applied' do
-        bug = create(:label, project: project, name: 'Bug')
-        create(:issue, project: project)
-        create(:labeled_issue, project: project, labels: [planning])
-        create(:labeled_issue, project: project, labels: [development])
-        create(:labeled_issue, project: project, labels: [bug])
+        bug = create(:label, project: project_1, name: 'Bug')
+        create(:issue, project: project_1)
+        create(:labeled_issue, project: project_2, labels: [planning])
+        create(:labeled_issue, project: project_2, labels: [development])
+        create(:labeled_issue, project: project_2, labels: [bug])
 
         list_issues user: user, board: board
 
@@ -75,8 +77,7 @@ describe Boards::IssuesController do
 
     context 'with unauthorized user' do
       before do
-        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
+        allow(Ability).to receive(:allowed?).with(user, :read_group, group).and_return(false)
       end
 
       it 'returns a forbidden 403 response' do
@@ -90,8 +91,6 @@ describe Boards::IssuesController do
       sign_in(user)
 
       params = {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
         board_id: board.to_param,
         list_id: list.try(:to_param)
       }
@@ -162,7 +161,7 @@ describe Boards::IssuesController do
     def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
-      post :create, project_id: project,
+      post :create, project_id: project_1.id,
                     board_id: board.to_param,
                     list_id: list.to_param,
                     issue: { title: title },
@@ -171,7 +170,7 @@ describe Boards::IssuesController do
   end
 
   describe 'PATCH update' do
-    let(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
+    let!(:issue) { create(:labeled_issue, project: project_1, labels: [planning]) }
 
     context 'with valid params' do
       it 'returns a successful 200 response' do
@@ -201,7 +200,7 @@ describe Boards::IssuesController do
       end
 
       it 'returns a not found 404 response for invalid issue id' do
-        move user: user, board: board, issue: 999, from_list_id: list1.id, to_list_id: list2.id
+        move user: user, board: board, issue: double(id: 999), from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(404)
       end
@@ -211,7 +210,7 @@ describe Boards::IssuesController do
       let(:guest) { create(:user) }
 
       before do
-        project.team << [guest, :guest]
+        group.add_guest(guest)
       end
 
       it 'returns a forbidden 403 response' do
@@ -224,10 +223,8 @@ describe Boards::IssuesController do
     def move(user:, board:, issue:, from_list_id:, to_list_id:)
       sign_in(user)
 
-      patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project,
-                     board_id: board.to_param,
-                     id: issue.to_param,
+      patch :update, board_id: board.to_param,
+                     id: issue.id,
                      from_list_id: from_list_id,
                      to_list_id: to_list_id,
                      format: :json

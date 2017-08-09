@@ -10,7 +10,7 @@ module EE
       end
 
       def project
-        @project ||= board.is_group_board? ? board.parent : super
+        @project ||= board.is_group_board? ? super : board.parent
       end
     end
   end
