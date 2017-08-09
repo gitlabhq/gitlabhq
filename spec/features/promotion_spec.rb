@@ -212,7 +212,7 @@ describe 'Promotions', js: true do
     end
   end
 
-  describe 'for audit events', js: true do
+  describe 'for project audit events', js: true do
     let!(:license) { nil }
     
     before do
@@ -221,8 +221,25 @@ describe 'Promotions', js: true do
 
     it 'should appear on the page' do
       visit project_audit_events_path(project)
-      expect(find('.issues-export-modal')).to have_content 'Track your project with Audit Events'
-      expect(find('.issues-export-modal')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
+      expect(find('.user-callout-copy')).to have_content 'Track your project with Audit Events'
+      expect(find('.user-callout-copy')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
     end
-  end  
+  end
+
+  describe 'for group contribution analytics', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+    end
+
+    it 'should appear on the page' do
+      visit group_analytics_path(project)
+      expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution analytics and GitLab Enterprise Edition.'
+      expect(find('.user-callout-copy')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
+    end
+  end
+
+
+
 end

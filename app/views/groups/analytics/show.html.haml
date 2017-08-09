@@ -1,130 +1,134 @@
 - page_title "Contribution Analytics"
 - header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('graphs')
 
-.sub-header-block
-  .pull-right
-    .dropdown.inline
-      %button.dropdown-toggle.btn{ type: 'button', 'data-toggle' => 'dropdown' }
-        = icon('calendar-o')
-        %b.caret
-      %ul.dropdown-menu.dropdown-menu-align-right
+- if @group.feature_available?(:contribution_analytics)
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_bundle_tag('common_d3')
+    = page_specific_javascript_bundle_tag('graphs')
+
+  .sub-header-block
+    .pull-right
+      .dropdown.inline
+        %button.dropdown-toggle.btn{ type: 'button', 'data-toggle' => 'dropdown' }
+          = icon('calendar-o')
+          %b.caret
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            = link_to group_analytics_path(@group, start_date: Date.today - 1.week) do
+              Last week
+          %li
+            = link_to group_analytics_path(@group, start_date: Date.today - 1.month) do
+              Last month
+          %li
+            = link_to group_analytics_path(@group, start_date: Date.today - 3.months) do
+              Last 3 months
+    .oneline
+      Contribution analytics for issues, merge requests and push events since #{@start_date}
+
+  %h3 Push
+
+  .row
+    .col-md-4
+      %ul
         %li
-          = link_to group_analytics_path(@group, start_date: Date.today - 1.week) do
-            Last week
+          = @events.code_push.count
+          times
         %li
-          = link_to group_analytics_path(@group, start_date: Date.today - 1.month) do
-            Last month
+          more than
+          = @events.code_push.map(&:commits_count).sum
+          commits
         %li
-          = link_to group_analytics_path(@group, start_date: Date.today - 3.months) do
-            Last 3 months
-  .oneline
-    Contribution analytics for issues, merge requests and push events since #{@start_date}
+          by
+          = pluralize @events.code_push.pluck(:author_id).uniq.count, 'person'
 
-%h3 Push
+    .col-md-8
+      %div
+        %p.light Push events per group member
+        %canvas#push{ height: 250 }
 
-.row
-  .col-md-4
-    %ul
-      %li
-        = @events.code_push.count
-        times
-      %li
-        more than
-        = @events.code_push.map(&:commits_count).sum
-        commits
-      %li
-        by
-        = pluralize @events.code_push.pluck(:author_id).uniq.count, 'person'
+  %h3 Merge Requests
 
-  .col-md-8
-    %div
-      %p.light Push events per group member
-      %canvas#push{ height: 250 }
+  .row
+    .col-md-4
+      %ul
+        %li
+          = @events.merge_requests.created.count
+          created
+        %li
+          = @events.merge_requests.merged.count
+          accepted
 
-%h3 Merge Requests
+    .col-md-8
+      %div
+        %p.light Merge requests created per group member
+        %canvas#merge_requests_created{ height: 250 }
 
-.row
-  .col-md-4
-    %ul
-      %li
-        = @events.merge_requests.created.count
-        created
-      %li
-        = @events.merge_requests.merged.count
-        accepted
+  %h3 Issues
 
-  .col-md-8
-    %div
-      %p.light Merge requests created per group member
-      %canvas#merge_requests_created{ height: 250 }
+  .row
+    .col-md-4
+      %ul
+        %li
+          = @events.issues.created.count
+          created
+        %li
+          = @events.issues.closed.pluck(:target_id).uniq.count
+          closed
 
-%h3 Issues
+    .col-md-8
+      %div
+        %p.light Issues closed per group member
+        %canvas#issues_closed{ height: 250 }
 
-.row
-  .col-md-4
-    %ul
-      %li
-        = @events.issues.created.count
-        created
-      %li
-        = @events.issues.closed.pluck(:target_id).uniq.count
-        closed
+  .gray-content-block
+    .oneline
+      Contributions per group member
 
-  .col-md-8
-    %div
-      %p.light Issues closed per group member
-      %canvas#issues_closed{ height: 250 }
-
-.gray-content-block
-  .oneline
-    Contributions per group member
-
-.table-holder
-  %table.table.sortable-table#event-stats
-    %thead
-      %tr
-        %th.sortable
-          Name
-          = icon('sort')
-        %th.sortable
-          Pushed
-          = icon('sort')
-        %th.sortable
-          Opened issues
-          = icon('sort')
-        %th.sortable
-          Closed issues
-          = icon('sort')
-        %th.sortable
-          Opened MR
-          = icon('sort')
-        %th.sortable
-          Accepted MR
-          = icon('sort')
-        %th.sortable
-          Total Contributions
-          = icon('sort')
-    %tbody
-      - @users.each_with_index do |user, index|
+  .table-holder
+    %table.table.sortable-table#event-stats
+      %thead
         %tr
-          %td
-            %strong
-              = link_to user.name, user
-          %td= @stats[:push][index]
-          %td= @stats[:issues_created][index]
-          %td= @stats[:issues_closed][index]
-          %td= @stats[:merge_requests_created][index]
-          %td= @stats[:merge_requests_merged][index]
-          %td= @stats[:total_events][index]
+          %th.sortable
+            Name
+            = icon('sort')
+          %th.sortable
+            Pushed
+            = icon('sort')
+          %th.sortable
+            Opened issues
+            = icon('sort')
+          %th.sortable
+            Closed issues
+            = icon('sort')
+          %th.sortable
+            Opened MR
+            = icon('sort')
+          %th.sortable
+            Accepted MR
+            = icon('sort')
+          %th.sortable
+            Total Contributions
+            = icon('sort')
+      %tbody
+        - @users.each_with_index do |user, index|
+          %tr
+            %td
+              %strong
+                = link_to user.name, user
+            %td= @stats[:push][index]
+            %td= @stats[:issues_created][index]
+            %td= @stats[:issues_closed][index]
+            %td= @stats[:merge_requests_created][index]
+            %td= @stats[:merge_requests_merged][index]
+            %td= @stats[:total_events][index]
 
 
-%script#js-analytics-data{ type: "application/json" }
-  - data = {}
-  - data[:labels] = @users.map(&:name)
-  - [:push, :issues_closed, :merge_requests_created].each do |scope|
-    - data[scope] = {}
-    - data[scope][:data] = @stats[scope]
-  = data.to_json.html_safe
+  %script#js-analytics-data{ type: "application/json" }
+    - data = {}
+    - data[:labels] = @users.map(&:name)
+    - [:push, :issues_closed, :merge_requests_created].each do |scope|
+      - data[scope] = {}
+      - data[scope][:data] = @stats[scope]
+    = data.to_json.html_safe
+- else
+  = render 'shared/promotions/promote_contribution_analytics'

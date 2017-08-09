@@ -6,15 +6,7 @@ describe 'layouts/nav/_group' do
   end
 
   describe 'contribution analytics tab' do
-    it 'is not visible when there is no valid license' do
-      stub_licensed_features(contribution_analytics: false)
-
-      render
-
-      expect(rendered).not_to have_text 'Contribution Analytics'
-    end
-
-    it 'is not visible when there is no valid license' do
+    it 'is visible' do
       stub_licensed_features(contribution_analytics: true)
 
       render
