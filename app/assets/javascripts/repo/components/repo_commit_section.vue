@@ -52,7 +52,7 @@ const RepoCommitSection = {
       this.openedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
-      $('html, body').animate({ scrollTop: 0 }, 'fast');
+      window.scrollTo(0,0);
     },
   },
 };
