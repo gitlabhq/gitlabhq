@@ -76,6 +76,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixed edit issue boards milestone action buttons not sticking to bottom of dropdown.
 - Respect the external user setting in Elasticsearch.
 
+## 9.3.10 (2017-08-09)
+
+- No changes.
+
 ## 9.3.9 (2017-07-20)
 
 - No changes.
