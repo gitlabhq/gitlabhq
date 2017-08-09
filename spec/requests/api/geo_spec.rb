@@ -49,6 +49,42 @@ describe API::Geo do
     end
   end
 
+  describe 'POST /geo/receive_events when node has namespace restrictions' do
+    let(:synced_group) { create(:group) }
+    let(:secondary_node) { create(:geo_node, namespaces: [synced_group]) }
+
+    let(:push_payload) do
+      {
+        'event_name' => 'push',
+        'project' => {
+          'git_ssh_url' => 'git@example.com:mike/diaspora.git'
+        }
+      }
+    end
+
+    before(:each) do
+      allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
+      allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute)
+      allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute)
+    end
+
+    it 'responds with not found for projects that do not belong to selected namespaces to replicate' do
+      unsynced_project = create(:project)
+
+      post api('/geo/receive_events'), push_payload.merge('project_id' => unsynced_project.id), geo_token_header
+
+      expect(response).to have_http_status(404)
+    end
+
+    it 'responds with success for projects that belong to selected namespaces to replicate' do
+      project_in_synced_group =  create(:project, group: synced_group)
+
+      post api('/geo/receive_events'), push_payload.merge('project_id' => project_in_synced_group.id), geo_token_header
+
+      expect(response).to have_http_status(201)
+    end
+  end
+
   describe 'POST /geo/receive_events key events' do
     before do
       allow_any_instance_of(::Geo::ScheduleKeyChangeService).to receive(:execute)
