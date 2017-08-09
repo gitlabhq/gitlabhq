@@ -52,16 +52,20 @@ module DropdownsHelper
     end
   end
 
+<<<<<<< HEAD
   def dropdown_toggle_link(toggle_text, data_attr, options = {})
     output = content_tag(:a, toggle_text, class: "dropdown-toggle-text #{options[:toggle_class] if options.key?(:toggle_class)}", id: (options[:id] if options.key?(:id)), data: data_attr)
     output.html_safe
   end
 
   def dropdown_title(title, back: false)
+=======
+  def dropdown_title(title, options: {})
+>>>>>>> upstream/master
     content_tag :div, class: "dropdown-title" do
       title_output = ""
 
-      if back
+      if options.fetch(:back, false)
         title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back", aria: { label: "Go back" }, type: "button") do
           icon('arrow-left')
         end
@@ -69,11 +73,22 @@ module DropdownsHelper
 
       title_output << content_tag(:span, title)
 
-      title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
-        icon('times', class: 'dropdown-menu-close-icon')
+      if options.fetch(:close, true)
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close", aria: { label: "Close" }, type: "button") do
+          icon('times', class: 'dropdown-menu-close-icon')
+        end
       end
 
       title_output.html_safe
+    end
+  end
+
+  def dropdown_input(placeholder, input_id: nil)
+    content_tag :div, class: "dropdown-input" do
+      filter_output = text_field_tag input_id, nil, class: "dropdown-input-field dropdown-no-filter", placeholder: placeholder, autocomplete: 'off'
+      filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
+
+      filter_output.html_safe
     end
   end
 

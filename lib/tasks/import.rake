@@ -7,7 +7,7 @@ class GithubImport
   end
 
   def initialize(token, gitlab_username, project_path, extras)
-    @options = { url: 'https://api.github.com', token: token, verbose: true }
+    @options = { token: token, verbose: true }
     @project_path = project_path
     @current_user = User.find_by_username(gitlab_username)
     @github_repo = extras.empty? ? nil : extras.first
@@ -62,6 +62,7 @@ class GithubImport
         visibility_level: visibility_level,
         import_type: 'github',
         import_source: @repo['full_name'],
+        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@"),
         skip_wiki: @repo['has_wiki']
       ).execute
     end

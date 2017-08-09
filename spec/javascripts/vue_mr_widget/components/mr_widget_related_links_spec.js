@@ -22,15 +22,16 @@ describe('MRWidgetRelatedLinks', () => {
   });
 
   describe('computed', () => {
+    const data = {
+      relatedLinks: {
+        closing: '/foo',
+        mentioned: '/foo',
+        assignToMe: '/foo',
+      },
+    };
+
     describe('hasLinks', () => {
       it('should return correct value when we have links reference', () => {
-        const data = {
-          relatedLinks: {
-            closing: '/foo',
-            mentioned: '/foo',
-            assignToMe: '/foo',
-          },
-        };
         const vm = createComponent(data);
         expect(vm.hasLinks).toBeTruthy();
 
@@ -44,6 +45,7 @@ describe('MRWidgetRelatedLinks', () => {
         expect(vm.hasLinks).toBeFalsy();
       });
     });
+<<<<<<< HEAD
   });
 
   describe('methods', () => {
@@ -66,6 +68,26 @@ describe('MRWidgetRelatedLinks', () => {
 
       it('returns correct tense for merged request', () => {
         expect(vm.closesText('merged')).toEqual('Closed');
+=======
+
+    describe('closesText', () => {
+      it('returns correct text for open merge request', () => {
+        data.state = 'open';
+        const vm = createComponent(data);
+        expect(vm.closesText).toEqual('Closes');
+      });
+
+      it('returns correct text for closed merge request', () => {
+        data.state = 'closed';
+        const vm = createComponent(data);
+        expect(vm.closesText).toEqual('Did not close');
+      });
+
+      it('returns correct tense for merged request', () => {
+        data.state = 'merged';
+        const vm = createComponent(data);
+        expect(vm.closesText).toEqual('Closed');
+>>>>>>> upstream/master
       });
     });
   });

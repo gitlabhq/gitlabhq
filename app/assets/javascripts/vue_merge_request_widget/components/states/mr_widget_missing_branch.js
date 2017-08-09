@@ -1,10 +1,17 @@
 import statusIcon from '../mr_widget_status_icon';
+<<<<<<< HEAD
+=======
+import tooltip from '../../../vue_shared/directives/tooltip';
+>>>>>>> upstream/master
 import mrWidgetMergeHelp from '../../components/mr_widget_merge_help';
 
 export default {
   name: 'MRWidgetMissingBranch',
   props: {
     mr: { type: Object, required: true },
+  },
+  directives: {
+    tooltip,
   },
   components: {
     'mr-widget-merge-help': mrWidgetMergeHelp,
@@ -28,8 +35,15 @@ export default {
           </span> branch does not exist.
           Please restore it or use a different {{missingBranchName}} branch
           <i
+<<<<<<< HEAD
             class="fa fa-question-circle has-tooltip"
             :title="message" />
+=======
+            v-tooltip
+            class="fa fa-question-circle"
+            :title="message"
+            :aria-label="message"></i>
+>>>>>>> upstream/master
         </span>
       </div>
     </div>

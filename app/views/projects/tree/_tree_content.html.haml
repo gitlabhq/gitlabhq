@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .tree-content-holder.js-tree-content{ 'data-logs-path': @logs_path, 'data-path-locks-available': (@project.feature_available?(:file_locks) ? 'true' : 'false'), 'data-path-locks-toggle': toggle_project_path_locks_path(@project), 'data-path-locks-path': @path }
   .table-holder
     %table.table#tree-slider{ class: "table_#{@hex_path} tree-table" }
@@ -22,3 +23,10 @@
 - if can_edit_tree?
   = render 'projects/blob/upload', title: _('Upload New File'), placeholder: _('Upload New File'), button_title: _('Upload file'), form_path: project_create_blob_path(@project, @id), method: :post
   = render 'projects/blob/new_dir'
+=======
+- content_url = local_assigns.fetch(:content_url, nil)
+- if show_new_repo?
+  = render 'shared/repo/repo', project: @project, content_url: content_url
+- else
+  = render 'projects/tree/old_tree_content', tree: tree
+>>>>>>> upstream/master

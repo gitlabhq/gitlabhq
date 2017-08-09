@@ -94,6 +94,7 @@
     "commit_change_content_path": { "type": "string" },
     "remove_wip_path": { "type": "string" },
     "commits_count": { "type": "integer" },
+<<<<<<< HEAD
     "merge_ongoing": { "type": "boolean" },
     "remove_source_branch": { "type": ["boolean", "null"] },
     // EE-specific
@@ -111,6 +112,10 @@
       "head_path": { "type": "string" },
       "base_path": { "type": "string" }
     }
+=======
+    "remove_source_branch": { "type": ["boolean", "null"] },
+    "merge_ongoing": { "type": "boolean" }
+>>>>>>> upstream/master
   },
   "additionalProperties": false
 }

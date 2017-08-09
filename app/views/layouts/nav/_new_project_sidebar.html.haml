@@ -1,4 +1,4 @@
-.nav-sidebar
+.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
   - can_edit = can?(current_user, :admin_project, @project)
   .context-header
     = link_to project_path(@project), title: @project.name do
@@ -6,9 +6,6 @@
         = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile')
       .project-title
         = @project.name
-    = button_tag class: 'close-nav-button', type: 'button' do
-      %span.sr-only Close sidebar
-      = icon ('times')
   %ul.sidebar-top-level-items
     = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
       = link_to project_path(@project), title: 'Project overview', class: 'shortcuts-project' do
@@ -219,7 +216,7 @@
         = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
           .nav-icon-container
             = custom_icon('members')
-          %span
+          %span.nav-item-name
             Members
 
     = render 'shared/sidebar_toggle_button'

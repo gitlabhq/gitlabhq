@@ -133,6 +133,20 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def commits_by_message(query, revision: '', path: '', limit: 1000, offset: 0)
+        request = Gitaly::CommitsByMessageRequest.new(
+          repository: @gitaly_repo,
+          query: query,
+          revision: revision.to_s.force_encoding(Encoding::ASCII_8BIT),
+          path: path.to_s.force_encoding(Encoding::ASCII_8BIT),
+          limit: limit.to_i,
+          offset: offset.to_i
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :commits_by_message, request)
+        consume_commits_response(response)
+      end
+
       def languages(ref = nil)
         request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: ref || '')
         response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request)

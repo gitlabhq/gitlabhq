@@ -47,11 +47,15 @@ describe MergeRequestEntity do
                                :cancel_merge_when_pipeline_succeeds_path,
                                :create_issue_to_resolve_discussions_path,
                                :source_branch_path, :target_branch_commits_path,
+<<<<<<< HEAD
                                :target_branch_tree_path, :commits_count, :merge_ongoing,
                                ## EE
                                :can_push_to_source_branch, :approvals_before_merge,
                                :squash, :rebase_commit_sha, :rebase_in_progress,
                                :approvals_path, :ff_only_enabled)
+=======
+                               :target_branch_tree_path, :commits_count, :merge_ongoing)
+>>>>>>> upstream/master
   end
 
   it 'has email_patches_path' do

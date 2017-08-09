@@ -1,5 +1,5 @@
 .form-group.import-url-data
-  = f.label :import_url, class: 'control-label' do
+  = f.label :import_url, class: 'label-light' do
     %span Git repository URL
 
   = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
@@ -14,6 +14,7 @@
         The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
       %li
         To migrate an SVN repository, check out #{link_to "this document", help_page_path('workflow/importing/migrating_from_svn')}.
+<<<<<<< HEAD
       %li
         The Git LFS objects will <strong>not</strong> be imported.
       %li
@@ -30,3 +31,5 @@
     repository every hour. The Git LFS objects will not be synced.
 
 = f.hidden_field :mirror_user_id, value: current_user.id
+=======
+>>>>>>> upstream/master

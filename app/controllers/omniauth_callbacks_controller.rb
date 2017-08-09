@@ -36,8 +36,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         prompt_for_two_factor(@user)
       else
         log_audit_event(@user, with: oauth['provider'])
+<<<<<<< HEAD
         # The counter only gets incremented in `sign_in_and_redirect`
         show_ldap_sync_flash if @user.sign_in_count == 0
+=======
+>>>>>>> upstream/master
         sign_in_and_redirect(@user)
       end
     else
@@ -155,6 +158,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def oauth
     @oauth ||= request.env['omniauth.auth']
+  end
+  
+  def fail_login
+    error_message = @user.errors.full_messages.to_sentence
+
+    return redirect_to omniauth_error_path(oauth['provider'], error: error_message)
+  end
+  
+  def fail_ldap_login
+    flash[:alert] = 'Access denied for your LDAP account.'
+
+    redirect_to new_user_session_path
   end
 
   def fail_login

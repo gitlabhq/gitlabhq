@@ -1,9 +1,13 @@
 class Admin::HealthCheckController < Admin::ApplicationController
   def show
+<<<<<<< HEAD
     checks = ['standard']
     checks << 'geo' if Gitlab::Geo.secondary?
 
     @errors = HealthCheck::Utils.process_checks(checks)
+=======
+    @errors = HealthCheck::Utils.process_checks(['standard'])
+>>>>>>> upstream/master
     @failing_storage_statuses = Gitlab::Git::Storage::Health.for_failing_storages
   end
 

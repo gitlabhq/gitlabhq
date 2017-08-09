@@ -545,6 +545,7 @@ describe Gitlab::Shell do
 
       it 'raises an exception when the command fails' do
         expect_popen.and_return(["error", 1])
+<<<<<<< HEAD
 
         expect { fetch_remote }.to raise_error(Gitlab::Shell::Error, "error")
       end
@@ -595,6 +596,58 @@ describe Gitlab::Shell do
 
           ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
 
+=======
+
+        expect { fetch_remote }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+
+      context 'SSH auth' do
+        it 'passes the SSH key if specified' do
+          expect_popen('GITLAB_SHELL_SSH_KEY' => 'foo').and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass an empty SSH key' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass the key unless SSH key auth is to be used' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'passes the known_hosts data if specified' do
+          expect_popen('GITLAB_SHELL_KNOWN_HOSTS' => 'foo').and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass empty known_hosts data' do
+          expect_popen.and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_known_hosts: '')
+
+          expect(fetch_remote(ssh_auth)).to be_truthy
+        end
+
+        it 'does not pass known_hosts data unless SSH is to be used' do
+          expect_popen(popen_vars).and_return([nil, 0])
+
+          ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
+
+>>>>>>> upstream/master
           expect(fetch_remote(ssh_auth)).to be_truthy
         end
       end

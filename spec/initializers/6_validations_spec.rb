@@ -27,6 +27,16 @@ describe '6_validations' do
       end
     end
 
+    context 'when one of the settings is incorrect' do
+      before do
+        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number' })
+      end
+
+      it 'throws an error' do
+        expect { validate_storages_config }.to raise_error(/failure_count_threshold/)
+      end
+    end
+
     context 'with invalid storage names' do
       before do
         mock_storages('name with spaces' => { 'path' => 'tmp/tests/paths/a/b/c' })
@@ -99,6 +109,7 @@ describe '6_validations' do
         expect { validate_storages_paths }.not_to raise_error
       end
     end
+<<<<<<< HEAD
   end
 
   context 'with incomplete settings' do
@@ -119,6 +130,8 @@ describe '6_validations' do
     it 'throws an error suggesting the user to update its settings' do
       expect { validate_storages_config }.to raise_error("foo is not a valid storage, because it has no `path` key. It may be configured as:\n\nfoo:\n  path: tmp/tests/paths/a/b/c\n\nFor source installations, update your config/gitlab.yml Refer to gitlab.yml.example for an updated example.\n\nIf you're using the Gitlab Development Kit, you can update your configuration running `gdk reconfigure`.\n")
     end
+=======
+>>>>>>> upstream/master
   end
 
   def mock_storages(storages)

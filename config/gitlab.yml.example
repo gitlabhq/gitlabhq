@@ -685,6 +685,12 @@ production: &base
     ip_whitelist:
       - 127.0.0.0/8
 
+    # Sidekiq exporter is webserver built in to Sidekiq to expose Prometheus metrics
+    sidekiq_exporter:
+    #  enabled: true
+    #  address: localhost
+    #  port: 3807
+
   #
   # 5. Extra customization
   # ==========================

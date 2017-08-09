@@ -251,7 +251,6 @@
 
       // Applies on /dashboard/issues
       .project-item-select-holder {
-        display: block;
         margin: 0;
       }
 
@@ -308,6 +307,31 @@
   pre {
     width: 100%;
   }
+}
+
+.project-item-select-holder.btn-group {
+  display: flex;
+  max-width: 350px;
+  overflow: hidden;
+
+  @media(max-width: $screen-xs-max) {
+    width: 100%;
+    max-width: none;
+  }
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
 }
 
 .layout-nav {

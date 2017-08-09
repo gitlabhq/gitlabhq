@@ -225,6 +225,26 @@ module ProjectsHelper
     end
   end
 
+  # Returns true if any projects are present.
+  #
+  # If the relation has a LIMIT applied we'll cast the relation to an Array
+  # since repeated any? checks would otherwise result in multiple COUNT queries
+  # being executed.
+  #
+  # If no limit is applied we'll just issue a COUNT since the result set could
+  # be too large to load into memory.
+  def any_projects?(projects)
+    if projects.limit_value
+      projects.to_a.any?
+    else
+      projects.except(:offset).any?
+    end
+  end
+
+  def has_projects_or_name?(projects, params)
+    !!(params[:name] || any_projects?(projects))
+  end
+
   private
 
   def repo_children_classes(field)

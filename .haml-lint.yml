@@ -41,6 +41,12 @@ linters:
   ImplicitDiv:
     enabled: true
 
+<<<<<<< HEAD
+=======
+  InlineJavaScript:
+    enabled: true
+
+>>>>>>> upstream/master
   InlineStyles:
     enabled: false
 

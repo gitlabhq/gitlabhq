@@ -6,7 +6,7 @@ Returns a list of group milestones.
 
 ```
 GET /groups/:id/milestones
-GET /groups/:id/milestones?iids=42
+GET /groups/:id/milestones?iids[]=42
 GET /groups/:id/milestones?iids[]=42&iids[]=43
 GET /groups/:id/milestones?state=active
 GET /groups/:id/milestones?state=closed
@@ -18,7 +18,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `iids` | Array[integer] | optional | Return only the milestones having the given `iids` |
+| `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
 | `state` | string | optional | Return only `active` or `closed` milestones` |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 

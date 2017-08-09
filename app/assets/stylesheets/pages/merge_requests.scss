@@ -3,9 +3,12 @@
  *
  */
 
+<<<<<<< HEAD
 $status-icon-size: 22px;
 $status-icon-margin: $gl-btn-padding;
 
+=======
+>>>>>>> upstream/master
 .space-children {
   @include clearfix;
 
@@ -27,7 +30,11 @@ $status-icon-margin: $gl-btn-padding;
   .mr-widget-heading,
   .mr-widget-section,
   .mr-widget-footer {
+<<<<<<< HEAD
     padding: 16px;
+=======
+    padding: $gl-padding;
+>>>>>>> upstream/master
     border-top: solid 1px $border-color;
   }
 
@@ -48,7 +55,11 @@ $status-icon-margin: $gl-btn-padding;
   }
 
   .btn {
+<<<<<<< HEAD
     font-size: 14px;
+=======
+    font-size: $gl-font-size;
+>>>>>>> upstream/master
 
     &[disabled] {
       opacity: 0.3;
@@ -61,8 +72,11 @@ $status-icon-margin: $gl-btn-padding;
     }
 
     &.dropdown-toggle {
+<<<<<<< HEAD
       padding: 4px 10px;
 
+=======
+>>>>>>> upstream/master
       .fa {
         color: inherit;
       }
@@ -203,7 +217,6 @@ $status-icon-margin: $gl-btn-padding;
     color: $gl-text-color;
     font-weight: 600;
     overflow: hidden;
-    margin: 0 3px;
     word-break: break-all;
 
     &.label-truncated {
@@ -285,15 +298,8 @@ $status-icon-margin: $gl-btn-padding;
         padding: 5px;
       }
 
-      .merge-opt-icon,
-      .merge-opt-title {
-        display: inline-block;
-        float: left;
-      }
-
-      .merge-opt-icon svg {
-        height: 15px;
-        width: 15px;
+      .merge-opt-icon {
+        line-height: 1.5;
       }
 
       .merge-opt-title {
@@ -488,8 +494,13 @@ $status-icon-margin: $gl-btn-padding;
 }
 
 .mr-source-target {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   background-color: $gray-light;
   border-radius: $border-radius-default $border-radius-default 0 0;
+<<<<<<< HEAD
   padding: $gl-padding-top $gl-padding;
 
   .pull-right {
@@ -500,6 +511,9 @@ $status-icon-margin: $gl-btn-padding;
     margin-left: 0;
     padding-left: 0;
   }
+=======
+  padding: $gl-padding / 2 $gl-padding;
+>>>>>>> upstream/master
 
   .dropdown-toggle .fa {
     color: $gl-text-color;
@@ -725,6 +739,7 @@ $status-icon-margin: $gl-btn-padding;
   }
 }
 
+<<<<<<< HEAD
 #merge-request-widget-app .loading {
   padding-top: 5px;
   border-top: 1px solid $well-inner-border;
@@ -773,11 +788,14 @@ $status-icon-margin: $gl-btn-padding;
   }
 }
 
+=======
+>>>>>>> upstream/master
 .mr-memory-usage {
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
   }
+<<<<<<< HEAD
 }
 
 
@@ -811,4 +829,6 @@ $status-icon-margin: $gl-btn-padding;
       }
     }
   }
+=======
+>>>>>>> upstream/master
 }

@@ -186,7 +186,14 @@ describe API::Projects do
 
       context 'and with simple=true' do
         it 'returns a simplified version of all the projects' do
-          expected_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
+          expected_keys = %w(
+            id description default_branch tag_list
+            ssh_url_to_repo http_url_to_repo web_url
+            name name_with_namespace
+            path path_with_namespace
+            star_count forks_count
+            created_at last_activity_at
+          )
 
           get api('/projects?simple=true', user)
 
@@ -689,6 +696,7 @@ describe API::Projects do
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(public_project.id)
         expect(json_response['description']).to eq(public_project.description)
+        expect(json_response['default_branch']).to eq(public_project.default_branch)
         expect(json_response.keys).not_to include('permissions')
       end
     end

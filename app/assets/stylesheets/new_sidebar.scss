@@ -8,14 +8,20 @@ $active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
-$hover-background: $indigo-700;
-$hover-color: $white-light;
+$hover-background: $white-light;
+$hover-color: $gl-text-color;
 $inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
 $new-sidebar-collapsed-width: 50px;
 
 .page-with-new-sidebar {
+<<<<<<< HEAD
   padding-left: $new-sidebar-collapsed-width;
+=======
+  @media (min-width: $screen-md-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
+>>>>>>> upstream/master
 
   @media (min-width: $screen-lg-min) {
     padding-left: $new-sidebar-width;
@@ -40,6 +46,7 @@ $new-sidebar-collapsed-width: 50px;
 
 .context-header {
   position: relative;
+  margin-right: 2px;
 
   a {
     border-bottom: 1px solid $border-color;
@@ -48,26 +55,16 @@ $new-sidebar-collapsed-width: 50px;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
+  }
 
-    @media (max-width: $screen-xs-max) {
-      padding-right: 30px;
-    }
+  &:hover,
+  a:hover {
+    background-color: $hover-background;
+    color: $hover-color;
 
-    &:hover {
-      background-color: $hover-background;
-      color: $hover-color;
-      border-color: $hover-background;
-
-      .avatar-container {
-        border-color: transparent;
-      }
-
-      .settings-avatar {
-        background-color: $indigo-500;
-
-        i {
-          color: $hover-color;
-        }
+    .settings-avatar {
+      i {
+        color: $hover-color;
       }
     }
   }
@@ -81,32 +78,6 @@ $new-sidebar-collapsed-width: 50px;
   .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-
-  &:hover {
-    .close-nav-button {
-      color: $white-light;
-    }
-  }
-
-  .close-nav-button {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    background-color: transparent;
-    border: 0;
-    padding: 0 10px;
-
-    @media (max-width: $screen-xs-max) {
-      display: block;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-    }
   }
 }
 
@@ -137,11 +108,21 @@ $new-sidebar-collapsed-width: 50px;
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
 
+<<<<<<< HEAD
     .nav-item-name,
+=======
+>>>>>>> upstream/master
     .badge,
     .project-title {
       display: none;
     }
+<<<<<<< HEAD
+=======
+
+    .nav-item-name {
+      opacity: 0;
+    }
+>>>>>>> upstream/master
   }
 
   &.nav-sidebar-expanded {
@@ -215,7 +196,7 @@ $new-sidebar-collapsed-width: 50px;
 
   > li {
     a {
-      padding: 8px 16px 8px 50px;
+      padding: 8px 16px 8px 40px;
 
       &:hover,
       &:focus {
@@ -251,10 +232,9 @@ $new-sidebar-collapsed-width: 50px;
       }
     }
 
-    &:not(.active) {
+    &.is-showing-fly-out {
       > a {
-        margin-left: 1px;
-        margin-right: 3px;
+        margin-right: 2px;
       }
 
       .sidebar-sub-level-items {
@@ -262,7 +242,11 @@ $new-sidebar-collapsed-width: 50px;
           position: fixed;
           top: 0;
           left: $new-sidebar-width;
+<<<<<<< HEAD
           width: 150px;
+=======
+          min-width: 150px;
+>>>>>>> upstream/master
           margin-top: -1px;
           padding: 8px 1px;
           background-color: $white-light;
@@ -304,6 +288,14 @@ $new-sidebar-collapsed-width: 50px;
             }
           }
 
+          > .active {
+            box-shadow: none;
+
+            > a {
+              background-color: transparent;
+            }
+          }
+
           a {
             padding: 8px 16px;
             color: $gl-text-color;
@@ -327,6 +319,7 @@ $new-sidebar-collapsed-width: 50px;
 
       > a {
         margin-left: 4px;
+        padding-left: 12px;
       }
 
       .badge {
@@ -350,21 +343,33 @@ $new-sidebar-collapsed-width: 50px;
 
 // Collapsed nav
 
+<<<<<<< HEAD
 .toggle-sidebar-button {
+=======
+.toggle-sidebar-button,
+.close-nav-button {
+>>>>>>> upstream/master
   width: $new-sidebar-width - 2px;
   position: fixed;
   bottom: 0;
   padding: 16px;
   background-color: $gray-normal;
+<<<<<<< HEAD
+=======
+  border: 0;
+>>>>>>> upstream/master
   border-top: 2px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
 
+<<<<<<< HEAD
   @media (max-width: $screen-xs-max) {
     display: none;
   }
 
+=======
+>>>>>>> upstream/master
   i {
     font-size: 20px;
     margin-right: 8px;
@@ -380,9 +385,22 @@ $new-sidebar-collapsed-width: 50px;
   }
 }
 
+<<<<<<< HEAD
 .sidebar-icons-only {
   .context-header {
     height: 60px;
+=======
+.toggle-sidebar-button {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
+
+.sidebar-icons-only {
+  .context-header {
+    height: 61px;
+>>>>>>> upstream/master
 
     a {
       padding: 10px 4px;
@@ -411,6 +429,10 @@ $new-sidebar-collapsed-width: 50px;
 
   .toggle-sidebar-button {
     width: $new-sidebar-collapsed-width - 2px;
+<<<<<<< HEAD
+=======
+    padding: 16px 18px;
+>>>>>>> upstream/master
 
     .collapse-text,
     .fa-angle-double-left {
@@ -426,6 +448,13 @@ $new-sidebar-collapsed-width: 50px;
 
 // Mobile nav
 
+<<<<<<< HEAD
+=======
+.close-nav-button {
+  display: none;
+}
+
+>>>>>>> upstream/master
 .toggle-mobile-nav {
   display: none;
   background-color: transparent;
@@ -442,6 +471,12 @@ $new-sidebar-collapsed-width: 50px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .close-nav-button {
+    display: flex;
   }
 }
 

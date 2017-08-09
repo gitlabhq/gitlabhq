@@ -33,7 +33,11 @@
               = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
                 Download
 
+<<<<<<< HEAD
               - if @build.browsable_artifacts?
+=======
+              - if @build.artifacts_metadata?
+>>>>>>> upstream/master
                 = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                   Browse
 
@@ -68,7 +72,11 @@
           #{@build.pipeline.git_commit_title}
 
       - if @build.pipeline.stages_count > 1
+<<<<<<< HEAD
         .dropdown.build-dropdown
+=======
+        .block-last.dropdown.build-dropdown
+>>>>>>> upstream/master
           %div
             %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
               = ci_icon_for_status(@build.pipeline.status)

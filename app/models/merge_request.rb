@@ -10,8 +10,11 @@ class MergeRequest < ActiveRecord::Base
 
   ignore_column :position
   ignore_column :locked_at
+<<<<<<< HEAD
 
   include ::EE::MergeRequest
+=======
+>>>>>>> upstream/master
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

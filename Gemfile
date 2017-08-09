@@ -367,7 +367,7 @@ group :development, :test do
 
   gem 'activerecord_sane_schema_dumper', '0.2'
 
-  gem 'stackprof', '~> 0.2.10'
+  gem 'stackprof', '~> 0.2.10', require: false
 end
 
 group :test do
@@ -403,12 +403,17 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+<<<<<<< HEAD
 # NTP client
 gem 'net-ntp'
 
 # SSH host key support
 gem 'net-ssh', '~> 4.1.0'
 gem 'sshkey', '~> 1.9.0'
+=======
+# SSH host key support
+gem 'net-ssh', '~> 4.1.0'
+>>>>>>> upstream/master
 
 # Required for ED25519 SSH host key support
 group :ed25519 do
@@ -418,7 +423,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.24.0'
+gem 'gitaly', '~> 0.26.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

@@ -35,12 +35,11 @@ Please don't depend on GitLab-specific code since it can change in future
 versions. If needed copy-paste GitLab code into the migration to make it forward
 compatible.
 
-## Commit Guidelines
+## Schema Changes
 
-Each migration **must** be added in its own commit with a descriptive commit
-message. If a commit adds a migration it _should only_ include the migration and
-any corresponding changes to `db/schema.rb`. This makes it easy to revert a
-database migration without accidentally reverting other changes.
+Migrations that make changes to the database schema (e.g. adding a column) can
+only be added in the monthly release, patch releases may only contain data
+migrations _unless_ schema changes are absolutely required to solve a problem.
 
 ## Downtime Tagging
 
@@ -224,9 +223,9 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Timestamp column type
 
-By default, Rails uses the `timestamp` data type that stores timestamp data without timezone information.        
-The `timestamp` data type is used by calling either the `add_timestamps` or the `timestamps` method.       
-Also Rails converts the `:datetime` data type to the `timestamp` one.        
+By default, Rails uses the `timestamp` data type that stores timestamp data without timezone information.
+The `timestamp` data type is used by calling either the `add_timestamps` or the `timestamps` method.
+Also Rails converts the `:datetime` data type to the `timestamp` one.
 
 Example:
 

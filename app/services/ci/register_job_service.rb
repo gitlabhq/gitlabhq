@@ -31,6 +31,7 @@ module Ci
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           build.runner_id = runner.id
           build.run!
+          register_success(build)
 
           return Result.new(build, true)
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
@@ -47,6 +48,7 @@ module Ci
         end
       end
 
+      register_failure
       Result.new(nil, valid)
     end
 
@@ -81,6 +83,28 @@ module Ci
 
     def shared_runner_build_limits_feature_enabled?
       ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
+    end
+
+    def register_failure
+      failed_attempt_counter.increase
+      attempt_counter.increase
+    end
+
+    def register_success(job)
+      job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
+      attempt_counter.increase
+    end
+
+    def failed_attempt_counter
+      @failed_attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_failed_total, "Counts the times a runner tries to register a job")
+    end
+
+    def attempt_counter
+      @attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_total, "Counts the times a runner tries to register a job")
+    end
+
+    def job_queue_duration_seconds
+      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time')
     end
   end
 end

@@ -38,6 +38,10 @@ export default {
   props: {
     mrData: {
       type: Object,
+<<<<<<< HEAD
+=======
+      required: false,
+>>>>>>> upstream/master
     },
   },
   data() {
@@ -247,7 +251,13 @@ export default {
           :state="mr.state"
           :related-links="mr.relatedLinks" />
       </div>
+<<<<<<< HEAD
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
+=======
+      <div
+        class="mr-widget-footer"
+        v-if="shouldRenderMergeHelp">
+>>>>>>> upstream/master
         <mr-widget-merge-help />
       </div>
     </div>
