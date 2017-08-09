@@ -14,13 +14,13 @@ export default {
   data: () => Store,
   mixins: [RepoMixin],
   components: {
-    'repo-sidebar': RepoSidebar,
-    'repo-tabs': RepoTabs,
-    'repo-file-buttons': RepoFileButtons,
+    RepoSidebar,
+    RepoTabs,
+    RepoFileButtons,
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
-    'repo-commit-section': RepoCommitSection,
-    'popup-dialog': PopupDialog,
-    'repo-preview': RepoPreview,
+    RepoCommitSection,
+    PopupDialog,
+    RepoPreview,
   },
 
   mounted() {
