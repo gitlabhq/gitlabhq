@@ -73,7 +73,6 @@ feature 'Merge Request closing issues message', js: true do
     it 'does not display closing issue message' do
       expect(page).to have_content("Closes #{issue_1.to_reference}")
       expect(page).to have_content("Mentions #{issue_2.to_reference}")
-<<<<<<< HEAD
     end
   end
 
@@ -88,8 +87,6 @@ feature 'Merge Request closing issues message', js: true do
     it 'displays closing issue message exactly one time' do
       wait_for_requests
       expect(page).to have_content("Closes #{issue_1.to_reference} and #{issue_2.to_reference}", count: 1)
-=======
->>>>>>> upstream/master
     end
   end
 end
