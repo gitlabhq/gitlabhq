@@ -211,4 +211,18 @@ describe 'Promotions', js: true do
       expect(find('.issues-export-modal')).to have_content 'Export Issues to CSV enables you and your team to export all the data collected from issues into a comma-separated values (CSV) file'
     end
   end
+
+  describe 'for audit events', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+    end
+
+    it 'should appear on the page' do
+      visit project_audit_events_path(project)
+      expect(find('.issues-export-modal')).to have_content 'Track your project with Audit Events'
+      expect(find('.issues-export-modal')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
+    end
+  end  
 end

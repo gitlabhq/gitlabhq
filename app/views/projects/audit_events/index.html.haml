@@ -2,7 +2,12 @@
 
 = render "projects/settings/head"
 
+- if !@project.feature_available?(:audit_events)
+  = render 'shared/promotions/promote_audit_events'
+
 %h3.page-title Project Audit Events
 %p.light Events in #{@project.full_path}
 
-= render 'shared/audit_events/event_table', events: @events
+- if @project.feature_available?(:audit_events)
+  = render 'shared/audit_events/event_table', events: @events
+ 
