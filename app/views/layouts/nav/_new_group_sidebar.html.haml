@@ -6,11 +6,7 @@
       .group-title
         = @group.name
   %ul.sidebar-top-level-items
-<<<<<<< HEAD
     = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups', 'analytics#show'], html_options: { class: 'home' }) do
-=======
-    = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
->>>>>>> upstream/master
       = link_to group_path(@group), title: 'Group overview' do
         .nav-icon-container
           = custom_icon('project')
@@ -96,9 +92,6 @@
               %span
                 CI / CD
 
-<<<<<<< HEAD
           = render "groups/ee/settings_nav"
 
-=======
->>>>>>> upstream/master
   = render 'shared/sidebar_toggle_button'
