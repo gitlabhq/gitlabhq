@@ -33,8 +33,7 @@ GitLabDropdownInput = (function() {
     .on('input', function(e) {
       var val = e.currentTarget.value || _this.options.inputFieldName;
       val = val.split(' ').join('-') // replaces space with dash
-        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
-        .replace(/(-)\1+/g, '-'); // replace repeated dashes
+        .replace(/[^a-zA-Z0-9-/]/g, '') // replace non alphanumeric
       _this.cb(_this.options.fieldName, val, {}, true);
       _this.input.closest('.dropdown')
         .find('.dropdown-toggle-text')
