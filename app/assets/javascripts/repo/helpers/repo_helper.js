@@ -33,8 +33,8 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
-  getBranch() {
-    return $('button.dropdown-menu-toggle').attr('data-ref');
+  getFileExtension(fileName) {
+    return fileName.split('.').pop();
   },
 
   getLanguageIDForFile(file, langs) {
