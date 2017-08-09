@@ -1091,6 +1091,11 @@ entry.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
 
+## 9.0.13 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.0.12 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
