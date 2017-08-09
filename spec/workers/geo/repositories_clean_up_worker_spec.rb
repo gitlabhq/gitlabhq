@@ -4,7 +4,7 @@ describe Geo::RepositoriesCleanUpWorker do
   let!(:geo_node) { create(:geo_node) }
   let(:synced_group) { create(:group) }
   let!(:project_in_synced_group) { create(:project, group: synced_group) }
-  let!(:unsynced_project) { create(:project) }
+  let!(:unsynced_project) { create(:project, :repository) }
 
   describe '#perform' do
     before do
@@ -18,6 +18,16 @@ describe Geo::RepositoriesCleanUpWorker do
         expect(GeoRepositoryDestroyWorker).to receive(:perform_async)
           .with(unsynced_project.id, unsynced_project.name, unsynced_project.full_path)
           .once.and_return(1)
+
+        subject.perform(geo_node.id)
+      end
+
+      it 'does not perform GeoRepositoryDestroyWorker when repository does not exist' do
+        allow_any_instance_of(Gitlab::Shell).to receive(:exists?)
+          .with(unsynced_project.repository_storage_path, "#{unsynced_project.disk_path}.git")
+          .and_return(false)
+
+        expect(GeoRepositoryDestroyWorker).not_to receive(:perform_async)
 
         subject.perform(geo_node.id)
       end
