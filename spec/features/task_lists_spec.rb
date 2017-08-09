@@ -52,8 +52,8 @@ feature 'Task Lists' do
   before do
     Warden.test_mode!
 
-    project.team << [user, :master]
-    project.team << [user2, :guest]
+    project.add_master(user)
+    project.add_guest(user2)
 
     login_as(user)
   end
@@ -246,7 +246,6 @@ feature 'Task Lists' do
     end
 
     describe 'multiple tasks' do
-      let(:project) { create(:project, :repository) }
       let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
 
       it 'renders for description' do

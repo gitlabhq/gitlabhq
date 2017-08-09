@@ -68,6 +68,16 @@ FactoryGirl.define do
       merge_user author
     end
 
+    after(:build) do |merge_request|
+      target_project = merge_request.target_project
+
+      # Fake `fetch_ref` if we don't have repository
+      # We have too many existing tests replying on this behaviour
+      unless target_project.repository_exists?
+        allow(target_project.repository).to receive(:fetch_ref)
+      end
+    end
+
     factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:opened]
