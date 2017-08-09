@@ -116,7 +116,7 @@ module API
         return unless params.key?(:project_id)
         return if Gitlab::Geo.current_node&.restricted_project_ids.nil?
 
-        unless Gitlab::Geo.current_node.restricted_project_ids.include?(params[:project_id])
+        unless Gitlab::Geo.current_node.restricted_project_ids.include?(params[:project_id].to_i)
           not_found!
         end
       end
