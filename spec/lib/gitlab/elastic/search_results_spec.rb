@@ -686,7 +686,7 @@ describe Gitlab::Elastic::SearchResults do
         results = described_class.new(user, 'term', limit_project_ids)
         blobs = results.objects('wiki_blobs')
 
-        expect(blobs.map{|blob| blob._parent.to_i }).to match_array [internal_project.id, private_project2.id, public_project.id]
+        expect(blobs.map {|blob| blob._parent.to_i }).to match_array [internal_project.id, private_project2.id, public_project.id]
         expect(results.wiki_blobs_count).to eq 3
 
         # Unauthenticated search
@@ -750,7 +750,7 @@ describe Gitlab::Elastic::SearchResults do
         results = described_class.new(user, 'tesla', limit_project_ids)
         blobs = results.objects('blobs')
 
-        expect(blobs.map{ |blob| blob._parent.to_i }).to match_array [internal_project.id, private_project2.id, public_project.id]
+        expect(blobs.map { |blob| blob._parent.to_i }).to match_array [internal_project.id, private_project2.id, public_project.id]
         expect(results.blobs_count).to eq 3
 
         # Unauthenticated search

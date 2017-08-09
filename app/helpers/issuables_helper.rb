@@ -151,7 +151,7 @@ module IssuablesHelper
   end
 
   def issuable_labels_tooltip(labels, limit: 5)
-    first, last = labels.partition.with_index{ |_, i| i < limit  }
+    first, last = labels.partition.with_index { |_, i| i < limit  }
 
     label_names = first.collect(&:name)
     label_names << "and #{last.size} more" unless last.empty?
@@ -337,7 +337,7 @@ module IssuablesHelper
   end
 
   def selected_template(issuable)
-    params[:issuable_template] if issuable_templates(issuable).any?{ |template| template[:name] == params[:issuable_template] }
+    params[:issuable_template] if issuable_templates(issuable).any? { |template| template[:name] == params[:issuable_template] }
   end
 
   def issuable_todo_button_data(issuable, todo, is_collapsed)

@@ -19,7 +19,7 @@ describe ProtectedBranches::UpdateService do
       let(:user) { create(:user) }
 
       it "raises error" do
-        expect{ service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
+        expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
       end
     end
   end

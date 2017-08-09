@@ -96,7 +96,7 @@ class Settings < Settingslogic
 
     # check that `current` (string or integer) is a contant in `modul`.
     def verify_constant(modul, current, default)
-      constant = modul.constants.find{ |name| modul.const_get(name) == current }
+      constant = modul.constants.find { |name| modul.const_get(name) == current }
       value = constant.nil? ? default : modul.const_get(constant)
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default

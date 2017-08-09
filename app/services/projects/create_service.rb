@@ -169,7 +169,7 @@ module Projects
       predefined_push_rule = PushRule.find_by(is_sample: true)
 
       if predefined_push_rule
-        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
+        push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
         project.push_rule = push_rule
       end
     end

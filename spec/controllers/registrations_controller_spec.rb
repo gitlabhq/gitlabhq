@@ -15,7 +15,7 @@ describe RegistrationsController do
         it 'signs the user in' do
           allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false)
 
-          expect { post(:create, user_params) }.not_to change{ ActionMailer::Base.deliveries.size }
+          expect { post(:create, user_params) }.not_to change { ActionMailer::Base.deliveries.size }
           expect(subject.current_user).not_to be_nil
         end
       end
