@@ -5,11 +5,9 @@ class AddStorageFieldsToProject < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
-  disable_ddl_transaction!
 
   def up
     add_column :projects, :storage_version, :integer, limit: 2
-    add_concurrent_index :projects, :storage_version
   end
 
   def down

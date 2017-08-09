@@ -1226,7 +1226,6 @@ ActiveRecord::Schema.define(version: 20170820100558) do
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
-  add_index "projects", ["storage_version"], name: "index_projects_on_storage_version", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|

@@ -11,14 +11,14 @@ module Storage
     #
     # @return [String] directory where repository is stored
     def base_dir
-      %Q(#{disk_hash[0..1]}/#{disk_hash[2..3]}) if disk_hash
+      "#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
     end
 
     # Disk path is used to build repository and project's wiki path on disk
     #
     # @return [String] combination of base_dir and the repository own name without `.git` or `.wiki.git` extensions
     def disk_path
-      %Q(#{base_dir}/#{disk_hash})
+      "#{base_dir}/#{disk_hash}"
     end
 
     def ensure_storage_path_exist

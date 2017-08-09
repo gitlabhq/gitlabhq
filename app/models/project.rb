@@ -1432,9 +1432,7 @@ class Project < ActiveRecord::Base
 
   def storage
     @storage ||=
-      if !has_attribute?(:storage_version) # during migration
-        Storage::LegacyProject.new(self)
-      elsif self.storage_version && self.storage_version >= 1
+      if self.storage_version && self.storage_version >= 1
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)
@@ -1442,7 +1440,7 @@ class Project < ActiveRecord::Base
   end
 
   def use_hashed_storage
-    if !self.persisted? && current_application_settings.hashed_storage_enabled
+    if self.new_record? && current_application_settings.hashed_storage_enabled
       self.storage_version = LATEST_STORAGE_VERSION
     end
   end
