@@ -4,9 +4,9 @@
   .user-callout-copy
     %h4
       - if current_application_settings.should_check_namespace_plan?
-        Upgrade your plan to activate Service Desk.
-      - else
         Upgrade your plan to activate Audit Events
+      - else
+        Track your project with Audit Events
     %p
       With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members.
       %a{ href: '/help/administration/audit_events.html', target: '_blank' } Read more

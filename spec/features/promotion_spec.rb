@@ -7,6 +7,7 @@ describe 'Promotions', js: true do
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository) }
   let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }
+  let!(:issue)  { create(:issue, project: project, author: user) }
   let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }  
 
   describe 'if you have a license' do
@@ -245,7 +246,7 @@ describe 'Promotions', js: true do
     it 'should appear on the page' do
       visit group_analytics_path(group)
       expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution analytics and GitLab Enterprise Edition.'
-      expect(find('.user-callout-copy')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
+      expect(find('.user-callout-copy')).to have_content 'With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members.'
     end
   end
 end
