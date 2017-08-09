@@ -13,7 +13,7 @@ const RepoCommitSection = {
   computed: {
 
     showCommitable() {
-      return isCommitable && changedFiles.length;
+      return this.isCommitable && this.changedFiles.length;
     },
 
     branchPaths() {
