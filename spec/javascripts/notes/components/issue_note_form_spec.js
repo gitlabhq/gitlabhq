@@ -27,7 +27,6 @@ describe('issue_note_form component', () => {
 
     });
 
-
     describe('keyboard events', () => {
       describe('up', () => {
         it('should ender edit mode', () => {
