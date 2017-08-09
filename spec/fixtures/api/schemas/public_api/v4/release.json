@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required" : [
+    "tag_name",
+    "description"
+  ],
+  "properties" : {
+    "tag_name": { "type": ["string", "null"] },
+    "description": { "type": "string" }
+  },
+  "additionalProperties": false
+}

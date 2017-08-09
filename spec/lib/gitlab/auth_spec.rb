@@ -65,7 +65,7 @@ describe Gitlab::Auth do
     end
 
     it 'recognizes other ci services' do
-      project = create(:empty_project)
+      project = create(:project)
       project.create_drone_ci_service(active: true)
       project.drone_ci_service.update(token: 'token')
 
@@ -313,7 +313,8 @@ describe Gitlab::Auth do
   def full_authentication_abilities
     read_authentication_abilities + [
       :push_code,
-      :create_container_image
+      :create_container_image,
+      :admin_container_image
     ]
   end
 end

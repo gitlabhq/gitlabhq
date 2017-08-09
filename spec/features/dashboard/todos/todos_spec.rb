@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Dashboard Todos' do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue)   { create(:issue, due_date: Date.today) }
 
   context 'User does not have todos' do
@@ -212,7 +212,7 @@ feature 'Dashboard Todos' do
       note1 = create(:note_on_issue, note: "Hello #{label1.to_reference(format: :name)}", noteable_id: issue.id, noteable_type: 'Issue', project: issue.project)
       create(:todo, :mentioned, project: project, target: issue, user: user, note_id: note1.id)
 
-      project2 = create(:empty_project, :public)
+      project2 = create(:project, :public)
       label2 = create(:label, project: project2)
       issue2 = create(:issue, project: project2)
       note2 = create(:note_on_issue, note: "Test #{label2.to_reference(format: :name)}", noteable_id: issue2.id, noteable_type: 'Issue', project: project2)

@@ -237,7 +237,7 @@ describe MergeRequest do
   end
 
   describe '#to_reference' do
-    let(:project) { build(:empty_project, name: 'sample-project') }
+    let(:project) { build(:project, name: 'sample-project') }
     let(:merge_request) { build(:merge_request, target_project: project, iid: 1) }
 
     it 'returns a String reference to the object' do
@@ -245,12 +245,12 @@ describe MergeRequest do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(merge_request.to_reference(another_project)).to eq "sample-project!1"
     end
 
     it 'returns a String reference with the full path' do
-      expect(merge_request.to_reference(full: true)).to eq(project.path_with_namespace + '!1')
+      expect(merge_request.to_reference(full: true)).to eq(project.full_path + '!1')
     end
   end
 
@@ -392,8 +392,8 @@ describe MergeRequest do
 
   describe '#for_fork?' do
     it 'returns true if the merge request is for a fork' do
-      subject.source_project = build_stubbed(:empty_project, namespace: create(:group))
-      subject.target_project = build_stubbed(:empty_project, namespace: create(:group))
+      subject.source_project = build_stubbed(:project, namespace: create(:group))
+      subject.target_project = build_stubbed(:project, namespace: create(:group))
 
       expect(subject.for_fork?).to be_truthy
     end
@@ -681,7 +681,7 @@ describe MergeRequest do
       end
 
       it 'does not crash' do
-        expect{ subject.diverged_commits_count }.not_to raise_error
+        expect { subject.diverged_commits_count }.not_to raise_error
       end
 
       it 'returns 0' do
@@ -753,7 +753,7 @@ describe MergeRequest do
     subject { create(:merge_request, :simple) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do
@@ -889,7 +889,7 @@ describe MergeRequest do
   end
 
   describe '#participants' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
 
     let(:mr) do
       create(:merge_request, source_project: project, target_project: project)
@@ -932,7 +932,7 @@ describe MergeRequest do
   end
 
   describe '#check_if_can_be_merged' do
-    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
+    let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
 
     subject { create(:merge_request, source_project: project, merge_status: :unchecked) }
 
@@ -970,7 +970,7 @@ describe MergeRequest do
   end
 
   describe '#mergeable?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     subject { create(:merge_request, source_project: project) }
 
@@ -1055,7 +1055,7 @@ describe MergeRequest do
   end
 
   describe '#mergeable_ci_state?' do
-    let(:project) { create(:empty_project, only_allow_merge_if_pipeline_succeeds: true) }
+    let(:project) { create(:project, only_allow_merge_if_pipeline_succeeds: true) }
     let(:pipeline) { create(:ci_empty_pipeline) }
 
     subject { build(:merge_request, target_project: project) }
@@ -1098,7 +1098,7 @@ describe MergeRequest do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:empty_project, only_allow_merge_if_pipeline_succeeds: false)) }
+      subject { build(:merge_request, target_project: build(:project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
@@ -1332,8 +1332,8 @@ describe MergeRequest do
   end
 
   describe "#source_project_missing?" do
-    let(:project)      { create(:empty_project) }
-    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1369,9 +1369,35 @@ describe MergeRequest do
     end
   end
 
+  describe '#merge_ongoing?' do
+    it 'returns true when merge process is ongoing for merge_jid' do
+      merge_request = create(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(1)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when no merge process running for merge_jid' do
+      merge_request = build(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(0)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build(:merge_request, merge_jid: nil)
+
+      expect(Gitlab::SidekiqStatus).not_to receive(:num_running)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+  end
+
   describe "#closed_without_fork?" do
-    let(:project)      { create(:empty_project) }
-    let(:fork_project) { create(:empty_project, forked_from_project: project) }
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
@@ -1416,9 +1442,9 @@ describe MergeRequest do
       end
 
       context 'forked project' do
-        let(:project)      { create(:empty_project) }
+        let(:project)      { create(:project) }
         let(:user)         { create(:user) }
-        let(:fork_project) { create(:empty_project, forked_from_project: project, namespace: user.namespace) }
+        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
 
         let!(:merge_request) do
           create(:closed_merge_request,

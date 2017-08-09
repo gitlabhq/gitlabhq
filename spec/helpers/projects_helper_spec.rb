@@ -46,25 +46,25 @@ describe ProjectsHelper do
   end
 
   describe "readme_cache_key" do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       helper.instance_variable_set(:@project, project)
     end
 
     it "returns a valid cach key" do
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-#{project.commit.id}-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-#{project.commit.id}-readme")
     end
 
     it "returns a valid cache key if HEAD does not exist" do
       allow(project).to receive(:commit) { nil }
 
-      expect(helper.send(:readme_cache_key)).to eq("#{project.path_with_namespace}-nil-readme")
+      expect(helper.send(:readme_cache_key)).to eq("#{project.full_path}-nil-readme")
     end
   end
 
   describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     it "includes the route" do
       expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
@@ -105,7 +105,7 @@ describe ProjectsHelper do
 
   describe '#load_pipeline_status' do
     it 'loads the pipeline status in batch' do
-      project = build(:empty_project)
+      project = build(:project)
 
       helper.load_pipeline_status([project])
       # Skip lazy loading of the `pipeline_status` attribute
@@ -193,7 +193,7 @@ describe ProjectsHelper do
 
   describe 'link_to_member' do
     let(:group)   { create(:group) }
-    let(:project) { create(:empty_project, group: group) }
+    let(:project) { create(:project, group: group) }
     let(:user)    { create(:user) }
 
     describe 'using the default options' do
@@ -225,7 +225,7 @@ describe ProjectsHelper do
   end
 
   describe '#license_short_name' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when project.repository has a license_key' do
       it 'returns the nickname of the license if present' do
@@ -251,7 +251,7 @@ describe ProjectsHelper do
   end
 
   describe '#sanitized_import_error' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
     before do
       allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
@@ -312,7 +312,7 @@ describe ProjectsHelper do
   end
 
   describe "#project_feature_access_select" do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:user)    { create(:user) }
 
     context "when project is internal or public" do
@@ -380,7 +380,7 @@ describe ProjectsHelper do
   end
 
   describe '#get_project_nav_tabs' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user)    { create(:user) }
 
     before do
@@ -409,6 +409,50 @@ describe ProjectsHelper do
       it "do not include pipelines tab" do
         is_expected.not_to include(:pipelines)
       end
+    end
+  end
+
+  describe '#has_projects_or_name?' do
+    let(:projects) do
+      create(:project)
+      Project.all
+    end
+
+    it 'returns true when there are projects' do
+      expect(helper.has_projects_or_name?(projects, {})).to eq(true)
+    end
+
+    it 'returns true when there are no projects but a name is given' do
+      expect(helper.has_projects_or_name?(Project.none, name: 'foo')).to eq(true)
+    end
+
+    it 'returns false when there are no projects and there is no name' do
+      expect(helper.has_projects_or_name?(Project.none, {})).to eq(false)
+    end
+  end
+
+  describe '#any_projects?' do
+    before do
+      create(:project)
+    end
+
+    it 'returns true when projects will be returned' do
+      expect(helper.any_projects?(Project.all)).to eq(true)
+    end
+
+    it 'returns false when no projects will be returned' do
+      expect(helper.any_projects?(Project.none)).to eq(false)
+    end
+
+    it 'only executes a single query when a LIMIT is applied' do
+      relation = Project.limit(1)
+      recorder = ActiveRecord::QueryRecorder.new do
+        2.times do
+          helper.any_projects?(relation)
+        end
+      end
+
+      expect(recorder.count).to eq(1)
     end
   end
 end

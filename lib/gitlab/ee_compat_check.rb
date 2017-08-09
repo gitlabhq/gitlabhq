@@ -98,9 +98,10 @@ module Gitlab
 
       if status.zero?
         @ee_branch_found = ee_branch_prefix
-      else
-        _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+        return
       end
+
+      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_suffix
@@ -181,8 +182,6 @@ module Gitlab
     end
 
     def find_merge_base_with_master(branch:)
-      return if merge_base_found?
-
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20

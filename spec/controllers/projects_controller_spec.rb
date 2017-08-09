@@ -1,8 +1,8 @@
 require('spec_helper')
 
 describe ProjectsController do
-  let(:project) { create(:empty_project) }
-  let(:public_project) { create(:empty_project, :public) }
+  let(:project) { create(:project) }
+  let(:public_project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:jpg) { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt) { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -34,7 +34,7 @@ describe ProjectsController do
       end
 
       context "user does not have access to project" do
-        let(:private_project) { create(:empty_project, :private) }
+        let(:private_project) { create(:project, :private) }
 
         it "does not initialize notification setting" do
           get :show, namespace_id: private_project.namespace, id: private_project
@@ -107,6 +107,20 @@ describe ProjectsController do
       end
     end
 
+    context 'when the storage is not available', broken_storage: true do
+      let(:project) { create(:project, :broken_storage) }
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'renders a 503' do
+        get :show, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(503)
+      end
+    end
+
     context "project with empty repo" do
       let(:empty_project) { create(:project_empty_repo, :public) }
 
@@ -176,7 +190,7 @@ describe ProjectsController do
     end
 
     context "when the url contains .atom" do
-      let(:public_project_with_dot_atom) { build(:empty_project, :public, name: 'my.atom', path: 'my.atom') }
+      let(:public_project_with_dot_atom) { build(:project, :public, name: 'my.atom', path: 'my.atom') }
 
       it 'expects an error creating the project' do
         expect(public_project_with_dot_atom).not_to be_valid
@@ -185,7 +199,7 @@ describe ProjectsController do
 
     context 'when the project is pending deletions' do
       it 'renders a 404 error' do
-        project = create(:empty_project, pending_delete: true)
+        project = create(:project, pending_delete: true)
         sign_in(user)
 
         get :show, namespace_id: project.namespace, id: project
@@ -254,7 +268,7 @@ describe ProjectsController do
   describe '#transfer' do
     render_views
 
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:admin) { create(:admin) }
     let(:new_namespace) { create(:namespace) }
 
@@ -311,8 +325,8 @@ describe ProjectsController do
     end
 
     context "when the project is forked" do
-      let(:project)      { create(:project) }
-      let(:fork_project) { create(:project, forked_from_project: project) }
+      let(:project)      { create(:project, :repository) }
+      let(:fork_project) { create(:project, :repository, forked_from_project: project) }
       let(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
@@ -390,7 +404,7 @@ describe ProjectsController do
       end
 
       context 'with forked project' do
-        let(:project_fork) { create(:project, namespace: user.namespace) }
+        let(:project_fork) { create(:project, :repository, namespace: user.namespace) }
 
         before do
           create(:forked_project_link, forked_to_project: project_fork)
@@ -430,7 +444,7 @@ describe ProjectsController do
   end
 
   describe "GET refs" do
-    let(:public_project) { create(:project, :public) }
+    let(:public_project) { create(:project, :public, :repository) }
 
     it "gets a list of branches and tags" do
       get :refs, namespace_id: public_project.namespace, id: public_project

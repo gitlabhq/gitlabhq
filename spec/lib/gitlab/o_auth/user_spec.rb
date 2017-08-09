@@ -147,7 +147,7 @@ describe Gitlab::OAuth::User do
           end
 
           it 'throws an error' do
-            expect{ oauth_user.save }.to raise_error StandardError
+            expect { oauth_user.save }.to raise_error StandardError
           end
         end
 
@@ -157,7 +157,7 @@ describe Gitlab::OAuth::User do
           end
 
           it 'throws an error' do
-            expect{ oauth_user.save }.to raise_error StandardError
+            expect { oauth_user.save }.to raise_error StandardError
           end
         end
       end
@@ -454,6 +454,36 @@ describe Gitlab::OAuth::User do
 
       it "has external_email set to false" do
         expect(gl_user.external_email?).to be(false)
+      end
+    end
+  end
+
+  describe 'generating username' do
+    context 'when no collision with existing user' do
+      it 'generates the username with no counter' do
+        expect(gl_user.username).to eq('johngitlab-ETC')
+      end
+    end
+
+    context 'when collision with existing user' do
+      it 'generates the username with a counter' do
+        oauth_user.save
+        oauth_user2 = described_class.new(OmniAuth::AuthHash.new(uid: 'my-uid2', provider: provider, info: { nickname: 'johngitlab-ETC@othermail.com', email: 'john@othermail.com' }))
+
+        expect(oauth_user2.gl_user.username).to eq('johngitlab-ETC1')
+      end
+    end
+
+    context 'when username is a reserved word' do
+      let(:info_hash) do
+        {
+          nickname: 'admin@othermail.com',
+          email: 'admin@othermail.com'
+        }
+      end
+      
+      it 'generates the username with a counter' do
+        expect(gl_user.username).to eq('admin1')
       end
     end
   end

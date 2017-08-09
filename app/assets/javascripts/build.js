@@ -64,7 +64,7 @@ window.Build = (function () {
     $(window)
       .off('scroll')
       .on('scroll', () => {
-        const contentHeight = this.$buildTraceOutput.prop('scrollHeight');
+        const contentHeight = this.$buildTraceOutput.height();
         if (contentHeight > this.windowSize) {
           // means the user did not scroll, the content was updated.
           this.windowSize = contentHeight;
@@ -105,16 +105,17 @@ window.Build = (function () {
   };
 
   Build.prototype.canScroll = function () {
-    return document.body.scrollHeight > window.innerHeight;
+    return $(document).height() > $(window).height();
   };
 
   Build.prototype.toggleScroll = function () {
-    const currentPosition = document.body.scrollTop;
-    const windowHeight = window.innerHeight;
+    const currentPosition = $(document).scrollTop();
+    const scrollHeight = $(document).height();
 
+    const windowHeight = $(window).height();
     if (this.canScroll()) {
       if (currentPosition > 0 &&
-        (document.body.scrollHeight - currentPosition !== windowHeight)) {
+        (scrollHeight - currentPosition !== windowHeight)) {
       // User is in the middle of the log
 
         this.toggleDisableButton(this.$scrollTopBtn, false);
@@ -124,7 +125,7 @@ window.Build = (function () {
 
         this.toggleDisableButton(this.$scrollTopBtn, true);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (document.body.scrollHeight - currentPosition === windowHeight) {
+      } else if (scrollHeight - currentPosition === windowHeight) {
         // User is at the bottom of the build log.
 
         this.toggleDisableButton(this.$scrollTopBtn, false);
@@ -137,7 +138,7 @@ window.Build = (function () {
   };
 
   Build.prototype.scrollDown = function () {
-    document.body.scrollTop = document.body.scrollHeight;
+    $(document).scrollTop($(document).height());
   };
 
   Build.prototype.scrollToBottom = function () {
@@ -147,7 +148,7 @@ window.Build = (function () {
   };
 
   Build.prototype.scrollToTop = function () {
-    document.body.scrollTop = 0;
+    $(document).scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
   };
@@ -163,7 +164,6 @@ window.Build = (function () {
 
   Build.prototype.initSidebar = function () {
     this.$sidebar = $('.js-build-sidebar');
-    this.$sidebar.niceScroll();
   };
 
   Build.prototype.getBuildTrace = function () {
@@ -178,7 +178,7 @@ window.Build = (function () {
           this.state = log.state;
         }
 
-        this.windowSize = this.$buildTraceOutput.prop('scrollHeight');
+        this.windowSize = this.$buildTraceOutput.height();
 
         if (log.append) {
           this.$buildTraceOutput.append(log.html);

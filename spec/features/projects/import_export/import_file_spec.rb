@@ -29,8 +29,9 @@ feature 'Import/Export - project import integration test', js: true do
       fill_in :project_path, with: 'test-project-path', visible: true
       click_link 'GitLab export'
 
-      expect(page).to have_content('GitLab project export')
+      expect(page).to have_content('Import an exported GitLab project')
       expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
+      expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}_test-project-path\z/).and_call_original
 
       attach_file('file', file)
 
@@ -46,7 +47,7 @@ feature 'Import/Export - project import integration test', js: true do
     end
 
     scenario 'invalid project' do
-      project = create(:empty_project, namespace: namespace)
+      project = create(:project, namespace: namespace)
 
       visit new_project_path
 
@@ -59,17 +60,6 @@ feature 'Import/Export - project import integration test', js: true do
       page.within('.flash-container') do
         expect(page).to have_content('Project could not be imported')
       end
-    end
-
-    scenario 'project with no name' do
-      create(:empty_project, namespace: namespace)
-
-      visit new_project_path
-
-      select2(namespace.id, from: '#project_namespace_id')
-
-      # Check for tooltip disabled import button
-      expect(find('.import_gitlab_project')['title']).to eq('Please enter a valid project name.')
     end
   end
 

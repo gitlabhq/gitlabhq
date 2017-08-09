@@ -132,7 +132,7 @@ describe GitPushService, services: true do
     end
 
     it "creates a new pipeline" do
-      expect{ subject }.to change{ Ci::Pipeline.count }
+      expect { subject }.to change { Ci::Pipeline.count }
       expect(Ci::Pipeline.last).to be_push
     end
   end
@@ -453,7 +453,7 @@ describe GitPushService, services: true do
         let(:message)         { "this is some work.\n\ncloses JIRA-1" }
         let(:comment_body) do
           {
-            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
+            body: "Issue solved with [#{closing_commit.id}|http://#{Gitlab.config.gitlab.host}/#{project.full_path}/commit/#{closing_commit.id}]."
           }.to_json
         end
 

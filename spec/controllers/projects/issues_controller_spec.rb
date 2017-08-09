@@ -234,7 +234,7 @@ describe Projects::IssuesController do
     end
 
     context 'when moving issue to another private project' do
-      let(:another_project) { create(:empty_project, :private) }
+      let(:another_project) { create(:project, :private) }
 
       context 'when user has access to move issue' do
         before do
@@ -292,13 +292,13 @@ describe Projects::IssuesController do
 
             it 'rejects an issue recognized as a spam' do
               expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'rejects an issue recognized as a spam when recaptcha disabled' do
               stub_application_setting(recaptcha_enabled: false)
 
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'creates a spam log' do
@@ -358,7 +358,7 @@ describe Projects::IssuesController do
             end
 
             it 'accepts an issue after recaptcha is verified' do
-              expect{ update_verified_issue }.to change{ issue.reload.title }.to(spammy_title)
+              expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
             end
 
             it 'marks spam log as recaptcha_verified' do
@@ -594,7 +594,7 @@ describe Projects::IssuesController do
   describe 'POST #create' do
     def post_new_issue(issue_attrs = {}, additional_params = {})
       sign_in(user)
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
       project.team << [user, :developer]
 
       post :create, {
@@ -817,7 +817,7 @@ describe Projects::IssuesController do
     context "when the user is owner" do
       let(:owner)     { create(:user) }
       let(:namespace) { create(:namespace, owner: owner) }
-      let(:project)   { create(:empty_project, namespace: namespace) }
+      let(:project)   { create(:project, namespace: namespace) }
 
       before do
         sign_in(owner)

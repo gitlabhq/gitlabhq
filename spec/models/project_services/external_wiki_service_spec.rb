@@ -27,7 +27,7 @@ describe ExternalWikiService do
   end
 
   describe 'External wiki' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when it is active' do
       before do

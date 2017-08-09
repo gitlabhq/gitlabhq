@@ -111,7 +111,7 @@ describe Namespace do
     let(:namespace) { create :namespace }
 
     let(:project1) do
-      create(:empty_project,
+      create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
                                storage_size:         606,
@@ -121,7 +121,7 @@ describe Namespace do
     end
 
     let(:project2) do
-      create(:empty_project,
+      create(:project,
              namespace: namespace,
              statistics: build(:project_statistics,
                                storage_size:         60,
@@ -177,7 +177,7 @@ describe Namespace do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags(repository: :any, tags: ['tag'])
 
-        create(:empty_project, namespace: @namespace, container_repositories: [container_repository])
+        create(:project, namespace: @namespace, container_repositories: [container_repository])
 
         allow(@namespace).to receive(:path_was).and_return(@namespace.path)
         allow(@namespace).to receive(:path).and_return('new_path')

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Project variables', js: true do
   let(:user)     { create(:user) }
-  let(:project)  { create(:empty_project) }
+  let(:project)  { create(:project) }
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do

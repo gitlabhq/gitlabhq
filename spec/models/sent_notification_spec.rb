@@ -21,7 +21,7 @@ describe SentNotification do
       end
 
       context "when the noteable project and discussion project match" do
-        let(:project) { create(:project) }
+        let(:project) { create(:project, :repository) }
         let(:issue) { create(:issue, project: project) }
         let(:discussion_id) { create(:note, project: project, noteable: issue).discussion_id }
         subject { build(:sent_notification, project: project, noteable: issue, in_reply_to_discussion_id: discussion_id) }
@@ -128,7 +128,7 @@ describe SentNotification do
     end
 
     context 'for commit' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:commit) { project.commit }
       subject { described_class.record(commit, project.creator.id) }
 

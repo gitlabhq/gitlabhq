@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ImportService do
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let(:user) { project.creator }
 
   subject { described_class.new(project, user) }
@@ -26,7 +26,7 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - The repository could not be created."
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The repository could not be created."
       end
     end
 
@@ -38,8 +38,7 @@ describe Projects::ImportService do
 
       context 'with a Github repository' do
         it 'succeeds if repository import is successfully' do
-          expect_any_instance_of(Repository).to receive(:fetch_remote).and_return(true)
-          expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(true)
+          expect_any_instance_of(Github::Import).to receive(:execute).and_return(true)
 
           result = subject.execute
 
@@ -52,16 +51,7 @@ describe Projects::ImportService do
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
-        end
-
-        it 'does not remove the GitHub remote' do
-          expect_any_instance_of(Repository).to receive(:fetch_remote).and_return(true)
-          expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(true)
-
-          subject.execute
-
-          expect(project.repository.raw_repository.remote_names).to include('github')
+          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - The remote data could not be imported."
         end
       end
 
@@ -86,7 +76,7 @@ describe Projects::ImportService do
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Failed to import the repository"
+          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Failed to import the repository"
         end
       end
     end
@@ -102,8 +92,7 @@ describe Projects::ImportService do
       end
 
       it 'succeeds if importer succeeds' do
-        allow_any_instance_of(Repository).to receive(:fetch_remote).and_return(true)
-        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(true)
+        allow_any_instance_of(Github::Import).to receive(:execute).and_return(true)
 
         result = subject.execute
 
@@ -111,10 +100,7 @@ describe Projects::ImportService do
       end
 
       it 'flushes various caches' do
-        allow_any_instance_of(Repository).to receive(:fetch_remote)
-          .and_return(true)
-
-        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute)
+        allow_any_instance_of(Github::Import).to receive(:execute)
           .and_return(true)
 
         expect_any_instance_of(Repository).to receive(:expire_content_cache)
@@ -123,29 +109,27 @@ describe Projects::ImportService do
       end
 
       it 'fails if importer fails' do
-        allow_any_instance_of(Repository).to receive(:fetch_remote).and_return(true)
-        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(false)
+        allow_any_instance_of(Github::Import).to receive(:execute).and_return(false)
 
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - The remote data could not be imported."
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The remote data could not be imported."
       end
 
       it 'fails if importer raise an error' do
-        allow_any_instance_of(Gitlab::Shell).to receive(:fetch_remote).and_return(true)
-        allow_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_raise(Projects::ImportService::Error.new('Github: failed to connect API'))
+        allow_any_instance_of(Github::Import).to receive(:execute).and_raise(Projects::ImportService::Error.new('Github: failed to connect API'))
 
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.path_with_namespace} - Github: failed to connect API"
+        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Github: failed to connect API"
       end
 
       it 'expires content cache after error' do
-        allow_any_instance_of(Project).to receive(:repository_exists?).and_return(false, true)
+        allow_any_instance_of(Project).to receive(:repository_exists?).and_return(false)
 
-        expect_any_instance_of(Gitlab::Shell).to receive(:fetch_remote).and_raise(Gitlab::Shell::Error.new('Failed to import the repository'))
+        expect_any_instance_of(Repository).to receive(:fetch_remote).and_raise(Gitlab::Shell::Error.new)
         expect_any_instance_of(Repository).to receive(:expire_content_cache)
 
         subject.execute

@@ -2,7 +2,7 @@ require('spec_helper')
 
 describe Projects::TodosController do
   let(:user)          { create(:user) }
-  let(:project)       { create(:empty_project) }
+  let(:project)       { create(:project) }
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
@@ -67,7 +67,7 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
+          expect { go }.not_to change { user.todos.count }
           expect(response).to have_http_status(404)
         end
       end
@@ -135,7 +135,7 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
+          expect { go }.not_to change { user.todos.count }
           expect(response).to have_http_status(404)
         end
       end

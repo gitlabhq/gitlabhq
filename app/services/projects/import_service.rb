@@ -11,7 +11,7 @@ module Projects
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}")
+      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
     end
 
     private
@@ -34,8 +34,12 @@ module Projects
     def import_repository
       raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
 
+      # We should return early for a GitHub import because the new GitHub
+      # importer fetch the project repositories for us.
+      return if project.github_import?
+
       begin
-        if project.github_import? || project.gitea_import?
+        if project.gitea_import?
           fetch_repository
         else
           clone_repository
@@ -51,11 +55,11 @@ module Projects
     end
 
     def clone_repository
-      gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
+      gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
     end
 
     def fetch_repository
-      project.create_repository
+      project.ensure_repository
       project.repository.add_remote(project.import_type, project.import_url)
       project.repository.set_remote_as_mirror(project.import_type)
       project.repository.fetch_remote(project.import_type, forced: true)

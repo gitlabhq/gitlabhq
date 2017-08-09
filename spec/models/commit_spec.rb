@@ -33,7 +33,6 @@ describe Commit do
 
   describe '#to_reference' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
-    let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id
@@ -47,7 +46,6 @@ describe Commit do
 
   describe '#reference_link_text' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
-    let(:commit)  { project.commit }
 
     it 'returns a String reference to the object' do
       expect(commit.reference_link_text).to eq commit.short_id
@@ -151,7 +149,7 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
-    let(:other_project) { create(:empty_project, :public) }
+    let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
     let(:commiter) { create :user }
 
@@ -161,7 +159,7 @@ eos
     end
 
     it 'detects issues that this commit is marked as closing' do
-      ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
+      ext_ref = "#{other_project.full_path}##{other_issue.iid}"
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
@@ -191,7 +189,7 @@ eos
 
     it { expect(data).to be_a(Hash) }
     it { expect(data[:message]).to include('adds bar folder and branch-test text file to check Repository merged_to_root_ref method') }
-    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46+00:00') }
+    it { expect(data[:timestamp]).to eq('2016-09-27T14:37:46Z') }
     it { expect(data[:added]).to eq(["bar/branch-test.txt"]) }
     it { expect(data[:modified]).to eq([]) }
     it { expect(data[:removed]).to eq([]) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Pipelines', :js do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   context 'when user is logged in' do
     let(:user) { create(:user) }

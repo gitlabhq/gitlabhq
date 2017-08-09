@@ -13,10 +13,8 @@
   - if show_callout?('user_callout_dismissed')
     = render 'shared/user_callout'
 
-  - if @projects.any? || params[:name]
+  - if has_projects_or_name?(@projects, params)
     = render 'dashboard/projects_head'
-
-  - if @projects.any? || params[:name]
     = render 'projects'
   - else
     = render "zero_authorized_projects"

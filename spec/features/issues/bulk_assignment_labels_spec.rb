@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
-  let!(:project)  { create(:empty_project) }
+  let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
   let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
   let!(:bug)      { create(:label, project: project, title: 'bug') }

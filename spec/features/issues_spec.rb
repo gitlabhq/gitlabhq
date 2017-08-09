@@ -6,7 +6,7 @@ describe 'Issues' do
   include SortingHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   before do
     sign_in(user)
@@ -367,7 +367,7 @@ describe 'Issues' do
   end
 
   describe 'when I want to reset my incoming email token' do
-    let(:project1) { create(:empty_project, namespace: user.namespace) }
+    let(:project1) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, project: project1) }
 
     before do
@@ -704,6 +704,32 @@ describe 'Issues' do
 
       wait_for_requests
       expect(page).to have_text("updated title")
+    end
+  end
+
+  describe 'confidential issue#show', js: true do
+    it 'shows confidential sibebar information as confidential and can be turned off' do 
+      issue = create(:issue, :confidential, project: project)
+
+      visit project_issue_path(project, issue)
+
+      expect(page).to have_css('.confidential-issue-warning')
+      expect(page).to have_css('.is-confidential')
+      expect(page).not_to have_css('.is-not-confidential')
+
+      find('.confidential-edit').click
+      expect(page).to have_css('.confidential-warning-message')
+
+      within('.confidential-warning-message') do
+        find('.btn-close').click
+      end
+
+      wait_for_requests
+
+      visit project_issue_path(project, issue)
+
+      expect(page).not_to have_css('.is-confidential')
+      expect(page).to have_css('.is-not-confidential')
     end
   end
 end

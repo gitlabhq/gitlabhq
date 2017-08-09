@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
@@ -424,6 +424,26 @@ describe QuickActions::InterpretService do
       end
     end
 
+    context 'assign command with me alias' do
+      let(:content) { "/assign me" }
+
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+    end
+
     it_behaves_like 'empty command' do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
@@ -683,7 +703,7 @@ describe QuickActions::InterpretService do
 
       context 'cross project references' do
         it_behaves_like 'duplicate command' do
-          let(:other_project) { create(:empty_project, :public) }
+          let(:other_project) { create(:project, :public) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
           let(:issuable) { issue }
@@ -695,7 +715,7 @@ describe QuickActions::InterpretService do
         end
 
         it_behaves_like 'empty command' do
-          let(:other_project) { create(:empty_project, :private) }
+          let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }

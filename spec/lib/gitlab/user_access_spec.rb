@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::UserAccess do
   let(:access) { described_class.new(user, project: project) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   describe '#can_push_to_branch?' do

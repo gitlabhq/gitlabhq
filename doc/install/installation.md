@@ -168,8 +168,10 @@ are out of date, so we'll need to install through the following commands:
     curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
-    # install yarn
-    curl --location https://yarnpkg.com/install.sh | bash -
+    curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    sudo apt-get update
+    sudo apt-get install yarn
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
@@ -294,9 +296,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-5-stable gitlab
 
-**Note:** You can change `9-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -505,14 +507,16 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
+    sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+
 ### Compile Assets
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
-
-### Compile GetText PO files
-
-    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

@@ -8,6 +8,7 @@ class MergeRequest < ActiveRecord::Base
   include CreatedAtFilterable
 
   ignore_column :position
+  ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -59,16 +60,6 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
-    end
-
-    after_transition any => :locked do |merge_request, transition|
-      merge_request.locked_at = Time.now
-      merge_request.save
-    end
-
-    after_transition locked: (any - :locked) do |merge_request, transition|
-      merge_request.locked_at = nil
-      merge_request.save
     end
 
     state :opened
@@ -171,7 +162,7 @@ class MergeRequest < ActiveRecord::Base
     target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
-    where("merge_requests.id IN (#{union.to_sql})")
+    where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
@@ -390,6 +381,12 @@ class MergeRequest < ActiveRecord::Base
 
     errors.add :validate_fork,
                'Source project is not a fork of the target project'
+  end
+
+  def merge_ongoing?
+    return false unless merge_jid
+
+    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
   end
 
   def closed_without_fork?
@@ -630,7 +627,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_path
     if target_project
-      target_project.path_with_namespace
+      target_project.full_path
     else
       "(removed)"
     end
@@ -638,7 +635,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_path
     if source_project
-      source_project.path_with_namespace
+      source_project.full_path
     else
       "(removed)"
     end
@@ -723,12 +720,6 @@ class MergeRequest < ActiveRecord::Base
     else
       source_project.repository.branch_names
     end
-  end
-
-  def locked_long_ago?
-    return false unless locked?
-
-    locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 
   def has_ci?

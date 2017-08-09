@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default {
   init() {
     if (!this.initialized) {
@@ -30,4 +32,3 @@ export default {
     }
   },
 };
-

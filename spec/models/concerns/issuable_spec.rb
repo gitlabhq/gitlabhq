@@ -155,7 +155,7 @@ describe Issuable do
   end
 
   describe "#sort" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context "by milestone due date" do
       # Correct order is:
@@ -296,7 +296,7 @@ describe Issuable do
   end
 
   describe '#labels_array' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
@@ -310,7 +310,7 @@ describe Issuable do
   end
 
   describe '#user_notes_count' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue1) { create(:issue, project: project) }
     let(:issue2) { create(:issue, project: project) }
 
@@ -340,7 +340,7 @@ describe Issuable do
   end
 
   describe '.order_due_date_and_labels_priority' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     def create_issue(milestone, labels)
       create(:labeled_issue, milestone: milestone, labels: labels, project: project)
@@ -394,7 +394,7 @@ describe Issuable do
   end
 
   describe ".with_label" do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:feature) { create(:label, project: project, title: 'feature') }
     let(:enhancement) { create(:label, project: project, title: 'enhancement') }

@@ -95,10 +95,20 @@
 }
 
 .right-sidebar.wiki-sidebar {
-  padding: $gl-padding 0;
+  padding: 0;
 
   &.right-sidebar-collapsed {
     display: none;
+  }
+
+  .sidebar-container {
+    padding: $gl-padding 0;
+    width: calc(100% + 100px);
+    padding-right: 100px;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .blocks-container {

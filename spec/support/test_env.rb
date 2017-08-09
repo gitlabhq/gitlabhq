@@ -122,32 +122,60 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    shell_needs_update = component_needs_update?(Gitlab.config.gitlab_shell.path,
+    puts "\n==> Setting up Gitlab Shell..."
+    start = Time.now
+    gitlab_shell_dir = Gitlab.config.gitlab_shell.path
+    shell_needs_update = component_needs_update?(gitlab_shell_dir,
       Gitlab::Shell.version_required)
 
     unless !shell_needs_update || system('rake', 'gitlab:shell:install')
-      raise 'Can`t clone gitlab-shell'
+      puts "\nGitLab Shell failed to install, cleaning up #{gitlab_shell_dir}!\n"
+      FileUtils.rm_rf(gitlab_shell_dir)
+      exit 1
     end
+
+    puts "    GitLab Shell setup in #{Time.now - start} seconds...\n"
   end
 
   def setup_gitaly
+    puts "\n==> Setting up Gitaly..."
+    start = Time.now
     socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
+
+    if gitaly_dir_stale?(gitaly_dir)
+      puts "    Gitaly is outdated, cleaning up #{gitaly_dir}!"
+      FileUtils.rm_rf(gitaly_dir)
+    end
+
     gitaly_needs_update = component_needs_update?(gitaly_dir,
       Gitlab::GitalyClient.expected_server_version)
 
     unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      raise "Can't clone gitaly"
+      puts "\nGitaly failed to install, cleaning up #{gitaly_dir}!\n"
+      FileUtils.rm_rf(gitaly_dir)
+      exit 1
     end
 
     start_gitaly(gitaly_dir)
+    puts "    Gitaly setup in #{Time.now - start} seconds...\n"
+  end
+
+  def gitaly_dir_stale?(dir)
+    gitaly_executable = File.join(dir, 'gitaly')
+    return false unless File.exist?(gitaly_executable)
+
+    File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION'))
   end
 
   def start_gitaly(gitaly_dir)
-    gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    gitaly_config = File.join(gitaly_dir, 'config.toml')
-    log_file = Rails.root.join('log/gitaly-test.log').to_s
-    @gitaly_pid = Bundler.with_original_env { spawn(gitaly_exec, gitaly_config, [:out, :err] => log_file) }
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
+    end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
   end
 
   def stop_gitaly
@@ -208,7 +236,6 @@ module TestEnv
   # Otherwise they'd be created by the first test, often timing out and
   # causing a transient test failure
   def eager_load_driver_server
-    return unless ENV['CI']
     return unless defined?(Capybara)
 
     puts "Starting the Capybara driver server..."
@@ -221,6 +248,14 @@ module TestEnv
 
   def forked_repo_path_bare
     "#{forked_repo_path}_bare"
+  end
+
+  def with_empty_bare_repository(name = nil)
+    path = Rails.root.join('tmp/tests', name || 'empty-bare-repository').to_s
+
+    yield(Rugged::Repository.init_at(path, :bare))
+  ensure
+    FileUtils.rm_rf(path)
   end
 
   private

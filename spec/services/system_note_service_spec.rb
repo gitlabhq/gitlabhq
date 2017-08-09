@@ -3,7 +3,8 @@ require 'spec_helper'
 describe SystemNoteService do
   include Gitlab::Routing
 
-  let(:project)  { create(:empty_project) }
+  let(:group)    { create(:group) }
+  let(:project)  { create(:project, group: group) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
@@ -34,7 +35,7 @@ describe SystemNoteService do
 
     context 'metadata' do
       it 'creates a new system note metadata record' do
-        expect { subject }.to change{ SystemNoteMetadata.count }.from(0).to(1)
+        expect { subject }.to change { SystemNoteMetadata.count }.from(0).to(1)
       end
 
       it 'creates a record correctly' do
@@ -242,25 +243,51 @@ describe SystemNoteService do
   end
 
   describe '.change_milestone' do
-    subject { described_class.change_milestone(noteable, project, author, milestone) }
+    context 'for a project milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-    let(:milestone) { create(:milestone, project: project) }
+      let(:milestone) { create(:milestone, project: project) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'milestone' }
-    end
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
 
-    context 'when milestone added' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+      context 'when milestone added' do
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
 
-    context 'when milestone removed' do
-      let(:milestone) { nil }
+    context 'for a group milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-      it 'sets the note text' do
-        expect(subject.note).to eq 'removed milestone'
+      let(:milestone) { create(:milestone, group: group) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
+
+      context 'when milestone added' do
+        it 'sets the note text to use the milestone name' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
   end
@@ -450,7 +477,7 @@ describe SystemNoteService do
       end
 
       it 'does not create a system note metadata record' do
-        expect { subject }.not_to change{ SystemNoteMetadata.count }
+        expect { subject }.not_to change { SystemNoteMetadata.count }
       end
     end
 
@@ -648,7 +675,7 @@ describe SystemNoteService do
   end
 
   describe '.noteable_moved' do
-    let(:new_project) { create(:empty_project) }
+    let(:new_project) { create(:project) }
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
@@ -667,7 +694,7 @@ describe SystemNoteService do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.path_with_namespace
+        expect(subject.note).to include new_project.full_path
       end
     end
 
@@ -718,7 +745,7 @@ describe SystemNoteService do
   describe 'JIRA integration' do
     include JiraServiceHelper
 
-    let(:project)         { create(:jira_project) }
+    let(:project)         { create(:jira_project, :repository) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
     let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
@@ -873,7 +900,7 @@ describe SystemNoteService do
     describe "existing reference" do
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
 
@@ -1116,7 +1143,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:empty_project) }
+      let(:other_project)  { create(:project) }
       let(:canonical_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1141,7 +1168,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:empty_project) }
+      let(:other_project)  { create(:project) }
       let(:duplicate_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do

@@ -3,8 +3,9 @@
 - if show_new_nav?
   - add_to_breadcrumbs("Repository", project_tree_path(@project))
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_d3')
-  = page_specific_javascript_bundle_tag('graphs')
+  = webpack_bundle_tag('common_d3')
+  = webpack_bundle_tag('graphs')
+  = webpack_bundle_tag('graphs_charts')
 = render "projects/commits/head"
 
 .repo-charts{ class: container_class }
@@ -75,55 +76,10 @@
           Commits per day hour (UTC)
         %canvas#hour-chart
 
-:javascript
-  var responsiveChart = function (selector, data) {
-    var options = { "scaleOverlay": true, responsive: true, pointHitDetectionRadius: 2, maintainAspectRatio: false };
-    // get selector by context
-    var ctx = selector.get(0).getContext("2d");
-    // pointing parent container to make chart.js inherit its width
-    var container = $(selector).parent();
-    var generateChart = function() {
-      selector.attr('width', $(container).width());
-      if (window.innerWidth < 768) {
-        // Scale fonts if window width lower than 768px (iPad portrait)
-        options.scaleFontSize = 8
-      }
-      return new Chart(ctx).Bar(data, options);
-    };
-    // enabling auto-resizing
-    $(window).resize(generateChart);
-    return generateChart();
-  };
-
-  var chartData = function (keys, values) {
-    var data = {
-      labels : keys,
-      datasets : [{
-        fillColor : "rgba(220,220,220,0.5)",
-        strokeColor : "rgba(220,220,220,1)",
-        barStrokeWidth: 1,
-        barValueSpacing: 1,
-        barDatasetSpacing: 1,
-        data : values
-      }]
-    };
-    return data;
-  };
-
-  var hourData = chartData(#{@commits_per_time.keys.to_json}, #{@commits_per_time.values.to_json});
-  responsiveChart($('#hour-chart'), hourData);
-
-  var dayData = chartData(#{@commits_per_week_days.keys.to_json}, #{@commits_per_week_days.values.to_json});
-  responsiveChart($('#weekday-chart'), dayData);
-
-  var monthData = chartData(#{@commits_per_month.keys.to_json}, #{@commits_per_month.values.to_json});
-  responsiveChart($('#month-chart'), monthData);
-
-  var data = #{@languages.to_json};
-  var ctx = $("#languages-chart").get(0).getContext("2d");
-  var options = {
-    scaleOverlay: true,
-    responsive: true,
-    maintainAspectRatio: false
-  }
-  var myPieChart = new Chart(ctx).Pie(data, options);
+%script#projectChartData{ type: "application/json" }
+  - projectChartData = {};
+  - projectChartData['hour'] = @commits_per_time
+  - projectChartData['weekDays'] = @commits_per_week_days
+  - projectChartData['month'] = @commits_per_month
+  - projectChartData['languages'] = @languages
+  = projectChartData.to_json.html_safe

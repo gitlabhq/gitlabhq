@@ -1,0 +1,4 @@
+---
+title: Fix deletion of deploy keys linked to other projects
+merge_request: 13162
+author:

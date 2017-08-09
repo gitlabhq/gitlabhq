@@ -49,7 +49,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
   config.include StubConfiguration
-  config.include EmailHelpers, type: :mailer
+  config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -93,6 +93,10 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
+  config.before(:example, :mailer) do
+    reset_delivered_emails!
+  end
+
   if ENV['CI']
     config.around(:each) do |ex|
       ex.run_with_retry retry: 2
@@ -129,10 +133,14 @@ RSpec.configure do |config|
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    reset_column_in_migration_models
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    reset_column_in_migration_models
   end
 
   config.around(:each, :nested_groups) do |example|

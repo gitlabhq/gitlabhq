@@ -66,13 +66,6 @@ module API
       expose :job_events
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id
-      expose :http_url_to_repo, :web_url
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
-    end
-
     class SharedGroup < Grape::Entity
       expose :group_id
       expose :group_name do |group_link, options|
@@ -81,7 +74,16 @@ module API
       expose :group_access, as: :group_access_level
     end
 
-    class Project < Grape::Entity
+    class BasicProjectDetails < Grape::Entity
+      expose :id, :description, :default_branch, :tag_list
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :name, :name_with_namespace
+      expose :path, :path_with_namespace
+      expose :star_count, :forks_count
+      expose :created_at, :last_activity_at
+    end
+
+    class Project < BasicProjectDetails 
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose :_links do
@@ -114,12 +116,9 @@ module API
         end
       end
 
-      expose :id, :description, :default_branch, :tag_list
       expose :archived?, as: :archived
-      expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -129,18 +128,16 @@ module API
       expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
 
-      expose :created_at, :last_activity_at
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
-      expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
@@ -240,7 +237,7 @@ module API
       end
 
       expose :protected do |repo_branch, options|
-        ProtectedBranch.protected?(options[:project], repo_branch.name)
+        ::ProtectedBranch.protected?(options[:project], repo_branch.name)
       end
 
       expose :developers_can_push do |repo_branch, options|
@@ -297,6 +294,19 @@ module API
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
       expose :deleted_file?, as: :deleted_file
+    end
+
+    class ProtectedRefAccess < Grape::Entity
+      expose :access_level
+      expose :access_level_description do |protected_ref_access|
+        protected_ref_access.humanize
+      end
+    end
+
+    class ProtectedBranch < Grape::Entity
+      expose :name
+      expose :push_access_levels, using: Entities::ProtectedRefAccess
+      expose :merge_access_levels, using: Entities::ProtectedRefAccess
     end
 
     class Milestone < Grape::Entity
@@ -444,6 +454,9 @@ module API
     end
 
     class Note < Grape::Entity
+      # Only Issue and MergeRequest have iid
+      NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
+
       expose :id
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
@@ -451,6 +464,9 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
+
+      # Avoid N+1 queries as much as possible
+      expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
     end
 
     class AwardEmoji < Grape::Entity
@@ -483,7 +499,7 @@ module API
 
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
-      expose :target_id, :target_type, :author_id
+      expose :target_id, :target_iid, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
@@ -689,7 +705,7 @@ module API
     class RepoTag < Grape::Entity
       expose :name, :message
 
-      expose :commit do |repo_tag, options|
+      expose :commit, using: Entities::RepoCommit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
@@ -940,6 +956,12 @@ module API
       expose :user_agent
       expose :ip_address
       expose :submitted, as: :akismet_submitted
+    end
+
+    class RepositoryStorageHealth < Grape::Entity
+      expose :storage_name
+      expose :failing_on_hosts
+      expose :total_failures
     end
   end
 end

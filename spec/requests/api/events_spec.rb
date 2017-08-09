@@ -5,7 +5,7 @@ describe API::Events do
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
   let(:other_user) { create(:user, username: 'otheruser') }
-  let(:private_project) { create(:empty_project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
   let(:closed_issue) { create(:closed_issue, project: private_project, author: user) }
   let!(:closed_issue_event) { create(:event, project: private_project, author: user, target: closed_issue, action: Event::CLOSED, created_at: Date.new(2016, 12, 30)) }
 
@@ -60,7 +60,7 @@ describe API::Events do
       end
 
       context 'when there are multiple events from different projects' do
-        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:second_note) { create(:note_on_issue, project: create(:project)) }
 
         before do
           second_note.project.add_user(user, :developer)
@@ -106,7 +106,7 @@ describe API::Events do
       end
 
       it 'returns 200 status for a public project' do
-        public_project = create(:empty_project, :public)
+        public_project = create(:project, :public)
 
         get api("/projects/#{public_project.id}/events")
 
@@ -136,6 +136,36 @@ describe API::Events do
         get api("/projects/1234/events", user)
 
         expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when exists some events' do
+      let(:merge_request1) { create(:merge_request, :closed, author: user, assignee: user, source_project: private_project, title: 'Test') }
+      let(:merge_request2) { create(:merge_request, :closed, author: user, assignee: user, source_project: private_project, title: 'Test') }
+
+      before do
+        create_event(merge_request1)
+      end
+
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
+        end.count
+
+        create_event(merge_request2)
+
+        expect do
+          get api("/projects/#{private_project.id}/events", user), target_type: :merge_request
+        end.not_to exceed_query_limit(control_count)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |r| r['target_id'] }).to match_array([merge_request1.id, merge_request2.id])
+      end
+
+      def create_event(target)
+        create(:event, project: private_project, author: user, target: target)
       end
     end
   end

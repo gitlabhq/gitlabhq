@@ -5,7 +5,7 @@ describe Projects::UpdateService, '#execute' do
   let(:admin) { create(:admin) }
 
   let(:project) do
-    create(:empty_project, creator: user, namespace: user.namespace)
+    create(:project, creator: user, namespace: user.namespace)
   end
 
   context 'when changing visibility level' do
@@ -59,7 +59,7 @@ describe Projects::UpdateService, '#execute' do
   end
 
   describe 'when updating project that has forks' do
-    let(:project) { create(:empty_project, :internal) }
+    let(:project) { create(:project, :internal) }
     let(:forked_project) { create(:forked_project_with_submodules, :internal) }
 
     before do
@@ -100,6 +100,13 @@ describe Projects::UpdateService, '#execute' do
       update_project(project, admin, default_branch: 'feature')
 
       expect(Project.find(project.id).default_branch).to eq 'feature'
+    end
+
+    it 'does not change a default branch' do
+      # The branch 'unexisted-branch' does not exist.
+      update_project(project, admin, default_branch: 'unexisted-branch')
+
+      expect(Project.find(project.id).default_branch).to eq 'master'
     end
   end
 

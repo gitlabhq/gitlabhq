@@ -1,13 +1,11 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService do
-  include EmailHelpers
-
+describe Issues::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
 
@@ -480,7 +478,7 @@ describe Issues::UpdateService do
             feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect{ update_issue(assignee_ids: [assignee.id]) }.not_to change{ issue.assignees }
+            expect { update_issue(assignee_ids: [assignee.id]) }.not_to change { issue.assignees }
           end
         end
       end

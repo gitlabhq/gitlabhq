@@ -5,8 +5,8 @@ describe API::V3::Runners do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
 
-  let(:project) { create(:empty_project, creator_id: user.id) }
-  let(:project2) { create(:empty_project, creator_id: user.id) }
+  let(:project) { create(:project, creator_id: user.id) }
+  let(:project2) { create(:project, creator_id: user.id) }
 
   let!(:shared_runner) { create(:ci_runner, :shared) }
   let!(:unused_specific_runner) { create(:ci_runner) }
@@ -38,7 +38,7 @@ describe API::V3::Runners do
             delete v3_api("/runners/#{shared_runner.id}", admin)
 
             expect(response).to have_http_status(200)
-          end.to change{ Ci::Runner.shared.count }.by(-1)
+          end.to change { Ci::Runner.shared.count }.by(-1)
         end
       end
 
@@ -48,7 +48,7 @@ describe API::V3::Runners do
             delete v3_api("/runners/#{unused_specific_runner.id}", admin)
 
             expect(response).to have_http_status(200)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
         it 'deletes used runner' do
@@ -56,7 +56,7 @@ describe API::V3::Runners do
             delete v3_api("/runners/#{specific_runner.id}", admin)
 
             expect(response).to have_http_status(200)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
 
@@ -91,7 +91,7 @@ describe API::V3::Runners do
             delete v3_api("/runners/#{specific_runner.id}", user)
 
             expect(response).to have_http_status(200)
-          end.to change{ Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
     end
@@ -113,7 +113,7 @@ describe API::V3::Runners do
             delete v3_api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
 
             expect(response).to have_http_status(200)
-          end.to change{ project.runners.count }.by(-1)
+          end.to change { project.runners.count }.by(-1)
         end
       end
 
@@ -121,7 +121,7 @@ describe API::V3::Runners do
         it "does not disable project's runner" do
           expect do
             delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
-          end.to change{ project.runners.count }.by(0)
+          end.to change { project.runners.count }.by(0)
           expect(response).to have_http_status(403)
         end
       end

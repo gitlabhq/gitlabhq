@@ -3,9 +3,9 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Issues' do
   let(:current_user) { create :user }
   let(:user) { current_user } # Shared examples depend on this being available
-  let!(:public_project) { create(:empty_project, :public) }
-  let(:project) { create(:empty_project) }
-  let(:project_with_issues_disabled) { create(:empty_project, :issues_disabled) }
+  let!(:public_project) { create(:project, :public) }
+  let(:project) { create(:project) }
+  let(:project_with_issues_disabled) { create(:project, :issues_disabled) }
   let!(:authored_issue) { create :issue, author: current_user, project: project }
   let!(:authored_issue_on_public_project) { create :issue, author: current_user, project: public_project }
   let!(:assigned_issue) { create :issue, assignees: [current_user], project: project }
@@ -79,12 +79,21 @@ RSpec.describe 'Dashboard Issues' do
       end
     end
 
-    it 'shows the new issue page', :js do
+    it 'shows the new issue page', js: true do
       find('.new-project-item-select-button').click
-      wait_for_requests
-      find('.select2-results li').click
 
-      expect(page).to have_current_path("/#{project.path_with_namespace}/issues/new")
+      wait_for_requests
+
+      project_path = "/#{project.path_with_namespace}"
+      project_json = { name: project.name_with_namespace, url: project_path }.to_json
+
+      # similate selection, and prevent overlap by dropdown menu
+      execute_script("$('.project-item-select').val('#{project_json}').trigger('change');")
+      execute_script("$('#select2-drop-mask').remove();")
+
+      find('.new-project-item-link').click
+
+      expect(page).to have_current_path("#{project_path}/issues/new")
 
       page.within('#content-body') do
         expect(page).to have_selector('.issue-form')

@@ -145,7 +145,6 @@ MergeRequest:
 - iid
 - description
 - position
-- locked_at
 - updated_by_id
 - merge_error
 - merge_params

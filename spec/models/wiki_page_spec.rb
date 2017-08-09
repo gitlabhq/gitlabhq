@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe WikiPage do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
@@ -178,12 +178,12 @@ describe WikiPage do
       end
 
       it "updates the content of the page" do
-        @page.update("new content")
+        @page.update(content: "new content")
         @page = wiki.find_page(title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
       end
     end
   end
@@ -195,29 +195,42 @@ describe WikiPage do
     end
 
     after do
-      destroy_page("Update")
+      destroy_page(@page.title)
     end
 
     context "with valid attributes" do
       it "updates the content of the page" do
-        @page.update("new content")
+        new_content = "new content"
+
+        @page.update(content: new_content)
         @page = wiki.find_page("Update")
+
+        expect(@page.content).to eq("new content")
+      end
+
+      it "updates the title of the page" do
+        new_title = "Index v.1.2.4"
+
+        @page.update(title: new_title)
+        @page = wiki.find_page(new_title)
+
+        expect(@page.title).to eq(new_title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
       end
     end
 
     context 'with same last commit sha' do
       it 'returns true' do
-        expect(@page.update('more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
+        expect(@page.update(content: 'more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
       end
     end
 
     context 'with different last commit sha' do
       it 'raises exception' do
-        expect { @page.update('more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
+        expect { @page.update(content: 'more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
       end
     end
   end
@@ -249,7 +262,7 @@ describe WikiPage do
     end
 
     it "returns an array of all commits for the page" do
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
       expect(@page.versions.count).to eq(4)
     end
   end
@@ -294,7 +307,7 @@ describe WikiPage do
     before do
       create_page('Update', 'content')
       @page = wiki.find_page('Update')
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
     end
 
     after do
@@ -338,7 +351,7 @@ describe WikiPage do
     end
 
     it 'returns false for updated wiki page' do
-      updated_wiki_page = original_wiki_page.update("Updated content")
+      updated_wiki_page = original_wiki_page.update(content: "Updated content")
       expect(original_wiki_page).not_to eq(updated_wiki_page)
     end
   end
@@ -360,7 +373,7 @@ describe WikiPage do
     it 'is changed after page updated' do
       last_commit_sha_before_update = @page.last_commit_sha
 
-      @page.update("new content")
+      @page.update(content: "new content")
       @page = wiki.find_page("Update")
 
       expect(@page.last_commit_sha).not_to eq last_commit_sha_before_update

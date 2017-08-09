@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Boards::IssuesController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let(:guest)   { create(:user) }

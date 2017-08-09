@@ -48,8 +48,8 @@ module API
     end
 
     before { header['X-Frame-Options'] = 'SAMEORIGIN' }
-    before { Gitlab::I18n.locale = current_user&.preferred_language }
 
+    # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
@@ -95,6 +95,7 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
+    mount ::API::CircuitBreakers
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
@@ -123,6 +124,7 @@ module API
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets
+    mount ::API::ProtectedBranches
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
@@ -139,6 +141,7 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::GroupVariables
     mount ::API::Version
 
     route :any, '*path' do

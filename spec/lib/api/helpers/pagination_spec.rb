@@ -32,7 +32,7 @@ describe API::Helpers::Pagination do
 
     context 'when resource can be paginated' do
       before do
-        create_list(:empty_project, 3)
+        create_list(:project, 3)
       end
 
       describe 'first page' do

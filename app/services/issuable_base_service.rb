@@ -2,11 +2,8 @@ class IssuableBaseService < BaseService
   private
 
   def create_milestone_note(issuable)
-    milestone = issuable.milestone
-    return if milestone && milestone.is_group_milestone?
-
     SystemNoteService.change_milestone(
-      issuable, issuable.project, current_user, milestone)
+      issuable, issuable.project, current_user, issuable.milestone)
   end
 
   def create_labels_note(issuable, old_labels)
@@ -182,7 +179,6 @@ class IssuableBaseService < BaseService
 
     if params.present? && create_issuable(issuable, params, label_ids: label_ids)
       after_create(issuable)
-      issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
     end
@@ -288,7 +284,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
-      todo_service.mark_todos_as_done([todo], current_user) if todo
+      todo_service.mark_todos_as_done_by_ids(todo, current_user) if todo
     end
   end
 

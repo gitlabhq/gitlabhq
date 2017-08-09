@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::PipelineSchedules do
   set(:developer) { create(:user) }
   set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
 
   before do
     project.add_developer(developer)
@@ -53,7 +53,7 @@ describe API::PipelineSchedules do
           it 'returns matched pipeline schedules' do
             get api("/projects/#{project.id}/pipeline_schedules", developer), scope: target
 
-            expect(json_response.map{ |r| r['active'] }).to all(eq(active?(target)))
+            expect(json_response.map { |r| r['active'] }).to all(eq(active?(target)))
           end
         end
 

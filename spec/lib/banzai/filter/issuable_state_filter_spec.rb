@@ -7,8 +7,8 @@ describe Banzai::Filter::IssuableStateFilter do
   let(:user) { create(:user) }
   let(:context) { { current_user: user, issuable_state_filter_enabled: true } }
   let(:closed_issue) { create_issue(:closed) }
-  let(:project) { create(:empty_project, :public) }
-  let(:other_project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
+  let(:other_project) { create(:project, :public) }
 
   def create_link(text, data)
     link_to(text, '', class: 'gfm has-tooltip', data: data)

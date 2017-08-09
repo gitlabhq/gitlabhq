@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::GitalyClient::CommitService do
   let(:project) { create(:project, :repository) }
   let(:storage_name) { project.repository_storage }
-  let(:relative_path) { project.path_with_namespace + '.git' }
+  let(:relative_path) { project.disk_path + '.git' }
   let(:repository) { project.repository }
   let(:repository_message) { repository.gitaly_repository }
   let(:revision) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
@@ -30,7 +30,7 @@ describe Gitlab::GitalyClient::CommitService do
 
     context 'when a commit does not have a parent' do
       it 'sends an RPC request with empty tree ref as left commit' do
-        initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863')
+        initial_commit = project.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863').raw
         request        = Gitaly::CommitDiffRequest.new(
           repository: repository_message,
           left_commit_id: '4b825dc642cb6eb9a060e54bf8d69288fbee4904',
@@ -46,18 +46,10 @@ describe Gitlab::GitalyClient::CommitService do
       end
     end
 
-    it 'returns a Gitlab::Git::DiffCollection' do
+    it 'returns a Gitlab::GitalyClient::DiffStitcher' do
       ret = client.diff_from_parent(commit)
 
-      expect(ret).to be_kind_of(Gitlab::Git::DiffCollection)
-    end
-
-    it 'passes options to Gitlab::Git::DiffCollection' do
-      options = { max_files: 31, max_lines: 13, from_gitaly: true }
-
-      expect(Gitlab::Git::DiffCollection).to receive(:new).with(kind_of(Enumerable), options)
-
-      client.diff_from_parent(commit, options)
+      expect(ret).to be_kind_of(Gitlab::GitalyClient::DiffStitcher)
     end
   end
 
@@ -118,6 +110,20 @@ describe Gitlab::GitalyClient::CommitService do
         .and_return([])
 
       client.tree_entries(repository, revision, path)
+    end
+  end
+
+  describe '#find_commit' do
+    let(:revision) { '4b825dc642cb6eb9a060e54bf8d69288fbee4904' }
+    it 'sends an RPC request' do
+      request = Gitaly::FindCommitRequest.new(
+        repository: repository_message, revision: revision
+      )
+
+      expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit)
+        .with(request, kind_of(Hash)).and_return(double(commit: nil))
+
+      described_class.new(repository).find_commit(revision)
     end
   end
 end

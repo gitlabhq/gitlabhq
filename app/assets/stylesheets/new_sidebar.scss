@@ -8,20 +8,25 @@ $active-color: $indigo-700;
 $active-hover-background: $active-background;
 $active-hover-color: $gl-text-color;
 $inactive-badge-background: rgba(0, 0, 0, .08);
-$hover-background: $indigo-700;
-$hover-color: $white-light;
+$hover-background: $white-light;
+$hover-color: $gl-text-color;
 $inactive-color: $gl-text-color-secondary;
 $new-sidebar-width: 220px;
+$new-sidebar-collapsed-width: 50px;
 
 .page-with-new-sidebar {
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: $screen-md-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
+
+  @media (min-width: $screen-lg-min) {
     padding-left: $new-sidebar-width;
   }
 
   // Override position: absolute
   .right-sidebar {
     position: fixed;
-    height: 100%;
+    height: calc(100% - #{$header-height});
   }
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
@@ -29,8 +34,15 @@ $new-sidebar-width: 220px;
   }
 }
 
+.page-with-icon-sidebar {
+  @media (min-width: $screen-sm-min) {
+    padding-left: $new-sidebar-collapsed-width;
+  }
+}
+
 .context-header {
   position: relative;
+  margin-right: 2px;
 
   a {
     border-bottom: 1px solid $border-color;
@@ -39,26 +51,16 @@ $new-sidebar-width: 220px;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
+  }
 
-    @media (max-width: $screen-xs-max) {
-      padding-right: 30px;
-    }
+  &:hover,
+  a:hover {
+    background-color: $hover-background;
+    color: $hover-color;
 
-    &:hover {
-      background-color: $hover-background;
-      color: $hover-color;
-      border-color: $hover-background;
-
-      .avatar-container {
-        border-color: transparent;
-      }
-
-      .settings-avatar {
-        background-color: $indigo-500;
-
-        i {
-          color: $hover-color;
-        }
+    .settings-avatar {
+      i {
+        color: $hover-color;
       }
     }
   }
@@ -72,32 +74,6 @@ $new-sidebar-width: 220px;
   .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-
-  &:hover {
-    .close-nav-button {
-      color: $white-light;
-    }
-  }
-
-  .close-nav-button {
-    display: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    height: 100%;
-    background-color: transparent;
-    border: 0;
-    padding: 0 10px;
-
-    @media (max-width: $screen-xs-max) {
-      display: block;
-    }
-
-    &:hover {
-      color: $gl-text-color;
-    }
   }
 }
 
@@ -125,6 +101,19 @@ $new-sidebar-width: 220px;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
 
+  &.sidebar-icons-only {
+    width: $new-sidebar-collapsed-width;
+
+    .badge,
+    .project-title {
+      display: none;
+    }
+
+    .nav-item-name {
+      opacity: 0;
+    }
+  }
+
   &.nav-sidebar-expanded {
     left: 0;
   }
@@ -143,10 +132,19 @@ $new-sidebar-width: 220px;
     white-space: nowrap;
 
     a {
-      display: block;
+      display: flex;
+      align-items: center;
       padding: 12px 16px;
       color: $inactive-color;
     }
+
+    svg {
+      fill: $inactive-color;
+    }
+  }
+
+  .nav-item-name {
+    flex: 1;
   }
 
   li.active {
@@ -156,10 +154,24 @@ $new-sidebar-width: 220px;
       color: $active-color;
       font-weight: 700;
     }
+
+    svg {
+      fill: $active-color;
+    }
   }
 
   @media (max-width: $screen-xs-max) {
     left: (-$new-sidebar-width);
+  }
+
+  .nav-icon-container {
+    display: flex;
+    margin-right: 8px;
+
+    svg {
+      height: 16px;
+      width: 16px;
+    }
   }
 }
 
@@ -173,7 +185,7 @@ $new-sidebar-width: 220px;
 
   > li {
     a {
-      padding: 8px 16px 8px 24px;
+      padding: 8px 16px 8px 40px;
 
       &:hover,
       &:focus {
@@ -196,15 +208,108 @@ $new-sidebar-width: 220px;
 }
 
 .sidebar-top-level-items {
+  margin-bottom: 60px;
+
   > li {
+    > a {
+      @media (min-width: $screen-sm-min) {
+        margin-right: 2px;
+      }
+
+      &:hover {
+        color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
+      }
+    }
+
+    &.is-showing-fly-out {
+      > a {
+        margin-right: 2px;
+      }
+
+      .sidebar-sub-level-items {
+        @media (min-width: $screen-sm-min) {
+          position: fixed;
+          top: 0;
+          left: $new-sidebar-width;
+          min-width: 150px;
+          margin-top: -1px;
+          padding: 8px 1px;
+          background-color: $white-light;
+          box-shadow: 2px 1px 3px $dropdown-shadow-color;
+          border: 1px solid $gray-darker;
+          border-left: 0;
+          border-radius: 0 3px 3px 0;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: -30px;
+            bottom: -30px;
+            left: 0;
+            right: -30px;
+            z-index: -1;
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            top: 44px;
+            left: -30px;
+            right: 35px;
+            bottom: 0;
+            height: 100%;
+            max-height: 150px;
+            z-index: -1;
+            transform: skew(33deg);
+          }
+
+          &.is-above {
+            margin-top: 1px;
+
+            &::after {
+              top: auto;
+              bottom: 44px;
+              transform: skew(-30deg);
+            }
+          }
+
+          > .active {
+            box-shadow: none;
+
+            > a {
+              background-color: transparent;
+            }
+          }
+
+          a {
+            padding: 8px 16px;
+            color: $gl-text-color;
+
+            &:hover,
+            &:focus {
+              background-color: $gray-darker;
+            }
+          }
+        }
+      }
+    }
+
     .badge {
-      float: right;
       background-color: $inactive-badge-background;
       color: $inactive-color;
     }
 
     &.active {
       background: $active-background;
+
+      > a {
+        margin-left: 4px;
+        padding-left: 12px;
+      }
 
       .badge {
         color: $active-color;
@@ -216,16 +321,101 @@ $new-sidebar-width: 220px;
       }
     }
 
-    > a:hover {
-      background-color: $hover-background;
-      color: $hover-color;
+    &:not(.active):hover > a,
+    > a:hover,
+    &.is-over > a {
+      background-color: $white-light;
+    }
+  }
+}
 
-      .badge {
-        background-color: $indigo-500;
-        color: $hover-color;
+
+// Collapsed nav
+
+.toggle-sidebar-button,
+.close-nav-button {
+  width: $new-sidebar-width - 2px;
+  position: fixed;
+  bottom: 0;
+  padding: 16px;
+  background-color: $gray-normal;
+  border: 0;
+  border-top: 2px solid $border-color;
+  color: $gl-text-color-secondary;
+  display: flex;
+  align-items: center;
+
+  i {
+    font-size: 20px;
+    margin-right: 8px;
+  }
+
+  .fa-angle-double-right {
+    display: none;
+  }
+
+  &:hover {
+    background-color: $border-color;
+    color: $gl-text-color;
+  }
+}
+
+.toggle-sidebar-button {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+  }
+}
+
+
+.sidebar-icons-only {
+  .context-header {
+    height: 61px;
+
+    a {
+      padding: 10px 4px;
+    }
+  }
+
+  li a {
+    padding: 12px 15px;
+  }
+
+  .sidebar-top-level-items > li {
+    &.active a {
+      padding-left: 12px;
+    }
+
+    .sidebar-sub-level-items {
+      @media (min-width: $screen-sm-min) {
+        left: $new-sidebar-collapsed-width;
+      }
+
+      &:not(.flyout-list) {
+        display: none;
       }
     }
   }
+
+  .toggle-sidebar-button {
+    width: $new-sidebar-collapsed-width - 2px;
+    padding: 16px 18px;
+
+    .collapse-text,
+    .fa-angle-double-left {
+      display: none;
+    }
+
+    .fa-angle-double-right {
+      display: block;
+    }
+  }
+}
+
+
+// Mobile nav
+
+.close-nav-button {
+  display: none;
 }
 
 .toggle-mobile-nav {
@@ -244,6 +434,12 @@ $new-sidebar-width: 220px;
 
   @media (max-width: $screen-xs-max) {
     display: inline-block;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .close-nav-button {
+    display: flex;
   }
 }
 

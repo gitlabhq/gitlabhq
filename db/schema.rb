@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170725145659) do
+ActiveRecord::Schema.define(version: 20170807160457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -451,6 +451,16 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.float "instance_service_desk_issues", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "percentage_boards", default: 0.0, null: false
+    t.float "percentage_ci_pipelines", default: 0.0, null: false
+    t.float "percentage_deployments", default: 0.0, null: false
+    t.float "percentage_environments", default: 0.0, null: false
+    t.float "percentage_issues", default: 0.0, null: false
+    t.float "percentage_merge_requests", default: 0.0, null: false
+    t.float "percentage_milestones", default: 0.0, null: false
+    t.float "percentage_notes", default: 0.0, null: false
+    t.float "percentage_projects_prometheus_active", default: 0.0, null: false
+    t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
@@ -641,12 +651,13 @@ ActiveRecord::Schema.define(version: 20170725145659) do
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
-  add_index "issues", ["created_at"], name: "index_issues_on_created_at", using: :btree
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
-  add_index "issues", ["due_date"], name: "index_issues_on_due_date", using: :btree
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
+  add_index "issues", ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
+  add_index "issues", ["project_id", "due_date", "id", "state"], name: "index_issues_on_project_id_and_due_date_and_id_and_state", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
+  add_index "issues", ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state", using: :btree
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
@@ -839,7 +850,6 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"
-    t.datetime "locked_at"
     t.integer "updated_by_id"
     t.text "merge_error"
     t.text "merge_params"
@@ -857,6 +867,7 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
     t.boolean "ref_fetched"
+    t.string "merge_jid"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -981,7 +992,6 @@ ActiveRecord::Schema.define(version: 20170725145659) do
     t.integer "level", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "events"
     t.boolean "new_note"
     t.boolean "new_issue"
     t.boolean "reopen_issue"

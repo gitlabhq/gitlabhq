@@ -42,7 +42,7 @@ describe API::Runner do
         end
 
         context 'when project token is used' do
-          let(:project) { create(:empty_project) }
+          let(:project) { create(:project) }
 
           it 'creates runner' do
             post api('/runners'), token: project.runners_token
@@ -182,7 +182,7 @@ describe API::Runner do
   end
 
   describe '/api/v4/jobs' do
-    let(:project) { create(:empty_project, shared_runners_enabled: false) }
+    let(:project) { create(:project, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner) }
     let!(:job) do
@@ -683,7 +683,7 @@ describe API::Runner do
         end
 
         context 'when job has been updated recently' do
-          it { expect{ patch_the_trace }.not_to change { job.updated_at }}
+          it { expect { patch_the_trace }.not_to change { job.updated_at }}
 
           it "changes the job's trace" do
             patch_the_trace
@@ -692,7 +692,7 @@ describe API::Runner do
           end
 
           context 'when Runner makes a force-patch' do
-            it { expect{ force_patch_the_trace }.not_to change { job.updated_at }}
+            it { expect { force_patch_the_trace }.not_to change { job.updated_at }}
 
             it "doesn't change the build.trace" do
               force_patch_the_trace

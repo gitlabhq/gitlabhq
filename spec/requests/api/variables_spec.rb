@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Variables do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:empty_project, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
   let!(:variable) { create(:ci_variable, project: project) }
@@ -74,7 +74,7 @@ describe API::Variables do
       it 'creates variable' do
         expect do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
-        end.to change{project.variables.count}.by(1)
+        end.to change {project.variables.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -85,7 +85,7 @@ describe API::Variables do
       it 'creates variable with optional attributes' do
         expect do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
-        end.to change{project.variables.count}.by(1)
+        end.to change {project.variables.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -96,7 +96,7 @@ describe API::Variables do
       it 'does not allow to duplicate variable key' do
         expect do
           post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2'
-        end.to change{project.variables.count}.by(0)
+        end.to change {project.variables.count}.by(0)
 
         expect(response).to have_http_status(400)
       end
@@ -166,7 +166,7 @@ describe API::Variables do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
 
           expect(response).to have_http_status(204)
-        end.to change{project.variables.count}.by(-1)
+        end.to change {project.variables.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
