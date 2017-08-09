@@ -34,6 +34,7 @@
       toggleHandler: {
         type: Function,
         required: false,
+        default: () => {},
       },
     },
     data() {
@@ -102,7 +103,7 @@
       class="discussion-actions">
       <button
         @click="handleToggle"
-        class="note-action-button discussion-toggle-button js-toggle-button"
+        class="note-action-button discussion-toggle-button js-vue-toggle-button"
         type="button">
           <i
             :class="toggleChevronClass"

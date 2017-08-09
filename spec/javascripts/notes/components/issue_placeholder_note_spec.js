@@ -15,6 +15,10 @@ describe('issue placeholder system note component', () => {
     }).$mount();
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('user information', () => {
     it('should render user avatar with link', () => {
       expect(vm.$el.querySelector('.user-avatar-link').getAttribute('href')).toEqual(userDataMock.path);
