@@ -999,7 +999,7 @@ class Repository
     yield(commit(branch_name_or_sha))
 
   ensure
-    rugged.references.delete(tmp_ref) if tmp_ref
+    rugged.references.delete(tmp_ref) if tmp_ref && ref_exists?(tmp_ref)
   end
 
   def add_remote(name, url)
@@ -1022,6 +1022,9 @@ class Repository
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError unless ref_exists?(target_ref)
   end
 
   def create_ref(ref, ref_path)

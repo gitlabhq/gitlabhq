@@ -961,6 +961,27 @@ describe Repository, models: true do
       end
     end
 
+    context 'when temporary ref failed to be created from other project' do
+      let(:target_project) { create(:project, :empty_repo) }
+
+      before do
+        expect(target_project.repository).to receive(:run_git)
+      end
+
+      it 'raises Rugged::ReferenceError' do
+        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
+          expect(err.cause).to be_nil
+        end
+
+        expect do
+          GitOperationService.new(user, target_project.repository)
+            .with_branch('feature',
+                         start_project: project,
+                         &:itself)
+        end.to raise_reference_error
+      end
+    end
+
     context 'when the update adds more than one commit' do
       let(:old_rev) { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
 
