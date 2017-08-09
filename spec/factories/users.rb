@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
+  factory :user, aliases: [:author, :assignee, :recipient, :owner, :resource_owner] do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
