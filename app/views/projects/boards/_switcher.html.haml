@@ -58,5 +58,6 @@
                 %a{ "href" => "#", "@click.stop.prevent" => "showPage('milestone')" }
                   Edit board milestone
             %li{ "v-if" => "showDelete" }
-              %a.text-danger{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
-                Delete board
+              %a{ "href" => "#", "@click.stop.prevent" => "showPage('delete')" }
+                %span.text-danger
+                  Delete board
