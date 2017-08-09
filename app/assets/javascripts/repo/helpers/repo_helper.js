@@ -40,10 +40,6 @@ const RepoHelper = {
     return foundLang ? foundLang.id : 'plaintext';
   },
 
-  getFilePathFromFullPath(fullPath, branch) {
-    return fullPath.split(`${Store.projectUrl}/blob/${branch}`)[1];
-  },
-
   findLanguage(ext, langs) {
     return langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
   },
