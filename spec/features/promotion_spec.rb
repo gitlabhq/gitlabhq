@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe 'Promotions', js: true do
-  let(:project) { create(:project, :repository) }
-  let(:otherproject) { create(:project, :repository) }
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:standarddeveloper) { create(:user) }  
+  let(:otherdeveloper) { create(:user, , name: 'TheOtherDeveloper') }
+  let(:project) { create(:project, :repository) }
+  let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }
 
   describe 'if you have a license' do
     before do
@@ -44,23 +44,21 @@ describe 'Promotions', js: true do
   describe 'for project features in general', js: true do
     context 'for .com' do
       before do
-        project.team << [standarddeveloper, :developer]
-        project.add_developer(standarddeveloper)
         project.team << [user, :master]
-        otherproject.team << [user, :developer]
+        otherproject.team << [user, :master]
         
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
+
+        sign_in(user)
       end
 
-      it 'should have the Upgrade your plan button' do
-        sign_in(user)
+      it 'should have the Upgrade your plan button' do        
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
 
       it 'should have the contact owner line' do
-        sign_in(user)
         visit edit_project_path(otherproject)
         expect(find('#promote_service_desk')).to have_content 'Contact owner'
       end
@@ -175,6 +173,4 @@ describe 'Promotions', js: true do
       expect(page).not_to have_selector('#promote_squash_commits')
     end
   end
-
-
 end
