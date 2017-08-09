@@ -218,6 +218,10 @@ $new-sidebar-collapsed-width: 50px;
 
       &:hover {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
     }
 
