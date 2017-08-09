@@ -1,5 +1,4 @@
 describe('issue_note_form component', () => {
-
   describe('conflicts editing', () => {
     it('should show conflict message if note changes outside the component', () => {
 

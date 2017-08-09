@@ -1,5 +1,4 @@
 describe('issue_discussion component', () => {
-
   it('should render user avatar', () => {
 
   });

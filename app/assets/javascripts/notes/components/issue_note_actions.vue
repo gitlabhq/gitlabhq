@@ -74,8 +74,8 @@
       },
       onDelete() {
         this.$emit('deleteHandler');
-      }
-    }
+      },
+    },
   };
 </script>
 

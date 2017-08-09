@@ -221,6 +221,47 @@ export const discussionMock = {
   individual_note: false,
 };
 
+export const loggedOutIssueData = {
+  "id": 98,
+  "iid": 26,
+  "author_id": 1,
+  "description": "",
+  "lock_version": 1,
+  "milestone_id": null,
+  "state": "opened",
+  "title": "asdsa",
+  "updated_by_id": 1,
+  "created_at": "2017-02-07T10:11:18.395Z",
+  "updated_at": "2017-08-08T10:22:51.564Z",
+  "deleted_at": null,
+  "time_estimate": 0,
+  "total_time_spent": 0,
+  "human_time_estimate": null,
+  "human_total_time_spent": null,
+  "milestone": null,
+  "labels": [],
+  "branch_name": null,
+  "confidential": false,
+  "assignees": [{
+    "id": 1,
+    "name": "Root",
+    "username": "root",
+    "state": "active",
+    "avatar_url": null,
+    "web_url": "http://localhost:3000/root"
+  }],
+  "due_date": null,
+  "moved_to_id": null,
+  "project_id": 2,
+  "web_url": "/gitlab-org/gitlab-ce/issues/26",
+  "current_user": {
+    "can_create_note": false,
+    "can_update": false
+  },
+  "create_note_path": "/gitlab-org/gitlab-ce/notes?target_id=98&target_type=issue",
+  "preview_note_path": "/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue"
+}
+
 export const individualNoteServerResponse = [{
   "id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
   "reply_id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",

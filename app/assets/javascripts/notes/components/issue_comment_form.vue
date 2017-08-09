@@ -204,7 +204,7 @@
   <div>
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
     <ul
-      v-if="isLoggedIn"
+      v-else
       class="notes notes-form timeline new-note">
       <li class="timeline-entry" ref="commentForm">
         <div class="timeline-entry-inner">
