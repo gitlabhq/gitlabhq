@@ -88,7 +88,7 @@ describe API::GroupVariables do
       it 'creates variable' do
         expect do
           post api("/groups/#{group.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
-        end.to change{group.variables.count}.by(1)
+        end.to change {group.variables.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -99,7 +99,7 @@ describe API::GroupVariables do
       it 'creates variable with optional attributes' do
         expect do
           post api("/groups/#{group.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
-        end.to change{group.variables.count}.by(1)
+        end.to change {group.variables.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
@@ -110,7 +110,7 @@ describe API::GroupVariables do
       it 'does not allow to duplicate variable key' do
         expect do
           post api("/groups/#{group.id}/variables", user), key: variable.key, value: 'VALUE_2'
-        end.to change{group.variables.count}.by(0)
+        end.to change {group.variables.count}.by(0)
 
         expect(response).to have_http_status(400)
       end
@@ -192,7 +192,7 @@ describe API::GroupVariables do
           delete api("/groups/#{group.id}/variables/#{variable.key}", user)
 
           expect(response).to have_http_status(204)
-        end.to change{group.variables.count}.by(-1)
+        end.to change {group.variables.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do

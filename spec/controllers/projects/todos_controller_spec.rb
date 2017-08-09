@@ -67,7 +67,7 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
+          expect { go }.not_to change { user.todos.count }
           expect(response).to have_http_status(404)
         end
       end
@@ -135,7 +135,7 @@ describe Projects::TodosController do
         end
 
         it "doesn't create todo" do
-          expect{ go }.not_to change { user.todos.count }
+          expect { go }.not_to change { user.todos.count }
           expect(response).to have_http_status(404)
         end
       end

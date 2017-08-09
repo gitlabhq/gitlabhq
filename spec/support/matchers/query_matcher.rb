@@ -28,6 +28,6 @@ RSpec::Matchers.define :make_queries_matching do |matcher, expected_count = nil|
 
   def query_count(regex, &block)
     @recorder = ActiveRecord::QueryRecorder.new(&block).log
-    @recorder.select{ |q| q.match(regex) }
+    @recorder.select { |q| q.match(regex) }
   end
 end

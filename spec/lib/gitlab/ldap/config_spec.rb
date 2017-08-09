@@ -7,7 +7,7 @@ describe Gitlab::LDAP::Config do
 
   describe '#initialize' do
     it 'requires a provider' do
-      expect{ described_class.new }.to raise_error ArgumentError
+      expect { described_class.new }.to raise_error ArgumentError
     end
 
     it 'works' do
@@ -15,7 +15,7 @@ describe Gitlab::LDAP::Config do
     end
 
     it 'raises an error if a unknown provider is used' do
-      expect{ described_class.new 'unknown' }.to raise_error(RuntimeError)
+      expect { described_class.new 'unknown' }.to raise_error(RuntimeError)
     end
   end
 

@@ -127,7 +127,7 @@ describe Admin::UsersController do
 
   describe 'POST create' do
     it 'creates the user' do
-      expect{ post :create, user: attributes_for(:user) }.to change{ User.count }.by(1)
+      expect { post :create, user: attributes_for(:user) }.to change { User.count }.by(1)
     end
 
     it 'shows only one error message for an invalid email' do

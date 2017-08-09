@@ -30,7 +30,7 @@ describe API::ProjectSnippets do
 
       expect(response).to have_http_status(200)
       expect(json_response.size).to eq(3)
-      expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
+      expect(json_response.map { |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
       expect(json_response.last).to have_key('web_url')
     end
 
