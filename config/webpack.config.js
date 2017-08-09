@@ -71,12 +71,9 @@ var config = {
     protected_branches:   './protected_branches',
     ee_protected_branches: 'ee/protected_branches',
     protected_tags:       './protected_tags',
-<<<<<<< HEAD
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
-=======
     repo:                 './repo/index.js',
->>>>>>> upstream/master
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
