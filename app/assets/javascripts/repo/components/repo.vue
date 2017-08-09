@@ -47,6 +47,7 @@ export default {
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
     <component
+      v-if="isMini"
       :is="currentBlobView"
       class="blob-viewer-container"/>
     <repo-file-buttons/>
