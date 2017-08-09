@@ -440,7 +440,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     page.execute_script <<-JS
       var fileList = [$('#fakeFileInput')[0].files[0]];
       var e = jQuery.Event('drop', { dataTransfer : { files : fileList } });
-      $('.dropzone-gl')[0].dropzone.listeners[0].events.drop(e);
+      $('.dropzone')[0].dropzone.listeners[0].events.drop(e);
     JS
   end
 
