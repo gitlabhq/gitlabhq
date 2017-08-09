@@ -28,7 +28,7 @@ export default {
   },
 
   methods: {
-    dialogToggled(toggle) {
+    toggleDialogOpen(toggle) {
       this.dialog.open = toggle;
     },
 
