@@ -119,6 +119,12 @@ only be left until after the freeze if:
   are aware of it.
 * It is in the correct milestone, with the ~Deliverable label.
 
+If a merge request is not ready, but the developers and Product Manager
+responsible for the feature think it is essential that it is in the release,
+they can [ask for an exception](#asking-for-an-exception) in advance. This is
+preferable to merging something that we are not confident in, but should still
+be a rare case: most features can be allowed to slip a release.
+
 All Community Edition merge requests from GitLab team members merged on the
 freeze date (the 7th) should have a corresponding Enterprise Edition merge
 request, even if there are no conflicts. This is to reduce the size of the
@@ -133,6 +139,14 @@ and security issues will be cherry-picked into the stable branch.
 Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
 These fixes will be shipped in the next RC for that release if it is before the 22nd.
 If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
+
+During the feature freeze all merge requests that are meant to go into the upcoming
+release should have the correct milestone assigned _and_ have the label
+~"Pick into Stable" set, so that release managers can find and pick them.
+Merge requests without a milestone and this label will
+not be merged into any stable branches.
+
+### Asking for an exception
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
@@ -152,11 +166,7 @@ When in doubt, we err on the side of _not_ cherry-picking.
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
-During the feature freeze all merge requests that are meant to go into the upcoming
-release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set, so that release managers can find and pick them.
-Merge requests without a milestone and this label will
-not be merged into any stable branches.
+All MRs which have had exceptions granted must be merged by the 15th.
 
 ### Regressions
 
