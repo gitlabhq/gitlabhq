@@ -42,10 +42,11 @@ export default {
         actions,
       };
       Store.submitCommitsLoading = true;
-      Service.commitFiles(payload, this.resetCommitState);
+      Service.commitFiles(payload)
+      .then(this.resetCommitState);
     },
 
-    resetCommitState() {
+    resetCommitState(data) {
       this.submitCommitsLoading = false;
       this.changedFiles = [];
       this.commitMessage = '';

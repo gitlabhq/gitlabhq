@@ -99,15 +99,13 @@ const Api = {
   commitMultiple(id, data, callback) {
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', id);
-    return $.ajax({
+    return this.wrapAjaxCall({
       url,
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(data),
       dataType: 'json',
-    })
-      .done(commitData => callback(commitData))
-      .fail(message => callback(message.responseJSON));
+    });
   },
 
   // Return text for a specific license
