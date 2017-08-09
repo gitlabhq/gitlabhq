@@ -11,6 +11,7 @@ const RepoHelper = {
       extension: '',
       html: '',
       mime_type: '',
+      currentLine: false,
       name: '',
       plain: '',
       size: 0,
@@ -285,17 +286,37 @@ const RepoHelper = {
     RepoHelper.key = RepoHelper.genKey();
 
     history.pushState({ key: RepoHelper.key }, '', url);
+    if(window.location.hash) {
+      window.location.hash = window.location.hash;
+    }
 
     if (title) {
       document.title = `${title} · GitLab`;
     }
   },
 
+  highLightIfCurrentLine() {
+    if(Store.activeFile.currentLine) {
+      RepoHelper.highlightLine(Store.activeFile.currentLine.split('#L')[1]);
+    }
+  },
+
+  //outside the vue context
+  diffLineNumClickWrapper(e) {
+    const lineClicked = $(e.target).attr('data-line-number');
+    RepoHelper.highlightLine(lineClicked);
+  },
+
+  highlightLine(lineNumber) {
+    $('span.line').css('background', '#FFF')
+    $(`#LC${lineNumber}`).css('background', '#F8EEC7');
+  },
+
   findOpenedFileFromActive() {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError() {
+  loadingError(e) {
     Flash('Unable to load the file at this time.');
   },
 };

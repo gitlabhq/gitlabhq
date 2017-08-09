@@ -30,6 +30,7 @@ const RepoStore = {
   tabsOverflow: 41,
   submitCommitsLoading: false,
   binaryLoaded: false,
+  hashToSet: false,
   dialog: {
     open: false,
     title: '',
@@ -88,6 +89,7 @@ const RepoStore = {
   },
 
   setActiveFiles(file) {
+    let url = '';
     if (RepoStore.isActiveFile(file)) return;
     RepoStore.openedFiles = RepoStore.openedFiles
       .map((openedFile, i) => RepoStore.setFileActivity(file, openedFile, i));
@@ -106,8 +108,12 @@ const RepoStore = {
           Helper.findOpenedFileFromActive().plain = rawResponse.data;
         }).catch(Helper.loadingError);
     }
+    url = file.url;
+    if(file.currentLine) {
+      url = `${url}${file.currentLine}`;
+    }
 
-    if (!file.loading) Helper.toURL(file.url, file.name);
+    if (!file.loading) Helper.toURL(url, file.name);
     RepoStore.binary = file.binary;
   },
 
@@ -115,7 +121,13 @@ const RepoStore = {
     const activeFile = openedFile;
     activeFile.active = file.url === activeFile.url;
 
-    if (activeFile.active) RepoStore.setActiveFile(activeFile, i);
+    if (activeFile.active) {
+      if(RepoStore.hashToSet) {
+        activeFile.currentLine = RepoStore.hashToSet;
+        RepoStore.hashToSet = false;
+      }
+      RepoStore.setActiveFile(activeFile, i);
+    }
 
     return activeFile;
   },

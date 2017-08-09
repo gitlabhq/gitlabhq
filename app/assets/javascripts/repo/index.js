@@ -30,6 +30,11 @@ function addEventsForNonVueEls() {
 function setInitialStore(data) {
   Store.service = Service;
   Store.service.url = data.url;
+
+  if(window.location.hash) {
+    Store.hashToSet = window.location.hash;
+  }
+
   Store.service.refsUrl = data.refsUrl;
   Store.projectId = data.projectId;
   Store.projectName = data.projectName;
