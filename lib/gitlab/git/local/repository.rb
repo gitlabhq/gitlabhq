@@ -5,7 +5,7 @@ module Gitlab
         def local_languages(ref)
           ref ||= rugged.head.target_id
           languages = Linguist::Repository.new(rugged, ref).languages
-          total = languages.map(&:last).sum
+          total = languages.inject(0) { |sum, (_, count)| sum + count }
 
           languages = languages.map do |language|
             name, share = language
