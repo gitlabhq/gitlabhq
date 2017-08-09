@@ -32,10 +32,21 @@ describe Groups::CreateService, '#execute' do
       end
 
       it { is_expected.to be_persisted }
+
+      context 'with nested group support not active' do
+        it 'creates group in the top level' do
+          allow(Group).to receive(:supports_nested_groups?).and_return(false)
+
+          is_expected.to be_persisted
+          expect(subject.parent_id).to be_nil
+        end
+      end
     end
 
     context 'as guest' do
       it 'does not save group and returns an error' do
+        allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
         is_expected.not_to be_persisted
         expect(subject.errors[:parent_id].first).to eq('manage access required to create subgroup')
         expect(subject.parent_id).to be_nil

@@ -17,6 +17,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def new
     @group = Group.new
+    @parent = GroupFinder.new(current_user).execute(id: @group.parent_id)
   end
 
   def edit

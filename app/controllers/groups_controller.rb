@@ -25,6 +25,9 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
+    @parent = GroupFinder.new(current_user).execute(id: params[:parent_id])
+    params.except!(:parent_id) unless can?(current_user, :create_subgroup, @parent)
+
     @group = Group.new
   end
 
@@ -82,6 +85,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def edit
+    @parent = GroupFinder.new(current_user).execute(id: @group.parent_id)
   end
 
   def projects

@@ -20,6 +20,8 @@ module Groups
         return @group
       end
 
+      @group.parent = nil unless can?(current_user, :create_subgroup, @group.parent)
+
       @group.name ||= @group.path.dup
 
       if create_chat_team?
