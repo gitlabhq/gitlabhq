@@ -77,7 +77,7 @@ describe API::Geo do
     end
 
     it 'responds with success for projects that belong to selected namespaces to replicate' do
-      project_in_synced_group =  create(:project, group: synced_group)
+      project_in_synced_group = create(:project, group: synced_group)
 
       post api('/geo/receive_events'), push_payload.merge('project_id' => project_in_synced_group.id), geo_token_header
 
