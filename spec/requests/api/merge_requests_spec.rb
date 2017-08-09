@@ -580,15 +580,27 @@ describe API::MergeRequests do
       let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
-      before :each do |each|
-        fork_project.team << [user2, :reporter]
+      before do
+        fork_project.add_reporter(user2)
+
+        Project.all.each(&method(:stub_project_repository_fetch_ref))
+      end
+
+      def stub_project_repository_fetch_ref(project)
+        allow(Project).to receive(:find_by).with(id: project.id.to_s)
+          .and_return(project)
+
+        allow(Project).to receive(:find).with(project.id)
+          .and_return(project)
+
+        allow(project.repository).to receive(:fetch_ref)
       end
 
       it "returns merge_request" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
           title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
           author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['description']).to eq('Test description for Test merge_request')
       end
@@ -599,7 +611,7 @@ describe API::MergeRequests do
         expect(fork_project.forked_from_project).to eq(project)
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
       end
 

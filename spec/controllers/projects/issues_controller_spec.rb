@@ -1,7 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:project) { create(:project_empty_repo) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
 
