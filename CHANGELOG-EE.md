@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.4.4 (2017-08-09)
+
+- No changes.
+
 ## 9.4.3 (2017-07-31)
 
 - Present Related Issues widget for logged-out users when available.
