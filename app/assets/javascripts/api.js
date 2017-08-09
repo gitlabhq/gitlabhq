@@ -14,11 +14,8 @@ const Api = {
   dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
-<<<<<<< HEAD
-=======
   commitPath: '/api/:version/projects/:id/repository/commits',
 
->>>>>>> upstream/master
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)
       .replace(':id', groupId);
