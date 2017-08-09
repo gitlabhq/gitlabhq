@@ -139,19 +139,6 @@ class Repository
       return []
     end
 
-<<<<<<< HEAD
-    ref ||= root_ref
-
-    args = %W(
-      log #{ref} --pretty=%H --skip #{offset}
-      --max-count #{limit} --grep=#{query} --regexp-ignore-case
-    )
-    args = args.concat(%W(-- #{path})) if path.present?
-
-    git_log_results = run_git(args).first.lines
-
-    git_log_results.map { |c| commit(c.chomp) }.compact
-=======
     raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
       if is_enabled
         find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
@@ -159,7 +146,6 @@ class Repository
         find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
       end
     end
->>>>>>> upstream/master
   end
 
   def find_branch(name, fresh_repo: true)
@@ -1276,8 +1262,6 @@ class Repository
   def circuit_breaker
     @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
   end
-<<<<<<< HEAD
-=======
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
     ref ||= root_ref
@@ -1299,5 +1283,4 @@ class Repository
       .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
       .map { |c| commit(c) }
   end
->>>>>>> upstream/master
 end
