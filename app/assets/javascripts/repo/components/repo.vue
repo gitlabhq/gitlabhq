@@ -46,7 +46,7 @@ export default {
 <div class="repository-view tree-content-holder">
   <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
     <repo-tabs/>
-    <component :is="currentBlobView" class="blob-viewer-container"></component>
+    <component :is="currentBlobView" class="blob-viewer-container"/>
     <repo-file-buttons/>
   </div>
   <repo-commit-section/>
