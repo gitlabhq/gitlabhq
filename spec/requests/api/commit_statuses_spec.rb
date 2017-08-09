@@ -44,8 +44,8 @@ describe API::CommitStatuses do
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
-            json_response.sort_by!{ |status| status['id'] }
-            expect(json_response.map{ |status| status['allow_failure'] }).to eq([true, false, false, false])
+            json_response.sort_by! { |status| status['id'] }
+            expect(json_response.map { |status| status['allow_failure'] }).to eq([true, false, false, false])
           end
         end
 

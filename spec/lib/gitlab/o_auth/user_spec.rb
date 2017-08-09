@@ -147,7 +147,7 @@ describe Gitlab::OAuth::User do
           end
 
           it 'throws an error' do
-            expect{ oauth_user.save }.to raise_error StandardError
+            expect { oauth_user.save }.to raise_error StandardError
           end
         end
 
@@ -157,7 +157,7 @@ describe Gitlab::OAuth::User do
           end
 
           it 'throws an error' do
-            expect{ oauth_user.save }.to raise_error StandardError
+            expect { oauth_user.save }.to raise_error StandardError
           end
         end
       end
