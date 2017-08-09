@@ -324,6 +324,23 @@ module Gitlab
         raw_log(options).map { |c| Commit.decorate(self, c) }
       end
 
+      # Used in gitaly-ruby
+      def raw_log(options)
+        actual_ref = options[:ref] || root_ref
+        begin
+          sha = sha_from_ref(actual_ref)
+        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+          # Return an empty array if the ref wasn't found
+          return []
+        end
+
+        if log_using_shell?(options)
+          log_by_shell(sha, options)
+        else
+          log_by_walk(sha, options)
+        end
+      end
+
       def count_commits(options)
         gitaly_migrate(:count_commits) do |is_enabled|
           if is_enabled
@@ -731,22 +748,6 @@ module Gitlab
         end.compact
 
         sort_branches(branches, sort_by)
-      end
-
-      def raw_log(options)
-        actual_ref = options[:ref] || root_ref
-        begin
-          sha = sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
-        end
-
-        if log_using_shell?(options)
-          log_by_shell(sha, options)
-        else
-          log_by_walk(sha, options)
-        end
       end
 
       def log_using_shell?(options)
