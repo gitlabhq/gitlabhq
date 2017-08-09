@@ -134,11 +134,18 @@ information, see
 
 ### After the 7th
 
-Once the stable branch is frozen, only fixes for [regressions](#regressions)
-and security issues will be cherry-picked into the stable branch.
-Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be shipped in the next RC for that release if it is before the 22nd.
-If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
+Once the stable branch is frozen, the only MRs that can be cherry-picked into
+the stable branch are:
+
+* Fixes for [regressions](#regressions)
+* Fixes for security issues
+* New or updated translations (as long as they do not touch application code)
+
+Any merge requests cherry-picked into the stable branch for a previous release
+will also be picked into the latest stable branch. These fixes will be shipped
+in the next RC for that release if it is before the 22nd. If the fixes are are
+completed on or after the 22nd, they will be shipped in a patch for that
+release.
 
 During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
