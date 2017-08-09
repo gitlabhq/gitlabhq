@@ -423,6 +423,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [Elasticsearch] More efficient search.
 - Get Geo secondaries nodes statuses over AJAX.
 
+## 8.17.8 (2017-08-09)
+
+- No changes.
+
 ## 8.17.7 (2017-07-19)
 
 - Prevent mirror user to be assigned to users other than the current one.
