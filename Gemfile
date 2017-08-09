@@ -355,7 +355,7 @@ group :development, :test do
 
   gem 'activerecord_sane_schema_dumper', '0.2'
 
-  gem 'stackprof', '~> 0.2.10'
+  gem 'stackprof', '~> 0.2.10', require: false
 end
 
 group :test do
