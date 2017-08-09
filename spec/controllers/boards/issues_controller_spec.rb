@@ -162,10 +162,9 @@ describe Boards::IssuesController do
     def create_issue(user:, board:, list:, title:)
       sign_in(user)
 
-      post :create, project_id: project.id,
-                    board_id: board.to_param,
+      post :create, board_id: board.to_param,
                     list_id: list.to_param,
-                    issue: { title: title },
+                    issue: { title: title,  project_id: project.id},
                     format: :json
     end
   end
