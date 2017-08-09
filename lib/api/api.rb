@@ -42,7 +42,6 @@ module API
       mount ::API::V3::Tags
       mount ::API::V3::Templates
       mount ::API::V3::Todos
-      mount ::API::V3::Triggers
       mount ::API::V3::Users
       mount ::API::V3::Variables
     end

@@ -10,19 +10,14 @@ describe Ci::CreatePipelineService do
   end
 
   describe '#execute' do
-    def execute_service(
-      source: :push,
-      after: project.commit.id,
-      message: 'Message',
-      ref: ref_name,
-      trigger_request: nil)
+    def execute_service(source: :push, after: project.commit.id, message: 'Message',
+      ref: ref_name, trigger_request: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }] }
 
-      described_class.new(project, user, params).execute(
-        source, trigger_request: trigger_request)
+      described_class.new(project, user, params).execute(source, trigger_request: trigger_request)
     end
 
     context 'valid params' do
@@ -363,53 +358,6 @@ describe Ci::CreatePipelineService do
 
         it 'creates a pipeline' do
           expect(execute_service).to be_persisted
-          expect(Ci::Pipeline.count).to eq(1)
-        end
-      end
-
-      context 'when trigger belongs to no one' do
-        let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request) }
-
-        it 'does not create a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .not_to be_persisted
-          expect(Ci::Pipeline.count).to eq(0)
-        end
-      end
-
-      context 'when trigger belongs to a developer' do
-        let(:user) {}
-
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_developer(user)
-            request.trigger.update(owner: user)
-          end
-        end
-
-        it 'does not create a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .not_to be_persisted
-          expect(Ci::Pipeline.count).to eq(0)
-        end
-      end
-
-      context 'when trigger belongs to a master' do
-        let(:user) {}
-
-        let(:trigger_request) do
-          create(:ci_trigger_request).tap do |request|
-            user = create(:user)
-            project.add_master(user)
-            request.trigger.update(owner: user)
-          end
-        end
-
-        it 'does not create a pipeline' do
-          expect(execute_service(trigger_request: trigger_request))
-            .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
         end
       end

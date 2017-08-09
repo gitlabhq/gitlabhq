@@ -33,7 +33,6 @@ module Ci
 
       mount ::Ci::API::Builds
       mount ::Ci::API::Runners
-      mount ::Ci::API::Triggers
     end
   end
 end
