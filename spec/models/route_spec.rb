@@ -151,7 +151,7 @@ describe Route do
         it 'deletes the redirect' do
           expect do
             route.delete_conflicting_redirects
-          end.to change{RedirectRoute.count}.by(-1)
+          end.to change { RedirectRoute.count }.by(-1)
         end
 
         context 'when redirect routes with paths descending from the route path exists' do
@@ -163,7 +163,7 @@ describe Route do
           it 'deletes all redirects with paths that descend from the route path' do
             expect do
               route.delete_conflicting_redirects
-            end.to change{RedirectRoute.count}.by(-4)
+            end.to change { RedirectRoute.count }.by(-4)
           end
         end
       end
@@ -174,7 +174,7 @@ describe Route do
         it 'deletes the redirect' do
           expect do
             route.delete_conflicting_redirects
-          end.to change{RedirectRoute.count}.by(-1)
+          end.to change { RedirectRoute.count }.by(-1)
         end
       end
     end
