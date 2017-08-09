@@ -261,7 +261,13 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        rugged_diff_from_parent.patch
+        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+          if is_enabled
+            @repository.gitaly_commit_client.patch(id)
+          else
+            rugged_diff_from_parent.patch
+          end
+        end
       end
 
       # Returns a diff object for the changes from this commit's first parent.
