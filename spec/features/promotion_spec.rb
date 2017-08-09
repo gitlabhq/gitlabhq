@@ -4,6 +4,7 @@ describe 'Promotions', js: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
   let(:otherdeveloper) { create(:user, name: 'TheOtherDeveloper') }
+  let(:group) { create(:group) }
   let(:project) { create(:project, :repository) }
   let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }
   let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }  
@@ -70,6 +71,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -96,6 +98,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -122,6 +125,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -149,6 +153,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -175,6 +180,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -201,6 +207,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -216,6 +223,7 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      project.team << [user, :master]
       sign_in(user)
     end
 
@@ -230,16 +238,14 @@ describe 'Promotions', js: true do
     let!(:license) { nil }
     
     before do
+      group.add_owner(user)
       sign_in(user)
     end
 
     it 'should appear on the page' do
-      visit group_analytics_path(project)
+      visit group_analytics_path(group)
       expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution analytics and GitLab Enterprise Edition.'
       expect(find('.user-callout-copy')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
     end
   end
-
-
-
 end
