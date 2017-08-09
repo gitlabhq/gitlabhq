@@ -292,13 +292,13 @@ describe Projects::IssuesController do
 
             it 'rejects an issue recognized as a spam' do
               expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'rejects an issue recognized as a spam when recaptcha disabled' do
               stub_application_setting(recaptcha_enabled: false)
 
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'creates a spam log' do
@@ -358,7 +358,7 @@ describe Projects::IssuesController do
             end
 
             it 'accepts an issue after recaptcha is verified' do
-              expect{ update_verified_issue }.to change{ issue.reload.title }.to(spammy_title)
+              expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
             end
 
             it 'marks spam log as recaptcha_verified' do

@@ -327,7 +327,7 @@ describe API::MergeRequests do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
 
@@ -338,7 +338,7 @@ describe API::MergeRequests do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
@@ -349,7 +349,7 @@ describe API::MergeRequests do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['updated_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['updated_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
@@ -360,7 +360,7 @@ describe API::MergeRequests do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
       end

@@ -375,7 +375,7 @@ describe Issue do
     subject { create(:issue, project: create(:project, :repository)) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do

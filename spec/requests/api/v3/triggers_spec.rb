@@ -171,7 +171,7 @@ describe API::V3::Triggers do
       it 'creates trigger' do
         expect do
           post v3_api("/projects/#{project.id}/triggers", user)
-        end.to change{project.triggers.count}.by(1)
+        end.to change {project.triggers.count}.by(1)
 
         expect(response).to have_http_status(201)
         expect(json_response).to be_a(Hash)
@@ -202,7 +202,7 @@ describe API::V3::Triggers do
           delete v3_api("/projects/#{project.id}/triggers/#{trigger.token}", user)
 
           expect(response).to have_http_status(200)
-        end.to change{project.triggers.count}.by(-1)
+        end.to change {project.triggers.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing trigger' do

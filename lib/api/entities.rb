@@ -144,7 +144,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :avatar_url do |user, options|

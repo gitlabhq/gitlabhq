@@ -9,7 +9,7 @@ describe ExportCsvWorker do
   end
 
   it 'emails a CSV' do
-    expect{perform}.to change(ActionMailer::Base.deliveries, :size).by(1)
+    expect {perform}.to change(ActionMailer::Base.deliveries, :size).by(1)
   end
 
   it 'ensures that project_id is passed to issues_finder' do

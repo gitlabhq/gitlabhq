@@ -121,7 +121,7 @@ class ApplicationController < ActionController::Base
     Raven.capture_exception(exception) if sentry_enabled?
 
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
-    application_trace.map!{ |t| "  #{t}\n" }
+    application_trace.map! { |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 

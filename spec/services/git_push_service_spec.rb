@@ -153,7 +153,7 @@ describe GitPushService do
     end
 
     it "creates a new pipeline" do
-      expect{ subject }.to change { Ci::Pipeline.count }
+      expect { subject }.to change { Ci::Pipeline.count }
       expect(Ci::Pipeline.last).to be_push
     end
   end

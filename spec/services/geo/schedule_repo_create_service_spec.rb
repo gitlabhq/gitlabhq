@@ -9,7 +9,7 @@ describe Geo::ScheduleRepoCreateService do
       Sidekiq::Worker.clear_all
 
       Sidekiq::Testing.fake! do
-        expect{ subject.execute }.to change(GeoRepositoryCreateWorker.jobs, :size).by(1)
+        expect { subject.execute }.to change(GeoRepositoryCreateWorker.jobs, :size).by(1)
       end
     end
   end
