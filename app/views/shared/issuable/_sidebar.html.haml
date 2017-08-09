@@ -115,7 +115,6 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
-<<<<<<< HEAD
       - if issuable.supports_weight?
         .block.weight
           .sidebar-collapsed-icon
@@ -143,8 +142,6 @@
                     %a{ href: "#", data: { id: weight, none: weight == Issue::WEIGHT_NONE }, class: ("is-active" if params[:weight] == weight.to_s) }
                       = weight
 
-=======
->>>>>>> upstream/master
       - if issuable.has_attribute?(:confidential)
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
