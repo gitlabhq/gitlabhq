@@ -1,22 +1,23 @@
-- return unless current_user && @project.feature_available?(:export_issues)
-
-.issues-export-modal.modal
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
-        .export-svg-container.pull-right
-          = render 'projects/issues/export_issues/export_issues_list.svg'
-        %h3
-          Export issues
-      .modal-header
-        = icon('check', { class: 'export-checkmark' })
-        %strong
-          #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
-      .modal-body
-        %div
-          The CSV export will be created in the background. Once finished, it will be sent to
-          %strong= @current_user.notification_email
-          in an attachment.
-      .modal-footer
-        = link_to 'Export issues', export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
+- if current_user && @project.feature_available?(:export_issues)
+  .issues-export-modal.modal
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
+          .export-svg-container.pull-right
+            = render 'projects/issues/export_issues/export_issues_list.svg'
+          %h3
+            Export issues
+        .modal-header
+          = icon('check', { class: 'export-checkmark' })
+          %strong
+            #{pluralize(issuables_count_for_state(:issues, params[:state]), 'issue')} selected
+        .modal-body
+          %div
+            The CSV export will be created in the background. Once finished, it will be sent to
+            %strong= @current_user.notification_email
+            in an attachment.
+        .modal-footer
+          = link_to 'Export issues', export_csv_project_issues_path(@project, request.query_parameters), method: :post, class: 'btn btn-success pull-left', title: 'Export issues'
+- else
+  = render 'shared/promotions/promote_csv_export'

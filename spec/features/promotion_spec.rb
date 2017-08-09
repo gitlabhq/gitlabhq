@@ -3,9 +3,10 @@ require 'spec_helper'
 describe 'Promotions', js: true do
   let(:admin) { create(:admin) }
   let(:user) { create(:user) }
-  let(:otherdeveloper) { create(:user, , name: 'TheOtherDeveloper') }
+  let(:otherdeveloper) { create(:user, name: 'TheOtherDeveloper') }
   let(:project) { create(:project, :repository) }
-  let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }
+  let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }
+  let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }  
 
   describe 'if you have a license' do
     before do
@@ -70,7 +71,6 @@ describe 'Promotions', js: true do
     
     before do
       sign_in(user)
-      project.team << [user, :master]
     end
 
     it 'should appear in project edit page' do
@@ -97,7 +97,6 @@ describe 'Promotions', js: true do
     
     before do
       sign_in(user)
-      project.team << [user, :master]
     end
 
     it 'should appear in project edit page' do
@@ -124,7 +123,6 @@ describe 'Promotions', js: true do
     
     before do
       sign_in(user)
-      project.team << [user, :master]
     end
 
     it 'should appear in repository settings page' do
@@ -152,7 +150,6 @@ describe 'Promotions', js: true do
     
     before do
       sign_in(user)
-      project.team << [user, :master]
     end
 
     it 'should appear in new MR page' do
@@ -171,6 +168,47 @@ describe 'Promotions', js: true do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       expect(page).not_to have_selector('#promote_squash_commits')
+    end
+  end
+
+  describe 'for burndown charts', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+    end
+
+    it 'should appear in milestone page' do
+      visit project_milestone_path(project, milestone)
+      expect(find('#promote_burndown_charts')).to have_content 'Improve milestone with Burndown Charts.'
+      expect(find('#promote_burndown_charts')).to have_content 'Burndown Charts are visual representations of the progress of completing a milestone.'
+    end
+
+    it 'does not show when cookie is set' do
+      visit project_milestone_path(project, milestone)
+
+      within('#promote_burndown_charts') do
+        find('.close').trigger('click')
+      end
+
+      visit project_milestone_path(project, milestone)
+
+      expect(page).not_to have_selector('#promote_burndown_charts')
+    end
+  end
+
+  describe 'for issue export', js: true do
+    let!(:license) { nil }
+    
+    before do
+      sign_in(user)
+    end
+
+    it 'should appear on export modal' do
+      visit project_issues_path(project)
+      click_on 'Export as CSV'
+      expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition'
+      expect(find('.issues-export-modal')).to have_content 'Export Issues to CSV enables you and your team to export all the data collected from issues into a comma-separated values (CSV) file'
     end
   end
 end

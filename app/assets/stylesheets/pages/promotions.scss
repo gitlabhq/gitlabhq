@@ -1,6 +1,8 @@
 .user-callout.promotion-callout {
   margin: 20px 0 0;
 
+  &.prepend-top-10 { margin-top: 10px; }
+
   .bordered-box {
     padding: 20px;
     border-color: $border-color;
@@ -26,5 +28,19 @@
     .svg-container {
       margin-right: 15px;
     }
+  }
+}
+
+.promotion-modal {
+  .modal-header {
+    border-bottom: none;
+  }
+
+  .modal-body {
+    margin-top: -20px;
+  }
+
+  .modal-footer {
+    border-top: none;
   }
 }

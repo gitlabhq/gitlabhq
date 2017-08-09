@@ -1,0 +1,20 @@
+.issues-export-modal.modal.promotion-modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{ href: '#', 'data-dismiss' => 'modal' } ×
+      .modal-body.center
+        %div
+          .svg-container
+            = custom_icon('icon_export_issues')
+        .user-callout-copy
+          %h4
+            - if current_application_settings.should_check_namespace_plan?
+              Upgrade your plan to export issues.
+            - else
+              Export issues with GitLab Enterprise Edition
+          %p
+            Export Issues to CSV enables you and your team to export all the data collected from issues into a comma-separated values (CSV) file, which stores tabular data in plain text.
+            %a{ href: '/help/user/project/issues/csv_export.html', target: '_blank' } Read more
+      .modal-footer.center
+        = render 'shared/promotions/promotion_link_project'

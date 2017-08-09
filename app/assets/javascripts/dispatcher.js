@@ -204,6 +204,7 @@ import initGroupAnalytics from './init_group_analytics';
           new ProjectSelect();
           break;
         case 'projects:milestones:show':
+          new UserCallout();
         case 'groups:milestones:show':
         case 'dashboard:milestones:show':
           new Milestone();

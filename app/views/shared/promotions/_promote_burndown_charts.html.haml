@@ -2,6 +2,8 @@
   .bordered-box.content-block
     %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss burndown charts promotion' }
       = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
+    .svg-container
+      = custom_icon('icon_burndown_charts')
     .user-callout-copy
       %h4
         - if current_application_settings.should_check_namespace_plan?
