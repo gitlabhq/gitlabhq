@@ -231,6 +231,11 @@ entry.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
 
+## 9.3.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.3.9 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
