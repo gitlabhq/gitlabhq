@@ -2,6 +2,7 @@
   import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
   export default {
+    name: 'editedNoteText',
     props: {
       actionText: {
         type: String,
@@ -37,7 +38,7 @@
     by
     <a
       :href="editedBy.path"
-      class="author_link">
+      class="js-vue-author author_link">
       {{editedBy.name}}
     </a>
   </div>
