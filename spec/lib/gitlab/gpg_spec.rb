@@ -43,6 +43,28 @@ describe Gitlab::Gpg do
       ).to eq []
     end
   end
+
+  describe '.current_home_dir' do
+    let(:default_home_dir) { GPGME::Engine.dirinfo('homedir') }
+
+    it 'returns the default value when no explicit home dir has been set' do
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+
+    it 'returns the explicitely set home dir' do
+      GPGME::Engine.home_dir = '/tmp/gpg'
+
+      expect(described_class.current_home_dir).to eq '/tmp/gpg'
+
+      GPGME::Engine.home_dir = GPGME::Engine.dirinfo('homedir')
+    end
+
+    it 'returns the default value when explicitely setting the home dir to nil' do
+      GPGME::Engine.home_dir = nil
+
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+  end
 end
 
 describe Gitlab::Gpg::CurrentKeyChain do

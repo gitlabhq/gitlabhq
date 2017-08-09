@@ -44,19 +44,23 @@ module Gitlab
 
     def using_tmp_keychain
       Dir.mktmpdir do |dir|
-        @original_dirs ||= [GPGME::Engine.dirinfo('homedir')]
-        @original_dirs.push(dir)
+        previous_dir = current_home_dir
 
         GPGME::Engine.home_dir = dir
 
         return_value = yield
 
-        @original_dirs.pop
-
-        GPGME::Engine.home_dir = @original_dirs[-1]
+        GPGME::Engine.home_dir = previous_dir
 
         return_value
       end
+    end
+
+    # 1. Returns the custom home directory if one has been set by calling
+    #    `GPGME::Engine.home_dir=`
+    # 2. Returns the default home directory otherwise
+    def current_home_dir
+      GPGME::Engine.info.first.home_dir || GPGME::Engine.dirinfo('homedir')
     end
   end
 end
