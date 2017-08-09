@@ -89,7 +89,7 @@ class Admin::GroupsController < Admin::ApplicationController
     [
       :repository_size_limit,
       :shared_runners_minutes_limit,
-      :plan
+      :plan_id
     ]
   end
 end

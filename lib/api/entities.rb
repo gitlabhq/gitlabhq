@@ -616,7 +616,9 @@ module API
 
       # EE-only
       expose :shared_runners_minutes_limit, if: lambda { |_, options| options[:current_user]&.admin? }
-      expose :plan, if: -> (namespace, opts) { Ability.allowed?(opts[:current_user], :admin_namespace, namespace) }
+      expose :plan, if: -> (namespace, opts) { Ability.allowed?(opts[:current_user], :admin_namespace, namespace) } do |namespace, _|
+        namespace.plan&.name
+      end
     end
 
     class MemberAccess < Grape::Entity

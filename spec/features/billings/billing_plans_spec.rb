@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Billing plan pages', :feature do
   let(:user) { create(:user) }
-
+  let(:bronze_plan) { Plan.find_by(name: 'bronze') }
   let(:plans_data) do
     [
       {
@@ -101,7 +101,7 @@ describe 'Billing plan pages', :feature do
 
   context 'users profile billing page' do
     before do
-      allow_any_instance_of(EE::Namespace).to receive(:plan).and_return('bronze')
+      allow_any_instance_of(EE::Namespace).to receive(:plan).and_return(bronze_plan)
 
       visit profile_billings_path
     end
@@ -123,7 +123,7 @@ describe 'Billing plan pages', :feature do
 
     context 'top-most group' do
       before do
-        expect_any_instance_of(EE::Group).to receive(:plan).at_least(:once).and_return('bronze')
+        expect_any_instance_of(EE::Group).to receive(:plan).at_least(:once).and_return(bronze_plan)
 
         visit group_billings_path(group)
       end
