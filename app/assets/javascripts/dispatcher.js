@@ -81,7 +81,6 @@ import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
-import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 
 // EE-only
