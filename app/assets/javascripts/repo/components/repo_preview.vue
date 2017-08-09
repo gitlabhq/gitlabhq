@@ -1,10 +1,16 @@
 <script>
+import Helper from '../helpers/repo_helper';
 import Store from '../stores/repo_store';
 
 export default {
   data: () => Store,
   mounted() {
     this.highlightFile();
+
+    $(this.$el)
+      .off('click', '.diff-line-num', Helper.diffLineNumClickWrapper)
+      .on('click', '.diff-line-num', Helper.diffLineNumClickWrapper);
+      Helper.highLightIfCurrentLine();
   },
   computed: {
     html() {
@@ -22,7 +28,15 @@ export default {
     html() {
       this.$nextTick(() => {
         this.highlightFile();
+        Helper.highLightIfCurrentLine();
       });
+    },
+
+    activeFile: {
+      handler(obj) {
+        Helper.highLightIfCurrentLine();
+      },
+      deep: true,
     },
   },
 };
