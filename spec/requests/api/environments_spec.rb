@@ -13,7 +13,14 @@ describe API::Environments do
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
       it 'returns project environments' do
-        project_data_keys = %w(id http_url_to_repo web_url name name_with_namespace path path_with_namespace)
+        project_data_keys = %w(
+          id description default_branch tag_list
+          ssh_url_to_repo http_url_to_repo web_url
+          name name_with_namespace
+          path path_with_namespace
+          star_count forks_count
+          created_at last_activity_at
+        )
 
         get api("/projects/#{project.id}/environments", user)
 

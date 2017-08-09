@@ -76,13 +76,6 @@ module API
       expose :file_name_regex, :max_file_size
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id
-      expose :http_url_to_repo, :web_url
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
-    end
-
     class SharedGroup < Grape::Entity
       expose :group_id
       expose :group_name do |group_link, options|
@@ -91,7 +84,16 @@ module API
       expose :group_access, as: :group_access_level
     end
 
-    class Project < Grape::Entity
+    class BasicProjectDetails < Grape::Entity
+      expose :id, :description, :default_branch, :tag_list
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :name, :name_with_namespace
+      expose :path, :path_with_namespace
+      expose :star_count, :forks_count
+      expose :created_at, :last_activity_at
+    end
+
+    class Project < BasicProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose :_links do
@@ -124,12 +126,9 @@ module API
         end
       end
 
-      expose :id, :description, :default_branch, :tag_list
       expose :archived?, as: :archived
-      expose :visibility, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :visibility
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
-      expose :name, :name_with_namespace
-      expose :path, :path_with_namespace
       expose :container_registry_enabled
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -139,7 +138,6 @@ module API
       expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
       expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
 
-      expose :created_at, :last_activity_at
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
@@ -150,7 +148,6 @@ module API
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
-      expose :star_count, :forks_count
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
