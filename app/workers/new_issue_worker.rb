@@ -4,7 +4,7 @@ class NewIssueWorker
   include NewIssuable
 
   def perform(issue_id, user_id)
-    return unless ensure_objects_found(issue_id, user_id)
+    return unless objects_found?(issue_id, user_id)
 
     EventCreateService.new.open_issue(issuable, user)
     NotificationService.new.new_issue(issuable, user)
