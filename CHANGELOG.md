@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.4 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.4.3 (2017-07-31)
 
 - Fix Prometheus client PID reuse bug. !13130
