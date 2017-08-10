@@ -1024,7 +1024,7 @@ class Repository
     message, status = run_git(args)
 
     # Make sure ref was created, and raise Rugged::ReferenceError when not
-    raise Rugged::ReferenceError, message unless ref_exists?(target_ref)
+    raise Rugged::ReferenceError, message if status != 0
   end
 
   def create_ref(ref, ref_path)
