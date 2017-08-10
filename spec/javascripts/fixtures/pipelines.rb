@@ -19,7 +19,7 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
     clean_frontend_fixtures('pipelines/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

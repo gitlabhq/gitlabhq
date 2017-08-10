@@ -583,7 +583,7 @@ describe API::MergeRequests do
       let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
-      before :each do |each|
+      before do |each|
         fork_project.team << [user2, :reporter]
       end
 

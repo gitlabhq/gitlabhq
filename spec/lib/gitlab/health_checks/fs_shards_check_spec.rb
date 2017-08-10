@@ -107,7 +107,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         end
 
         # Unsolved intermittent failure in CI https://gitlab.com/gitlab-org/gitlab-ce/issues/31128
-        around(:each) do |example| # rubocop:disable RSpec/AroundBlock
+        around do |example| # rubocop:disable RSpec/AroundBlock
           times_to_try = ENV['CI'] ? 4 : 1
           example.run_with_retry retry: times_to_try
         end
