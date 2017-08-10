@@ -1,5 +1,4 @@
 <script>
-  /* global Breakpoints */
   import d3 from 'd3';
   import monitoringLegends from './monitoring_legends.vue';
   import monitoringFlag from './monitoring_flag.vue';
@@ -8,6 +7,7 @@
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
   import { formatRelevantDigits } from '../../lib/utils/number_utils';
+  import bp from '../../breakpoints';
 
   const bisectDate = d3.bisector(d => d.time).left;
 
@@ -42,7 +42,6 @@
         yScale: {},
         margin: {},
         data: [],
-        breakpointHandler: Breakpoints.get(),
         unitOfDisplay: '',
         areaColorRgb: '#8fbce8',
         lineColorRgb: '#1f78d1',
@@ -96,7 +95,7 @@
 
     methods: {
       draw() {
-        const breakpointSize = this.breakpointHandler.getBreakpointSize();
+        const breakpointSize = bp.getBreakpointSize();
         const query = this.columnData.queries[0];
         this.margin = measurements.large.margin;
         if (breakpointSize === 'xs' || breakpointSize === 'sm') {

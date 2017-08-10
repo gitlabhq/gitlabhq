@@ -1,7 +1,6 @@
 import Cookies from 'js-cookie';
 import _ from 'underscore';
-/* global bp */
-import './breakpoints';
+import bp from './breakpoints';
 
 export default class NewNavSidebar {
   constructor() {
