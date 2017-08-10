@@ -4,7 +4,8 @@ export default {
   },
 
   componentUpdated(el) {
-    $(el).tooltip('fixTitle');
+    $(el).tooltip('hide')
+      .tooltip('fixTitle');
   },
 
   unbind(el) {
