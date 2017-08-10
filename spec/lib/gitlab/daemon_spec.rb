@@ -13,7 +13,7 @@ describe Gitlab::Daemon do
       allow(Kernel).to receive(:at_exit)
     end
 
-    after(:each) do
+    after do
       described_class.instance_variable_set(:@instance, nil)
     end
 

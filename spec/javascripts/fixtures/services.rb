@@ -15,7 +15,7 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     clean_frontend_fixtures('services/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

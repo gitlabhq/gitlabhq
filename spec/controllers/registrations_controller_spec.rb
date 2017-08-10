@@ -5,7 +5,7 @@ describe RegistrationsController do
     let(:user_params) { { user: { name: 'new_user', username: 'new_username', email: 'new@user.com', password: 'Any_password' } } }
 
     context 'email confirmation' do
-      around(:each) do |example|
+      around do |example|
         perform_enqueued_jobs do
           example.run
         end

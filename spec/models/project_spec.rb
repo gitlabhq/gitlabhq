@@ -651,7 +651,7 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     context 'on existing projects with no value for has_external_issue_tracker' do
-      before(:each) do
+      before do
         project.update_column(:has_external_issue_tracker, nil)
         ext_project.update_column(:has_external_issue_tracker, nil)
       end

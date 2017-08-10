@@ -31,7 +31,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
   let(:now) { Time.now.utc }
 
-  around(:each) do |example|
+  around do |example|
     Timecop.freeze(now) { example.run }
   end
 

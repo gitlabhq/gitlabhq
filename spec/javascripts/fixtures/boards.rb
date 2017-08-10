@@ -13,7 +13,7 @@ describe Projects::BoardsController, '(JavaScript fixtures)', type: :controller 
     clean_frontend_fixtures('boards/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 
