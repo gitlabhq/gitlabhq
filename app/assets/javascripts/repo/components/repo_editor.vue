@@ -8,7 +8,9 @@ const RepoEditor = {
   data: () => Store,
 
   destroyed() {
-    this.monacoInstance.destroy();
+    if(this.monacoInstance){
+      this.monacoInstance.destroy();
+    }
   },
 
   mounted() {
