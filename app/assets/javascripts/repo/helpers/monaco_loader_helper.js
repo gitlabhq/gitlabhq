@@ -11,7 +11,10 @@ function repoEditorLoader() {
       Helper.monaco = monaco;
       Store.monacoLoading = false;
       resolve(RepoEditor);
-    }, reject);
+    }, () => {
+      Store.monacoLoading = false;
+      reject();
+    });
   });
 }
 
