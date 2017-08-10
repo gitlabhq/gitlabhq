@@ -33,6 +33,15 @@ const RepoFile = {
     canShowFile() {
       return !this.loading.tree || this.hasFiles;
     },
+
+    fileIcon() {
+      let classObj = {
+        'fa-spinner' : this.file.loading,
+        'fa-spin' : this.file.loading,
+        [this.file.icon] : !this.file.loading,
+      };
+      return classObj;
+    }
   },
 
   methods: {
@@ -48,8 +57,7 @@ export default RepoFile;
 <template>
 <tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}" @click.prevent="linkClicked(file)">
   <td>
-    <i class="fa file-icon" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
-    <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}"></i>
+    <i class="fa fa-fw" :class="fileIcon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
     <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
   </td>
 
