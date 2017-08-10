@@ -472,6 +472,36 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'Members' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:added_user) { create(:user) }
+
+    def create_member!
+      GroupMember.create(
+        group: group,
+        user: added_user,
+        access_level: Gitlab::Access::GUEST
+      )
+    end
+
+    it 'sends a notification' do
+      create_member!
+      should_only_email(added_user)
+    end
+
+    describe 'when notifications are disabled' do
+      before do
+        create_global_setting_for(added_user, :disabled)
+      end
+
+      it 'does not send a notification' do
+        create_member!
+        should_not_email_anyone
+      end
+    end
+  end
+
   describe 'Issues' do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, namespace: group) }
