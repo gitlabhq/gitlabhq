@@ -1,8 +1,11 @@
 import _ from 'underscore';
+import Cookies from 'js-cookie';
 
 export default {
   init() {
     if (!this.initialized) {
+      if (Cookies.get('new_nav') === 'true' && $('.js-issuable-sidebar').length) return;
+
       this.$window = $(window);
       this.$rightSidebar = $('.js-right-sidebar');
       this.$navHeight = $('.navbar-gitlab').outerHeight() +
