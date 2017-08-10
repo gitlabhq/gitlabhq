@@ -124,10 +124,10 @@ class ProjectWiki
     return false
   end
 
-  def update_page(page, content, format = :markdown, message = nil)
+  def update_page(page, content:, title: nil, format: :markdown, message: nil)
     commit = commit_details(:updated, message, page.title)
 
-    wiki.update_page(page, page.name, format.to_sym, content, commit)
+    wiki.update_page(page, title || page.name, format.to_sym, content, commit)
 
     update_elastic_index
 

@@ -81,6 +81,7 @@ import GpgBadges from './gpg_badges';
 import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
+import UserFeatureHelper from './helpers/user_feature_helper';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -104,6 +105,7 @@ import initGroupAnalytics from './init_group_analytics';
       if (!page) {
         return false;
       }
+
       path = page.split(':');
       shortcut_handler = null;
 
@@ -360,7 +362,6 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
-          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
@@ -370,12 +371,10 @@ import initGroupAnalytics from './init_group_analytics';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          if ($('#tree-slider').length) {
-            new TreeView();
-          }
-          if ($('.blob-viewer').length) {
-            new BlobViewer();
-          }
+
+          if ($('#tree-slider').length) new TreeView();
+          if ($('.blob-viewer').length) new BlobViewer();
+          if ($('.project-show-activity').length) new gl.Activities();
           initGeoInfoModal();
           break;
         case 'projects:edit':
@@ -443,6 +442,9 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
+
+          if (UserFeatureHelper.isNewRepo()) break;
+
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
@@ -469,6 +471,7 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
+          if (UserFeatureHelper.isNewRepo()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -654,7 +657,6 @@ import initGroupAnalytics from './init_group_analytics';
               shortcut_handler = new ShortcutsWiki();
               new ZenMode();
               new gl.GLForm($('.wiki-form'), true);
-              new Sidebar();
               break;
             case 'snippets':
               shortcut_handler = new ShortcutsNavigation();

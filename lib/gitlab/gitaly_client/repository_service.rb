@@ -27,6 +27,11 @@ module Gitlab
         request = Gitaly::RepackIncrementalRequest.new(repository: @gitaly_repo)
         GitalyClient.call(@storage, :repository_service, :repack_incremental, request)
       end
+
+      def repository_size
+        request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
+        GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+      end
     end
   end
 end

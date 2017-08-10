@@ -1089,6 +1089,9 @@ msgstr "私有"
 msgid "VisibilityLevel|Public"
 msgstr "公开"
 
+msgid "VisibilityLevel|Unknown"
+msgstr "未知"
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "权限不足。如需查看相关数据，请向管理员申请权限。"
 

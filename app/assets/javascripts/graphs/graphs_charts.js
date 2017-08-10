@@ -1,4 +1,5 @@
 import Chart from 'vendor/Chart';
+import _ from 'underscore';
 
 document.addEventListener('DOMContentLoaded', () => {
   const projectChartData = JSON.parse(document.getElementById('projectChartData').innerHTML);
@@ -27,28 +28,25 @@ document.addEventListener('DOMContentLoaded', () => {
     return generateChart();
   };
 
-  const chartData = (keys, values) => {
-    const data = {
-      labels: keys,
-      datasets: [{
-        fillColor: 'rgba(220,220,220,0.5)',
-        strokeColor: 'rgba(220,220,220,1)',
-        barStrokeWidth: 1,
-        barValueSpacing: 1,
-        barDatasetSpacing: 1,
-        data: values,
-      }],
-    };
-    return data;
-  };
+  const chartData = data => ({
+    labels: Object.keys(data),
+    datasets: [{
+      fillColor: 'rgba(220,220,220,0.5)',
+      strokeColor: 'rgba(220,220,220,1)',
+      barStrokeWidth: 1,
+      barValueSpacing: 1,
+      barDatasetSpacing: 1,
+      data: _.values(data),
+    }],
+  });
 
-  const hourData = chartData(projectChartData.hour.keys, projectChartData.hour.values);
+  const hourData = chartData(projectChartData.hour);
   responsiveChart($('#hour-chart'), hourData);
 
-  const dayData = chartData(projectChartData.weekDays.keys, projectChartData.weekDays.values);
+  const dayData = chartData(projectChartData.weekDays);
   responsiveChart($('#weekday-chart'), dayData);
 
-  const monthData = chartData(projectChartData.month.keys, projectChartData.month.values);
+  const monthData = chartData(projectChartData.month);
   responsiveChart($('#month-chart'), monthData);
 
   const data = projectChartData.languages;

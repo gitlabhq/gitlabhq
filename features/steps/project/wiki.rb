@@ -63,7 +63,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'That page has two revisions' do
-    @page.update("new content", message: "second commit")
+    @page.update(content: "new content", message: "second commit")
   end
 
   step 'I click the History button' do

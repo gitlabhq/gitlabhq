@@ -2,20 +2,18 @@ export default {
   name: 'MRWidgetRelatedLinks',
   props: {
     relatedLinks: { type: Object, required: true },
-    state: { type: String },
+    state: { type: String, required: false },
   },
   computed: {
     hasLinks() {
       const { closing, mentioned, assignToMe } = this.relatedLinks;
       return closing || mentioned || assignToMe;
     },
-  },
-  methods: {
-    closesText(state) {
-      if (state === 'merged') {
+    closesText() {
+      if (this.state === 'merged') {
         return 'Closed';
       }
-      if (state === 'closed') {
+      if (this.state === 'closed') {
         return 'Did not close';
       }
       return 'Closes';
@@ -26,7 +24,7 @@ export default {
       v-if="hasLinks"
       class="mr-info-list mr-links">
       <p v-if="relatedLinks.closing">
-        {{closesText(state)}} <span v-html="relatedLinks.closing"></span>
+        {{closesText}} <span v-html="relatedLinks.closing"></span>
       </p>
       <p v-if="relatedLinks.mentioned">
         Mentions <span v-html="relatedLinks.mentioned"></span>

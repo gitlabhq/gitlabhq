@@ -181,7 +181,6 @@ class IssuableBaseService < BaseService
 
     if params.present? && create_issuable(issuable, params, label_ids: label_ids)
       after_create(issuable)
-      issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
     end

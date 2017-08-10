@@ -512,7 +512,12 @@ module QuickActions
       users = extract_references(params, :user)
 
       if users.empty?
-        users = User.where(username: params.split(' ').map(&:strip))
+        users =
+          if params == 'me'
+            [current_user]
+          else
+            User.where(username: params.split(' ').map(&:strip))
+          end
       end
 
       users

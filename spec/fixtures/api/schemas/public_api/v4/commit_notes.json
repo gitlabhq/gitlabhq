@@ -1,0 +1,4 @@
+{
+  "type": "array",
+  "items": { "$ref": "commit_note.json" }
+}

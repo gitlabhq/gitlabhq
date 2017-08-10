@@ -45,8 +45,10 @@ export default class NewNavSidebar {
 
   toggleCollapsedSidebar(collapsed) {
     this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
-    this.$page.toggleClass('page-with-new-sidebar', !collapsed);
-    this.$page.toggleClass('page-with-icon-sidebar', collapsed);
+    if (this.$sidebar.length) {
+      this.$page.toggleClass('page-with-new-sidebar', !collapsed);
+      this.$page.toggleClass('page-with-icon-sidebar', collapsed);
+    }
     NewNavSidebar.setCollapsedCookie(collapsed);
   }
 

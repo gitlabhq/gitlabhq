@@ -1,9 +1,14 @@
+import tooltip from '../../vue_shared/directives/tooltip';
+
 export default {
   name: 'MRWidgetAuthor',
   props: {
     author: { type: Object, required: true },
     showAuthorName: { type: Boolean, required: false, default: true },
     showAuthorTooltip: { type: Boolean, required: false, default: false },
+  },
+  directives: {
+    tooltip,
   },
   template: `
     <a

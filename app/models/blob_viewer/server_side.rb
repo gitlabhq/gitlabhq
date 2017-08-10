@@ -17,7 +17,7 @@ module BlobViewer
       # build artifacts, can only be rendered using a client-side viewer,
       # since we do not want to read large amounts of data into memory on the
       # server side. Client-side viewers use JS and can fetch the file from
-      # `blob_raw_url` using AJAX.
+      # `blob_raw_path` using AJAX.
       return :server_side_but_stored_externally if blob.stored_externally?
 
       super

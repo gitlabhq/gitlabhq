@@ -231,7 +231,12 @@ describe ProjectWiki do
     before do
       create_page("update-page", "some content")
       @gollum_page = subject.wiki.paged("update-page")
-      subject.update_page(@gollum_page, "some other content", :markdown, "updated page")
+      subject.update_page(
+        @gollum_page,
+        content: "some other content",
+        format: :markdown,
+        message: "updated page"
+      )
       @page = subject.pages.first.page
     end
 
@@ -248,7 +253,12 @@ describe ProjectWiki do
     end
 
     it 'updates project activity' do
-      subject.update_page(@gollum_page, 'Yet more content', :markdown, 'Updated page again')
+      subject.update_page(
+        @gollum_page,
+        content: 'Yet more content',
+        format: :markdown,
+        message: 'Updated page again'
+      )
 
       project.reload
 
