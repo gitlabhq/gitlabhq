@@ -13,7 +13,7 @@ import {
 } from '~/fly_out_nav';
 import bp from '~/breakpoints';
 
-fdescribe('Fly out sidebar navigation', () => {
+describe('Fly out sidebar navigation', () => {
   let el;
   let breakpointSize = 'lg';
 
@@ -28,7 +28,7 @@ fdescribe('Fly out sidebar navigation', () => {
   });
 
   afterEach(() => {
-    el.remove();
+    document.body.innerHTML = '';
     breakpointSize = 'lg';
     mousePos.length = 0;
   });
@@ -59,7 +59,7 @@ fdescribe('Fly out sidebar navigation', () => {
 
   describe('getHideSubItemsInterval', () => {
     beforeEach(() => {
-      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute; top: 0; left: 100px; height: 200px;"></div>';
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: fixed; top: 0; left: 100px; height: 50px;"></div>';
     });
 
     it('returns 0 if currentOpenMenu is nil', () => {

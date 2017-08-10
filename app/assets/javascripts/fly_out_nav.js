@@ -122,7 +122,8 @@ export const mouseEnterTopItems = (el) => {
 export const mouseLeaveTopItem = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
 
-  if (!canShowSubItems() || !canShowActiveSubItems(el) || (subItems && subItems === currentOpenMenu)) return;
+  if (!canShowSubItems() || !canShowActiveSubItems(el) ||
+      (subItems && subItems === currentOpenMenu)) return;
 
   el.classList.remove(IS_OVER_CLASS);
 };
