@@ -14,6 +14,18 @@ const Api = {
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
   usersPath: '/api/:version/users.json',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  branchPath: '/api/:version/projects/:id/repository/branches/:branch',
+
+  branch(id, branchName) {
+    const url = Api.buildUrl(Api.branchPath)
+      .replace(':id', id)
+      .replace(':branch', branchName)
+    return Api.wrapAjaxCall({
+      url,
+      type: 'GET',
+      contentType: 'application/json; charset=utf-8',
+    });
+  },
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath)

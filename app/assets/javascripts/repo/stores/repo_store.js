@@ -70,11 +70,15 @@ const RepoStore = {
     RepoStore.service.checkCurrentBranchIsCommitable()
       .then((data) => {
         // you shouldn't be able to make commits on commits or tags.
+        console.log('data',data);
         const { Branches, Commits, Tags } = data.data;
         if (Branches && Branches.length) RepoStore.isCommitable = true;
         if (Commits && Commits.length) RepoStore.isCommitable = false;
         if (Tags && Tags.length) RepoStore.isCommitable = false;
-      }).catch(() => Flash('Failed to check if branch can be committed to.'));
+      }).catch((a,b,c,d,e) => {
+        console.log('e',a,b,c,d,e)
+        Flash('Failed to check if branch can be committed to.')
+      });
   },
 
   addFilesToDirectory(inDirectory, currentList, newList) {
