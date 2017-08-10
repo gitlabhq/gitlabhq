@@ -1,7 +1,7 @@
 /* global ListIssue */
-/* global bp */
 
 import Vue from 'vue';
+import bp from '../../../breakpoints';
 
 const ModalStore = gl.issueBoards.ModalStore;
 
