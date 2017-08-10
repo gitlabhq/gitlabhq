@@ -11,7 +11,7 @@ export default {
     },
 
     showButton() {
-      return this.isCommitable && !this.activeFile.render_error && !this.binary;
+      return this.isCommitable && !this.activeFile.render_error && !this.binary && this.openedFiles.length;
     }
   },
   methods: {
