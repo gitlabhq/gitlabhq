@@ -1482,7 +1482,7 @@ describe Project do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(StandardError) }
+      it { expect {subject}.to raise_error(StandardError) }
     end
   end
 

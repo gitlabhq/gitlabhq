@@ -111,7 +111,7 @@ describe UpdateAuthorizedKeysFile, :migration do
           it { is_expected.to be_falsey }
 
           it 'outputs a warning message for users who unintentionally Saved the setting unchecked' do
-            expect{ subject }.to output(/warning.*intentionally/mi).to_stdout
+            expect { subject }.to output(/warning.*intentionally/mi).to_stdout
           end
         end
       end

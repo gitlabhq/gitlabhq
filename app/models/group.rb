@@ -249,7 +249,7 @@ class Group < Namespace
   end
 
   def first_non_empty_project
-    projects.detect{ |project| !project.empty_repo? }
+    projects.detect { |project| !project.empty_repo? }
   end
 
   def refresh_members_authorized_projects

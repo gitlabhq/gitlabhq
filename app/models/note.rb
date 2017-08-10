@@ -77,22 +77,22 @@ class Note < ActiveRecord::Base
   mount_uploader :attachment, AttachmentUploader
 
   # Scopes
-  scope :searchable, ->{ where(system: false) }
+  scope :searchable, -> { where(system: false) }
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :system, ->{ where(system: true) }
-  scope :user, ->{ where(system: false) }
-  scope :common, ->{ where(noteable_type: ["", nil]) }
-  scope :fresh, ->{ order(created_at: :asc, id: :asc) }
-  scope :updated_after, ->(time){ where('updated_at > ?', time) }
-  scope :inc_author_project, ->{ includes(:project, :author) }
-  scope :inc_author, ->{ includes(:author) }
+  scope :system, -> { where(system: true) }
+  scope :user, -> { where(system: false) }
+  scope :common, -> { where(noteable_type: ["", nil]) }
+  scope :fresh, -> { order(created_at: :asc, id: :asc) }
+  scope :updated_after, ->(time) { where('updated_at > ?', time) }
+  scope :inc_author_project, -> { includes(:project, :author) }
+  scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
     includes(:project, :author, :updated_by, :resolved_by, :award_emoji, :system_note_metadata)
   end
 
-  scope :diff_notes, ->{ where(type: %w(LegacyDiffNote DiffNote)) }
-  scope :new_diff_notes, ->{ where(type: 'DiffNote') }
-  scope :non_diff_notes, ->{ where(type: ['Note', 'DiscussionNote', nil]) }
+  scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
+  scope :new_diff_notes, -> { where(type: 'DiffNote') }
+  scope :non_diff_notes, -> { where(type: ['Note', 'DiscussionNote', nil]) }
 
   scope :with_associations, -> do
     # FYI noteable cannot be loaded for LegacyDiffNote for commits

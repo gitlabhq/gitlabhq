@@ -240,7 +240,7 @@ describe SystemCheck::SimpleExecutor do
 
     context 'when there is an exception' do
       it 'rescues the exception' do
-        expect{ subject.run_check(BugousCheck) }.not_to raise_exception
+        expect { subject.run_check(BugousCheck) }.not_to raise_exception
       end
     end
   end

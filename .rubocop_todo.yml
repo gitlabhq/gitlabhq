@@ -26,13 +26,6 @@ Layout/IndentArray:
 Layout/IndentHash:
   Enabled: false
 
-# Offense count: 174
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: AllowForAlignment.
