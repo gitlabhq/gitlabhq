@@ -31,6 +31,9 @@ module MergeRequests
       end
     rescue MergeError => e
       log_merge_error(e.message, save_message_on_model: true)
+    ensure
+      # Make sure to clean up merge_jid in the end of the merge process.
+      merge_request.update_column(:merge_jid, nil)
     end
 
     private

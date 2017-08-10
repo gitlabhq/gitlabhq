@@ -12,6 +12,15 @@ describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
+    it 'cleans up merge_jid from MergeRequest' do
+      merge_request.update_column(:merge_jid, 'hash-123')
+      service = described_class.new(project, user, commit_message: 'Awesome message')
+
+      service.execute(merge_request)
+
+      expect(merge_request.reload.merge_jid).to be_nil
+    end
+
     context 'valid params' do
       let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
