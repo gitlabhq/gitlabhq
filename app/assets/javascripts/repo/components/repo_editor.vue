@@ -8,9 +8,6 @@ const RepoEditor = {
   data: () => Store,
 
   destroyed() {
-    // this.monacoInstance.getModels().forEach((m) => {
-    //   m.dispose();
-    // });
     this.monacoInstance.destroy();
   },
 
