@@ -50,7 +50,7 @@ export default {
       v-if="isMini"
       :is="currentBlobView"
       class="blob-viewer-container"/>
-    <repo-file-buttons/>
+    <repo-file-buttons v-if="isMini"/>
   </div>
   <repo-commit-section/>
   <popup-dialog
