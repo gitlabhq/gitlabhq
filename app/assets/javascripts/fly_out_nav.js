@@ -15,6 +15,10 @@ export const setOpenMenu = (menu = null) => { currentOpenMenu = menu; };
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 
+let headerHeight = 50;
+
+export const getHeaderHeight = () => headerHeight;
+
 export const canShowActiveSubItems = (el) => {
   const isHiddenByMedia = bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md';
 
@@ -74,7 +78,7 @@ export const moveSubItemsToPosition = (el, subItems) => {
   const isAbove = top < boundingRect.top;
 
   subItems.classList.add('fly-out-list');
-  subItems.style.transform = `translate3d(0, ${Math.floor(top)}px, 0)`; // eslint-disable-line no-param-reassign
+  subItems.style.transform = `translate3d(0, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
 
   const subItemsRect = subItems.getBoundingClientRect();
 
@@ -152,6 +156,8 @@ export default () => {
       if (currentOpenMenu) hideMenu(currentOpenMenu);
     }, getHideSubItemsInterval());
   });
+
+  headerHeight = document.querySelector('.nav-sidebar').offsetTop;
 
   items.forEach((el) => {
     const subItems = el.querySelector('.sidebar-sub-level-items');
