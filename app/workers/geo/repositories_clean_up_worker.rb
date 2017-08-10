@@ -2,6 +2,7 @@ module Geo
   class RepositoriesCleanUpWorker
     include Sidekiq::Worker
     include GeoQueue
+    include Gitlab::ShellAdapter
 
     BATCH_SIZE = 250
     LEASE_TIMEOUT = 60.minutes
@@ -27,6 +28,9 @@ module Geo
     private
 
     def clean_up_repositories(project)
+      # There is a possibility project does not have repository or wiki
+      return true unless gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")
+
       job_id = ::GeoRepositoryDestroyWorker.perform_async(project.id, project.name, project.full_path)
 
       if job_id
