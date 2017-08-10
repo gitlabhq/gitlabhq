@@ -59,7 +59,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('none');
+      ).toBe('');
     });
 
     it('does not hude subitems on mobile', () => {
