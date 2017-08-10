@@ -87,6 +87,14 @@ describe NotificationService, :mailer do
       it 'sends email to key owner' do
         expect { notification.new_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
+
+      it 'never emails the ghost user' do
+        key.user = User.ghost
+
+        notification.new_key(key)
+
+        should_not_email_anyone
+      end
     end
   end
 
