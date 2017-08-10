@@ -16,6 +16,8 @@ describe Geo::ScheduleWikiRepoUpdateService do
     subject { described_class.new(projects) }
 
     it "enqueues a batch of IDs of wiki's projects to have their wiki repositories updated" do
+      create(:geo_node, :current)
+
       expect(GeoWikiRepositoryUpdateWorker).to receive(:perform_async)
         .once.with(project_1.id, 'git@example.com:mike/diaspora.git').and_return(spy)
       expect(GeoWikiRepositoryUpdateWorker).to receive(:perform_async)
