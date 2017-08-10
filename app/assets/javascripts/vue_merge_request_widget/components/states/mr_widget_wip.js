@@ -17,6 +17,9 @@ export default {
       isMakingRequest: false,
     };
   },
+  components: {
+    statusIcon,
+  },
   methods: {
     removeWIP() {
       this.isMakingRequest = true;
