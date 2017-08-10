@@ -1,6 +1,5 @@
 <script>
   /* global Flash */
-
   import { mapGetters, mapActions } from 'vuex';
   import store from '../stores/';
   import * as constants from '../constants';
@@ -13,7 +12,7 @@
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'IssueNotes',
+    name: 'issueNotesApp',
     props: {
       issueData: {
         type: Object,
@@ -114,6 +113,7 @@
     },
     mounted() {
       this.fetchNotes();
+
       const parentElement = this.$el.parentElement;
 
       if (parentElement &&

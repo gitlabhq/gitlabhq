@@ -63,6 +63,7 @@ import './shortcuts_navigation';
       quote = _.map(selected.split("\n"), function(val) {
         return ("> " + val).trim() + "\n";
       });
+
       // If replyField already has some content, add a newline before our quote
       separator = replyField.val().trim() !== "" && "\n\n" || '';
       replyField.val(function(a, current) {

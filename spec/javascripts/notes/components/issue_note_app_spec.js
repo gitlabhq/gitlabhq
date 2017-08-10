@@ -261,4 +261,8 @@ describe('issue_note_app', () => {
     it('should show flash error message when new comment failed to be posted', () => {});
     it('should show flash error message when comment failed to be updated', () => {});
   });
+
+  describe('shortcuts issuable spec', () => {
+
+  });
 });

@@ -53,17 +53,18 @@ import '~/notes';
       it('modifies the Markdown field', function() {
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
-        $('input[type=checkbox]').attr('checked', true)[0].dispatchEvent(changeEvent);
-        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        $('input[type=checkbox]').attr('checked', true)[1].dispatchEvent(changeEvent);
+
+        expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/notes/3');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
           return expect(req.data.note).not.toBe(null);
         });
-        $('.js-task-list-field').trigger('tasklist:changed');
+        $('.js-task-list-field.original-task-list').trigger('tasklist:changed');
       });
     });
 

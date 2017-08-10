@@ -11,6 +11,7 @@
   import '../../autosave';
 
   export default {
+    name: 'issueCommentForm',
     data() {
       return {
         note: '',
@@ -92,7 +93,7 @@
         'saveNote',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
-         if (!_.isEmpty(note) && !isSubmitting) {
+        if (!_.isEmpty(note) && !isSubmitting) {
           this.isSubmitButtonDisabled = false;
         } else {
           this.isSubmitButtonDisabled = true;
@@ -187,6 +188,13 @@
       initAutoSave() {
         this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id]);
       },
+      initTaskList() {
+        return new TaskList({
+          dataType: 'note',
+          fieldName: 'note',
+          selector: '.notes',
+        });
+      }
     },
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
@@ -195,6 +203,7 @@
       });
 
       this.initAutoSave();
+      this.initTaskList();
     },
   };
 </script>
@@ -227,6 +236,7 @@
                 :quick-actions-docs="quickActionsDocsUrl"
                 :add-spacing-classes="false">
                 <textarea
+                  id="note-body"
                   name="note[note]"
                   class="note-textarea js-vue-comment-form js-gfm-input js-autosize markdown-area"
                   data-supports-quick-actions="true"
