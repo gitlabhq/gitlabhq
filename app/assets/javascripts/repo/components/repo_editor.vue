@@ -82,7 +82,7 @@ const RepoEditor = {
         const newObj = obj;
         if (newObj.status) {
           newObj.status = false;
-          this.openedFiles.map((file) => {
+          this.openedFiles = this.openedFiles.map((file) => {
             const f = file;
             if (f.active) {
               this.blobRaw = f.plain;
