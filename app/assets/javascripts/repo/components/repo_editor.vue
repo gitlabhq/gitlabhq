@@ -8,8 +8,8 @@ const RepoEditor = {
   data: () => Store,
 
   destroyed() {
-    if(this.monacoInstance){
-      this.monacoInstance.destroy();
+    if(Helper.monacoInstance){
+      Helper.monacoInstance.destroy();
     }
   },
 
@@ -25,7 +25,7 @@ const RepoEditor = {
         contextmenu: false,
       });
 
-      Store.monacoInstance = monacoInstance;
+      Helper.monacoInstance = monacoInstance;
 
       this.addMonacoEvents();
 
@@ -34,7 +34,7 @@ const RepoEditor = {
       this.showHide();
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
-      this.monacoInstance.setModel(newModel);
+      Helper.monacoInstance.setModel(newModel);
     }).catch(Helper.loadingError);
   },
 
@@ -48,12 +48,12 @@ const RepoEditor = {
     },
 
     addMonacoEvents() {
-      this.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
-      this.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
+      Helper.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
+      Helper.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
     },
 
     onMonacoEditorKeysPressed() {
-      Store.setActiveFileContents(this.monacoInstance.getValue());
+      Store.setActiveFileContents(Helper.monacoInstance.getValue());
     },
 
     onMonacoEditorMouseUp(e) {
@@ -67,7 +67,7 @@ const RepoEditor = {
 
   watch: {
     activeLine() {
-      this.monacoInstance.setPosition({
+      Helper.monacoInstance.setPosition({
         lineNumber: this.activeLine,
         column: 1,
       });
@@ -115,13 +115,13 @@ const RepoEditor = {
 
       if (this.isTree) return;
 
-      this.monacoInstance.setModel(null);
+      Helper.monacoInstance.setModel(null);
 
       const languages = this.monaco.languages.getLanguages();
       const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
-      this.monacoInstance.setModel(newModel);
+      Helper.monacoInstance.setModel(newModel);
     },
   },
 };

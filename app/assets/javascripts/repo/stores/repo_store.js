@@ -6,7 +6,6 @@ const RepoStore = {
   ideEl: {},
   monaco: {},
   monacoLoading: false,
-  monacoInstance: {},
   service: '',
   editor: '',
   sidebar: '',
