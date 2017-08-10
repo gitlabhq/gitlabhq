@@ -472,36 +472,6 @@ describe NotificationService, :mailer do
     end
   end
 
-  describe 'Members' do
-    let(:group) { create(:group) }
-    let(:project) { create(:project, :public, namespace: group) }
-    let(:added_user) { create(:user) }
-
-    def create_member!
-      GroupMember.create(
-        group: group,
-        user: added_user,
-        access_level: Gitlab::Access::GUEST
-      )
-    end
-
-    it 'sends a notification' do
-      create_member!
-      should_only_email(added_user)
-    end
-
-    describe 'when notifications are disabled' do
-      before do
-        create_global_setting_for(added_user, :disabled)
-      end
-
-      it 'does not send a notification' do
-        create_member!
-        should_not_email_anyone
-      end
-    end
-  end
-
   describe 'Issues' do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, namespace: group) }
@@ -1267,6 +1237,35 @@ describe NotificationService, :mailer do
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
+
+    describe '#new_group_member' do
+      let(:group) { create(:group) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        GroupMember.create(
+          group: group,
+          user: added_user,
+          access_level: Gitlab::Access::GUEST
+        )
+      end
+
+      it 'sends a notification' do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
+
+        it 'does not send a notification' do
+          create_member!
+          should_not_email_anyone
+        end
+      end
+    end
   end
 
   describe 'ProjectMember' do
@@ -1284,6 +1283,29 @@ describe NotificationService, :mailer do
         expect do
           notification.decline_project_invite(project_member)
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+
+    describe '#new_project_member' do
+      let(:project) { create(:project) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        create(:project_member, user: added_user, project: project)
+      end
+
+      it do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before { create_global_setting_for(added_user, :disabled) }
+
+        it do
+          create_member!
+          should_not_email_anyone
+        end
       end
     end
   end
