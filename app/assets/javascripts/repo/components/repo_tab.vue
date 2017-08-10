@@ -10,6 +10,12 @@ const RepoTab = {
   },
 
   computed: {
+    closeLabel() {
+      if (this.tab.changed) {
+        return `${this.tab.name} changed`;
+      }
+      return `Close ${this.tab.name}`;
+    },
     changedClass() {
       const tabChangedObj = {
         'fa-times': !this.tab.changed,
@@ -34,8 +40,17 @@ export default RepoTab;
 
 <template>
 <li>
-  <a href="#" class="close" @click.prevent="xClicked(tab)" v-if="!tab.loading">
-    <i class="fa" :class="changedClass"></i>
+  <a
+    v-if="!tab.loading"
+    href="#0"
+    class="close"
+    @click.prevent="xClicked(tab)"
+    :aria-label="closeLabel">
+    <i
+      class="fa"
+      :class="changedClass"
+      aria-hidden="true">
+    </i>
   </a>
 
   <a href="#" class="repo-tab" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
