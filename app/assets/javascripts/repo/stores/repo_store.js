@@ -27,7 +27,6 @@ const RepoStore = {
   tabSize: 100,
   defaultTabSize: 100,
   minTabSize: 30,
-  tabsOverflow: 41,
   submitCommitsLoading: false,
   binaryLoaded: false,
   dialog: {
