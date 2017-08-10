@@ -1,3 +1,7 @@
+---
+toc: false
+---
+
 # GitLab Documentation
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
