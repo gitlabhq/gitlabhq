@@ -186,6 +186,8 @@ ul.related-merge-requests > li {
 }
 
 .create-mr-dropdown-wrap {
+  @include new-style-dropdown;
+
   .btn-group:not(.hide) {
     display: flex;
   }
@@ -212,15 +214,6 @@ ul.related-merge-requests > li {
   }
 
   li:not(.divider) {
-    padding: 6px;
-    cursor: pointer;
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
-    }
-
     &.droplab-item-selected {
       .icon-container {
         i {
