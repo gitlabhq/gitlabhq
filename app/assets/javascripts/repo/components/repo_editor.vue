@@ -58,7 +58,7 @@ const RepoEditor = {
 
     onMonacoEditorMouseUp(e) {
       const lineNumber = e.target.position.lineNumber;
-      if (e.target.element.className === 'line-numbers') {
+      if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
         Store.activeLine = lineNumber;
       }
