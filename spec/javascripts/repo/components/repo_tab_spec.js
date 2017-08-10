@@ -12,7 +12,6 @@ describe('RepoTab', () => {
 
   it('renders a close link and a name link', () => {
     const tab = {
-      loading: false,
       url: 'url',
       name: 'name',
     };
@@ -26,7 +25,7 @@ describe('RepoTab', () => {
     spyOn(vm, 'tabClicked');
 
     expect(close.querySelector('.fa-times')).toBeTruthy();
-    expect(name.textContent).toEqual(tab.name);
+    expect(name.textContent.trim()).toEqual(tab.name);
 
     close.click();
     name.click();
@@ -35,25 +34,8 @@ describe('RepoTab', () => {
     expect(vm.tabClicked).toHaveBeenCalledWith(tab);
   });
 
-  it('renders a spinner if tab is loading', () => {
-    const tab = {
-      loading: true,
-      url: 'url',
-    };
-    const vm = createComponent({
-      tab,
-    });
-    const close = vm.$el.querySelector('.close');
-    const name = vm.$el.querySelector(`a[title="${tab.url}"]`);
-
-    expect(close).toBeFalsy();
-    expect(name).toBeFalsy();
-    expect(vm.$el.querySelector('.fa.fa-spinner.fa-spin')).toBeTruthy();
-  });
-
   it('renders an fa-circle icon if tab is changed', () => {
     const tab = {
-      loading: false,
       url: 'url',
       name: 'name',
       changed: true,
