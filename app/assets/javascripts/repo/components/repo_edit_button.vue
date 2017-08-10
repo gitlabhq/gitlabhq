@@ -11,7 +11,7 @@ export default {
     },
   },
   methods: {
-    editClicked() {
+    editCancelClicked() {
       if (this.changedFiles.length) {
         this.dialog.open = true;
         return;
@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
+<button class="btn btn-default" @click.prevent="editCancelClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
   <i class="fa fa-pencil" v-if="!editMode"></i>
   <span>{{buttonLabel}}</span>
 </button>
