@@ -26,7 +26,7 @@ class MergeRequestDiffCommit < ActiveRecord::Base
 
   def to_hash
     Gitlab::Git::Commit::SERIALIZE_KEYS.each_with_object({}) do |key, hash|
-      hash[key] = public_send(key)
+      hash[key] = public_send(key) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

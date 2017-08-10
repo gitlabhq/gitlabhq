@@ -300,7 +300,7 @@ class Repository
 
     expire_method_caches(to_refresh)
 
-    to_refresh.each { |method| send(method) }
+    to_refresh.each { |method| send(method) } # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def expire_branch_cache(branch_name = nil)

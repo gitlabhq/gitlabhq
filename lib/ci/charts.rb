@@ -47,7 +47,7 @@ module Ci
 
       def collect
         query = project.pipelines
-          .where("? > #{Ci::Pipeline.table_name}.created_at AND #{Ci::Pipeline.table_name}.created_at > ?", @to, @from)
+          .where("? > #{Ci::Pipeline.table_name}.created_at AND #{Ci::Pipeline.table_name}.created_at > ?", @to, @from) # rubocop:disable GitlabSecurity/SqlInjection
 
         totals_count  = grouped_count(query)
         success_count = grouped_count(query.success)

@@ -1301,7 +1301,7 @@ describe Project do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(StandardError) }
+      it { expect {subject}.to raise_error(StandardError) }
     end
   end
 
@@ -1831,6 +1831,11 @@ describe Project do
 
   describe '#change_head' do
     let(:project) { create(:project, :repository) }
+
+    it 'returns error if branch does not exist' do
+      expect(project.change_head('unexisted-branch')).to be false
+      expect(project.errors.size).to eq(1)
+    end
 
     it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)

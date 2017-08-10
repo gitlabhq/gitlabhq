@@ -254,7 +254,7 @@ module Ci
 
       def state
         state = STATE_PARAMS.inject({}) do |h, param|
-          h[param] = send(param)
+          h[param] = send(param) # rubocop:disable GitlabSecurity/PublicSend
           h
         end
         Base64.urlsafe_encode64(state.to_json)
@@ -266,7 +266,7 @@ module Ci
         return if state[:offset].to_i > stream.size
 
         STATE_PARAMS.each do |param|
-          send("#{param}=".to_sym, state[param])
+          send("#{param}=".to_sym, state[param]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

@@ -341,6 +341,7 @@ group :development, :test do
 
   gem 'rubocop', '~> 0.49.1', require: false
   gem 'rubocop-rspec', '~> 1.15.1', require: false
+  gem 'rubocop-gitlab-security', '~> 0.0.6', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
   gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
@@ -354,7 +355,7 @@ group :development, :test do
 
   gem 'activerecord_sane_schema_dumper', '0.2'
 
-  gem 'stackprof', '~> 0.2.10'
+  gem 'stackprof', '~> 0.2.10', require: false
 end
 
 group :test do

@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-gitlab-security
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
@@ -204,6 +205,13 @@ Layout/SpaceAroundKeyword:
 
 # Use a single space around operators.
 Layout/SpaceAroundOperators:
+  Enabled: true
+
+# Checks that block braces have or don't have a space before the opening
+# brace depending on configuration.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: space, no_space
+Layout/SpaceBeforeBlockBraces:
   Enabled: true
 
 # No spaces before commas.
@@ -1156,3 +1164,35 @@ RSpec/SubjectStub:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# GitlabSecurity ##############################################################
+
+GitlabSecurity/DeepMunge:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/RedirectToParamsUpdate:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/SqlInjection:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'
+
+GitlabSecurity/SystemCommandInjection:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'lib/**/*.rake'

@@ -78,7 +78,7 @@ describe PostReceive do
           stub_ci_pipeline_to_return_yaml_file
         end
 
-        it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
+        it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }
       end
 
       context "does not create a Ci::Pipeline" do
@@ -86,7 +86,7 @@ describe PostReceive do
           stub_ci_pipeline_yaml_file(nil)
         end
 
-        it { expect{ subject }.not_to change{ Ci::Pipeline.count } }
+        it { expect { subject }.not_to change { Ci::Pipeline.count } }
       end
     end
 
