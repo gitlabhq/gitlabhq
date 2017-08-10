@@ -83,17 +83,6 @@ const RepoHelper = {
     return Store.removeFromOpenedFiles(file);
   },
 
-  setLoading(loading, file) {
-    if (Service.url.indexOf('blob') > -1) {
-      Store.loading.blob = loading;
-      return RepoHelper.toggleFakeTab(loading, file);
-    }
-
-    if (Service.url.indexOf('tree') > -1) Store.loading.tree = loading;
-
-    return undefined;
-  },
-
   getNewMergedList(inDirectory, currentList, newList) {
     const newListSorted = newList.sort(this.compareFilesCaseInsensitive);
     if (!inDirectory) return newListSorted;
@@ -139,11 +128,9 @@ const RepoHelper = {
 
   getContent(treeOrFile, cb) {
     let file = treeOrFile;
-    // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-      // RepoHelper.setLoading(false, loadingData);
       if (cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
