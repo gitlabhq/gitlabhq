@@ -2,10 +2,6 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20170626202753_update_authorized_keys_file.rb')
 
 describe UpdateAuthorizedKeysFile, :migration do
-  class ApplicationSetting < ActiveRecord::Base
-    self.table_name = 'application_settings'
-  end
-
   let(:migration) { described_class.new }
 
   describe '#up' do
@@ -15,13 +11,13 @@ describe UpdateAuthorizedKeysFile, :migration do
         ActiveRecord::Base.connection.change_column_null :application_settings, :authorized_keys_enabled, true
         ActiveRecord::Base.connection.change_column :application_settings, :authorized_keys_enabled, :boolean, default: nil
 
-        ApplicationSetting.create!(authorized_keys_enabled: nil)
+        described_class::ApplicationSetting.create!(authorized_keys_enabled: nil)
       end
 
       it 'sets authorized_keys_enabled to true' do
         migration.up
 
-        expect(ApplicationSetting.last.authorized_keys_enabled).to be_truthy
+        expect(described_class::ApplicationSetting.last.authorized_keys_enabled).to be_truthy
       end
 
       context 'there are keys created before and after the cutoff datetime' do
@@ -89,7 +85,7 @@ describe UpdateAuthorizedKeysFile, :migration do
       context 'when is a record in application_settings table' do
         context 'when authorized_keys_enabled is true' do
           before do
-            ApplicationSetting.create!(authorized_keys_enabled: true)
+            described_class::ApplicationSetting.create!(authorized_keys_enabled: true)
           end
 
           it { is_expected.to be_truthy }
@@ -101,7 +97,7 @@ describe UpdateAuthorizedKeysFile, :migration do
             ActiveRecord::Base.connection.change_column_null :application_settings, :authorized_keys_enabled, true
             ActiveRecord::Base.connection.change_column :application_settings, :authorized_keys_enabled, :boolean, default: nil
 
-            ApplicationSetting.create!(authorized_keys_enabled: nil)
+            described_class::ApplicationSetting.create!(authorized_keys_enabled: nil)
           end
 
           it { is_expected.to be_truthy }
@@ -109,7 +105,7 @@ describe UpdateAuthorizedKeysFile, :migration do
 
         context 'when authorized_keys_enabled is explicitly false' do
           before do
-            ApplicationSetting.create!(authorized_keys_enabled: false)
+            described_class::ApplicationSetting.create!(authorized_keys_enabled: false)
           end
 
           it { is_expected.to be_falsey }
@@ -122,7 +118,7 @@ describe UpdateAuthorizedKeysFile, :migration do
 
       context 'when there is no record in application_settings table' do
         before do
-          expect(ApplicationSetting.count).to eq(0)
+          expect(described_class::ApplicationSetting.count).to eq(0)
         end
 
         it { is_expected.to be_falsey }
