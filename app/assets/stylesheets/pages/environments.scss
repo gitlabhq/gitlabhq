@@ -275,10 +275,6 @@
   background-color: $gray-light;
   min-height: 20px;
 
-  @media (max-width: $screen-sm-max) {
-    display: none;
-  }
-
   .fa-spinner {
     margin: 0 auto;
     width: 20px;
