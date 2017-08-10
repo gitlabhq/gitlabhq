@@ -64,7 +64,7 @@ const RepoHelper = {
     return file;
   },
 
-  isKindaBinary() {
+  isRenderable() {
     const okExts = ['md', 'svg'];
     return okExts.indexOf(Store.activeFile.extension) > -1;
   },

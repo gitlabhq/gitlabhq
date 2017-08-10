@@ -15,7 +15,7 @@ const RepoFileButtons = {
     },
 
     canPreview() {
-      return Helper.isKindaBinary();
+      return Helper.isRenderable();
     },
   },
 
