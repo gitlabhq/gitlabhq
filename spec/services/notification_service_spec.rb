@@ -80,21 +80,16 @@ describe NotificationService, :mailer do
 
   describe 'Keys' do
     describe '#new_key' do
-      let!(:key) { create(:personal_key) }
+      let(:key_options) { {} }
+      let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
+      it { should_email(key.user) }
 
-      it 'sends email to key owner' do
-        expect { notification.new_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
+      describe 'never emails the ghost user' do
+        let(:key_options) { { user: User.ghost } }
 
-      it 'never emails the ghost user' do
-        key.user = User.ghost
-
-        reset_delivered_emails!
-        notification.new_key(key)
-
-        should_not_email_anyone
+        it { should_not_email_anyone }
       end
     end
   end
