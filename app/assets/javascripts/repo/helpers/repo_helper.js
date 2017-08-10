@@ -83,6 +83,8 @@ const RepoHelper = {
     return Store.removeFromOpenedFiles(file);
   },
 
+  // when you open a directory you need to put the directory files under
+  // the directory... This will merge the list of the current directory and the new list.
   getNewMergedList(inDirectory, currentList, newList) {
     const newListSorted = newList.sort(this.compareFilesCaseInsensitive);
     if (!inDirectory) return newListSorted;
