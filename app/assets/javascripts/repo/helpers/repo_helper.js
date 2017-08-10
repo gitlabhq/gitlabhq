@@ -46,6 +46,14 @@ const RepoHelper = {
     return foundLang ? foundLang.id : 'plaintext';
   },
 
+  setMonacoModelFromLanguage() {
+    RepoHelper.monacoInstance.setModel(null);
+    const languages = Store.monaco.languages.getLanguages();
+    const languageID = RepoHelper.getLanguageIDForFile(Store.activeFile, languages);
+    const newModel = Store.monaco.editor.createModel(Store.blobRaw, languageID);
+    RepoHelper.monacoInstance.setModel(newModel);
+  },
+
   findLanguage(ext, langs) {
     return langs.find(lang => lang.extensions && lang.extensions.indexOf(`.${ext}`) > -1);
   },
@@ -293,7 +301,8 @@ const RepoHelper = {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError() {
+  loadingError(e) {
+    console.log(e);
     Flash('Unable to load this content at this time.');
   },
 };
