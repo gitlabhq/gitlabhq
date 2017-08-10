@@ -9,6 +9,10 @@ export default {
     buttonLabel() {
       return this.editMode ? this.__('Cancel edit') : this.__('Edit');
     },
+
+    showButton() {
+      return this.isCommitable && !this.activeFile.render_error;
+    }
   },
   methods: {
     editCancelClicked() {
@@ -31,7 +35,7 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" @click.prevent="editCancelClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
+<button class="btn btn-default" type="button" @click.prevent="editCancelClicked" v-if="showButton" :disabled="binary">
   <i class="fa fa-pencil" v-if="!editMode"></i>
   <span>{{buttonLabel}}</span>
 </button>
