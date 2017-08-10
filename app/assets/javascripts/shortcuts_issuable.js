@@ -20,7 +20,7 @@ import './shortcuts_navigation';
       Mousetrap.bind('m', this.openSidebarDropdown.bind(this, 'milestone'));
       Mousetrap.bind('r', (function(_this) {
         return function() {
-          _this.replyWithSelectedText();
+          _this.replyWithSelectedText(isMergeRequest);
           return false;
         };
       })(this));
@@ -38,9 +38,15 @@ import './shortcuts_navigation';
       }
     }
 
-    ShortcutsIssuable.prototype.replyWithSelectedText = function() {
+    ShortcutsIssuable.prototype.replyWithSelectedText = function(isMergeRequest) {
       var quote, documentFragment, el, selected, separator;
-      var replyField = $('.js-main-target-form #note_note');
+      let replyField;
+
+      if (isMergeRequest) {
+        replyField = $('.js-main-target-form #note_note');
+      } else {
+        replyField = $('.js-main-target-form .js-vue-comment-form');
+      }
 
       documentFragment = window.gl.utils.getSelectedFragment();
       if (!documentFragment) {
