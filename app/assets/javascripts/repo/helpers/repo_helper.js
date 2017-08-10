@@ -93,6 +93,10 @@ const RepoHelper = {
     return RepoHelper.mergeNewListToOldList(newListSorted, currentList, inDirectory, indexOfFile);
   },
 
+
+  // within the get new merged list this does the merging of the current list of files
+  // and the new list of files. The files are never "in" another directory they just
+  // appear like they are because of the margin.
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
     newList.reverse().forEach((newFile) => {
       const fileIndex = indexOfFile + 1;
