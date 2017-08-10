@@ -93,7 +93,7 @@ export default RepoCommitSection;
       </div>
       <div class="col-md-offset-4 col-md-6">
         <button type="submit" :disabled="cantCommitYet" class="btn btn-success submit-commit">
-          <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
+          <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading" aria-hidden="true" aria-label="loading"></i>
           <span class="commit-summary">Commit {{changedFiles.length}} {{filePluralize}}</span>
         </button>
       </div>
