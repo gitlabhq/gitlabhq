@@ -123,8 +123,8 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
-unless Sidekiq.server?
-  Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+unless Sidekiq.server?  
+  Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
 end
 
 Gitlab::Application.configure do |config|
@@ -192,7 +192,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::InfluxSampler.initialize_instance.start
+  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
 
   module TrackNewRedisConnections
     def connect(*args)

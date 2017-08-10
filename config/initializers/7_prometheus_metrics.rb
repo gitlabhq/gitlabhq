@@ -19,3 +19,7 @@ Sidekiq.configure_server do |config|
     Gitlab::Metrics::SidekiqMetricsExporter.instance.start
   end
 end
+
+# if Gitlab::Metrics.prometheus_metrics_enabled?
+Gitlab::Metrics::Samplers::RubySampler.initialize_instance(1.second).start
+# end
