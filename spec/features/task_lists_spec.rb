@@ -245,6 +245,10 @@ feature 'Task Lists' do
       visit project_merge_request_path(project, merge)
     end
 
+    before do
+      allow_any_instance_of(Repository).to receive(:write_ref)
+    end
+
     describe 'multiple tasks' do
       let!(:merge) { create(:merge_request, :simple, description: markdown, author: user, source_project: project) }
 

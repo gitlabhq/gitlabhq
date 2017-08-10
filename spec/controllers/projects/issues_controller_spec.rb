@@ -858,6 +858,8 @@ describe Projects::IssuesController do
     before do
       project.add_developer(user)
       sign_in(user)
+
+      allow_any_instance_of(MergeRequest).to receive(:write_ref)
     end
 
     it 'creates a new merge request' do
