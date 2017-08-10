@@ -18,7 +18,7 @@ describe Note, elastic: true do
       create :note, note: 'bla-bla term1', project: issue.project
       create :note, project: issue.project
 
-      # The note in the project you have no access to
+      # The note in the project you have no access to except as an administrator
       create :note, note: 'bla-bla term2'
 
       Gitlab::Elastic::Helper.refresh_index
@@ -27,6 +27,8 @@ describe Note, elastic: true do
     options = { project_ids: [issue.project.id] }
 
     expect(described_class.elastic_search('term1 | term2', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('bla-bla', options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('bla-bla', options: { project_ids: :any }).total_count).to eq(2)
   end
 
   it "indexes && searches diff notes" do

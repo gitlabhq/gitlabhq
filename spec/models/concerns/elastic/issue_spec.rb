@@ -19,8 +19,8 @@ describe Issue, elastic: true do
       create :issue, description: 'bla-bla term2', project: project
       create :issue, project: project
 
-      # The issue I have no access to
-      create :issue, title: 'bla-bla term3'
+      # The issue I have no access to except as an administrator
+      create :issue, title: 'bla-bla term3', project: create(:project, :private)
 
       Gitlab::Elastic::Helper.refresh_index
     end
@@ -29,6 +29,7 @@ describe Issue, elastic: true do
 
     expect(described_class.elastic_search('(term1 | term2 | term3) +bla-bla', options: options).total_count).to eq(2)
     expect(described_class.elastic_search(Issue.last.to_reference, options: options).total_count).to eq(1)
+    expect(described_class.elastic_search('bla-bla', options: { project_ids: :any }).total_count).to eq(3)
   end
 
   it "returns json with all needed elements" do
