@@ -41,7 +41,6 @@ export default RepoTab;
 <template>
 <li>
   <a
-    v-if="!tab.loading"
     href="#0"
     class="close"
     @click.prevent="xClicked(tab)"
@@ -53,8 +52,12 @@ export default RepoTab;
     </i>
   </a>
 
-  <a href="#" class="repo-tab" v-if="!tab.loading" :title="tab.url" @click.prevent="tabClicked(tab)">{{tab.name}}</a>
-
-  <i v-if="tab.loading" class="fa fa-spinner fa-spin"></i>
+  <a
+    href="#"
+    class="repo-tab"
+    :title="tab.url"
+    @click.prevent="tabClicked(tab)">
+    {{tab.name}}
+  </a>
 </li>
 </template>
