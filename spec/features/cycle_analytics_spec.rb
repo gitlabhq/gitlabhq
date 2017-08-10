@@ -24,6 +24,12 @@ feature 'Cycle Analytics', js: true do
         expect(page).to have_content('Introducing Cycle Analytics')
       end
 
+      it 'shows pipeline summary' do
+        expect(new_issues_counter).to have_content('-')
+        expect(commits_counter).to have_content('-')
+        expect(deploys_counter).to have_content('-')
+      end
+
       it 'shows active stage with empty message' do
         expect(page).to have_selector('.stage-nav-item.active', text: 'Issue')
         expect(page).to have_content("We don't have enough data to show this stage.")
@@ -40,6 +46,12 @@ feature 'Cycle Analytics', js: true do
 
         sign_in(user)
         visit project_cycle_analytics_path(project)
+      end
+
+      it 'shows pipeline summary' do
+        expect(new_issues_counter).to have_content('1')
+        expect(commits_counter).to have_content('2')
+        expect(deploys_counter).to have_content('1')
       end
 
       it 'shows data on each stage' do
@@ -107,6 +119,18 @@ feature 'Cycle Analytics', js: true do
       click_stage('Review')
       expect(find('.stage-events')).to have_content('You need permission.')
     end
+  end
+
+  def new_issues_counter
+    find(:xpath, "//p[contains(text(),'New Issue')]/preceding-sibling::h3")
+  end
+
+  def commits_counter
+    find(:xpath, "//p[contains(text(),'Commits')]/preceding-sibling::h3")
+  end
+
+  def deploys_counter
+    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3")
   end
 
   def expect_issue_to_be_present
