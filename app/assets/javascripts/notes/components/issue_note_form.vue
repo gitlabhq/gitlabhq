@@ -22,6 +22,7 @@
       discussion: {
         type: Object,
         required: false,
+        default: () => ({}),
       },
       isEditing: {
         type: Boolean,
@@ -30,7 +31,6 @@
     },
     data() {
       return {
-        initialNote: this.noteBody,
         note: this.noteBody,
         conflictWhileEditing: false,
         isSubmitting: false,
@@ -72,10 +72,7 @@
       },
       editMyLastNote() {
         if (this.note === '') {
-          const lastNoteInDiscussion = this.getDiscussionLastNote(
-            this.discussion,
-            this.currentUserId,
-          );
+          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
 
           if (lastNoteInDiscussion) {
             eventHub.$emit('enterEditMode', {
@@ -86,7 +83,7 @@
       },
       cancelHandler(shouldConfirm = false) {
         // Sends information about confirm message and if the textarea has changed
-        this.$emit('cancelFormEdition', shouldConfirm, this.initialNote !== this.note);
+        this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.note);
       },
     },
     mounted() {
@@ -94,7 +91,7 @@
     },
     watch: {
       noteBody() {
-        if (this.note === this.initialNote) {
+        if (this.note === this.noteBody) {
           this.note = this.noteBody;
         } else {
           this.conflictWhileEditing = true;
@@ -157,3 +154,4 @@
     </form>
   </div>
 </template>
+
