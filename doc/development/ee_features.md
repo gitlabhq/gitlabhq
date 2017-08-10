@@ -58,7 +58,7 @@ because only one line is added to the CE class - the `include` statement.
 
 There are two ways for overriding a method that's defined in CE:
 
-- changing the method's body in place
+- changing the method's body in place (not recommended)
 - override the method's body by using `prepend` which lets you override a
   method in a class with a method from a module, and still access the class's
   implementation with `super`.
@@ -80,8 +80,8 @@ The `prepend` method should always be preferred but there are a few gotchas with
   pragmatic to just change the method in place since conflicts resolution
   should be trivial in this case. Use your best judgement!
 
-When prepending, place them in a `/ee/` sub-folder, and wrap class or
-module in `module EE` to avoid naming conflicts.
+When prepending, place them in the `ee/` specific sub-directory, and
+wrap class or module in `module EE` to avoid naming conflicts.
 
 For example to override the CE implementation of
 `ApplicationController#after_sign_out_path_for`:
@@ -108,7 +108,8 @@ class ApplicationController < ActionController::Base
 end
 ```
 
-And create a new file in the `/ee/` sub-folder with the altered implementation:
+And create a new file in the `ee/` sub-directory with the altered
+implementation:
 
 ```ruby
 module EE
@@ -143,7 +144,7 @@ def full_private_access?
 end
 ```
 
-In EE, the implementation `app/models/ee/users.rb` would be:
+In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
 def full_private_access?
@@ -246,7 +247,7 @@ When you're testing EE-only features, avoid adding examples to the
 existing CE specs. Also do no change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
-Instead add a file in a `/ee/` sub-folder.
+Instead place EE specs in the `/spec/ee/spec` folder.
 
 When doing this, rubocop might complain about the path not
 matching. So on the top-level `describe` append `# rubocop:disable
@@ -259,7 +260,7 @@ To separate EE-specific JS-files we can also move the files into an `ee` folder.
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
 ee counterpart
-`app/assets/javascripts/protected_branches/ee/protected_branches_bundle.js`.
+`ee/app/assets/javascripts/protected_branches/ee/protected_branches_bundle.js`.
 
 That way we can create a separate webpack bundle in `webpack.config.js`:
 
@@ -280,11 +281,10 @@ view, using the `page_specific_javascript_bundle_tag` helper.
 
 To separate EE-specific styles in SCSS files, If a component you're adding styles for,
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
-within `assets/stylesheets` such that the file will only exist in EE codebase.
-
+within `ee/app/assets/stylesheets/ee` such that the file will only exist in EE codebase.
 
 In some cases, this is not entirely possible and creating dedicated SCSS file is an overkill,
-for eg; a text style of some component is different for EE. In such cases,
+e.g. a text style of some component is different for EE. In such cases,
 styles are usually kept in stylesheet that is common for both CE and EE, and it is wise
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
 to avoid conflicts during CE to EE merge.
