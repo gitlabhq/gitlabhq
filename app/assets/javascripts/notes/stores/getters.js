@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export const notes = state => state.notes;
 export const targetNoteHash = state => state.targetNoteHash;
 
@@ -16,15 +18,11 @@ export const notesById = state => state.notes.reduce((acc, note) => {
 }, {});
 
 const reverseNotes = array => array.slice(0).reverse();
-const isLastNote = (note, userId) => !note.system && note.author.id === userId;
+const isLastNote = (note, state) => !note.system && note.author.id === state.userData.id;
 
-export const getCurrentUserLastNote = state => userId => reverseNotes(state.notes)
-  .reduce((acc, note) => {
-    acc.push(reverseNotes(note.notes).find(el => isLastNote(el, userId)));
-    return acc;
-  }, []).filter(el => el !== undefined)[0];
+export const getCurrentUserLastNote = state => _.flatten(reverseNotes(state.notes)
+  .map(note => note.notes))
+  .find(el => isLastNote(el, state));
 
-// eslint-disable-next-line no-unused-vars
-export const getDiscussionLastNote = state => (discussion, userId) => reverseNotes(discussion.notes)
-  .find(el => isLastNote(el, userId));
-
+export const getDiscussionLastNote = state => discussion => reverseNotes(discussion.notes)
+  .find(el => isLastNote(el, state));
