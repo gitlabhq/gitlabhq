@@ -27,6 +27,8 @@
 .new-note,
 .note-edit-form {
   .note-form-actions {
+    @include new-style-dropdown;
+
     position: relative;
     margin: $gl-padding 0 0;
   }
