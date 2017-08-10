@@ -1094,7 +1094,7 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)

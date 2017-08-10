@@ -525,22 +525,47 @@ describe Gitlab::Shell do
       end
     end
 
-    describe '#fetch_remote' do
+    shared_examples 'fetch_remote' do |gitaly_on|
+      let(:project2) { create(:project, :repository) }
+      let(:repository) { project2.repository }
+
       def fetch_remote(ssh_auth = nil)
-        gitlab_shell.fetch_remote('current/storage', 'project/path', 'new/storage', ssh_auth: ssh_auth)
+        gitlab_shell.fetch_remote(repository.raw_repository, 'new/storage', ssh_auth: ssh_auth)
       end
 
-      def expect_popen(vars = {})
+      def expect_popen(fail = false, vars = {})
         popen_args = [
           projects_path,
           'fetch-remote',
-          'current/storage',
-          'project/path.git',
+          TestEnv.repos_path,
+          repository.relative_path,
           'new/storage',
           Gitlab.config.gitlab_shell.git_timeout.to_s
         ]
 
-        expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars))
+        if fail
+          expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return(["error", 1])
+        else
+          expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return([nil, 0])
+        end
+      end
+
+      def expect_gitaly_call(fail, vars = {})
+        if fail
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fetch_remote).and_raise(GRPC::NotFound)
+        else
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fetch_remote).and_return(true)
+        end
+      end
+
+      if gitaly_on
+        def expect_call(fail, vars = {})
+          expect_gitaly_call(fail, vars)
+        end
+      else
+        def expect_call(fail, vars = {})
+          expect_popen(fail, vars)
+        end
       end
 
       def build_ssh_auth(opts = {})
@@ -555,20 +580,20 @@ describe Gitlab::Shell do
       end
 
       it 'returns true when the command succeeds' do
-        expect_popen.and_return([nil, 0])
+        expect_call(false)
 
         expect(fetch_remote).to be_truthy
       end
 
       it 'raises an exception when the command fails' do
-        expect_popen.and_return(["error", 1])
+        expect_call(true)
 
-        expect { fetch_remote }.to raise_error(Gitlab::Shell::Error, "error")
+        expect { fetch_remote }.to raise_error(Gitlab::Shell::Error)
       end
 
       context 'SSH auth' do
         it 'passes the SSH key if specified' do
-          expect_popen('GITLAB_SHELL_SSH_KEY' => 'foo').and_return([nil, 0])
+          expect_call(false, 'GITLAB_SHELL_SSH_KEY' => 'foo')
 
           ssh_auth = build_ssh_auth(ssh_key_auth?: true, ssh_private_key: 'foo')
 
@@ -576,7 +601,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass an empty SSH key' do
-          expect_popen.and_return([nil, 0])
+          expect_call(false)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: true, ssh_private_key: '')
 
@@ -584,7 +609,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass the key unless SSH key auth is to be used' do
-          expect_popen.and_return([nil, 0])
+          expect_call(false)
 
           ssh_auth = build_ssh_auth(ssh_key_auth: false, ssh_private_key: 'foo')
 
@@ -592,7 +617,7 @@ describe Gitlab::Shell do
         end
 
         it 'passes the known_hosts data if specified' do
-          expect_popen('GITLAB_SHELL_KNOWN_HOSTS' => 'foo').and_return([nil, 0])
+          expect_call(false, 'GITLAB_SHELL_KNOWN_HOSTS' => 'foo')
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: 'foo')
 
@@ -600,7 +625,7 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass empty known_hosts data' do
-          expect_popen.and_return([nil, 0])
+          expect_call(false)
 
           ssh_auth = build_ssh_auth(ssh_known_hosts: '')
 
@@ -608,13 +633,21 @@ describe Gitlab::Shell do
         end
 
         it 'does not pass known_hosts data unless SSH is to be used' do
-          expect_popen(popen_vars).and_return([nil, 0])
+          expect_call(false, popen_vars)
 
           ssh_auth = build_ssh_auth(ssh_import?: false, ssh_known_hosts: 'foo')
 
           expect(fetch_remote(ssh_auth)).to be_truthy
         end
       end
+    end
+
+    describe '#fetch_remote local', skip_gitaly_mock: true do
+      it_should_behave_like 'fetch_remote', false
+    end
+
+    describe '#fetch_remote gitaly' do
+      it_should_behave_like 'fetch_remote', true
     end
 
     describe '#import_repository' do
