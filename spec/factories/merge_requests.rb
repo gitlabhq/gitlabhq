@@ -72,10 +72,10 @@ FactoryGirl.define do
       target_project = merge_request.target_project
       source_project = merge_request.source_project
 
-      # Fake `fetch_ref` if we don't have repository
+      # Fake `write_ref` if we don't have repository
       # We have too many existing tests replying on this behaviour
       unless [target_project, source_project].all?(&:repository_exists?)
-        allow(target_project.repository).to receive(:fetch_ref)
+        allow(merge_request).to receive(:write_ref)
       end
     end
 

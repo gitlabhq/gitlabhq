@@ -224,7 +224,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -235,6 +235,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)

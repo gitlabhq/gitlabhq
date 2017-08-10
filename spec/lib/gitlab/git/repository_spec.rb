@@ -1196,8 +1196,9 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
-    rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
+    repository.write_ref(
+      "refs/remotes/#{remote_name}/#{branch_name}",
+      source_branch.dereferenced_target.sha)
   end
 
   # Build the options hash that's passed to Rugged::Commit#create

@@ -792,11 +792,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def fetch_ref
-    target_project.repository.fetch_ref(
-      source_project.repository.path_to_repo,
-      "refs/heads/#{source_branch}",
-      ref_path
-    )
+    write_ref
     update_column(:ref_fetched, true)
   end
 
@@ -938,5 +934,19 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  private
+
+  def write_ref
+    if for_fork?
+      target_project.repository.fetch_ref(
+        source_project.repository.path_to_repo,
+        "refs/heads/#{source_branch}",
+        ref_path
+      )
+    else
+      source_project.repository.write_ref(ref_path, source_branch_sha)
+    end
   end
 end
