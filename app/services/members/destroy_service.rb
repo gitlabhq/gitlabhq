@@ -31,7 +31,7 @@ module Members
         source.members.find_by(condition) ||
           source.requesters.find_by!(condition)
       else
-        source.public_send(scope).find_by!(condition)
+        source.public_send(scope).find_by!(condition) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 

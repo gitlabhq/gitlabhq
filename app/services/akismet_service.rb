@@ -58,7 +58,7 @@ class AkismetService
     }
 
     begin
-      akismet_client.public_send(type, options[:ip_address], options[:user_agent], params)
+      akismet_client.public_send(type, options[:ip_address], options[:user_agent], params) # rubocop:disable GitlabSecurity/PublicSend
       true
     rescue => e
       Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")

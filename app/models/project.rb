@@ -921,14 +921,14 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data, hooks_scope = :push_hooks)
-    hooks.send(hooks_scope).each do |hook|
+    hooks.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
       hook.async_execute(data, hooks_scope.to_s)
     end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
-    services.send(hooks_scope).each do |service|
+    services.public_send(hooks_scope).each do |service| # rubocop:disable GitlabSecurity/PublicSend
       service.async_execute(data)
     end
   end

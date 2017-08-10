@@ -11,6 +11,7 @@ module Commits
     def commit_change(action)
       raise NotImplementedError unless repository.respond_to?(action)
 
+      # rubocop:disable GitlabSecurity/PublicSend
       repository.public_send(
         action,
         current_user,

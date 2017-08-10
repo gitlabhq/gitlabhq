@@ -109,7 +109,7 @@ module DeclarativePolicy
         name = name.to_sym
 
         if delegation_block.nil?
-          delegation_block = proc { @subject.__send__(name) }
+          delegation_block = proc { @subject.__send__(name) } # rubocop:disable GitlabSecurity/PublicSend
         end
 
         own_delegations[name] = delegation_block
