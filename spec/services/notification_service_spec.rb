@@ -91,6 +91,7 @@ describe NotificationService, :mailer do
       it 'never emails the ghost user' do
         key.user = User.ghost
 
+        reset_delivered_emails!
         notification.new_key(key)
 
         should_not_email_anyone
