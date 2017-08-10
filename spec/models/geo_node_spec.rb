@@ -317,6 +317,32 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#projects_include?' do
+    let(:unsynced_project) { create(:project) }
+
+    it 'returns true without namespace restrictions' do
+      expect(node.projects_include?(unsynced_project.id)).to eq true
+    end
+
+    context 'with namespace restrictions' do
+      let(:synced_group) { create(:group) }
+
+      before do
+        node.update_attribute(:namespaces, [synced_group])
+      end
+
+      it 'returns true when project belongs to one of the namespaces' do
+        project_in_synced_group = create(:project, group: synced_group)
+
+        expect(node.projects_include?(project_in_synced_group.id)).to eq true
+      end
+
+      it 'returns false when project does not belong to one of the namespaces' do
+        expect(node.projects_include?(unsynced_project.id)).to eq false
+      end
+    end
+  end
+
   describe '#restricted_project_ids' do
     context 'without namespace restriction' do
       it 'returns nil' do
