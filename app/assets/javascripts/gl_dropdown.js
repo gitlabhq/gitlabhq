@@ -13,7 +13,7 @@ GitLabDropdownInput = (function() {
     this.options = options;
     this.fieldName = this.options.fieldName || 'field-name';
     $inputContainer = this.input.parent();
-    if(this.options.defaultInputFieldText) {
+    if (this.options.defaultInputFieldText) {
       this.input.val(this.options.defaultInputFieldText);
     }
     $clearButton = $inputContainer.find('.js-dropdown-input-clear');
@@ -815,8 +815,8 @@ GitLabDropdown = (function() {
     }
 
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
-    if(custom) {
-      $input.attr('data-'+custom, true);
+    if (custom) {
+      $input.attr('data-' + custom, true);
     }
 
     if (this.options.inputId != null) {

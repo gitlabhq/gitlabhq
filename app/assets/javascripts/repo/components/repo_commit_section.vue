@@ -40,8 +40,8 @@ const RepoCommitSection = {
         commit_message: commitMessage,
         actions,
       };
-      
-      if(Store.isTargetBranchNew) {
+
+      if (Store.isTargetBranchNew) {
         payload.start_branch = Store.currentBranch;
       }
 
