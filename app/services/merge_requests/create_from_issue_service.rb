@@ -43,7 +43,9 @@ module MergeRequests
       {
         source_project_id: project.id,
         source_branch: branch_name,
-        target_project_id: project.id
+        target_project_id: project.id,
+        labels: issue.labels,
+        milestone_id: issue.milestone_id
       }
     end
 
