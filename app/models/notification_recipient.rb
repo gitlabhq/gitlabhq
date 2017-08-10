@@ -6,7 +6,8 @@ class NotificationRecipient
     target: nil,
     acting_user: nil,
     project: nil,
-    group: nil
+    group: nil,
+    skip_read_ability: false
   )
     unless NotificationSetting.levels.key?(type) || type == :subscription
       raise ArgumentError, "invalid type: #{type.inspect}"
@@ -19,6 +20,7 @@ class NotificationRecipient
     @group = group || @project&.group
     @user = user
     @type = type
+    @skip_read_ability = skip_read_ability
   end
 
   def notification_setting
@@ -83,6 +85,8 @@ class NotificationRecipient
   def has_access?
     DeclarativePolicy.subject_scope do
       return false unless user.can?(:receive_notifications)
+      return true if @skip_read_ability
+
       return false if @project && !user.can?(:read_project, @project)
 
       return true unless read_ability
@@ -102,6 +106,7 @@ class NotificationRecipient
   private
 
   def read_ability
+    return nil if @skip_read_ability
     return @read_ability if instance_variable_defined?(:@read_ability)
 
     @read_ability =

@@ -244,7 +244,7 @@ class NotificationService
   end
 
   def new_project_member(project_member)
-    return true unless project_member.notifiable?(:mention)
+    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
 
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
