@@ -1,18 +1,37 @@
 require 'spec_helper'
 
 describe SshHostKey do
+  using RSpec::Parameterized::TableSyntax
   include ReactiveCachingHelpers
 
-  keys = [
-    SSHKeygen.generate,
-    SSHKeygen.generate
-  ]
+  let(:key1) do
+    'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3UpyF2iLqy1d63M6k3jH1vuEnq/NWtE+o' \
+    'rJe1Xn7JoRbduKd6zpsJ0JhBGWgcQK0ph0aGW5PcudzzBSc+SlYfCc4GTaxDtmj41hW0o72m' \
+    'NiuDW3oKXXShOiVRde2ZOquH8Z865jGiZIC8BI/bXZD29IGUih0hPu7Rjp70VYiE+35QRf/p' \
+    'sD0Ddrz8QUIG3A/2dMzLI5F5ZORk3BIX2F3mJwJOvZxRhR/SqyphDMZ5eZ0EzqbFBCDE6HAB' \
+    'Woz9ck8RBGLvCIggmDHj3FmMLcQGMDiy6wKp7QdnBtxjCP6vtE6YPUM223AqsWt+9NTtCfB8' \
+    'YdNAH7YcHHOR1FgtSk1x'
+  end
+
+  let(:key2) do
+    'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLIp+4ciR2YO9f9rpldc7InNQw/TBUtcNb' \
+    'J2XR0rr15/5ytz7YM16xXG0Qjx576PNSmqs4gbTrvTuFZak+v1Jx/9deHRq/yqp9f+tv33+i' \
+    'aJGCQCX/+OVY7aWgV2R9YsS7XQ4mnv4XlOTEssib/rGAIT+ATd/GcdYSEOO+dh4O09/6O/jI' \
+    'MGSeP+NNetgn1nPCnLOjrXFZUnUtNDi6EEKeIlrliJjSb7Jr4f7gjvZnv4RskWHHFo8FgAAq' \
+    't0gOMT6EmKrnypBe2vLGSAXbtkXr01q6/DNPH+n9VA1LTV6v1KN/W5CN5tQV11wRSKiM8g5O' \
+    'Ebi86VjJRi2sOuYoXQU1'
+  end
 
   # Purposefully ordered so that `sort` will make changes
-  known_hosts = <<~EOF
-    example.com #{keys[0]} git@localhost
-    @revoked other.example.com #{keys[1]} git@localhost
-  EOF
+  let(:known_hosts) do
+    <<~EOF
+      example.com #{key1} git@localhost
+      @revoked other.example.com #{key2} git@localhost
+    EOF
+  end
+
+  let(:extra) { known_hosts + "foo\nbar\n" }
+  let(:reversed) { known_hosts.lines.reverse.join }
 
   def stub_ssh_keyscan(args, status: true, stdout: "", stderr: "")
     stdin = StringIO.new
@@ -33,7 +52,7 @@ describe SshHostKey do
     it 'returns an array of indexed fingerprints when the cache is filled' do
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 
-      expected = keys
+      expected = [key1, key2]
         .map { |data| Gitlab::KeyFingerprint.new(data) }
         .each_with_index
         .map { |key, i| { bits: key.bits, fingerprint: key.fingerprint, type: key.type, index: i } } 
@@ -48,16 +67,12 @@ describe SshHostKey do
 
   describe '#fingerprints', use_clean_rails_memory_store_caching: true do
     it 'returns an array of indexed fingerprints when the cache is filled' do
-      key1 = SSHKeygen.generate
-      key2 = SSHKeygen.generate
-
-      known_hosts = "example.com #{key1} git@localhost\n\n\n@revoked other.example.com #{key2} git@localhost\n"
       stub_reactive_cache(ssh_host_key, known_hosts: known_hosts)
 
       expect(ssh_host_key.fingerprints.as_json).to eq(
         [
           { bits: 2048, fingerprint: Gitlab::KeyFingerprint.new(key1).fingerprint, type: 'RSA', index: 0 },
-          { bits: 2048, fingerprint: Gitlab::KeyFingerprint.new(key2).fingerprint, type: 'RSA', index: 3 }
+          { bits: 2048, fingerprint: Gitlab::KeyFingerprint.new(key2).fingerprint, type: 'RSA', index: 1 }
         ]
       )
     end
@@ -68,36 +83,35 @@ describe SshHostKey do
   end
 
   describe '#changes_project_import_data?' do
-    subject { ssh_host_key.changes_project_import_data? }
+    where(:a, :b, :result) do
+      known_hosts | extra       | true
+      known_hosts | "foo\n"     | true
+      known_hosts | ''          | true
+      known_hosts | nil         | true
+      known_hosts | known_hosts | false
+      reversed    | known_hosts | false
+      extra       | "foo\n"     | true
+      ''          | ''          | false
+      nil         | nil         | false
+      ''          | nil         | false
+    end
 
-    reversed = known_hosts.lines.reverse.join
-    extra = known_hosts + "foo\nbar\n"
+    with_them do
+      subject { ssh_host_key.changes_project_import_data? }
 
-    [
-      { a: known_hosts, b: extra,       result: true  },
-      { a: known_hosts, b: "foo\n",     result: true  },
-      { a: known_hosts, b: '',          result: true  },
-      { a: known_hosts, b: nil,         result: true  },
-      { a: known_hosts, b: known_hosts, result: false },
-      { a: reversed,    b: known_hosts, result: false },
-      { a: extra,       b: "foo\n",     result: true  },
-      { a: '',          b: '',          result: false },
-      { a: nil,         b: nil,         result: false },
-      { a: '',          b: nil,         result: false }
-    ].each_with_index do |spec, index|
-      it "is #{spec[:result]} for test case #{index}" do
-        expect(ssh_host_key).to receive(:known_hosts).and_return(spec[:a])
-        project.import_data.ssh_known_hosts = spec[:b]
+      it "(normal)" do
+        expect(ssh_host_key).to receive(:known_hosts).and_return(a)
+        project.import_data.ssh_known_hosts = b
 
-        is_expected.to eq(spec[:result])
+        is_expected.to eq(result)
       end
 
       # Comparisons should be symmetrical, so test the reverse too
-      it "is #{spec[:result]} for test case #{index} (reversed)" do
-        expect(ssh_host_key).to receive(:known_hosts).and_return(spec[:b])
-        project.import_data.ssh_known_hosts = spec[:a]
+      it "(reversed)" do
+        expect(ssh_host_key).to receive(:known_hosts).and_return(b)
+        project.import_data.ssh_known_hosts = a
 
-        is_expected.to eq(spec[:result])
+        is_expected.to eq(result)
       end
     end
   end
