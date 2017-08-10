@@ -841,7 +841,7 @@ describe Projects::IssuesController do
   describe 'POST #toggle_award_emoji' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "toggles the award emoji" do

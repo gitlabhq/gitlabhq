@@ -443,7 +443,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_diff_if_branch_changed
-    if source_branch_changed? || target_branch_changed?
+    if (source_branch_changed? || target_branch_changed?) &&
+        (source_branch_head && target_branch_head)
       reload_diff
     end
   end
