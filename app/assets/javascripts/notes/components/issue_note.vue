@@ -19,7 +19,6 @@
       return {
         isEditing: false,
         isDeleting: false,
-        currentUserId: window.gon.current_user_id,
       };
     },
     components: {
@@ -31,6 +30,7 @@
     computed: {
       ...mapGetters([
         'targetNoteHash',
+        'getUserData',
       ]),
       author() {
         return this.note.author;
@@ -43,7 +43,7 @@
         };
       },
       canReportAsAbuse() {
-        return this.note.report_abuse_path && this.author.id !== this.currentUserId;
+        return this.note.report_abuse_path && this.author.id !== this.getUserData.id;
       },
       noteAnchorId() {
         return `note_${this.note.id}`;

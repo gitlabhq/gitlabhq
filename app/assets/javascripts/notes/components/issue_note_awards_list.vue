@@ -1,7 +1,7 @@
 <script>
   /* global Flash */
 
-  import { mapActions } from 'vuex';
+  import { mapActions, mapGetters } from 'vuex';
   import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
@@ -30,18 +30,10 @@
     directives: {
       tooltip,
     },
-    data() {
-      const userId = window.gon.current_user_id;
-
-      return {
-        emojiSmiling,
-        emojiSmile,
-        emojiSmiley,
-        canAward: !!userId,
-        myUserId: userId,
-      };
-    },
     computed: {
+      ...mapGetters([
+        'getUserData',
+      ]),
       // `this.awards` is an array with emojis but they are not grouped by emoji name. See below.
       // [ { name: foo, user: user1 }, { name: bar, user: user1 }, { name: foo, user: user2 } ]
       // This method will group emojis by their name as an Object. See below.
@@ -76,7 +68,10 @@
         return Object.assign({}, orderedAwards, awards);
       },
       isAuthoredByMe() {
-        return this.noteAuthorId === window.gon.current_user_id;
+        return this.noteAuthorId === this.getUserData.id;
+      },
+      isLoggedIn() {
+        return this.getUserData.id;
       },
     },
     methods: {
@@ -95,17 +90,16 @@
       canInteractWithEmoji(awardList, awardName) {
         let isAllowed = true;
         const restrictedEmojis = ['thumbsup', 'thumbsdown'];
-        const { myUserId, noteAuthorId } = this;
 
         // Users can not add :+1: and :-1: to their own notes
-        if (myUserId === noteAuthorId && restrictedEmojis.indexOf(awardName) > -1) {
+        if (this.getUserData.id === this.noteAuthorId && restrictedEmojis.indexOf(awardName) > -1) {
           isAllowed = false;
         }
 
-        return this.canAward && isAllowed;
+        return this.getUserData.id && isAllowed;
       },
       hasReactionByCurrentUser(awardList) {
-        return awardList.filter(award => award.user.id === this.myUserId).length;
+        return awardList.filter(award => award.user.id === this.getUserData.id).length;
       },
       awardTitle(awardsList) {
         const hasReactionByCurrentUser = this.hasReactionByCurrentUser(awardsList);
@@ -114,7 +108,7 @@
 
         // Filter myself from list if I am awarded.
         if (hasReactionByCurrentUser) {
-          awardList = awardList.filter(award => award.user.id !== this.myUserId);
+          awardList = awardList.filter(award => award.user.id !== this.getUserData.id);
         }
 
         // Get only 9-10 usernames to show in tooltip text.
@@ -157,6 +151,11 @@
           .catch(() => Flash('Something went wrong on our end.'));
       },
     },
+    created() {
+      this.emojiSmiling = emojiSmiling;
+      this.emojiSmile = this.emojiSmile;
+      this.emojiSmiley = this.emojiSmiley;
+    },
   };
 </script>
 
@@ -179,7 +178,7 @@
         </span>
       </button>
       <div
-        v-if="canAward"
+        v-if="isLoggedIn"
         class="award-menu-holder">
         <button
           v-tooltip
