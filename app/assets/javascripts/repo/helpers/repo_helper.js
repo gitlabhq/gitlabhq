@@ -135,14 +135,13 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getContent(treeOrFile, cb) {
+  getContent(treeOrFile) {
     let file = treeOrFile;
     // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
       const data = response.data;
       // RepoHelper.setLoading(false, loadingData);
-      if (cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;

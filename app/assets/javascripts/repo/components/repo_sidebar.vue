@@ -42,19 +42,20 @@ const RepoSidebar = {
         file.loading = false;
       } else {
         Service.url = file.url;
-        // I need to refactor this to do the `then` here.
-        // Not a callback. For now this is good enough.
-        // it works.
-        Helper.getContent(file, () => {
-          file.loading = false;
-          Helper.scrollTabsRight();
-        });
+        Helper.getContent(file)
+          .then(() => {
+            file.loading = false;
+            Helper.scrollTabsRight();
+          })
+          .catch(Helper.loadingError);
       }
     },
 
     goToPreviousDirectoryClicked(prevURL) {
       Service.url = prevURL;
-      Helper.getContent(null, () => Helper.scrollTabsRight());
+      Helper.getContent(null)
+        .then(() => Helper.scrollTabsRight())
+        .catch(Helper.loadingError);
     },
   },
 };
