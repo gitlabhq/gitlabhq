@@ -29,12 +29,10 @@ const RepoEditor = {
 
       this.addMonacoEvents();
 
-      const languages = this.monaco.languages.getLanguages();
-      const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
+      Helper.setMonacoModelFromLanguage();
+      
       this.showHide();
-      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
-      Helper.monacoInstance.setModel(newModel);
     }).catch(Helper.loadingError);
   },
 
@@ -114,14 +112,7 @@ const RepoEditor = {
       this.showHide();
 
       if (this.isTree) return;
-
-      Helper.monacoInstance.setModel(null);
-
-      const languages = this.monaco.languages.getLanguages();
-      const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
-
-      Helper.monacoInstance.setModel(newModel);
+      Helper.setMonacoModelFromLanguage();
     },
   },
 };
