@@ -182,7 +182,7 @@ const RepoHelper = {
 
     newFile.url = file.url || location.pathname;
     newFile.url = file.url;
-    if (newFile.render_error === 'too_large') {
+    if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }
     newFile.newContent = '';
