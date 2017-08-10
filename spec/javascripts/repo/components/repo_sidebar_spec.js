@@ -65,9 +65,10 @@ describe('RepoSidebar', () => {
   describe('methods', () => {
     describe('fileClicked', () => {
       it('should fetch data for new file', () => {
-        spyOn(Helper, 'getContent');
+        spyOn(Helper, 'getContent').and.callThrough();
         const file1 = {
           id: 0,
+          url: '',
         };
         RepoStore.files = [file1];
         RepoStore.isRoot = true;
@@ -75,7 +76,7 @@ describe('RepoSidebar', () => {
 
         vm.fileClicked(file1);
 
-        expect(Helper.getContent).toHaveBeenCalledWith(file1, jasmine.any(Function));
+        expect(Helper.getContent).toHaveBeenCalledWith(file1);
       });
 
       it('should hide files in directory if already open', () => {
