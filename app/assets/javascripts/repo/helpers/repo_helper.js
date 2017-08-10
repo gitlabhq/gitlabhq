@@ -4,6 +4,8 @@ import Store from '../stores/repo_store';
 import '../../flash';
 
 const RepoHelper = {
+  monacoInstance: {},
+
   getDefaultActiveFile() {
     return {
       active: true,
