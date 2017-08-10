@@ -153,8 +153,8 @@
     },
     created() {
       this.emojiSmiling = emojiSmiling;
-      this.emojiSmile = this.emojiSmile;
-      this.emojiSmiley = this.emojiSmiley;
+      this.emojiSmile = emojiSmile;
+      this.emojiSmiley = emojiSmiley;
     },
   };
 </script>

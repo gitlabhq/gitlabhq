@@ -163,5 +163,7 @@ module SharedNote
     page.within(".note") do
       expect(page).to have_content("+1 Awesome!")
     end
+
+    wait_for_requests
   end
 end

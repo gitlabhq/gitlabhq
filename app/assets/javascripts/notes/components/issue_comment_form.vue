@@ -92,7 +92,7 @@
         'saveNote',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
-         if (!_.isEmpty(note) && !isSubmitting) {
+        if (!_.isEmpty(note) && !isSubmitting) {
           this.isSubmitButtonDisabled = false;
         } else {
           this.isSubmitButtonDisabled = true;
