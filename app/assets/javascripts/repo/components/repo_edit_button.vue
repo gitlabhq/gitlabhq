@@ -23,15 +23,8 @@ export default {
 
   watch: {
     editMode() {
-      if (this.editMode) {
-        $('.project-refs-form').addClass('disabled');
-        $('.fa-long-arrow-right').show();
-        $('.project-refs-target-form').show();
-      } else {
-        $('.project-refs-form').removeClass('disabled');
-        $('.fa-long-arrow-right').hide();
-        $('.project-refs-target-form').hide();
-      }
+      $('.project-refs-form').toggleClass('disabled', this.editMode);
+      $('.fa-long-arrow-right, .project-refs-target-form').toggle(this.editMode);
     },
   },
 };
