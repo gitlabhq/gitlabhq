@@ -148,6 +148,8 @@ class User < ActiveRecord::Base
     uniqueness: { case_sensitive: false }
 
   validate :namespace_uniq, if: :username_changed?
+  validate :namespace_move_dir_allowed, if: :username_changed?
+
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
@@ -487,6 +489,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def namespace_move_dir_allowed
+    if namespace&.any_project_has_container_registry_tags?
+      errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
+    end
+  end
+
   def avatar_type
     unless avatar.image?
       errors.add :avatar, "only images allowed"
@@ -528,7 +536,7 @@ class User < ActiveRecord::Base
     union = Gitlab::SQL::Union
       .new([groups.select(:id), authorized_projects.select(:namespace_id)])
 
-    Group.where("namespaces.id IN (#{union.to_sql})")
+    Group.where("namespaces.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   # Returns a relation of groups the user has access to, including their parent
@@ -719,8 +727,8 @@ class User < ActiveRecord::Base
 
   def sanitize_attrs
     %w[username skype linkedin twitter].each do |attr|
-      value = public_send(attr)
-      public_send("#{attr}=", Sanitize.clean(value)) if value.present?
+      value = public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
+      public_send("#{attr}=", Sanitize.clean(value)) if value.present? # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -779,7 +787,7 @@ class User < ActiveRecord::Base
 
   def with_defaults
     User.defaults.each do |k, v|
-      public_send("#{k}=", v)
+      public_send("#{k}=", v) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     self
@@ -825,7 +833,7 @@ class User < ActiveRecord::Base
     {
       name: name,
       username: username,
-      avatar_url: avatar_url
+      avatar_url: avatar_url(only_path: false)
     }
   end
 
@@ -919,7 +927,7 @@ class User < ActiveRecord::Base
   def ci_authorized_runners
     @ci_authorized_runners ||= begin
       runner_ids = Ci::RunnerProject
-        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})")
+        .where("ci_runner_projects.project_id IN (#{ci_projects_union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
         .select(:runner_id)
       Ci::Runner.specific.where(id: runner_ids)
     end

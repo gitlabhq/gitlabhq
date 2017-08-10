@@ -17,6 +17,7 @@ module MergeRequests
     end
 
     def before_create(merge_request)
+      # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
       merge_request.run_after_commit do
         NewMergeRequestWorker.perform_async(merge_request.id, user.id)

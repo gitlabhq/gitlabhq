@@ -104,10 +104,13 @@ $new-sidebar-collapsed-width: 50px;
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
 
-    .nav-item-name,
     .badge,
     .project-title {
       display: none;
+    }
+
+    .nav-item-name {
+      opacity: 0;
     }
   }
 
@@ -182,7 +185,7 @@ $new-sidebar-collapsed-width: 50px;
 
   > li {
     a {
-      padding: 8px 16px 8px 50px;
+      padding: 8px 16px 8px 40px;
 
       &:hover,
       &:focus {
@@ -215,12 +218,15 @@ $new-sidebar-collapsed-width: 50px;
 
       &:hover {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
     }
 
-    &:not(.active) {
+    &.is-showing-fly-out {
       > a {
-        margin-left: 1px;
         margin-right: 2px;
       }
 
@@ -229,7 +235,7 @@ $new-sidebar-collapsed-width: 50px;
           position: fixed;
           top: 0;
           left: $new-sidebar-width;
-          width: 150px;
+          min-width: 150px;
           margin-top: -1px;
           padding: 8px 1px;
           background-color: $white-light;
@@ -271,6 +277,14 @@ $new-sidebar-collapsed-width: 50px;
             }
           }
 
+          > .active {
+            box-shadow: none;
+
+            > a {
+              background-color: transparent;
+            }
+          }
+
           a {
             padding: 8px 16px;
             color: $gl-text-color;
@@ -294,6 +308,7 @@ $new-sidebar-collapsed-width: 50px;
 
       > a {
         margin-left: 4px;
+        padding-left: 12px;
       }
 
       .badge {
@@ -354,7 +369,7 @@ $new-sidebar-collapsed-width: 50px;
 
 .sidebar-icons-only {
   .context-header {
-    height: 60px;
+    height: 61px;
 
     a {
       padding: 10px 4px;

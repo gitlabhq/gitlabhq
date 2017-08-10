@@ -216,6 +216,9 @@
 }
 
 .blob-upload-dropzone-previews {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: 2px;
   border-style: dashed;

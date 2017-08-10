@@ -1,0 +1,4 @@
+---
+title: Add missing validation error for username change with container registry tags
+merge_request: 13356
+author:

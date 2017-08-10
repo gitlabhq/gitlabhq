@@ -5,6 +5,8 @@ module Gitlab
   TaskAbortedByUserError = Class.new(StandardError)
 
   module TaskHelpers
+    extend self
+
     # Ask if the user wants to continue
     #
     # Returns "yes" the user chose to continue

@@ -1,9 +1,11 @@
 /* global bp */
+import Cookies from 'js-cookie';
 import {
   calculateTop,
   hideSubLevelItems,
   showSubLevelItems,
   canShowSubItems,
+  canShowActiveSubItems,
 } from '~/fly_out_nav';
 
 describe('Fly out sidebar navigation', () => {
@@ -61,7 +63,7 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('does not hude subitems on mobile', () => {
-      breakpointSize = 'sm';
+      breakpointSize = 'xs';
 
       hideSubLevelItems(el);
 
@@ -121,7 +123,7 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('does not show sub-items on mobile', () => {
-      breakpointSize = 'sm';
+      breakpointSize = 'xs';
 
       showSubLevelItems(el);
 
@@ -170,11 +172,59 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('returns false if on mobile size', () => {
-      breakpointSize = 'sm';
+      breakpointSize = 'xs';
 
       expect(
         canShowSubItems(),
       ).toBeFalsy();
+    });
+  });
+
+  describe('canShowActiveSubItems', () => {
+    afterEach(() => {
+      Cookies.remove('sidebar_collapsed');
+    });
+
+    it('returns true by default', () => {
+      expect(
+        canShowActiveSubItems(el),
+      ).toBeTruthy();
+    });
+
+    it('returns false when cookie is false & element is active', () => {
+      Cookies.set('sidebar_collapsed', 'false');
+      el.classList.add('active');
+
+      expect(
+        canShowActiveSubItems(el),
+      ).toBeFalsy();
+    });
+
+    it('returns true when cookie is false & element is active', () => {
+      Cookies.set('sidebar_collapsed', 'true');
+      el.classList.add('active');
+
+      expect(
+        canShowActiveSubItems(el),
+      ).toBeTruthy();
+    });
+
+    it('returns true when element is active & breakpoint is sm', () => {
+      breakpointSize = 'sm';
+      el.classList.add('active');
+
+      expect(
+        canShowActiveSubItems(el),
+      ).toBeTruthy();
+    });
+
+    it('returns true when element is active & breakpoint is md', () => {
+      breakpointSize = 'md';
+      el.classList.add('active');
+
+      expect(
+        canShowActiveSubItems(el),
+      ).toBeTruthy();
     });
   });
 });

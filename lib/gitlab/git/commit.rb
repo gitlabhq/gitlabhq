@@ -14,7 +14,7 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :raw_commit
+      delegate :tree, to: :rugged_commit
 
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
@@ -50,19 +50,29 @@ module Gitlab
         #
         # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/321
         def find(repo, commit_id = "HEAD")
+          # Already a commit?
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
-          return decorate(commit_id) if commit_id.is_a?(Rugged::Commit)
 
-          obj = if commit_id.is_a?(String)
-                  repo.rev_parse_target(commit_id)
-                else
-                  Gitlab::Git::Ref.dereference_object(commit_id)
-                end
+          # A rugged reference?
+          commit_id = Gitlab::Git::Ref.dereference_object(commit_id)
+          return decorate(repo, commit_id) if commit_id.is_a?(Rugged::Commit)
 
-          return nil unless obj.is_a?(Rugged::Commit)
+          # Some weird thing?
+          return nil unless commit_id.is_a?(String)
 
-          decorate(obj)
-        rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError, Gitlab::Git::Repository::NoRepository
+          commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.find_commit(commit_id)
+            else
+              obj = repo.rev_parse_target(commit_id)
+
+              obj.is_a?(Rugged::Commit) ? obj : nil
+            end
+          end
+
+          decorate(repo, commit) if commit
+        rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
+               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository
           nil
         end
 
@@ -102,7 +112,7 @@ module Gitlab
             if is_enabled
               repo.gitaly_commit_client.between(base, head)
             else
-              repo.rugged_commits_between(base, head).map { |c| decorate(c) }
+              repo.rugged_commits_between(base, head).map { |c| decorate(repo, c) }
             end
           end
         rescue Rugged::ReferenceError
@@ -169,7 +179,7 @@ module Gitlab
           offset = actual_options[:skip]
           limit = actual_options[:max_count]
           walker.each(offset: offset, limit: limit) do |commit|
-            commits.push(decorate(commit))
+            commits.push(decorate(repo, commit))
           end
 
           walker.reset
@@ -183,27 +193,8 @@ module Gitlab
           Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
-        def decorate(commit, ref = nil)
-          Gitlab::Git::Commit.new(commit, ref)
-        end
-
-        # Returns a diff object for the changes introduced by +rugged_commit+.
-        # If +rugged_commit+ doesn't have a parent, then the diff is between
-        # this commit and an empty repo.  See Repository#diff for the keys
-        # allowed in the +options+ hash.
-        def diff_from_parent(rugged_commit, options = {})
-          options ||= {}
-          break_rewrites = options[:break_rewrites]
-          actual_options = Gitlab::Git::Diff.filter_diff_options(options)
-
-          diff = if rugged_commit.parents.empty?
-                   rugged_commit.diff(actual_options.merge(reverse: true))
-                 else
-                   rugged_commit.parents[0].diff(rugged_commit, actual_options)
-                 end
-
-          diff.find_similar!(break_rewrites: break_rewrites)
-          diff
+        def decorate(repository, commit, ref = nil)
+          Gitlab::Git::Commit.new(repository, commit, ref)
         end
 
         # Returns the `Rugged` sorting type constant for one or more given
@@ -221,7 +212,7 @@ module Gitlab
         end
       end
 
-      def initialize(raw_commit, head = nil)
+      def initialize(repository, raw_commit, head = nil)
         raise "Nil as raw commit passed" unless raw_commit
 
         case raw_commit
@@ -229,12 +220,13 @@ module Gitlab
           init_from_hash(raw_commit)
         when Rugged::Commit
           init_from_rugged(raw_commit)
-        when Gitlab::GitalyClient::Commit
+        when Gitaly::GitCommit
           init_from_gitaly(raw_commit)
         else
           raise "Invalid raw commit type: #{raw_commit.class}"
         end
 
+        @repository = repository
         @head = head
       end
 
@@ -269,19 +261,50 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        diff_from_parent.patch
+        rugged_diff_from_parent.patch
       end
 
       # Returns a diff object for the changes from this commit's first parent.
       # If there is no parent, then the diff is between this commit and an
-      # empty repo.  See Repository#diff for keys allowed in the +options+
+      # empty repo. See Repository#diff for keys allowed in the +options+
       # hash.
       def diff_from_parent(options = {})
-        Commit.diff_from_parent(raw_commit, options)
+        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
+          if is_enabled
+            @repository.gitaly_commit_client.diff_from_parent(self, options)
+          else
+            rugged_diff_from_parent(options)
+          end
+        end
+      end
+
+      def rugged_diff_from_parent(options = {})
+        options ||= {}
+        break_rewrites = options[:break_rewrites]
+        actual_options = Gitlab::Git::Diff.filter_diff_options(options)
+
+        diff = if rugged_commit.parents.empty?
+                 rugged_commit.diff(actual_options.merge(reverse: true))
+               else
+                 rugged_commit.parents[0].diff(rugged_commit, actual_options)
+               end
+
+        diff.find_similar!(break_rewrites: break_rewrites)
+        diff
       end
 
       def deltas
-        @deltas ||= diff_from_parent.each_delta.map { |d| Gitlab::Git::Diff.new(d) }
+        @deltas ||= begin
+          deltas = Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
+            if is_enabled
+              @repository.gitaly_commit_client.commit_deltas(self)
+            else
+              rugged_diff_from_parent.each_delta
+            end
+          end
+
+          deltas.map { |delta| Gitlab::Git::Diff.new(delta) }
+        end
       end
 
       def has_zero_stats?
@@ -296,7 +319,7 @@ module Gitlab
 
       def to_hash
         serialize_keys.map.with_object({}) do |key, hash|
-          hash[key] = send(key)
+          hash[key] = send(key) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 
@@ -309,14 +332,7 @@ module Gitlab
       end
 
       def parents
-        case raw_commit
-        when Rugged::Commit
-          raw_commit.parents.map { |c| Gitlab::Git::Commit.new(c) }
-        when Gitlab::GitalyClient::Commit
-          parent_ids.map { |oid| self.class.find(raw_commit.repository, oid) }.compact
-        else
-          raise NotImplementedError, "commit source doesn't support #parents"
-        end
+        parent_ids.map { |oid| self.class.find(@repository, oid) }.compact
       end
 
       # Get the gpg signature of this commit.
@@ -334,7 +350,7 @@ module Gitlab
 
       def to_patch(options = {})
         begin
-          raw_commit.to_mbox(options)
+          rugged_commit.to_mbox(options)
         rescue Rugged::InvalidError => ex
           if ex.message =~ /commit \w+ is a merge commit/i
             'Patch format is not currently supported for merge commits.'
@@ -382,13 +398,21 @@ module Gitlab
         encode! @committer_email
       end
 
+      def rugged_commit
+        @rugged_commit ||= if raw_commit.is_a?(Rugged::Commit)
+                             raw_commit
+                           else
+                             @repository.rev_parse_target(id)
+                           end
+      end
+
       private
 
       def init_from_hash(hash)
         raw_commit = hash.symbolize_keys
 
         serialize_keys.each do |key|
-          send("#{key}=", raw_commit[key])
+          send("#{key}=", raw_commit[key]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 
@@ -415,10 +439,10 @@ module Gitlab
         # subject from the message to make it clearer when there's one
         # available but not the other.
         @message = (commit.body.presence || commit.subject).dup
-        @authored_date = Time.at(commit.author.date.seconds)
+        @authored_date = Time.at(commit.author.date.seconds).utc
         @author_name = commit.author.name.dup
         @author_email = commit.author.email.dup
-        @committed_date = Time.at(commit.committer.date.seconds)
+        @committed_date = Time.at(commit.committer.date.seconds).utc
         @committer_name = commit.committer.name.dup
         @committer_email = commit.committer.email.dup
         @parent_ids = commit.parent_ids

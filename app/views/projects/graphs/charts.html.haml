@@ -78,8 +78,8 @@
 
 %script#projectChartData{ type: "application/json" }
   - projectChartData = {};
-  - projectChartData['hour'] = { 'keys' => @commits_per_time.keys, 'values' => @commits_per_time.values }
-  - projectChartData['weekDays'] = { 'keys' => @commits_per_week_days.keys, 'values' => @commits_per_week_days.values }
-  - projectChartData['month'] = { 'keys' => @commits_per_month.keys, 'values' => @commits_per_month.values }
+  - projectChartData['hour'] = @commits_per_time
+  - projectChartData['weekDays'] = @commits_per_week_days
+  - projectChartData['month'] = @commits_per_month
   - projectChartData['languages'] = @languages
   = projectChartData.to_json.html_safe

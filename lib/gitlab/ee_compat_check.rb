@@ -98,9 +98,10 @@ module Gitlab
 
       if status.zero?
         @ee_branch_found = ee_branch_prefix
-      else
-        _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+        return
       end
+
+      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_suffix

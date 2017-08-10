@@ -167,6 +167,21 @@ feature 'Project' do
     end
   end
 
+  describe 'activity view' do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    before do
+      project.team << [user, :master]
+      sign_in user
+      visit project_path(project)
+    end
+
+    it 'loads activity', :js do
+      expect(page).to have_selector('.event-item')
+    end
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

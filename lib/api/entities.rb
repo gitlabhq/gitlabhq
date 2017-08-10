@@ -132,7 +132,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace, using: 'API::Entities::Namespace'
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :avatar_url do |user, options|
@@ -454,6 +454,9 @@ module API
     end
 
     class Note < Grape::Entity
+      # Only Issue and MergeRequest have iid
+      NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
+
       expose :id
       expose :note, as: :body
       expose :attachment_identifier, as: :attachment
@@ -461,6 +464,9 @@ module API
       expose :created_at, :updated_at
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
+
+      # Avoid N+1 queries as much as possible
+      expose(:noteable_iid) { |note| note.noteable.iid if NOTEABLE_TYPES_WITH_IID.include?(note.noteable_type) }
     end
 
     class AwardEmoji < Grape::Entity
