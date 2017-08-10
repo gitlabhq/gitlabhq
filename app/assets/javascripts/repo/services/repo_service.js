@@ -14,6 +14,7 @@ const RepoService = {
 
   getRaw(url) {
     return axios.get(url, {
+      // Stop Axios from parsing a JSON file into a JS object
       transformResponse: [res => res],
     });
   },
