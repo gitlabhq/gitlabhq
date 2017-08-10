@@ -75,6 +75,20 @@ feature 'Cycle Analytics', js: true do
         click_stage('Production')
         expect_issue_to_be_present
       end
+
+      context "when I change the time period observed" do
+        before do
+          _two_weeks_old_issue = create(:issue, project: project, created_at: 2.weeks.ago)
+
+          click_button('Last 30 days')
+          click_link('Last 7 days')
+          wait_for_requests
+        end
+
+        it 'shows only relevant data' do
+          expect(new_issues_counter).to have_content('1')
+        end
+      end
     end
 
     context "when my preferred language is Spanish" do
