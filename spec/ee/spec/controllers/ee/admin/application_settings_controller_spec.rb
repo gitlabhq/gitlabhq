@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::ApplicationSettingsController do # rubocop:disable RSpec/FilePath
+describe Admin::ApplicationSettingsController do
   include StubENV
 
   let(:admin) { create(:admin) }
