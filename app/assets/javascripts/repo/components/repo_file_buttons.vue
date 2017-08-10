@@ -28,7 +28,7 @@ export default RepoFileButtons;
 </script>
 
 <template>
-<div id="repo-file-buttons" v-if="isMini">
+<div id="repo-file-buttons">
   <a :href="activeFile.raw_path" target="_blank" class="btn btn-default raw" rel="noopener noreferrer">{{rawDownloadButtonLabel}}</a>
 
   <div class="btn-group" role="group" aria-label="File actions">
