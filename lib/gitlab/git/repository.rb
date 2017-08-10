@@ -46,6 +46,9 @@ module Gitlab
       # Directory name of repo
       attr_reader :name
 
+      # Relative path of repo
+      attr_reader :relative_path
+
       # Rugged repo object
       attr_reader :rugged
 
