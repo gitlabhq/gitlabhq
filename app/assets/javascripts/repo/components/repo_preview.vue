@@ -4,7 +4,7 @@ import Store from '../stores/repo_store';
 export default {
   data: () => Store,
   mounted() {
-    $(this.$el).find('.file-content').syntaxHighlight();
+    this.highlightFile();
   },
   computed: {
     html() {
@@ -12,10 +12,16 @@ export default {
     },
   },
 
+  methods: {
+    highlightFile() {
+      $(this.$el).find('.file-content').syntaxHighlight();
+    },
+  },
+
   watch: {
     html() {
       this.$nextTick(() => {
-        $(this.$el).find('.file-content').syntaxHighlight();
+        this.highlightFile();
       });
     },
   },
