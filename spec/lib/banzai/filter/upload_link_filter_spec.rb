@@ -91,7 +91,7 @@ describe Banzai::Filter::UploadLinkFilter do
     context 'in a geo secondary node' do
       let(:geo_url) { 'http://geo.example.com' }
 
-      before(:each) do
+      before do
         allow(Gitlab::Geo).to receive(:secondary?) { true }
         allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
       end

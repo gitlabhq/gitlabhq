@@ -15,7 +15,7 @@ describe Gitlab::Geo do
   end
 
   describe 'primary_node' do
-    before(:each) do
+    before do
       primary_node
       secondary_node
     end
@@ -27,7 +27,7 @@ describe Gitlab::Geo do
 
   describe 'primary?' do
     context 'when current node is a primary node' do
-      before(:each) do
+      before do
         primary_node
       end
 
@@ -45,7 +45,7 @@ describe Gitlab::Geo do
 
   describe 'secondary?' do
     context 'when current node is a secondary node' do
-      before(:each) do
+      before do
         secondary_node
         allow(described_class).to receive(:current_node) { secondary_node }
       end

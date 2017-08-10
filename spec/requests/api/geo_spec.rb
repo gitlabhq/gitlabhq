@@ -11,7 +11,7 @@ describe API::Geo do
     { 'X-Gitlab-Token' => secondary_node.system_hook.token }
   end
 
-  before(:each) do
+  before do
     allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
   end
 
@@ -62,7 +62,7 @@ describe API::Geo do
       }
     end
 
-    before(:each) do
+    before do
       allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
       allow_any_instance_of(::Geo::ScheduleRepoUpdateService).to receive(:execute)
       allow_any_instance_of(::Geo::ScheduleRepoFetchService).to receive(:execute)
@@ -339,7 +339,7 @@ describe API::Geo do
     end
 
     context 'when requesting secondary node with valid auth header' do
-      before(:each) do
+      before do
         allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
         allow(request).to receive(:requesting_node) { primary_node }
       end
@@ -353,7 +353,7 @@ describe API::Geo do
     end
 
     context 'when requesting primary node with valid auth header' do
-      before(:each) do
+      before do
         allow(Gitlab::Geo).to receive(:current_node) { primary_node }
         allow(request).to receive(:requesting_node) { secondary_node }
       end

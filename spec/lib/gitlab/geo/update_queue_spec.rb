@@ -25,7 +25,7 @@ describe Gitlab::Geo::UpdateQueue do
   end
 
   context 'when queue has elements' do
-    before(:each) do
+    before do
       subject.store(dummy_data)
       subject.store(dummy_data2)
     end
