@@ -52,6 +52,8 @@ const RepoEditor = {
       Helper.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
     },
 
+
+
     onMonacoEditorKeysPressed() {
       Store.setActiveFileContents(Helper.monacoInstance.getValue());
     },
@@ -61,18 +63,16 @@ const RepoEditor = {
       if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
         Store.activeLine = lineNumber;
+        
+        Helper.monacoInstance.setPosition({
+          lineNumber: this.activeLine,
+          column: 1,
+        });
       }
     },
   },
 
   watch: {
-    activeLine() {
-      Helper.monacoInstance.setPosition({
-        lineNumber: this.activeLine,
-        column: 1,
-      });
-    },
-
     activeFileLabel() {
       this.showHide();
     },
