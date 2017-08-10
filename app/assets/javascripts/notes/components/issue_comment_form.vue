@@ -29,18 +29,10 @@
     },
     watch: {
       note(newNote) {
-        if (!_.isEmpty(newNote) && !this.isSubmitting) {
-          this.isSubmitButtonDisabled = false;
-        } else {
-          this.isSubmitButtonDisabled = true;
-        }
+        this.setIsSubmitButtonDisabled(newNote, this.isSubmitting);
       },
       isSubmitting(newValue) {
-        if (!_.isEmpty(this.note) && !newValue) {
-          this.isSubmitButtonDisabled = false;
-        } else {
-          this.isSubmitButtonDisabled = true;
-        }
+        this.setIsSubmitButtonDisabled(this.note, newValue);
       },
     },
     computed: {
@@ -99,6 +91,13 @@
       ...mapActions([
         'saveNote',
       ]),
+      setIsSubmitButtonDisabled(note, isSubmitting) {
+         if (!_.isEmpty(note) && !isSubmitting) {
+          this.isSubmitButtonDisabled = false;
+        } else {
+          this.isSubmitButtonDisabled = true;
+        }
+      },
       handleSave(withIssueAction) {
         if (this.note.length) {
           const noteData = {
@@ -176,7 +175,7 @@
       },
       editCurrentUserLastNote() {
         if (this.note === '') {
-          const lastNote = this.getCurrentUserLastNote(window.gon.current_user_id);
+          const lastNote = this.getCurrentUserLastNote;
 
           if (lastNote) {
             eventHub.$emit('enterEditMode', {

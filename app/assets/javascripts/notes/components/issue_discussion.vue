@@ -183,7 +183,7 @@
                     title="Add a reply">Reply...</button>
                   <issue-note-form
                     v-if="isReplying"
-                    saveButtonTitle="Comment"
+                    save-button-title="Comment"
                     :discussion="note"
                     :is-editing="false"
                     @handleFormUpdate="saveReply"
