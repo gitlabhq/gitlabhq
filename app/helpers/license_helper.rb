@@ -68,10 +68,10 @@ module LicenseHelper
   end
 
   def upgrade_plan_url
-    if @project.owner.present? && @project.owner == @current_user
-      profile_billings_path
-    else
+    if  @project.group
       group_billings_path(@project.group)
+    else
+      profile_billings_path      
     end
   end
 
