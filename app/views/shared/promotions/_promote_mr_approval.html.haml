@@ -1,4 +1,4 @@
-.user-callout.promotion-callout.js-mr-approval-callout{ id: 'promote_mr_approval', data: { uid: 'promote_mr_approval_dismissed' } }
+.user-callout.promotion-callout.append-bottom-20.js-mr-approval-callout{ id: 'promote_mr_approval', data: { uid: 'promote_mr_approval_dismissed' } }
   .bordered-box.content-block
     %button.btn.btn-default.close.js-close-callout{ type: 'button', 'aria-label' => 'Dismiss merge request promotion' }
       = icon('times', class: 'dismiss-icon', 'aria-hidden' => 'true')
@@ -17,9 +17,5 @@
           %a{ href: '/help/user/project/merge_requests/fast_forward_merge.html', target: '_blank' } Fast-forward Merge
           %p
             If you prefer a linear Git history and a way to accept merge requests without creating merge commits, you can configure this on a per-project basis.
-        %li
-          %a{ href: '/help/user/project/service_desk.html', target: '_blank' } GitLab Service Desk
-          %p
-            GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account.
 
       = render 'shared/promotions/promotion_link_project'

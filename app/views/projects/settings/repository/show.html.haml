@@ -25,3 +25,6 @@
   = render "projects/protected_tags/index"
 
 = render @deploy_keys
+
+- if show_promotions? && show_callout?('promote_repository_features_dismissed')
+  = render 'shared/promotions/promote_repository_features'

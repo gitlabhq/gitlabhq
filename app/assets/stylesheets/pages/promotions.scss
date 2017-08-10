@@ -5,6 +5,10 @@
     margin-top: 10px;
   }
 
+  &.append-bottom-20 {
+    margin-bottom: 20px;
+  }
+
   .bordered-box {
     padding: 20px;
     border-color: $border-color;
@@ -12,7 +16,7 @@
     align-items: flex-start;
 
     .user-callout-copy {
-      max-width: inherit;
+      max-width: 700px;
     }
 
     .close {
@@ -38,12 +42,17 @@
 
 .promotion-modal {
 
+  .modal-dialog {
+    width: 540px;
+  }
+
   .modal-header {
     border-bottom: none;
   }
 
   .modal-body {
     margin-top: -20px;
+    padding: 16px 16px 32px 16px;
   }
 
   .modal-footer {
@@ -55,5 +64,9 @@
 .promotion-backdrop {
   background-color: $white-transparent;
   position: absolute;
-  padding-top: 20px;
+  padding-top: 72px;
+
+  .user-callout-copy {
+    max-width: 700px;
+  }
 }

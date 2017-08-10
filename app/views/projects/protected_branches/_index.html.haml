@@ -1,9 +1,6 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_branches')
 
-- if show_promotions? && show_callout?('promote_repository_features_dismissed')
-  = render 'shared/promotions/promote_repository_features'
-
 - content_for :create_protected_branch do
   = render 'projects/protected_branches/create_protected_branch'
 

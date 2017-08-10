@@ -370,11 +370,6 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;
-        case 'projects:edit':
-          new UsersSelect();
-          new UserCallout('js-service-desk-callout');
-          new UserCallout('js-mr-approval-callout');
-          break;
         case 'projects:imports:show':
           new ProjectImport();
           break;
@@ -398,7 +393,8 @@ import initGroupAnalytics from './init_group_analytics';
           setupProjectEdit();
           // Initialize expandable settings panels
           initSettingsPanels();
-          new UsersSelect();
+          new UserCallout('js-service-desk-callout');
+          new UserCallout('js-mr-approval-callout');
           break;
         case 'projects:imports:show':
           new ProjectImport();
