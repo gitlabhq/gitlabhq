@@ -751,6 +751,8 @@
       button {
         border-radius: 0;
         padding: 8px 16px;
+        text-align: left;
+        width: 100%;
 
         // make sure the text color is not overriden
         &.text-danger {
