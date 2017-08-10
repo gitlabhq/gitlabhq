@@ -16,8 +16,4 @@ const BreakpointInstance = {
   },
 };
 
-// For legacy reasons, this is added to window
-// one day this should be deleted
-window.bp = BreakpointInstance;
-
 export default BreakpointInstance;
