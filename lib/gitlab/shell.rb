@@ -139,7 +139,7 @@ module Gitlab
     def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false)
       gitaly_migrate(:fetch_remote) do |is_enabled|
         if is_enabled
-          gitaly_repository_client(repository).fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
+          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
         else
           storage_path = Gitlab.config.repositories.storages[repository.storage]["path"]
           local_fetch_remote(storage_path, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
@@ -491,10 +491,6 @@ module Gitlab
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH
       Bundler.with_original_env { Popen.popen(cmd, nil, vars) }
-    end
-
-    def gitaly_repository_client(repo)
-      Gitlab::GitalyClient::RepositoryService.new(repo)
     end
 
     def gitaly_migrate(method, &block)

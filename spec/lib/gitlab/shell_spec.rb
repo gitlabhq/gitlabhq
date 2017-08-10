@@ -543,19 +543,20 @@ describe Gitlab::Shell do
           Gitlab.config.gitlab_shell.git_timeout.to_s
         ]
 
-        if fail
-          expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return(["error", 1])
-        else
-          expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return([nil, 0])
-        end
+        return_value = fail ? ["error", 1] : [nil, 0]
+
+        expect(Gitlab::Popen).to receive(:popen).with(popen_args, nil, popen_vars.merge(vars)).and_return(return_value)
       end
 
       def expect_gitaly_call(fail, vars = {})
-        if fail
-          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fetch_remote).and_raise(GRPC::NotFound)
-        else
-          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fetch_remote).and_return(true)
-        end
+        receive_fetch_remote =
+          if fail
+            receive(:fetch_remote).and_raise(GRPC::NotFound)
+          else
+            receive(:fetch_remote).and_return(true)
+          end
+
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive_fetch_remote
       end
 
       if gitaly_on
