@@ -108,6 +108,12 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
+  def projects_include?(project_id)
+    return true if restricted_project_ids.nil?
+
+    restricted_project_ids.include?(project_id)
+  end
+
   def restricted_project_ids
     return unless namespaces.presence
 
