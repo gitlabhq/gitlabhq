@@ -41,6 +41,14 @@ const RepoFile = {
         [this.file.icon] : !this.file.loading,
       };
       return classObj;
+    },
+
+    fileIndentation() {
+      return {'margin-left': this.file.level * 10 + 'px'};
+    },
+
+    activeFileClass() {
+      return {'active': this.activeFile.url === this.file.url};
     }
   },
 
@@ -55,9 +63,9 @@ export default RepoFile;
 </script>
 
 <template>
-<tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}" @click.prevent="linkClicked(file)">
+<tr class="file" v-if="canShowFile" :class="activeFileClass" @click.prevent="linkClicked(file)">
   <td>
-    <i class="fa fa-fw" :class="fileIcon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
+    <i class="fa fa-fw" :class="fileIcon" :style="fileIndentation" aria-label="file icon"></i>
     <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
   </td>
 
