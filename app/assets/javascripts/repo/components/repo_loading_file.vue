@@ -20,7 +20,7 @@ const RepoLoadingFile = {
 
   computed: {
     showGhostLines() {
-      return loading.tree && !hasFiles;
+      return this.loading.tree && !this.hasFiles;
     }
   },
 
