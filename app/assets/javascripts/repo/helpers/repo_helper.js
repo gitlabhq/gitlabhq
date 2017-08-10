@@ -231,7 +231,7 @@ const RepoHelper = {
     setTimeout(() => {
       const tabs = document.getElementById('tabs');
       if (!tabs) return;
-      tabs.scrollLeft = 12000;
+      tabs.scrollLeft = tabs.scrollWidth;
     }, 200);
   },
 
