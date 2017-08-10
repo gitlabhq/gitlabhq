@@ -11,7 +11,7 @@ export default {
     },
 
     showButton() {
-      return this.isCommitable && !this.activeFile.render_error;
+      return this.isCommitable && !this.activeFile.render_error && !this.binary;
     }
   },
   methods: {
@@ -35,7 +35,7 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" type="button" @click.prevent="editCancelClicked" v-if="showButton" :disabled="binary">
+<button class="btn btn-default" type="button" @click.prevent="editCancelClicked" v-if="showButton">
   <i class="fa fa-pencil" v-if="!editMode"></i>
   <span>{{buttonLabel}}</span>
 </button>
