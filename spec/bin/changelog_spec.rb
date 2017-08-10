@@ -83,7 +83,7 @@ describe 'bin/changelog' do
           allow($stdin).to receive(:getc).and_return(type)
           expect do
             expect do
-              expect{ described_class.read_type }.to raise_error(SystemExit)
+              expect { described_class.read_type }.to raise_error(SystemExit)
             end.to output("Invalid category index, please select an index between 1 and 7\n").to_stderr
           end.to output.to_stdout
         end
