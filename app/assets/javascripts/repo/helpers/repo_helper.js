@@ -197,10 +197,6 @@ const RepoHelper = {
     Store.setActiveFiles(newFile);
   },
 
-  toFA(icon) {
-    return `fa-${icon}`;
-  },
-
   serializeBlob(blob) {
     const simpleBlob = RepoHelper.serializeRepoEntity('blob', blob);
     simpleBlob.lastCommitMessage = blob.last_commit.message;
@@ -224,7 +220,7 @@ const RepoHelper = {
       type,
       name,
       url,
-      icon: RepoHelper.toFA(icon),
+      icon: `fa-${icon}`,
       level: 0,
       loading: false,
     };
