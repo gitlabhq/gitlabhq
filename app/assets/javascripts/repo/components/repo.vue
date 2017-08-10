@@ -43,24 +43,24 @@ export default {
 </script>
 
 <template>
-<div class="repository-view tree-content-holder">
-  <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
-    <repo-tabs/>
-    <component
-      v-if="isMini"
-      :is="currentBlobView"
-      class="blob-viewer-container"/>
-    <repo-file-buttons v-if="isMini"/>
+  <div class="repository-view tree-content-holder">
+    <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
+      <repo-tabs/>
+      <component
+        v-if="isMini"
+        :is="currentBlobView"
+        class="blob-viewer-container"/>
+      <repo-file-buttons v-if="isMini"/>
+    </div>
+    <repo-commit-section/>
+    <popup-dialog
+      v-show="dialog.open"
+      :primary-button-label="__('Discard changes')"
+      kind="warning"
+      :title="__('Are you sure?')"
+      :body="__('Are you sure you want to discard your changes?')"
+      @toggle="toggleDialogOpen"
+      @submit="dialogSubmitted"
+    />
   </div>
-  <repo-commit-section/>
-  <popup-dialog
-    v-show="dialog.open"
-    :primary-button-label="__('Discard changes')"
-    kind="warning"
-    :title="__('Are you sure?')"
-    :body="__('Are you sure you want to discard your changes?')"
-    @toggle="toggleDialogOpen"
-    @submit="dialogSubmitted"
-  />
-</div>
 </template>
