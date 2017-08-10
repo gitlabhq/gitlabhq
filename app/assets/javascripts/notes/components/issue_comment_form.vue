@@ -43,7 +43,7 @@
         'getNotesData',
       ]),
       isLoggedIn() {
-        return this.getUserData !== null;
+        return this.getUserData.id;
       },
       commentButtonTitle() {
         return this.noteType === constants.COMMENT ? 'Comment' : 'Start discussion';
@@ -92,7 +92,7 @@
         'saveNote',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
-        if (!_.isEmpty(note) && !isSubmitting) {
+         if (!_.isEmpty(note) && !isSubmitting) {
           this.isSubmitButtonDisabled = false;
         } else {
           this.isSubmitButtonDisabled = true;
