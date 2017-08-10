@@ -581,7 +581,7 @@ a.deploy-project-label {
       // Mobile
       @media (max-width: $screen-xs-max) {
         left: 50%;
-        top: 0px;
+        top: 0;
         transform: translateX(-50%);
         padding: 0 8px;
       }
