@@ -10,6 +10,12 @@ const RepoTab = {
   },
 
   computed: {
+    closeLabel() {
+      if (this.tab.changed) {
+        return `${this.tab.name} changed`;
+      }
+      return `Close ${this.tab.name}`;
+    },
     changedClass() {
       const tabChangedObj = {
         'fa-times close-icon': !this.tab.changed,
