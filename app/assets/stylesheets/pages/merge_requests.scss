@@ -550,6 +550,8 @@
 }
 
 .merge-request-select {
+  @include new-style-dropdown;
+
   padding-left: 5px;
   padding-right: 5px;
   margin-bottom: 10px;
