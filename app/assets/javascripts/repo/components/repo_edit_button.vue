@@ -9,10 +9,6 @@ export default {
     buttonLabel() {
       return this.editMode ? this.__('Cancel edit') : this.__('Edit');
     },
-
-    buttonIcon() {
-      return this.editMode ? [] : ['fa', 'fa-pencil'];
-    },
   },
   methods: {
     editClicked() {
@@ -43,7 +39,7 @@ export default {
 
 <template>
 <button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
-  <i :class="buttonIcon"></i>
+  <i class="fa fa-pencil" v-if="!editMode"></i>
   <span>{{buttonLabel}}</span>
 </button>
 </template>
