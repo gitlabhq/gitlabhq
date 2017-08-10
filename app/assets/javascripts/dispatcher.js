@@ -82,6 +82,7 @@ import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import UserFeatureHelper from './helpers/user_feature_helper';
+import initChangesDropdown from './init_changes_dropdown';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -255,6 +256,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          initChangesDropdown();
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -348,6 +350,7 @@ import initGroupAnalytics from './init_group_analytics';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          initChangesDropdown();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':

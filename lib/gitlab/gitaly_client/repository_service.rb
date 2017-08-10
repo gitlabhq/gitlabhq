@@ -10,7 +10,7 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :exists, request).exists
+        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
       end
 
       def garbage_collect(create_bitmap)

@@ -574,14 +574,14 @@ a.deploy-project-label {
     &::before {
       content: "OR";
       position: absolute;
-      left: 0;
-      top: 40%;
+      left: -10px;
+      top: 50%;
       z-index: 10;
       padding: 8px 0;
       text-align: center;
       background-color: $white-light;
       color: $gl-text-color-tertiary;
-      transform: translateX(-50%);
+      transform: translateY(-50%);
       font-size: 12px;
       font-weight: bold;
       line-height: 20px;
@@ -589,8 +589,8 @@ a.deploy-project-label {
       // Mobile
       @media (max-width: $screen-xs-max) {
         left: 50%;
-        top: 10px;
-        transform: translateY(-50%);
+        top: 0;
+        transform: translateX(-50%);
         padding: 0 8px;
       }
     }
