@@ -46,8 +46,8 @@ export default RepoFile;
 </script>
 
 <template>
-<tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}">
-  <td @click.prevent="linkClicked(file)">
+<tr class="file" v-if="canShowFile" :class="{'active': activeFile.url === file.url}" @click.prevent="linkClicked(file)">
+  <td>
     <i class="fa file-icon" v-if="!file.loading" :class="file.icon" :style="{'margin-left': file.level * 10 + 'px'}"></i>
     <i class="fa fa-spinner fa-spin" v-if="file.loading" :style="{'margin-left': file.level * 10 + 'px'}"></i>
     <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
