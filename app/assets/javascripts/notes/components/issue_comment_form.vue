@@ -9,6 +9,7 @@
   import eventHub from '../event_hub';
   import * as constants from '../constants';
   import '../../autosave';
+  import TaskList from '../../task_list';
 
   export default {
     name: 'issueCommentForm',
