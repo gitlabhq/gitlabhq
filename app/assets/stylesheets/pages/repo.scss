@@ -114,6 +114,7 @@
         border-right: 1px solid $white-dark;
         border-bottom: 1px solid $white-dark;
         white-space: nowrap;
+        cursor: pointer;
 
         &.remove {
           animation: swipeRightDissapear ease-in 0.1s;
@@ -137,6 +138,7 @@
           width: 100px;
           text-align: center;
           vertical-align: middle;
+          text-decoration: none;
 
           &.close {
             width: auto;
