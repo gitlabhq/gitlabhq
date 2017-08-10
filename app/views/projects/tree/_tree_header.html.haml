@@ -9,17 +9,12 @@
     = render 'projects/tree/old_tree_header'
 
 .tree-controls
-<<<<<<< HEAD
-  = render 'projects/find_file_link'
-  = lock_file_link(html_options: { class: 'btn path-lock' })
-  = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
-=======
   - if show_new_repo?
     = render 'shared/repo/editable_mode'
   - else
+    = lock_file_link(html_options: { class: 'btn path-lock' })
     = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 
   = render 'projects/find_file_link'
->>>>>>> upstream/master
 
   = render 'projects/buttons/download', project: @project, ref: @ref
