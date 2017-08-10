@@ -22,6 +22,7 @@ There are two configuration options to help GitLab server administrators:
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
+# Change to true to enable lfs
 gitlab_rails['lfs_enabled'] = false
 
 # Optionally, change the storage path location. Defaults to
@@ -35,6 +36,7 @@ gitlab_rails['lfs_storage_path'] = "/mnt/storage/lfs-objects"
 In `config/gitlab.yml`:
 
 ```yaml
+# Change to true to enable lfs
   lfs:
     enabled: false
     storage_path: /mnt/storage/lfs-objects
