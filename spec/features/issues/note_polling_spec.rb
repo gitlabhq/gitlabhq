@@ -13,7 +13,6 @@ feature 'Issue notes polling', :js do
 
     it 'displays the new comment' do
       note = create(:note, noteable: issue, project: project, note: 'Looks good!')
-      page.execute_script('issueNotes.refresh();')
       wait_for_requests
 
       expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
@@ -115,7 +114,6 @@ feature 'Issue notes polling', :js do
 
   def update_note(note, new_text)
     note.update(note: new_text)
-    page.execute_script('issueNotes.refresh();')
     wait_for_requests
   end
 

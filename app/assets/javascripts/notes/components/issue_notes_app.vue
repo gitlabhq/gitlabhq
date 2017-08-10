@@ -79,16 +79,18 @@
         return note.individual_note ? note.notes[0] : note;
       },
       fetchNotes() {
-        this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
+        return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
           .then(() => {
-            this.isLoading = false;
-
             // Scroll to note if we have hash fragment in the page URL
             this.$nextTick(() => {
               this.checkLocationHash();
             });
           })
-          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'));
+          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'))
+          .then(() => {
+            this.isLoading = false;
+            this.initPolling();
+          });
       },
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
@@ -112,7 +114,6 @@
     },
     mounted() {
       this.fetchNotes();
-      this.initPolling();
       const parentElement = this.$el.parentElement;
 
       if (parentElement &&

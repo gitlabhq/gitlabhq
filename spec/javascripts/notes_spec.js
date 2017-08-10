@@ -30,16 +30,16 @@ import '~/notes';
     return escapedString;
   };
 
-  describe('Notes', function() {
+  fdescribe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
-    var commentsTemplate = 'issues/issue_with_comment.html.raw';
+    var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
 
     beforeEach(function () {
       loadFixtures(commentsTemplate);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
-      $('body').data('page', 'projects:issues:show');
+      $('body').data('page', 'projects:merge_requets:show');
     });
 
     describe('task lists', function() {
@@ -60,7 +60,7 @@ import '~/notes';
       it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('http://test.host/frontend-fixtures/issues-project/notes/1');
+          expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/notes/3');
           return expect(req.data.note).not.toBe(null);
         });
         $('.js-task-list-field').trigger('tasklist:changed');
