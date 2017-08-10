@@ -67,7 +67,7 @@ export default RepoCommitSection;
 
 <template>
 <div id="commit-area" v-if="showCommitable">
-  <form class="form-horizontal">
+  <form class="form-horizontal" @submit.prevent="makeCommit">
     <fieldset>
       <div class="form-group">
         <label class="col-md-4 control-label staged-files">Staged files ({{changedFiles.length}})</label>
@@ -92,7 +92,7 @@ export default RepoCommitSection;
         </div>
       </div>
       <div class="col-md-offset-4 col-md-6">
-        <button type="submit" :disabled="cantCommitYet" class="btn btn-success submit-commit" @click.prevent="makeCommit">
+        <button type="submit" :disabled="cantCommitYet" class="btn btn-success submit-commit">
           <i class="fa fa-spinner fa-spin" v-if="submitCommitsLoading"></i>
           <span class="commit-summary">Commit {{changedFiles.length}} {{filePluralize}}</span>
         </button>
