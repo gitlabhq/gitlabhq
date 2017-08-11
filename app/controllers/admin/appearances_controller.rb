@@ -45,7 +45,7 @@ class Admin::AppearancesController < Admin::ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_appearance
-    @appearance = Appearance.current || Appearance.new
+    @appearance = Appearance.last || Appearance.new
   end
 
   # Only allow a trusted parameter "white list" through.
