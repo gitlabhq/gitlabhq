@@ -989,12 +989,10 @@ class Repository
       if start_repository == self
         start_branch_name
       else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
+        tmp_ref = fetch_ref(
           start_repository.path_to_repo,
           "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
+          "refs/tmp/#{SecureRandom.hex}/head"
         )
 
         start_repository.commit(start_branch_name).sha
@@ -1003,7 +1001,7 @@ class Repository
     yield(commit(branch_name_or_sha))
 
   ensure
-    rugged.references.delete(tmp_ref) if tmp_ref && ref_exists?(tmp_ref)
+    rugged.references.delete(tmp_ref) if tmp_ref
   end
 
   def add_remote(name, url)
@@ -1029,6 +1027,8 @@ class Repository
 
     # Make sure ref was created, and raise Rugged::ReferenceError when not
     raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)
