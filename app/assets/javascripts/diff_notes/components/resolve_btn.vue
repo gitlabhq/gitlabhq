@@ -1,4 +1,7 @@
 <script>
+  /* global CommentsStore */
+  /* global ResolveService */
+  /* global Flash */
   import tooltip from '../../vue_shared/directives/tooltip';
   import statusSuccessSvg from '../icons/status_success.svg';
 
@@ -7,24 +10,47 @@
       tooltip,
     },
     props: {
-      noteId: Number,
-      discussionId: String,
-      resolved: Boolean,
-      canResolve: Boolean,
-      resolvedBy: String,
-      authorName: String,
-      authorAvatar: String,
-      noteTruncated: String,
+      noteId: {
+        type: Number,
+        required: true,
+      },
+      discussionId: {
+        type: String,
+        required: true,
+      },
+      resolved: {
+        type: Boolean,
+        required: true,
+      },
+      canResolve: {
+        type: Boolean,
+        required: true,
+      },
+      resolvedBy: {
+        type: String,
+        required: true,
+      },
+      authorName: {
+        type: String,
+        required: true,
+      },
+      authorAvatar: {
+        type: String,
+        required: true,
+      },
+      noteTruncated: {
+        type: String,
+        required: true,
+      },
     },
     data() {
       return {
-        discussions: CommentsStore.state,
         loading: false,
       };
     },
     computed: {
       discussion() {
-        return this.discussions[this.discussionId];
+        return CommentsStore.state[this.discussionId];
       },
       note() {
         return this.discussion ? this.discussion.getNote(this.noteId) : {};
@@ -35,14 +61,14 @@
         } else if (this.canResolve) {
           return 'Mark as resolved';
         }
-        
+
         return 'Unable to resolve';
       },
       isResolved() {
         if (this.note) {
           return this.note.resolved;
         }
-        
+
         return false;
       },
     },
@@ -66,14 +92,14 @@
           .then((data) => {
             this.loading = false;
 
-            const resolved_by = data ? data.resolved_by : null;
+            const resolvedBy = data ? data.resolved_by : null;
 
-            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
+            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolvedBy);
             this.discussion.updateHeadline(data);
             gl.mrWidget.checkStatus();
           })
           .catch(() => new Flash('An error occurred when trying to resolve a comment. Please try again.'));
-      }
+      },
     },
     beforeDestroy() {
       CommentsStore.delete(this.discussionId, this.noteId);
