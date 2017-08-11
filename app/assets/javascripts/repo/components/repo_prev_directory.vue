@@ -29,8 +29,8 @@ export default RepoPreviousDirectory;
 
 <template>
 <tr class="prev-directory">
-  <td :colspan="colSpanCondition">
-    <a :href="prevUrl" @click.prevent="linkClicked(prevUrl)">..</a>
+  <td :colspan="colSpanCondition" @click.prevent="linkClicked(prevUrl)">
+    <a :href="prevUrl">..</a>
   </td>
 </tr>
 </template>
