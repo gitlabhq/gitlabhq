@@ -18,11 +18,14 @@ export const notesById = state => state.notes.reduce((acc, note) => {
 }, {});
 
 const reverseNotes = array => array.slice(0).reverse();
-const isLastNote = (note, state) => !note.system && note.author.id === state.userData.id;
+const isLastNote = (note, state) => !note.system &&
+  state.userData &&
+  note.author.id === state.userData.id;
 
-export const getCurrentUserLastNote = state => _.flatten(reverseNotes(state.notes)
-  .map(note => note.notes))
-  .find(el => isLastNote(el, state));
+export const getCurrentUserLastNote = state => _.flatten(
+    reverseNotes(state.notes)
+    .map(note => reverseNotes(note.notes)),
+  ).find(el => isLastNote(el, state));
 
 export const getDiscussionLastNote = state => discussion => reverseNotes(discussion.notes)
   .find(el => isLastNote(el, state));

@@ -31,11 +31,6 @@
         required: false,
         default: false,
       },
-      toggleHandler: {
-        type: Function,
-        required: false,
-        default: () => {},
-      },
     },
     data() {
       return {
@@ -59,7 +54,7 @@
       ]),
       handleToggle() {
         this.isExpanded = !this.isExpanded;
-        this.toggleHandler();
+        this.$emit('toggleHandler');
       },
       updateTargetNoteHash() {
         this.setTargetNoteHash(this.noteTimestampLink);

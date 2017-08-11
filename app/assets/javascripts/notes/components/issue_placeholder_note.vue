@@ -1,4 +1,5 @@
 <script>
+  import { mapGetters } from 'vuex';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 
   export default {
@@ -12,10 +13,10 @@
     components: {
       userAvatarLink,
     },
-    data() {
-      return {
-        currentUser: this.$store.getters.getUserData,
-      };
+    computed: {
+      ...mapGetters([
+        'getUserData',
+      ]),
     },
   };
 </script>
@@ -25,9 +26,9 @@
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
-          :link-href="currentUser.path"
-          :img-src="currentUser.avatar_url"
-          :size="40"
+          :link-href="getUserData.path"
+          :img-src="getUserData.avatar_url"
+          :img-size="40"
           />
       </div>
       <div
@@ -35,9 +36,9 @@
         class="timeline-content">
         <div class="note-header">
           <div class="note-header-info">
-            <a :href="currentUser.path">
-              <span class="hidden-xs">{{currentUser.name}}</span>
-              <span class="note-headline-light">@{{currentUser.username}}</span>
+            <a :href="getUserData.path">
+              <span class="hidden-xs">{{getUserData.name}}</span>
+              <span class="note-headline-light">@{{getUserData.username}}</span>
             </a>
           </div>
         </div>

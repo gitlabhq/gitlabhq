@@ -7,6 +7,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
+    name: 'issueNoteActions',
     props: {
       authorId: {
         type: Number,
@@ -41,13 +42,6 @@
     directives: {
       tooltip,
     },
-    data() {
-      return {
-        emojiSmiling,
-        emojiSmile,
-        emojiSmiley,
-      };
-    },
     components: {
       loadingIcon,
     },
@@ -76,6 +70,11 @@
         this.$emit('deleteHandler');
       },
     },
+    created() {
+      this.emojiSmiling = emojiSmiling;
+      this.emojiSmile = emojiSmile;
+      this.emojiSmiley = emojiSmiley;
+    }
   };
 </script>
 

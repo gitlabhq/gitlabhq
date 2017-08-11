@@ -25,9 +25,6 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   },
   render(createElement) {
     return createElement('issue-notes-app', {
-      attrs: {
-        ref: 'notes',
-      },
       props: {
         issueData: this.issueData,
         notesData: this.notesData,

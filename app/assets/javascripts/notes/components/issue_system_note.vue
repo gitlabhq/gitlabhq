@@ -11,11 +11,6 @@
         required: true,
       },
     },
-    data() {
-      return {
-        svg: iconsMap[this.note.system_note_icon_name],
-      };
-    },
     components: {
       issueNoteHeader,
     },
@@ -29,6 +24,9 @@
       isTargetNote() {
         return this.targetNoteHash === this.noteAnchorId;
       },
+    },
+    created() {
+      this.svg = iconsMap[this.note.system_note_icon_name];
     },
   };
 </script>

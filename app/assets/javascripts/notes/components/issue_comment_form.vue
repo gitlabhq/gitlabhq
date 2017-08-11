@@ -1,6 +1,5 @@
 <script>
   /* global Flash, Autosave */
-
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
   import '../../autosave';
@@ -113,7 +112,7 @@
             data: {
               view: 'full_data',
               note: {
-                noteable_type: 'Issue',
+                noteable_type: constants.NOTEABLE_TYPE,
                 noteable_id: this.getIssueData.id,
                 note: this.note,
               },
@@ -123,7 +122,6 @@
           if (this.noteType === constants.DISCUSSION) {
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
-
           this.isSubmitting = true;
 
           this.saveNote(noteData)
@@ -150,13 +148,7 @@
         }
 
         if (withIssueAction) {
-          if (this.isIssueOpen) {
-            this.issueState = constants.CLOSED;
-          } else {
-            this.issueState = constants.REOPENED;
-          }
-
-          this.isIssueOpen = !this.isIssueOpen;
+          this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
 
           // This is out of scope for the Notes Vue component.
           // It was the shortest path to update the issue state and relevant places.
@@ -220,9 +212,8 @@
     <ul
       v-else
       class="notes notes-form timeline new-note">
-      <li class="timeline-entry" ref="commentForm">
+      <li class="timeline-entry">
         <div class="timeline-entry-inner">
-          <div class="flash-container timeline-content"></div>
           <div class="timeline-icon hidden-xs hidden-sm">
             <user-avatar-link
               v-if="author"
@@ -234,10 +225,10 @@
           </div>
           <div >
             <form
-              class="js-main-target-form timeline-content timeline-content-form common-note-form"
-              @submit="handleSave(true)">
+              ref="commentForm"
+              class="js-main-target-form timeline-content timeline-content-form common-note-form">
+              <div class="flash-container timeline-content"></div>
               <confidentialIssue v-if="isConfidentialIssue" />
-
               <markdown-field
                 :markdown-preview-url="markdownPreviewUrl"
                 :markdown-docs="markdownDocsUrl"
@@ -263,7 +254,7 @@
                   <button
                     @click="handleSave()"
                     :disabled="isSubmitButtonDisabled"
-                    class="btn btn-nr btn-create comment-btn js-comment-button js-comment-submit-button"
+                    class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
                     type="button">
                     {{commentButtonTitle}}
                   </button>
@@ -319,7 +310,8 @@
                   </ul>
                 </div>
                 <button
-                  type="submit"
+                  type="button"
+                  @click="handleSave(true)"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
                   class="btn btn-comment btn-comment-and-close">

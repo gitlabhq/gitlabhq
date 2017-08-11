@@ -1,5 +1,4 @@
 <script>
-  /* global Autosave */
   import issueNoteEditedText from './issue_note_edited_text.vue';
   import issueNoteAwardsList from './issue_note_awards_list.vue';
   import issueNoteForm from './issue_note_form.vue';

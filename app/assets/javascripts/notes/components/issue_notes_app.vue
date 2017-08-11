@@ -79,16 +79,15 @@
       },
       fetchNotes() {
         return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
-          .then(() => {
-            // Scroll to note if we have hash fragment in the page URL
-            this.$nextTick(() => {
-              this.checkLocationHash();
-            });
-          })
-          .catch(() => Flash('Something went wrong while fetching issue comments. Please try again.'))
+          .then(() => this.initPolling())
           .then(() => {
             this.isLoading = false;
-            this.initPolling();
+          })
+          .then(() => this.$nextTick())
+          .then(() => this.checkLocationHash())
+          .catch(() => {
+            this.isLoading = false;
+            Flash('Something went wrong while fetching issue comments. Please try again.');
           });
       },
       initPolling() {

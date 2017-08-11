@@ -8,3 +8,4 @@ export const REOPENED = 'reopened';
 export const CLOSED = 'closed';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
+export const NOTEABLE_TYPE = 'Issue';

@@ -5,7 +5,7 @@
   import emojiSmiling from 'icons/_emoji_slightly_smiling_face.svg';
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
-  import * as Emoji from '../../emoji';
+  import { glEmojiTag } from '../../emoji';
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
@@ -79,7 +79,7 @@
         'toggleAwardRequest',
       ]),
       getAwardHTML(name) {
-        return Emoji.glEmojiTag(name);
+        return glEmojiTag(name);
       },
       getAwardClassBindings(awardList, awardName) {
         return {

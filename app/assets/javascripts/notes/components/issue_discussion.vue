@@ -148,7 +148,7 @@
               :created-at="discussion.created_at"
               :note-id="discussion.id"
               :include-toggle="true"
-              :toggle-handler="toggleDiscussionHandler"
+              @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
               />
             <issue-note-edited-text

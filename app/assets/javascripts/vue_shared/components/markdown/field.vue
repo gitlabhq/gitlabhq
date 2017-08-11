@@ -3,8 +3,6 @@
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
 
-  const REFERENCED_USERS_THRESHOLD = 10;
-
   export default {
     props: {
       markdownPreviewUrl: {
@@ -41,7 +39,8 @@
     },
     computed: {
       shouldShowReferencedUsers() {
-        return this.referencedUsers.length >= REFERENCED_USERS_THRESHOLD;
+        const referencedUsersThreshold = 10;
+        return this.referencedUsers.length >= referencedUsersThreshold;
       },
     },
     methods: {
