@@ -82,7 +82,7 @@ module BlobViewer
     # format of the blob.
     #
     # Prefer to implement a client-side viewer, where the JS component loads the
-    # binary from `blob_raw_url` and does its own format validation and error
+    # binary from `blob_raw_path` and does its own format validation and error
     # rendering, especially for potentially large binary formats.
     def render_error
       if too_large?

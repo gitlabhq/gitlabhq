@@ -118,7 +118,7 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_url
+  def blob_raw_path
     if @build && @entry
       raw_project_job_artifacts_path(@project, @build, path: @entry.path)
     elsif @snippet
@@ -235,7 +235,7 @@ module BlobHelper
       title = 'Open raw'
     end
 
-    link_to icon, blob_raw_url, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    link_to icon, blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)
@@ -270,7 +270,7 @@ module BlobHelper
       options << link_to('view the source', '#', class: 'js-blob-viewer-switch-btn', data: { viewer: 'simple' })
     end
 
-    options << link_to('download it', blob_raw_url, target: '_blank', rel: 'noopener noreferrer')
+    options << link_to('download it', blob_raw_path, target: '_blank', rel: 'noopener noreferrer')
 
     options
   end

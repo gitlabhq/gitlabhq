@@ -146,3 +146,20 @@ If new emoji are added, the spritesheet may change size. To compensate for
 such changes, first generate the `emoji.png` spritesheet with the above Rake
 task, then check the dimensions of the new spritesheet and update the
 `SPRITESHEET_WIDTH` and `SPRITESHEET_HEIGHT` constants accordingly.
+
+## Updating project templates
+
+Starting a project from a template needs this project to be exported. On a
+up to date master branch with run:
+
+```
+gdk run db
+# In a new terminal window
+bundle exec rake gitlab:update_project_templates
+git checkout -b update-project-templates
+git add vendor/project_templates
+git commit
+git push -u origin update-project-templates
+```
+
+Now create a merge request and merge that to master.

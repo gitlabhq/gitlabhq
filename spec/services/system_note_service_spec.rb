@@ -35,7 +35,7 @@ describe SystemNoteService do
 
     context 'metadata' do
       it 'creates a new system note metadata record' do
-        expect { subject }.to change{ SystemNoteMetadata.count }.from(0).to(1)
+        expect { subject }.to change { SystemNoteMetadata.count }.from(0).to(1)
       end
 
       it 'creates a record correctly' do
@@ -477,7 +477,7 @@ describe SystemNoteService do
       end
 
       it 'does not create a system note metadata record' do
-        expect { subject }.not_to change{ SystemNoteMetadata.count }
+        expect { subject }.not_to change { SystemNoteMetadata.count }
       end
     end
 

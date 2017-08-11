@@ -58,6 +58,8 @@ module API
       post 'receive_events' do
         authenticate_by_gitlab_geo_token!
         require_node_to_be_enabled!
+        check_node_restricted_project_ids!
+
         required_attributes! %w(event_name)
 
         case params['event_name']
@@ -108,6 +110,14 @@ module API
 
       def require_node_to_be_secondary!
         forbidden! 'Geo node is not secondary node.' unless Gitlab::Geo.current_node&.secondary?
+      end
+
+      def check_node_restricted_project_ids!
+        return unless params.key?(:project_id)
+
+        unless Gitlab::Geo.current_node&.projects_include?(params[:project_id].to_i)
+          not_found!
+        end
       end
     end
   end

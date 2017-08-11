@@ -74,7 +74,7 @@ describe 'Issues csv' do
   end
 
   it 'avoids excessive database calls' do
-    control_count = ActiveRecord::QueryRecorder.new{ request_csv }.count
+    control_count = ActiveRecord::QueryRecorder.new { request_csv }.count
     create_list(:labeled_issue,
                 10,
                 project: project,
@@ -82,6 +82,6 @@ describe 'Issues csv' do
                 author: user,
                 milestone: milestone,
                 labels: [feature_label, idea_label])
-    expect{ request_csv }.not_to exceed_query_limit(control_count + 5)
+    expect { request_csv }.not_to exceed_query_limit(control_count + 5)
   end
 end

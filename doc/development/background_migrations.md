@@ -7,6 +7,11 @@ storing data in a single JSON column the data is stored in a separate table.
 
 ## When To Use Background Migrations
 
+>**Note:**
+When adding background migrations _you must_ make sure they are announced in the
+monthly release post along with an estimate of how long it will take to complete
+the migrations.
+
 In the vast majority of cases you will want to use a regular Rails migration
 instead. Background migrations should _only_ be used when migrating _data_ in
 tables that have so many rows this process would take hours when performed in a
@@ -90,6 +95,10 @@ BackgroundMigrationWorker.perform_bulk_in(5.minutes, jobs)
 ```
 
 ## Cleaning Up
+
+>**Note:**
+Cleaning up any remaining background migrations _must_ be done in either a major
+or minor release, you _must not_ do this in a patch release.
 
 Because background migrations can take a long time you can't immediately clean
 things up after scheduling them. For example, you can't drop a column that's

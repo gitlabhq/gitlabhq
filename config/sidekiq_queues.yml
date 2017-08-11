@@ -23,6 +23,8 @@
   - [update_merge_requests, 3]
   - [process_commit, 3]
   - [new_note, 2]
+  - [new_issue, 2]
+  - [new_merge_request, 2]
   - [build, 2]
   - [pipeline, 2]
   - [gitlab_shell, 2]

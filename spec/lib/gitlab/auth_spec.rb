@@ -313,7 +313,8 @@ describe Gitlab::Auth do
   def full_authentication_abilities
     read_authentication_abilities + [
       :push_code,
-      :create_container_image
+      :create_container_image,
+      :admin_container_image
     ]
   end
 end

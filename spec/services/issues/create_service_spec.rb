@@ -351,14 +351,14 @@ describe Issues::CreateService do
         end
 
         it 'marks related spam_log as recaptcha_verified' do
-          expect { issue }.to change{SpamLog.last.recaptcha_verified}.from(false).to(true)
+          expect { issue }.to change {SpamLog.last.recaptcha_verified}.from(false).to(true)
         end
 
         context 'when spam log does not belong to a user' do
           let(:log_user) { create(:user) }
 
           it 'does not mark spam_log as recaptcha_verified' do
-            expect { issue }.not_to change{SpamLog.last.recaptcha_verified}
+            expect { issue }.not_to change {SpamLog.last.recaptcha_verified}
           end
         end
       end
@@ -378,7 +378,7 @@ describe Issues::CreateService do
           end
 
           it 'creates a new spam_log' do
-            expect{issue}.to change{SpamLog.count}.from(0).to(1)
+            expect {issue}.to change {SpamLog.count}.from(0).to(1)
           end
 
           it 'assigns a spam_log to an issue' do

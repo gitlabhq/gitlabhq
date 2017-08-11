@@ -87,7 +87,7 @@
   }
 
   .add-to-tree {
-    vertical-align: top;
+    vertical-align: middle;
     padding: 6px 10px;
   }
 
@@ -216,6 +216,9 @@
 }
 
 .blob-upload-dropzone-previews {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: 2px;
   border-style: dashed;

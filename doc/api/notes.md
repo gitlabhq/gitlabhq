@@ -35,7 +35,8 @@ Parameters:
     "updated_at": "2013-10-02T10:22:45Z",
     "system": true,
     "noteable_id": 377,
-    "noteable_type": "Issue"
+    "noteable_type": "Issue",
+    "noteable_iid": 377
   },
   {
     "id": 305,
@@ -53,7 +54,8 @@ Parameters:
     "updated_at": "2013-10-02T09:56:03Z",
     "system": true,
     "noteable_id": 121,
-    "noteable_type": "Issue"
+    "noteable_type": "Issue",
+    "noteable_iid": 121
   }
 ]
 ```
@@ -267,7 +269,8 @@ Parameters:
   "updated_at": "2013-10-02T08:57:14Z",
   "system": false,
   "noteable_id": 2,
-  "noteable_type": "MergeRequest"
+  "noteable_type": "MergeRequest",
+  "noteable_iid": 2
 }
 ```
 

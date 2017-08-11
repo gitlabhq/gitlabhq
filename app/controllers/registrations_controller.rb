@@ -1,5 +1,6 @@
 class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
+  prepend EE::RegistrationsController
 
   def new
     redirect_to(new_user_session_path)

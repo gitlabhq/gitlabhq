@@ -421,7 +421,7 @@ describe Ci::API::Builds do
         end
 
         context 'when build has been updated recently' do
-          it { expect{ patch_the_trace }.not_to change { build.updated_at }}
+          it { expect { patch_the_trace }.not_to change { build.updated_at }}
 
           it 'changes the build trace' do
             patch_the_trace
@@ -430,7 +430,7 @@ describe Ci::API::Builds do
           end
 
           context 'when Runner makes a force-patch' do
-            it { expect{ force_patch_the_trace }.not_to change { build.updated_at }}
+            it { expect { force_patch_the_trace }.not_to change { build.updated_at }}
 
             it "doesn't change the build.trace" do
               force_patch_the_trace

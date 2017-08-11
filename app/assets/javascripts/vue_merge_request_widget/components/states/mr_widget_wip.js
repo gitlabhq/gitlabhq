@@ -1,5 +1,6 @@
 /* global Flash */
 import statusIcon from '../mr_widget_status_icon';
+import tooltip from '../../../vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
 
 export default {
@@ -8,10 +9,16 @@ export default {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
   },
+  directives: {
+    tooltip,
+  },
   data() {
     return {
       isMakingRequest: false,
     };
+  },
+  components: {
+    statusIcon,
   },
   methods: {
     removeWIP() {
@@ -29,9 +36,6 @@ export default {
         });
     },
   },
-  components: {
-    statusIcon,
-  },
   template: `
     <div class="mr-widget-body media">
       <status-icon status="failed" :showDisabledButton="Boolean(mr.removeWIPPath)" />
@@ -39,8 +43,11 @@ export default {
         <span class="bold">
           This is a Work in Progress
           <i
-            class="fa fa-question-circle has-tooltip"
-            title="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged." />
+            v-tooltip
+            class="fa fa-question-circle"
+            title="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged"
+            aria-label="When this merge request is ready, remove the WIP: prefix from the title to allow it to be merged">
+           </i>
         </span>
         <button
           v-if="mr.removeWIPPath"

@@ -10,3 +10,9 @@ Prometheus::Client.configure do |config|
     config.multiprocess_files_dir ||= Rails.root.join('tmp/prometheus_multiproc_dir')
   end
 end
+
+Sidekiq.configure_server do |config|
+  config.on(:startup) do
+    Gitlab::Metrics::SidekiqMetricsExporter.instance.start
+  end
+end

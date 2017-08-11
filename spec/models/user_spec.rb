@@ -127,6 +127,17 @@ describe User do
 
         expect(user).to validate_uniqueness_of(:username).case_insensitive
       end
+
+      context 'when username is changed' do
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:namespace)) }
+
+        it 'validates move_dir is allowed for the namespace' do
+          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
+          user.username = 'new_path'
+          expect(user).to be_invalid
+          expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
+        end
+      end
     end
 
     it { is_expected.to validate_presence_of(:projects_limit) }
@@ -2096,6 +2107,30 @@ describe User do
       user = create(:omniauth_user, provider: 'ldapmain')
 
       expect(user.allow_password_authentication?).to be_falsey
+    end
+  end
+
+  describe '#personal_projects_count' do
+    it 'returns the number of personal projects using a single query' do
+      user = build(:user)
+      projects = double(:projects, count: 1)
+
+      expect(user).to receive(:personal_projects).once.and_return(projects)
+
+      2.times do
+        expect(user.personal_projects_count).to eq(1)
+      end
+    end
+  end
+
+  describe '#projects_limit_left' do
+    it 'returns the number of projects that can be created by the user' do
+      user = build(:user)
+
+      allow(user).to receive(:projects_limit).and_return(10)
+      allow(user).to receive(:personal_projects_count).and_return(5)
+
+      expect(user.projects_limit_left).to eq(5)
     end
   end
 end

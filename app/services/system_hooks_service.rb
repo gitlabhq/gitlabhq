@@ -1,4 +1,6 @@
 class SystemHooksService
+  prepend EE::SystemHooksService
+
   def execute_hooks_for(model, event)
     execute_hooks(build_event_data(model, event))
   end
@@ -35,12 +37,7 @@ class SystemHooksService
         data[:old_path_with_namespace] = model.old_path_with_namespace
       end
     when User
-      data.merge!({
-        name: model.name,
-        email: model.email,
-        user_id: model.id,
-        username: model.username
-      })
+      data.merge!(user_data(model))
     when ProjectMember
       data.merge!(project_member_data(model))
     when Group
@@ -114,6 +111,15 @@ class SystemHooksService
       user_email: model.user.email,
       user_id: model.user.id,
       group_access: model.human_access
+    }
+  end
+
+  def user_data(model)
+    {
+      name: model.name,
+      email: model.email,
+      user_id: model.id,
+      username: model.username
     }
   end
 end

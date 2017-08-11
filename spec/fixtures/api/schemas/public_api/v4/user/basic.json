@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "state",
+    "avatar_url",
+    "web_url"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "state": { "type": "string" },
+    "avatar_url": { "type": "string" },
+    "web_url": { "type": "string" }
+  }
+}

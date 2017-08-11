@@ -1,5 +1,5 @@
 .form-group.import-url-data
-  = f.label :import_url, class: 'control-label' do
+  = f.label :import_url, class: 'label-light' do
     %span Git repository URL
 
   = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
@@ -21,7 +21,7 @@
         = link_to 'here', help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')
 
 .form-group
-  = f.label :mirror, class: 'control-label' do
+  = f.label :mirror, class: 'label-light' do
     = f.check_box :mirror, disabled: true
     %strong
       Mirror repository

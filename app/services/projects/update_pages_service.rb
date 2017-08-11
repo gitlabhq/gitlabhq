@@ -33,8 +33,10 @@ module Projects
         success
       end
     rescue => e
+      register_failure
       error(e.message)
     ensure
+      register_attempt
       build.erase_artifacts! unless build.has_expiring_artifacts?
     end
 
@@ -171,6 +173,22 @@ module Projects
 
     def sha
       build.sha
+    end
+
+    def register_attempt
+      pages_deployments_total_counter.increase
+    end
+
+    def register_failure
+      pages_deployments_failed_total_counter.increase
+    end
+
+    def pages_deployments_total_counter
+      @pages_deployments_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_total, "Counter of GitLab Pages deployments triggered")
+    end
+
+    def pages_deployments_failed_total_counter
+      @pages_deployments_failed_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
     end
   end
 end

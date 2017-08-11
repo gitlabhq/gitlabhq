@@ -105,4 +105,30 @@ describe EE::User do
       expect { subject.remember_me! }.not_to change(subject, :remember_created_at)
     end
   end
+
+  describe '#email_opted_in_source' do
+    context 'for GitLab.com' do
+      let(:user) { build(:user, email_opted_in_source_id: 1) }
+
+      it 'returns GitLab.com' do
+        expect(user.email_opted_in_source).to eq('GitLab.com')
+      end
+    end
+
+    context 'for nil source id' do
+      let(:user) { build(:user, email_opted_in_source_id: nil) }
+
+      it 'returns blank' do
+        expect(user.email_opted_in_source).to be_blank
+      end
+    end
+
+    context 'for non-existent source id' do
+      let(:user) { build(:user, email_opted_in_source_id: 2) }
+
+      it 'returns blank' do
+        expect(user.email_opted_in_source).to be_blank
+      end
+    end
+  end
 end

@@ -21,7 +21,7 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
@@ -37,7 +37,7 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
@@ -53,7 +53,7 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
@@ -69,7 +69,7 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
@@ -89,7 +89,7 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::FileTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
@@ -104,13 +104,13 @@ describe Geo::FileDownloadService do
         allow_any_instance_of(Gitlab::Geo::LfsTransfer)
           .to receive(:download_from_primary).and_return(100)
 
-        expect{ subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+        expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
       end
     end
 
     context 'bad object type' do
       it 'raises an error' do
-        expect{ described_class.new(:bad, 1).execute }.to raise_error(NameError)
+        expect { described_class.new(:bad, 1).execute }.to raise_error(NameError)
       end
     end
   end

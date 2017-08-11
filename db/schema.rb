@@ -1904,6 +1904,10 @@ ActiveRecord::Schema.define(version: 20170808163512) do
     t.string "rss_token"
     t.boolean "external_email", default: false, null: false
     t.string "email_provider"
+    t.boolean "email_opted_in"
+    t.string "email_opted_in_ip"
+    t.integer "email_opted_in_source_id"
+    t.datetime_with_timezone "email_opted_in_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

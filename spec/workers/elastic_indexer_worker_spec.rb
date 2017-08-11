@@ -36,7 +36,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "Project", project.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('*').records.size }.by(1)
     end
 
     it 'indexes an issue' do
@@ -49,7 +49,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "Issue", issue.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('*').records.size }.by(1)
     end
 
     it 'indexes a note' do
@@ -62,7 +62,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "Note", note.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('*').records.size }.by(1)
     end
 
     it 'indexes a milestone' do
@@ -75,7 +75,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "Milestone", milestone.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('*').records.size }.by(1)
     end
 
     it 'indexes a merge request' do
@@ -88,7 +88,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "MergeRequest", merge_request.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('*').records.size }.by(1)
     end
   end
 
@@ -105,7 +105,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("update", "Project", project.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('new').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('new').records.size }.by(1)
     end
 
     it 'updates an issue' do
@@ -120,7 +120,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("update", "Issue", issue.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('new').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('new').records.size }.by(1)
     end
 
     it 'updates a note' do
@@ -135,7 +135,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("update", "Note", note.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('new').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('new').records.size }.by(1)
     end
 
     it 'updates a milestone' do
@@ -150,7 +150,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("update", "Milestone", milestone.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('new').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('new').records.size }.by(1)
     end
 
     it 'updates a merge request' do
@@ -165,7 +165,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("index", "MergeRequest", merge_request.id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('new').records.size }.by(1)
+      end.to change { Elasticsearch::Model.search('new').records.size }.by(1)
     end
   end
 
@@ -216,7 +216,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("delete", "Issue", issue.id, "project_id" => project_id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').total_count }.by(-1)
+      end.to change { Elasticsearch::Model.search('*').total_count }.by(-1)
     end
 
     it 'deletes a note' do
@@ -233,7 +233,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("delete", "Note", note.id, "project_id" => project_id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').total_count }.by(-1)
+      end.to change { Elasticsearch::Model.search('*').total_count }.by(-1)
     end
 
     it 'deletes a milestone' do
@@ -250,7 +250,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("delete", "Milestone", milestone.id, "project_id" => project_id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').total_count }.by(-1)
+      end.to change { Elasticsearch::Model.search('*').total_count }.by(-1)
     end
 
     it 'deletes a merge request' do
@@ -267,7 +267,7 @@ describe ElasticIndexerWorker, elastic: true do
       expect do
         subject.perform("delete", "MergeRequest", merge_request.id, "project_id" => project_id)
         Gitlab::Elastic::Helper.refresh_index
-      end.to change{ Elasticsearch::Model.search('*').total_count }.by(-1)
+      end.to change { Elasticsearch::Model.search('*').total_count }.by(-1)
     end
   end
 end
