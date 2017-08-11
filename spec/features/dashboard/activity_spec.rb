@@ -23,27 +23,19 @@ feature 'Dashboard > Activity' do
       create(:merge_request, author: user, source_project: project, target_project: project)
     end
 
-    let(:push_event_data) do
-      {
-        before: Gitlab::Git::BLANK_SHA,
-        after: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
-        ref: 'refs/heads/new_design',
-        user_id: user.id,
-        user_name: user.name,
-        repository: {
-          name: project.name,
-          url: 'localhost/rubinius',
-          description: '',
-          homepage: 'localhost/rubinius',
-          private: true
-        }
-      }
-    end
-
     let(:note) { create(:note, project: project, noteable: merge_request) }
 
     let!(:push_event) do
-      create(:event, :pushed, data: push_event_data, project: project, author: user)
+      event = create(:push_event, project: project, author: user)
+
+      create(:push_event_payload,
+             event: event,
+             action: :created,
+             commit_to: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
+             ref: 'new_design',
+             commit_count: 1)
+
+      event
     end
 
     let!(:merged_event) do
