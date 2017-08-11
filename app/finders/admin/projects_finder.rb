@@ -43,7 +43,13 @@ class Admin::ProjectsFinder
   end
 
   def by_archived(items)
-    items.non_archived unless params[:archived].present?
+    if params[:archived] == 'only'
+      items.archived
+    elsif params[:archived].blank?
+      items.non_archived
+    else
+      items
+    end
   end
 
   def by_personal(items)
