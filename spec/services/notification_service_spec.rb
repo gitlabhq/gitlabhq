@@ -4,7 +4,7 @@ describe NotificationService, :mailer do
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
-  around(:each) do |example|
+  around do |example|
     perform_enqueued_jobs do
       example.run
     end
@@ -1231,7 +1231,7 @@ describe NotificationService, :mailer do
       let(:group) { create(:group) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         group.add_owner(creator)
         group.add_developer(member, creator)
       end
@@ -1251,7 +1251,7 @@ describe NotificationService, :mailer do
       let(:project) { create(:project) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         project.add_developer(member, current_user: project.owner)
       end
 

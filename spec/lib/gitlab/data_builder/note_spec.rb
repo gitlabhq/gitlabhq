@@ -6,7 +6,7 @@ describe Gitlab::DataBuilder::Note do
   let(:data) { described_class.build(note, user) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
 
-  before(:each) do
+  before do
     expect(data).to have_key(:object_attributes)
     expect(data[:object_attributes]).to have_key(:url)
     expect(data[:object_attributes][:url])

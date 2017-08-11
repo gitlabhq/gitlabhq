@@ -135,7 +135,7 @@ describe Projects::MirrorsController do
       sign_in(project.owner)
     end
 
-    around(:each) do |example|
+    around do |example|
       Sidekiq::Testing.fake! { example.run }
     end
 

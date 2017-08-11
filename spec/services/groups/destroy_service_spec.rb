@@ -85,7 +85,7 @@ describe Groups::DestroyService do
 
     context 'potential race conditions' do
       context "when the `GroupDestroyWorker` task runs immediately" do
-        around(:each) do |example|
+        around do |example|
           old_strategy = DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }].strategy
           DatabaseCleaner[:active_record, { connection: ActiveRecord::Base }].strategy = :deletion
           begin

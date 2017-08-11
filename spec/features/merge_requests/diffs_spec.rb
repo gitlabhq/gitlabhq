@@ -5,7 +5,7 @@ feature 'Diffs URL', js: true do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
-    before(:each) do
+    before do
       page.driver.add_header('Accept', '*/*')
     end
 

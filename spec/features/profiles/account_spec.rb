@@ -35,7 +35,7 @@ feature 'Profile > Account' do
         TestEnv.clean_test_path
       end
 
-      after(:example) do
+      after do
         TestEnv.clean_test_path
       end
 

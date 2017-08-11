@@ -9,7 +9,7 @@ describe Gitlab::Geo::OauthSession do
   let(:access_token) { FactoryGirl.create(:doorkeeper_access_token).token }
   let(:user) { FactoryGirl.build(:user) }
 
-  before(:each) do
+  before do
     allow(subject).to receive(:oauth_app) { oauth_app }
     allow(subject).to receive(:primary_node_url) { 'http://localhost:3001/' }
   end
