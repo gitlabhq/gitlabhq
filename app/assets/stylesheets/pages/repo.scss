@@ -282,6 +282,7 @@
     }
 
     a {
+      @include str-truncated(250px);
       color: $almost-black;
       display: inline-block;
       vertical-align: middle;
