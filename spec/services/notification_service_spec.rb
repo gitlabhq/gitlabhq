@@ -932,6 +932,13 @@ describe NotificationService, :mailer do
           project_approvers.each { |approver| should_email(approver) }
         end
 
+        it 'does not email the approvers when approving is disabled' do
+          merge_request.target_project.update_attributes(approvals_before_merge: 0)
+          notification.new_merge_request(merge_request, @u_disabled)
+
+          project_approvers.each { |approver| should_not_email(approver) }
+        end
+
         context 'when the merge request has approvers set' do
           let(:mr_approvers) { create_list(:user, 3) }
 
