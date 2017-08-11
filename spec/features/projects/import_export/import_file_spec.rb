@@ -10,7 +10,7 @@ feature 'Import/Export - project import integration test', js: true do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
   end
 
-  after(:each) do
+  after do
     FileUtils.rm_rf(export_path, secure: true)
   end
 

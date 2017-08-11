@@ -1,6 +1,5 @@
-/* global bp */
 import Cookies from 'js-cookie';
-import './breakpoints';
+import bp from './breakpoints';
 
 export const canShowActiveSubItems = (el) => {
   const isHiddenByMedia = bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md';

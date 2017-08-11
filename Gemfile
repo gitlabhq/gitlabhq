@@ -64,7 +64,7 @@ gem 'gpgme'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
@@ -402,7 +402,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.26.0'
+gem 'gitaly', '~> 0.27.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

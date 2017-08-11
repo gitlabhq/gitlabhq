@@ -42,14 +42,14 @@ feature 'Contributions Calendar', :js do
   end
 
   def push_code_contribution
-    push_params = {
-      project: contributed_project,
-      action: Event::PUSHED,
-      author_id: user.id,
-      data: { commit_count: 3 }
-    }
+    event = create(:push_event, project: contributed_project, author: user)
 
-    Event.create(push_params)
+    create(:push_event_payload,
+           event: event,
+           commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 3,
+           ref: 'master')
   end
 
   def note_comment_contribution

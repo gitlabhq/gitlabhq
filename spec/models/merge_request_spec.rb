@@ -714,7 +714,7 @@ describe MergeRequest do
     end
 
     describe 'caching' do
-      before(:example) do
+      before do
         allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
       end
 

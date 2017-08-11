@@ -33,7 +33,7 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     clean_frontend_fixtures('merge_requests/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 
