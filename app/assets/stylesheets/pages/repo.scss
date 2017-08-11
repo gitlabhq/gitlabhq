@@ -90,7 +90,7 @@
     }
 
     .blob-viewer-container {
-      height: calc(100vh - 63px);
+      height: calc(100vh - 62px);
       overflow: auto;
     }
 
@@ -291,7 +291,7 @@
 }
 
 .render-error {
-  min-height: calc(100vh - 63px);
+  min-height: calc(100vh - 62px);
 
   p {
     width: 100%;
