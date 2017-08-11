@@ -1296,7 +1296,9 @@ describe NotificationService, :mailer do
       end
 
       describe 'when notifications are disabled' do
-        before { create_global_setting_for(added_user, :disabled) }
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
 
         it do
           create_member!
