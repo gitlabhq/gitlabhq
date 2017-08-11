@@ -44,6 +44,7 @@ Learn how to use [Git with GitLab](../topics/git/index.md):
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
+| [Numerous _undo_ possibilities in Git](numerous_undo_possibilities_in_git/index.md) | Tutorial | 2017/08/17 |
 | [Why Git is Worth the Learning Curve](https://about.gitlab.com/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/) | Concepts | 2017/05/17 |
 | [How to install Git](how_to_install_git/index.md) | Tutorial | 2017/05/15 |
 | [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/) | Tutorial | 2017/01/30 |
