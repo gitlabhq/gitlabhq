@@ -179,7 +179,7 @@
                     v-if="canReply && !isReplying"
                     @click="showReplyForm"
                     type="button"
-                    class="btn btn-text-field"
+                    class="js-vue-discussion-reply btn btn-text-field"
                     title="Add a reply">Reply...</button>
                   <issue-note-form
                     v-if="isReplying"
