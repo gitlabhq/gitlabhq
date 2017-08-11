@@ -14,7 +14,7 @@ describe ConfigLint do
 end
 
 describe 'config_lint rake task' do
-  before(:each) do
+  before do
     # Prevent `system` from actually being called
     allow(Kernel).to receive(:system).and_return(true)
   end

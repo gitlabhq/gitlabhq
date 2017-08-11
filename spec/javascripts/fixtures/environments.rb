@@ -14,7 +14,7 @@ describe Projects::EnvironmentsController, '(JavaScript fixtures)', type: :contr
     clean_frontend_fixtures('environments/metrics')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

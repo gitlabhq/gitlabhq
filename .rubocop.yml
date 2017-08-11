@@ -1099,6 +1099,11 @@ RSpec/FilePath:
 RSpec/Focus:
   Enabled: true
 
+# Checks the arguments passed to `before`, `around`, and `after`.
+RSpec/HookArgument:
+  Enabled: true
+  EnforcedStyle: implicit
+
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: is_expected, should
 RSpec/ImplicitExpect:
