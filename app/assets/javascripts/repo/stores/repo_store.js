@@ -3,7 +3,6 @@ import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
 const RepoStore = {
-  ideEl: {},
   monaco: {},
   monacoLoading: false,
   service: '',
@@ -16,18 +15,10 @@ const RepoStore = {
   projectId: '',
   projectName: '',
   projectUrl: '',
-  trees: [],
-  blobs: [],
-  submodules: [],
   blobRaw: '',
-  blobRendered: '',
   currentBlobView: 'repo-preview',
   openedFiles: [],
-  tabSize: 100,
-  defaultTabSize: 100,
-  minTabSize: 30,
   submitCommitsLoading: false,
-  binaryLoaded: false,
   dialog: {
     open: false,
     title: '',
@@ -43,9 +34,6 @@ const RepoStore = {
   currentBranch: '',
   targetBranch: 'new-branch',
   commitMessage: '',
-  binaryMimeType: '',
-  // scroll bar space for windows
-  scrollWidth: 0,
   binaryTypes: {
     png: false,
     md: false,
@@ -56,7 +44,6 @@ const RepoStore = {
     tree: false,
     blob: false,
   },
-  readOnly: true,
 
   resetBinaryTypes() {
     Object.keys(RepoStore.binaryTypes).forEach((key) => {
@@ -87,7 +74,6 @@ const RepoStore = {
 
     if (file.binary) {
       RepoStore.blobRaw = file.base64;
-      RepoStore.binaryMimeType = file.mime_type;
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
     } else {
@@ -209,4 +195,5 @@ const RepoStore = {
     return RepoStore.currentBlobView === 'repo-preview';
   },
 };
+
 export default RepoStore;
