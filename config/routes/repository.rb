@@ -10,6 +10,7 @@ end
 # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
 scope format: false do
   get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
+  get '/commits/signatures', to: 'commits#signatures', as: :signatures
 
   resources :compare, only: [:index, :create] do
     collection do
@@ -77,7 +78,6 @@ scope format: false do
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
 
-    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 
     post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir

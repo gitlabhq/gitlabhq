@@ -4,11 +4,20 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
 
   before_action :require_non_empty_project
-  before_action :assign_ref_vars
+  before_action :assign_ref_vars, only: :show
   before_action :authorize_download_code!
-  before_action :set_commits
 
   def show
+    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
+    search = params[:search]
+
+    @commits =
+      if search.present?
+        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
+      else
+        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
+      end
+
     @note_counts = project.notes.where(commit_id: @commits.map(&:id))
       .group(:commit_id).count
 
@@ -30,31 +39,24 @@ class Projects::CommitsController < Projects::ApplicationController
   end
 
   def signatures
-    respond_to do |format|
-      format.json do
-        render json: {
-          signatures: @commits.select(&:has_signature?).map do |commit|
-            {
-              commit_sha: commit.sha,
-              html: view_to_html_string('projects/commit/_signature', signature: commit.signature)
-            }
-          end
+    commit_ids = Array(params[:sha])
+
+    signatures = GpgSignature.where(commit_sha: commit_ids)
+
+    # Filter commits without GpgSignature record in the database
+    # but with signature in git and create missing GpgSignature objects by
+    # invoking `signature` method on those
+    commit_ids = commit_ids - signatures.map(&:commit_sha)
+    commits = commit_ids.map { |sha| @repository.commit(sha) }
+    signatures += commits.select(&:has_signature?).map(&:signature)
+
+    render json: {
+      signatures: signatures.map do |signature|
+        {
+          commit_sha: signature.commit_sha,
+          html: view_to_html_string('projects/commit/_signature', signature: signature)
         }
       end
-    end
-  end
-
-  private
-
-  def set_commits
-    @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
-    search = params[:search]
-
-    @commits =
-      if search.present?
-        @repository.find_commits_by_message(search, @ref, @path, @limit, @offset)
-      else
-        @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
-      end
+    }
   end
 end

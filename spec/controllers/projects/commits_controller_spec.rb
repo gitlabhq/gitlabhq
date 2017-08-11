@@ -45,4 +45,16 @@ describe Projects::CommitsController do
       end
     end
   end
+
+  describe "GET signatures" do
+    it "renders as json" do
+      get(:signatures,
+          namespace_id: project.namespace,
+          project_id: project,
+          sha: project.repository.commit.sha)
+
+      expect(response).to be_success
+      expect(response.content_type).to eq('application/json')
+    end
+  end
 end
