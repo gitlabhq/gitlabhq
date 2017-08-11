@@ -1222,7 +1222,8 @@ class Project < ActiveRecord::Base
   end
 
   def pages_path
-    File.join(Settings.pages.path, disk_path)
+    # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
+    File.join(Settings.pages.path, full_path)
   end
 
   def public_pages_path

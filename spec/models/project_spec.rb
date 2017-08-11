@@ -2318,6 +2318,10 @@ describe Project do
     let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
 
+    before do
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
+    end
+
     describe '#base_dir' do
       it 'returns base_dir based on namespace only' do
         expect(project.base_dir).to eq(project.namespace.full_path)
@@ -2331,10 +2335,6 @@ describe Project do
     end
 
     describe '#ensure_storage_path_exist' do
-      before do
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-      end
-
       it 'delegates to gitlab_shell to ensure namespace is created' do
         expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, project.base_dir)
 
@@ -2392,6 +2392,12 @@ describe Project do
         it { expect { subject }.to raise_error(StandardError) }
       end
     end
+
+    describe '#pages_path' do
+      it 'returns a path where pages are stored' do
+        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
+      end
+    end
   end
 
   context 'hashed storage' do
@@ -2402,6 +2408,7 @@ describe Project do
     before do
       stub_application_setting(hashed_storage_enabled: true)
       allow(Digest::SHA2).to receive(:hexdigest) { hash }
+      allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
     end
 
     describe '#base_dir' do
@@ -2411,7 +2418,7 @@ describe Project do
     end
 
     describe '#disk_path' do
-      it 'returns disk_path based on has of project id' do
+      it 'returns disk_path based on hash of project id' do
         hashed_path = '6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
 
         expect(project.disk_path).to eq(hashed_path)
@@ -2419,10 +2426,6 @@ describe Project do
     end
 
     describe '#ensure_storage_path_exist' do
-      before do
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-      end
-
       it 'delegates to gitlab_shell to ensure namespace is created' do
         expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '6b/86')
 
@@ -2470,6 +2473,12 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+    end
+
+    describe '#pages_path' do
+      it 'returns a path where pages are stored' do
+        expect(project.pages_path).to eq(File.join(Settings.pages.path, project.namespace.full_path, project.path))
       end
     end
   end
