@@ -1,0 +1,5 @@
+---
+title: Fix branch link in sidebar of job log page
+merge_request: 13495
+author:
+type: fixed
