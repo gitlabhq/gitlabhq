@@ -49,19 +49,6 @@ describe GeoNode, type: :model do
     end
   end
 
-  context 'system hooks' do
-    it 'primary does not create a system hook' do
-      expect(primary_node.system_hook).to be_nil
-    end
-
-    it 'secondary creates a system hook with repository update events' do
-      hook = new_node.system_hook
-      expect(hook.push_events).to be_falsey
-      expect(hook.tag_push_events).to be_falsey
-      expect(hook.repository_update_events).to be_truthy
-    end
-  end
-
   context 'prevent locking yourself out' do
     subject do
       GeoNode.new(host: Gitlab.config.gitlab.host,
@@ -95,19 +82,6 @@ describe GeoNode, type: :model do
 
       it 'saves a corresponding oauth application if it is a secondary node' do
         expect(node.oauth_application).to be_persisted
-      end
-
-      it 'has a system_hook if it is a secondary node' do
-        expect(node.system_hook).to be_present
-      end
-
-      it 'generated system_hook has required attributes' do
-        expect(node.system_hook.url).to be_present
-        expect(node.system_hook.url).to eq(node.geo_events_url)
-        expect(node.system_hook.token).to be_present
-        expect(node.system_hook.push_events).to be_falsey
-        expect(node.system_hook.tag_push_events).to be_falsey
-        expect(node.system_hook.repository_update_events).to be_truthy
       end
 
       context 'when is a primary node' do

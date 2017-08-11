@@ -683,7 +683,6 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.boolean "primary"
     t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
-    t.integer "system_hook_id"
     t.boolean "enabled", default: true, null: false
     t.string "access_key"
     t.string "encrypted_secret_access_key"

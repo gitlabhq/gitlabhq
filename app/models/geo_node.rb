@@ -3,7 +3,6 @@ class GeoNode < ActiveRecord::Base
 
   belongs_to :geo_node_key, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
-  belongs_to :system_hook, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   has_many :geo_node_namespace_links
   has_many :namespaces, through: :geo_node_namespace_links
@@ -14,7 +13,7 @@ class GeoNode < ActiveRecord::Base
                  relative_url_root: lambda { Gitlab.config.gitlab.relative_url_root },
                  primary: false
 
-  accepts_nested_attributes_for :geo_node_key, :system_hook
+  accepts_nested_attributes_for :geo_node_key
 
   validates :host, host: true, presence: true, uniqueness: { case_sensitive: false, scope: :port }
   validates :primary, uniqueness: { message: 'node already exists' }, if: :primary
@@ -194,7 +193,6 @@ class GeoNode < ActiveRecord::Base
       update_clone_url
     else
       update_oauth_application!
-      update_system_hook!
     end
   end
 
@@ -215,17 +213,6 @@ class GeoNode < ActiveRecord::Base
     self.build_oauth_application if oauth_application.nil?
     self.oauth_application.name = "Geo node: #{self.url}"
     self.oauth_application.redirect_uri = oauth_callback_url
-  end
-
-  def update_system_hook!
-    return if self.primary?
-
-    self.build_system_hook if system_hook.nil?
-    self.system_hook.token = SecureRandom.hex(20) unless self.system_hook.token.present?
-    self.system_hook.url = geo_events_url if uri.present?
-    self.system_hook.push_events = false
-    self.system_hook.tag_push_events = false
-    self.system_hook.repository_update_events = true
   end
 
   def expire_cache!
