@@ -59,6 +59,7 @@
 - [Iterating Tables In Batches](iterating_tables_in_batches.md)
 - [Ordering Table Columns](ordering_table_columns.md)
 - [Verifying Database Capabilities](verifying_database_capabilities.md)
+- [Hash Indexes](hash_indexes.md)
 
 ## i18n
 
