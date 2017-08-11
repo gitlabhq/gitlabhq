@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170808163512) do
+ActiveRecord::Schema.define(version: 20170811203342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1907,7 +1907,7 @@ ActiveRecord::Schema.define(version: 20170808163512) do
     t.boolean "email_opted_in"
     t.string "email_opted_in_ip"
     t.integer "email_opted_in_source_id"
-    t.datetime_with_timezone "email_opted_in_at"
+    t.datetime "email_opted_in_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
