@@ -270,6 +270,15 @@ complexity of RSpec expectations.They should be placed under
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.
 
+#### have_gitlab_http_status
+
+Prefer `have_gitlab_http_status` over `have_http_status` because the former
+could also show the response body whenever the status mismatched. This would
+be very useful whenever some tests start breaking and we would love to know
+why without editing the source and rerun the tests.
+
+This is especially useful whenever it's showing 500 internal server error.
+
 ### Shared contexts
 
 All shared contexts should be be placed under `spec/support/shared_contexts/`.
