@@ -206,7 +206,7 @@
     background: $gray-light;
     padding: 20px;
 
-    span.help-block {
+    .help-block {
       padding-top: 7px;
       margin-top: 0;
     }
@@ -234,7 +234,7 @@
       vertical-align: top;
       width: 20%;
       border-right: 1px solid $white-normal;
-      height: calc(100vh + 20px);
+      min-height: calc(100vh + 20px);
       overflow: auto;
     }
 
