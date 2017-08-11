@@ -1,25 +1,24 @@
 # Numerous undo possibilities in Git
 
-> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):**  tutorial ||
+> **Article [Type](../../development/writing_documentation.md#types-of-technical-articles):**  tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Crt Mori](https://gitlab.com/Letme)  ||
-> **Publication date:** 2017/08/04
+> **Publication date:** 2017/08/17
 
 ## Introduction
 
-In this tutorial, we will show you different ways of undoing in Git, for which
+In this tutorial, we will show you different ways of undoing your work in Git, for which
 we will assume you have a basic working knowledge of. Check GitLab's
 [Git documentation](../../topics/git/index.md#git-documentation) for reference.
 Also, we will only provide some general info of the commands, which is enough
-to get you started for the easy cases/examples, but you will have to read the
-command manual for anything more advanced.
+to get you started for the easy cases/examples, but for anything more advanced please refer to the [Git book](https://git-scm.com/book/en/v2).
 
 We will explain a few different techniques to undo your changes based on the stage
 of the change in your current development. Also, keep in mind that [nothing in
 Git is really deleted.][git-autoclean-ref]
 This means that until Git automatically cleans detached commits (which cannot be
 accessed by branch or tag) it will be possible to view them with `git reflog` command
-and access them with direct commit-id. You can read more about [redo in below section](#redoing-the-undo).
+and access them with direct commit-id. Read more about _[redoing the undo](#redoing-the-undo)_ on the section below.
 
 This guide is organized depending on the [stage of development][git-basics]
 where you want to undo your changes from and if they were shared with other developers
@@ -78,7 +77,7 @@ proposes a solution to discard changes to certain file.
 
 Suppose you edited a file to change the content using your favorite editor:
 
-```
+```shell
 vim <file>
 ```
 
@@ -101,19 +100,19 @@ At this point there are 3 options to undo the local changes you have:
 
  - Discard all local changes, but save them for possible re-use [later](#quickly-save-local-changes)
 
-     ```
+     ```shell
      git stash
      ```
 
  - Discarding local changes (permanently) to a file
 
-     ```
+     ```shell
      git checkout -- <file>
      ```
 
  - Discard all local changes to all files permanently
 
-     ```
+     ```shell
      git reset --hard
      ```
 
@@ -123,7 +122,6 @@ just temporary store the changes without committing them using `git stash`.
 This command resets the changes to all files, but it also saves them in case
 you would like to apply them at some later time. You can read more about it in
 [section below](#quickly-save-local-changes).
-
 
 ### Quickly save local changes
 
@@ -143,7 +141,6 @@ additional options like:
  - `git stash list`, which lists all previously stashed commits (yes, there can be more) that were not `pop`ed
  - `git stash pop`, which redoes previously stashed changes and removes them from stashed list
  - `git stash apply`, which redoes previously stashed changes, but keeps them on stashed list
-
 
 ### Staged local changes (before you commit)
 
@@ -176,28 +173,27 @@ Now you have 4 options to undo your changes:
 
  - Unstage the file to current commit (HEAD)
 
-     ```
+     ```shell
      git reset HEAD <file>
      ```
 
  - Unstage everything - retain changes
 
-     ```
+     ```shell
      git reset
      ```
 
  - Discard all local changes, but save them for [later](#quickly-save-local-changes)
 
-     ```
+     ```shell
      git stash
      ```
 
  - Discard everything permanently
 
-     ```
+     ```shell
      git reset --hard
      ```
-
 
 ## Committed local changes
 
@@ -206,7 +202,6 @@ Because you haven't pushed to your remote repository yet, your changes are
 still not public (or shared with other developers). At this point, undoing
 things is a lot easier, we have quite some workaround options. Once you push
 your code, you'll have less options to troubleshoot your work.
-
 
 ### Without modifying history
 
@@ -223,7 +218,7 @@ and `B` is the commit you want to undo. There are many different ways to identif
 `B` as bad, one of them is to pass a range to `git bisect` command. The provided range includes
 last known good commit (we assume `A`) and first known bad commit (where bug was detected - we will assume `E`).
 
-```
+```shell
 git bisect A..E
 ```
 
@@ -232,23 +227,23 @@ through simple bisection process. You can read more about it [in official Git To
 In our example we will end up with commit `B`, that introduced bug/error. We have
 4 options on how to remove it (or part of it) from our repository.
 
- - Undo (swap additions and deletions) changes introduced by commit `B`.
+- Undo (swap additions and deletions) changes introduced by commit `B`.
 
-     ```
-     git revert commit-B-id
-     ```
+   ```shell
+   git revert commit-B-id
+   ```
 
- - Undo changes on a single file or directory from commit `B`, but retain them in the staged state
+- Undo changes on a single file or directory from commit `B`, but retain them in the staged state
 
-     ```
-     git checkout commit-B-id <file>
-     ```
+   ```shell
+   git checkout commit-B-id <file>
+   ```
 
- - Undo changes on a single file or directory from commit `B`, but retain them in the unstaged state
+- Undo changes on a single file or directory from commit `B`, but retain them in the unstaged state
 
-     ```
-     git reset  commit-B-id <file>
-     ```
+   ```shell
+   git reset  commit-B-id <file>
+   ```
 
  - There is one command we also must not forget: **creating a new branch**
    from the point where changes are not applicable or where the development has hit a
@@ -264,13 +259,12 @@ In our example we will end up with commit `B`, that introduced bug/error. We hav
 
       ![Create a new branch to avoid clashing](img/branching.png)
 
-       ```
-       git checkout commit-B-id
-       git checkout -b new-path-of-feature
-       # Create <commit F>
-       git commit -a
-        ```
-
+      ```shell
+      git checkout commit-B-id
+      git checkout -b new-path-of-feature
+      # Create <commit F>
+      git commit -a
+      ```
 
 ### With history modification
 
@@ -288,34 +282,34 @@ provides interactive mode (`-i` flag) which enables you to:
 Let us check few examples. Again there are commits `A-B-C-D` where you want to
 delete commit `B`.
 
- - Rebase the range from current commit D to A
+- Rebase the range from current commit D to A:
 
-     ```
-     git rebase -i A
-     ```
+   ```shell
+   git rebase -i A
+   ```
 
- - Command opens your favorite editor where you write `drop` in front of commit
-   `B`, but you leave default `pick` with all other commits. Save and exit the
-   editor to perform a rebase. Remember: if you want to cancel delete whole
-   file content before saving and exiting the editor
+- Command opens your favorite editor where you write `drop` in front of commit
+ `B`, but you leave default `pick` with all other commits. Save and exit the
+ editor to perform a rebase. Remember: if you want to cancel delete whole
+ file content before saving and exiting the editor
 
 In case you want to modify something introduced in commit `B`.
 
- - Rebase the range from current commit D to A
+- Rebase the range from current commit D to A:
 
-      ```
-      git rebase -i A
-      ```
+    ```shell
+    git rebase -i A
+    ```
 
- - Command opens your favorite text editor where you write `edit` in front of commit
-   `B`, but leave default `pick` with all other commits. Save and exit the editor to
-   perform a rebase
+- Command opens your favorite text editor where you write `edit` in front of commit
+ `B`, but leave default `pick` with all other commits. Save and exit the editor to
+ perform a rebase
 
- - Now do your edits and commit changes
+- Now do your edits and commit changes:
 
-      ```
-      git commit -a
-      ```
+    ```shell
+    git commit -a
+    ```
 
 You can find some more examples in [below section where we explain how to modify
 history](#how-modifying-history-is-done)
@@ -329,7 +323,7 @@ enables you to *recall* detached local commits by referencing or applying them
 via commit-id. Although, do not expect to see really old commits in reflog, because
 Git regularly [cleans the commits which are *unreachable* by branches or tags][git-autoclean-ref].
 
-To view repository history and to track older commits you can use below command
+To view repository history and to track older commits you can use below command:
 
 ```shell
 $ git reflog show
@@ -352,7 +346,6 @@ in following column, number next to `HEAD` indicates how many commits ago someth
 was made, after that indicator of action that was made (commit, rebase, merge, ...)
 and then on end description of that action.
 
-
 ## Undo remote changes without changing history
 
 This topic is roughly same as modifying committed local changes without modifying
@@ -365,20 +358,19 @@ it also provides a clear timeline and development structure.
 ![Use revert to keep branch flowing](img/revert.png)
 
 If you want to revert changes introduced in certain `commit-id` you can simply
-revert that `commit-id` (swap additions and deletions) in newly created commit.
+revert that `commit-id` (swap additions and deletions) in newly created commit:
 You can do this with
 
-```
+```shell
 git revert commit-id
 ```
 
-or creating a new branch
+or creating a new branch:
 
-```
+```shell
 git checkout commit-id
 git checkout -b new-path-of-feature
 ```
-
 
 ## Undo remote changes with modifying history
 
@@ -391,7 +383,6 @@ accessed through commit-id** - at least until all repositories perform
 the cleanup of detached commits (happens automatically).
 
 ![Modifying history causes problems on remote branch](img/rebase_reset.png)
-
 
 ### Where modifying history is generally acceptable
 
@@ -414,7 +405,6 @@ at merge).
 
 >**Note:**
 Never modify the commit history of `master` or shared branch
-
 
 ### How modifying history is done
 
@@ -464,7 +454,6 @@ different outcomes locally).
 git rebase -i commit-id
 ```
 
-
 ### Deleting sensitive information from commits
 
 Git also enables you to delete sensitive information from your past commits and
@@ -475,7 +464,7 @@ section and not as a standalone topic. To do so, you should run the
 This command uses rebase to modify history and if you want to remove certain
 file from history altogether use:
 
-```
+```shell
 git filter-branch --tree-filter 'rm filename' HEAD
 ```
 
@@ -486,7 +475,6 @@ An alternative is [BFG Repo-cleaner][bfg-repo-cleaner]. Keep in mind that these
 tools are faster because they do not provide a same fully feature set as `git filter-branch`
 does, but focus on specific usecases.
 
-
 ## Conclusion
 
 There are various options of undoing your work with any version control system, but
@@ -494,7 +482,6 @@ because of de-centralized nature of Git, these options are multiplied (or limite
 depending on the stage of your process. Git also enables rewriting history, but that
 should be avoided as it might cause problems when multiple developers are
 contributing to the same codebase.
-
 
 <!-- Identifiers, in alphabetical order -->
 
@@ -508,4 +495,3 @@ contributing to the same codebase.
 [gitlab-ce]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
 [gitlab-flow]: https://about.gitlab.com/2014/09/29/gitlab-flow/
 [gitlab-git-tips-n-tricks]: https://about.gitlab.com/2016/12/08/git-tips-and-tricks/
-
