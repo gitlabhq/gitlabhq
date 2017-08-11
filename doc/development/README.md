@@ -58,6 +58,7 @@
 - [Storing SHA1 Hashes As Binary](sha1_as_binary.md)
 - [Iterating Tables In Batches](iterating_tables_in_batches.md)
 - [Ordering Table Columns](ordering_table_columns.md)
+- [Verifying Database Capabilities](verifying_database_capabilities.md)
 
 ## i18n
 
