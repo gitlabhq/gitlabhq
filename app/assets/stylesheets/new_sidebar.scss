@@ -103,6 +103,7 @@ $new-sidebar-collapsed-width: 50px;
 
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
+    overflow-x: hidden;
 
     .badge,
     .project-title {
