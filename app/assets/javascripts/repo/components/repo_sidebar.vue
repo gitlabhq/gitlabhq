@@ -64,7 +64,7 @@ export default RepoSidebar;
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak>
+<div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak="true">
   <table class="table">
     <thead v-if="!isMini">
       <tr>
