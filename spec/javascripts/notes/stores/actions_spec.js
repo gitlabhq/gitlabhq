@@ -1,25 +1,9 @@
 
 import * as actions from '~/notes/stores/actions';
 import testAction from './helpers';
-import { note, discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
-import service from '~/notes/services/issue_notes_service';
+import { discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
 
-// use require syntax for inline loaders.
-// with inject-loader, this returns a module factory
-// that allows us to inject mocked dependencies.
-// const actionsInjector = require('inject-loader!./actions');
-
-// const actions = actionsInjector({
-//   '../api/shop': {
-//     getProducts (cb) {
-//       setTimeout(() => {
-//         cb([ /* mocked response */ ])
-//       }, 100)
-//     }
-//   }
-// });
-
-fdescribe('Actions Notes Store', () => {
+describe('Actions Notes Store', () => {
   describe('setNotesData', () => {
     it('should set received notes data', (done) => {
       testAction(actions.setNotesData, null, { notesData: {} }, [
@@ -73,71 +57,6 @@ fdescribe('Actions Notes Store', () => {
       testAction(actions.toggleDiscussion, null, { notes: [discussionMock] }, [
         { type: 'TOGGLE_DISCUSSION', payload: { discussionId: discussionMock.id } },
       ], done);
-    });
-  });
-
-  describe('fetchNotes', () => {
-    it('should request notes', (done) => {
-      spyOn(service, 'fetchNotes').and.returnValue(Promise.resolve({
-        json() {
-          return [individualNote];
-        },
-      }));
-      testAction(actions.fetchNotes, null, { notes: [] }, [
-        { type: 'TOGGLE_DISCUSSION', payload: [individualNote] },
-      ], done);
-    });
-  });
-
-  describe('deleteNote', () => {
-    it('should delete note', () => {});
-  });
-
-  describe('updateNote', () => {
-    it('should update note', () => {
-
-    });
-  });
-
-  describe('replyToDiscussion', () => {
-    it('should add a reply to a discussion', () => {
-
-    });
-  });
-
-  describe('createNewNote', () => {
-    it('should create a new note', () => {});
-  });
-
-  describe('saveNote', () => {
-    it('should save the received note', () => {
-
-    });
-  });
-
-  describe('poll', () => {
-    it('should start polling the received endoint', () => {
-
-    });
-  });
-
-  describe('toggleAward', () => {
-    it('should toggle received award', () => {
-
-    });
-  });
-
-  describe('toggleAwardRequest', () => {
-    it('should make a request to toggle the award', () => {
-
-    });
-  });
-
-  describe('scrollToNoteIfNeeded', () => {
-    it('should call `scrollToElement` if note is not in viewport', () => {
-    });
-
-    it('should note call `scrollToElement` if note is in viewport', () => {
     });
   });
 });
