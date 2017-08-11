@@ -90,7 +90,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def source_branch_path
     if source_branch_exists?
-      project_branch_path(source_project, source_branch)
+      destroy_project_branch_path(source_project, source_branch)
     end
   end
 
