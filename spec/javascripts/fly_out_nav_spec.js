@@ -1,4 +1,3 @@
-/* global bp */
 import Cookies from 'js-cookie';
 import {
   calculateTop,
@@ -7,6 +6,7 @@ import {
   canShowSubItems,
   canShowActiveSubItems,
 } from '~/fly_out_nav';
+import bp from '~/breakpoints';
 
 describe('Fly out sidebar navigation', () => {
   let el;

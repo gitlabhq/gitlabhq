@@ -226,7 +226,7 @@
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p
-        Perform advanced options such as housekeeping, exporting, archiveing, renameing, transfering, or removeing your project.
+        Perform advanced options such as housekeeping, exporting, archiving, renaming, transferring, or removing your project.
     .settings-content.no-animate{ class: ('expanded' if expanded) }
       .sub-section
         %h4 Housekeeping
@@ -295,7 +295,7 @@
                 %li Be careful. Changing the project's namespace can have unintended side effects.
                 %li You can only transfer the project to namespaces you manage.
                 %li You will need to update your local repositories to point to the new location.
-                %li Project visibility level will be changed to match namespace rules when transfering to a group.
+                %li Project visibility level will be changed to match namespace rules when transferring to a group.
             = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
       - if @project.forked? && can?(current_user, :remove_fork_project, @project)
         .sub-section
