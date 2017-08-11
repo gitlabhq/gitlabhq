@@ -88,9 +88,11 @@ describe('RepoCommitSection', () => {
   it('shows commit submit and summary if commitMessage and spinner if submitCommitsLoading', (done) => {
     const projectId = 'projectId';
     const commitMessage = 'commitMessage';
+    const currentBranch = 'currentBranch';
     RepoStore.isCommitable = true;
     RepoStore.openedFiles = openedFiles;
     RepoStore.projectId = projectId;
+    RepoStore.currentBranch = currentBranch;
 
     spyOn(RepoHelper, 'getBranch').and.returnValue(branch);
 
@@ -100,7 +102,7 @@ describe('RepoCommitSection', () => {
 
     vm.commitMessage = commitMessage;
 
-    Vue.nextTick(() => {
+    Vue.nextTick().then(() => {
       expect(commitMessageEl.value).toBe(commitMessage);
       expect(submitCommit.disabled).toBeFalsy();
 
@@ -109,17 +111,18 @@ describe('RepoCommitSection', () => {
 
       submitCommit.click();
 
-      Vue.nextTick(() => {
+      Vue.nextTick().then(() => {
         expect(vm.makeCommit).toHaveBeenCalled();
         expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeTruthy();
 
         const args = Api.commitMultiple.calls.allArgs()[0];
-        const { commit_message, actions, branch: payloadBranch } = args[1];
+        const { commit_message, start_branch, actions, branch: payloadBranch } = args[1];
 
         expect(args[0]).toBe(projectId);
         expect(commit_message).toBe(commitMessage);
         expect(actions.length).toEqual(2);
         expect(payloadBranch).toEqual(branch);
+        expect(start_branch).toEqual(currentBranch);
         expect(actions[0].action).toEqual('update');
         expect(actions[1].action).toEqual('update');
         expect(actions[0].content).toEqual(openedFiles[0].newContent);
@@ -130,8 +133,8 @@ describe('RepoCommitSection', () => {
           .toEqual(RepoHelper.getFilePathFromFullPath(openedFiles[1].url, branch));
 
         done();
-      });
-    });
+      }).catch(done.fail);
+    }).catch(done.fail);
   });
 
   describe('methods', () => {
