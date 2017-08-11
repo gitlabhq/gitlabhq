@@ -71,7 +71,7 @@ module Gitlab
       end
 
       def config
-        Gitlab.config.omniauth.providers.find{|provider| provider.name == "gitlab"}
+        Gitlab.config.omniauth.providers.find {|provider| provider.name == "gitlab"}
       end
 
       def gitlab_options

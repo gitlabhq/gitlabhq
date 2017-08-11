@@ -85,7 +85,7 @@ describe NotificationService, :mailer do
       it { expect(notification.new_key(key)).to be_truthy }
 
       it 'sends email to key owner' do
-        expect{ notification.new_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+        expect { notification.new_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -97,7 +97,7 @@ describe NotificationService, :mailer do
       it { expect(notification.new_gpg_key(key)).to be_truthy }
 
       it 'sends email to key owner' do
-        expect{ notification.new_gpg_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+        expect { notification.new_gpg_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -109,7 +109,7 @@ describe NotificationService, :mailer do
       it { expect(notification.new_email(email)).to be_truthy }
 
       it 'sends email to email owner' do
-        expect{ notification.new_email(email) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end

@@ -53,7 +53,7 @@ describe API::PipelineSchedules do
           it 'returns matched pipeline schedules' do
             get api("/projects/#{project.id}/pipeline_schedules", developer), scope: target
 
-            expect(json_response.map{ |r| r['active'] }).to all(eq(active?(target)))
+            expect(json_response.map { |r| r['active'] }).to all(eq(active?(target)))
           end
         end
 

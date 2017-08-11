@@ -76,6 +76,7 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
+import initChangesDropdown from './init_changes_dropdown';
 
 (function() {
   var Dispatcher;
@@ -228,6 +229,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          initChangesDropdown();
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -320,6 +322,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          initChangesDropdown();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':

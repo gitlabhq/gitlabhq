@@ -681,7 +681,7 @@ describe MergeRequest do
       end
 
       it 'does not crash' do
-        expect{ subject.diverged_commits_count }.not_to raise_error
+        expect { subject.diverged_commits_count }.not_to raise_error
       end
 
       it 'returns 0' do
@@ -753,7 +753,7 @@ describe MergeRequest do
     subject { create(:merge_request, :simple) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do

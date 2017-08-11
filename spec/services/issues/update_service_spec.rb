@@ -478,7 +478,7 @@ describe Issues::UpdateService, :mailer do
             feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect{ update_issue(assignee_ids: [assignee.id]) }.not_to change{ issue.assignees }
+            expect { update_issue(assignee_ids: [assignee.id]) }.not_to change { issue.assignees }
           end
         end
       end

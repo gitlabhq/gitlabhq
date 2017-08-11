@@ -207,6 +207,13 @@ Layout/SpaceAroundKeyword:
 Layout/SpaceAroundOperators:
   Enabled: true
 
+# Checks that block braces have or don't have a space before the opening
+# brace depending on configuration.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: space, no_space
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
 # No spaces before commas.
 Layout/SpaceBeforeComma:
   Enabled: true
