@@ -255,3 +255,13 @@ a {
     height: 10px;
   }
 }
+
+@keyframes blockTextShine {
+  0% {
+    transform: translateX(-468px);
+  }
+
+  100% {
+    transform: translateX(468px);
+  }
+}
