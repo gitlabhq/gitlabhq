@@ -40,7 +40,7 @@ const RepoHelper = {
   },
 
   getLanguageIDForFile(file, langs) {
-    const ext = file.name.split('.').pop();
+    const ext = RepoHelper.getFileExtension(file.name);
     const foundLang = RepoHelper.findLanguage(ext, langs);
 
     return foundLang ? foundLang.id : 'plaintext';
