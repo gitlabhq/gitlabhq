@@ -21,18 +21,19 @@ or for a non-HA option
 ### Preparation
 
 The recommended configuration for a PostgreSQL HA setup requires:
+* A minimum of three consul server nodes
 * A minimum of two database nodes
   * Each node will run the following services
     * postgresql -- The database itself
     * repmgrd -- A service to monitor, and handle failover in case of a master failure
+    * consul -- Used for service discovery, to alert other nodes when failover occurs
 * At least one separate node for running the `pgbouncer` service.
-  * This is recommended to be on the same node as your `gitlab-rails` service(s)
 
 #### Required information
 
 * Network information for all nodes
   * DNS names -- By default, `repmgr` and `pgbouncer` use DNS to locate nodes
-  * IP address -- PostgreSQL does not listen on any network interface by default. It needs to know which IP address to listen on in order to use the network interface. It can be set to `0.0.0.0` to listen on all interfaces.
+  * IP address -- PostgreSQL does not listen on any network interface by default. It needs to know which IP address to listen on in order to use the network interface. It can be set to `0.0.0.0` to listen on all interfaces. It cannot be set to the loopack address 127.0.0.1
   * Network Address -- PostgreSQL access is controlled based on the network source. This can be in subnet (i.e. 192.168.0.0/255.255.255.0) or CIDR (i.e. 192.168.0.0/24) form.
 * User information for `pgbouncer` service
   * Default username is `pgbouncer`. In the rest of the documentation we will refer to this username as `PGBOUNCER_USERNAME`
@@ -43,8 +44,8 @@ The recommended configuration for a PostgreSQL HA setup requires:
       ``
       $ echo -n 'PASSWORD+USERNAME' | md5sum
       ``
-    * In the rest of the documentation we will refer to this has as `PGBOUNCER_PASSWORD_HASH`
-* The number of nodes in the cluster.  
+    * In the rest of the documentation we will refer to this hash as `PGBOUNCER_PASSWORD_HASH`
+* The number of nodes in the database cluster.
   * When configuring PostgreSQL, we will set `max_wal_senders` to one more than this number. This is used to prevent replication from using up all of the available database connections.
 
 ### Installation
@@ -53,6 +54,45 @@ The recommended configuration for a PostgreSQL HA setup requires:
 1. Download/install GitLab Omnibus using **steps 1 and 2** from
    [GitLab downloads](https://about.gitlab.com/downloads). Do not complete other
    steps on the download page.
+
+#### On each consul server node
+1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration
+    ```ruby
+    # Disable all components except Consul
+    bootstrap['enable'] = false
+    gitaly['enable'] = false
+    gitlab_workhorse['enable'] = false
+    mailroom['enable'] = false
+    nginx['enable'] = false
+    postgresql['enable'] = false
+    redis['enable'] = false
+    sidekiq['enable'] = false
+    unicorn['enable'] = false
+
+    consul['enable'] = true
+    consul['configuration'] = {
+      server: true
+    }
+    ```
+
+1. Reconfigure GitLab for the new settings to take effect
+    ```
+    # gitlab-ctl reconfigure
+    ```
+
+1. Pick one node, and tell the remaining nodes to join that node
+    ```
+    # /opt/gitlab/embedded/bin/consul join FIRST_NODE
+    ```
+
+1. Verify the nodes are all communicating
+    ```
+    # consul members
+    Node         Address              Status  Type    Build  Protocol  DC
+    NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
+    NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
+    NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
+    ```
 
 #### On each database node
 1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
@@ -65,34 +105,47 @@ The recommended configuration for a PostgreSQL HA setup requires:
     unicorn['enable'] = false
     sidekiq['enable'] = false
     redis['enable'] = false
-    prometheus['enable'] = false
     gitaly['enable'] = false
     gitlab_workhorse['enable'] = false
     mailroom['enable'] = false
 
     # PostgreSQL configuration
-    postgresql['listen_address'] = '0.0.0.0' # This can also be the IP address of the server, but should not be the loopback address
+    postgresql['listen_address'] = '0.0.0.0'
     postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.0/24)
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
-    postgresql['max_wal_senders'] = X # Should be set to at least 1 more than the number of nodes in the cluster
-    postgresql['shared_preload_libraries'] = 'repmgr_funcs' # If this attribute is already defined, append the new value as a comma separated list
-
-    # pgbouncer user
-    postgresql['pgbouncer_user'] = 'PGBOUNCER_USER'
-    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH' # This is the hash generated in the preparation section
+    postgresql['max_wal_senders'] = X
+    postgresql['shared_preload_libraries'] = 'repmgr_funcs'
 
     # repmgr configuration
     repmgr['enable'] = true
-    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network(s) your database nodes are on
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
+
+    # Enable the consul agent
+    consul['enable'] = true
+    consul['services'] = %w(postgresql)
+
+    # START user configuration
+    # Please set the real values as explained in Required Information section
+    #
+    postgresql['pgbouncer_user'] = 'PGBOUNCER_USER'
+    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH' # This is the hash generated in the preparation section
+    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network(s) your database nodes are on
+    #
+    # END user configuration
     ```
 
 1. Reconfigure GitLab for the new settings to take effect
     ```
     # gitlab-ctl reconfigure
+    ```
+
+1. Join the node to the consul cluster. SERVER_NODE can be any of the consul server nodes
+    ```
+    # /opt/gitlab/embedded/bin/consul join SERVER_NODE
+    Successfully joined cluster by contacting 1 nodes.
     ```
 
 #### On the primary database node
@@ -149,24 +202,25 @@ Ensure the following attributes are set
 pgbouncer['enable'] = true
 pgbouncer['databases'] = {
   gitlabhq_production: {
-    host: '172.21.0.2',
+    host: 'CURRENT_MASTER',
     user: 'PGBOUNCER_USER',
     password: 'PGBOUNCER_PASSWORD_HASH' # This should be the hash from the preparation section
   }
 }
+consul['enable'] = true
+consul['watchers'] = %w(postgresql)
 ```
-Remaining TBD
 
 #### Configuring the Application
 After database setup is complete, the next step is to Configure the GitLab application servers with the appropriate details.
 Add the following to `/etc/gitlab/gitlab.rb` on the application nodes
 ```ruby
-gitlab_rails['db_host'] = '127.0.0.1'
+gitlab_rails['db_host'] = 'PGBOUNCER_NODE'
 gitlab_rails['db_port'] = 6432
 ```
 
 ### Failover procedure
-By default, if the master database fails, repmgrd should promote one of the standby nodes to master automatically.
+By default, if the master database fails, repmgrd should promote one of the standby nodes to master automatically, and consul will update pgbouncer with the new master.
 
 If you need to failover manually, you have two options:
 1. Shutdown the current master database
@@ -176,6 +230,8 @@ If you need to failover manually, you have two options:
    The automated failover process will see this and failover to one of the standby nodes.
 
 1. Manually failover
+  1. Ensure the old master node is not still active.
+
   1. Login to the server that should become the new master and run the following
       ```
       # gitlab-ctl repmgr standby promote
@@ -186,7 +242,10 @@ If you need to failover manually, you have two options:
       # gitlab-ctl repmgr standby follow NEW_MASTER
       ```
 
-  1. TBD: Notify application of new nodes
+  1. On the pgbouncer nodes run the following
+      ```
+      # gitlab-ctl pgb-notify --host NEW_MASTER
+      ```
 
 ### Restore procedure
 If a node fails, it can be removed from the cluster, or added back as a standby after it has been restored to service.
