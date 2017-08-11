@@ -148,7 +148,6 @@ const RepoHelper = {
         Store.binary = data.binary;
 
         if (data.binary) {
-          Store.binaryMimeType = data.mime_type;
           // file might be undefined
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
