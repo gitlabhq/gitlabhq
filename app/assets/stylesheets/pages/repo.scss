@@ -310,88 +310,11 @@
 
 }
 
-.animation-container {
-  background: $repo-editor-grey;
-  height: 40px;
-  overflow: hidden;
-  position: relative;
-
-  &.animation-container-small {
-    height: 12px;
-  }
-
-  &::before {
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: blockTextShine;
-    animation-timing-function: linear;
-    background-image: $repo-editor-linear-gradient;
-    background-repeat: no-repeat;
-    background-size: 800px 45px;
-    content: ' ';
-    display: block;
-    height: 100%;
-    position: relative;
-  }
-
-  div {
-    background: $white-light;
-    height: 6px;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-
-  .line-of-code-1 {
-    left: 0;
-    top: 8px;
-  }
-
-  .line-of-code-2 {
-    left: 150px;
-    top: 0;
-    height: 10px;
-  }
-
-  .line-of-code-3 {
-    left: 0;
-    top: 23px;
-  }
-
-  .line-of-code-4 {
-    left: 0;
-    top: 38px;
-  }
-
-  .line-of-code-5 {
-    left: 200px;
-    top: 28px;
-    height: 10px;
-  }
-
-  .line-of-code-6 {
-    top: 14px;
-    left: 230px;
-    height: 10px;
-  }
-}
-
 .render-error {
   min-height: calc(100vh - 63px);
 
   p {
     width: 100%;
-  }
-}
-
-@keyframes blockTextShine {
-  0% {
-    transform: translateX(-468px);
-  }
-
-  100% {
-    transform: translateX(468px);
   }
 }
 
