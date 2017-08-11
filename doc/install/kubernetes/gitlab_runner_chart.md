@@ -1,7 +1,7 @@
 # GitLab Runner Helm Chart
-> Officially supported cloud providers are Google Container Service and Azure Container Service.
+> These Helm charts are in beta. GitLab is working on a [cloud-native](http://docs.gitlab.com/omnibus/package-information/cloud_native.html) set of [Charts](https://gitlab.com/charts/helm.gitlab.io) which will replace these.
 
-> Officially supported schedulers are Kubernetes and Terraform.
+> Officially supported cloud providers are Google Container Service and Azure Container Service.
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.

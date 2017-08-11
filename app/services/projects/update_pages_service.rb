@@ -176,11 +176,11 @@ module Projects
     end
 
     def register_attempt
-      pages_deployments_total_counter.increase
+      pages_deployments_total_counter.increment
     end
 
     def register_failure
-      pages_deployments_failed_total_counter.increase
+      pages_deployments_failed_total_counter.increment
     end
 
     def pages_deployments_total_counter
