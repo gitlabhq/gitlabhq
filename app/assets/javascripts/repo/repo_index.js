@@ -11,22 +11,26 @@ function initDropdowns() {
   $('.fa-long-arrow-right').hide();
 }
 
-function addEventsForNonVueEls() {
-  $(document).on('change', '.dropdown', () => {
-    const $hiddenInput = $('.project-refs-target-form input[name="ref"]');
-    Store.targetBranch = $hiddenInput.val();
-    Store.isTargetBranchNew = !!$hiddenInput.attr('data-input');
-  });
+function confirmUnload(e) {
+  const hasChanged = Store.openedFiles
+    .some(file => file.changed);
+  if (!hasChanged) return undefined;
+  const event = e || window.event;
+  if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
+  // For Safari
+  return 'Are you sure you want to lose unsaved changes?';
+}
 
-  window.onbeforeunload = function confirmUnload(e) {
-    const hasChanged = Store.openedFiles
-      .some(file => file.changed);
-    if (!hasChanged) return undefined;
-    const event = e || window.event;
-    if (event) event.returnValue = 'Are you sure you want to lose unsaved changes?';
-    // For Safari
-    return 'Are you sure you want to lose unsaved changes?';
-  };
+function handleDropdownChange() {
+  const $hiddenInput = $('.project-refs-target-form input[name="ref"]');
+  Store.targetBranch = $hiddenInput.val();
+  Store.isTargetBranchNew = !!$hiddenInput.attr('data-input');
+}
+
+function addEventsForNonVueEls() {
+  $(document).on('change', '.dropdown', handleDropdownChange);
+
+  window.onbeforeunload = confirmUnload;
 }
 
 function setInitialStore(data) {
@@ -71,6 +75,9 @@ function initRepoBundle() {
   initRepoEditButton(editButton);
 }
 
-$(initRepoBundle);
-
-export default initRepoBundle;
+export {
+  initRepoBundle as default,
+  addEventsForNonVueEls,
+  handleDropdownChange,
+  confirmUnload,
+};
