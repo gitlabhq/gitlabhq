@@ -180,24 +180,6 @@ const RepoStore = {
     }
   },
 
-  addPlaceholderFile() {
-    const randomURL = Helper.Time.now();
-    const newFakeFile = {
-      active: false,
-      binary: true,
-      type: 'blob',
-      loading: true,
-      mime_type: 'loading',
-      name: 'loading',
-      url: randomURL,
-      fake: true,
-    };
-
-    RepoStore.openedFiles.push(newFakeFile);
-
-    return newFakeFile;
-  },
-
   addToOpenedFiles(file) {
     const openFile = file;
 

@@ -82,11 +82,6 @@ const RepoHelper = {
     .catch(RepoHelper.loadingError);
   },
 
-  toggleFakeTab(loading, file) {
-    if (loading) return Store.addPlaceholderFile();
-    return Store.removeFromOpenedFiles(file);
-  },
-
   // when you open a directory you need to put the directory files under
   // the directory... This will merge the list of the current directory and the new list.
   getNewMergedList(inDirectory, currentList, newList) {
