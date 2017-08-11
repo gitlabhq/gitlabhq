@@ -70,6 +70,7 @@ RSpec.configure do |config|
   config.raise_errors_for_deprecations!
 
   config.before(:suite) do
+    Timecop.safe_mode = true
     TestEnv.init
   end
 
