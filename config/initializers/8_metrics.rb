@@ -133,6 +133,10 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Elastic::SnippetsSearch)
   instrumentation.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
 
+  instrumentation.instrument_instance_methods(Gitlab::BitbucketImport::Importer)
+  instrumentation.instrument_instance_methods(Bitbucket::Connection)
+  instrumentation.instrument_instance_methods(Github::Client)
+
   # This is a Rails scope so we have to instrument it manually.
   instrumentation.instrument_method(Project, :visible_to_user)
 
