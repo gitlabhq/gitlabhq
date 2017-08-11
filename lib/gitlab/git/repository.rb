@@ -631,33 +631,15 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
-        begin
-          commit = lookup(ref)
-        rescue Rugged::ReferenceError
-          raise InvalidRef.new("Ref #{ref} is invalid")
+        Gitlab::GitalyClient.migrate(:apply_gitattributes) do |is_enabled|
+          if is_enabled
+            gitaly_copy_gitattributes(ref)
+          else
+            rugged_copy_gitattributes(ref)
+          end
         end
-
-        # Create the paths
-        info_dir_path = File.join(path, 'info')
-        info_attributes_path = File.join(info_dir_path, 'attributes')
-
-        begin
-          # Retrieve the contents of the blob
-          gitattributes_content = blob_content(commit, '.gitattributes')
-        rescue InvalidBlobName
-          # No .gitattributes found. Should now remove any info/attributes and return
-          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
-          return
-        end
-
-        # Create the info directory if needed
-        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
-
-        # Write the contents of the .gitattributes file to info/attributes
-        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
-        File.open(info_attributes_path, "wb") do |file|
-          file.write(gitattributes_content)
-        end
+      rescue GRPC::InvalidArgument
+        raise InvalidRef
       end
 
       # Returns the Git attributes for the given file path.
@@ -989,6 +971,40 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      def gitaly_copy_gitattributes(revision)
+        gitaly_repository_client.apply_gitattributes(revision)
+      end
+
+      def rugged_copy_gitattributes(ref)
+        begin
+          commit = lookup(ref)
+        rescue Rugged::ReferenceError
+          raise InvalidRef.new("Ref #{ref} is invalid")
+        end
+
+        # Create the paths
+        info_dir_path = File.join(path, 'info')
+        info_attributes_path = File.join(info_dir_path, 'attributes')
+
+        begin
+          # Retrieve the contents of the blob
+          gitattributes_content = blob_content(commit, '.gitattributes')
+        rescue InvalidBlobName
+          # No .gitattributes found. Should now remove any info/attributes and return
+          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
+          return
+        end
+
+        # Create the info directory if needed
+        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
+
+        # Write the contents of the .gitattributes file to info/attributes
+        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
+        File.open(info_attributes_path, "wb") do |file|
+          file.write(gitattributes_content)
+        end
       end
     end
   end
