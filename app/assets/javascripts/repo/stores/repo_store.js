@@ -7,8 +7,8 @@ const RepoStore = {
   monaco: {},
   monacoLoading: false,
   service: '',
-  editor: '',
-  sidebar: '',
+  canCommit: false,
+  onTopOfBranch: false,
   editMode: false,
   isTree: false,
   isRoot: false,
@@ -67,14 +67,7 @@ const RepoStore = {
 
   // mutations
   checkIsCommitable() {
-    RepoStore.service.checkCurrentBranchIsCommitable()
-      .then((data) => {
-        // you shouldn't be able to make commits on commits or tags.
-        const { Branches, Commits, Tags } = data.data;
-        if (Branches && Branches.length) RepoStore.isCommitable = true;
-        if (Commits && Commits.length) RepoStore.isCommitable = false;
-        if (Tags && Tags.length) RepoStore.isCommitable = false;
-      }).catch(() => Flash('Failed to check if branch can be committed to.'));
+    RepoStore.isCommitable = RepoStore.onTopOfBranch && RepoStore.canCommit;
   },
 
   addFilesToDirectory(inDirectory, currentList, newList) {

@@ -12,14 +12,6 @@ const RepoService = {
   },
   richExtensionRegExp: /md/,
 
-  checkCurrentBranchIsCommitable() {
-    const url = Store.service.refsUrl;
-    return axios.get(url, { params: {
-      ref: Store.currentBranch,
-      search: Store.currentBranch,
-    } });
-  },
-
   getRaw(url) {
     return axios.get(url, {
       transformResponse: [res => res],

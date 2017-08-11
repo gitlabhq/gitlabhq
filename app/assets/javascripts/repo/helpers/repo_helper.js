@@ -289,7 +289,6 @@ const RepoHelper = {
   },
 
   loadingError(e) {
-    console.log(e);
     Flash('Unable to load this content at this time.');
   },
 };
