@@ -40,6 +40,7 @@ describe('issue_note_body component', () => {
   });
 
   it('should render awards list', () => {
-    expect(vm.$el.querySelectorAll('.js-awards-block button').length).toEqual(note.award_emoji.length);
+    expect(vm.$el.querySelector('.js-awards-block button [data-name="baseball"]')).toBeDefined();
+    expect(vm.$el.querySelector('.js-awards-block button [data-name="bath_tone3"]')).toBeDefined();
   });
 });

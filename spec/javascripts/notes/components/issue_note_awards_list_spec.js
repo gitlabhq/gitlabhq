@@ -39,7 +39,8 @@ describe('issue_note_awards_list component', () => {
   });
 
   it('should render awarded emojis', () => {
-    expect(vm.$el.querySelectorAll('.js-awards-block button').length).toEqual(awardsMock.length);
+    expect(vm.$el.querySelector('.js-awards-block button [data-name="flag_tz"]')).toBeDefined();
+    expect(vm.$el.querySelector('.js-awards-block button [data-name="cartwheel_tone3"]')).toBeDefined();
   });
 
   it('should be possible to remove awareded emoji', () => {

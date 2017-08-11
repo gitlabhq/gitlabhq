@@ -12,7 +12,7 @@
   notes_path: notes_url(view: 'full_data'),
   last_fetched_at: Time.now.to_i,
   issue_data: serialize_issuable(@issue),
-  current_user_data: UserSerializer.new.represent(current_user).to_json }}
+  current_user_data: UserSerializer.new.represent(current_user).to_json } }
   - content_for :page_specific_javascripts do
     = webpack_bundle_tag 'common_vue'
     = webpack_bundle_tag 'notes'
