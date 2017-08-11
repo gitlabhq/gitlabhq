@@ -72,10 +72,6 @@ class GeoNode < ActiveRecord::Base
     geo_api_url('refresh_wikis')
   end
 
-  def geo_events_url
-    geo_api_url('receive_events')
-  end
-
   def geo_transfers_url(file_type, file_id)
     geo_api_url("transfers/#{file_type}/#{file_id}")
   end

@@ -248,14 +248,6 @@ describe GeoNode, type: :model do
     end
   end
 
-  describe '#geo_events_url' do
-    let(:events_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/receive_events" }
-
-    it 'returns api url based on node uri' do
-      expect(new_node.geo_events_url).to eq(events_url)
-    end
-  end
-
   describe '#geo_transfers_url' do
     let(:transfers_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/transfers/lfs/1" }
 

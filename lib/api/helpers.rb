@@ -161,13 +161,6 @@ module API
       end
     end
 
-    def authenticate_by_gitlab_geo_token!
-      token = headers['X-Gitlab-Token'].try(:chomp)
-      unless token && Devise.secure_compare(geo_token, token)
-        unauthorized!
-      end
-    end
-
     def authenticated_as_admin!
       authenticate!
       forbidden! unless current_user.admin?

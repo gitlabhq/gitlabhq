@@ -37,7 +37,7 @@ module Gitlab
       end
 
       def geo_routes
-        geo_routes = %w(refresh_wikis receive_events)
+        geo_routes = %w(refresh_wikis)
         API_VERSIONS.flat_map { |version| geo_routes.map { |route| "api/v#{version}/geo/#{route}" } }
       end
 

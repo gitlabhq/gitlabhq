@@ -56,17 +56,7 @@ screen.
 Previous implementation (GitLab =< 8.6.x) used custom code to handle
 notification from **Primary** to **Secondary** by HTTP requests.
 
-We decided to move away from custom code and integrate by using
-**System Webhooks**, as we have more people using them, so any
-improvements we make to this communication layer, many other will
-benefit from.
-
-There is a specific **internal** endpoint in our api code (Grape),
-that receives all requests from this System Hooks:
-`/api/v3/geo/receive_events`.
-
-We switch and filter from each event by the `event_name` field.
-
+TODO
 
 ## Readonly
 
