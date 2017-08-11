@@ -37,7 +37,7 @@ class NoteEntity < API::Entities::Note
     if note.for_personal_snippet?
       toggle_award_emoji_snippet_note_path(note.noteable, note)
     else
-      toggle_award_emoji_namespace_project_note_path(note.project.namespace, note.project, note.id)
+      toggle_award_emoji_project_note_path(note.project, note.id)
     end
   end
 
@@ -49,12 +49,12 @@ class NoteEntity < API::Entities::Note
     if note.for_personal_snippet?
       snippet_note_path(note.noteable, note)
     else
-      namespace_project_note_path(note.project.namespace, note.project, note)
+      project_note_path(note.project, note)
     end
   end
 
   expose :attachment, using: NoteAttachmentEntity
   expose :delete_attachment_path, if: -> (note, _) { note.attachment? } do |note|
-    delete_attachment_namespace_project_note_path(note.project.namespace, note.project, note)
+    delete_attachment_project_note_path(note.project, note)
   end
 end

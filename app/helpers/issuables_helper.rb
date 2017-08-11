@@ -213,7 +213,7 @@ module IssuablesHelper
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
-      initialTaskStatus: issuable.task_status,
+      initialTaskStatus: issuable.task_status
     }
 
     data.merge!(updated_at_by(issuable))
