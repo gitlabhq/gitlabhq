@@ -324,7 +324,7 @@ ee_compat_check:
   except:
     - master
     - tags
-    - /^[\d-]+-stable(-ee)?$/
+    - /^[\d-]+-stable(-ee)?/
   allow_failure: yes
   cache:
     key: "ee_compat_check_repo"
