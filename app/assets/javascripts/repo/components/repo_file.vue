@@ -65,7 +65,7 @@ export default RepoFile;
 <template>
 <tr class="file" v-if="canShowFile" :class="activeFileClass" @click.prevent="linkClicked(file)">
   <td>
-    <i class="fa fa-fw" :class="fileIcon" :style="fileIndentation" aria-label="file icon"></i>
+    <i class="fa fa-fw file-icon" :class="fileIcon" :style="fileIndentation" aria-label="file icon"></i>
     <a :href="file.url" class="repo-file-name" :title="file.url">{{file.name}}</a>
   </td>
 
