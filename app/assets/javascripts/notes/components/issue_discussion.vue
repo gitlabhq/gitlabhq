@@ -1,5 +1,5 @@
 <script>
-  /* global Flash, Autosave */
+  /* global Flash */
   import { mapActions, mapGetters } from 'vuex';
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';

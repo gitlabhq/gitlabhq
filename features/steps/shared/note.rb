@@ -156,7 +156,7 @@ module SharedNote
     page.find('.current-note-edit-form textarea')
 
     page.within(".current-note-edit-form") do
-      fill_in '#note-body', with: '+1 Awesome!'
+      fill_in 'note[note]', with: '+1 Awesome!'
       click_button 'Save comment'
     end
     wait_for_requests

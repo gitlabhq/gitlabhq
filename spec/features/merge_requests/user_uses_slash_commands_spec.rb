@@ -67,7 +67,7 @@ feature 'Merge Requests > User uses quick actions', js: true do
         it 'does not change the WIP prefix' do
           write_note("/wip")
 
-          expect(page).to have_content '/wip'
+          expect(page).not_to have_content '/wip'
           expect(page).not_to have_content 'Commands applied'
 
           expect(merge_request.reload.work_in_progress?).to eq false
@@ -78,7 +78,7 @@ feature 'Merge Requests > User uses quick actions', js: true do
     describe 'merging the MR from the note' do
       context 'when the current user can merge the MR' do
         it 'merges the MR' do
-          write_note("/merge", false)
+          write_note("/merge")
 
           expect(page).to have_content 'Commands applied'
 
@@ -197,7 +197,7 @@ feature 'Merge Requests > User uses quick actions', js: true do
         it 'does not change target branch' do
           write_note('/target_branch merge-test')
 
-          expect(page).to have_content '/target_branch merge-test'
+          expect(page).not_to have_content '/target_branch merge-test'
 
           expect(merge_request.target_branch).to eq 'feature'
         end

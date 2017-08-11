@@ -140,11 +140,25 @@
         return title;
       },
       handleAward(awardName) {
+        let parsedName;
+
+        // 100 and 1234 emoji are a number. Callback for v-for click sends it as a string
+        switch(awardName) {
+          case '100':
+            parsedName = 100;
+            break;
+          case '1234':
+            parsedName = 1234;
+            break;
+          default:
+            parsedName = awardName;
+            break;
+        }
+
         const data = {
           endpoint: this.toggleAwardPath,
           noteId: this.noteId,
-        // 100 emoji is a number. Callback for v-for click sends it as a string
-          awardName: awardName === '100' ? 100 : awardName,
+          awardName: parsedName,
         };
 
         this.toggleAwardRequest(data)

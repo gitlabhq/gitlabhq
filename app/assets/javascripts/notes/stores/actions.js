@@ -86,7 +86,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       const { errors } = res;
       const commandsChanges = res.commands_changes;
 
-      if (hasQuickActions && Object.keys(errors).length) {
+      if (hasQuickActions && errors && Object.keys(errors).length) {
         dispatch('fetchData');
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');

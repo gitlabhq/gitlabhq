@@ -15,7 +15,7 @@ feature 'Member autocomplete', :js do
     before do
       page.within('.new-note') do
         if note.noteable_type === 'Issue'
-          find('#note-body').send_keys('@')
+          find('.js-vue-comment-form').send_keys('@')
         else
           find('#note_note').send_keys('@')
         end
