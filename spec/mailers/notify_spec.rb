@@ -545,7 +545,7 @@ describe Notify do
       let(:note_author) { create(:user, name: 'author_name') }
       let(:note) { create(:note, project: project, author: note_author) }
 
-      before :each do
+      before do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
@@ -661,7 +661,7 @@ describe Notify do
       let(:project) { create(:project, :repository) }
       let(:note_author) { create(:user, name: 'author_name') }
 
-      before :each do
+      before do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
@@ -779,7 +779,7 @@ describe Notify do
     context 'items that are noteable, the email for a diff discussion note' do
       let(:note_author) { create(:user, name: 'author_name') }
 
-      before :each do
+      before do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 

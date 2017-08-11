@@ -22,7 +22,7 @@ describe 'Labels (JavaScript fixtures)' do
   describe Groups::LabelsController, '(JavaScript fixtures)', type: :controller do
     render_views
 
-    before(:each) do
+    before do
       sign_in(admin)
     end
 
@@ -39,7 +39,7 @@ describe 'Labels (JavaScript fixtures)' do
   describe Projects::LabelsController, '(JavaScript fixtures)', type: :controller do
     render_views
 
-    before(:each) do
+    before do
       sign_in(admin)
     end
 

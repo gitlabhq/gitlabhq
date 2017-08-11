@@ -24,7 +24,7 @@ describe Projects::HousekeepingService do
     end
 
     context 'when no lease can be obtained' do
-      before(:each) do
+      before do
         expect(subject).to receive(:try_obtain_lease).and_return(false)
       end
 

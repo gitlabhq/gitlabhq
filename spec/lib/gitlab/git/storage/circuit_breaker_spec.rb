@@ -174,7 +174,7 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
   end
 
   describe '#track_storage_inaccessible' do
-    around(:each) do |example|
+    around do |example|
       Timecop.freeze
 
       example.run

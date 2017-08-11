@@ -1023,7 +1023,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context "with no .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("master")
       end
 
@@ -1031,13 +1031,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(File.exist?(attributes_path)).to be_falsey
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
       end
 
@@ -1050,13 +1050,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(contents).to eq("*.md binary\n")
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with updated .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
         repository.copy_gitattributes("gitattributes-updated")
       end
@@ -1070,13 +1070,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(contents).to eq("*.txt binary\n")
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with no .gitattrbutes in HEAD but with previous info/attributes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
         repository.copy_gitattributes("master")
       end
@@ -1085,7 +1085,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(File.exist?(attributes_path)).to be_falsey
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
