@@ -14,9 +14,15 @@ class BroadcastMessage < ActiveRecord::Base
   default_value_for :color, '#E75E40'
   default_value_for :font,  '#FFFFFF'
 
+  CACHE_KEY = 'broadcast_message_current'.freeze
+
+  after_commit :flush_redis_cache
+
   def self.current
-    Rails.cache.fetch("broadcast_message_current", expires_in: 1.minute) do
-      where('ends_at > :now AND starts_at <= :now', now: Time.zone.now).order([:created_at, :id]).to_a
+    Rails.cache.fetch(CACHE_KEY) do
+      where('ends_at > :now AND starts_at <= :now', now: Time.zone.now)
+        .reorder(id: :asc)
+        .to_a
     end
   end
 
@@ -30,5 +36,9 @@ class BroadcastMessage < ActiveRecord::Base
 
   def ended?
     ends_at < Time.zone.now
+  end
+
+  def flush_redis_cache
+    Rails.cache.delete(CACHE_KEY)
   end
 end
