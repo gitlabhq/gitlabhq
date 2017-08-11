@@ -173,10 +173,8 @@ const RepoStore = {
       return;
     }
 
-    if (foundIndex) {
-      if (foundIndex > 0) {
-        RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
-      }
+    if (foundIndex && foundIndex > 0) {
+      RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
     }
   },
 
