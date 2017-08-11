@@ -1323,11 +1323,11 @@ EOT
 
     describe "Error handling" do
       it "fails to parse YAML" do
-        expect{GitlabCiYamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)
+        expect {GitlabCiYamlProcessor.new("invalid: yaml: test")}.to raise_error(Psych::SyntaxError)
       end
 
       it "indicates that object is invalid" do
-        expect{GitlabCiYamlProcessor.new("invalid_yaml")}.to raise_error(GitlabCiYamlProcessor::ValidationError)
+        expect {GitlabCiYamlProcessor.new("invalid_yaml")}.to raise_error(GitlabCiYamlProcessor::ValidationError)
       end
 
       it "returns errors if tags parameter is invalid" do

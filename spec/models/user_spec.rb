@@ -118,6 +118,17 @@ describe User do
 
         expect(user).to validate_uniqueness_of(:username).case_insensitive
       end
+
+      context 'when username is changed' do
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:namespace)) }
+
+        it 'validates move_dir is allowed for the namespace' do
+          expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)
+          user.username = 'new_path'
+          expect(user).to be_invalid
+          expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
+        end
+      end
     end
 
     it { is_expected.to validate_presence_of(:projects_limit) }

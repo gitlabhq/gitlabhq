@@ -8,11 +8,46 @@ FactoryGirl.define do
   factory :project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    namespace
-    creator
-
     # Behaves differently to nil due to cache_has_external_issue_tracker
     has_external_issue_tracker false
+
+    # Associations
+    namespace
+    creator { group ? create(:user) : namespace&.owner }
+
+    # Nest Project Feature attributes
+    transient do
+      wiki_access_level ProjectFeature::ENABLED
+      builds_access_level ProjectFeature::ENABLED
+      snippets_access_level ProjectFeature::ENABLED
+      issues_access_level ProjectFeature::ENABLED
+      merge_requests_access_level ProjectFeature::ENABLED
+      repository_access_level ProjectFeature::ENABLED
+    end
+
+    after(:create) do |project, evaluator|
+      # Builds and MRs can't have higher visibility level than repository access level.
+      builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
+      merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
+
+      project.project_feature.update_columns(
+        wiki_access_level: evaluator.wiki_access_level,
+        builds_access_level: builds_access_level,
+        snippets_access_level: evaluator.snippets_access_level,
+        issues_access_level: evaluator.issues_access_level,
+        merge_requests_access_level: merge_requests_access_level,
+        repository_access_level: evaluator.repository_access_level)
+
+      # Normally the class Projects::CreateService is used for creating
+      # projects, and this class takes care of making sure the owner and current
+      # user have access to the project. Our specs don't use said service class,
+      # thus we must manually refresh things here.
+      unless project.group || project.pending_delete
+        project.add_master(project.owner)
+      end
+
+      project.group&.refresh_members_authorized_projects
+    end
 
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
@@ -67,30 +102,28 @@ FactoryGirl.define do
       test_repo
 
       transient do
-        create_template nil
+        create_templates nil
       end
 
       after :create do |project, evaluator|
-        if evaluator.create_template
-          args = evaluator.create_template
-
-          project.add_user(args[:user], args[:access])
+        if evaluator.create_templates
+          templates_path = "#{evaluator.create_templates}_templates"
 
           project.repository.create_file(
-            args[:user],
-            ".gitlab/#{args[:path]}/bug.md",
+            project.creator,
+            ".gitlab/#{templates_path}/bug.md",
             'something valid',
             message: 'test 3',
             branch_name: 'master')
           project.repository.create_file(
-            args[:user],
-            ".gitlab/#{args[:path]}/template_test.md",
+            project.creator,
+            ".gitlab/#{templates_path}/template_test.md",
             'template_test',
             message: 'test 1',
             branch_name: 'master')
           project.repository.create_file(
-            args[:user],
-            ".gitlab/#{args[:path]}/feature_proposal.md",
+            project.creator,
+            ".gitlab/#{templates_path}/feature_proposal.md",
             'feature_proposal',
             message: 'test 2',
             branch_name: 'master')
@@ -142,44 +175,6 @@ FactoryGirl.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
-
-    # Nest Project Feature attributes
-    transient do
-      wiki_access_level ProjectFeature::ENABLED
-      builds_access_level ProjectFeature::ENABLED
-      snippets_access_level ProjectFeature::ENABLED
-      issues_access_level ProjectFeature::ENABLED
-      merge_requests_access_level ProjectFeature::ENABLED
-      repository_access_level ProjectFeature::ENABLED
-    end
-
-    after(:create) do |project, evaluator|
-      # Builds and MRs can't have higher visibility level than repository access level.
-      builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
-      merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
-
-      project.project_feature
-        .update_attributes!(
-          wiki_access_level: evaluator.wiki_access_level,
-          builds_access_level: builds_access_level,
-          snippets_access_level: evaluator.snippets_access_level,
-          issues_access_level: evaluator.issues_access_level,
-          merge_requests_access_level: merge_requests_access_level,
-          repository_access_level: evaluator.repository_access_level
-        )
-
-      # Normally the class Projects::CreateService is used for creating
-      # projects, and this class takes care of making sure the owner and current
-      # user have access to the project. Our specs don't use said service class,
-      # thus we must manually refresh things here.
-      owner = project.owner
-
-      if owner && owner.is_a?(User) && !project.pending_delete
-        project.members.create!(user: owner, access_level: Gitlab::Access::MASTER)
-      end
-
-      project.group&.refresh_members_authorized_projects
-    end
   end
 
   # Project with empty repository

@@ -15,7 +15,7 @@ describe Bitbucket::Paginator do
       expect(paginator.items).to match(['item_2'])
 
       allow(paginator).to receive(:fetch_next_page).and_return(nil)
-      expect{ paginator.items }.to raise_error(StopIteration)
+      expect { paginator.items }.to raise_error(StopIteration)
     end
   end
 end

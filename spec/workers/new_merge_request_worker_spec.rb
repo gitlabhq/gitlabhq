@@ -43,7 +43,7 @@ describe NewMergeRequestWorker do
       end
 
       it 'creates a new event record' do
-        expect{ worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
+        expect { worker.perform(merge_request.id, user.id) }.to change { Event.count }.from(0).to(1)
       end
 
       it 'creates a notification for the assignee' do

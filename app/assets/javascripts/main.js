@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global bp */
 /* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
@@ -7,7 +6,6 @@
 import jQuery from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
@@ -20,7 +18,6 @@ import 'vendor/fuzzaldrin-plus';
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
@@ -68,7 +65,7 @@ import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
-import './breakpoints';
+import bp from './breakpoints';
 import './broadcast_message';
 import './build';
 import './build_artifacts';

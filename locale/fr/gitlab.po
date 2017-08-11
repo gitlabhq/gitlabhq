@@ -417,7 +417,7 @@ msgstr[0] "Fourche"
 msgstr[1] "Fourches"
 
 msgid "ForkedFromProjectPath|Forked from"
-msgstr "Fouché depuis"
+msgstr "Fourché depuis"
 
 msgid "From issue creation until deploy to production"
 msgstr "Depuis la création de l'incident jusqu'au déploiement en production"

@@ -104,7 +104,7 @@ feature 'Users', js: true do
   end
 
   def errors_on_page(page)
-    page.find('#error_explanation').find('ul').all('li').map{ |item| item.text }.join("\n")
+    page.find('#error_explanation').find('ul').all('li').map { |item| item.text }.join("\n")
   end
 
   def number_of_errors_on_page(page)

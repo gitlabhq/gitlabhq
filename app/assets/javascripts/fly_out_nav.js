@@ -1,6 +1,5 @@
-/* global bp */
 import Cookies from 'js-cookie';
-import './breakpoints';
+import bp from './breakpoints';
 
 export const canShowActiveSubItems = (el) => {
   const isHiddenByMedia = bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md';
@@ -49,7 +48,8 @@ export const hideSubLevelItems = (el) => {
 
   el.classList.remove('is-showing-fly-out');
   el.classList.remove('is-over');
-  subItems.style.display = 'none';
+  subItems.style.display = '';
+  subItems.style.transform = '';
   subItems.classList.remove('is-above');
 };
 

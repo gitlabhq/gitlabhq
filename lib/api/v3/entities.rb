@@ -68,7 +68,7 @@ module API
         expose :lfs_enabled?, as: :lfs_enabled
         expose :creator_id
         expose :namespace, using: 'API::Entities::Namespace'
-        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
         expose :avatar_url do |user, options|
           user.avatar_url(only_path: false)
         end
