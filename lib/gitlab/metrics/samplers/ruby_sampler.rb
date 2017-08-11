@@ -2,15 +2,14 @@ module Gitlab
   module Metrics
     module Samplers
       class RubySampler < BaseSampler
-
         COUNTS = [:count, :minor_gc_count, :major_gc_count]
 
         def metrics
           @metrics ||= init_metrics
         end
 
-        def with_prefix(name)
-          "ruby_gc_#{name}".to_sym
+        def with_prefix(prefix, name)
+          "ruby_#{prefix}_#{name}".to_sym
         end
 
         def to_doc_string(name)
@@ -23,28 +22,74 @@ module Gitlab
 
         def initialize(interval)
           super(interval)
-          GC::Profiler.enable
-          Rails.logger.info("123")
 
-          init_metrics
+          if Gitlab::Metrics.mri?
+            require 'allocations'
+
+            Allocations.start
+          end
         end
 
         def init_metrics
           metrics = {}
-          metrics[:total_time] = Gitlab::Metrics.gauge(with_prefix(:total_time), to_doc_string(:total_time), labels, :livesum)
+          metrics[:samples_total] = Gitlab::Metrics.counter(with_prefix(:sampler, :total), 'Total count of samples')
+          metrics[:total_time] = Gitlab::Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
-            metrics[key] = Gitlab::Metrics.gauge(with_prefix(key), to_doc_string(key), labels, :livesum)
+            metrics[key] = Gitlab::Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
           end
+
+          metrics[:objects_total] = Gitlab::Metrics.gauge(with_prefix(:objects, :total), 'Objects total', labels.merge(class: nil), :livesum)
+
           metrics
         end
 
         def sample
+
+          metrics[:samples_total].increment(labels)
+          sample_gc
+          sample_objects
+        rescue => ex
+          puts ex
+
+        end
+
+        private
+
+        def sample_gc
           metrics[:total_time].set(labels, GC::Profiler.total_time * 1000)
 
           GC.stat.each do |key, value|
             metrics[key].set(labels, value)
           end
         end
+
+        def sample_objects
+          ss_objects.each do |name, count|
+            metrics[:objects_total].set(labels.merge(class: name), count)
+          end
+        end
+
+        if Metrics.mri?
+          def ss_objects
+            sample = Allocations.to_hash
+            counts = sample.each_with_object({}) do |(klass, count), hash|
+              name = klass.name
+
+              next unless name
+
+              hash[name] = count
+            end
+
+            # Symbols aren't allocated so we'll need to add those manually.
+            counts['Symbol'] = Symbol.all_symbols.length
+            counts
+          end
+        else
+          def ss_objects
+
+          end
+        end
+
 
         def source_label
           if Sidekiq.server?
@@ -64,24 +109,6 @@ module Gitlab
           else
             { unicorn: 'master' }
           end
-        end
-
-        def sample_gc
-          time = GC::Profiler.total_time * 1000.0
-          stats = GC.stat.merge(total_time: time)
-
-          # We want the difference of GC runs compared to the last sample, not the
-          # total amount since the process started.
-
-          stats[:minor_gc_count] =
-            @last_minor_gc.compared_with(stats[:minor_gc_count])
-
-          stats[:major_gc_count] =
-            @last_major_gc.compared_with(stats[:major_gc_count])
-
-          stats[:count] = stats[:minor_gc_count] + stats[:major_gc_count]
-
-          add_metric('gc_statistics', stats)
         end
       end
     end
