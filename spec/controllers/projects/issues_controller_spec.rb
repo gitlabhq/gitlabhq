@@ -855,11 +855,11 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
+    let(:project) { create(:project, :repository) }
+
     before do
       project.add_developer(user)
       sign_in(user)
-
-      allow_any_instance_of(MergeRequest).to receive(:write_ref)
     end
 
     it 'creates a new merge request' do
