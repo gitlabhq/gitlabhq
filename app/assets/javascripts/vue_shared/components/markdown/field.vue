@@ -64,12 +64,11 @@
           .then(resp => resp.json())
           .then((data) => {
             this.markdownPreviewLoading = false;
-            this.markdownPreview = data.body;
-            this.referencedCommands = data.references.commands;
-            this.referencedUsers = data.references.users;
+            this.markdownPreview = data.body || 'Nothing to preview.';
 
-            if (!this.markdownPreview) {
-              this.markdownPreview = 'Nothing to preview.';
+            if (data.references) {
+              this.referencedCommands = data.references.commands;
+              this.referencedUsers = data.references.users;
             }
 
             this.$nextTick(() => {

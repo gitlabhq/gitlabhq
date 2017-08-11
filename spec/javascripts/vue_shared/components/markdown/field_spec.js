@@ -92,6 +92,7 @@ describe('Markdown field component', () => {
 
       it('renders GFM with jQuery', (done) => {
         spyOn($.fn, 'renderGFM');
+
         previewLink.click();
 
         setTimeout(() => {
@@ -100,7 +101,7 @@ describe('Markdown field component', () => {
           ).toHaveBeenCalled();
 
           done();
-        });
+        }, 0);
       });
     });
 
