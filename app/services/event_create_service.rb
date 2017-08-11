@@ -71,14 +71,7 @@ class EventCreateService
   end
 
   def push(project, current_user, push_data)
-    # We're using an explicit transaction here so that any errors that may occur
-    # when creating push payload data will result in the event creation being
-    # rolled back as well.
-    Event.transaction do
-      event = create_event(project, current_user, Event::PUSHED)
-
-      PushEventPayloadService.new(event, push_data).execute
-    end
+    create_event(project, current_user, Event::PUSHED, data: push_data)
 
     Users::ActivityService.new(current_user, 'push').execute
   end

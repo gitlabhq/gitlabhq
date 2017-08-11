@@ -92,14 +92,8 @@ describe UsersController do
       before do
         sign_in(user)
         project.team << [user, :developer]
-
-        push_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-
-        fork_push_data = Gitlab::DataBuilder::Push
-          .build_sample(forked_project, user)
-
-        EventCreateService.new.push(project, user, push_data)
-        EventCreateService.new.push(forked_project, user, fork_push_data)
+        EventCreateService.new.push(project, user, [])
+        EventCreateService.new.push(forked_project, user, [])
       end
 
       it 'includes forked projects' do

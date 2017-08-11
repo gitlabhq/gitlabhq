@@ -29,9 +29,9 @@ class DashboardController < Dashboard::ApplicationController
         current_user.authorized_projects
       end
 
-    @events = EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: @event_filter)
-      .to_a
+    @events = Event.in_projects(projects)
+    @events = @event_filter.apply_filter(@events).with_associations
+    @events = @events.limit(20).offset(params[:offset] || 0)
   end
 
   def set_show_full_reference

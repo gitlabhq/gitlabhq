@@ -3,22 +3,18 @@ project_tree:
   - labels:
       :priorities
   - milestones:
-    - events:
-      - :push_event_payload
+    - :events
   - issues:
-    - events:
-      - :push_event_payload
+    - :events
     - :timelogs
     - notes:
       - :author
-      - events:
-        - :push_event_payload
+      - :events
     - label_links:
       - label:
           :priorities
     - milestone:
-      - events:
-        - :push_event_payload
+      - :events
   - snippets:
     - :award_emoji
     - notes:
@@ -29,25 +25,21 @@ project_tree:
   - merge_requests:
     - notes:
       - :author
-      - events:
-        - :push_event_payload
+      - :events
     - merge_request_diff:
       - :merge_request_diff_commits
       - :merge_request_diff_files
-    - events:
-      - :push_event_payload
+    - :events
     - :timelogs
     - label_links:
       - label:
           :priorities
     - milestone:
-      - events:
-        - :push_event_payload
+      - :events
   - pipelines:
     - notes:
       - :author
-      - events:
-        - :push_event_payload
+      - :events
     - :stages
     - :statuses
   - :triggers
@@ -115,8 +107,6 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
-  push_event_payload:
-    - :event_id
 
 methods:
   labels:

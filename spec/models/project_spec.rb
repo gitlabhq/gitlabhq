@@ -485,7 +485,7 @@ describe Project do
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
-        last_event = create(:event, :closed, project: project)
+        last_event = create(:event, project: project)
 
         expect(project.last_activity).to eq(last_event)
       end
@@ -493,7 +493,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        new_event = create(:event, :closed, project: project, created_at: Time.now)
+        new_event = create(:event, project: project, created_at: Time.now)
 
         project.reload
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
