@@ -133,15 +133,15 @@ const RepoStore = {
   removeChildFilesOfTree(tree) {
     let foundTree = false;
     const treeToClose = tree;
-    let wereDone = false;
+    let canStopSearching = false;
     RepoStore.files = RepoStore.files.filter((file) => {
       const isItTheTreeWeWant = file.url === treeToClose.url;
       // if it's the next tree
       if (foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
-        wereDone = true;
+        canStopSearching = true;
         return true;
       }
-      if (wereDone) return true;
+      if (canStopSearching) return true;
 
       if (isItTheTreeWeWant) foundTree = true;
 
