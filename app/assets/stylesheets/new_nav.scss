@@ -17,6 +17,7 @@ header.navbar-gitlab-new {
     }
 
     .title {
+      display: -webkit-flex;
       display: flex;
       padding-right: 0;
       color: currentColor;
@@ -27,6 +28,7 @@ header.navbar-gitlab-new {
       }
 
       > a {
+        display: -webkit-flex;
         display: flex;
         align-items: center;
         padding-right: $gl-padding;
@@ -177,6 +179,7 @@ header.navbar-gitlab-new {
 }
 
 .navbar-sub-nav {
+  display: -webkit-flex;
   display: flex;
   margin-bottom: 0;
   color: $indigo-200;

@@ -4,7 +4,7 @@
     .header-content
       .title-container
         %h1.title
-          = link_to root_path, title: 'Dashboard' do
+          = link_to root_path, title: 'Dashboard', id: 'logo' do
             = brand_header_logo
             %span.logo-text.hidden-xs
               = render 'shared/logo_type.svg'
