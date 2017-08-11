@@ -1,6 +1,8 @@
 /* global Flash */
 
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
+import tooltip from '../../../vue_shared/directives/tooltip';
+import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
 
@@ -10,14 +12,18 @@ export default {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
   },
-  components: {
-    'mr-widget-author-and-time': mrWidgetAuthorTime,
-    statusIcon,
-  },
   data() {
     return {
       isMakingRequest: false,
     };
+  },
+  directives: {
+    tooltip,
+  },
+  components: {
+    'mr-widget-author-and-time': mrWidgetAuthorTime,
+    loadingIcon,
+    statusIcon,
   },
   computed: {
     shouldShowRemoveSourceBranch() {
@@ -68,7 +74,8 @@ export default {
             :dateReadable="mr.mergedAt" />
           <a
             v-if="mr.canRevertInCurrentMR"
-            class="btn btn-close btn-xs has-tooltip"
+            v-tooltip
+            class="btn btn-close btn-xs"
             href="#modal-revert-commit"
             data-toggle="modal"
             data-container="body"
@@ -77,7 +84,8 @@ export default {
           </a>
           <a
             v-else-if="mr.revertInForkPath"
-            class="btn btn-close btn-xs has-tooltip"
+            v-tooltip
+            class="btn btn-close btn-xs"
             data-method="post"
             :href="mr.revertInForkPath"
             title="Revert this merge request in a new merge request">
@@ -85,7 +93,8 @@ export default {
           </a>
           <a
             v-if="mr.canCherryPickInCurrentMR"
-            class="btn btn-default btn-xs has-tooltip"
+            v-tooltip
+            class="btn btn-default btn-xs"
             href="#modal-cherry-pick-commit"
             data-toggle="modal"
             data-container="body"
@@ -94,7 +103,8 @@ export default {
           </a>
           <a
             v-else-if="mr.cherryPickInForkPath"
-            class="btn btn-default btn-xs has-tooltip"
+            v-tooltip
+            class="btn btn-default btn-xs"
             data-method="post"
             :href="mr.cherryPickInForkPath"
             title="Cherry-pick this merge request in a new merge request">
@@ -113,14 +123,14 @@ export default {
             <span>You can remove source branch now</span>
             <button
               @click="removeSourceBranch"
-              :class="{ disabled: isMakingRequest }"
+              :disabled="isMakingRequest"
               type="button"
               class="btn btn-xs btn-default js-remove-branch-button">
               Remove Source Branch
             </button>
           </p>
           <p v-if="shouldShowSourceBranchRemoving">
-            <status-icon status="loading" />
+            <loading-icon inline />
             <span>The source branch is being removed</span>
           </p>
         </section>

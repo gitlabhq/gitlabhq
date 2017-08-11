@@ -191,14 +191,10 @@ describe Issue do
     end
 
     it 'returns the merge request to close this issue' do
-      mr
-
       expect(issue.closed_by_merge_requests(mr.author)).to eq([mr])
     end
 
     it "returns an empty array when the merge request is closed already" do
-      closed_mr
-
       expect(issue.closed_by_merge_requests(closed_mr.author)).to eq([])
     end
 
@@ -375,7 +371,7 @@ describe Issue do
     subject { create(:issue, project: create(:project, :repository)) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do

@@ -21,14 +21,20 @@ module EE
     }.freeze
 
     prepended do
+      include IgnorableColumn
+
+      ignore_column :plan
+
+      belongs_to :plan
+
       has_one :namespace_statistics
 
-      scope :with_plan, -> { where.not(plan: [nil, '']) }
+      scope :with_plan, -> { where.not(plan_id: nil) }
 
       delegate :shared_runners_minutes, :shared_runners_seconds, :shared_runners_seconds_last_reset,
         to: :namespace_statistics, allow_nil: true
 
-      validates :plan, inclusion: { in: EE_PLANS.keys }, allow_blank: true
+      validate :validate_plan_name
     end
 
     def root_ancestor
@@ -68,7 +74,7 @@ module EE
 
     def feature_available_in_plan?(feature)
       @features_available_in_plan ||= Hash.new do |h, feature|
-        h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan], feature) }
+        h[feature] = plans.any? { |plan| License.plan_includes_feature?(EE_PLANS[plan&.name], feature) }
       end
 
       @features_available_in_plan[feature]
@@ -77,7 +83,7 @@ module EE
     # The main difference between the "plan" column and this method is that "plan"
     # returns nil / "" when it has no plan. Having no plan means it's a "free" plan.
     def actual_plan
-      plan.presence || FREE_PLAN
+      plan&.name || FREE_PLAN
     end
 
     def actual_shared_runners_minutes_limit
@@ -95,7 +101,24 @@ module EE
         shared_runners_minutes.to_i >= actual_shared_runners_minutes_limit
     end
 
+    # These helper methods are required to not break the Namespace API.
+    def plan=(plan_name)
+      if plan_name.is_a?(String)
+        @plan_name = plan_name
+
+        super(Plan.find_by(name: @plan_name))
+      else
+        super
+      end
+    end
+
     private
+
+    def validate_plan_name
+      if @plan_name.present? && EE_PLANS.keys.exclude?(@plan_name)
+        errors.add(:plan, 'is not included in the list')
+      end
+    end
 
     def load_feature_available(feature)
       globally_available = License.feature_available?(feature)
@@ -110,7 +133,7 @@ module EE
     def plans
       @ancestors_plans ||=
         if parent_id
-          ancestors.with_plan.reorder(nil).pluck('DISTINCT plan') + [plan]
+          Plan.where(id: ancestors.with_plan.reorder(nil).select('plan_id')) + [plan]
         else
           [plan]
         end

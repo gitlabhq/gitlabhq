@@ -275,7 +275,7 @@ describe API::Triggers do
           expect do
             post api("/projects/#{project.id}/triggers", user),
               description: 'trigger'
-          end.to change{project.triggers.count}.by(1)
+          end.to change {project.triggers.count}.by(1)
 
           expect(response).to have_http_status(201)
           expect(json_response).to include('description' => 'trigger')
@@ -378,7 +378,7 @@ describe API::Triggers do
           delete api("/projects/#{project.id}/triggers/#{trigger.id}", user)
 
           expect(response).to have_http_status(204)
-        end.to change{project.triggers.count}.by(-1)
+        end.to change {project.triggers.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing trigger' do

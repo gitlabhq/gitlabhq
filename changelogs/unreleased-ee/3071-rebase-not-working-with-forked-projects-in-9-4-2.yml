@@ -1,0 +1,4 @@
+---
+title: Fix rebase from fork when upstream has protected branches
+merge_request:
+author:

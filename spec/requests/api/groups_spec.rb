@@ -507,7 +507,7 @@ describe API::Groups do
 
       it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
         group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
-        expect { post api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
+        expect { post api("/groups", admin), group_attributes }.to change { LdapGroupLink.count }.by(1)
       end
 
       # EE

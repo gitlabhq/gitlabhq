@@ -102,6 +102,7 @@ import Cookies from 'js-cookie';
           filterable: true,
           filterRemote: true,
           filterByText: true,
+          inputFieldName: $dropdown.data('input-field-name'),
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var li = refListItem.cloneNode(false);
@@ -135,9 +136,14 @@ import Cookies from 'js-cookie';
             e.preventDefault();
             if ($('input[name="ref"]').length) {
               var $form = $dropdown.closest('form');
+
+              var $visit = $dropdown.data('visit');
+              var shouldVisit = typeof $visit === 'undefined' ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
-              gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+              if (shouldVisit) {
+                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+              }
             }
           }
         });

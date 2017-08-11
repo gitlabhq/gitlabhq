@@ -12,7 +12,7 @@ module EE
 
         # select projects which have allowed number of shared runner minutes or are public
         super
-          .where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",
+          .where("projects.visibility_level=? OR (#{builds_check_limit.to_sql})=1",  # rubocop:disable GitlabSecurity/SqlInjection
                 ::Gitlab::VisibilityLevel::PUBLIC)
       end
 

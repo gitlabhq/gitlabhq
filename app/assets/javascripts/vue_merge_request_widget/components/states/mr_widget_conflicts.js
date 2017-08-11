@@ -15,7 +15,7 @@ export default {
         <span class="bold">
           There are merge conflicts<span v-if="!mr.canMerge">.</span>
           <span v-if="!mr.canMerge">
-            Resolve these conflicts or ask someone with write access to this repository to merge it locally.
+            Resolve these conflicts or ask someone with write access to this repository to merge it locally
           </span>
         </span>
         <a

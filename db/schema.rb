@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807160457) do
+ActiveRecord::Schema.define(version: 20170808163512) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1166,7 +1166,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
     t.boolean "require_two_factor_authentication", default: false, null: false
     t.integer "two_factor_grace_period", default: 48, null: false
     t.integer "cached_markdown_version"
-    t.string "plan"
+    t.integer "plan_id"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -1179,6 +1179,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_index "namespaces", ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path", using: :btree
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+  add_index "namespaces", ["plan_id"], name: "index_namespaces_on_plan_id", using: :btree
   add_index "namespaces", ["require_two_factor_authentication"], name: "index_namespaces_on_require_two_factor_authentication", using: :btree
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
@@ -1330,6 +1331,15 @@ ActiveRecord::Schema.define(version: 20170807160457) do
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
+
+  create_table "plans", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "title"
+  end
+
+  add_index "plans", ["name"], name: "index_plans_on_name", using: :btree
 
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id"
@@ -1896,6 +1906,10 @@ ActiveRecord::Schema.define(version: 20170807160457) do
     t.string "rss_token"
     t.boolean "external_email", default: false, null: false
     t.string "email_provider"
+    t.boolean "email_opted_in"
+    t.string "email_opted_in_ip"
+    t.integer "email_opted_in_source_id"
+    t.datetime_with_timezone "email_opted_in_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2038,6 +2052,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
   add_foreign_key "namespace_statistics", "namespaces", on_delete: :cascade
+  add_foreign_key "namespaces", "plans", name: "fk_fdd12e5b80", on_delete: :nullify
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade

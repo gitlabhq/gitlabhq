@@ -220,7 +220,8 @@ module Gitlab
       def full_authentication_abilities
         read_authentication_abilities + [
           :push_code,
-          :create_container_image
+          :create_container_image,
+          :admin_container_image
         ]
       end
       alias_method :api_scope_authentication_abilities, :full_authentication_abilities

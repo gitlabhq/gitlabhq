@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::Internal do # rubocop:disable RSpec/FilePath
+describe API::Internal do
   let(:project) { create(:project, :repository) }
   let(:secret_token) { Gitlab::Shell.secret_token }
 

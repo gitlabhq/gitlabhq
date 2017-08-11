@@ -68,7 +68,7 @@
           #{@build.pipeline.git_commit_title}
 
       - if @build.pipeline.stages_count > 1
-        .dropdown.build-dropdown
+        .block-last.dropdown.build-dropdown
           %div
             %span{ class: "ci-status-icon-#{@build.pipeline.status}" }
               = ci_icon_for_status(@build.pipeline.status)

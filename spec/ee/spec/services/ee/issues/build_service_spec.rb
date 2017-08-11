@@ -1,6 +1,6 @@
-require 'spec_helper.rb'
+require 'spec_helper'
 
-describe Issues::BuildService do # rubocop:disable RSpec/FilePath
+describe Issues::BuildService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

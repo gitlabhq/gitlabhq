@@ -8,6 +8,8 @@ module EE
     include AuditorUserHelper
 
     included do
+      EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM = 1
+
       # We aren't using the `auditor?` method for the `if` condition here
       # because `auditor?` returns `false` when the `auditor` column is `true`
       # and the auditor add-on absent. We want to run this validation
@@ -90,6 +92,10 @@ module EE
     def forget_me!
       return if ::Gitlab::Geo.secondary?
       super
+    end
+
+    def email_opted_in_source
+      email_opted_in_source_id == EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM ? 'GitLab.com' : ''
     end
   end
 end

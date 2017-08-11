@@ -9,7 +9,8 @@ describe WikiPages::UpdateService do
     {
       content: 'New content for wiki page',
       format: 'markdown',
-      message: 'New wiki message'
+      message: 'New wiki message',
+      title: 'New Title'
     }
   end
 
@@ -25,6 +26,8 @@ describe WikiPages::UpdateService do
 
       expect(updated_page).to be_valid
       expect(updated_page).to have_attributes(message: opts[:message], content: opts[:content], format: opts[:format].to_sym)
+
+      expect(updated_page.title).to eq(opts[:title])
     end
 
     it 'executes webhooks' do

@@ -5,6 +5,10 @@ module Projects
     end
 
     def execute
+      if @params[:template_name]&.present?
+        return ::Projects::CreateFromTemplateService.new(current_user, params).execute
+      end
+
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)
@@ -169,7 +173,7 @@ module Projects
       predefined_push_rule = PushRule.find_by(is_sample: true)
 
       if predefined_push_rule
-        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
+        push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
         project.push_rule = push_rule
       end
     end

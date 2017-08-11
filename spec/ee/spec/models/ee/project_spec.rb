@@ -115,7 +115,7 @@ describe Project do
 
             context 'allowed by Plan License AND Global License' do
               let(:allowed_on_global_license) { true }
-              let(:plan_license) { Namespace::GOLD_PLAN }
+              let(:plan_license) { Plan.find_by(name: 'gold') }
 
               it 'returns true' do
                 is_expected.to eq(true)
@@ -124,7 +124,7 @@ describe Project do
 
             context 'not allowed by Plan License but project and namespace are public' do
               let(:allowed_on_global_license) { true }
-              let(:plan_license) { Namespace::BRONZE_PLAN }
+              let(:plan_license) { Plan.find_by(name: 'bronze') }
 
               it 'returns true' do
                 allow(namespace).to receive(:public?) { true }
@@ -137,7 +137,7 @@ describe Project do
             unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
               context 'not allowed by Plan License' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Namespace::BRONZE_PLAN }
+                let(:plan_license) { Plan.find_by(name: 'bronze') }
 
                 it 'returns false' do
                   is_expected.to eq(false)
@@ -147,7 +147,7 @@ describe Project do
 
             context 'not allowed by Global License' do
               let(:allowed_on_global_license) { false }
-              let(:plan_license) { Namespace::GOLD_PLAN }
+              let(:plan_license) { Plan.find_by(name: 'gold') }
 
               it 'returns false' do
                 is_expected.to eq(false)

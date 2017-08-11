@@ -78,6 +78,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_accessor :template_name
   attr_writer :pipeline_status
 
   alias_attribute :title, :name
@@ -413,7 +414,7 @@ class Project < ActiveRecord::Base
 
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
-      where("projects.id IN (#{union.to_sql})")
+      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def search_by_title(query)
@@ -823,7 +824,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `build_gitlab_ci_service`
-          public_send("build_#{service_name}_service")
+          public_send("build_#{service_name}_service") # rubocop:disable GitlabSecurity/PublicSend
         else
           Service.build_from_template(id, template)
         end
@@ -939,7 +940,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo
-    repository.raw
+    repository.rugged
   end
 
   def url_to_repo
@@ -1045,13 +1046,18 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
-    repository.before_change_head
-    repository.rugged.references.create('HEAD',
-                                        "refs/heads/#{branch}",
-                                        force: true)
-    repository.copy_gitattributes(branch)
-    repository.after_change_head
-    reload_default_branch
+    if repository.branch_exists?(branch)
+      repository.before_change_head
+      repository.rugged.references.create('HEAD',
+                                          "refs/heads/#{branch}",
+                                          force: true)
+      repository.copy_gitattributes(branch)
+      repository.after_change_head
+      reload_default_branch
+    else
+      errors.add(:base, "Could not change HEAD: branch '#{branch}' does not exist")
+      false
+    end
   end
 
   def forked_from?(project)
@@ -1325,7 +1331,7 @@ class Project < ActiveRecord::Base
   end
 
   def append_or_update_attribute(name, value)
-    old_values = public_send(name.to_s)
+    old_values = public_send(name.to_s) # rubocop:disable GitlabSecurity/PublicSend
 
     if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
       update_attribute(name, old_values + value)

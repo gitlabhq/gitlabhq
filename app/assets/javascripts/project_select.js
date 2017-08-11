@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
 import Api from './api';
+import ProjectSelectComboButton from './project_select_combo_button';
 
 (function () {
   this.ProjectSelect = (function () {
@@ -50,20 +51,19 @@ import Api from './api';
       });
       $('.ajax-project-select').each(function (i, select) {
         var placeholder;
-        var idAttribute;
         this.groupId = $(select).data('group-id');
         this.includeGroups = $(select).data('include-groups');
         this.allProjects = $(select).data('allprojects') || false;
         this.orderBy = $(select).data('order-by') || 'id';
         this.withIssuesEnabled = $(select).data('with-issues-enabled');
         this.withMergeRequestsEnabled = $(select).data('with-merge-requests-enabled');
-        idAttribute = $(select).data('idattribute') || 'web_url';
 
         placeholder = "Search for project";
         if (this.includeGroups) {
           placeholder += " or group";
         }
-        return $(select).select2({
+
+        $(select).select2({
           placeholder: placeholder,
           minimumInputLength: 0,
           query: (function (_this) {
@@ -101,22 +101,19 @@ import Api from './api';
               }
             };
           })(this),
-          id: function (project) {
-            return project[idAttribute];
+          id: function(project) {
+            return JSON.stringify({
+              name: project.name,
+              url: project.web_url,
+            });
           },
           text: function (project) {
             return project.name_with_namespace || project.name;
           },
           dropdownCssClass: "ajax-project-dropdown"
         });
-      });
 
-      $('.new-project-item-select-button').on('click', function() {
-        $('.project-item-select', this.parentNode).select2('open');
-      });
-
-      $('.project-item-select').on('click', function() {
-        window.location = `${$(this).val()}/${this.dataset.relativePath}`;
+        return new ProjectSelectComboButton(select);
       });
     }
 

@@ -79,12 +79,21 @@ RSpec.describe 'Dashboard Issues' do
       end
     end
 
-    it 'shows the new issue page', :js do
+    it 'shows the new issue page', js: true do
       find('.new-project-item-select-button').trigger('click')
-      wait_for_requests
-      find('.select2-results li').click
 
-      expect(page).to have_current_path("/#{project.path_with_namespace}/issues/new")
+      wait_for_requests
+
+      project_path = "/#{project.path_with_namespace}"
+      project_json = { name: project.name_with_namespace, url: project_path }.to_json
+
+      # similate selection, and prevent overlap by dropdown menu
+      execute_script("$('.project-item-select').val('#{project_json}').trigger('change');")
+      execute_script("$('#select2-drop-mask').remove();")
+
+      find('.new-project-item-link').trigger('click')
+
+      expect(page).to have_current_path("#{project_path}/issues/new")
 
       page.within('#content-body') do
         expect(page).to have_selector('.issue-form')

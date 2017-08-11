@@ -96,7 +96,7 @@ class Settings < Settingslogic
 
     # check that `current` (string or integer) is a contant in `modul`.
     def verify_constant(modul, current, default)
-      constant = modul.constants.find{ |name| modul.const_get(name) == current }
+      constant = modul.constants.find { |name| modul.const_get(name) == current }
       value = constant.nil? ? default : modul.const_get(constant)
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default
@@ -619,6 +619,10 @@ Settings.webpack.dev_server['port']    ||= 3808
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
+Settings.monitoring.sidekiq_exporter['enabled'] ||= false
+Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
+Settings.monitoring.sidekiq_exporter['port'] ||= 3807
 
 #
 # Testing settings

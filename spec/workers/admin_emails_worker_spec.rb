@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe AdminEmailsWorker do
   context "recipients" do
-    let(:group) { create :group }
-    let(:project) { create :project }
+    let(:group) { create(:group) }
+    let(:project) { create(:project) }
 
     before do
       2.times do
@@ -26,8 +26,9 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          described_class.new.perform(recipient_id, 'subject', 'body')
-          expect(ActionMailer::Base.deliveries.count).to be 2
+          subject.perform(recipient_id, 'subject', 'body')
+
+          expect(ActionMailer::Base.deliveries.count).to eq(2)
         end
       end
     end
@@ -37,8 +38,9 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          described_class.new.perform(recipient_id, 'subject', 'body')
-          expect(ActionMailer::Base.deliveries.count).to be 3
+          subject.perform(recipient_id, 'subject', 'body')
+
+          expect(ActionMailer::Base.deliveries.count).to eq(3)
         end
       end
     end
@@ -48,8 +50,9 @@ describe AdminEmailsWorker do
 
       it "sends email to subscribed users" do
         perform_enqueued_jobs do
-          described_class.new.perform(recipient_id, 'subject', 'body')
-          expect(ActionMailer::Base.deliveries.count).to be 4
+          subject.perform(recipient_id, 'subject', 'body')
+
+          expect(ActionMailer::Base.deliveries.count).to eq(3)
         end
       end
     end

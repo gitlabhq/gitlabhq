@@ -616,13 +616,13 @@ describe TodoService do
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is pending' do
         create(:todo, :directly_addressed, user: member, project: project, target: addressed_mr_assigned, author: author)
 
-        expect{ service.update_merge_request(addressed_mr_assigned, author) }.not_to change(member.todos, :count)
+        expect { service.update_merge_request(addressed_mr_assigned, author) }.not_to change(member.todos, :count)
       end
 
       it 'does not create a directly addressed todo if user was already mentioned or addressed and todo is done' do
         create(:todo, :directly_addressed, user: skipped, project: project, target: addressed_mr_assigned, author: author)
 
-        expect{ service.update_merge_request(addressed_mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
+        expect { service.update_merge_request(addressed_mr_assigned, author, skip_users) }.not_to change(skipped.todos, :count)
       end
 
       context 'with a task list' do

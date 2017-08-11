@@ -4,11 +4,11 @@ describe Namespace do
   let!(:namespace) { create(:namespace) }
 
   it { is_expected.to have_one(:namespace_statistics) }
+  it { is_expected.to belong_to(:plan) }
 
   it { is_expected.to delegate_method(:shared_runners_minutes).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds).to(:namespace_statistics) }
   it { is_expected.to delegate_method(:shared_runners_seconds_last_reset).to(:namespace_statistics) }
-  it { is_expected.to validate_inclusion_of(:plan).in_array(Namespace::EE_PLANS.keys).allow_blank }
 
   context 'scopes' do
     describe '.with_plan' do
@@ -37,6 +37,29 @@ describe Namespace do
           it 'returns no namespace' do
             expect(described_class.with_plan).to be_empty
           end
+        end
+      end
+    end
+  end
+
+  describe 'custom validations' do
+    describe '#validate_plan_name' do
+      let(:group) { build(:group) }
+
+      context 'with a valid plan name' do
+        it 'is valid' do
+          group.plan = Namespace::BRONZE_PLAN
+
+          expect(group).to be_valid
+        end
+      end
+
+      context 'with an invalid plan name' do
+        it 'is invalid' do
+          group.plan = 'unknown'
+
+          expect(group).not_to be_valid
+          expect(group.errors[:plan]).to include('is not included in the list')
         end
       end
     end

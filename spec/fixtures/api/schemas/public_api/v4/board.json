@@ -14,21 +14,37 @@
       "type": "object",
       "required": [
         "id",
+        "description",
+        "default_branch",
+        "tag_list",
+        "ssh_url_to_repo",
+        "http_url_to_repo",
+        "web_url",
         "name",
         "name_with_namespace",
         "path",
         "path_with_namespace",
-        "http_url_to_repo",
-        "web_url"
+        "star_count",
+        "forks_count",
+        "created_at",
+        "last_activity_at"
       ],
       "properties": {
         "id": { "type": "integer" },
+        "description": { "type": ["string", "null"] },
+        "default_branch": { "type": ["string", "null"] },
+        "tag_list": { "type": "array" },
+        "ssh_url_to_repo": { "type": "string" },
+        "http_url_to_repo": { "type": "string" },
+        "web_url": { "type": "string" },
         "name": { "type": "string" },
         "name_with_namespace": { "type": "string" },
         "path": { "type": "string" },
         "path_with_namespace": { "type": "string" },
-        "http_url_to_repo": { "type": "string" },
-        "web_url": { "type": "string" }
+        "star_count": { "type": "integer" },
+        "forks_count": { "type": "integer" },
+        "created_at": { "type": "date" },
+        "last_activity_at": { "type": "date" }
       },
       "additionalProperties": false
     },

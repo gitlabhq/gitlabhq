@@ -98,9 +98,8 @@ module Gitlab
 
         def can_replay?(event_log)
           return true if event_log.project_id.nil?
-          return true if Gitlab::Geo.current_node.restricted_project_ids.nil?
 
-          Gitlab::Geo.current_node.restricted_project_ids.include?(event_log.project_id)
+          Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
 
         def handle_repository_update(updated_event)

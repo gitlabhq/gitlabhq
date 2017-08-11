@@ -199,7 +199,7 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args)
+            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
       end

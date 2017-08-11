@@ -61,7 +61,7 @@ describe API::Helpers do
   end
 
   def doorkeeper_guard_returns(value)
-    allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ value }
+    allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { value }
   end
 
   def error!(message, status, header)
@@ -166,7 +166,7 @@ describe API::Helpers do
     describe "when authenticating using a user's private token" do
       it "returns nil for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
 
         expect(current_user).to be_nil
       end

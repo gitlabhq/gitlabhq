@@ -1,6 +1,6 @@
-require('spec_helper')
+require 'spec_helper'
 
-describe ProjectsController do # rubocop:disable RSpec/FilePath
+describe ProjectsController do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 

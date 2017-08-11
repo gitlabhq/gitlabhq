@@ -88,15 +88,15 @@ module DiffHelper
   end
 
   def submodule_link(blob, ref, repository = @repository)
-    tree, commit = submodule_links(blob, ref, repository)
-    commit_id = if commit.nil?
+    project_url, tree_url = submodule_links(blob, ref, repository)
+    commit_id = if tree_url.nil?
                   Commit.truncate_sha(blob.id)
                 else
-                  link_to Commit.truncate_sha(blob.id), commit
+                  link_to Commit.truncate_sha(blob.id), tree_url
                 end
 
     [
-      content_tag(:span, link_to(truncate(blob.name, length: 40), tree)),
+      content_tag(:span, link_to(truncate(blob.name, length: 40), project_url)),
       '@',
       content_tag(:span, commit_id, class: 'commit-sha')
     ].join(' ').html_safe

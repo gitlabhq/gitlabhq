@@ -9,8 +9,8 @@
 </template>
 
 <script>
-  import pdfjsLib from 'pdfjs-dist';
-  import workerSrc from 'vendor/pdf.worker';
+  import pdfjsLib from 'vendor/pdf';
+  import workerSrc from 'vendor/pdf.worker.min';
 
   import page from './page/index.vue';
 

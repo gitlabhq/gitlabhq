@@ -21,6 +21,9 @@ describe Project, elastic: true do
       create :project, path: 'someone_elses_project'
       project_ids += [project.id, project1.id, project2.id]
 
+      # The project you have no access to except as an administrator
+      create :project, :private, name: 'test3'
+
       Gitlab::Elastic::Helper.refresh_index
     end
 
@@ -28,6 +31,7 @@ describe Project, elastic: true do
     expect(described_class.elastic_search('test2', options: { project_ids: project_ids }).total_count).to eq(1)
     expect(described_class.elastic_search('awesome', options: { project_ids: project_ids }).total_count).to eq(1)
     expect(described_class.elastic_search('test*', options: { project_ids: project_ids }).total_count).to eq(2)
+    expect(described_class.elastic_search('test*', options: { project_ids: :any }).total_count).to eq(3)
     expect(described_class.elastic_search('someone_elses_project', options: { project_ids: project_ids }).total_count).to eq(0)
   end
 

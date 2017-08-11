@@ -43,11 +43,11 @@ module LabelsHelper
   def label_filter_path(subject, label, type: :issue)
     case subject
     when Group
-      send("#{type.to_s.pluralize}_group_path",
+      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject,
                   label_name: [label.name])
     when Project
-      send("namespace_project_#{type.to_s.pluralize}_path",
+      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
                   subject.namespace,
                   subject,
                   label_name: [label.name])
