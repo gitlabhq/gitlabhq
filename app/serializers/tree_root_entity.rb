@@ -1,8 +1,20 @@
 # TODO: Inherit from TreeEntity, when `Tree` implements `id` and `name` like `Gitlab::Git::Tree`.
 class TreeRootEntity < Grape::Entity
-  expose :path
+  include RequestAwareEntity
   
+  expose :path
+
   expose :trees, using: TreeEntity
   expose :blobs, using: BlobEntity
   expose :submodules, using: SubmoduleEntity
+
+  expose :parent_tree_url do |tree|
+    next unless tree.path.present?
+
+    path_segments = tree.path.split('/')
+    path_segments.pop
+    parent_tree_path = path_segments.join('/')
+
+    project_tree_path(request.project, File.join(request.ref, parent_tree_path))
+  end
 end
