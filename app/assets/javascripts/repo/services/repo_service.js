@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Store from '../stores/repo_store';
 import Api from '../../api';
+import Helper from '../helpers/repo_helper';
 
 const RepoService = {
   url: '',
@@ -37,7 +38,7 @@ const RepoService = {
   },
 
   urlIsRichBlob(url = this.url) {
-    const extension = url.split('.').pop();
+    const extension = Helper.getFileExtension(url);
 
     return this.richExtensionRegExp.test(extension);
   },

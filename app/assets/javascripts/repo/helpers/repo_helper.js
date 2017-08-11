@@ -33,12 +33,16 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
+  getFileExtension(fileName) {
+    return fileName.split('.').pop();
+  },
+
   getBranch() {
     return $('button.dropdown-menu-toggle').attr('data-ref');
   },
 
   getLanguageIDForFile(file, langs) {
-    const ext = file.name.split('.').pop();
+    const ext = RepoHelper.getFileExtension(file.name);
     const foundLang = RepoHelper.findLanguage(ext, langs);
 
     return foundLang ? foundLang.id : 'plaintext';
