@@ -102,6 +102,16 @@ describe('issue_comment_form component', () => {
         });
       });
     });
+
+    describe('issue is confidential', () => {
+      it('shows information warning', (done) => {
+        store.dispatch('setIssueData', Object.assign(issueDataMock, { confidential: true }));
+        Vue.nextTick(() => {
+          expect(vm.$el.querySelector('.confidential-issue-warning')).toBeDefined();
+          done();
+        });
+      });
+    });
   });
 
   describe('user is not logged in', () => {

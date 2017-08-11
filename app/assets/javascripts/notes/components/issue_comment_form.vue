@@ -3,13 +3,14 @@
 
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import markdownField from '../../vue_shared/components/markdown/field.vue';
-  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
-  import eventHub from '../event_hub';
-  import * as constants from '../constants';
   import '../../autosave';
   import TaskList from '../../task_list';
+  import * as constants from '../constants';
+  import eventHub from '../event_hub';
+  import confidentialIssue from '../../vue_shared/components/issue/confidential_issue_warning.vue';
+  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 
   export default {
     name: 'issueCommentForm',
@@ -25,9 +26,10 @@
       };
     },
     components: {
-      userAvatarLink,
-      markdownField,
+      confidentialIssue,
       issueNoteSignedOutWidget,
+      markdownField,
+      userAvatarLink,
     },
     watch: {
       note(newNote) {
@@ -87,6 +89,9 @@
       },
       endpoint() {
         return this.getIssueData.create_note_path;
+      },
+      isConfidentialIssue() {
+        return this.getIssueData.confidential;
       },
     },
     methods: {
@@ -195,7 +200,7 @@
           fieldName: 'note',
           selector: '.notes',
         });
-      }
+      },
     },
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
@@ -231,11 +236,14 @@
             <form
               class="js-main-target-form timeline-content timeline-content-form common-note-form"
               @submit="handleSave(true)">
+              <confidentialIssue v-if="isConfidentialIssue" />
+
               <markdown-field
                 :markdown-preview-url="markdownPreviewUrl"
                 :markdown-docs="markdownDocsUrl"
                 :quick-actions-docs="quickActionsDocsUrl"
-                :add-spacing-classes="false">
+                :add-spacing-classes="false"
+                :is-confidential-issue="isConfidentialIssue">
                 <textarea
                   id="note-body"
                   name="note[note]"
