@@ -69,6 +69,12 @@ RSpec.configure do |config|
 
   config.raise_errors_for_deprecations!
 
+  if ENV['CI']
+    # This includes the first try, i.e. tests will be run 4 times before failing.
+    config.default_retry_count = 4
+    config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
+  end
+
   config.before(:suite) do
     TestEnv.init
   end
@@ -95,12 +101,6 @@ RSpec.configure do |config|
 
   config.before(:example, :mailer) do
     reset_delivered_emails!
-  end
-
-  if ENV['CI']
-    config.around(:each) do |ex|
-      ex.run_with_retry retry: 2
-    end
   end
 
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
