@@ -12,8 +12,8 @@ const RepoTab = {
   computed: {
     changedClass() {
       const tabChangedObj = {
-        'fa-times': !this.tab.changed,
-        'fa-circle': this.tab.changed,
+        'fa-times close-icon': !this.tab.changed,
+        'fa-circle unsaved-icon': this.tab.changed,
       };
       return tabChangedObj;
     },
