@@ -1,70 +1,58 @@
-import { getters } from '~/notes/stores/getters';
+import * as getters from '~/notes/stores/getters';
+import { notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
 
 describe('Getters Notes Store', () => {
+  let state;
+  beforeEach(() => {
+    state = {
+      notes: [individualNote],
+      targetNoteHash: 'hash',
+      lastFetchedAt: 'timestamp',
 
+      notesData: notesDataMock,
+      userData: userDataMock,
+      issueData: issueDataMock,
+    };
+  });
   describe('notes', () => {
     it('should return all notes in the store', () => {
-
+      expect(getters.notes(state)).toEqual([individualNote]);
     });
   });
 
   describe('targetNoteHash', () => {
     it('should return `targetNoteHash`', () => {
-
+      expect(getters.targetNoteHash(state)).toEqual('hash');
     });
   });
 
   describe('getNotesData', () => {
     it('should return all data in `notesData`', () => {
-
-    });
-  });
-
-  describe('getNotesDataByProp', () => {
-    it('should return the given prop', () => {
-
+      expect(getters.getNotesData(state)).toEqual(notesDataMock);
     });
   });
 
   describe('getIssueData', () => {
     it('should return all data in `issueData`', () => {
-
-    });
-  });
-
-  describe('getIssueDataByProp', () => {
-    it('should return the given prop', () => {
-
+      expect(getters.getIssueData(state)).toEqual(issueDataMock);
     });
   });
 
   describe('getUserData', () => {
     it('should return all data in `userData`', () => {
-
-    });
-  });
-
-  describe('getUserDataByProp', () => {
-    it('should return the given prop', () => {
-
+      expect(getters.getUserData(state)).toEqual(userDataMock);
     });
   });
 
   describe('notesById', () => {
     it('should return the note for the given id', () => {
-
+      expect(getters.notesById(state)).toEqual({ 1390: individualNote.notes[0] });
     });
   });
 
   describe('getCurrentUserLastNote', () => {
     it('should return the last note of the current user', () => {
-
-    });
-  });
-
-  describe('getDiscussionLastNote', () => {
-    it('should return the last discussion note of the current user', () => {
-
+      expect(getters.getCurrentUserLastNote(state)).toEqual(individualNote.notes[0]);
     });
   });
 });

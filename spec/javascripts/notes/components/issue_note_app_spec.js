@@ -252,17 +252,4 @@ describe('issue_note_app', () => {
       }, 0);
     });
   });
-
-  // TODO: FILIPA
-  describe('create new note', () => {
-    it('should show placeholder note while new comment is being posted', () => {});
-    it('should remove placeholder note when new comment is done posting', () => {});
-    it('should show actual note element when new comment is done posting', () => {});
-    it('should show flash error message when new comment failed to be posted', () => {});
-    it('should show flash error message when comment failed to be updated', () => {});
-  });
-
-  describe('shortcuts issuable spec', () => {
-
-  });
 });

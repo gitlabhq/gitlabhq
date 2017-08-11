@@ -143,7 +143,7 @@
         let parsedName;
 
         // 100 and 1234 emoji are a number. Callback for v-for click sends it as a string
-        switch(awardName) {
+        switch (awardName) {
           case '100':
             parsedName = 100;
             break;

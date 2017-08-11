@@ -152,7 +152,7 @@
         </button>
         <button
           @click="cancelHandler()"
-          class="btn btn-nr btn-cancel note-edit-cancel"
+          class="btn btn-cancel note-edit-cancel"
           type="button">
           Cancel
         </button>

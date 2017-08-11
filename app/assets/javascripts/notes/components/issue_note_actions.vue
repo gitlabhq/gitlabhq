@@ -74,7 +74,7 @@
       this.emojiSmiling = emojiSmiling;
       this.emojiSmile = emojiSmile;
       this.emojiSmiley = emojiSmiley;
-    }
+    },
   };
 </script>
 

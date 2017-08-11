@@ -46,7 +46,6 @@
     computed: {
       ...mapGetters([
         'notes',
-        'notesById',
         'getNotesDataByProp',
       ]),
     },
