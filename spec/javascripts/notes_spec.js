@@ -64,7 +64,8 @@ import '~/notes';
           expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
           return expect(req.data.note).not.toBe(null);
         });
-        $('.js-task-list-field.original-task-list').trigger('tasklist:changed');
+
+        $('.js-task-list-field.js-note-text').trigger('tasklist:changed');
       });
     });
 
