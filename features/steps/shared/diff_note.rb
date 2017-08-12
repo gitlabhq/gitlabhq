@@ -227,12 +227,10 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find(".line_holder[id='#{code}'] td:nth-of-type(1)").trigger 'mouseover'
     find(".line_holder[id='#{code}'] button").click
   end
 
   def click_parallel_diff_line(code, line_type)
-    find(".line_holder.parallel .diff-line-num[id='#{code}']").trigger 'mouseover'
     find(".line_holder.parallel button[data-line-code='#{code}']").click
   end
 end
