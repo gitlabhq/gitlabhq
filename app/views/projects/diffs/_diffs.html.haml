@@ -2,8 +2,9 @@
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
 - can_create_note = !@diff_notes_disabled && can?(current_user, :create_note, diffs.project)
 - diff_files = diffs.diff_files
+- merge_request = local_assigns.fetch(:merge_request, false)
 
-.content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed
+.content-block.oneline-block.files-changed.diff-files-changed.js-diff-files-changed{ class: ("diff-files-changed-merge-request" if merge_request) }
   .files-changed-inner
     .inline-parallel-buttons
       - if !diffs_expanded? && diff_files.any? { |diff_file| diff_file.collapsed? }

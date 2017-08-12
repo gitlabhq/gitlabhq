@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807160457) do
+ActiveRecord::Schema.define(version: 20170809161910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,13 +28,13 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   end
 
   create_table "appearances", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
+    t.string "title", null: false
+    t.text "description", null: false
     t.string "header_logo"
     t.string "logo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "description_html"
+    t.text "description_html", null: false
     t.integer "cached_markdown_version"
   end
 
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
     t.string "help_page_support_url"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
+    t.boolean "project_export_enabled", default: true, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -163,15 +164,17 @@ ActiveRecord::Schema.define(version: 20170807160457) do
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text "message", null: false
-    t.datetime "starts_at"
-    t.datetime "ends_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "color"
     t.string "font"
-    t.text "message_html"
+    t.text "message_html", null: false
     t.integer "cached_markdown_version"
   end
+
+  add_index "broadcast_messages", ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
 
   create_table "chat_names", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -530,9 +533,24 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_index "events", ["action"], name: "index_events_on_action", using: :btree
   add_index "events", ["author_id"], name: "index_events_on_author_id", using: :btree
   add_index "events", ["created_at"], name: "index_events_on_created_at", using: :btree
-  add_index "events", ["project_id"], name: "index_events_on_project_id", using: :btree
+  add_index "events", ["project_id", "id"], name: "index_events_on_project_id_and_id", using: :btree
   add_index "events", ["target_id"], name: "index_events_on_target_id", using: :btree
   add_index "events", ["target_type"], name: "index_events_on_target_type", using: :btree
+
+  create_table "events_for_migration", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "author_id", null: false
+    t.integer "target_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "action", limit: 2, null: false
+    t.string "target_type"
+  end
+
+  add_index "events_for_migration", ["action"], name: "index_events_for_migration_on_action", using: :btree
+  add_index "events_for_migration", ["author_id"], name: "index_events_for_migration_on_author_id", using: :btree
+  add_index "events_for_migration", ["project_id", "id"], name: "index_events_for_migration_on_project_id_and_id", using: :btree
+  add_index "events_for_migration", ["target_type", "target_id"], name: "index_events_for_migration_on_target_type_and_target_id", using: :btree
 
   create_table "feature_gates", force: :cascade do |t|
     t.string "feature_key", null: false
@@ -1254,6 +1272,19 @@ ActiveRecord::Schema.define(version: 20170807160457) do
 
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
+  create_table "push_event_payloads", id: false, force: :cascade do |t|
+    t.integer "commit_count", limit: 8, null: false
+    t.integer "event_id", null: false
+    t.integer "action", limit: 2, null: false
+    t.integer "ref_type", limit: 2, null: false
+    t.binary "commit_from"
+    t.binary "commit_to"
+    t.text "ref"
+    t.string "commit_title", limit: 70
+  end
+
+  add_index "push_event_payloads", ["event_id"], name: "index_push_event_payloads_on_event_id", unique: true, using: :btree
+
   create_table "redirect_routes", force: :cascade do |t|
     t.integer "source_id", null: false
     t.string "source_type", null: false
@@ -1654,6 +1685,8 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
   add_foreign_key "events", "projects", name: "fk_0434b48643", on_delete: :cascade
+  add_foreign_key "events_for_migration", "projects", on_delete: :cascade
+  add_foreign_key "events_for_migration", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "forked_project_links", "projects", column: "forked_to_project_id", name: "fk_434510edb0", on_delete: :cascade
   add_foreign_key "gpg_keys", "users", on_delete: :cascade
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
@@ -1696,6 +1729,7 @@ ActiveRecord::Schema.define(version: 20170807160457) do
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
+  add_foreign_key "push_event_payloads", "events_for_migration", column: "event_id", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade

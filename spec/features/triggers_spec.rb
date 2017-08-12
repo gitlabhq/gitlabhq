@@ -82,7 +82,7 @@ feature 'Triggers', js: true do
   end
 
   describe 'trigger "Take ownership" workflow' do
-    before(:each) do
+    before do
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
       visit project_settings_ci_cd_path(@project)
     end
@@ -104,7 +104,7 @@ feature 'Triggers', js: true do
   end
 
   describe 'trigger "Revoke" workflow' do
-    before(:each) do
+    before do
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
       visit project_settings_ci_cd_path(@project)
     end

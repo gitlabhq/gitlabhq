@@ -2,6 +2,11 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.4 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.4.3 (2017-07-31)
 
 - Fix Prometheus client PID reuse bug. !13130
@@ -225,6 +230,11 @@ entry.
 - Defer project destroys within a namespace in Groups::DestroyService#async_execute.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
+
+## 9.3.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.3.9 (2017-07-20)
 
@@ -498,6 +508,11 @@ entry.
 - Remove foreigh key on ci_trigger_schedules only if it exists.
 - Allow translation of Pipeline Schedules.
 
+## 9.2.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.2.9 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
@@ -752,6 +767,11 @@ entry.
 - Unassign all Issues and Merge Requests when member leaves a team.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
+
+## 9.1.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.1.9 (2017-07-20)
 
@@ -1075,6 +1095,11 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.13 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.0.12 (2017-07-20)
 
@@ -1455,6 +1480,11 @@ entry.
 - hide loading spinners for server-rendered sidebar fields.
 - Change development tanuki favicon colors to match logo color order.
 - API issues - support filtering by iids.
+
+## 8.17.8 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 8.17.7 (2017-07-19)
 

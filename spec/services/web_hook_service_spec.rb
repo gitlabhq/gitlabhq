@@ -15,7 +15,7 @@ describe WebHookService do
   let(:service_instance) { described_class.new(project_hook, data, 'push_hooks') }
 
   describe '#execute' do
-    before(:each) do
+    before do
       project.hooks << [project_hook]
 
       WebMock.stub_request(:post, project_hook.url)

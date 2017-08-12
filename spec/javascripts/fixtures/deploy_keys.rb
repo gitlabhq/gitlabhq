@@ -12,7 +12,7 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
     clean_frontend_fixtures('deploy_keys/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

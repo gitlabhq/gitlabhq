@@ -3,12 +3,12 @@ RSpec.shared_examples "redis_shared_examples" do
 
   let(:test_redis_url)  { "redis://redishost:#{redis_port}"}
 
-  before(:each) do
+  before do
     stub_env(environment_config_file_name, Rails.root.join(config_file_name))
     clear_raw_config
   end
 
-  after(:each) do
+  after do
     clear_raw_config
   end
 
