@@ -76,16 +76,26 @@ shared_examples 'discussion comments' do |resource_name|
       expect(page).not_to have_selector menu_selector
     end
 
+
     it 'clicking the ul padding or divider should not change the text' do
-      find(menu_selector).trigger 'click'
+      if resource_name == 'issue'
+        find(menu_selector).trigger 'click'
+        expect(find(dropdown_selector)).to have_content 'Comment'
 
-      expect(page).to have_selector menu_selector
-      expect(find(dropdown_selector)).to have_content 'Comment'
+        find(toggle_selector).click
+        find("#{menu_selector} .divider").trigger 'click'
+        expect(find(dropdown_selector)).to have_content 'Comment'
+      else
+        find(menu_selector).trigger 'click'
 
-      find("#{menu_selector} .divider").trigger 'click'
+        expect(page).to have_selector menu_selector
+        expect(find(dropdown_selector)).to have_content 'Comment'
 
-      expect(page).to have_selector menu_selector
-      expect(find(dropdown_selector)).to have_content 'Comment'
+        find("#{menu_selector} .divider").trigger 'click'
+
+        expect(page).to have_selector menu_selector
+        expect(find(dropdown_selector)).to have_content 'Comment'
+      end
     end
 
     describe 'when selecting "Start discussion"' do
