@@ -16,13 +16,12 @@ shared_examples 'reportable note' do |type|
     open_dropdown(dropdown)
 
     if type == 'issue'
-      expect(dropdown).to have_button('Edit comment')
       expect(dropdown).to have_button('Delete comment')
     else
-      expect(dropdown).to have_link('Edit comment')
       expect(dropdown).to have_link('Delete comment')
     end
 
+    expect(dropdown).to have_button('Edit comment')
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
   end
 
