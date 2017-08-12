@@ -264,14 +264,6 @@ const RepoHelper = {
     return RepoHelper.Time.now().toFixed(3);
   },
 
-  getStateKey() {
-    return RepoHelper.key;
-  },
-
-  setStateKey(key) {
-    RepoHelper.key = key;
-  },
-
   toURL(url, title) {
     const history = window.history;
 
