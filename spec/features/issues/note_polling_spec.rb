@@ -39,33 +39,22 @@ feature 'Issue notes polling', :js do
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
       end
 
-      it 'when editing but have not changed anything, and an update comes in, show the updated content in the textarea' do
+      it 'when editing but have not changed anything, and an update comes in, show warning and does not update the note' do
         click_edit_action(existing_note)
 
-        expect(page).to have_field("note-body", with: note_text)
+        expect(page).to have_field("note[note]", with: note_text)
 
         update_note(existing_note, updated_text)
 
-        expect(page).to have_field("note-body", with: updated_text)
-      end
-
-      it 'when editing but you changed some things, and an update comes in, show a warning' do
-        click_edit_action(existing_note)
-
-        expect(page).to have_field("note-body", with: note_text)
-
-        find("#note_#{existing_note.id} .js-note-text").set('something random')
-        update_note(existing_note, updated_text)
-
+        expect(page).not_to have_field("note[note]", with: updated_text)
         expect(page).to have_selector(".alert")
       end
+
 
       it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
         click_edit_action(existing_note)
 
-        expect(page).to have_field("note-body", with: note_text)
-
-        find("#note_#{existing_note.id} .js-note-text").set('something random')
+        expect(page).to have_field("note[note]", with: note_text)
 
         update_note(existing_note, updated_text)
 
