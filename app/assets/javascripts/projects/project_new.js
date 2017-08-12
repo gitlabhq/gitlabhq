@@ -57,6 +57,12 @@ const bindEvents = () => {
   });
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
+
+  $('.import_git').on('click', () => {
+    const $projectMirror = $('#project_mirror');
+
+    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
+  });
 };
 
 document.addEventListener('DOMContentLoaded', bindEvents);
