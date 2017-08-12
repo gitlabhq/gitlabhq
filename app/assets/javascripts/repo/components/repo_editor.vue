@@ -19,7 +19,7 @@ const RepoEditor = {
       Store.blobRaw = rawResponse.data;
       Store.activeFile.plain = rawResponse.data;
 
-      const monacoInstance = this.monaco.editor.create(this.$el, {
+      const monacoInstance = Helper.monaco.editor.create(this.$el, {
         model: null,
         readOnly: false,
         contextmenu: false,

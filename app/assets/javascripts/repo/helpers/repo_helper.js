@@ -48,9 +48,9 @@ const RepoHelper = {
 
   setMonacoModelFromLanguage() {
     RepoHelper.monacoInstance.setModel(null);
-    const languages = Store.monaco.languages.getLanguages();
+    const languages = RepoHelper.monaco.languages.getLanguages();
     const languageID = RepoHelper.getLanguageIDForFile(Store.activeFile, languages);
-    const newModel = Store.monaco.editor.createModel(Store.blobRaw, languageID);
+    const newModel = RepoHelper.monaco.editor.createModel(Store.blobRaw, languageID);
     RepoHelper.monacoInstance.setModel(newModel);
   },
 
