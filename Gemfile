@@ -333,7 +333,7 @@ group :development, :test do
 
   gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'selenium-webdriver', '~> 2.53'
+  gem 'selenium-webdriver', '~> 3.5'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
