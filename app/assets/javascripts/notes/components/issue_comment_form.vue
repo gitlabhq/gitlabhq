@@ -184,7 +184,7 @@
         }
       },
       initAutoSave() {
-        this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id]);
+        this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id], 'issue');
       },
       initTaskList() {
         return new TaskList({
@@ -211,7 +211,7 @@
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
     <ul
       v-else
-      class="notes notes-form timeline new-note">
+      class="notes notes-form timeline">
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
           <div class="timeline-icon hidden-xs hidden-sm">
@@ -223,10 +223,10 @@
               :img-size="40"
               />
           </div>
-          <div >
+          <div class="timeline-content timeline-content-form">
             <form
               ref="commentForm"
-              class="js-main-target-form timeline-content timeline-content-form common-note-form">
+              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
               <div class="flash-container timeline-content"></div>
               <confidentialIssue v-if="isConfidentialIssue" />
               <markdown-field

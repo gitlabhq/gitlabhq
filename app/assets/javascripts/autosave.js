@@ -2,17 +2,17 @@
 import AccessorUtilities from './lib/utils/accessor';
 
 window.Autosave = (function() {
-  function Autosave(field, key) {
+  function Autosave(field, key, resource) {
     this.field = field;
     this.isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
-
+    this.resource = resource;
     if (key.join != null) {
-      key = key.join("/");
+      key = key.join('/');
     }
-    this.key = "autosave/" + key;
-    this.field.data("autosave", this);
+    this.key = 'autosave/' + key;
+    this.field.data('autosave', this);
     this.restore();
-    this.field.on("input", (function(_this) {
+    this.field.on('input', (function(_this) {
       return function() {
         return _this.save();
       };
@@ -29,7 +29,14 @@ window.Autosave = (function() {
     if ((text != null ? text.length : void 0) > 0) {
       this.field.val(text);
     }
-    return this.field.trigger("input");
+    if (!this.resource && this.resource !== 'issue') {
+      this.field.trigger('input');
+    } else {
+      // v-model does not update with jQuery trigger
+      // https://github.com/vuejs/vue/issues/2804#issuecomment-216968137
+      const event = new Event('change', { bubbles: true, cancelable: false });
+      this.field.get(0).dispatchEvent(event);
+    }
   };
 
   Autosave.prototype.save = function() {

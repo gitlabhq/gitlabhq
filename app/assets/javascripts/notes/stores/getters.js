@@ -19,7 +19,7 @@ export const notesById = state => state.notes.reduce((acc, note) => {
 
 const reverseNotes = array => array.slice(0).reverse();
 const isLastNote = (note, state) => !note.system &&
-  state.userData &&
+  state.userData !== undefined &&
   note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = state => _.flatten(
