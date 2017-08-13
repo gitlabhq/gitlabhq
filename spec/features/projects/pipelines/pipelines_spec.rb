@@ -103,7 +103,7 @@ describe 'Pipelines', :js do
 
         context 'when canceling' do
           before do
-            find('.js-pipelines-cancel-button').click
+            accept_confirm { find('.js-pipelines-cancel-button').click }
             wait_for_requests
           end
 
