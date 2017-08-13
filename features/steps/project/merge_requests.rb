@@ -418,7 +418,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Reopen"' do
-    first(:css, '.reopen-mr-link').click
+    all(:css, '.reopen-mr-link').last.click
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
