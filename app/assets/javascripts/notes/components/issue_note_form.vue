@@ -129,6 +129,7 @@
         :quick-actions-docs="quickActionsDocsUrl"
         :add-spacing-classes="false">
         <textarea
+          id="note_note"
           name="note[note]"
           class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form"
           :data-supports-quick-actions="!isEditing"

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Task Lists', js: true do
+feature 'Task Lists' do
   include Warden::Test::Helpers
 
   let(:project) { create(:project) }
@@ -181,7 +181,7 @@ feature 'Task Lists', js: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -189,14 +189,14 @@ feature 'Task Lists', js: true do
         expect(page).to have_selector('.note ul input[checked]', count: 2)
       end
 
-      it 'contains the required selectors' do
+      it 'contains the required selectors', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note .js-task-list-container')
         expect(page).to have_selector('.note .js-task-list-container .task-list .task-list-item .task-list-item-checkbox')
       end
 
-      it 'is only editable by author' do
+      it 'is only editable by author', :js do
         visit_issue(project, issue)
         expect(page).to have_selector('.js-task-list-container')
 
@@ -214,7 +214,7 @@ feature 'Task Lists', js: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -229,7 +229,7 @@ feature 'Task Lists', js: true do
                       project: project, author: user)
       end
 
-      it 'renders for note body' do
+      it 'renders for note body', :js do
         visit_issue(project, issue)
 
         expect(page).to have_selector('.note ul.task-list',      count: 1)
@@ -263,6 +263,7 @@ feature 'Task Lists', js: true do
 
         expect(page).to have_selector(container)
         expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_selector("#{container} .js-task-list-field")
         expect(page).to have_selector('form.js-issuable-update')
         expect(page).to have_selector('a.btn-close')
       end

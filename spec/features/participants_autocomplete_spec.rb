@@ -14,11 +14,7 @@ feature 'Member autocomplete', :js do
   shared_examples "open suggestions when typing @" do
     before do
       page.within('.new-note') do
-        if note.noteable_type === 'Issue'
-          find('.js-vue-comment-form').send_keys('@')
-        else
-          find('#note_note').send_keys('@')
-        end
+        find('#note_note').send_keys('@')
       end
     end
 
