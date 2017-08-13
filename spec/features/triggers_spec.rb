@@ -94,12 +94,13 @@ feature 'Triggers', js: true do
 
     scenario 'take trigger ownership' do
       # See if "Take ownership" on trigger works post trigger creation
-      find('a.btn-trigger-take-ownership').click
       page.accept_confirm do
-        expect(page.find('.flash-notice')).to have_content 'Trigger was re-assigned.'
-        expect(page.find('.triggers-list')).to have_content trigger_title
-        expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
+        find('a.btn-trigger-take-ownership').click
       end
+
+      expect(page.find('.flash-notice')).to have_content 'Trigger was re-assigned.'
+      expect(page.find('.triggers-list')).to have_content trigger_title
+      expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
     end
   end
 
