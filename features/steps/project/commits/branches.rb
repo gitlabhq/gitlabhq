@@ -70,13 +70,12 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step "I click branch 'improve/awesome' delete link" do
     page.within '.js-branch-improve\/awesome' do
-      find('.btn-remove').click
-      sleep 0.05
+      accept_alert { find('.btn-remove').click }
     end
   end
 
   step "I should not see branch 'improve/awesome'" do
-    expect(page.all(visible: true)).not_to have_content 'improve/awesome'
+    expect(page).to have_css('.js-branch-improve\\/awesome', visible: :hidden)
   end
 
   def select_branch(branch_name)
