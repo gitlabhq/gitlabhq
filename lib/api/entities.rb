@@ -234,6 +234,7 @@ module API
     class RepoCommitDetail < RepoCommit
       expose :stats, using: Entities::RepoCommitStats
       expose :status
+      expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
 
     class RepoBranch < Grape::Entity
