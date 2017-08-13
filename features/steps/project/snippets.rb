@@ -58,7 +58,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
     fill_in "project_snippet_title", with: "Snippet three"
     fill_in "project_snippet_file_name", with: "my_snippet.rb"
     page.within('.file-editor') do
-      find('.ace_editor').native.send_keys 'Content of snippet three'
+      find('.ace_text-input').native.send_keys 'Content of snippet three'
     end
     click_button "Create snippet"
     wait_for_requests
