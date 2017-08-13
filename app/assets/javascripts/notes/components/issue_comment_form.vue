@@ -184,7 +184,9 @@
         }
       },
       initAutoSave() {
-        this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id], 'issue');
+        if (this.isLoggedIn) {
+          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getIssueData.id], 'issue');
+        }
       },
       initTaskList() {
         return new TaskList({
