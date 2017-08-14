@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.4.5 (2017-08-14)
+
+- Ensure artifacts are moved locally within the filesystem to prevent timeouts. !2572
+- Fix rebase from fork when upstream has protected branches.
+- Present Related Issues add badge only when user can manage related issues (previously when user could edit issue).
+- Fix accessing individual files on Object Storage.
+
 ## 9.4.4 (2017-08-09)
 
 - No changes.
