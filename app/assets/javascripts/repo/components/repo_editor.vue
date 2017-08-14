@@ -90,6 +90,7 @@ const RepoEditor = {
             return f;
           });
           this.editMode = false;
+          Store.toggleBlobView();
         }
       },
       deep: true,
