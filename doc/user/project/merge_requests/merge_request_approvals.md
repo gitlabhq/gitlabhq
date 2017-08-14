@@ -51,7 +51,7 @@ be merged. (The merge button is disabled.)
 
 > Introduced in GitLab Enterprise Edition 9.4.
 
-Check this checkbox to increase the mininum number of approvals required, per merge
+Check this checkbox to increase the minimum number of approvals required, per merge
 request, over the project settings number above. (You cannot set a minimum below
 the project settings number.) You can also add or remove eligible approvers, per
 merge request.
@@ -87,7 +87,7 @@ there are different cases:
 Note that approvers and the number of required approvals can be changed while
 creating or editing a merge request.
 
-When someone is marked as a eligible approver for a merge request, an email is
+When someone is marked as an eligible approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
 ### Selecting individual approvers
@@ -117,7 +117,7 @@ If, on the other hand, an approver removes their approval but the number of appr
 given stays at or above the number of required approvals, the merge request can still be
 merged.
 
-## Merge request with different sourch branch and target branch projects
+## Merge request with different source branch and target branch projects
 
 If the merge request source branch and target branch belong to different projects,
 everything is with repsect to the target branch's project. In particular, since the
