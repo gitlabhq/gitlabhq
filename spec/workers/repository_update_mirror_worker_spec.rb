@@ -1,28 +1,24 @@
 require 'rails_helper'
 
 describe RepositoryUpdateMirrorWorker do
-  subject { described_class.new }
-
   describe '#perform' do
-    context 'with status none' do
-      let(:project) { create(:project, :mirror, :import_scheduled) }
+    let!(:project) { create(:project, :mirror, :import_scheduled) }
 
-      it 'sets status as finished when update mirror service executes successfully' do
-        expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
+    before do
+      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+    end
 
-        expect { subject.perform(project.id) }.to change { project.reload.import_status }.to('finished')
-      end
+    it 'sets status as finished when update mirror service executes successfully' do
+      expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
 
-      it 'sets status as failed when update mirror service executes with errors' do
-        error_message = 'fail!'
+      expect { subject.perform(project.id) }.to change { project.reload.import_status }.to('finished')
+    end
 
-        expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :error, message: error_message)
+    it 'sets status as failed when update mirror service executes with errors' do
+      allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :error, message: 'error')
 
-        expect do
-          subject.perform(project.id)
-        end.to raise_error(RepositoryUpdateMirrorWorker::UpdateError, error_message)
-        expect(project.reload.import_status).to eq('failed')
-      end
+      expect { subject.perform(project.id) }.to raise_error(RepositoryUpdateMirrorWorker::UpdateError, 'error')
+      expect(project.reload.import_status).to eq('failed')
     end
 
     context 'with another worker already running' do
@@ -33,44 +29,54 @@ describe RepositoryUpdateMirrorWorker do
       end
     end
 
-    context 'with unexpected error' do
-      it 'marks mirror as failed' do
-        mirror = create(:project, :repository, :mirror, :import_scheduled)
+    it 'marks mirror as failed when an error occurs' do
+      allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_raise(RuntimeError)
 
-        allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_raise(RuntimeError)
-
-        expect do
-          subject.perform(mirror.id)
-        end.to raise_error(RepositoryUpdateMirrorWorker::UpdateError)
-        expect(mirror.reload.import_status).to eq('failed')
-      end
+      expect { subject.perform(project.id) }.to raise_error(RepositoryUpdateMirrorWorker::UpdateError)
+      expect(project.reload.import_status).to eq('failed')
     end
 
-    context 'threshold_reached?' do
-      let(:mirror) { create(:project, :repository, :mirror, :import_scheduled) }
-
+    context 'reschedule mirrors' do
       before do
-        expect_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
+        allow_any_instance_of(Projects::UpdateMirrorService).to receive(:execute).and_return(status: :success)
       end
 
-      context 'with threshold_reached? true' do
-        it 'schedules UpdateAllMirrorsWorker' do
-          expect(Gitlab::Mirror).to receive(:threshold_reached?).and_return(true)
-
-          expect(UpdateAllMirrorsWorker).to receive(:perform_async)
-
-          subject.perform(mirror.id)
+      context 'when we obtain the lease' do
+        before do
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
         end
-      end
 
-      context 'with threshold_reached? false' do
-        it 'does not schedule UpdateAllMirrorsWorker' do
-          expect(Gitlab::Mirror).to receive(:threshold_reached?).and_return(false)
+        it 'performs UpdateAllMirrorsWorker when reschedule_immediately? returns true' do
+          allow(Gitlab::Mirror).to receive(:reschedule_immediately?).and_return(true)
+
+          expect(UpdateAllMirrorsWorker).to receive(:perform_async).once
+
+          subject.perform(project.id)
+        end
+
+        it 'does not perform UpdateAllMirrorsWorker when reschedule_immediately? returns false' do
+          allow(Gitlab::Mirror).to receive(:reschedule_immediately?).and_return(false)
 
           expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
 
-          subject.perform(mirror.id)
+          subject.perform(project.id)
         end
+      end
+
+      it 'does not perform UpdateAllMirrorsWorker when we cannot obtain the lease' do
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+
+        expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
+
+        subject.perform(project.id)
+      end
+
+      it 'does not perform UpdateAllMirrorsWorker when the lease already exists' do
+        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).and_return(true)
+
+        expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
+
+        subject.perform(project.id)
       end
     end
   end

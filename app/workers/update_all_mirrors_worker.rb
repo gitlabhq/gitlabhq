@@ -51,12 +51,7 @@ class UpdateAllMirrorsWorker
   end
 
   def pull_mirrors_batch(freeze_at:, batch_size:, offset_at: nil)
-    relation = Project
-      .mirror
-      .joins(:mirror_data)
-      .where("next_execution_timestamp <= ? AND import_status NOT IN ('scheduled', 'started')", freeze_at)
-      .reorder('project_mirror_data.next_execution_timestamp')
-      .limit(batch_size)
+    relation = Project.mirrors_to_sync(freeze_at).reorder('project_mirror_data.next_execution_timestamp').limit(batch_size)
 
     relation = relation.where('next_execution_timestamp > ?', offset_at) if offset_at
 
