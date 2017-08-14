@@ -68,17 +68,13 @@ module Gitlab
     private
 
     def optimistic_using_tmp_keychain
+      previous_dir = current_home_dir
       Dir.mktmpdir do |dir|
-        previous_dir = current_home_dir
-
         GPGME::Engine.home_dir = dir
-
-        return_value = yield
-
-        GPGME::Engine.home_dir = previous_dir
-
-        return_value
+        yield
       end
+    ensure
+      GPGME::Engine.home_dir = previous_dir
     end
   end
 end
