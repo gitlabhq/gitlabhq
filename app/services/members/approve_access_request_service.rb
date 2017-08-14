@@ -1,33 +1,39 @@
 module Members
   class ApproveAccessRequestService < BaseService
     include MembersHelper
+    include Gitlab::Access
 
-    attr_accessor :source
+    DEFAULT_ACCESS_LEVEL = Gitlab::Access::DEVELOPER
+
+    attr_accessor :source, :access_requester, :current_user, :access_level
 
     # source - The source object that respond to `#access_requests` (i.g. project or group)
+    # access_requester - The user who requested access
     # current_user - The user that performs the access request approval
-    # params - A hash of parameters
-    #   :user_id - User ID used to retrieve the access request
-    #   :id - Member ID used to retrieve the access request
-    #   :access_level - Optional access level set when the request is accepted
-    def initialize(source, current_user, params = {})
+    # access_level - Optional access level set when the request is accepted
+    def initialize(source, access_requester, current_user, access_level = DEFAULT_ACCESS_LEVEL)
       @source = source
+      @access_requester = access_requester
       @current_user = current_user
-      @params = params.slice(:user_id, :id, :access_level)
+      @access_level = access_level
     end
+
+    attr_accessor :source
 
     # opts - A hash of options
     #   :force - Bypass permission check: current_user can be nil in that case
     def execute(opts = {})
-      condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
-      access_request = source.access_requests.find_by!(condition)
+      access_request = source.access_requests.where(user: access_requester).take!
 
       raise Gitlab::Access::AccessDeniedError unless can_update_access_request?(access_request, opts)
 
-      access_request.access_level = params[:access_level] if params[:access_level]
-      access_request.accept_request
+      member = Member.add_user(source, access_requester, access_level, current_user: current_user)
 
-      access_request
+      raise 'Failed to create member from access request' unless member.persisted?
+
+      # Member destroys AccessRequests in after_create.
+
+      member
     end
 
     private
@@ -35,7 +41,7 @@ module Members
     def can_update_access_request?(access_request, opts = {})
       access_request && (
         opts[:force] ||
-        can?(current_user, action_member_permission(:update, access_request), access_request)
+        can?(current_user, action_access_request_permission(:update, access_request), access_request)
       )
     end
   end

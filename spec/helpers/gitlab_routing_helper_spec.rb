@@ -9,6 +9,14 @@ describe GitlabRoutingHelper do
       it { expect(project_access_requests_path(project)).to eq project_project_access_requests_path(project) }
     end
 
+    describe '#approve_project_access_requests_path' do
+      let(:project) { create(:project, :public, :access_requestable) }
+      let(:user) { create(:user) }
+      let(:project_access_request) { project.request_access(user) }
+
+      it { expect(approve_project_access_requests_path(project_access_request)).to eq approve_project_project_access_requests_path(project_access_request.project, project_access_request.user.username) }
+    end
+
     describe '#withdraw_project_access_requests_path' do
       let(:project) { build_stubbed(:project) }
 
@@ -31,12 +39,6 @@ describe GitlabRoutingHelper do
 
     describe '#leave_project_members_path' do
       it { expect(leave_project_members_path(project)).to eq leave_project_project_members_path(project) }
-    end
-
-    describe '#approve_access_request_project_member_path' do
-      let(:project_member) { create(:project_member) }
-
-      it { expect(approve_access_request_project_member_path(project_member)).to eq approve_access_request_project_project_member_path(project_member.source, project_member) }
     end
 
     describe '#resend_invite_project_member_path' do

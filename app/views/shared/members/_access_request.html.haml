@@ -33,7 +33,7 @@
     .controls.member-controls
       - if show_controls && access_request.source == current_resource
         - if can_update_access_request
-          = link_to polymorphic_path([:approve_access_request, access_request.source, :members], user_id: access_request.user),
+          = link_to approve_project_access_requests_path(access_request),
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
                     title: 'Grant access' do

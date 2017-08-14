@@ -3,7 +3,6 @@ require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
   concern :access_requestable do
-    post :approve_access_request, on: :collection # requires user_id in query string
   end
 
   concern :awardable do

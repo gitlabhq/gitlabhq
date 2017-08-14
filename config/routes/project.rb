@@ -316,12 +316,13 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :project_access_requests, only: [:create] do
         collection do
+          post ':username/approve', action: :approve, as: :approve, constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
           delete :withdraw
           delete ':username/deny', action: :deny, as: :deny, constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }
         end
       end
 
-      resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+      resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
         collection do
           delete :leave
 

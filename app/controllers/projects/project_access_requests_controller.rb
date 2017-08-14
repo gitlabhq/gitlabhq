@@ -8,6 +8,15 @@ class Projects::ProjectAccessRequestsController < Projects::ApplicationControlle
                 notice: 'Your request for access has been queued for review.'
   end
 
+  def approve
+    access_requester = User.find_by!(username: approve_username)
+
+    access_requestable.approve_access_request(access_requester, current_user)
+
+    redirect_to project_members_path(access_requestable),
+                notice: "User #{approve_username} was granted access to the #{access_requestable.human_name} #{source_type}."
+  end
+
   def withdraw
     access_requestable.withdraw_access_request(current_user)
 
@@ -31,6 +40,10 @@ class Projects::ProjectAccessRequestsController < Projects::ApplicationControlle
   end
 
   protected
+
+  def approve_username
+    params.require(:username)
+  end
 
   def deny_username
     params.require(:username)

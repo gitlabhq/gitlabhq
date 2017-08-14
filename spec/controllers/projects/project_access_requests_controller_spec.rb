@@ -19,6 +19,72 @@ describe Projects::ProjectAccessRequestsController do
     end
   end
 
+  describe 'POST approve' do
+    let(:current_user) { create(:user) }
+
+    before do
+      sign_in(current_user)
+    end
+
+    context 'when the given user has requested access to the project' do
+      let!(:access_request) { project.request_access(user) }
+
+      context 'when the current_user has permission to grant access to the project' do
+        before do
+          project.team << [current_user, :master]
+        end
+
+        it 'creates the member object' do
+          post :approve, namespace_id: project.namespace,
+                         project_id: project,
+                         username: user.username
+
+          expect(project.members.where(user: user)).to exist
+          expect(response).to set_flash.to /User .* was granted access to the .* project./
+          expect(response).to redirect_to(project_members_path(project))
+        end
+
+        it 'destroys the access request' do
+          post :approve, namespace_id: project.namespace,
+                         project_id: project,
+                         username: user.username
+
+          expect(project.access_requests.where(user: user)).not_to exist
+        end
+      end
+
+      context 'when the current_user does not have permission to grant access to the project' do
+        before do
+          project.team << [current_user, :developer]
+        end
+
+        it 'responds 404 Not Found (do not reveal project existence)' do
+          post :approve, namespace_id: project.namespace,
+                         project_id: project,
+                         username: user.username
+
+          expect(response).to have_http_status(404)
+        end
+
+        it 'does not create any members' do
+          expect do
+            post :approve, namespace_id: project.namespace,
+                           project_id: project,
+                           username: user.username
+          end.not_to change { project.members.count }
+        end
+
+        it 'does not destroy any access request' do
+          expect do
+            post :approve, namespace_id: project.namespace,
+                           project_id: project,
+                           username: user.username
+          end.not_to change { project.access_requests.count }
+        end
+      end
+    end
+  end
+
   describe 'DELETE withdraw' do
     context 'when the current_user has requested access to the project' do
       let!(:access_request) { project.request_access(user) }

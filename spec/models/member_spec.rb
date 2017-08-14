@@ -262,15 +262,14 @@ describe Member do
                 source.request_access(user)
               end
 
-              it 'does not add the user as a member' do
+              it 'adds the user as a member' do
                 expect(source.users).not_to include(user)
                 expect(source.access_requests.exists?(user_id: user)).to be_truthy
 
-                expect { described_class.add_user(source, user, :master) }
-                  .to raise_error(Gitlab::Access::AccessDeniedError)
+                described_class.add_user(source, user, :master)
 
-                expect(source.users.reload).not_to include(user)
-                expect(source.access_requests.reload.exists?(user_id: user)).to be_truthy
+                expect(source.users.reload).to include(user)
+                expect(source.access_requests.reload.exists?(user_id: user)).to be_falsey
               end
             end
           end
@@ -525,6 +524,46 @@ describe Member do
       member.destroy
 
       expect(user.authorized_projects).not_to include(project)
+    end
+  end
+
+  describe '#delete_access_request' do
+    it "is called after_create" do
+      expect_any_instance_of(Member).to receive(:delete_access_request)
+      create(:group_member)
+    end
+
+    context 'for a Member' do
+      subject { member.send(:delete_access_request) }
+      let!(:member) { create(:group_member) }
+      let(:group) { member.group }
+
+      context 'when unrelated AccessRequests exist' do
+        before do
+          group.access_requests.create!(user: create(:user))
+        end
+
+        context 'with a corresponding AccessRequest' do
+          let!(:access_request) do
+            access_request = group.access_requests.build(user: member.user)
+            access_request.save(validate: false)
+          end
+
+          it 'deletes the AccessRequest' do
+            expect { subject }.to change { group.access_requests.count }.by(-1)
+          end
+
+          it 'does not delete any other AccessRequests' do
+            expect { subject }.to change { GroupAccessRequest.count }.by(-1)
+          end
+        end
+
+        context 'without a corresponding AccessRequest' do
+          it 'does not delete any other AccessRequests' do
+            expect { subject }.not_to change { GroupAccessRequest.count }
+          end
+        end
+      end
     end
   end
 end

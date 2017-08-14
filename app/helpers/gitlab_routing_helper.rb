@@ -104,6 +104,10 @@ module GitlabRoutingHelper
     project_project_access_requests_url(project, *args)
   end
 
+  def approve_project_access_requests_path(project_access_request, *args)
+    approve_project_project_access_requests_path(project_access_request.source, project_access_request.user.username)
+  end
+
   def withdraw_project_access_requests_path(project, *args)
     withdraw_project_project_access_requests_path(project)
   end
@@ -127,10 +131,6 @@ module GitlabRoutingHelper
 
   def leave_project_members_path(project, *args)
     leave_project_project_members_path(project)
-  end
-
-  def approve_access_request_project_member_path(project_member, *args)
-    approve_access_request_project_project_member_path(project_member.source, project_member)
   end
 
   def resend_invite_project_member_path(project_member, *args)

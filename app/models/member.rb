@@ -80,6 +80,7 @@ class Member < ActiveRecord::Base
 
   after_create :send_invite, if: :invite?, unless: :importing?
   after_create :send_request, if: :request?, unless: :importing?
+  after_create :delete_access_request
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?]
   after_update :post_update_hook, unless: [:pending?, :importing?]
@@ -134,7 +135,6 @@ class Member < ActiveRecord::Base
       member =
         if user.is_a?(User)
           source.members.find_by(user_id: user.id) ||
-            source.access_requests.find_by(user_id: user.id) ||
             source.members.build(user_id: user.id)
         else
           source.members.build(invite_email: user)
@@ -148,16 +148,7 @@ class Member < ActiveRecord::Base
         expires_at: expires_at
       }
 
-      if member.request?
-        ::Members::ApproveAccessRequestService.new(
-          source,
-          current_user,
-          id: member.id,
-          access_level: access_level
-        ).execute
-      else
-        member.save
-      end
+      member.save
 
       member
     end
@@ -302,6 +293,12 @@ class Member < ActiveRecord::Base
 
   def send_request
     notification_service.new_access_request(self)
+  end
+
+  def delete_access_request
+    # Can't destroy an instance directly because it doesn't have a primary key
+    access_request_scope = source.access_requests.where(user_id: user_id)
+    access_request_scope.delete_all
   end
 
   def post_create_hook
