@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie';
 import bp from './breakpoints';
 
+const HIDE_INTERVAL_TIMEOUT = 300;
 const IS_OVER_CLASS = 'is-over';
 const IS_ABOVE_CLASS = 'is-above';
 const IS_SHOWING_FLY_OUT_CLASS = 'is-showing-fly-out';
@@ -10,7 +11,7 @@ let timeoutId;
 
 export const mousePos = [];
 
-export const setOpenMenu = (menu) => { currentOpenMenu = menu; };
+export const setOpenMenu = (menu = null) => { currentOpenMenu = menu; };
 
 export const slope = (a, b) => (b.y - a.y) / (b.x - a.x);
 
@@ -39,7 +40,7 @@ export const getHideSubItemsInterval = () => {
 
   if (slope(prevMousePos, menuBottom) < slope(currentMousePos, menuBottom) &&
     slope(prevMousePos, menuTop) > slope(currentMousePos, menuTop)) {
-    return 300;
+    return HIDE_INTERVAL_TIMEOUT;
   }
 
   return 0;
@@ -64,7 +65,7 @@ export const hideMenu = (el) => {
   parentEl.classList.remove(IS_OVER_CLASS);
   parentEl.classList.remove(IS_SHOWING_FLY_OUT_CLASS);
 
-  setOpenMenu(null);
+  setOpenMenu();
 };
 
 export const moveSubItemsToPosition = (el, subItems) => {
@@ -129,7 +130,10 @@ export const mouseLeaveTopItem = (el) => {
 };
 
 export const documentMouseMove = (e) => {
-  mousePos.push({ x: e.clientX, y: e.clientY });
+  mousePos.push({
+    x: e.clientX,
+    y: e.clientY,
+  });
 
   if (mousePos.length > 6) mousePos.shift();
 };
