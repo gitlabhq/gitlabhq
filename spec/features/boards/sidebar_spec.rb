@@ -15,17 +15,12 @@ describe 'Issue Boards', js: true do
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
   let(:card) { find('.board:nth-child(2)').first('.card') }
 
-<<<<<<< HEAD
-  before do
-    Timecop.freeze
-    stub_licensed_features(multiple_issue_assignees: false)
-=======
   around do |example|
     Timecop.freeze { example.run }
   end
->>>>>>> ce-com/master
 
   before do
+    stub_licensed_features(multiple_issue_assignees: false)
     project.add_master(user)
 
     sign_in(user)
