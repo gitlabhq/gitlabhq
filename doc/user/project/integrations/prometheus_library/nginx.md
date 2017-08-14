@@ -8,8 +8,8 @@ GitLab has support for automatically detecting and monitoring NGINX. This is pro
 | Name | Query |
 | ---- | ----- |
 | Throughput (req/sec) | sum(rate(nginx_requests_total{server_zone!="*", server_zone!="_", %{environment_filter}}[2m])) |
-| Latency (ms) | avg(nginx_upstream_response_msecs_avg{%{environment_filter}}) * 1000 |
-| HTTP Error Rate (%) | sum(rate(haproxy_frontend_http_responses_total{code="5xx",%{environment_filter}}[2m])) / sum(rate(haproxy_frontend_http_responses_total{%{environment_filter}}[2m])) |
+| Latency (ms) | avg(nginx_upstream_response_msecs_avg{%{environment_filter}}) |
+| HTTP Error Rate (HTTP Errors / sec) | rate(nginx_responses_total{status_code="5xx", %{environment_filter}}[2m])) |
 
 ## Configuring Prometheus to monitor for NGINX metrics
 
