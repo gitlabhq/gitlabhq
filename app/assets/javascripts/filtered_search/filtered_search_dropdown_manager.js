@@ -56,7 +56,7 @@ class FilteredSearchDropdownManager {
         reference: null,
         gl: 'DropdownNonUser',
         extraArguments: {
-          endpoint: `${this.baseEndpoint}/labels.json`,
+          endpoint: `${this.baseEndpoint}/labels.json?only_group_labels=true`,
           symbol: '~',
           preprocessing: gl.DropdownUtils.duplicateLabelPreprocessing,
         },
