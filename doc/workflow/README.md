@@ -18,7 +18,7 @@
 - [Notification emails](notifications.md)
 - [Projects](../user/project/index.md)
 - [Project forking workflow](forking_workflow.md)
-- [Project users](add-user/add-user.md)
+- [Project users](../user/project/members/index.md)
 - [Protected branches](../user/project/protected_branches.md)
 - [Protected tags](../user/project/protected_tags.md)
 - [Quick Actions](../user/project/quick_actions.md)
