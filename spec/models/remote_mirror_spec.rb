@@ -88,12 +88,8 @@ describe RemoteMirror do
   context '#sync' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
 
-    before do
-      Timecop.freeze(Time.now)
-    end
-
-    after do
-      Timecop.return
+    around do |example|
+      Timecop.freeze { example.run }
     end
 
     context 'repository mirrors not licensed' do
@@ -145,13 +141,12 @@ describe RemoteMirror do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
 
-    before do
-      Timecop.freeze(Time.now)
-      remote_mirror.update_attributes(last_update_started_at: Time.now)
+    around do |example|
+      Timecop.freeze { example.run }
     end
 
-    after do
-      Timecop.return
+    before do
+      remote_mirror.update_attributes(last_update_started_at: Time.now)
     end
 
     context 'when remote mirror does not have status failed' do

@@ -4,10 +4,6 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
   let(:app) { double('app') }
   subject { described_class.new(app) }
 
-  around do |example|
-    Timecop.freeze { example.run }
-  end
-
   describe '#call' do
     let(:status) { 100 }
     let(:env) { { 'REQUEST_METHOD' => 'GET' } }
@@ -28,16 +24,14 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
         subject.call(env)
       end
 
+      RSpec::Matchers.define :a_positive_execution_time do
+        match { |actual| actual > 0 }
+      end
+
       it 'measures execution time' do
-        execution_time = 10
-        allow(app).to receive(:call) do |*args|
-          Timecop.freeze(execution_time.seconds)
-          [200, nil, nil]
-        end
+        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ status: 200, method: 'get' }, a_positive_execution_time)
 
-        expect(described_class).to receive_message_chain(:http_request_duration_seconds, :observe).with({ status: 200, method: 'get' }, execution_time)
-
-        subject.call(env)
+        Timecop.scale(3600) { subject.call(env) }
       end
     end
 

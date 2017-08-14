@@ -18,13 +18,15 @@ describe Burndown do
     }
   end
 
+  around do |example|
+    Timecop.travel(due_date) do
+      example.run
+    end
+  end
+
   before do
     project.add_master(user)
     build_sample
-  end
-
-  after do
-    Timecop.return
   end
 
   subject { described_class.new(milestone).to_json }
@@ -52,9 +54,9 @@ describe Burndown do
   end
 
   it "it counts until today if milestone due date > Date.today" do
-    Timecop.travel(milestone.due_date - 1.day)
-
-    expect(JSON.parse(subject).last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
+    Timecop.travel(milestone.due_date - 1.day) do
+      expect(JSON.parse(subject).last[0]).to eq(Time.now.strftime("%Y-%m-%d"))
+    end
   end
 
   it "sets attribute accurate to true" do
@@ -104,19 +106,17 @@ describe Burndown do
       next if day.even?
 
       count = day * 4
-      Timecop.travel(date)
+      Timecop.travel(date) do
+        # Create issues
+        issues = create_list(:issue, count, issue_params)
 
-      # Create issues
-      issues = create_list(:issue, count, issue_params)
+        # Close issues
+        closed = issues.slice(0..count / 2)
+        closed.each(&:close)
 
-      # Close issues
-      closed = issues.slice(0..count / 2)
-      closed.each(&:close)
-
-      # Reopen issues
-      closed.slice(0..count / 4).each(&:reopen)
+        # Reopen issues
+        closed.slice(0..count / 4).each(&:reopen)
+      end
     end
-
-    Timecop.travel(due_date)
   end
 end

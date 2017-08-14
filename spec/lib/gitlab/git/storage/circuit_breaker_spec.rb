@@ -175,11 +175,7 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
 
   describe '#track_storage_inaccessible' do
     around do |example|
-      Timecop.freeze
-
-      example.run
-
-      Timecop.return
+      Timecop.freeze { example.run }
     end
 
     it 'records the failure time in redis' do
