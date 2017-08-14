@@ -16,7 +16,7 @@
 - [File finder](file_finder.md)
 - [Labels](../user/project/labels.md)
 - [Notification emails](notifications.md)
-- [Project Features](project_features.md)
+- [Projects](../user/project/index.md)
 - [Project forking workflow](forking_workflow.md)
 - [Project users](add-user/add-user.md)
 - [Protected branches](../user/project/protected_branches.md)
