@@ -229,7 +229,7 @@
             <form
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
-              <div class="flash-container timeline-content"></div>
+              <div class="flash-container error-alert timeline-content"></div>
               <confidentialIssue v-if="isConfidentialIssue" />
               <markdown-field
                 :markdown-preview-url="markdownPreviewUrl"

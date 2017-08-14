@@ -121,7 +121,7 @@
     </div>
     <div class="flash-container timeline-content"></div>
     <form
-      class="edit-note common-note-form">
+      class="edit-note common-note-form js-quick-submit gfm-form">
       <confidentialIssue v-if="isConfidentialIssue" />
       <markdown-field
         :markdown-preview-url="markdownPreviewUrl"
@@ -145,7 +145,7 @@
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
-          type="submit"
+          type="button"
           @click="handleUpdate()"
           :disabled="isDisabled"
           class="js-vue-issue-save btn btn-save">
