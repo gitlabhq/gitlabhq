@@ -451,7 +451,7 @@ describe Ci::CreatePipelineService do
         user.block!
       end
 
-      it 'creates a pipeline' do
+      it 'does not create a pipeline' do
         expect(execute_service.errors[:base].first).to eq('Blocked user can not create a new pipeline')
       end
     end
