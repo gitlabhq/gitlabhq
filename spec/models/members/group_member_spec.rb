@@ -59,16 +59,6 @@ describe GroupMember do
       end
     end
 
-    describe '#after_accept_request' do
-      it 'calls NotificationService.accept_group_access_request' do
-        member = create(:group_member, user: build(:user), requested_at: Time.now)
-
-        expect_any_instance_of(NotificationService).to receive(:new_group_member)
-
-        member.__send__(:after_accept_request)
-      end
-    end
-
     describe '#real_source_type' do
       subject { create(:group_member).real_source_type }
 

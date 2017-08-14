@@ -147,13 +147,11 @@ describe ProjectMember do
   end
 
   describe 'notifications' do
-    describe '#after_accept_request' do
+    describe '#after_create (e.g. approval of an access request)' do
       it 'calls NotificationService.new_project_member' do
-        member = create(:project_member, user: create(:user), requested_at: Time.now)
-
         expect_any_instance_of(NotificationService).to receive(:new_project_member)
 
-        member.__send__(:after_accept_request)
+        create(:project_member, user: create(:user))
       end
     end
   end
