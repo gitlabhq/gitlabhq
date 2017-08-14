@@ -7,7 +7,7 @@ describe MergeRequests::SquashService do
 
   let(:merge_request_with_one_commit) do
     create(:merge_request,
-           source_branch: 'feature.custom-highlighting', source_project: project,
+           source_branch: 'feature', source_project: project,
            target_branch: 'master', target_project: project)
   end
 
