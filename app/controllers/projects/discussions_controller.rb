@@ -21,6 +21,12 @@ class Projects::DiscussionsController < Projects::ApplicationController
     }
   end
 
+  def show
+    render json: {
+      discussion_html: view_to_html_string('discussions/_diff_with_notes', discussion: discussion)
+    }
+  end
+
   private
 
   def merge_request
