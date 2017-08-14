@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import repoCommitSection from '~/repo/components/repo_commit_section.vue';
 import RepoStore from '~/repo/stores/repo_store';
-import RepoHelper from '~/repo/helpers/repo_helper';
 import Api from '~/api';
 
 describe('RepoCommitSection', () => {
