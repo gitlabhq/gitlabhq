@@ -1,0 +1,5 @@
+---
+title: Forbid blocked users to create a pipeline
+merge_request: 13358
+author:
+type: security
