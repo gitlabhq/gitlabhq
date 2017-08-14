@@ -41,7 +41,7 @@ describe('Confidential Issue Sidebar Block', () => {
     ).toBe(true);
 
     expect(
-      vm2.$el.innerHTML.includes('None'),
+      vm2.$el.innerHTML.includes('This issue is not confidential'),
     ).toBe(true);
   });
 
