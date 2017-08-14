@@ -8,7 +8,7 @@ module BoardsHelper
   def board_data
     {
       boards_endpoint: @boards_endpoint,
-      lists_endpoint: board_lists_path(board),
+      lists_endpoint: board_lists_url(board),
       board_id: board.id,
       board_milestone_title: board&.milestone&.title,
       disabled: "#{!can?(current_user, :admin_list, current_board_parent)}",

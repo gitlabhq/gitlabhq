@@ -7,7 +7,7 @@ class BoardService {
     this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
         method: 'GET',
-        url: `/boards/${boardId}/issues.json`,
+        url: gon.gitlab_url + `/boards/${boardId}/issues.json`,
       }
     });
     this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {
@@ -16,7 +16,7 @@ class BoardService {
         url: `${listsEndpoint}/generate.json`
       }
     });
-    this.issue = Vue.resource(`/boards/${boardId}/issues{/id}`, {});
+    this.issue = Vue.resource(gon.gitlab_url + `/boards/${boardId}/issues{/id}`, {});
     this.issues = Vue.resource(`${listsEndpoint}{/id}/issues`, {}, {
       bulkUpdate: {
         method: 'POST',
