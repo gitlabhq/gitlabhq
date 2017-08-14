@@ -303,6 +303,7 @@ constraints(ProjectUrlConstrainer.new) do
         member do
           post :toggle_subscription
           post :mark_as_spam
+          post :move
           get :referenced_merge_requests
           get :related_branches
           get :can_create_branch
