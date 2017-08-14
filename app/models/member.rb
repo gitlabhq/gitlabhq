@@ -218,15 +218,6 @@ class Member < ActiveRecord::Base
     invite? || request?
   end
 
-  def accept_request
-    return false unless request?
-
-    updated = self.update(requested_at: nil)
-    after_accept_request if updated
-
-    updated
-  end
-
   def accept_invite!(new_user)
     return false unless invite?
 
@@ -334,10 +325,6 @@ class Member < ActiveRecord::Base
 
   def after_decline_invite
     # override in subclass
-  end
-
-  def after_accept_request
-    post_create_hook
   end
 
   def system_hook_service

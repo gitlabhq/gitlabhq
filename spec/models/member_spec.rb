@@ -86,11 +86,9 @@ describe Member do
                                       invite_email: 'toto2@example.com')
                                       .tap { |u| u.accept_invite!(accepted_invite_user) }
 
-      requested_user = create(:user).tap { |u| project.request_access(u) }
-      @requested_member = project.access_requests.find_by(user_id: requested_user.id)
-
-      accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.access_requests.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      accepted_request_user = create(:user)
+      access_request = project.request_access(accepted_request_user)
+      @accepted_request_member = Members::ApproveAccessRequestService.new(project, access_request.user, @master_user).execute
     end
 
     describe '.access_for_user_ids' do
@@ -109,7 +107,6 @@ describe Member do
       it { expect(described_class.invite).not_to include @master }
       it { expect(described_class.invite).to include @invited_member }
       it { expect(described_class.invite).not_to include @accepted_invite_member }
-      it { expect(described_class.invite).not_to include @requested_member }
       it { expect(described_class.invite).not_to include @accepted_request_member }
     end
 
@@ -117,7 +114,6 @@ describe Member do
       it { expect(described_class.non_invite).to include @master }
       it { expect(described_class.non_invite).not_to include @invited_member }
       it { expect(described_class.non_invite).to include @accepted_invite_member }
-      it { expect(described_class.non_invite).to include @requested_member }
       it { expect(described_class.non_invite).to include @accepted_request_member }
     end
 
@@ -125,7 +121,6 @@ describe Member do
       it { expect(described_class.request).not_to include @master }
       it { expect(described_class.request).not_to include @invited_member }
       it { expect(described_class.request).not_to include @accepted_invite_member }
-      it { expect(described_class.request).to include @requested_member }
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
@@ -133,7 +128,6 @@ describe Member do
       it { expect(described_class.non_request).to include @master }
       it { expect(described_class.non_request).to include @invited_member }
       it { expect(described_class.non_request).to include @accepted_invite_member }
-      it { expect(described_class.non_request).not_to include @requested_member }
       it { expect(described_class.non_request).to include @accepted_request_member }
     end
 
@@ -144,7 +138,6 @@ describe Member do
       it { is_expected.not_to include @master }
       it { is_expected.to include @invited_member }
       it { is_expected.to include @accepted_invite_member }
-      it { is_expected.not_to include @requested_member }
       it { is_expected.to include @accepted_request_member }
       it { is_expected.not_to include @blocked_master }
       it { is_expected.not_to include @blocked_developer }
@@ -155,7 +148,6 @@ describe Member do
       it { expect(described_class.owners_and_masters).to include @master }
       it { expect(described_class.owners_and_masters).not_to include @invited_member }
       it { expect(described_class.owners_and_masters).not_to include @accepted_invite_member }
-      it { expect(described_class.owners_and_masters).not_to include @requested_member }
       it { expect(described_class.owners_and_masters).not_to include @accepted_request_member }
       it { expect(described_class.owners_and_masters).not_to include @blocked_master }
     end
@@ -167,7 +159,6 @@ describe Member do
       it { is_expected.to include @master }
       it { is_expected.to include @invited_member }
       it { is_expected.to include @accepted_invite_member }
-      it { is_expected.not_to include @requested_member }
       it { is_expected.to include @accepted_request_member }
       it { is_expected.not_to include @blocked_master }
       it { is_expected.not_to include @blocked_developer }
@@ -411,24 +402,6 @@ describe Member do
           expect(members).to be_empty
         end
       end
-    end
-  end
-
-  describe '#accept_request' do
-    let(:member) { create(:project_member, requested_at: Time.now.utc) }
-
-    it { expect(member.accept_request).to be_truthy }
-
-    it 'clears requested_at' do
-      member.accept_request
-
-      expect(member.requested_at).to be_nil
-    end
-
-    it 'calls #after_accept_request' do
-      expect(member).to receive(:after_accept_request)
-
-      member.accept_request
     end
   end
 
