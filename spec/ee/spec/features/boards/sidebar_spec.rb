@@ -13,8 +13,11 @@ describe 'Issue Boards', :js do
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
   let(:card) { find('.board:nth-child(2)').first('.card') }
 
+  around do |example|
+    Timecop.freeze { example.run }
+  end
+
   before do
-    Timecop.freeze
     stub_licensed_features(multiple_issue_assignees: true)
 
     project.team << [user, :master]
@@ -24,10 +27,6 @@ describe 'Issue Boards', :js do
 
     visit project_board_path(project, board)
     wait_for_requests
-  end
-
-  after do
-    Timecop.return
   end
 
   context 'assignee' do

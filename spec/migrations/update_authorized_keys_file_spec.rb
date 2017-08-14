@@ -22,19 +22,15 @@ describe UpdateAuthorizedKeysFile, :migration do
 
       context 'there are keys created before and after the cutoff datetime' do
         before do
-          Timecop.freeze
-        end
-        after do
-          Timecop.return
-        end
-
-        before do
           @cutoff_datetime = UpdateAuthorizedKeysFile::DATETIME_9_3_0_RELEASED
           @keys = []
-          Timecop.travel(@cutoff_datetime - 1.day)
-          2.times { @keys << create(:key) } # 2 keys before cutoff
-          Timecop.travel(@cutoff_datetime + 1.day)
-          2.times { @keys << create(:key) } # 2 keys after cutoff
+          Timecop.travel(@cutoff_datetime - 1.day) do
+            2.times { @keys << create(:key) } # 2 keys before cutoff
+          end
+
+          Timecop.travel(@cutoff_datetime + 1.day) do
+            2.times { @keys << create(:key) } # 2 keys after cutoff
+          end
         end
 
         it 'adds the keys created after the cutoff datetime to the authorized_keys file' do
