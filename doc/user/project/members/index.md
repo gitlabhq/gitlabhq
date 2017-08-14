@@ -113,4 +113,4 @@ If you change your mind before your request is approved, just click the
 
 ## Share project with group
 
-Alternatively, you can [share a project with an entire group](share_project_with_group.md) instead of adding users one by one.
+Alternatively, you can [share a project with an entire group](share_project_with_groups.md) instead of adding users one by one.
