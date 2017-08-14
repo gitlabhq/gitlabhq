@@ -39,7 +39,7 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector(`.${file.icon}`).style.marginLeft).toEqual('100px');
     expect(name.title).toEqual(file.url);
     expect(name.href).toMatch(`/${file.url}`);
-    expect(name.textContent).toEqual(file.name);
+    expect(name.textContent.trim()).toEqual(file.name);
     expect(vm.$el.querySelector('.commit-message').textContent).toBe(file.lastCommitMessage);
     expect(vm.$el.querySelector('.commit-update').textContent).toBe(updated);
     expect(fileIcon.classList.contains(file.icon)).toBeTruthy();
