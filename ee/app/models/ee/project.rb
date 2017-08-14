@@ -7,12 +7,9 @@ module EE
     extend ActiveSupport::Concern
 
     prepended do
-      include IgnorableColumn
       include Elastic::ProjectsSearch
       prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
-
-      ignore_column :sync_time
 
       before_validation :mark_remote_mirrors_for_removal
 
