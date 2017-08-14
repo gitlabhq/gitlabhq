@@ -7,12 +7,9 @@ class ProjectsController < Projects::ApplicationController
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
-<<<<<<< HEAD
   before_action :assign_tree_vars, only: [:show], if: [:repo_exists?, :project_view_files?]
-=======
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
->>>>>>> ce-com/master
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
