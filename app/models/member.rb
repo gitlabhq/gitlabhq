@@ -276,6 +276,13 @@ class Member < ActiveRecord::Base
     @notification_setting ||= user.notification_settings_for(source)
   end
 
+  def notifiable?(type, opts = {})
+    # always notify when there isn't a user yet
+    return true if user.blank?
+
+    NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
+  end
+
   private
 
   def send_invite
@@ -331,5 +338,9 @@ class Member < ActiveRecord::Base
 
   def notification_service
     NotificationService.new
+  end
+
+  def notifiable_options
+    {}
   end
 end

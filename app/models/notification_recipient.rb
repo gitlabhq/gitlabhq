@@ -5,14 +5,22 @@ class NotificationRecipient
     custom_action: nil,
     target: nil,
     acting_user: nil,
-    project: nil
+    project: nil,
+    group: nil,
+    skip_read_ability: false
   )
+    unless NotificationSetting.levels.key?(type) || type == :subscription
+      raise ArgumentError, "invalid type: #{type.inspect}"
+    end
+
     @custom_action = custom_action
     @acting_user = acting_user
     @target = target
-    @project = project || @target&.project
+    @project = project || default_project
+    @group = group || @project&.group
     @user = user
     @type = type
+    @skip_read_ability = skip_read_ability
   end
 
   def notification_setting
@@ -77,6 +85,8 @@ class NotificationRecipient
   def has_access?
     DeclarativePolicy.subject_scope do
       return false unless user.can?(:receive_notifications)
+      return true if @skip_read_ability
+
       return false if @project && !user.can?(:read_project, @project)
 
       return true unless read_ability
@@ -96,6 +106,7 @@ class NotificationRecipient
   private
 
   def read_ability
+    return nil if @skip_read_ability
     return @read_ability if instance_variable_defined?(:@read_ability)
 
     @read_ability =
@@ -111,12 +122,18 @@ class NotificationRecipient
       end
   end
 
+  def default_project
+    return nil if @target.nil?
+    return @target if @target.is_a?(Project)
+    return @target.project if @target.respond_to?(:project)
+  end
+
   def find_notification_setting
     project_setting = @project && user.notification_settings_for(@project)
 
     return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = @project&.group && user.notification_settings_for(@project.group)
+    group_setting = @group && user.notification_settings_for(@group)
 
     return group_setting unless group_setting.nil? || group_setting.global?
 
