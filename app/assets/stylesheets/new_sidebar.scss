@@ -70,7 +70,8 @@ $new-sidebar-collapsed-width: 50px;
     background-color: $white-light;
   }
 
-  .sidebar-context-title {
+  .project-title,
+  .group-title {
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -96,29 +97,21 @@ $new-sidebar-collapsed-width: 50px;
   top: $header-height;
   bottom: 0;
   left: 0;
+  overflow: auto;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
-  transform: translate3d(0, 0, 0);
 
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
     overflow-x: hidden;
 
-    .nav-sidebar-inner-scroll {
-      overflow-x: hidden;
-    }
-
     .badge,
-    .sidebar-context-title {
+    .project-title {
       display: none;
     }
 
     .nav-item-name {
-      display: none;
-    }
-
-    .sidebar-top-level-items > li > a {
-      min-height: 44px;
+      opacity: 0;
     }
   }
 
@@ -181,12 +174,6 @@ $new-sidebar-collapsed-width: 50px;
       width: 16px;
     }
   }
-}
-
-.nav-sidebar-inner-scroll {
-  height: 100%;
-  width: 100%;
-  overflow: auto;
 }
 
 .with-performance-bar .nav-sidebar {
@@ -263,32 +250,13 @@ $new-sidebar-collapsed-width: 50px;
             position: absolute;
             top: -30px;
             bottom: -30px;
-            left: 0;
+            left: -10px;
             right: -30px;
             z-index: -1;
           }
 
-          &::after {
-            content: "";
-            position: absolute;
-            top: 44px;
-            left: -30px;
-            right: 35px;
-            bottom: 0;
-            height: 100%;
-            max-height: 150px;
-            z-index: -1;
-            transform: skew(33deg);
-          }
-
           &.is-above {
             margin-top: 1px;
-
-            &::after {
-              top: auto;
-              bottom: 44px;
-              transform: skew(-30deg);
-            }
           }
 
           > .active {
@@ -335,8 +303,7 @@ $new-sidebar-collapsed-width: 50px;
       }
     }
 
-    &:not(.active):hover > a,
-    > a:hover,
+    &.active > a:hover,
     &.is-over > a {
       background-color: $white-light;
     }
