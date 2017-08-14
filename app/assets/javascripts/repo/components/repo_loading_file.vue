@@ -21,7 +21,7 @@ const RepoLoadingFile = {
   computed: {
     showGhostLines() {
       return this.loading.tree && !this.hasFiles;
-    }
+    },
   },
 
   methods: {

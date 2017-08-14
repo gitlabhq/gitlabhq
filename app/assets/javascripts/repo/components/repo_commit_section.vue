@@ -2,7 +2,6 @@
 /* global Flash */
 import Store from '../stores/repo_store';
 import RepoMixin from '../mixins/repo_mixin';
-import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
 const RepoCommitSection = {

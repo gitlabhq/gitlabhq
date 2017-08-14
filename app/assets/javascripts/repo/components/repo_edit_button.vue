@@ -11,8 +11,11 @@ export default {
     },
 
     showButton() {
-      return this.isCommitable && !this.activeFile.render_error && !this.binary && this.openedFiles.length;
-    }
+      return this.isCommitable &&
+        !this.activeFile.render_error &&
+        !this.binary &&
+        this.openedFiles.length;
+    },
   },
   methods: {
     editCancelClicked() {
@@ -35,8 +38,18 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" type="button" @click.prevent="editCancelClicked" v-if="showButton">
-  <i class="fa fa-pencil" v-if="!editMode"></i>
-  <span>{{buttonLabel}}</span>
+<button
+  v-if="showButton"
+  class="btn btn-default"
+  type="button"
+  @click.prevent="editCancelClicked">
+  <i
+    v-if="!editMode"
+    class="fa fa-pencil"
+    aria-hidden="true">
+  </i>
+  <span>
+    {{buttonLabel}}
+  </span>
 </button>
 </template>

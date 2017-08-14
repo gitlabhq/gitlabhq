@@ -92,7 +92,6 @@ const RepoHelper = {
     return RepoHelper.mergeNewListToOldList(newListSorted, currentList, inDirectory, indexOfFile);
   },
 
-
   // within the get new merged list this does the merging of the current list of files
   // and the new list of files. The files are never "in" another directory they just
   // appear like they are because of the margin.
@@ -280,7 +279,7 @@ const RepoHelper = {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError(e) {
+  loadingError() {
     Flash('Unable to load this content at this time.');
   },
 };

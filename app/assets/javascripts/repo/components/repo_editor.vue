@@ -8,32 +8,32 @@ const RepoEditor = {
   data: () => Store,
 
   destroyed() {
-    if(Helper.monacoInstance){
+    if (Helper.monacoInstance) {
       Helper.monacoInstance.destroy();
     }
   },
 
   mounted() {
     Service.getRaw(this.activeFile.raw_path)
-    .then((rawResponse) => {
-      Store.blobRaw = rawResponse.data;
-      Store.activeFile.plain = rawResponse.data;
+      .then((rawResponse) => {
+        Store.blobRaw = rawResponse.data;
+        Store.activeFile.plain = rawResponse.data;
 
-      const monacoInstance = Helper.monaco.editor.create(this.$el, {
-        model: null,
-        readOnly: false,
-        contextmenu: false,
-      });
+        const monacoInstance = Helper.monaco.editor.create(this.$el, {
+          model: null,
+          readOnly: false,
+          contextmenu: false,
+        });
 
-      Helper.monacoInstance = monacoInstance;
+        Helper.monacoInstance = monacoInstance;
 
-      this.addMonacoEvents();
+        this.addMonacoEvents();
 
-      Helper.setMonacoModelFromLanguage();
-      
-      this.showHide();
+        Helper.setMonacoModelFromLanguage();
 
-    }).catch(Helper.loadingError);
+        this.showHide();
+      })
+      .catch(Helper.loadingError);
   },
 
   methods: {
@@ -50,19 +50,17 @@ const RepoEditor = {
       Helper.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
     },
 
-
-
     onMonacoEditorKeysPressed() {
       Store.setActiveFileContents(Helper.monacoInstance.getValue());
     },
 
     onMonacoEditorMouseUp(e) {
-      if(!e.target.position) return;
+      if (!e.target.position) return;
       const lineNumber = e.target.position.lineNumber;
       if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
         Store.activeLine = lineNumber;
-        
+
         Helper.monacoInstance.setPosition({
           lineNumber: this.activeLine,
           column: 1,
