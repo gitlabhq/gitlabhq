@@ -210,26 +210,26 @@ class NotificationService
 
   # Members
   def new_access_request(member)
-    return true unless member.notifiable?(:subscription)
+    return true unless member.notifiable?(:subscription, skip_read_ability: true)
 
     mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
   end
 
   def decline_access_request(member)
-    return true unless member.notifiable?(:subscription)
+    return true unless member.notifiable?(:subscription, skip_read_ability: true)
 
     mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
   end
 
   # Project invite
   def invite_project_member(project_member, token)
-    return true unless project_member.notifiable?(:subscription)
+    return true unless project_member.notifiable?(:subscription, skip_read_ability: true)
 
     mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
-    return true unless project_member.notifiable?(:subscription)
+    return true unless project_member.notifiable?(:subscription, skip_read_ability: true)
 
     mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
@@ -250,17 +250,20 @@ class NotificationService
   end
 
   def update_project_member(project_member)
-    return true unless project_member.notifiable?(:mention)
+    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
 
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   # Group invite
   def invite_group_member(group_member, token)
+    return true unless group_member.notifiable?(:subscription, skip_read_ability: true)
+
     mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end
 
   def accept_group_invite(group_member)
+    return true unless group_member.notifiable?(:subscription, skip_read_ability: true)
     mailer.member_invite_accepted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
@@ -277,13 +280,13 @@ class NotificationService
   end
 
   def new_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
+    return true unless group_member.notifiable?(:mention, skip_read_ability: true)
 
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
-    return true unless group_member.notifiable?(:mention)
+    return true unless group_member.notifiable?(:mention, skip_read_ability: true)
 
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
