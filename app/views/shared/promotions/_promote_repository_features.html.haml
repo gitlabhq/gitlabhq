@@ -12,15 +12,15 @@
           Improve repositories with GitLab Enterprise Edition.
       %ul
         %li
-          %a{ href: '/help/push_rules/push_rules.md#push-rules', target: '_blank' } Push Rules
+          = link_to 'Push Rules', help_page_path('push_rules/push_rules.md#push-rules'), target: '_blank'
           %p
             Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.
         %li
-          %a{ href: '/help/workflow/repository_mirroring.html', target: '_blank' } Repository Mirroring
+          = link_to 'Repository Mirroring', help_page_path('workflow/repository_mirroring.html'), target: '_blank'
           %p
             Repository Mirroring is a way to mirror repositories from external sources. It can be used to mirror all branches, tags, and commits that you have in your repository.
         %li
-          %a{ href: '/help/user/project/protected_branches.html', target: '_blank' } Protected Branches
+          = link_to 'Protected Branches', help_page_path('user/project/protected_branches.html'), target: '_blank'
           %p
             With GitLab Enterprise Edition you can restrict access to protected branches by choosing a role (Masters, Developers) as well as certain users.
 
