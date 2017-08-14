@@ -113,7 +113,7 @@ GEM
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
     cause (0.1)
-    charlock_holmes (0.7.3)
+    charlock_holmes (0.7.4)
     chronic (0.10.2)
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
