@@ -79,7 +79,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
         first_u2f_device = register_u2f_device
         second_u2f_device = register_u2f_device(name: 'My other device')
 
-        click_on "Delete", match: :first
+        accept_confirm { click_on "Delete", match: :first }
 
         expect(page).to have_content('Successfully deleted')
         expect(page.body).not_to match(first_u2f_device.name)
@@ -162,7 +162,6 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
         @u2f_device.respond_to_u2f_authentication
 
-        expect(page).to have_content('We heard back from your U2F device')
         expect(page).to have_css('.sign-out-link', visible: false)
       end
     end
@@ -174,20 +173,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
 
         @u2f_device.respond_to_u2f_authentication
 
-        expect(page).to have_content('We heard back from your U2F device')
         expect(page).to have_css('.sign-out-link', visible: false)
-      end
-    end
-
-    it 'persists remember_me value via hidden field' do
-      gitlab_sign_in(user, remember: true)
-
-      @u2f_device.respond_to_u2f_authentication
-      expect(page).to have_content('We heard back from your U2F device')
-
-      within 'div#js-authenticate-u2f' do
-        field = first('input#user_remember_me', visible: false)
-        expect(field.value).to eq '1'
       end
     end
 
