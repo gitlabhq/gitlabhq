@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20170811203342) do
-=======
-ActiveRecord::Schema.define(version: 20170809161910) do
->>>>>>> ce-com/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,24 +28,14 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   end
 
   create_table "appearances", force: :cascade do |t|
-<<<<<<< HEAD
-    t.string "title"
-    t.text "description"
-    t.string "logo"
-    t.integer "updated_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "header_logo"
-    t.text "description_html"
-=======
     t.string "title", null: false
     t.text "description", null: false
     t.string "header_logo"
     t.string "logo"
+    t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "description_html", null: false
->>>>>>> ce-com/master
     t.integer "cached_markdown_version"
   end
 
@@ -163,8 +149,8 @@ ActiveRecord::Schema.define(version: 20170809161910) do
     t.string "slack_app_verification_token"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
-<<<<<<< HEAD
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
+    t.boolean "project_export_enabled", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -182,9 +168,6 @@ ActiveRecord::Schema.define(version: 20170809161910) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "project_export_enabled", default: true, null: false
->>>>>>> ce-com/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
@@ -1578,7 +1561,6 @@ ActiveRecord::Schema.define(version: 20170809161910) do
 
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
-<<<<<<< HEAD
   create_table "push_rules", force: :cascade do |t|
     t.string "force_push_regex"
     t.string "delete_branch_regex"
@@ -1597,7 +1579,7 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   end
 
   add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
-=======
+
   create_table "push_event_payloads", id: false, force: :cascade do |t|
     t.integer "commit_count", limit: 8, null: false
     t.integer "event_id", null: false
@@ -1610,7 +1592,6 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   end
 
   add_index "push_event_payloads", ["event_id"], name: "index_push_event_payloads_on_event_id", unique: true, using: :btree
->>>>>>> ce-com/master
 
   create_table "redirect_routes", force: :cascade do |t|
     t.integer "source_id", null: false
@@ -2126,11 +2107,8 @@ ActiveRecord::Schema.define(version: 20170809161910) do
   add_foreign_key "protected_tag_create_access_levels", "protected_tags"
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
-=======
   add_foreign_key "push_event_payloads", "events_for_migration", column: "event_id", name: "fk_36c74129da", on_delete: :cascade
->>>>>>> ce-com/master
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
