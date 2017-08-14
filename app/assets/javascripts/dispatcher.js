@@ -378,13 +378,12 @@ import initGroupAnalytics from './init_group_analytics';
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new gl.Activities();
-<<<<<<< HEAD
-          initGeoInfoModal();
-=======
+
           $('#tree-slider').waitForImages(function() {
             gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
->>>>>>> ce-com/master
+
+          initGeoInfoModal();
           break;
         case 'projects:edit':
           new UsersSelect();
