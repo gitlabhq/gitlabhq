@@ -321,6 +321,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
+  gem 'rspec-parameterized'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
