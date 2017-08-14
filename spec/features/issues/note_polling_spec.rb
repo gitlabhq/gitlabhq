@@ -50,7 +50,6 @@ feature 'Issue notes polling', :js do
         expect(page).to have_selector(".alert")
       end
 
-
       it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
         click_edit_action(existing_note)
 

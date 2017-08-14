@@ -889,8 +889,7 @@ describe Projects::IssuesController do
     it 'returns discussion json' do
       get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-      expect(JSON.parse(response.body).first.keys).to match_array(
-        ['id', 'reply_id', 'expanded', 'notes', 'individual_note'])
+      expect(JSON.parse(response.body).first.keys).to match_array(%w[id reply_id expanded notes individual_note])
     end
   end
 end
