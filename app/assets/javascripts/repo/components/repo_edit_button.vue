@@ -29,12 +29,10 @@ export default {
     editMode() {
       if (this.editMode) {
         $('.project-refs-form').addClass('disabled');
-        $('.fa-long-arrow-right').show();
-        $('.project-refs-target-form').show();
+        $('.js-tree-ref-target-holder').show();
       } else {
         $('.project-refs-form').removeClass('disabled');
-        $('.fa-long-arrow-right').hide();
-        $('.project-refs-target-form').hide();
+        $('.js-tree-ref-target-holder').hide();
       }
     },
   },

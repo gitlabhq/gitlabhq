@@ -7,8 +7,7 @@ import RepoEditButton from './components/repo_edit_button.vue';
 import Translate from '../vue_shared/translate';
 
 function initDropdowns() {
-  $('.project-refs-target-form').hide();
-  $('.fa-long-arrow-right').hide();
+  $('.js-tree-ref-target-holder').hide();
 }
 
 function addEventsForNonVueEls() {
