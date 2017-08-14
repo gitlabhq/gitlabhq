@@ -71,12 +71,4 @@ describe('RepoFileButtons', () => {
 
     expect(vm.$el.querySelector('.preview')).toBeFalsy();
   });
-
-  it('does not render if not isMini', () => {
-    RepoStore.openedFiles = [];
-
-    const vm = createComponent();
-
-    expect(vm.$el.innerHTML).toBeFalsy();
-  });
 });

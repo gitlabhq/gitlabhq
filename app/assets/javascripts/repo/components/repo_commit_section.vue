@@ -10,7 +10,6 @@ const RepoCommitSection = {
   mixins: [RepoMixin],
 
   computed: {
-
     showCommitable() {
       return this.isCommitable && this.changedFiles.length;
     },
@@ -73,9 +72,9 @@ export default RepoCommitSection;
         </label>
         <div class="col-md-6">
           <ul class="list-unstyled changed-files">
-            <li v-for="file in branchPaths" :key="file.id">
+            <li v-for="branchPath in branchPaths" :key="branchPath">
               <span class="help-block">
-                {{file}}
+                {{branchPath}}
               </span>
             </li>
           </ul>
@@ -110,9 +109,10 @@ export default RepoCommitSection;
       </div>
       <div class="col-md-offset-4 col-md-6">
         <button
+          ref="submitCommit"
           type="submit"
           :disabled="cantCommitYet"
-          class="btn btn-success submit-commit">
+          class="btn btn-success">
           <i
             v-if="submitCommitsLoading"
             class="fa fa-spinner fa-spin"
