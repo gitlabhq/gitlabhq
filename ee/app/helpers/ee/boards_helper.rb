@@ -38,7 +38,7 @@ module EE
     end
 
     def board_sidebar_user_data
-      super.merge(group_id: @group&.path)
+      super.merge(group_id: @group&.id)
     end
   end
 end
