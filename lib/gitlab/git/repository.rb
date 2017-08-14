@@ -18,6 +18,28 @@ module Gitlab
       InvalidBlobName = Class.new(StandardError)
       InvalidRef = Class.new(StandardError)
 
+      class << self
+        # Unlike `new`, `create` takes the storage path, not the storage name
+        def create(storage_path, name, bare: true, symlink_hooks_to: nil)
+          repo_path = File.join(storage_path, name)
+          repo_path += '.git' unless repo_path.end_with?('.git')
+
+          FileUtils.mkdir_p(repo_path, mode: 0770)
+
+          # Equivalent to `git --git-path=#{repo_path} init [--bare]`
+          repo = Rugged::Repository.init_at(repo_path, bare)
+          repo.close
+
+          if symlink_hooks_to.present?
+            hooks_path = File.join(repo_path, 'hooks')
+            FileUtils.rm_rf(hooks_path)
+            FileUtils.ln_s(symlink_hooks_to, hooks_path)
+          end
+
+          true
+        end
+      end
+
       # Full path to repo
       attr_reader :path
 
