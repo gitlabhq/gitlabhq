@@ -131,7 +131,7 @@
         <textarea
           id="note_note"
           name="note[note]"
-          class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form"
+          class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"
           v-model="note"

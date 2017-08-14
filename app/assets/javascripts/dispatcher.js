@@ -98,7 +98,7 @@ import initChangesDropdown from './init_changes_dropdown';
       path = page.split(':');
       shortcut_handler = null;
 
-      $('.js-gfm-input').each((i, el) => {
+      $('.js-gfm-input:not(.js-vue-textarea)').each((i, el) => {
         const gfm = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
         const enableGFM = gl.utils.convertPermissionToBoolean(el.dataset.supportsAutocomplete);
         gfm.setup($(el), {
