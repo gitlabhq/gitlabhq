@@ -148,6 +148,7 @@ module ApplicationSettingsHelper
       :plantuml_enabled,
       :plantuml_url,
       :polling_interval_multiplier,
+      :project_export_enabled,
       :prometheus_metrics_enabled,
       :recaptcha_enabled,
       :recaptcha_private_key,

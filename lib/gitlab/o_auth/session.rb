@@ -1,3 +1,4 @@
+# :nocov:
 module Gitlab
   module OAuth
     module Session
@@ -15,3 +16,4 @@ module Gitlab
     end
   end
 end
+# :nocov:

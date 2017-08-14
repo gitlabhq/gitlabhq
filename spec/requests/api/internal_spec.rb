@@ -229,13 +229,12 @@ describe API::Internal do
 
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
-      before do
-        project.team << [user, :developer]
-        Timecop.freeze
+      around do |example|
+        Timecop.freeze { example.run }
       end
 
-      after do
-        Timecop.return
+      before do
+        project.team << [user, :developer]
       end
 
       context 'with env passed as a JSON' do

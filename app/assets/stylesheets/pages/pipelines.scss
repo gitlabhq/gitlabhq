@@ -854,6 +854,7 @@ a.linked-pipeline-mini-item {
  * Top arrow in the dropdown in the mini pipeline graph
  */
 .mini-pipeline-graph-dropdown-menu {
+  z-index: 200;
 
   &::before,
   &::after {

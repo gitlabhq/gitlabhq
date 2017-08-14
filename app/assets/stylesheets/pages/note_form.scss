@@ -108,6 +108,7 @@
   background-color: $orange-50;
   border-radius: $border-radius-default $border-radius-default 0 0;
   border: 1px solid $border-gray-normal;
+  border-bottom: none;
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -132,22 +133,9 @@
   }
 }
 
-.not-confidential {
-  padding: 0;
-  border-top: none;
-}
-
-.right-sidebar-expanded {
-  .md-area {
-    border-radius: 0;
-    border-top: none;
-  }
-}
-
-.right-sidebar-collapsed {
-  .confidential-issue-warning {
-    border-bottom: none;
-  }
+.confidential-issue-warning + .md-area {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .discussion-form {

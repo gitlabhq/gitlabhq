@@ -167,6 +167,7 @@
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
+<<<<<<< HEAD
   - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
     %section.settings.js-service-desk-setting-wrapper
       .settings-header
@@ -218,6 +219,9 @@
       - else
         = link_to 'Export project', export_project_path(@project),
                 method: :post, class: "btn btn-default"
+=======
+  = render 'export', project: @project
+>>>>>>> ce-com/master
 
   %section.settings.advanced-settings
     .settings-header
