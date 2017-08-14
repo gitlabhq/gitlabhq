@@ -1,4 +1,5 @@
 class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
+  include Select2Helper
   include SharedAuthentication
   include SharedIssuable
   include SharedProject
@@ -330,7 +331,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       find('.more-actions').click
       find('.more-actions .dropdown-menu li', match: :first)
 
-      find('.js-note-delete').click
+      accept_confirm { find('.js-note-delete').click }
     end
   end
 
@@ -534,7 +535,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I select a new target branch' do
-    select "feature", from: "merge_request_target_branch"
+    capybara_select2('feature_conflict')
     click_button 'Save'
   end
 
