@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProjectImportData do
+  using RSpec::Parameterized::TableSyntax
+
   let(:import_url) { 'ssh://example.com' }
   let(:import_data_attrs) { { auth_method: 'ssh_public_key' } }
   let(:project) { build(:project, :mirror, import_url: import_url, import_data_attributes: import_data_attrs) }
@@ -12,20 +14,19 @@ describe ProjectImportData do
   end
 
   describe '#ssh_key_auth?' do
-    subject { import_data.ssh_key_auth? }
+    where(:import_url, :auth_method, :expected) do
+      'ssh://example.com'  | 'ssh_public_key' | true
+      'ssh://example.com'  | 'password'       | false
+      'http://example.com' | 'ssh_public_key' | false
+      'http://example.com' | 'password'       | false
+    end
 
-    [
-      { import_url: 'ssh://example.com',  auth_method: 'ssh_public_key', expected: true  },
-      { import_url: 'ssh://example.com',  auth_method: 'password',       expected: false },
-      { import_url: 'http://example.com', auth_method: 'ssh_public_key', expected: false },
-      { import_url: 'http://example.com', auth_method: 'password',       expected: false }
-    ].each do |spec|
-      context spec.inspect do
-        let(:import_url) { spec[:import_url] }
-        let(:import_data_attrs) { { auth_method: spec[:auth_method] } }
+    with_them do
+      let(:import_data_attrs) { { auth_method: auth_method } }
 
-        it { is_expected.to spec[:expected] ? be_truthy : be_falsy }
-      end
+      subject { import_data.ssh_key_auth? }
+
+      it { is_expected.to eq(expected) }
     end
   end
 
@@ -62,20 +63,18 @@ describe ProjectImportData do
   end
 
   describe '#ssh_import?' do
-    subject { import_data.ssh_import? }
+    where(:import_url, :expected) do
+      'ssh://example.com'   | true
+      'git://example.com'   | false
+      'http://example.com'  | false
+      'https://example.com' | false
+      nil                   | nil
+    end
 
-    [
-      { import_url: nil,                   expected: false },
-      { import_url: 'ssh://example.com',   expected: true  },
-      { import_url: 'git://example.com',   expected: false },
-      { import_url: 'http://example.com',  expected: false },
-      { import_url: 'https://example.com', expected: false }
-    ].each do |spec|
-      context spec.inspect do
-        let(:import_url) { spec[:import_url] }
+    with_them do
+      subject { import_data.ssh_import? }
 
-        it { is_expected.to spec[:expected] ? be_truthy : be_falsy }
-      end
+      it { is_expected.to eq(expected) }
     end
   end
 
