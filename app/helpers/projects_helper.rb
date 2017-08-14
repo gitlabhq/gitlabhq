@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+    _("You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
       { project_name_with_namespace: project.name_with_namespace }
   end
 
