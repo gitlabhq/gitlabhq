@@ -241,22 +241,12 @@ const RepoHelper = {
   },
 
   dataToListOfFiles(data) {
-    const a = [];
-
-    // push in blobs
-    data.blobs.forEach((blob) => {
-      a.push(RepoHelper.serializeBlob(blob));
-    });
-
-    data.trees.forEach((tree) => {
-      a.push(RepoHelper.serializeTree(tree));
-    });
-
-    data.submodules.forEach((submodule) => {
-      a.push(RepoHelper.serializeSubmodule(submodule));
-    });
-
-    return a;
+    const { blobs, trees, submodules } = data;
+    return [
+      ...blobs.map(blob => RepoHelper.serializeBlob(blob)),
+      ...trees.map(tree => RepoHelper.serializeTree(tree)),
+      ...submodules.map(submodule => RepoHelper.serializeSubmodule(submodule)),
+    ];
   },
 
   genKey() {
