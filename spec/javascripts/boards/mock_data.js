@@ -34,7 +34,17 @@ const listObjDuplicate = {
 
 const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/1/lists{/id}/issues': {
+    '/test/boards/1{/id}/issues': {
+      issues: [{
+        title: 'Testing',
+        id: 1,
+        iid: 1,
+        confidential: false,
+        labels: [],
+        assignees: [],
+      }],
+    },
+    '/boards/1{/id}/issues': {
       issues: [{
         title: 'Testing',
         id: 1,
@@ -51,7 +61,7 @@ const BoardsMockData = {
     }],
   },
   'POST': {
-    '/test/issue-boards/board/1/lists{/id}': listObj
+    '/boards/1{/id}': listObj
   },
   'PUT': {
     '/test/issue-boards/board/1/lists{/id}': {}
@@ -76,11 +86,16 @@ window.BoardsMockData = BoardsMockData;
 window.boardsMockInterceptor = boardsMockInterceptor;
 
 // eslint-disable-next-line import/prefer-default-export
-export function mockBoardService() {
+export function mockBoardService(opts = {}) {
+  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/board';
+  const listsEndpoint = opts.listsEndpoint || '/test/boards/1';
+  const bulkUpdatePath = opts.bulkUpdatePath || '';
+  const boardId = opts.boardId || '1';
+
   return new BoardService({
-    boardsEndpoint: '/test/issue-boards/board',
-    listsEndpoint: '/test/boards/1',
-    bulkUpdatePath: '',
-    boardId: '1',
+    boardsEndpoint,
+    listsEndpoint,
+    bulkUpdatePath,
+    boardId,
   });
 }

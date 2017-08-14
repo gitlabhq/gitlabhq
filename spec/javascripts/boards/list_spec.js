@@ -97,6 +97,7 @@ describe('List model', () => {
     const listDup = new List(listObjDuplicate);
     const issue = new ListIssue({
       title: 'Testing',
+      id: _.random(10000),
       iid: _.random(10000),
       confidential: false,
       labels: [list.label, listDup.label],
@@ -123,7 +124,8 @@ describe('List model', () => {
       for (let i = 0; i < 30; i += 1) {
         list.issues.push(new ListIssue({
           title: 'Testing',
-          iid: _.random(10000) + i,
+          id: _.random(10000) + i,
+          iid: _.random(1000) + i,
           confidential: false,
           labels: [list.label],
           assignees: [],
@@ -142,7 +144,7 @@ describe('List model', () => {
     it('does not increase page number if issue count is less than the page size', () => {
       list.issues.push(new ListIssue({
         title: 'Testing',
-        iid: _.random(10000),
+        id: _.random(10000),
         confidential: false,
         labels: [list.label],
         assignees: [],
@@ -161,7 +163,7 @@ describe('List model', () => {
       spyOn(gl.boardService, 'newIssue').and.returnValue(Promise.resolve({
         json() {
           return {
-            iid: 42,
+            id: 42,
           };
         },
       }));
@@ -170,14 +172,14 @@ describe('List model', () => {
     it('adds new issue to top of list', (done) => {
       list.issues.push(new ListIssue({
         title: 'Testing',
-        iid: _.random(10000),
+        id: _.random(10000),
         confidential: false,
         labels: [list.label],
         assignees: [],
       }));
       const dummyIssue = new ListIssue({
         title: 'new issue',
-        iid: _.random(10000),
+        id: _.random(10000),
         confidential: false,
         labels: [list.label],
         assignees: [],

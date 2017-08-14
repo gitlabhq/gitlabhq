@@ -32,6 +32,7 @@ describe('Board list component', () => {
     const list = new List(listObj);
     const issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [],
