@@ -583,8 +583,7 @@ describe API::MergeRequests do
       before do
         fork_project.add_reporter(user2)
 
-        allow_any_instance_of(Repository).to receive(:fetch_ref) # for forks
-        allow_any_instance_of(Repository).to receive(:write_ref) # for non-forks
+        allow_any_instance_of(MergeRequest).to receive(:write_ref)
       end
 
       it "returns merge_request" do

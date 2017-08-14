@@ -940,14 +940,13 @@ class MergeRequest < ActiveRecord::Base
   private
 
   def write_ref
-    if for_fork?
-      target_project.repository.fetch_ref(
-        source_project.repository.path_to_repo,
-        "refs/heads/#{source_branch}",
-        ref_path
-      )
-    else
-      source_project.repository.write_ref(ref_path, source_branch_sha)
-    end
+    target_project.repository.with_repo_branch_commit(
+      source_project.repository, source_branch) do |commit|
+        if commit
+          target_project.repository.write_ref(ref_path, commit.sha)
+        else
+          raise Rugged::ReferenceError, 'source repository is empty'
+        end
+      end
   end
 end
