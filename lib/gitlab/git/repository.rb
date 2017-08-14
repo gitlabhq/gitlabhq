@@ -620,29 +620,13 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
-        actual_ref = ref || root_ref
-
-        begin
-          sha_from_ref(actual_ref)
-        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-          # Return an empty array if the ref wasn't found
-          return []
+        gitaly_migrate(:ls_files) do |is_enabled|
+          if is_enabled
+            gitaly_ls_files(ref)
+          else
+            git_ls_files(ref)
+          end
         end
-
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-tree)
-        cmd += %w(-r)
-        cmd += %w(--full-tree)
-        cmd += %w(--full-name)
-        cmd += %W(-- #{actual_ref})
-
-        raw_output = IO.popen(cmd, &:read).split("\n").map do |f|
-          stuff, path = f.split("\t")
-          _mode, type, _sha = stuff.split(" ")
-          path if type == "blob"
-          # Contain only blob type
-        end
-
-        raw_output.compact
       end
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
@@ -973,6 +957,36 @@ module Gitlab
         raw_output = IO.popen(cmd) { |io| io.read }
 
         raw_output.to_i
+      end
+
+      def gitaly_ls_files(ref)
+        gitaly_commit_client.ls_files(ref)
+      end
+
+      def git_ls_files(ref)
+        actual_ref = ref || root_ref
+
+        begin
+          sha_from_ref(actual_ref)
+        rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
+          # Return an empty array if the ref wasn't found
+          return []
+        end
+
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-tree)
+        cmd += %w(-r)
+        cmd += %w(--full-tree)
+        cmd += %w(--full-name)
+        cmd += %W(-- #{actual_ref})
+
+        raw_output = IO.popen(cmd, &:read).split("\n").map do |f|
+          stuff, path = f.split("\t")
+          _mode, type, _sha = stuff.split(" ")
+          path if type == "blob"
+          # Contain only blob type
+        end
+
+        raw_output.compact
       end
     end
   end
