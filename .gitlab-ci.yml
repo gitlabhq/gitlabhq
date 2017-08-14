@@ -226,6 +226,7 @@ update-tests-metadata:
 
 flaky-examples-check:
   <<: *dedicated-runner
+  <<: *except-docs
   image: ruby:2.3-alpine
   services: []
   before_script: []
