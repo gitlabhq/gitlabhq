@@ -157,8 +157,9 @@ trade-off:
 
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
-  correctly. However if you run only unit tests without integration / system tests, you might [miss] the [big] [picture]!
-- Integration tests are a bit more expensive, but don't abuse them. A feature test
+  correctly. However if you run only unit tests without integration / system
+  tests, you might [miss] the [big] [picture]!
+- Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
   a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
@@ -195,10 +196,26 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
-- Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- Don't assert against the absolute value of a sequence-generated attribute (see
+  [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+- Don't supply the `:each` argument to hooks since it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
+
+### Automatic retries and flaky tests detection
+
+On our CI, we use [rspec-retry] to automatically retry a failing example a few
+times (see [`spec/spec_helper.rb`] for the precise retries count).
+
+We also use a home-made `RspecFlaky::Listener` listener which records flaky
+examples in a JSON report file on `master` (`retrieve-tests-metadata` and `update-tests-metadata` jobs), and warns when a new flaky example
+is detected in any other branch (`flaky-examples-check` job). In the future, the
+`flaky-examples-check` job will not be allowed to fail.
+
+[rspec-retry]: https://github.com/NoRedInk/rspec-retry
+[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/spec_helper.rb
 
 ### `let` variables
 
@@ -269,6 +286,15 @@ complexity of RSpec expectations.They should be placed under
 `spec/support/matchers/`. Matchers can be placed in subfolder if they apply to
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.
+
+#### have_gitlab_http_status
+
+Prefer `have_gitlab_http_status` over `have_http_status` because the former
+could also show the response body whenever the status mismatched. This would
+be very useful whenever some tests start breaking and we would love to know
+why without editing the source and rerun the tests.
+
+This is especially useful whenever it's showing 500 internal server error.
 
 ### Shared contexts
 

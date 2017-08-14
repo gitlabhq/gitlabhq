@@ -217,7 +217,17 @@ describe API::Users do
     it "does not return the user's `is_admin` flag" do
       get api("/users/#{user.id}", user)
 
+      expect(response).to have_http_status(200)
       expect(json_response['is_admin']).to be_nil
+    end
+
+    context 'when authenticated as admin' do
+      it 'includes the `is_admin` field' do
+        get api("/users/#{user.id}", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['is_admin']).to be(false)
+      end
     end
 
     context 'for an anonymous user' do
