@@ -155,6 +155,8 @@
 
 .project-repo-buttons,
 .group-buttons {
+  @include new-style-dropdown;
+
   .btn {
     @include btn-gray;
     padding: 3px 10px;
