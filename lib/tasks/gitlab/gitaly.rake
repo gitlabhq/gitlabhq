@@ -18,7 +18,7 @@ namespace :gitlab do
       command = status.zero? ? ['gmake'] : ['make']
 
       if Rails.env.test?
-        command += %W[BUNDLE_PATH=#{Bundler.bundle_path}] 
+        command += %W[BUNDLE_PATH=#{Bundler.bundle_path}]
       end
 
       Dir.chdir(args.dir) do

@@ -221,7 +221,7 @@ module DeclarativePolicy
     end
 
     # computes the given ability and prints a helpful debugging output
-    # showing which 
+    # showing which
     def debug(ability, *a)
       runner(ability).debug(*a)
     end

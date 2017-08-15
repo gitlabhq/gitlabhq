@@ -83,7 +83,7 @@ module API
       expose :created_at, :last_activity_at
     end
 
-    class Project < BasicProjectDetails 
+    class Project < BasicProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose :_links do
