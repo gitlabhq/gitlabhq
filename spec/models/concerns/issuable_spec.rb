@@ -483,8 +483,8 @@ describe Issuable do
 
   describe '#first_contribution?' do
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, namespace: group) }
-    let(:other_project) { create(:empty_project) }
+    let(:project) { create(:project, namespace: group) }
+    let(:other_project) { create(:project) }
     let(:owner) { create(:owner) }
     let(:master) { create(:user) }
     let(:reporter) { create(:user) }
