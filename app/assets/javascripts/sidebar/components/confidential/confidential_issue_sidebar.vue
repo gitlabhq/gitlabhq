@@ -71,7 +71,7 @@ export default {
       />
       <div v-if="!isConfidential" class="no-value confidential-value">
         <i class="fa fa-eye is-not-confidential"></i>
-        None
+        This issue is not confidential
       </div>
       <div v-else class="value confidential-value hide-collapsed">
         <i aria-hidden="true" data-hidden="true" class="fa fa-eye-slash is-confidential"></i>
