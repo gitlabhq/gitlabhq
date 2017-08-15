@@ -160,7 +160,7 @@ const RepoStore = {
     const openFile = file;
 
     const openedFilesAlreadyExists = RepoStore.openedFiles
-      .some(openedFile => openedFile.url === openFile.url);
+      .some(openedFile => openedFile.path === openFile.path);
 
     if (openedFilesAlreadyExists) return;
 
