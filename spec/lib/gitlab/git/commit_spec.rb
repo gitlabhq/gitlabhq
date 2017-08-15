@@ -307,8 +307,8 @@ describe Gitlab::Git::Commit, seed_helper: true do
             commits.map(&:id)
           end
 
-          it 'has 33 elements' do
-            expect(subject.size).to eq(33)
+          it 'has 34 elements' do
+            expect(subject.size).to eq(34)
           end
 
           it 'includes the expected commits' do
