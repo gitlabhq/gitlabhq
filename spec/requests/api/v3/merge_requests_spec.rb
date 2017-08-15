@@ -400,7 +400,6 @@ describe API::MergeRequests do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
         expect(response).to have_gitlab_http_status(201)
-<<<<<<< HEAD
       end
     end
 
@@ -461,8 +460,6 @@ describe API::MergeRequests do
             expect(json_response['approvals_before_merge']).to eq(2)
           end
         end
-=======
->>>>>>> 4a2a6d521a260981482ee8e4931ebf06cb4f5b6a
       end
     end
   end

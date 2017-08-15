@@ -962,13 +962,10 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
-<<<<<<< HEAD
   def base_pipeline
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
   end
 
-=======
->>>>>>> 4a2a6d521a260981482ee8e4931ebf06cb4f5b6a
   private
 
   def write_ref
