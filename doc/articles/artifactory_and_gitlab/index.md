@@ -1,6 +1,6 @@
 # How to deploy Maven projects to Artifactory with GitLab CI/CD
 
-> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
+> **Article [Type](../../development/writing_documentation.md#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Fabio Busatto](https://gitlab.com/bikebilly) ||
 > **Publication date:** 2017-08-15
