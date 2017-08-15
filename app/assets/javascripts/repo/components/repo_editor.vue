@@ -29,14 +29,19 @@ const RepoEditor = {
 
         this.addMonacoEvents();
 
-        Helper.setMonacoModelFromLanguage();
-
-        this.showHide();
+        this.setupEditor();
       })
       .catch(Helper.loadingError);
   },
 
   methods: {
+    setupEditor() {
+      this.showHide();
+
+      if (this.isTree) return;
+      Helper.setMonacoModelFromLanguage();
+    },
+
     showHide() {
       if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
         this.$el.style.display = 'none';
@@ -109,10 +114,9 @@ const RepoEditor = {
     },
 
     blobRaw() {
-      this.showHide();
-
-      if (this.isTree) return;
-      Helper.setMonacoModelFromLanguage();
+      if (Helper.monacoInstance) {
+        this.setupEditor();
+      }
     },
   },
 };
