@@ -26,7 +26,7 @@ const RepoLoadingFile = {
 
   methods: {
     lineOfCode(n) {
-      return `line-of-code-${n}`;
+      return `skeleton-line-${n}`;
     },
   },
 };
