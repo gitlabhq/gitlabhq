@@ -169,7 +169,7 @@ file - just paste the entire `ssh-rsa AAA.... user@host` block into the file on
 its own line and save it.
 
 Once the public key is set up on the source repository, press `Save changes` and your
-mirror will be begin working.
+mirror will begin working.
 
 If you need to change the key at any time, you can press the `Regenerate key`
 button to do so. You'll have to update the source repository with the new key
