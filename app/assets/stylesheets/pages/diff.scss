@@ -560,9 +560,13 @@
 }
 
 .diff-files-changed {
+  .inline-parallel-buttons {
+    position: relative;
+    z-index: 1;
+  }
+
   .commit-stat-summary {
     @include new-style-dropdown;
-    z-index: -1;
 
     @media (min-width: $screen-sm-min) {
       margin-left: -$gl-padding;
