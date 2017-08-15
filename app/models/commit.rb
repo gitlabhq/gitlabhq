@@ -251,15 +251,15 @@ class Commit
     project.repository.next_branch("cherry-pick-#{short_id}", mild: true)
   end
 
-  def cherry_pick_message(start_branch_name)
-    message_buffer = message.dup
-
+  def cherry_pick_description(start_branch_name)
     if merge_commit?
+      message_buffer = ""
+
       compare = CompareService.new(project, sha).execute(project, start_branch_name)
 
       *commits_in_merge, merge_commit = compare.commits
 
-      message_buffer << "\n\ncherry picked from merge #{merge_commit.sha}"
+      message_buffer << "cherry picked from merge #{merge_commit.sha}"
 
       if commits_in_merge.present?
         message_buffer << "; commits:"
@@ -268,11 +268,15 @@ class Commit
           message_buffer << "\n- #{commit_in_merge.sha}"
         end
       end
-    else
-      message_buffer << "\ncherry picked from commit #{sha}"
-    end
 
-    message_buffer
+      message_buffer
+    else
+      "cherry picked from commit #{sha}"
+    end
+  end
+
+  def cherry_pick_message(start_branch_name)
+    %Q{#{message}\n\n#{cherry_pick_description(start_branch_name)}}
   end
 
   def revert_description(user)
