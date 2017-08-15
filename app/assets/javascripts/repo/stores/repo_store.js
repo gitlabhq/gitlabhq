@@ -136,8 +136,8 @@ const RepoStore = {
     if (file.type === 'tree') return;
     let foundIndex;
     RepoStore.openedFiles = RepoStore.openedFiles.filter((openedFile, i) => {
-      if (openedFile.url === file.url) foundIndex = i;
-      return openedFile.url !== file.url;
+      if (openedFile.path === file.path) foundIndex = i;
+      return openedFile.path !== file.path;
     });
 
     // now activate the right tab based on what you closed.
