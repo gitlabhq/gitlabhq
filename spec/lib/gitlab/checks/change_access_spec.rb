@@ -239,6 +239,27 @@ describe Gitlab::Checks::ChangeAccess do
         end
       end
 
+      context 'branch name rules' do
+        let(:push_rule) { create(:push_rule, branch_name_regex: '^(w*)$') }
+        let(:ref) { 'refs/heads/a-branch-that-is-not-allowed' }
+
+        it_behaves_like 'check ignored when push rule unlicensed'
+
+        it 'rejects the branch that is not allowed' do
+          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+        end
+
+        context 'when no commits are present' do
+          before do
+            allow(project.repository).to receive(:new_commits) { [] }
+          end
+
+          it 'rejects the branch that is not allowed' do
+            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+          end
+        end
+      end
+
       context 'existing member rules' do
         let(:push_rule) { create(:push_rule, member_check: true) }
 
