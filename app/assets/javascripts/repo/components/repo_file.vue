@@ -90,7 +90,7 @@ export default RepoFile;
     v-if="!isMini"
     class="hidden-sm hidden-xs">
     <div class="commit-message">
-      <a :href="file.lastCommitUrl">
+      <a @click.stop :href="file.lastCommitUrl">
         {{file.lastCommitMessage}}
       </a>
     </div>
