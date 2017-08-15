@@ -62,7 +62,7 @@ const RepoHelper = {
 
     file.opened = true;
     file.icon = 'fa-folder-open';
-    RepoHelper.toURL(file.url, file.name);
+    RepoHelper.updateHistoryEntry(file.url, file.name);
     return file;
   },
 
@@ -276,7 +276,7 @@ const RepoHelper = {
     RepoHelper.key = key;
   },
 
-  toURL(url, title) {
+  updateHistoryEntry(url, title) {
     const history = window.history;
 
     RepoHelper.key = RepoHelper.genKey();

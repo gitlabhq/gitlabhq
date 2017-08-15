@@ -23,17 +23,19 @@ export default {
       this.editMode = !this.editMode;
       Store.toggleBlobView();
     },
+    toggleProjectRefsForm() {
+      if (this.editMode) {
+        $('.project-refs-form').addClass('disabled-content');
+        $('.project-refs-target-form').show();
+      } else {
+        $('.project-refs-form').removeClass('disabled-content');
+        $('.project-refs-target-form').hide();
+      }
+    },
   },
-
   watch: {
     editMode() {
-      if (this.editMode) {
-        $('.project-refs-form').addClass('disabled');
-        $('.js-tree-ref-target-holder').show();
-      } else {
-        $('.project-refs-form').removeClass('disabled');
-        $('.js-tree-ref-target-holder').hide();
-      }
+      this.toggleProjectRefsForm();
     },
   },
 };

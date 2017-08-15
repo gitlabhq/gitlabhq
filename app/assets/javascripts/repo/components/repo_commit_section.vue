@@ -5,7 +5,7 @@ import RepoMixin from '../mixins/repo_mixin';
 import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
-const RepoCommitSection = {
+export default {
   data: () => Store,
 
   mixins: [RepoMixin],
@@ -54,8 +54,6 @@ const RepoCommitSection = {
     },
   },
 };
-
-export default RepoCommitSection;
 </script>
 
 <template>
