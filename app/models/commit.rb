@@ -252,27 +252,24 @@ class Commit
   end
 
   def cherry_pick_description(start_branch_name)
-    if merge_commit?
-      message_buffer = ""
+    message_buffer = "(cherry picked from commit #{sha})"
 
+    if merge_commit?
       compare = CompareService.new(project, sha).execute(project, start_branch_name)
 
-      *commits_in_merge, merge_commit = compare.commits
-
-      message_buffer << "cherry picked from merge #{merge_commit.sha}"
+      # Ignore the merge commit.
+      commits_in_merge = compare.commits[0..-2]
 
       if commits_in_merge.present?
-        message_buffer << "; commits:"
+        message_buffer << "\n"
 
         commits_in_merge.each do |commit_in_merge|
-          message_buffer << "\n- #{commit_in_merge.sha}"
+          message_buffer << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end
-
-      message_buffer
-    else
-      "cherry picked from commit #{sha}"
     end
+
+    message_buffer
   end
 
   def cherry_pick_message(start_branch_name)
