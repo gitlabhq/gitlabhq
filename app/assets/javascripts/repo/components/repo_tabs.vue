@@ -24,7 +24,6 @@ export default RepoTabs;
 
 <template>
 <ul
-  v-if="isMini"
   id="tabs">
   <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}" @xclicked="xClicked"/>
   <li class="tabs-divider" />
