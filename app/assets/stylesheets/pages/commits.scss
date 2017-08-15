@@ -290,6 +290,10 @@
 
 
 .gpg-status-box {
+  &:empty {
+    display: none;
+  }
+
   &.valid {
     @include green-status-color;
   }

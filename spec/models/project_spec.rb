@@ -2791,4 +2791,14 @@ describe Project do
       end
     end
   end
+
+  describe '#forks_count' do
+    it 'returns the number of forks' do
+      project = build(:project)
+
+      allow(project.forks).to receive(:count).and_return(1)
+
+      expect(project.forks_count).to eq(1)
+    end
+  end
 end

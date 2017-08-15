@@ -129,6 +129,8 @@ module Projects
       project.repository.before_delete
 
       Repository.new(wiki_path, project, disk_path: repo_path).before_delete
+
+      Projects::ForksCountService.new(project).delete_cache
     end
   end
 end

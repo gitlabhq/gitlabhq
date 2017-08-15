@@ -200,7 +200,6 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :import_data
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
@@ -1395,6 +1394,10 @@ class Project < ActiveRecord::Base
   alias_method :human_name, :full_name
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
+
+  def forks_count
+    Projects::ForksCountService.new(self).count
+  end
 
   private
 

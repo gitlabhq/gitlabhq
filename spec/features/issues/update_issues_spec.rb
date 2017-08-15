@@ -14,7 +14,7 @@ feature 'Multiple issue updating from issues#index', :js do
     it 'sets to closed' do
       visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.js-issue-status').click
 
@@ -27,7 +27,7 @@ feature 'Multiple issue updating from issues#index', :js do
       create_closed
       visit project_issues_path(project, state: 'closed')
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.js-issue-status').click
 
@@ -41,7 +41,7 @@ feature 'Multiple issue updating from issues#index', :js do
     it 'updates to current user' do
       visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       click_update_assignee_button
 
@@ -57,7 +57,7 @@ feature 'Multiple issue updating from issues#index', :js do
       create_assigned
       visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       click_update_assignee_button
 
@@ -73,7 +73,7 @@ feature 'Multiple issue updating from issues#index', :js do
     it 'updates milestone' do
       visit project_issues_path(project)
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.issues-bulk-update .js-milestone-select').click
 
@@ -89,7 +89,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
       expect(first('.issue')).to have_content milestone.title
 
-      click_button 'Edit Issues'
+      click_button 'Edit issues'
       find('#check-all-issues').click
       find('.issues-bulk-update .js-milestone-select').click
 

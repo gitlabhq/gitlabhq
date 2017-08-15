@@ -665,6 +665,7 @@ describe API::MergeRequests do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
         expect(response).to have_gitlab_http_status(201)
+<<<<<<< HEAD
       end
     end
 
@@ -736,6 +737,8 @@ describe API::MergeRequests do
             expect(json_response['approvals_before_merge']).to eq(2)
           end
         end
+=======
+>>>>>>> 4a2a6d521a260981482ee8e4931ebf06cb4f5b6a
       end
     end
   end
@@ -857,6 +860,7 @@ describe API::MergeRequests do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), sha: merge_request.diff_head_sha
 
       expect(response).to have_gitlab_http_status(200)
+<<<<<<< HEAD
     end
 
     it "updates the MR's squash attribute" do
@@ -865,6 +869,8 @@ describe API::MergeRequests do
       end.to change { merge_request.reload.squash }
 
       expect(response).to have_http_status(200)
+=======
+>>>>>>> 4a2a6d521a260981482ee8e4931ebf06cb4f5b6a
     end
 
     it "enables merge when pipeline succeeds if the pipeline is active" do
@@ -1133,6 +1139,7 @@ describe API::MergeRequests do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/unsubscribe", guest)
 
       expect(response).to have_gitlab_http_status(403)
+<<<<<<< HEAD
     end
   end
 
@@ -1252,6 +1259,8 @@ describe API::MergeRequests do
         expect(json_response['user_has_approved']).to be false
         expect(json_response['user_can_approve']).to be true
       end
+=======
+>>>>>>> 4a2a6d521a260981482ee8e4931ebf06cb4f5b6a
     end
   end
 

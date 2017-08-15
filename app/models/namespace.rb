@@ -161,10 +161,24 @@ class Namespace < ActiveRecord::Base
       .base_and_ancestors
   end
 
+  def self_and_ancestors
+    return self.class.where(id: id) unless parent_id
+
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .base_and_ancestors
+  end
+
   # Returns all the descendants of the current namespace.
   def descendants
     Gitlab::GroupHierarchy
       .new(self.class.where(parent_id: id))
+      .base_and_descendants
+  end
+
+  def self_and_descendants
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
       .base_and_descendants
   end
 

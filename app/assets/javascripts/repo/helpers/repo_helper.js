@@ -33,12 +33,16 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
+  getFileExtension(fileName) {
+    return fileName.split('.').pop();
+  },
+
   getBranch() {
     return $('button.dropdown-menu-toggle').attr('data-ref');
   },
 
   getLanguageIDForFile(file, langs) {
-    const ext = file.name.split('.').pop();
+    const ext = RepoHelper.getFileExtension(file.name);
     const foundLang = RepoHelper.findLanguage(ext, langs);
 
     return foundLang ? foundLang.id : 'plaintext';
@@ -135,21 +139,19 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getContent(treeOrFile, cb) {
+  getContent(treeOrFile) {
     let file = treeOrFile;
     // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
       const data = response.data;
       // RepoHelper.setLoading(false, loadingData);
-      if (cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
         Store.binary = data.binary;
 
         if (data.binary) {
-          Store.binaryMimeType = data.mime_type;
           // file might be undefined
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
@@ -188,19 +190,14 @@ const RepoHelper = {
   setFile(data, file) {
     const newFile = data;
 
-    newFile.url = file.url || location.pathname;
     newFile.url = file.url;
-    if (newFile.render_error === 'too_large') {
+    if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }
     newFile.newContent = '';
 
     Store.addToOpenedFiles(newFile);
     Store.setActiveFiles(newFile);
-  },
-
-  toFA(icon) {
-    return `fa-${icon}`;
   },
 
   serializeBlob(blob) {
@@ -226,7 +223,7 @@ const RepoHelper = {
       type,
       name,
       url,
-      icon: RepoHelper.toFA(icon),
+      icon: `fa-${icon}`,
       level: 0,
       loading: false,
     };
@@ -244,7 +241,7 @@ const RepoHelper = {
     setTimeout(() => {
       const tabs = document.getElementById('tabs');
       if (!tabs) return;
-      tabs.scrollLeft = 12000;
+      tabs.scrollLeft = tabs.scrollWidth;
     }, 200);
   },
 

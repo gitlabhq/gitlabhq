@@ -157,7 +157,7 @@ feature 'Diff note avatars', js: true do
         end
 
         page.within find("[id='#{position.line_code(project.repository)}']") do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').trigger('click')
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
           expect(find('.diff-comments-more-count')).to have_content '+1'
