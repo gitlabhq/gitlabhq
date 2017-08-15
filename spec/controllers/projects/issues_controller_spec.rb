@@ -1,7 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:project) { create(:project_empty_repo) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
 
@@ -292,13 +292,13 @@ describe Projects::IssuesController do
 
             it 'rejects an issue recognized as a spam' do
               expect(Gitlab::Recaptcha).to receive(:load_configurations!).and_return(true)
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'rejects an issue recognized as a spam when recaptcha disabled' do
               stub_application_setting(recaptcha_enabled: false)
 
-              expect { update_spam_issue }.not_to change{ issue.reload.title }
+              expect { update_spam_issue }.not_to change { issue.reload.title }
             end
 
             it 'creates a spam log' do
@@ -358,7 +358,7 @@ describe Projects::IssuesController do
             end
 
             it 'accepts an issue after recaptcha is verified' do
-              expect{ update_verified_issue }.to change{ issue.reload.title }.to(spammy_title)
+              expect { update_verified_issue }.to change { issue.reload.title }.to(spammy_title)
             end
 
             it 'marks spam log as recaptcha_verified' do
@@ -841,7 +841,7 @@ describe Projects::IssuesController do
   describe 'POST #toggle_award_emoji' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "toggles the award emoji" do
@@ -855,6 +855,8 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
+    let(:project) { create(:project, :repository) }
+
     before do
       project.add_developer(user)
       sign_in(user)

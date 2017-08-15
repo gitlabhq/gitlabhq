@@ -16,8 +16,7 @@ module Gitlab
 
         response.flat_map do |message|
           message.branches.map do |branch|
-            gitaly_commit = GitalyClient::Commit.new(@repository, branch.target)
-            target_commit = Gitlab::Git::Commit.decorate(gitaly_commit)
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
             Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
           end
         end
@@ -102,8 +101,7 @@ module Gitlab
         response.flat_map do |message|
           message.tags.map do |gitaly_tag|
             if gitaly_tag.target_commit.present?
-              commit = GitalyClient::Commit.new(@repository, gitaly_tag.target_commit)
-              gitaly_commit = Gitlab::Git::Commit.new(commit)
+              gitaly_commit = Gitlab::Git::Commit.decorate(@repository, gitaly_tag.target_commit)
             end
 
             Gitlab::Git::Tag.new(
@@ -141,7 +139,7 @@ module Gitlab
           committer_email: response.commit_committer.email.dup
         }
 
-        Gitlab::Git::Commit.decorate(hash)
+        Gitlab::Git::Commit.decorate(@repository, hash)
       end
     end
   end

@@ -3,9 +3,12 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
   = form_errors(@page)
 
-  = f.hidden_field :title, value: @page.title
   - if @page.persisted?
     = f.hidden_field :last_commit_sha, value: @page.last_commit_sha
+
+  .form-group
+    .col-sm-12= f.label :title, class: 'control-label-full-width'
+    .col-sm-12= f.text_field :title, class: 'form-control', value: @page.title
   .form-group
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12

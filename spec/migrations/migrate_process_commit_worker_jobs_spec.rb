@@ -6,7 +6,7 @@ require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_
 describe MigrateProcessCommitWorkerJobs do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
-  let(:commit) { project.commit.raw.raw_commit }
+  let(:commit) { project.commit.raw.rugged_commit }
 
   describe 'Project' do
     describe 'find_including_path' do

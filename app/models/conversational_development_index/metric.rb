@@ -13,9 +13,7 @@ module ConversationalDevelopmentIndex
     end
 
     def percentage_score(feature)
-      return 100 if leader_score(feature).zero?
-
-      100 * instance_score(feature) / leader_score(feature)
+      self["percentage_#{feature}"]
     end
   end
 end

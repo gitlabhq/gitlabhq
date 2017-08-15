@@ -3,7 +3,8 @@ require 'spec_helper'
 describe SystemNoteService do
   include Gitlab::Routing
 
-  let(:project)  { create(:project) }
+  let(:group)    { create(:group) }
+  let(:project)  { create(:project, group: group) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
@@ -34,7 +35,7 @@ describe SystemNoteService do
 
     context 'metadata' do
       it 'creates a new system note metadata record' do
-        expect { subject }.to change{ SystemNoteMetadata.count }.from(0).to(1)
+        expect { subject }.to change { SystemNoteMetadata.count }.from(0).to(1)
       end
 
       it 'creates a record correctly' do
@@ -242,25 +243,51 @@ describe SystemNoteService do
   end
 
   describe '.change_milestone' do
-    subject { described_class.change_milestone(noteable, project, author, milestone) }
+    context 'for a project milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-    let(:milestone) { create(:milestone, project: project) }
+      let(:milestone) { create(:milestone, project: project) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'milestone' }
-    end
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
 
-    context 'when milestone added' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+      context 'when milestone added' do
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
 
-    context 'when milestone removed' do
-      let(:milestone) { nil }
+    context 'for a group milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-      it 'sets the note text' do
-        expect(subject.note).to eq 'removed milestone'
+      let(:milestone) { create(:milestone, group: group) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
+
+      context 'when milestone added' do
+        it 'sets the note text to use the milestone name' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
   end
@@ -450,7 +477,7 @@ describe SystemNoteService do
       end
 
       it 'does not create a system note metadata record' do
-        expect { subject }.not_to change{ SystemNoteMetadata.count }
+        expect { subject }.not_to change { SystemNoteMetadata.count }
       end
     end
 

@@ -7,6 +7,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -220,21 +221,34 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
-    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+    find_refs = params['find']
 
-    options = {
-      s_('RefSwitcher|Branches') => branches.take(100)
-    }
+    find_branches = true
+    find_tags = true
+    find_commits = true
 
-    unless @repository.tag_count.zero?
-      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+    unless find_refs.nil?
+      find_branches = find_refs.include?('branches')
+      find_tags = find_refs.include?('tags')
+      find_commits = find_refs.include?('commits')
+    end
 
-      options[s_('RefSwitcher|Tags')] = tags.take(100)
+    options = {}
+
+    if find_branches
+      branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
+      options[s_('RefSwitcher|Branches')] = branches
+    end
+
+    if find_tags && @repository.tag_count.nonzero?
+      tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
+
+      options[s_('RefSwitcher|Tags')] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
     ref = Addressable::URI.unescape(params[:ref])
-    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+    if find_commits && ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options['Commits'] = [ref]
     end
 
@@ -288,10 +302,11 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def load_events
-    @events = @project.events.recent
-    @events = event_filter.apply_filter(@events).with_associations
-    limit = (params[:limit] || 20).to_i
-    @events = @events.limit(limit).offset(params[:offset] || 0)
+    projects = Project.where(id: @project.id)
+
+    @events = EventCollection
+      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 
   def project_params
@@ -324,6 +339,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
+      :template_name,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -374,5 +390,9 @@ class ProjectsController < Projects::ApplicationController
     params[:id] = project.to_param
 
     url_for(params)
+  end
+
+  def project_export_enabled
+    render_404 unless current_application_settings.project_export_enabled?
   end
 end

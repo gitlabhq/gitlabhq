@@ -233,7 +233,7 @@ describe 'Issue Boards', js: true do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(3)')).to have_content(issue6.title)
-        expect(find('.board:nth-child(3)').all('.card').last).not_to have_content(development.title)
+        expect(find('.board:nth-child(3)').all('.card').last).to have_content(development.title)
       end
 
       it 'issue moves between lists' do
@@ -244,7 +244,7 @@ describe 'Issue Boards', js: true do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue7.title)
-        expect(find('.board:nth-child(2)').all('.card').first).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)').all('.card').first).to have_content(planning.title)
       end
 
       it 'issue moves from closed' do

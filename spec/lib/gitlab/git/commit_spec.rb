@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Gitlab::Git::Commit, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH) }
-  let(:commit) { Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID) }
+  let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
     repository.rugged.lookup(SeedRepo::Commit::ID)
   end
@@ -24,7 +24,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       }
 
       @parents = [repo.head.target]
-      @gitlab_parents = @parents.map { |c| Gitlab::Git::Commit.decorate(c) }
+      @gitlab_parents = @parents.map { |c| described_class.decorate(repository, c) }
       @tree = @parents.first.tree
 
       sha = Rugged::Commit.create(
@@ -38,7 +38,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       )
 
       @raw_commit = repo.lookup(sha)
-      @commit = Gitlab::Git::Commit.new(@raw_commit)
+      @commit = described_class.new(repository, @raw_commit)
     end
 
     it { expect(@commit.short_id).to eq(@raw_commit.oid[0..10]) }
@@ -66,6 +66,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
   describe "Commit info from gitaly commit" do
     let(:id) { 'f00' }
+    let(:parent_ids) { %w(b45 b46) }
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
     let(:committer) do
@@ -88,10 +89,11 @@ describe Gitlab::Git::Commit, seed_helper: true do
         subject: subject,
         body: body,
         author: author,
-        committer: committer
+        committer: committer,
+        parent_ids: parent_ids
       )
     end
-    let(:commit) { described_class.new(Gitlab::GitalyClient::Commit.new(repository, gitaly_commit)) }
+    let(:commit) { described_class.new(repository, gitaly_commit) }
 
     it { expect(commit.short_id).to eq(id[0..10]) }
     it { expect(commit.id).to eq(id) }
@@ -102,6 +104,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
+    it { expect(commit.parent_ids).to eq(parent_ids) }
 
     context 'no body' do
       let(:body) { "".force_encoding('ASCII-8BIT') }
@@ -113,45 +116,45 @@ describe Gitlab::Git::Commit, seed_helper: true do
   context 'Class methods' do
     describe '.find' do
       it "should return first head commit if without params" do
-        expect(Gitlab::Git::Commit.last(repository).id).to eq(
-          repository.raw.head.target.oid
+        expect(described_class.last(repository).id).to eq(
+          repository.rugged.head.target.oid
         )
       end
 
       it "should return valid commit" do
-        expect(Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
+        expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
       end
 
       it "should return valid commit for tag" do
-        expect(Gitlab::Git::Commit.find(repository, 'v1.0.0').id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+        expect(described_class.find(repository, 'v1.0.0').id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end
 
       it "should return nil for non-commit ids" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
-        expect(Gitlab::Git::Commit.find(repository, blob.id)).to be_nil
+        expect(described_class.find(repository, blob.id)).to be_nil
       end
 
       it "should return nil for parent of non-commit object" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
-        expect(Gitlab::Git::Commit.find(repository, "#{blob.id}^")).to be_nil
+        expect(described_class.find(repository, "#{blob.id}^")).to be_nil
       end
 
       it "should return nil for nonexisting ids" do
-        expect(Gitlab::Git::Commit.find(repository, "+123_4532530XYZ")).to be_nil
+        expect(described_class.find(repository, "+123_4532530XYZ")).to be_nil
       end
 
       context 'with broken repo' do
         let(:repository) { Gitlab::Git::Repository.new('default', TEST_BROKEN_REPO_PATH) }
 
         it 'returns nil' do
-          expect(Gitlab::Git::Commit.find(repository, SeedRepo::Commit::ID)).to be_nil
+          expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
         end
       end
     end
 
     describe '.last_for_path' do
       context 'no path' do
-        subject { Gitlab::Git::Commit.last_for_path(repository, 'master') }
+        subject { described_class.last_for_path(repository, 'master') }
 
         describe '#id' do
           subject { super().id }
@@ -160,7 +163,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
 
       context 'path' do
-        subject { Gitlab::Git::Commit.last_for_path(repository, 'master', 'files/ruby') }
+        subject { described_class.last_for_path(repository, 'master', 'files/ruby') }
 
         describe '#id' do
           subject { super().id }
@@ -169,7 +172,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
 
       context 'ref + path' do
-        subject { Gitlab::Git::Commit.last_for_path(repository, SeedRepo::Commit::ID, 'encoding') }
+        subject { described_class.last_for_path(repository, SeedRepo::Commit::ID, 'encoding') }
 
         describe '#id' do
           subject { super().id }
@@ -181,7 +184,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '.where' do
       context 'path is empty string' do
         subject do
-          commits = Gitlab::Git::Commit.where(
+          commits = described_class.where(
             repo: repository,
             ref: 'master',
             path: '',
@@ -199,7 +202,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       context 'path is nil' do
         subject do
-          commits = Gitlab::Git::Commit.where(
+          commits = described_class.where(
             repo: repository,
             ref: 'master',
             path: nil,
@@ -217,7 +220,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       context 'ref is branch name' do
         subject do
-          commits = Gitlab::Git::Commit.where(
+          commits = described_class.where(
             repo: repository,
             ref: 'master',
             path: 'files',
@@ -237,7 +240,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       context 'ref is commit id' do
         subject do
-          commits = Gitlab::Git::Commit.where(
+          commits = described_class.where(
             repo: repository,
             ref: "874797c3a73b60d2187ed6e2fcabd289ff75171e",
             path: 'files',
@@ -257,7 +260,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       context 'ref is tag' do
         subject do
-          commits = Gitlab::Git::Commit.where(
+          commits = described_class.where(
             repo: repository,
             ref: 'v1.0.0',
             path: 'files',
@@ -278,7 +281,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
     describe '.between' do
       subject do
-        commits = Gitlab::Git::Commit.between(repository, SeedRepo::Commit::PARENT_ID, SeedRepo::Commit::ID)
+        commits = described_class.between(repository, SeedRepo::Commit::PARENT_ID, SeedRepo::Commit::ID)
         commits.map { |c| c.id }
       end
 
@@ -294,12 +297,12 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it 'should return a return a collection of commits' do
           commits = described_class.find_all(repository)
 
-          expect(commits).to all( be_a_kind_of(Gitlab::Git::Commit) )
+          expect(commits).to all( be_a_kind_of(described_class) )
         end
 
         context 'max_count' do
           subject do
-            commits = Gitlab::Git::Commit.find_all(
+            commits = described_class.find_all(
               repository,
               max_count: 50
             )
@@ -322,7 +325,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
         context 'ref + max_count + skip' do
           subject do
-            commits = Gitlab::Git::Commit.find_all(
+            commits = described_class.find_all(
               repository,
               ref: 'master',
               max_count: 50,
@@ -374,7 +377,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
   end
 
   describe '#init_from_rugged' do
-    let(:gitlab_commit) { Gitlab::Git::Commit.new(rugged_commit) }
+    let(:gitlab_commit) { described_class.new(repository, rugged_commit) }
     subject { gitlab_commit }
 
     describe '#id' do
@@ -384,7 +387,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
   end
 
   describe '#init_from_hash' do
-    let(:commit) { Gitlab::Git::Commit.new(sample_commit_hash) }
+    let(:commit) { described_class.new(repository, sample_commit_hash) }
     subject { commit }
 
     describe '#id' do
@@ -451,7 +454,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
   end
 
   describe '#ref_names' do
-    let(:commit) { Gitlab::Git::Commit.find(repository, 'master') }
+    let(:commit) { described_class.find(repository, 'master') }
     subject { commit.ref_names(repository) }
 
     it 'has 1 element' do

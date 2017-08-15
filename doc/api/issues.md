@@ -40,7 +40,7 @@ GET /issues?assignee_id=5
 | `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
 | `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
 | `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
+| `iids[]`    | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
 | `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
 | `search`    | string         | no       | Search issues against their `title` and `description`                                                                       |
@@ -132,7 +132,7 @@ GET /groups/:id/issues?assignee_id=5
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
+| `iids[]`    | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
 | `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
 | `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
@@ -227,7 +227,7 @@ GET /projects/:id/issues?assignee_id=5
 | Attribute   | Type           | Required | Description                                                                                                                 |
 |-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `iids`      | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
+| `iids[]`    | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |

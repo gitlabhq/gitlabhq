@@ -3,7 +3,7 @@
   = page_specific_javascript_bundle_tag('common_vue')
   = page_specific_javascript_bundle_tag('sidebar')
 
-%aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix", signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
+%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { "offset-top" => ("50" unless show_new_nav?), "spy" => ("affix" unless show_new_nav?), signed: { in: current_user.present? } }, class: sidebar_gutter_collapsed_class, 'aria-live' => 'polite' }
   .issuable-sidebar{ data: { endpoint: "#{issuable_json_path(issuable)}" } }
     - can_edit_issuable = can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
     .block.issuable-sidebar-header
@@ -114,6 +114,10 @@
                 = render partial: "shared/issuable/label_page_default"
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
+
+      - if issuable.has_attribute?(:confidential)
+        %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
+        #js-confidential-entry-point
 
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user

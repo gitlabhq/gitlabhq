@@ -55,7 +55,7 @@ feature 'Projects > Wiki > User updates wiki page' do
     scenario 'page has been updated since the user opened the edit page' do
       click_link 'Edit'
 
-      wiki_page.update('Update')
+      wiki_page.update(content: 'Update')
 
       click_button 'Save changes'
 

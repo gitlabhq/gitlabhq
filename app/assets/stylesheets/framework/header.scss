@@ -4,6 +4,8 @@
  */
 
 header {
+  @include new-style-dropdown;
+
   transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
@@ -24,7 +26,7 @@ header {
 
   &.navbar-gitlab {
     padding: 0 16px;
-    z-index: 400;
+    z-index: 1000;
     margin-bottom: 0;
     min-height: $header-height;
     background-color: $gray-light;
@@ -313,25 +315,6 @@ header {
   .impersonation i {
     color: $red-500;
   }
-
-  // TODO: fallback to global style
-  .dropdown-menu,
-  .dropdown-menu-nav {
-    li {
-      padding: 0 1px;
-
-      a {
-        border-radius: 0;
-        padding: 8px 16px;
-
-        &:hover,
-        &:active,
-        &:focus {
-          background-color: $gray-darker;
-        }
-      }
-    }
-  }
 }
 
 .with-performance-bar header.navbar-gitlab {
@@ -342,9 +325,9 @@ header {
   li {
     .badge {
       position: inherit;
-      top: -3px;
+      top: -8px;
       font-weight: normal;
-      margin-left: -12px;
+      margin-left: -11px;
       font-size: 11px;
       color: $white-light;
       padding: 1px 5px 2px;

@@ -38,6 +38,9 @@
 
   = Gon::Base.render_data
 
+  - if content_for?(:library_javascripts)
+    = yield :library_javascripts
+
   = webpack_bundle_tag "webpack_runtime"
   = webpack_bundle_tag "common"
   = webpack_bundle_tag "locale"

@@ -75,6 +75,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :new_default_branch
   attr_accessor :old_path_with_namespace
+  attr_accessor :template_name
   attr_writer :pipeline_status
 
   alias_attribute :title, :name
@@ -163,7 +164,7 @@ class Project < ActiveRecord::Base
   has_many :todos
   has_many :notification_settings, as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :import_data, class_name: 'ProjectImportData'
+  has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature
   has_one :statistics, class_name: 'ProjectStatistics'
 
@@ -192,6 +193,7 @@ class Project < ActiveRecord::Base
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature
+  accepts_nested_attributes_for :import_data
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :count, to: :forks, prefix: true
@@ -413,7 +415,7 @@ class Project < ActiveRecord::Base
 
       union = Gitlab::SQL::Union.new([projects, namespaces])
 
-      where("projects.id IN (#{union.to_sql})")
+      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def search_by_title(query)
@@ -588,8 +590,6 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
-
-    project_import_data.save
   end
 
   def import?
@@ -825,7 +825,7 @@ class Project < ActiveRecord::Base
 
         if template.nil?
           # If no template, we should create an instance. Ex `build_gitlab_ci_service`
-          public_send("build_#{service_name}_service")
+          public_send("build_#{service_name}_service") # rubocop:disable GitlabSecurity/PublicSend
         else
           Service.build_from_template(id, template)
         end
@@ -941,7 +941,7 @@ class Project < ActiveRecord::Base
   end
 
   def repo
-    repository.raw
+    repository.rugged
   end
 
   def url_to_repo
@@ -1046,13 +1046,16 @@ class Project < ActiveRecord::Base
   end
 
   def change_head(branch)
-    repository.before_change_head
-    repository.rugged.references.create('HEAD',
-                                        "refs/heads/#{branch}",
-                                        force: true)
-    repository.copy_gitattributes(branch)
-    repository.after_change_head
-    reload_default_branch
+    if repository.branch_exists?(branch)
+      repository.before_change_head
+      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.copy_gitattributes(branch)
+      repository.after_change_head
+      reload_default_branch
+    else
+      errors.add(:base, "Could not change HEAD: branch '#{branch}' does not exist")
+      false
+    end
   end
 
   def forked_from?(project)
@@ -1326,7 +1329,7 @@ class Project < ActiveRecord::Base
   end
 
   def append_or_update_attribute(name, value)
-    old_values = public_send(name.to_s)
+    old_values = public_send(name.to_s) # rubocop:disable GitlabSecurity/PublicSend
 
     if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
       update_attribute(name, old_values + value)

@@ -105,12 +105,24 @@ module Gitlab
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
-    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+    def fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
       args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
       args << '--force' if forced
       args << '--no-tags' if no_tags
 
-      gitlab_shell_fast_execute_raise_error(args)
+      vars = {}
+
+      if ssh_auth&.ssh_import?
+        if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
+          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
+        end
+
+        if ssh_auth.ssh_known_hosts.present?
+          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+        end
+      end
+
+      gitlab_shell_fast_execute_raise_error(args, vars)
     end
 
     # Move repository
@@ -293,15 +305,15 @@ module Gitlab
       false
     end
 
-    def gitlab_shell_fast_execute_raise_error(cmd)
-      output, status = gitlab_shell_fast_execute_helper(cmd)
+    def gitlab_shell_fast_execute_raise_error(cmd, vars = {})
+      output, status = gitlab_shell_fast_execute_helper(cmd, vars)
 
       raise Error, output unless status.zero?
       true
     end
 
-    def gitlab_shell_fast_execute_helper(cmd)
-      vars = ENV.to_h.slice(*GITLAB_SHELL_ENV_VARS)
+    def gitlab_shell_fast_execute_helper(cmd, vars = {})
+      vars.merge!(ENV.to_h.slice(*GITLAB_SHELL_ENV_VARS))
 
       # Don't pass along the entire parent environment to prevent gitlab-shell
       # from wasting I/O by searching through GEM_PATH

@@ -1,331 +1,288 @@
 #
 # Used by NotificationService to determine who should receive notification
 #
-class NotificationRecipientService
-  attr_reader :project
-
-  def initialize(project)
-    @project = project
+module NotificationRecipientService
+  def self.notifiable_users(users, *args)
+    users.compact.map { |u| NotificationRecipient.new(u, *args) }.select(&:notifiable?).map(&:user)
   end
 
-  def build_recipients(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
-    custom_action = build_custom_key(action, target)
-
-    recipients = participants(target, current_user)
-    recipients = add_project_watchers(recipients)
-    recipients = add_custom_notifications(recipients, custom_action)
-    recipients = reject_mention_users(recipients)
-
-    # Re-assign is considered as a mention of the new assignee so we add the
-    # new assignee to the list of recipients after we rejected users with
-    # the "on mention" notification level
-    case custom_action
-    when :reassign_merge_request
-      recipients << previous_assignee if previous_assignee
-      recipients << target.assignee
-    when :reassign_issue
-      previous_assignees = Array(previous_assignee)
-      recipients.concat(previous_assignees)
-      recipients.concat(target.assignees)
-    end
-
-    recipients = reject_muted_users(recipients)
-    recipients = add_subscribed_users(recipients, target)
-
-    if [:new_issue, :new_merge_request].include?(custom_action)
-      recipients = add_labels_subscribers(recipients, target)
-    end
-
-    recipients = reject_unsubscribed_users(recipients, target)
-    recipients = reject_users_without_access(recipients, target)
-
-    recipients.delete(current_user) if skip_current_user && !current_user.notified_of_own_activity?
-
-    recipients.uniq
+  def self.notifiable?(user, *args)
+    NotificationRecipient.new(user, *args).notifiable?
   end
 
-  def build_pipeline_recipients(target, current_user, action:)
-    return [] unless current_user
+  def self.build_recipients(*a)
+    Builder::Default.new(*a).recipient_users
+  end
 
-    custom_action =
-      case action.to_s
-      when 'failed'
-        :failed_pipeline
-      when 'success'
-        :success_pipeline
+  def self.build_new_note_recipients(*a)
+    Builder::NewNote.new(*a).recipient_users
+  end
+
+  module Builder
+    class Base
+      def initialize(*)
+        raise 'abstract'
       end
 
-    notification_setting = notification_setting_for_user_project(current_user, target.project)
+      def build!
+        raise 'abstract'
+      end
 
-    return [] if notification_setting.mention? || notification_setting.disabled?
+      def filter!
+        recipients.select!(&:notifiable?)
+      end
 
-    return [] if notification_setting.custom? && !notification_setting.event_enabled?(custom_action)
+      def acting_user
+        current_user
+      end
 
-    return [] if (notification_setting.watch? || notification_setting.participating?) && NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(custom_action)
+      def target
+        raise 'abstract'
+      end
 
-    reject_users_without_access([current_user], target)
-  end
+      # rubocop:disable Rails/Delegate
+      def project
+        target.project
+      end
 
-  def build_relabeled_recipients(target, current_user, labels:)
-    recipients = add_labels_subscribers([], target, labels: labels)
-    recipients = reject_unsubscribed_users(recipients, target)
-    recipients = reject_users_without_access(recipients, target)
-    recipients.delete(current_user) unless current_user.notified_of_own_activity?
-    recipients.uniq
-  end
+      def recipients
+        @recipients ||= []
+      end
 
-  def build_new_note_recipients(note)
-    target = note.noteable
+      def <<(pair)
+        users, type = pair
 
-    ability, subject = if note.for_personal_snippet?
-                         [:read_personal_snippet, note.noteable]
-                       else
-                         [:read_project, note.project]
-                       end
+        if users.is_a?(ActiveRecord::Relation)
+          users = users.includes(:notification_settings)
+        end
 
-    mentioned_users = note.mentioned_users.select { |user| user.can?(ability, subject) }
+        users = Array(users)
+        users.compact!
+        recipients.concat(users.map { |u| make_recipient(u, type) })
+      end
 
-    # Add all users participating in the thread (author, assignee, comment authors)
-    recipients = participants(target, note.author) || mentioned_users
+      def user_scope
+        User.includes(:notification_settings)
+      end
 
-    unless note.for_personal_snippet?
-      # Merge project watchers
-      recipients = add_project_watchers(recipients)
+      def make_recipient(user, type)
+        NotificationRecipient.new(
+          user, type,
+          project: project,
+          custom_action: custom_action,
+          target: target,
+          acting_user: acting_user
+        )
+      end
 
-      # Merge project with custom notification
-      recipients = add_custom_notifications(recipients, :new_note)
-    end
+      def recipient_users
+        @recipient_users ||=
+          begin
+            build!
+            filter!
+            users = recipients.map(&:user)
+            users.uniq!
+            users.freeze
+          end
+      end
 
-    # Reject users with Mention notification level, except those mentioned in _this_ note.
-    recipients = reject_mention_users(recipients - mentioned_users)
-    recipients = recipients + mentioned_users
+      def custom_action
+        nil
+      end
 
-    recipients = reject_muted_users(recipients)
+      protected
 
-    recipients = add_subscribed_users(recipients, note.noteable)
-    recipients = reject_unsubscribed_users(recipients, note.noteable)
-    recipients = reject_users_without_access(recipients, note.noteable)
+      def add_participants(user)
+        return unless target.respond_to?(:participants)
 
-    recipients.delete(note.author) unless note.author.notified_of_own_activity?
-    recipients.uniq
-  end
+        self << [target.participants(user), :watch]
+      end
 
-  # Remove users with disabled notifications from array
-  # Also remove duplications and nil recipients
-  def reject_muted_users(users)
-    reject_users(users, :disabled)
-  end
+      # Get project/group users with CUSTOM notification level
+      def add_custom_notifications
+        user_ids = []
 
-  protected
+        # Users with a notification setting on group or project
+        user_ids += user_ids_notifiable_on(project, :custom)
+        user_ids += user_ids_notifiable_on(project.group, :custom)
 
-  # Ensure that if we modify this array, we aren't modifying the memoised
-  # participants on the target.
-  def participants(target, user)
-    return unless target.respond_to?(:participants)
+        # Users with global level custom
+        user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
+        user_ids_with_group_level_global   = user_ids_notifiable_on(project.group, :global)
 
-    target.participants(user).dup
-  end
+        global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
+        user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
-  # Get project/group users with CUSTOM notification level
-  def add_custom_notifications(recipients, action)
-    user_ids = []
+        self << [user_scope.where(id: user_ids), :watch]
+      end
 
-    # Users with a notification setting on group or project
-    user_ids += user_ids_notifiable_on(project, :custom, action)
-    user_ids += user_ids_notifiable_on(project.group, :custom, action)
+      def add_project_watchers
+        self << [project_watchers, :watch]
+      end
 
-    # Users with global level custom
-    user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
-    user_ids_with_group_level_global   = user_ids_notifiable_on(project.group, :global)
+      # Get project users with WATCH notification level
+      def project_watchers
+        project_members_ids = user_ids_notifiable_on(project)
 
-    global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
-    user_ids += user_ids_with_global_level_custom(global_users_ids, action)
+        user_ids_with_project_global = user_ids_notifiable_on(project, :global)
+        user_ids_with_group_global   = user_ids_notifiable_on(project.group, :global)
 
-    recipients.concat(User.find(user_ids))
-  end
+        user_ids = user_ids_with_global_level_watch((user_ids_with_project_global + user_ids_with_group_global).uniq)
 
-  def add_project_watchers(recipients)
-    recipients.concat(project_watchers).compact
-  end
+        user_ids_with_project_setting = select_project_members_ids(user_ids_with_project_global, user_ids)
+        user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
 
-  # Get project users with WATCH notification level
-  def project_watchers
-    project_members_ids = user_ids_notifiable_on(project)
+        user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
+      end
 
-    user_ids_with_project_global = user_ids_notifiable_on(project, :global)
-    user_ids_with_group_global   = user_ids_notifiable_on(project.group, :global)
+      def add_subscribed_users
+        return unless target.respond_to? :subscribers
 
-    user_ids = user_ids_with_global_level_watch((user_ids_with_project_global + user_ids_with_group_global).uniq)
+        self << [target.subscribers(project), :subscription]
+      end
 
-    user_ids_with_project_setting = select_project_members_ids(project, user_ids_with_project_global, user_ids)
-    user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
+      def user_ids_notifiable_on(resource, notification_level = nil)
+        return [] unless resource
 
-    User.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq).to_a
-  end
+        scope = resource.notification_settings
 
-  # Remove users with notification level 'Mentioned'
-  def reject_mention_users(users)
-    reject_users(users, :mention)
-  end
+        if notification_level
+          scope = scope.where(level: NotificationSetting.levels[notification_level])
+        end
 
-  def add_subscribed_users(recipients, target)
-    return recipients unless target.respond_to? :subscribers
+        scope.pluck(:user_id)
+      end
 
-    recipients + target.subscribers(project)
-  end
+      # Build a list of user_ids based on project notification settings
+      def select_project_members_ids(global_setting, user_ids_global_level_watch)
+        user_ids = user_ids_notifiable_on(project, :watch)
 
-  def user_ids_notifiable_on(resource, notification_level = nil, action = nil)
-    return [] unless resource
+        # If project setting is global, add to watch list if global setting is watch
+        user_ids + (global_setting & user_ids_global_level_watch)
+      end
 
-    if notification_level
-      settings = resource.notification_settings.where(level: NotificationSetting.levels[notification_level])
-      settings = settings.select { |setting| setting.event_enabled?(action) } if action.present?
-      settings.map(&:user_id)
-    else
-      resource.notification_settings.pluck(:user_id)
-    end
-  end
+      # Build a list of user_ids based on group notification settings
+      def select_group_members_ids(group, project_members, global_setting, user_ids_global_level_watch)
+        uids = user_ids_notifiable_on(group, :watch)
 
-  # Build a list of user_ids based on project notification settings
-  def select_project_members_ids(project, global_setting, user_ids_global_level_watch)
-    user_ids = user_ids_notifiable_on(project, :watch)
+        # Group setting is global, add to user_ids list if global setting is watch
+        uids + (global_setting & user_ids_global_level_watch) - project_members
+      end
 
-    # If project setting is global, add to watch list if global setting is watch
-    global_setting.each do |user_id|
-      if user_ids_global_level_watch.include?(user_id)
-        user_ids << user_id
+      def user_ids_with_global_level_watch(ids)
+        settings_with_global_level_of(:watch, ids).pluck(:user_id)
+      end
+
+      def user_ids_with_global_level_custom(ids, action)
+        settings_with_global_level_of(:custom, ids).pluck(:user_id)
+      end
+
+      def settings_with_global_level_of(level, ids)
+        NotificationSetting.where(
+          user_id: ids,
+          source_type: nil,
+          level: NotificationSetting.levels[level]
+        )
+      end
+
+      def add_labels_subscribers(labels: nil)
+        return unless target.respond_to? :labels
+
+        (labels || target.labels).each do |label|
+          self << [label.subscribers(project), :subscription]
+        end
       end
     end
 
-    user_ids
-  end
+    class Default < Base
+      attr_reader :target
+      attr_reader :current_user
+      attr_reader :action
+      attr_reader :previous_assignee
+      attr_reader :skip_current_user
+      def initialize(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+        @target = target
+        @current_user = current_user
+        @action = action
+        @previous_assignee = previous_assignee
+        @skip_current_user = skip_current_user
+      end
 
-  # Build a list of user_ids based on group notification settings
-  def select_group_members_ids(group, project_members, global_setting, user_ids_global_level_watch)
-    uids = user_ids_notifiable_on(group, :watch)
+      def build!
+        add_participants(current_user)
+        add_project_watchers
+        add_custom_notifications
 
-    # Group setting is watch, add to user_ids list if user is not project member
-    user_ids = []
-    uids.each do |user_id|
-      if project_members.exclude?(user_id)
-        user_ids << user_id
+        # Re-assign is considered as a mention of the new assignee
+        case custom_action
+        when :reassign_merge_request
+          self << [previous_assignee, :mention]
+          self << [target.assignee, :mention]
+        when :reassign_issue
+          previous_assignees = Array(previous_assignee)
+          self << [previous_assignees, :mention]
+          self << [target.assignees, :mention]
+        end
+
+        add_subscribed_users
+
+        if [:new_issue, :new_merge_request].include?(custom_action)
+          add_labels_subscribers
+        end
+      end
+
+      def acting_user
+        current_user if skip_current_user
+      end
+
+      # Build event key to search on custom notification level
+      # Check NotificationSetting::EMAIL_EVENTS
+      def custom_action
+        @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
       end
     end
 
-    # Group setting is global, add to user_ids list if global setting is watch
-    global_setting.each do |user_id|
-      if project_members.exclude?(user_id) && user_ids_global_level_watch.include?(user_id)
-        user_ids << user_id
-      end
-    end
-
-    user_ids
-  end
-
-  def user_ids_with_global_level_watch(ids)
-    settings_with_global_level_of(:watch, ids).pluck(:user_id)
-  end
-
-  def user_ids_with_global_level_custom(ids, action)
-    settings = settings_with_global_level_of(:custom, ids)
-    settings = settings.select { |setting| setting.event_enabled?(action) }
-    settings.map(&:user_id)
-  end
-
-  def settings_with_global_level_of(level, ids)
-    NotificationSetting.where(
-      user_id: ids,
-      source_type: nil,
-      level: NotificationSetting.levels[level]
-    )
-  end
-
-  # Reject users which has certain notification level
-  #
-  # Example:
-  #   reject_users(users, :watch, project)
-  #
-  def reject_users(users, level)
-    level = level.to_s
-
-    unless NotificationSetting.levels.keys.include?(level)
-      raise 'Invalid notification level'
-    end
-
-    users = users.to_a.compact.uniq
-    users = users.select { |u| u.can?(:receive_notifications) }
-
-    users.reject do |user|
-      global_notification_setting = user.global_notification_setting
-
-      next global_notification_setting.level == level unless project
-
-      setting = user.notification_settings_for(project)
-
-      if project.group && (setting.nil? || setting.global?)
-        setting = user.notification_settings_for(project.group)
+    class NewNote < Base
+      attr_reader :note
+      def initialize(note)
+        @note = note
       end
 
-      # reject users who globally set mention notification and has no setting per project/group
-      next global_notification_setting.level == level unless setting
+      def target
+        note.noteable
+      end
 
-      # reject users who set mention notification in project
-      next true if setting.level == level
+      # NOTE: may be nil, in the case of a PersonalSnippet
+      #
+      # (this is okay because NotificationRecipient is written
+      # to handle nil projects)
+      def project
+        note.project
+      end
 
-      # reject users who have mention level in project and disabled in global settings
-      setting.global? && global_notification_setting.level == level
+      def build!
+        # Add all users participating in the thread (author, assignee, comment authors)
+        add_participants(note.author)
+        self << [note.mentioned_users, :mention]
+
+        unless note.for_personal_snippet?
+          # Merge project watchers
+          add_project_watchers
+
+          # Merge project with custom notification
+          add_custom_notifications
+        end
+
+        add_subscribed_users
+      end
+
+      def custom_action
+        :new_note
+      end
+
+      def acting_user
+        note.author
+      end
     end
-  end
-
-  def reject_unsubscribed_users(recipients, target)
-    return recipients unless target.respond_to? :subscriptions
-
-    recipients.reject do |user|
-      subscription = target.subscriptions.find_by_user_id(user.id)
-      subscription && !subscription.subscribed
-    end
-  end
-
-  def reject_users_without_access(recipients, target)
-    ability = case target
-              when Issuable
-                :"read_#{target.to_ability_name}"
-              when Ci::Pipeline
-                :read_build # We have build trace in pipeline emails
-              end
-
-    return recipients unless ability
-
-    recipients.select do |user|
-      user.can?(ability, target)
-    end
-  end
-
-  def add_labels_subscribers(recipients, target, labels: nil)
-    return recipients unless target.respond_to? :labels
-
-    (labels || target.labels).each do |label|
-      recipients += label.subscribers(project)
-    end
-
-    recipients
-  end
-
-  # Build event key to search on custom notification level
-  # Check NotificationSetting::EMAIL_EVENTS
-  def build_custom_key(action, object)
-    "#{action}_#{object.class.model_name.name.underscore}".to_sym
-  end
-
-  def notification_setting_for_user_project(user, project)
-    project_setting = user.notification_settings_for(project)
-
-    return project_setting unless project_setting.global?
-
-    group_setting = user.notification_settings_for(project.group)
-
-    return group_setting unless group_setting.global?
-
-    user.global_notification_setting
   end
 end

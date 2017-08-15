@@ -12,7 +12,7 @@ describe 'Filter merge requests' do
   let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     group.add_developer(user)
     sign_in(user)
     create(:merge_request, source_project: project, target_project: project)
@@ -170,7 +170,7 @@ describe 'Filter merge requests' do
 
   describe 'filter merge requests by text' do
     before do
-      create(:merge_request, title: "Bug", source_project: project, target_project: project, source_branch: "bug")
+      create(:merge_request, title: "Bug", source_project: project, target_project: project, source_branch: "wip")
 
       bug_label = create(:label, project: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
@@ -179,7 +179,7 @@ describe 'Filter merge requests' do
         title: "Bug 2",
         source_project: project,
         target_project: project,
-        source_branch: "bug2",
+        source_branch: "fix",
         milestone: milestone,
         author: user,
         assignee: user)
@@ -259,12 +259,12 @@ describe 'Filter merge requests' do
     end
   end
 
-  describe 'filter merge requests and sort', js: true do
+  describe 'filter merge requests and sort', :js do
     before do
       bug_label = create(:label, project: project, title: 'bug')
 
-      mr1 = create(:merge_request, title: "Frontend", source_project: project, target_project: project, source_branch: "Frontend")
-      mr2 = create(:merge_request, title: "Bug 2", source_project: project, target_project: project, source_branch: "bug2")
+      mr1 = create(:merge_request, title: "Frontend", source_project: project, target_project: project, source_branch: "wip")
+      mr2 = create(:merge_request, title: "Bug 2", source_project: project, target_project: project, source_branch: "fix")
 
       mr1.labels << bug_label
       mr2.labels << bug_label

@@ -2,6 +2,8 @@ module Gitlab
   module Gpg
     extend self
 
+    MUTEX = Mutex.new
+
     module CurrentKeyChain
       extend self
 
@@ -42,21 +44,37 @@ module Gitlab
       end
     end
 
-    def using_tmp_keychain
-      Dir.mktmpdir do |dir|
-        @original_dirs ||= [GPGME::Engine.dirinfo('homedir')]
-        @original_dirs.push(dir)
-
-        GPGME::Engine.home_dir = dir
-
-        return_value = yield
-
-        @original_dirs.pop
-
-        GPGME::Engine.home_dir = @original_dirs[-1]
-
-        return_value
+    # Allows thread safe switching of temporary keychain files
+    #
+    # 1. The current thread may use nesting of temporary keychain
+    # 2. Another thread needs to wait for the lock to be released
+    def using_tmp_keychain(&block)
+      if MUTEX.locked? && MUTEX.owned?
+        optimistic_using_tmp_keychain(&block)
+      else
+        MUTEX.synchronize do
+          optimistic_using_tmp_keychain(&block)
+        end
       end
+    end
+
+    # 1. Returns the custom home directory if one has been set by calling
+    #    `GPGME::Engine.home_dir=`
+    # 2. Returns the default home directory otherwise
+    def current_home_dir
+      GPGME::Engine.info.first.home_dir || GPGME::Engine.dirinfo('homedir')
+    end
+
+    private
+
+    def optimistic_using_tmp_keychain
+      previous_dir = current_home_dir
+      Dir.mktmpdir do |dir|
+        GPGME::Engine.home_dir = dir
+        yield
+      end
+    ensure
+      GPGME::Engine.home_dir = previous_dir
     end
   end
 end

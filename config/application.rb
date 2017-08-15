@@ -23,13 +23,13 @@ module Gitlab
     # https://github.com/rails/rails/blob/v4.2.6/railties/lib/rails/engine.rb#L687
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
-    config.eager_load_paths.push(*%W(#{config.root}/lib
+    config.eager_load_paths.push(*%W[#{config.root}/lib
                                      #{config.root}/app/models/hooks
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
-                                     #{config.root}/app/finders/concerns))
+                                     #{config.root}/app/finders/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -176,12 +176,16 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args)
+            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
           end
         end
       end
 
+      # We add the MilestonesRoutingHelper because we know that this does not
+      # conflict with the methods defined in `project_url_helpers`, and we want
+      # these methods available in the same places.
       Gitlab::Routing.add_helpers(project_url_helpers)
+      Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
     end
   end
 end

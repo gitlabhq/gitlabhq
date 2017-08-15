@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
 

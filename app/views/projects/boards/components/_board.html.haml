@@ -6,8 +6,16 @@
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded && list.position === -1, \"fa-caret-left\": !list.isExpanded && list.position !== -1 }",
           "aria-hidden": "true" }
-        %span.has-tooltip{ ":title" => '(list.label ? list.label.description : "")',
-          data: { container: "body", placement: "bottom" } }
+
+        %span.has-tooltip{ "v-if": "list.type !== \"label\"",
+          ":title" => '(list.label ? list.label.description : "")' }
+          {{ list.title }}
+
+        %span.has-tooltip{ "v-if": "list.type === \"label\"",
+          ":title" => '(list.label ? list.label.description : "")',
+          data: { container: "body", placement: "bottom" },
+          class: "label color-label title",
+          ":style" => "{ backgroundColor: (list.label && list.label.color ? list.label.color : null), color: (list.label && list.label.color ? list.label.text_color : \"#2e2e2e\") }" }
           {{ list.title }}
         .issue-count-badge.pull-right.clearfix{ "v-if" => 'list.type !== "blank"' }
           %span.issue-count-badge-count.pull-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }

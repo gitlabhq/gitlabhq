@@ -25,13 +25,23 @@ module API
         expose(:downvote?)  { |note| false }
       end
 
+      class PushEventPayload < Grape::Entity
+        expose :commit_count, :action, :ref_type, :commit_from, :commit_to
+        expose :ref, :commit_title
+      end
+
       class Event < Grape::Entity
         expose :title, :project_id, :action_name
         expose :target_id, :target_type, :author_id
-        expose :data, :target_title
+        expose :target_title
         expose :created_at
         expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
         expose :author, using: ::API::Entities::UserBasic, if: ->(event, options) { event.author }
+
+        expose :push_event_payload,
+          as: :push_data,
+          using: PushEventPayload,
+          if: -> (event, _) { event.push? }
 
         expose :author_username do |event, options|
           event.author&.username
@@ -68,7 +78,7 @@ module API
         expose :lfs_enabled?, as: :lfs_enabled
         expose :creator_id
         expose :namespace, using: 'API::Entities::Namespace'
-        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
+        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
         expose :avatar_url do |user, options|
           user.avatar_url(only_path: false)
         end

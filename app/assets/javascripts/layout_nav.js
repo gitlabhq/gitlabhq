@@ -2,6 +2,7 @@
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import NewNavSidebar from './new_sidebar';
+import initFlyOutNav from './fly_out_nav';
 
 (function() {
   var hideEndFade;
@@ -58,6 +59,8 @@ import NewNavSidebar from './new_sidebar';
     if (Cookies.get('new_nav') === 'true') {
       const newNavSidebar = new NewNavSidebar();
       newNavSidebar.bindEvents();
+
+      initFlyOutNav();
     }
 
     $(window).on('scroll', _.throttle(applyScrollNavClass, 100));

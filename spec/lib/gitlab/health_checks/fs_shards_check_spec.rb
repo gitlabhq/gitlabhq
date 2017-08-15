@@ -44,11 +44,24 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     describe '#readiness' do
       subject { described_class.readiness }
 
+      context 'storage has a tripped circuitbreaker', broken_storage: true do
+        let(:repository_storages) { ['broken'] }
+        let(:storages_paths) do
+          Gitlab.config.repositories.storages
+        end
+
+        it { is_expected.to include(result_class.new(false, 'circuitbreaker tripped', shard: 'broken')) }
+      end
+
       context 'storage points to not existing folder' do
         let(:storages_paths) do
           {
             default: { path: 'tmp/this/path/doesnt/exist' }
           }.with_indifferent_access
+        end
+
+        before do
+          allow(described_class).to receive(:storage_circuitbreaker_test) { true }
         end
 
         it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: :default)) }
@@ -93,12 +106,6 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           }.with_indifferent_access
         end
 
-        # Unsolved intermittent failure in CI https://gitlab.com/gitlab-org/gitlab-ce/issues/31128
-        around(:each) do |example| # rubocop:disable RSpec/AroundBlock
-          times_to_try = ENV['CI'] ? 4 : 1
-          example.run_with_retry retry: times_to_try
-        end
-
         it 'provides metrics' do
           metrics = described_class.metrics
 
@@ -109,6 +116,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_circuitbreaker_latency_seconds, value: be >= 0))
         end
       end
 
@@ -127,6 +135,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_circuitbreaker_latency_seconds, value: be >= 0))
         end
 
         it 'cleans up files used for metrics' do

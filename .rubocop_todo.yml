@@ -26,13 +26,6 @@ Layout/IndentArray:
 Layout/IndentHash:
   Enabled: false
 
-# Offense count: 174
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Layout/SpaceBeforeBlockBraces:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 # Configuration parameters: AllowForAlignment.
@@ -75,12 +68,6 @@ RSpec/EmptyLineAfterFinalLet:
 
 # Offense count: 181
 RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
-# Offense count: 78
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
   Enabled: false
 
 # Offense count: 9

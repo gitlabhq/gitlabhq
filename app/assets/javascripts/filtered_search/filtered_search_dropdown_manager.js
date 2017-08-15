@@ -167,7 +167,7 @@ class FilteredSearchDropdownManager {
       // Eg. token = 'label:'
 
       const split = lastToken.split(':');
-      const dropdownName = split[0].split(' ').last();
+      const dropdownName = _.last(split[0].split(' '));
       this.loadDropdown(split.length > 1 ? dropdownName : '');
     } else if (lastToken) {
       // Token has been initialized into an object because it has a value

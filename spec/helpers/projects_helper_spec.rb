@@ -411,4 +411,48 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe '#has_projects_or_name?' do
+    let(:projects) do
+      create(:project)
+      Project.all
+    end
+
+    it 'returns true when there are projects' do
+      expect(helper.has_projects_or_name?(projects, {})).to eq(true)
+    end
+
+    it 'returns true when there are no projects but a name is given' do
+      expect(helper.has_projects_or_name?(Project.none, name: 'foo')).to eq(true)
+    end
+
+    it 'returns false when there are no projects and there is no name' do
+      expect(helper.has_projects_or_name?(Project.none, {})).to eq(false)
+    end
+  end
+
+  describe '#any_projects?' do
+    before do
+      create(:project)
+    end
+
+    it 'returns true when projects will be returned' do
+      expect(helper.any_projects?(Project.all)).to eq(true)
+    end
+
+    it 'returns false when no projects will be returned' do
+      expect(helper.any_projects?(Project.none)).to eq(false)
+    end
+
+    it 'only executes a single query when a LIMIT is applied' do
+      relation = Project.limit(1)
+      recorder = ActiveRecord::QueryRecorder.new do
+        2.times do
+          helper.any_projects?(relation)
+        end
+      end
+
+      expect(recorder.count).to eq(1)
+    end
+  end
 end

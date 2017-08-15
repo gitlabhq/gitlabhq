@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::Issues do
-  include EmailHelpers
-
+describe API::Issues, :mailer do
   set(:user) { create(:user) }
   set(:project) do
     create(:project, :public, creator_id: user.id, namespace: user.namespace)

@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.4.5 (2017-08-14)
+
+- Fix deletion of deploy keys linked to other projects. !13162
+- Allow any logged in users to read_users_list even if it's restricted. !13201
+- Make Delete Merged Branches handle wildcard protected branches correctly. !13251
+- Fix an order of operations for CI connection error message in merge request widget. !13252
+- Fix pipeline_schedules pages when active schedule has an abnormal state. !13286
+- Add missing validation error for username change with container registry tags. !13356
+- Fix destroy of case-insensitive conflicting redirects. !13357
+- Project pending delete no longer return 500 error in admins projects view. !13389
+- Fix search box losing focus when typing.
+- Use jQuery to control scroll behavior in job log for cross browser consistency.
+- Use project_ref_path to create the link to a branch to fix links that 404.
+- improve file upload/replace experience.
+- fix jump to next discussion button.
+- Fixes new issue button for failed job returning 404.
+- Fix links to group milestones from issue and merge request sidebar.
+- Fixed sign-in restrictions buttons not toggling active state.
+- Fix Mattermost integration.
+- Change project FK migration to skip existing FKs.
+
+## 9.4.4 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.4.3 (2017-07-31)
 
 - Fix Prometheus client PID reuse bug. !13130
@@ -225,6 +251,11 @@ entry.
 - Defer project destroys within a namespace in Groups::DestroyService#async_execute.
 - Log rescued exceptions to Sentry.
 - Remove remaining N+1 queries in merge requests API with emojis and labels.
+
+## 9.3.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.3.9 (2017-07-20)
 
@@ -498,6 +529,11 @@ entry.
 - Remove foreigh key on ci_trigger_schedules only if it exists.
 - Allow translation of Pipeline Schedules.
 
+## 9.2.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 9.2.9 (2017-07-20)
 
 - Fix an infinite loop when handling user-supplied regular expressions.
@@ -752,6 +788,11 @@ entry.
 - Unassign all Issues and Merge Requests when member leaves a team.
 - Fix preemptive scroll bar on user activity calendar.
 - Pipeline chat notifications convert seconds to minutes and hours.
+
+## 9.1.10 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.1.9 (2017-07-20)
 
@@ -1075,6 +1116,11 @@ entry.
 - Removed the hours & minutes from the users start date on their profile.
 - Only send chat notifications for the default branch.
 - Don't fill in the default kubernetes namespace.
+
+## 9.0.13 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
 
 ## 9.0.12 (2017-07-20)
 
@@ -1456,6 +1502,11 @@ entry.
 - Change development tanuki favicon colors to match logo color order.
 - API issues - support filtering by iids.
 
+## 8.17.8 (2017-08-09)
+
+- Remove hidden symlinks from project import files.
+- Disallow Git URLs that include a username or hostname beginning with a non-alphanumeric character.
+
 ## 8.17.7 (2017-07-19)
 
 - Renders 404 if given project is not readable by the user on Todos dashboard.
@@ -1708,8 +1759,6 @@ entry.
 
 ## 8.16.7 (2017-02-27)
 
-- No changes.
-- No changes.
 - Fix MR changes tab size count when there are over 100 files in the diff.
 
 ## 8.16.6 (2017-02-17)
@@ -1922,6 +1971,14 @@ entry.
 - Fix XSS vulnerability in SVG attachments.
 - Prevent the GitHub importer from assigning labels and comments to merge requests or issues belonging to other projects.
 - Patch XSS vulnerability in RDOC support.
+
+## 8.15.5 (2017-01-20)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
 
 ## 8.15.4 (2017-01-09)
 
@@ -2205,6 +2262,14 @@ entry.
 - Speed up group milestone index by passing group_id to IssuesFinder. !8363
 - Ensure issuable state changes only fire webhooks once.
 
+## 8.14.7 (2017-01-21)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
+
 ## 8.14.6 (2017-01-10)
 
 - Update the gitlab-markup gem to the version 1.5.1. !8509
@@ -2486,6 +2551,14 @@ entry.
 - Updated commit SHA styling on the branches page.
 - Fix "Without projects" filter. !6611 (Ben Bodenmiller)
 - Fix 404 when visit /projects page
+
+## 8.13.12 (2017-01-21)
+
+- Ensure export files are removed after a namespace is deleted.
+- Don't allow project guests to subscribe to merge requests through the API. (Robert Schilling)
+- Prevent users from creating notes on resources they can't access.
+- Prevent users from deleting system deploy keys via the project deploy key API.
+- Upgrade omniauth gem to 1.3.2.
 
 ## 8.13.11 (2017-01-10)
 

@@ -73,6 +73,7 @@ export default class MergeRequestStore {
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
     this.hasSHAChanged = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
+    this.mergeOngoing = data.merge_ongoing;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -94,6 +95,11 @@ export default class MergeRequestStore {
   }
 
   setState(data) {
+    if (this.mergeOngoing) {
+      this.state = 'merging';
+      return;
+    }
+
     if (this.isOpen) {
       this.state = getStateKey.call(this, data);
     } else {
@@ -103,9 +109,6 @@ export default class MergeRequestStore {
           break;
         case 'closed':
           this.state = 'closed';
-          break;
-        case 'locked':
-          this.state = 'locked';
           break;
         default:
           this.state = null;

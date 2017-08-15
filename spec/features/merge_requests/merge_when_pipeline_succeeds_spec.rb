@@ -41,8 +41,8 @@ feature 'Merge When Pipeline Succeeds', :js do
         it 'activates the Merge when pipeline succeeds feature' do
           click_button "Merge when pipeline succeeds"
 
-          expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
-          expect(page).to have_content "The source branch will not be removed."
+          expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
+          expect(page).to have_content "The source branch will not be removed"
           expect(page).to have_selector ".js-cancel-auto-merge"
           visit_merge_request(merge_request) # Needed to refresh the page
           expect(page).to have_content /enabled an automatic merge when the pipeline for \h{8} succeeds/i
@@ -97,11 +97,11 @@ feature 'Merge When Pipeline Succeeds', :js do
 
     describe 'enabling Merge when pipeline succeeds via dropdown' do
       it 'activates the Merge when pipeline succeeds feature' do
-        click_button 'Select merge moment'
+        find('.js-merge-moment').click
         click_link 'Merge when pipeline succeeds'
 
-        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds."
-        expect(page).to have_content "The source branch will not be removed."
+        expect(page).to have_content "Set by #{user.name} to be merged automatically when the pipeline succeeds"
+        expect(page).to have_content "The source branch will not be removed"
         expect(page).to have_link "Cancel automatic merge"
       end
     end

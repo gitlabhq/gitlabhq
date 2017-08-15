@@ -107,6 +107,20 @@ describe ProjectsController do
       end
     end
 
+    context 'when the storage is not available', broken_storage: true do
+      let(:project) { create(:project, :broken_storage) }
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'renders a 503' do
+        get :show, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(503)
+      end
+    end
+
     context "project with empty repo" do
       let(:empty_project) { create(:project_empty_repo, :public) }
 
@@ -560,6 +574,118 @@ describe ProjectsController do
 
           expect(response).to have_http_status(404)
         end
+      end
+    end
+  end
+
+  describe '#export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#download_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#remove_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#generate_new_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
       end
     end
   end

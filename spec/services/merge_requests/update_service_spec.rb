@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService do
-  include EmailHelpers
-
+describe MergeRequests::UpdateService, :mailer do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -511,7 +509,7 @@ describe MergeRequests::UpdateService do
             feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect{ update_merge_request(assignee_id: assignee) }.not_to change{ merge_request.assignee }
+            expect { update_merge_request(assignee_id: assignee) }.not_to change { merge_request.assignee }
           end
         end
       end

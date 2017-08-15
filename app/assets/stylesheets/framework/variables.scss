@@ -88,6 +88,7 @@ $indigo-950: #1a1a40;
 
 $black: #000;
 $black-transparent: rgba(0, 0, 0, 0.3);
+$almost-black: #242424;
 
 $border-white-light: darken($white-light, $darken-border-factor);
 $border-white-normal: darken($white-normal, $darken-border-factor);
@@ -206,7 +207,6 @@ $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
 
-
 /*
 * Common component specific colors
 */
@@ -314,6 +314,12 @@ $btn-white-active: #848484;
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
 $badge-color: $gl-text-color-secondary;
+
+/*
+ *  Status icons
+ */
+$status-icon-size: 22px;
+$status-icon-margin: $gl-btn-padding;
 
 /*
  *  Award emoji
@@ -614,6 +620,13 @@ $color-average-score: $orange-400;
 $color-low-score: $red-400;
 
 /*
+Repo editor
+*/
+$repo-editor-grey: #f6f7f9;
+$repo-editor-grey-darker: #e9ebee;
+$repo-editor-linear-gradient: linear-gradient(to right, $repo-editor-grey 0%, $repo-editor-grey-darker, 20%, $repo-editor-grey 40%, $repo-editor-grey 100%);
+
+/*
 Performance Bar
 */
 $perf-bar-text: #999;
@@ -624,3 +637,11 @@ $perf-bar-bucket-bg: #111;
 $perf-bar-bucket-color: #ccc;
 $perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
 $perf-bar-bucket-box-shadow-to: rgba($black, .25);
+
+
+/*
+Project Templates Icons
+*/
+$rails: #c00;
+$node: #353535;
+$java: #70ad51;

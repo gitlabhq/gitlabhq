@@ -312,6 +312,10 @@ header.navbar-gitlab-new {
 
   // TODO: fallback to global style
   .dropdown-menu {
+    .divider {
+      margin: 6px 0;
+    }
+
     li {
       padding: 0 1px;
 

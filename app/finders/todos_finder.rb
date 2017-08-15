@@ -95,9 +95,18 @@ class TodosFinder
     @project
   end
 
+  def project_ids(items)
+    ids = items.except(:order).select(:project_id)
+    if Gitlab::Database.mysql?
+      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
+      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
+    end
+
+    ids
+  end
+
   def projects(items)
-    item_project_ids = items.reorder(nil).select(:project_id)
-    ProjectsFinder.new(current_user: current_user, project_ids_relation: item_project_ids).execute
+    ProjectsFinder.new(current_user: current_user, project_ids_relation: project_ids(items)).execute
   end
 
   def type?

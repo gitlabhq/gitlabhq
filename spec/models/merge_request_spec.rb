@@ -681,7 +681,7 @@ describe MergeRequest do
       end
 
       it 'does not crash' do
-        expect{ subject.diverged_commits_count }.not_to raise_error
+        expect { subject.diverged_commits_count }.not_to raise_error
       end
 
       it 'returns 0' do
@@ -714,7 +714,7 @@ describe MergeRequest do
     end
 
     describe 'caching' do
-      before(:example) do
+      before do
         allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
       end
 
@@ -753,7 +753,7 @@ describe MergeRequest do
     subject { create(:merge_request, :simple) }
 
     let(:backref_text) { "merge request #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do
@@ -1366,6 +1366,32 @@ describe MergeRequest do
 
         expect(merge_request.source_project_missing?).to be_truthy
       end
+    end
+  end
+
+  describe '#merge_ongoing?' do
+    it 'returns true when merge process is ongoing for merge_jid' do
+      merge_request = create(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(1)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when no merge process running for merge_jid' do
+      merge_request = build(:merge_request, merge_jid: 'foo')
+
+      allow(Gitlab::SidekiqStatus).to receive(:num_running).with(['foo']).and_return(0)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build(:merge_request, merge_jid: nil)
+
+      expect(Gitlab::SidekiqStatus).not_to receive(:num_running)
+
+      expect(merge_request.merge_ongoing?).to be(false)
     end
   end
 

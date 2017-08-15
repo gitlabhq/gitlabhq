@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import d3 from 'd3';
 
 const LOADING_HTML = `
@@ -5,6 +6,14 @@ const LOADING_HTML = `
     <i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i>
   </div>
 `;
+
+function getSystemDate(systemUtcOffsetSeconds) {
+  const date = new Date();
+  const localUtcOffsetMinutes = 0 - date.getTimezoneOffset();
+  const systemUtcOffsetMinutes = systemUtcOffsetSeconds / 60;
+  date.setMinutes((date.getMinutes() - localUtcOffsetMinutes) + systemUtcOffsetMinutes);
+  return date;
+}
 
 function formatTooltipText({ date, count }) {
   const dateObject = new Date(date);
@@ -21,7 +30,7 @@ function formatTooltipText({ date, count }) {
 const initColorKey = () => d3.scale.linear().range(['#acd5f2', '#254e77']).domain([0, 3]);
 
 export default class ActivityCalendar {
-  constructor(container, timestamps, calendarActivitiesPath) {
+  constructor(container, timestamps, calendarActivitiesPath, utcOffset = 0) {
     this.calendarActivitiesPath = calendarActivitiesPath;
     this.clickDay = this.clickDay.bind(this);
     this.currentSelectedDate = '';
@@ -36,7 +45,7 @@ export default class ActivityCalendar {
     this.timestampsTmp = [];
     let group = 0;
 
-    const today = new Date();
+    const today = getSystemDate(utcOffset);
     today.setHours(0, 0, 0, 0, 0);
 
     const oneYearAgo = new Date(today);

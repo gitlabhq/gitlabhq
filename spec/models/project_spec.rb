@@ -485,7 +485,7 @@ describe Project do
 
     describe 'last_activity' do
       it 'alias last_activity to last_event' do
-        last_event = create(:event, project: project)
+        last_event = create(:event, :closed, project: project)
 
         expect(project.last_activity).to eq(last_event)
       end
@@ -493,7 +493,7 @@ describe Project do
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
-        new_event = create(:event, project: project, created_at: Time.now)
+        new_event = create(:event, :closed, project: project, created_at: Time.now)
 
         project.reload
         expect(project.last_activity_at.to_i).to eq(new_event.created_at.to_i)
@@ -651,7 +651,7 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     context 'on existing projects with no value for has_external_issue_tracker' do
-      before(:each) do
+      before do
         project.update_column(:has_external_issue_tracker, nil)
         ext_project.update_column(:has_external_issue_tracker, nil)
       end
@@ -1301,7 +1301,7 @@ describe Project do
 
       subject { project.rename_repo }
 
-      it { expect{subject}.to raise_error(StandardError) }
+      it { expect {subject}.to raise_error(StandardError) }
     end
   end
 
@@ -1831,6 +1831,11 @@ describe Project do
 
   describe '#change_head' do
     let(:project) { create(:project, :repository) }
+
+    it 'returns error if branch does not exist' do
+      expect(project.change_head('unexisted-branch')).to be false
+      expect(project.errors.size).to eq(1)
+    end
 
     it 'calls the before_change_head and after_change_head methods' do
       expect(project.repository).to receive(:before_change_head)

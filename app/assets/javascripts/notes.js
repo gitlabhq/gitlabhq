@@ -11,6 +11,7 @@ newline-per-chained-call, no-useless-escape, class-methods-use-this */
 /* global mrRefreshWidgetUrl */
 
 import $ from 'jquery';
+import _ from 'underscore';
 import Cookies from 'js-cookie';
 import autosize from 'vendor/autosize';
 import Dropzone from 'dropzone';

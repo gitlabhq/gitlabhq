@@ -153,6 +153,15 @@ describe JiraService do
       expect(WebMock).not_to have_requested(:post, @remote_link_url)
     end
 
+    it "does not send comment or remote links to issues with unknown resolution" do
+      allow_any_instance_of(JIRA::Resource::Issue).to receive(:respond_to?).with(:resolution).and_return(false)
+
+      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+      expect(WebMock).not_to have_requested(:post, @comment_url)
+      expect(WebMock).not_to have_requested(:post, @remote_link_url)
+    end
+
     it "references the GitLab commit/merge request" do
       stub_config_setting(base_url: custom_base_url)
 

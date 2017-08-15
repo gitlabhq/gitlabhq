@@ -12,7 +12,7 @@ describe('MRWidgetChecking', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(el.querySelector('button').classList.contains('btn-success')).toBeTruthy();
       expect(el.querySelector('button').disabled).toBeTruthy();
-      expect(el.innerText).toContain('Checking ability to merge automatically.');
+      expect(el.innerText).toContain('Checking ability to merge automatically');
       expect(el.querySelector('i')).toBeDefined();
     });
   });
