@@ -44,7 +44,8 @@ export default {
 
 <template>
   <div class="repository-view tree-content-holder">
-    <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
+    <repo-sidebar/><div class="panel-right"
+    :class="{'edit-mode': editMode}">
       <repo-tabs/>
       <component
         v-if="isMini"
