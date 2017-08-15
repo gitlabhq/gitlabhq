@@ -18,8 +18,8 @@ const RepoTab = {
     },
     changedClass() {
       const tabChangedObj = {
-        'fa-times': !this.tab.changed,
-        'fa-circle': this.tab.changed,
+        'fa-times close-icon': !this.tab.changed,
+        'fa-circle unsaved-icon': this.tab.changed,
       };
       return tabChangedObj;
     },
@@ -39,11 +39,11 @@ export default RepoTab;
 </script>
 
 <template>
-<li>
+<li @click="tabClicked(tab)">
   <a
     href="#0"
     class="close"
-    @click.prevent="closeTab(tab)"
+    @click.stop.prevent="closeTab(tab)"
     :aria-label="closeLabel">
     <i
       class="fa"

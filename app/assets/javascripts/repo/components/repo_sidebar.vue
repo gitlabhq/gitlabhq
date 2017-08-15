@@ -35,7 +35,7 @@ export default {
 
     fileClicked(clickedFile) {
       let file = clickedFile;
-
+      if (file.loading) return;
       file.loading = true;
       if (file.type === 'tree' && file.opened) {
         file = Store.removeChildFilesOfTree(file);

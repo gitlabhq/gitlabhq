@@ -23,8 +23,7 @@ export default RepoTabs;
 </script>
 
 <template>
-<ul id="tabs"
-    v-if="isMini">
+<ul id="tabs">
   <repo-tab
     v-for="tab in openedFiles"
     :key="tab.id"
