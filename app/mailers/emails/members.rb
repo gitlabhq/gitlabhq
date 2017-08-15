@@ -11,11 +11,11 @@ module Emails
       @member_source_type = member_source_type
       @member_id = member_id
 
-      admins = member_source.members.owners_and_masters.includes(:user).pluck(:notification_email)
+      admins = member_source.members.owners_and_masters.pluck(:notification_email)
       # A project in a group can have no explicit owners/masters, in that case
       # we fallbacks to the group's owners/masters.
       if admins.empty? && member_source.respond_to?(:group) && member_source.group
-        admins = member_source.group.members.owners_and_masters.includes(:user).pluck(:notification_email)
+        admins = member_source.group.members.owners_and_masters.pluck(:notification_email)
       end
 
       mail(to: admins,
