@@ -267,7 +267,11 @@ describe Admin::GeoNodesController, :postgresql do
           lfs_objects_synced_count: 123,
           repositories_count: 10,
           repositories_synced_count: 5,
-          repositories_failed_count: 0
+          repositories_failed_count: 0,
+          last_event_id: 2,
+          last_event_date: Time.now.iso8601,
+          cursor_last_event_id: 1,
+          cursor_last_event_date: Time.now.iso8601
         )
       end
 

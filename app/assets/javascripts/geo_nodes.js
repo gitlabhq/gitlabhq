@@ -1,5 +1,6 @@
 /* eslint-disable no-new*/
 import './smart_interval';
+import './lib/utils/datetime_utility';
 
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
@@ -20,6 +21,8 @@ class GeoNodeStatus {
     this.$repositoriesFailed = $('.js-repositories-failed', this.$status);
     this.$lfsObjectsSynced = $('.js-lfs-objects-synced', this.$status);
     this.$attachmentsSynced = $('.js-attachments-synced', this.$status);
+    this.$lastEventSeen = $('.js-last-event-seen', this.$status);
+    this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health', this.$status);
     this.endpoint = this.$el.data('status-url');
 
@@ -50,6 +53,10 @@ class GeoNodeStatus {
       this.$repositoriesFailed.html(status.repositories_failed_count);
       this.$lfsObjectsSynced.html(`${status.lfs_objects_synced_count}/${status.lfs_objects_count} (${status.lfs_objects_synced_in_percentage})`);
       this.$attachmentsSynced.html(`${status.attachments_synced_count}/${status.attachments_count} (${status.attachments_synced_in_percentage})`);
+      const eventDate = gl.utils.formatDate(new Date(status.last_event_date));
+      const cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_date));
+      this.$lastEventSeen.html(`${status.last_event_id} (${eventDate})`);
+      this.$lastCursorEvent.html(`${status.cursor_last_event_id} (${cursorDate})`);
       if (status.health === 'Healthy') {
         this.$health.html('');
       } else {

@@ -66,6 +66,13 @@
                     Attachments synced:
                     %strong.node-info.js-attachments-synced
                 %p
+                  %span.help-block
+                    Last event ID seen from primary:
+                    %strong.node-info.js-last-event-seen
+                  %span.help-block
+                    Last event ID processed by cursor:
+                    %strong.node-info.js-last-cursor-event
+                %p
                   .js-health
 
           - unless Gitlab::Geo.secondary?

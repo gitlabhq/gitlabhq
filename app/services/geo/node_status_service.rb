@@ -13,6 +13,10 @@ module Geo
       lfs_objects_synced_count
       attachments_count
       attachments_synced_count
+      last_event_id
+      last_event_date
+      cursor_last_event_id
+      cursor_last_event_date
     ).freeze
 
     def call(geo_node)

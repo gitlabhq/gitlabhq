@@ -28,4 +28,9 @@ class GeoNodeStatusEntity < Grape::Entity
   expose :repositories_synced_in_percentage do |node|
     number_to_percentage(node.repositories_synced_in_percentage, precision: 2)
   end
+
+  expose :last_event_id
+  expose :last_event_date
+  expose :cursor_last_event_id
+  expose :cursor_last_event_date
 end
