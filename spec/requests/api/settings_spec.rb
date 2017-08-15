@@ -45,6 +45,7 @@ describe API::Settings, 'Settings' do
           default_artifacts_expire_in: '2 days',
           help_page_text: 'custom help text',
           help_page_hide_commercial_content: true,
+          project_export_enabled: false,
           help_page_support_url: 'http://example.com/help'
 
         expect(response).to have_http_status(200)
@@ -62,6 +63,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['help_page_text']).to eq('custom help text')
         expect(json_response['help_page_hide_commercial_content']).to be_truthy
         expect(json_response['help_page_support_url']).to eq('http://example.com/help')
+        expect(json_response['project_export_enabled']).to be_falsey
       end
     end
 

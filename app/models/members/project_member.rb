@@ -88,6 +88,10 @@ class ProjectMember < Member
     project.owner == user
   end
 
+  def notifiable_options
+    { project: project }
+  end
+
   private
 
   def delete_member_todos

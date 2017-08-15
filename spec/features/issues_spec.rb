@@ -765,7 +765,6 @@ describe 'Issues' do
       visit project_issue_path(project, issue)
 
       expect(page).not_to have_css('.is-confidential')
-      expect(page).to have_css('.is-not-confidential')
     end
   end
 end
