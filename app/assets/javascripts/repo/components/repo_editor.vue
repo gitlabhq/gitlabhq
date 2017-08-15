@@ -38,7 +38,6 @@ const RepoEditor = {
     setupEditor() {
       this.showHide();
 
-      if (this.isTree) return;
       Helper.setMonacoModelFromLanguage();
     },
 
@@ -114,7 +113,7 @@ const RepoEditor = {
     },
 
     blobRaw() {
-      if (Helper.monacoInstance) {
+      if (Helper.monacoInstance && !this.isTree) {
         this.setupEditor();
       }
     },
