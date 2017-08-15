@@ -115,7 +115,7 @@ feature 'Diff note avatars', js: true do
         open_more_actions_dropdown(note)
 
         page.within find(".note-row-#{note.id}") do
-          find('.js-note-delete').click
+          accept_confirm { find('.js-note-delete').click }
         end
 
         wait_for_requests
