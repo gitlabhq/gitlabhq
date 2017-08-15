@@ -133,7 +133,7 @@ describe ObjectStoreUploader do
       let(:job) { create(:ci_build, :artifacts, artifacts_file_store: store) }
       let(:uploader) { job.artifacts_file }
       let(:store) { described_class::LOCAL_STORE }
-      
+
       subject { uploader.migrate!(new_store) }
 
       context 'when using the same storage' do
@@ -149,7 +149,7 @@ describe ObjectStoreUploader do
       context 'when migrating to local storage' do
         let(:store) { described_class::REMOTE_STORE }
         let(:new_store) { described_class::LOCAL_STORE }
-        
+
         before do
           stub_artifacts_object_storage
         end
@@ -173,10 +173,10 @@ describe ObjectStoreUploader do
         it "file does exist" do
           expect(File.exist?(current_path)).to eq(true)
         end
-        
+
         context 'when storage is disabled' do
           before do
-            stub_artifacts_object_storage(enabled: false) 
+            stub_artifacts_object_storage(enabled: false)
           end
 
           it "to raise an error" do
@@ -198,7 +198,7 @@ describe ObjectStoreUploader do
 
           it "does delete original file" do
             subject
-    
+
             expect(File.exist?(current_path)).to eq(false)
           end
 

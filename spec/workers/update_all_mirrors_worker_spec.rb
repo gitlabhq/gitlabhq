@@ -74,7 +74,7 @@ describe UpdateAllMirrorsWorker do
     def schedule_mirrors!(capacity:)
       allow(Gitlab::Mirror).to receive_messages(available_capacity: capacity)
 
-      Sidekiq::Testing.fake! do 
+      Sidekiq::Testing.fake! do
         worker.schedule_mirrors!
       end
     end

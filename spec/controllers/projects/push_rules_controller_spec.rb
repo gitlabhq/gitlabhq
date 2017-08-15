@@ -9,7 +9,7 @@ describe Projects::PushRulesController do
 
     sign_in(user)
   end
-  
+
   describe '#update' do
     def do_update
       patch :update, namespace_id: project.namespace, project_id: project, id: 1, push_rule: { prevent_secrets: true }

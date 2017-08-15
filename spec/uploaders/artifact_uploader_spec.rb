@@ -18,7 +18,7 @@ describe ArtifactUploader do
 
   describe '.artifacts_upload_path' do
     subject { described_class.artifacts_upload_path }
-    
+
     it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('tmp/uploads/') }
   end
@@ -35,7 +35,7 @@ describe ArtifactUploader do
 
     context 'when using remote storage' do
       let(:store) { described_class::REMOTE_STORE }
-      
+
       before do
         stub_artifacts_object_storage
       end

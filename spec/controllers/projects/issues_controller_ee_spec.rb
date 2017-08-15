@@ -122,7 +122,7 @@ describe Projects::IssuesController do
           _ = issue2
 
           perform :get, :index, weight: 1
-          
+
           expect(response).to have_http_status(200)
           expect(assigns(:issues)).to eq([issue2])
         end
