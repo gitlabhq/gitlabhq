@@ -404,6 +404,6 @@ describe Namespace do
     let!(:project1) { create(:project_empty_repo, namespace: group) }
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
-    it { expect(group.all_projects.to_a).to eq([project2, project1]) }
+    it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
   end
 end

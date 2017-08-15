@@ -574,7 +574,7 @@ describe API::Projects do
       expect { post api("/projects/user/#{user.id}", admin), name: 'Foo Project' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
 
-      project = Project.first
+      project = Project.last
 
       expect(project.name).to eq('Foo Project')
       expect(project.path).to eq('foo-project')
@@ -585,7 +585,7 @@ describe API::Projects do
         .to change { Project.count }.by(1)
       expect(response).to have_http_status(201)
 
-      project = Project.first
+      project = Project.last
 
       expect(project.name).to eq('Foo Project')
       expect(project.path).to eq('path-project-Foo')

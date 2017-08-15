@@ -17,7 +17,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def keys
-    @keys = user.keys
+    @keys = user.keys.order_id_desc
   end
 
   def new
