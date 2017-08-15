@@ -335,9 +335,10 @@ module Issuable
     metrics.record!
   end
 
-  def first_contribution?
-    return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
-
-    project.merge_requests.merged.where(author_id: author_id).empty?
+  ##
+  # Override in issuable specialization
+  #
+  def first_contribution?(*)
+    false
   end
 end

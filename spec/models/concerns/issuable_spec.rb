@@ -539,19 +539,11 @@ describe Issuable do
     context "for issues" do
       let(:contributor_issue) { create(:issue, author: contributor, project: project) }
       let(:first_time_contributor_issue) { create(:issue, author: first_time_contributor, project: project) }
-      let(:first_time_contributor_issue_other_project) { create(:issue, author: first_time_contributor, project: other_project) }
 
-      it "is true when you don't have any merged MR" do
+      it "is false even without merged MR" do
         expect(merged_mr).to be
-        expect(first_time_contributor_issue).to be_first_contribution
+        expect(first_time_contributor_issue).not_to be_first_contribution
         expect(contributor_issue).not_to be_first_contribution
-      end
-
-      it "handles multiple projects separately" do
-        expect(merged_mr).to be
-        expect(merged_mr_other_project).to be
-        expect(first_time_contributor_issue).to be_first_contribution
-        expect(first_time_contributor_issue_other_project).not_to be_first_contribution
       end
     end
   end

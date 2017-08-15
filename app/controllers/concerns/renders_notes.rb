@@ -2,7 +2,7 @@ module RendersNotes
   def prepare_notes_for_rendering(notes, noteable = nil)
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
-    preload_first_time_contribution_for_authors(noteable, notes) if noteable.is_a?(Issuable)
+    preload_first_time_contribution_for_authors(noteable, notes)
     Banzai::NoteRenderer.render(notes, @project, current_user)
 
     notes
@@ -21,12 +21,9 @@ module RendersNotes
     ActiveRecord::Associations::Preloader.new.preload(notes.reject(&:for_commit?), :noteable)
   end
 
-  def preload_first_time_contribution_for_authors(issuable, notes)
-    return unless issuable.first_contribution?
+  def preload_first_time_contribution_for_authors(noteable, notes)
+    return unless noteable.is_a?(Issuable) && noteable.first_contribution?
 
-    same_author = lambda {|n| n.author_id == issuable.author_id}
-    notes.each do |note|
-      note.specialize!(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR, &same_author)
-    end
+    notes.each {|n| n.specialize_for_first_contribution!(noteable)}
   end
 end

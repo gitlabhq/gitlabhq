@@ -1,8 +1,8 @@
 - if note.has_special_role?(Note::SpecialRole::FIRST_TIME_CONTRIBUTOR)
-  %span.note-role.has-tooltip{ title: _("This user hasn't yet contributed code to this project. Handle with care.")}
-    = _('First-time contributor')
-- elsif access = note_max_access_for_user(note)
-  %span.note-role= Gitlab::Access.human_access(access)
+  %span.note-role.note-role-special.has-tooltip{ title: _("This user hasn't yet contributed code to this project. Handle with care.")}
+    = issuable_first_contribution_icon
+- if access = note_max_access_for_user(note)
+  %span.note-role.note-role-access= Gitlab::Access.human_access(access)
 
 - if note.resolvable?
   - can_resolve = can?(current_user, :resolve_note, note)
