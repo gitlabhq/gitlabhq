@@ -3,10 +3,6 @@ export default {
   name: 'popup-dialog',
 
   props: {
-    open: {
-      type: Boolean,
-      required: true,
-    },
     title: {
       type: String,
       required: true,
@@ -53,7 +49,6 @@ export default {
 <template>
 <div
   class="modal popup-dialog"
-  v-if="open"
   role="dialog"
   tabindex="-1">
   <div class="modal-dialog" role="document">

@@ -15,6 +15,7 @@ describe('RepoSidebar', () => {
     RepoStore.files = [{
       id: 0,
     }];
+    RepoStore.openedFiles = [];
     const vm = createComponent();
     const thead = vm.$el.querySelector('thead');
     const tbody = vm.$el.querySelector('tbody');
