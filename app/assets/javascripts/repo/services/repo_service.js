@@ -67,7 +67,11 @@ const RepoService = {
 
   commitFiles(payload, cb) {
     Api.commitMultiple(Store.projectId, payload, (data) => {
-      Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      if (data.short_id && data.stats) {
+        Flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      } else {
+        Flash(data.message);
+      }
       cb();
     });
   },
