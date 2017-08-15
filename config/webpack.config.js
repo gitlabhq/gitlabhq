@@ -223,6 +223,9 @@ var config = {
       names: ['main', 'locale', 'common', 'webpack_runtime'],
     }),
 
+    // enable scope hoisting
+    new webpack.optimize.ModuleConcatenationPlugin(),
+
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
       {
