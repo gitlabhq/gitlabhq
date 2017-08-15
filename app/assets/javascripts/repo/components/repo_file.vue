@@ -43,11 +43,15 @@ const RepoFile = {
     },
 
     fileIndentation() {
-      return { 'margin-left': `${this.file.level * 10}px` };
+      return {
+        'margin-left': `${this.file.level * 10}px`,
+      };
     },
 
     activeFileClass() {
-      return { active: this.activeFile.url === this.file.url };
+      return {
+        active: this.activeFile.url === this.file.url,
+      };
     },
   },
 

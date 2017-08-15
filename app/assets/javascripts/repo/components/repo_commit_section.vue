@@ -72,7 +72,9 @@ export default RepoCommitSection;
         </label>
         <div class="col-md-6">
           <ul class="list-unstyled changed-files">
-            <li v-for="branchPath in branchPaths" :key="branchPath">
+            <li
+              v-for="branchPath in branchPaths"
+              :key="branchPath">
               <span class="help-block">
                 {{branchPath}}
               </span>

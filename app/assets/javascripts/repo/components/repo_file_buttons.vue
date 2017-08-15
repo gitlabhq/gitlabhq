@@ -29,14 +29,41 @@ export default RepoFileButtons;
 
 <template>
   <div id="repo-file-buttons">
-    <a :href="activeFile.raw_path" target="_blank" class="btn btn-default raw" rel="noopener noreferrer">{{rawDownloadButtonLabel}}</a>
+    <a
+      :href="activeFile.raw_path"
+      target="_blank"
+      class="btn btn-default raw"
+      rel="noopener noreferrer">
+      {{rawDownloadButtonLabel}}
+    </a>
 
-    <div class="btn-group" role="group" aria-label="File actions">
-      <a :href="activeFile.blame_path" class="btn btn-default blame">Blame</a>
-      <a :href="activeFile.commits_path" class="btn btn-default history">History</a>
-      <a :href="activeFile.permalink" class="btn btn-default permalink">Permalink</a>
+    <div
+      class="btn-group"
+      role="group"
+      aria-label="File actions">
+      <a
+        :href="activeFile.blame_path"
+        class="btn btn-default blame">
+        Blame
+      </a>
+      <a
+        :href="activeFile.commits_path"
+        class="btn btn-default history">
+        History
+      </a>
+      <a
+        :href="activeFile.permalink"
+        class="btn btn-default permalink">
+        Permalink
+      </a>
     </div>
 
-    <a href="#" v-if="canPreview" @click.prevent="rawPreviewToggle" class="btn btn-default preview">{{activeFileLabel}}</a>
+    <a
+      v-if="canPreview"
+      href="#"
+      @click.prevent="rawPreviewToggle"
+      class="btn btn-default preview">
+      {{activeFileLabel}}
+    </a>
   </div>
 </template>

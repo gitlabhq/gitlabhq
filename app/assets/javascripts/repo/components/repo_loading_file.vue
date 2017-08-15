@@ -35,22 +35,41 @@ export default RepoLoadingFile;
 </script>
 
 <template>
-  <tr v-if="showGhostLines" class="loading-file">
+  <tr
+    v-if="showGhostLines"
+    class="loading-file">
     <td>
-      <div class="animation-container animation-container-small">
-        <div v-for="n in 6" :class="lineOfCode(n)" :key="n"></div>
+      <div
+        class="animation-container animation-container-small">
+        <div
+          v-for="n in 6"
+          :key="n"
+          :class="lineOfCode(n)">
+        </div>
       </div>
     </td>
 
-    <td v-if="!isMini" class="hidden-sm hidden-xs">
+    <td
+      v-if="!isMini"
+      class="hidden-sm hidden-xs">
       <div class="animation-container">
-        <div v-for="n in 6" :class="lineOfCode(n)" :key="n"></div>
+        <div
+          v-for="n in 6"
+          :key="n"
+          :class="lineOfCode(n)">
+        </div>
       </div>
     </td>
 
-    <td v-if="!isMini" class="hidden-xs">
+    <td
+      v-if="!isMini"
+      class="hidden-xs">
       <div class="animation-container animation-container-small">
-        <div v-for="n in 6" :class="lineOfCode(n)" :key="n"></div>
+        <div
+          v-for="n in 6"
+          :key="n"
+          :class="lineOfCode(n)">
+        </div>
       </div>
     </td>
   </tr>
