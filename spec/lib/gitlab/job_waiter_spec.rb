@@ -1,30 +1,39 @@
 require 'spec_helper'
 
 describe Gitlab::JobWaiter do
+  describe '.notify' do
+    it 'pushes the jid to the named queue' do
+      key = 'gitlab:job_waiter:foo'
+      jid = 1
+
+      redis = double('redis')
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
+      expect(redis).to receive(:lpush).with(key, jid)
+
+      described_class.notify(key, jid)
+    end
+  end
+
   describe '#wait' do
-    let(:waiter) { described_class.new(%w(a)) }
+    let(:waiter) { described_class.new(2) }
+
     it 'returns when all jobs have been completed' do
-      expect(Gitlab::SidekiqStatus).to receive(:all_completed?).with(%w(a))
-        .and_return(true)
+      described_class.notify(waiter.key, 'a')
+      described_class.notify(waiter.key, 'b')
 
-      expect(waiter).not_to receive(:sleep)
+      result = nil
+      expect { Timeout.timeout(1) { result = waiter.wait(2) } }.not_to raise_error
 
-      waiter.wait
+      expect(result).to contain_exactly('a', 'b')
     end
 
-    it 'sleeps between checking the job statuses' do
-      expect(Gitlab::SidekiqStatus).to receive(:all_completed?)
-        .with(%w(a))
-        .and_return(false, true)
+    it 'times out if not all jobs complete' do
+      described_class.notify(waiter.key, 'a')
 
-      expect(waiter).to receive(:sleep).with(described_class::INTERVAL)
+      result = nil
+      expect { Timeout.timeout(2) { result = waiter.wait(1) } }.not_to raise_error
 
-      waiter.wait
-    end
-
-    it 'returns when timing out' do
-      expect(waiter).not_to receive(:sleep)
-      waiter.wait(0)
+      expect(result).to contain_exactly('a')
     end
   end
 end
