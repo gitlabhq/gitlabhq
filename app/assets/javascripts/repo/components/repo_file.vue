@@ -86,24 +86,22 @@ export default RepoFile;
     </a>
   </td>
 
-  <td
-    v-if="!isMini"
-    class="hidden-sm hidden-xs">
-    <div class="commit-message">
-      <a @click.stop :href="file.lastCommitUrl">
-        {{file.lastCommitMessage}}
-      </a>
-    </div>
-  </td>
+  <template v-if="!isMini">
+    <td class="hidden-sm hidden-xs">
+      <div class="commit-message">
+        <a @click.stop :href="file.lastCommitUrl">
+          {{file.lastCommitMessage}}
+        </a>
+      </div>
+    </td>
 
-  <td
-    v-if="!isMini"
-    class="hidden-xs">
-    <span
-      class="commit-update"
-      :title="tooltipTitle(file.lastCommitUpdate)">
-      {{timeFormated(file.lastCommitUpdate)}}
-    </span>
-  </td>
+    <td class="hidden-xs">
+      <span
+        class="commit-update"
+        :title="tooltipTitle(file.lastCommitUpdate)">
+        {{timeFormated(file.lastCommitUpdate)}}
+      </span>
+    </td>
+  </template>
 </tr>
 </template>
