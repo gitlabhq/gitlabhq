@@ -130,7 +130,7 @@ import Cookies from 'js-cookie';
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
               if (shouldVisit) {
-                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+                gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
               }
             }
           }

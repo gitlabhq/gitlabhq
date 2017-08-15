@@ -21,7 +21,7 @@ describe('RepoTab', () => {
     const close = vm.$el.querySelector('.close');
     const name = vm.$el.querySelector(`a[title="${tab.url}"]`);
 
-    spyOn(vm, 'xClicked');
+    spyOn(vm, 'closeTab');
     spyOn(vm, 'tabClicked');
 
     expect(close.querySelector('.fa-times')).toBeTruthy();
@@ -30,7 +30,7 @@ describe('RepoTab', () => {
     close.click();
     name.click();
 
-    expect(vm.xClicked).toHaveBeenCalledWith(tab);
+    expect(vm.closeTab).toHaveBeenCalledWith(tab);
     expect(vm.tabClicked).toHaveBeenCalledWith(tab);
   });
 
@@ -48,22 +48,22 @@ describe('RepoTab', () => {
   });
 
   describe('methods', () => {
-    describe('xClicked', () => {
+    describe('closeTab', () => {
       const vm = jasmine.createSpyObj('vm', ['$emit']);
 
       it('returns undefined and does not $emit if file is changed', () => {
         const file = { changed: true };
-        const returnVal = repoTab.methods.xClicked.call(vm, file);
+        const returnVal = repoTab.methods.closeTab.call(vm, file);
 
         expect(returnVal).toBeUndefined();
         expect(vm.$emit).not.toHaveBeenCalled();
       });
 
-      it('$emits xclicked event with file obj', () => {
+      it('$emits tabclosed event with file obj', () => {
         const file = { changed: false };
-        repoTab.methods.xClicked.call(vm, file);
+        repoTab.methods.closeTab.call(vm, file);
 
-        expect(vm.$emit).toHaveBeenCalledWith('xclicked', file);
+        expect(vm.$emit).toHaveBeenCalledWith('tabclosed', file);
       });
     });
   });

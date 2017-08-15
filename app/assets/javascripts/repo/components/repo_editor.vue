@@ -32,7 +32,6 @@ const RepoEditor = {
 
       const languages = this.monaco.languages.getLanguages();
       const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      this.showHide();
       const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
 
       this.monacoInstance.setModel(newModel);
@@ -40,14 +39,6 @@ const RepoEditor = {
   },
 
   methods: {
-    showHide() {
-      if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
-        this.$el.style.display = 'none';
-      } else {
-        this.$el.style.display = 'inline-block';
-      }
-    },
-
     addMonacoEvents() {
       this.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
       this.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
@@ -73,11 +64,6 @@ const RepoEditor = {
         column: 1,
       });
     },
-
-    activeFileLabel() {
-      this.showHide();
-    },
-
     dialog: {
       handler(obj) {
         const newObj = obj;
@@ -99,21 +85,7 @@ const RepoEditor = {
       deep: true,
     },
 
-    isTree() {
-      this.showHide();
-    },
-
-    openedFiles() {
-      this.showHide();
-    },
-
-    binary() {
-      this.showHide();
-    },
-
     blobRaw() {
-      this.showHide();
-
       if (this.isTree) return;
 
       this.monacoInstance.setModel(null);
@@ -125,11 +97,16 @@ const RepoEditor = {
       this.monacoInstance.setModel(newModel);
     },
   },
+  computed: {
+    shouldHideEditor() {
+      return !this.openedFiles.length || (this.binary && !this.activeFile.raw);
+    },
+  },
 };
 
 export default RepoEditor;
 </script>
 
 <template>
-<div id="ide"></div>
+<div id="ide" v-if='!shouldHideEditor'></div>
 </template>
