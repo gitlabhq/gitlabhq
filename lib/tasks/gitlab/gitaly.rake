@@ -15,13 +15,17 @@ namespace :gitlab do
       checkout_or_clone_version(version: version, repo: args.repo, target_dir: args.dir)
 
       _, status = Gitlab::Popen.popen(%w[which gmake])
-      command = status.zero? ? 'gmake' : 'make'
+      command = status.zero? ? ['gmake'] : ['make']
+
+      if Rails.env.test?
+        command += %W[BUNDLE_PATH=#{Bundler.bundle_path}] 
+      end
 
       Dir.chdir(args.dir) do
         create_gitaly_configuration
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
-          Bundler.with_original_env { run_command!(%w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] + [command]) }
+          Bundler.with_original_env { run_command!(%w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] + command) }
         end
       end
     end

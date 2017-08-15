@@ -726,9 +726,9 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w[username skype linkedin twitter].each do |attr|
-      value = public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
-      public_send("#{attr}=", Sanitize.clean(value)) if value.present? # rubocop:disable GitlabSecurity/PublicSend
+    %i[skype linkedin twitter].each do |attr|
+      value = self[attr]
+      self[attr] = Sanitize.clean(value) if value.present?
     end
   end
 

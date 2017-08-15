@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import Helper from '~/repo/helpers/repo_helper';
+import RepoService from '~/repo/services/repo_service';
 import RepoStore from '~/repo/stores/repo_store';
 import repoSidebar from '~/repo/components/repo_sidebar.vue';
 
@@ -57,5 +59,52 @@ describe('RepoSidebar', () => {
     const vm = createComponent();
 
     expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
+  });
+
+  describe('methods', () => {
+    describe('fileClicked', () => {
+      it('should fetch data for new file', () => {
+        spyOn(Helper, 'getContent').and.callThrough();
+        const file1 = {
+          id: 0,
+          url: '',
+        };
+        RepoStore.files = [file1];
+        RepoStore.isRoot = true;
+        const vm = createComponent();
+
+        vm.fileClicked(file1);
+
+        expect(Helper.getContent).toHaveBeenCalledWith(file1);
+      });
+
+      it('should hide files in directory if already open', () => {
+        spyOn(RepoStore, 'removeChildFilesOfTree').and.callThrough();
+        const file1 = {
+          id: 0,
+          type: 'tree',
+          url: '',
+          opened: true,
+        };
+        RepoStore.files = [file1];
+        RepoStore.isRoot = true;
+        const vm = createComponent();
+
+        vm.fileClicked(file1);
+
+        expect(RepoStore.removeChildFilesOfTree).toHaveBeenCalledWith(file1);
+      });
+    });
+
+    describe('goToPreviousDirectoryClicked', () => {
+      it('should hide files in directory if already open', () => {
+        const prevUrl = 'foo/bar';
+        const vm = createComponent();
+
+        vm.goToPreviousDirectoryClicked(prevUrl);
+
+        expect(RepoService.url).toEqual(prevUrl);
+      });
+    });
   });
 });

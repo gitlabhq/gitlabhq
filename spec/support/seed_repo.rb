@@ -97,6 +97,7 @@ module SeedRepo
       gitattributes-updated
       master
       merge-test
+      missing-gitmodules
     ].freeze
     TAGS = %w[
       v1.0.0
