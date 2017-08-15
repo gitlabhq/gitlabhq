@@ -9,6 +9,9 @@
 >    application settings (`/admin/application_settings`) under 'Import sources'.
 >    Ask your administrator if you don't see the **GitLab export** button when
 >    creating a new project.
+>  - Starting with GitLab 10.0, administrators can disable the project export option
+>    on the GitLab instance in application settings (`/admin/application_settings`)
+>    under 'Visibility and Access Controls'.
 >  - You can find some useful raketasks if you are an administrator in the
 >    [import_export](../../../administration/raketasks/project_import_export.md)
 >    raketask.

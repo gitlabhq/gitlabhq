@@ -559,13 +559,23 @@ module API
       expose :author, using: Entities::UserBasic
     end
 
+    class PushEventPayload < Grape::Entity
+      expose :commit_count, :action, :ref_type, :commit_from, :commit_to
+      expose :ref, :commit_title
+    end
+
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
       expose :target_id, :target_iid, :target_type, :author_id
-      expose :data, :target_title
+      expose :target_title
       expose :created_at
       expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
       expose :author, using: Entities::UserBasic, if: ->(event, options) { event.author }
+
+      expose :push_event_payload,
+        as: :push_data,
+        using: PushEventPayload,
+        if: -> (event, _) { event.push? }
 
       expose :author_username do |event, options|
         event.author&.username

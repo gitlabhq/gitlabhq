@@ -184,10 +184,13 @@ describe GitPushService do
     let!(:push_data) { push_data_from_service(project, user, oldrev, newrev, ref) }
     let(:event) { Event.find_by_action(Event::PUSHED) }
 
-    it { expect(event).not_to be_nil }
+    it { expect(event).to be_an_instance_of(PushEvent) }
     it { expect(event.project).to eq(project) }
     it { expect(event.action).to eq(Event::PUSHED) }
-    it { expect(event.data).to eq(push_data) }
+    it { expect(event.push_event_payload).to be_an_instance_of(PushEventPayload) }
+    it { expect(event.push_event_payload.commit_from).to eq(oldrev) }
+    it { expect(event.push_event_payload.commit_to).to eq(newrev) }
+    it { expect(event.push_event_payload.ref).to eq('master') }
 
     context "Updates merge requests" do
       it "when pushing a new branch for the first time" do

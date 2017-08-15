@@ -22,6 +22,7 @@ events:
 - author
 - project
 - target
+- push_event_payload
 notes:
 - award_emoji
 - project
@@ -299,3 +300,5 @@ timelogs:
 - issue
 - merge_request
 - user
+push_event_payload:
+- event

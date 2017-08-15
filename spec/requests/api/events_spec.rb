@@ -59,6 +59,34 @@ describe API::Events do
         expect(json_response.size).to eq(1)
       end
 
+      context 'when the list of events includes push events' do
+        let(:event) do
+          create(:push_event, author: user, project: private_project)
+        end
+
+        let!(:payload) { create(:push_event_payload, event: event) }
+        let(:payload_hash) { json_response[0]['push_data'] }
+
+        before do
+          get api("/users/#{user.id}/events?action=pushed", user)
+        end
+
+        it 'responds with HTTP 200 OK' do
+          expect(response).to have_http_status(200)
+        end
+
+        it 'includes the push payload as a Hash' do
+          expect(payload_hash).to be_an_instance_of(Hash)
+        end
+
+        it 'includes the push payload details' do
+          expect(payload_hash['commit_count']).to eq(payload.commit_count)
+          expect(payload_hash['action']).to eq(payload.action)
+          expect(payload_hash['ref_type']).to eq(payload.ref_type)
+          expect(payload_hash['commit_to']).to eq(payload.commit_to)
+        end
+      end
+
       context 'when there are multiple events from different projects' do
         let(:second_note) { create(:note_on_issue, project: create(:project)) }
 
