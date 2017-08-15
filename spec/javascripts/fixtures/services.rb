@@ -8,7 +8,6 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
   let!(:service)  { create(:custom_issue_tracker_service, project: project, title: 'Custom Issue Tracker') }
 
-
   render_views
 
   before(:all) do
