@@ -6,7 +6,7 @@ require 'json'
 uri = URI('https://gitlab.com/api/v4/projects/20699/trigger/pipeline')
 params = {
   "ref" => ENV["OMNIBUS_BRANCH"] || "master",
-  "token" => ENV["BUILD_TRIGGER_TOKEN"],
+  "token" => ENV["CI_JOB_TOKEN"],
   "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
   "variables[ALTERNATIVE_SOURCES]" => true,
   "variables[ee]" => ENV["EE_PACKAGE"] || "false"
