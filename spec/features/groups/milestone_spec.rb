@@ -5,14 +5,12 @@ feature 'Group milestones', :js do
   let!(:project) { create(:project_empty_repo, group: group) }
   let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }
 
-  before do
-    Timecop.freeze
-
-    sign_in(user)
+  around do |example|
+    Timecop.freeze { example.run }
   end
 
-  after do
-    Timecop.return
+  before do
+    sign_in(user)
   end
 
   context 'create a milestone' do

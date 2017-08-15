@@ -30,6 +30,9 @@ Shortcuts to GitLab's most visited docs:
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) | [SSH authentication](ssh/README.md) |
 | [Using Docker images](ci/docker/using_docker_images.md) | [GitLab Pages](user/project/pages/index.md) |
 
+- [User documentation](user/index.md)
+- [Administrator documentation](#administrator-documentation)
+
 ## Getting started with GitLab
 
 - [GitLab Basics](gitlab-basics/README.md): Start working on your command line and on GitLab.
@@ -40,7 +43,6 @@ Shortcuts to GitLab's most visited docs:
 
 ### User account
 
-- [User documentation](user/index.md): Learn how to use GitLab and explore its features
 - [User account](user/profile/index.md): Manage your account
   - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.

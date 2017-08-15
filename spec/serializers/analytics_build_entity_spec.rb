@@ -13,12 +13,8 @@ describe AnalyticsBuildEntity do
 
     subject { entity.as_json }
 
-    before do
-      Timecop.freeze
-    end
-
-    after do
-      Timecop.return
+    around do |example|
+      Timecop.freeze { example.run }
     end
 
     it 'contains the URL' do

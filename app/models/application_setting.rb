@@ -241,6 +241,7 @@ class ApplicationSetting < ActiveRecord::Base
       performance_bar_allowed_group_id: nil,
       plantuml_enabled: false,
       plantuml_url: nil,
+      project_export_enabled: true,
       recaptcha_enabled: false,
       repository_checks_enabled: true,
       repository_storages: ['default'],

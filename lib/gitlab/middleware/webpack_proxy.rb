@@ -1,6 +1,7 @@
 # This Rack middleware is intended to proxy the webpack assets directory to the
 # webpack-dev-server.  It is only intended for use in development.
 
+# :nocov:
 module Gitlab
   module Middleware
     class WebpackProxy < Rack::Proxy
@@ -22,3 +23,4 @@ module Gitlab
     end
   end
 end
+# :nocov:

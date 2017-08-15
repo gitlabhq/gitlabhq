@@ -1,0 +1,4 @@
+---
+title: Make GPGME temporary directory handling thread safe
+merge_request: 13481
+author: Alexis Reigel

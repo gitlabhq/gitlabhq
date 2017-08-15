@@ -10,6 +10,18 @@ module Gitlab
         @repository = repository
       end
 
+      def ls_files(revision)
+        request = Gitaly::ListFilesRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request)
+        response.flat_map do |msg|
+          msg.paths.map { |d| d.dup.force_encoding(Encoding::UTF_8) }
+        end
+      end
+
       def is_ancestor(ancestor_id, child_id)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,

@@ -33,6 +33,15 @@ describe MoveSystemUploadFolder do
       expect(File.symlink?(File.join(test_base, 'system'))).to be_truthy
       expect(File.exist?(File.join(test_base, 'system', 'file'))).to be_truthy
     end
+
+    it 'does not move if the target directory already exists' do
+      FileUtils.mkdir_p(File.join(test_base, '-', 'system'))
+
+      expect(FileUtils).not_to receive(:mv)
+      expect(migration).to receive(:say).with(/already exists. No need to redo the move/)
+
+      migration.up
+    end
   end
 
   describe '#down' do
@@ -57,6 +66,15 @@ describe MoveSystemUploadFolder do
 
       expect(File.directory?(File.join(test_base, 'system'))).to be_truthy
       expect(File.symlink?(File.join(test_base, 'system'))).to be_falsey
+    end
+
+    it 'does not move if the old directory already exists' do
+      FileUtils.mkdir_p(File.join(test_base, 'system'))
+
+      expect(FileUtils).not_to receive(:mv)
+      expect(migration).to receive(:say).with(/already exists and is not a symlink, no need to revert/)
+
+      migration.down
     end
   end
 end

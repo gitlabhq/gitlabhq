@@ -75,7 +75,7 @@
             Pipeline
             = link_to "##{@build.pipeline.id}", project_pipeline_path(@project, @build.pipeline), class: 'link-commit'
             from
-            = link_to "#{@build.pipeline.ref}", project_branch_path(@project, @build.pipeline.ref), class: 'link-commit'
+            = link_to "#{@build.pipeline.ref}", project_ref_path(@project, @build.pipeline.ref), class: 'link-commit ref-name'
           %button.dropdown-menu-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
             %span.stage-selection More
             = icon('chevron-down')

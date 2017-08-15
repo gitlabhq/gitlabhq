@@ -12,8 +12,8 @@ will be unassigned automatically.
 
 GitLab administrators receive all permissions.
 
-To add or import a user, you can follow the [project users and members
-documentation](../workflow/add-user/add-user.md).
+To add or import a user, you can follow the
+[project members documentation](../user/project/members/index.md).
 
 ## Project
 

@@ -300,7 +300,7 @@ describe Issuable do
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
-    before(:each) do
+    before do
       issue.labels << bug
     end
 
@@ -402,7 +402,7 @@ describe Issuable do
     let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
     let(:issue3) { create(:issue, title: "Feature1", project: project) }
 
-    before(:each) do
+    before do
       issue1.labels << bug
       issue1.labels << feature
       issue2.labels << bug

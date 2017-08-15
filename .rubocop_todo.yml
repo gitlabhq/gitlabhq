@@ -70,12 +70,6 @@ RSpec/EmptyLineAfterFinalLet:
 RSpec/EmptyLineAfterSubject:
   Enabled: false
 
-# Offense count: 78
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Enabled: false
-
 # Offense count: 9
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: it_behaves_like, it_should_behave_like
