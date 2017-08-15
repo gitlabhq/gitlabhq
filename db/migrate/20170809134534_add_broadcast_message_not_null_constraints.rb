@@ -9,9 +9,21 @@ class AddBroadcastMessageNotNullConstraints < ActiveRecord::Migration
 
   COLUMNS = %i[starts_at ends_at created_at updated_at message_html]
 
-  def change
+  class BroadcastMessage < ActiveRecord::Base
+    self.table_name = 'broadcast_messages'
+  end
+
+  def up
     COLUMNS.each do |column|
+      BroadcastMessage.where(column => nil).delete_all
+
       change_column_null :broadcast_messages, column, false
+    end
+  end
+
+  def down
+    COLUMNS.each do |column|
+      change_column_null :broadcast_messages, column, true
     end
   end
 end
