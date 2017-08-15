@@ -10,12 +10,15 @@ export default {
       return this.editMode ? this.__('Cancel edit') : this.__('Edit');
     },
 
-    buttonIcon() {
-      return this.editMode ? [] : ['fa', 'fa-pencil'];
+    showButton() {
+      return this.isCommitable &&
+        !this.activeFile.render_error &&
+        !this.binary &&
+        this.openedFiles.length;
     },
   },
   methods: {
-    editClicked() {
+    editCancelClicked() {
       if (this.changedFiles.length) {
         this.dialog.open = true;
         return;
@@ -24,15 +27,11 @@ export default {
       Store.toggleBlobView();
     },
     toggleProjectRefsForm() {
-      if (this.editMode) {
-        $('.project-refs-form').addClass('disabled-content');
-        $('.project-refs-target-form').show();
-      } else {
-        $('.project-refs-form').removeClass('disabled-content');
-        $('.project-refs-target-form').hide();
-      }
+      $('.project-refs-form').toggleClass('disabled', this.editMode);
+      $('.js-tree-ref-target-holder').toggle(this.editMode);
     },
   },
+
   watch: {
     editMode() {
       this.toggleProjectRefsForm();
@@ -42,8 +41,18 @@ export default {
 </script>
 
 <template>
-<button class="btn btn-default" @click.prevent="editClicked" v-cloak v-if="isCommitable && !activeFile.render_error" :disabled="binary">
-  <i :class="buttonIcon"></i>
-  <span>{{buttonLabel}}</span>
+<button
+  v-if="showButton"
+  class="btn btn-default"
+  type="button"
+  @click.prevent="editCancelClicked">
+  <i
+    v-if="!editMode"
+    class="fa fa-pencil"
+    aria-hidden="true">
+  </i>
+  <span>
+    {{buttonLabel}}
+  </span>
 </button>
 </template>

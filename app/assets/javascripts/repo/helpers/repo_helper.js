@@ -4,6 +4,8 @@ import Store from '../stores/repo_store';
 import '../../flash';
 
 const RepoHelper = {
+  monacoInstance: null,
+
   getDefaultActiveFile() {
     return {
       active: true,
@@ -37,10 +39,6 @@ const RepoHelper = {
     return fileName.split('.').pop();
   },
 
-  getBranch() {
-    return $('button.dropdown-menu-toggle').attr('data-ref');
-  },
-
   getLanguageIDForFile(file, langs) {
     const ext = RepoHelper.getFileExtension(file.name);
     const foundLang = RepoHelper.findLanguage(ext, langs);
@@ -48,8 +46,12 @@ const RepoHelper = {
     return foundLang ? foundLang.id : 'plaintext';
   },
 
-  getFilePathFromFullPath(fullPath, branch) {
-    return fullPath.split(`${Store.projectUrl}/blob/${branch}`)[1];
+  setMonacoModelFromLanguage() {
+    RepoHelper.monacoInstance.setModel(null);
+    const languages = RepoHelper.monaco.languages.getLanguages();
+    const languageID = RepoHelper.getLanguageIDForFile(Store.activeFile, languages);
+    const newModel = RepoHelper.monaco.editor.createModel(Store.blobRaw, languageID);
+    RepoHelper.monacoInstance.setModel(newModel);
   },
 
   findLanguage(ext, langs) {
@@ -66,7 +68,7 @@ const RepoHelper = {
     return file;
   },
 
-  isKindaBinary() {
+  isRenderable() {
     const okExts = ['md', 'svg'];
     return okExts.indexOf(Store.activeFile.extension) > -1;
   },
@@ -80,22 +82,8 @@ const RepoHelper = {
     .catch(RepoHelper.loadingError);
   },
 
-  toggleFakeTab(loading, file) {
-    if (loading) return Store.addPlaceholderFile();
-    return Store.removeFromOpenedFiles(file);
-  },
-
-  setLoading(loading, file) {
-    if (Service.url.indexOf('blob') > -1) {
-      Store.loading.blob = loading;
-      return RepoHelper.toggleFakeTab(loading, file);
-    }
-
-    if (Service.url.indexOf('tree') > -1) Store.loading.tree = loading;
-
-    return undefined;
-  },
-
+  // when you open a directory you need to put the directory files under
+  // the directory... This will merge the list of the current directory and the new list.
   getNewMergedList(inDirectory, currentList, newList) {
     const newListSorted = newList.sort(this.compareFilesCaseInsensitive);
     if (!inDirectory) return newListSorted;
@@ -104,6 +92,9 @@ const RepoHelper = {
     return RepoHelper.mergeNewListToOldList(newListSorted, currentList, inDirectory, indexOfFile);
   },
 
+  // within the get new merged list this does the merging of the current list of files
+  // and the new list of files. The files are never "in" another directory they just
+  // appear like they are because of the margin.
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
     newList.reverse().forEach((newFile) => {
       const fileIndex = indexOfFile + 1;
@@ -141,11 +132,9 @@ const RepoHelper = {
 
   getContent(treeOrFile) {
     let file = treeOrFile;
-    // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-      // RepoHelper.setLoading(false, loadingData);
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
@@ -246,34 +235,16 @@ const RepoHelper = {
   },
 
   dataToListOfFiles(data) {
-    const a = [];
-
-    // push in blobs
-    data.blobs.forEach((blob) => {
-      a.push(RepoHelper.serializeBlob(blob));
-    });
-
-    data.trees.forEach((tree) => {
-      a.push(RepoHelper.serializeTree(tree));
-    });
-
-    data.submodules.forEach((submodule) => {
-      a.push(RepoHelper.serializeSubmodule(submodule));
-    });
-
-    return a;
+    const { blobs, trees, submodules } = data;
+    return [
+      ...blobs.map(blob => RepoHelper.serializeBlob(blob)),
+      ...trees.map(tree => RepoHelper.serializeTree(tree)),
+      ...submodules.map(submodule => RepoHelper.serializeSubmodule(submodule)),
+    ];
   },
 
   genKey() {
     return RepoHelper.Time.now().toFixed(3);
-  },
-
-  getStateKey() {
-    return RepoHelper.key;
-  },
-
-  setStateKey(key) {
-    RepoHelper.key = key;
   },
 
   updateHistoryEntry(url, title) {
@@ -293,7 +264,7 @@ const RepoHelper = {
   },
 
   loadingError() {
-    Flash('Unable to load the file at this time.');
+    Flash('Unable to load this content at this time.');
   },
 };
 
