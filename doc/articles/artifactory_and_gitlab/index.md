@@ -3,7 +3,7 @@
 > **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Fabio Busatto](https://gitlab.com/bikebilly) ||
-> **Publication date:** 2017/08/03
+> **Publication date:** 2017-08-15
 
 ## Introduction
 
