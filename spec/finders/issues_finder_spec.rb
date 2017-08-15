@@ -64,7 +64,7 @@ describe IssuesFinder do
         let(:params) { { assignee_ids: [user2.id, user3.id] } }
 
         before do
-          project2.team << [user3, :developer]
+          project2.add_developer(user3)
 
           issue3.assignees = [user2, user3]
         end
@@ -76,10 +76,10 @@ describe IssuesFinder do
 
       context 'filtering by assignee usernames' do
         set(:user3) { create(:user) }
-        let(:params) { { assignee_usernames: [user2.username, user3.username] } }
+        let(:params) { { assignee_username: [user2.username, user3.username] } }
 
         before do
-          project2.team << [user3, :developer]
+          project2.add_developer(user3)
 
           issue3.assignees = [user2, user3]
         end

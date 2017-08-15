@@ -118,8 +118,8 @@ class IssuesFinder < IssuableFinder
     @assignees =
       if params[:assignee_ids]
         User.where(id: params[:assignee_ids])
-      elsif params[:assignee_usernames]
-        User.where(username: params[:assignee_usernames])
+      elsif params[:assignee_username]
+        User.where(username: params[:assignee_username])
       else
         []
       end
