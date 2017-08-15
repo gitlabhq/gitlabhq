@@ -74,10 +74,6 @@ const RepoEditor = {
   },
 
   watch: {
-    activeFileLabel() {
-      this.showHide();
-    },
-
     dialog: {
       handler(obj) {
         const newObj = obj;
@@ -100,22 +96,15 @@ const RepoEditor = {
       deep: true,
     },
 
-    isTree() {
-      this.showHide();
-    },
-
-    openedFiles() {
-      this.showHide();
-    },
-
-    binary() {
-      this.showHide();
-    },
-
     blobRaw() {
       if (Helper.monacoInstance && !this.isTree) {
         this.setupEditor();
       }
+    },
+  },
+  computed: {
+    shouldHideEditor() {
+      return !this.openedFiles.length || (this.binary && !this.activeFile.raw);
     },
   },
 };
@@ -124,5 +113,5 @@ export default RepoEditor;
 </script>
 
 <template>
-<div id="ide"></div>
+<div id="ide" v-if='!shouldHideEditor'></div>
 </template>

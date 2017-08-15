@@ -23,6 +23,7 @@ describe('RepoFileButtons', () => {
     RepoStore.activeFile = activeFile;
     RepoStore.activeFileLabel = activeFileLabel;
     RepoStore.editMode = true;
+    RepoStore.binary = false;
 
     const vm = createComponent();
     const raw = vm.$el.querySelector('.raw');

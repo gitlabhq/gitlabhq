@@ -28,11 +28,6 @@
 .project-refs-form,
 .project-refs-target-form {
   display: inline-block;
-
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
 }
 
 .fade-enter,
@@ -134,7 +129,6 @@
         a {
           @include str-truncated(100px);
           color: $black;
-          display: inline-block;
           width: 100px;
           text-align: center;
           vertical-align: middle;

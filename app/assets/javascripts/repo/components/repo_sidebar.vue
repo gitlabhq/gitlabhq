@@ -8,7 +8,7 @@ import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
 import RepoMixin from '../mixins/repo_mixin';
 
-const RepoSidebar = {
+export default {
   mixins: [RepoMixin],
   components: {
     'repo-file-options': RepoFileOptions,
@@ -59,8 +59,6 @@ const RepoSidebar = {
     },
   },
 };
-
-export default RepoSidebar;
 </script>
 
 <template>

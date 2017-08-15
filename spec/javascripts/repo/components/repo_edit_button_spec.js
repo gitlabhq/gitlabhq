@@ -21,11 +21,13 @@ describe('RepoEditButton', () => {
     expect(vm.$el.textContent).toMatch('Edit');
 
     spyOn(vm, 'editCancelClicked').and.callThrough();
+    spyOn(vm, 'toggleProjectRefsForm');
 
     vm.$el.click();
 
     Vue.nextTick(() => {
       expect(vm.editCancelClicked).toHaveBeenCalled();
+      expect(vm.toggleProjectRefsForm).toHaveBeenCalled();
       expect(vm.$el.textContent).toMatch('Cancel edit');
       done();
     });
