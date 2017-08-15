@@ -744,7 +744,7 @@ describe 'Issues' do
   end
 
   describe 'confidential issue#show', js: true do
-    it 'shows confidential sibebar information as confidential and can be turned off' do 
+    it 'shows confidential sibebar information as confidential and can be turned off' do
       issue = create(:issue, :confidential, project: project)
 
       visit project_issue_path(project, issue)

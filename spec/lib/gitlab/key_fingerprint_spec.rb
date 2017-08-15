@@ -30,8 +30,8 @@ describe Gitlab::KeyFingerprint, lib: true do
 
   MD5_FINGERPRINTS = {
     rsa: '06:b2:8a:92:df:0e:11:2c:ca:7b:8f:a4:ba:6e:4b:fd',
-    ecdsa: '45:ff:5b:98:9a:b6:8a:41:13:c1:30:8b:09:5e:7b:4e', 
-    ed25519: '2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16', 
+    ecdsa: '45:ff:5b:98:9a:b6:8a:41:13:c1:30:8b:09:5e:7b:4e',
+    ed25519: '2e:65:6a:c8:cf:bf:b2:8b:9a:bd:6d:9f:11:5c:12:16',
     dss: '57:98:86:02:5f:9c:f4:9b:ad:5a:1e:51:92:0e:fd:2b'
   }.freeze
 

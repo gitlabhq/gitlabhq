@@ -1,6 +1,6 @@
 # AccessMatchersForController
 #
-# For testing authorize_xxx in controller. 
+# For testing authorize_xxx in controller.
 module AccessMatchersForController
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
