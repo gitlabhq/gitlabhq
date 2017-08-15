@@ -28,9 +28,9 @@ const RepoTab = {
   methods: {
     tabClicked: Store.setActiveFiles,
 
-    xClicked(file) {
+    closeTab(file) {
       if (file.changed) return;
-      this.$emit('xclicked', file);
+      this.$emit('tabclosed', file);
     },
   },
 };
@@ -43,7 +43,7 @@ export default RepoTab;
   <a
     href="#0"
     class="close"
-    @click.prevent="xClicked(tab)"
+    @click.prevent="closeTab(tab)"
     :aria-label="closeLabel">
     <i
       class="fa"

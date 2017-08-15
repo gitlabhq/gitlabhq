@@ -13,7 +13,7 @@ const RepoTabs = {
   data: () => Store,
 
   methods: {
-    xClicked(file) {
+    tabClosed(file) {
       Store.removeFromOpenedFiles(file);
     },
   },
@@ -23,10 +23,15 @@ export default RepoTabs;
 </script>
 
 <template>
-<ul
-  v-if="isMini"
-  id="tabs">
-  <repo-tab v-for="tab in openedFiles" :key="tab.id" :tab="tab" :class="{'active' : tab.active}" @xclicked="xClicked"/>
+<ul id="tabs"
+    v-if="isMini">
+  <repo-tab
+    v-for="tab in openedFiles"
+    :key="tab.id"
+    :tab="tab"
+    :class="{'active' : tab.active}"
+    @tabclosed="tabClosed"
+  />
   <li class="tabs-divider" />
 </ul>
 </template>

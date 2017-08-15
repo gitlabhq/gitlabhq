@@ -38,13 +38,13 @@ describe('RepoTabs', () => {
   });
 
   describe('methods', () => {
-    describe('xClicked', () => {
+    describe('tabClosed', () => {
       it('calls removeFromOpenedFiles with file obj', () => {
         const file = {};
 
         spyOn(RepoStore, 'removeFromOpenedFiles');
 
-        repoTabs.methods.xClicked(file);
+        repoTabs.methods.tabClosed(file);
 
         expect(RepoStore.removeFromOpenedFiles).toHaveBeenCalledWith(file);
       });

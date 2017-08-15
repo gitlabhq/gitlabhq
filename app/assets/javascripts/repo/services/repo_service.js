@@ -15,10 +15,12 @@ const RepoService = {
 
   checkCurrentBranchIsCommitable() {
     const url = Store.service.refsUrl;
-    return axios.get(url, { params: {
-      ref: Store.currentBranch,
-      search: Store.currentBranch,
-    } });
+    return axios.get(url, {
+      params: {
+        ref: Store.currentBranch,
+        search: Store.currentBranch,
+      },
+    });
   },
 
   getRaw(url) {

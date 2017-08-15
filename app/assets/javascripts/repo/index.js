@@ -43,6 +43,9 @@ function initRepo(el) {
     components: {
       repo: Repo,
     },
+    render(createElement) {
+      return createElement('repo');
+    },
   });
 }
 
