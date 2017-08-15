@@ -167,6 +167,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
 
   Settings.ldap['servers'].each do |key, server|
     server = Settingslogic.new(server)
+
     server['label'] ||= 'LDAP'
     server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
@@ -177,7 +178,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
     server['external_groups'] = [] if server['external_groups'].nil?
     server['sync_ssh_keys'] = 'sshPublicKey' if server['sync_ssh_keys'].to_s == 'true'
-    Settings.ldap['servers'][key] = server
 
     # For backwards compatibility
     server['encryption'] ||= server['method']
@@ -196,6 +196,8 @@ if Settings.ldap['enabled'] || Rails.env.test?
       MSG
       Rails.logger.warn(message)
     end
+
+    Settings.ldap['servers'][key] = server
   end
 end
 
