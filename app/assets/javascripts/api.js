@@ -98,7 +98,6 @@ const Api = {
   },
 
   commitMultiple(id, data, callback) {
-    // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
       .replace(':id', id);
     return $.ajax({

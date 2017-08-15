@@ -1,31 +1,37 @@
 <script>
-const PopupDialog = {
+export default {
   name: 'popup-dialog',
 
   props: {
-    open: Boolean,
-    title: String,
-    body: String,
+    title: {
+      type: String,
+      required: true,
+    },
+    body: {
+      type: String,
+      required: true,
+    },
     kind: {
       type: String,
+      required: false,
       default: 'primary',
     },
     closeButtonLabel: {
       type: String,
+      required: false,
       default: 'Cancel',
     },
     primaryButtonLabel: {
       type: String,
-      default: 'Save changes',
+      required: true,
     },
   },
 
   computed: {
-    typeOfClass() {
-      const className = `btn-${this.kind}`;
-      const returnObj = {};
-      returnObj[className] = true;
-      return returnObj;
+    btnKindClass() {
+      return {
+        [`btn-${this.kind}`]: true,
+      };
     },
   },
 
@@ -33,33 +39,48 @@ const PopupDialog = {
     close() {
       this.$emit('toggle', false);
     },
-
-    yesClick() {
-      this.$emit('submit', true);
-    },
-
-    noClick() {
-      this.$emit('submit', false);
+    emitSubmit(status) {
+      this.$emit('submit', status);
     },
   },
 };
-
-export default PopupDialog;
 </script>
+
 <template>
-<div class="modal popup-dialog" tabindex="-1" v-show="open" role="dialog">
-  <div class="modal-dialog" role="document">
+<div
+  class="modal popup-dialog"
+  role="dialog"
+  tabindex="-1">
+  <div
+    class="modal-dialog"
+    role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" @click="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button"
+          class="close"
+          @click="close"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
         <h4 class="modal-title">{{this.title}}</h4>
       </div>
       <div class="modal-body">
         <p>{{this.body}}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" @click="noClick">{{closeButtonLabel}}</button>
-        <button type="button" class="btn" :class="typeOfClass" @click="yesClick">{{primaryButtonLabel}}</button>
+        <button
+          type="button"
+          class="btn btn-default"
+          @click="emitSubmit(false)">
+            {{closeButtonLabel}}
+        </button>
+        <button
+          type="button"
+          class="btn"
+          :class="btnKindClass"
+          @click="emitSubmit(true)">
+            {{primaryButtonLabel}}
+        </button>
       </div>
     </div>
   </div>

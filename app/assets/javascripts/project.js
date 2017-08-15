@@ -138,11 +138,11 @@ import Cookies from 'js-cookie';
               var $form = $dropdown.closest('form');
 
               var $visit = $dropdown.data('visit');
-              var shouldVisit = typeof $visit === 'undefined' ? true : $visit;
+              var shouldVisit = $visit ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
               if (shouldVisit) {
-                gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+                gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
               }
             }
           }
