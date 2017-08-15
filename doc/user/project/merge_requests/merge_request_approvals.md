@@ -119,8 +119,9 @@ merged.
 
 ## Merge request with different source branch and target branch projects
 
-If the merge request source branch and target branch belong to different projects,
-everything is with repsect to the target branch's project. In particular, since the
+If the merge request source branch and target branch belong to different projects (which
+happens in merge requests in forked projects), everything is with respect to the 
+target branch's project (typically the original project). In particular, since the
 merge request in this case is part of the target branch's project, the relevant
 settings are the target project's. The source branch's project settings are not 
 applicable. Even if you start the merge request from the source branch's project
