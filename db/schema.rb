@@ -163,17 +163,15 @@ ActiveRecord::Schema.define(version: 20170809142252) do
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text "message", null: false
-    t.datetime "starts_at", null: false
-    t.datetime "ends_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "color"
     t.string "font"
-    t.text "message_html", null: false
+    t.text "message_html"
     t.integer "cached_markdown_version"
   end
-
-  add_index "broadcast_messages", ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
 
   create_table "chat_names", force: :cascade do |t|
     t.integer "user_id", null: false
