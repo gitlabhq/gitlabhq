@@ -20,7 +20,7 @@ module AppearancesHelper
   end
 
   def brand_item
-    @appearance ||= Appearance.current
+    @appearance ||= Appearance.first
   end
 
   def brand_header_logo
