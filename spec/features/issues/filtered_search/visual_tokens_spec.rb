@@ -346,13 +346,8 @@ describe 'Visual tokens', js: true do
 
     it 'tokenizes the search term to complete visual token' do
       expect_tokens([
-<<<<<<< HEAD
-        { name: 'author', value: 'administrator' },
-        { name: 'assignee', value: 'none' }
-=======
         author_token(user.name),
         assignee_token('none')
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       ])
     end
   end

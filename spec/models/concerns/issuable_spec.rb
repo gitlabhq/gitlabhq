@@ -154,13 +154,8 @@ describe Issuable do
     end
   end
 
-<<<<<<< HEAD
-  describe "#sort_by_attr" do
-    let(:project) { create(:empty_project) }
-=======
   describe "#sort" do
     let(:project) { create(:project) }
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
 
     context "by milestone due date" do
       # Correct order is:

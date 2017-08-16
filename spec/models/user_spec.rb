@@ -1254,62 +1254,34 @@ describe User do
 
     context 'when sort by recent_sign_in' do
       it 'sorts users by the recent sign-in time' do
-<<<<<<< HEAD
-        expect(User.sort_by_attr('recent_sign_in').first).to eq(@user)
+        expect(described_class.sort_by_attr('recent_sign_in').first).to eq(@user)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort_by_attr('recent_sign_in').third).to eq(@user2)
-=======
-        expect(described_class.sort('recent_sign_in').first).to eq(@user)
-      end
-
-      it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('recent_sign_in').third).to eq(@user2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+        expect(described_class.sort_by_attr('recent_sign_in').third).to eq(@user2)
       end
     end
 
     context 'when sort by oldest_sign_in' do
       it 'sorts users by the oldest sign-in time' do
-<<<<<<< HEAD
-        expect(User.sort_by_attr('oldest_sign_in').first).to eq(@user1)
+        expect(described_class.sort_by_attr('oldest_sign_in').first).to eq(@user1)
       end
 
       it 'pushes users who never signed in to the end' do
-        expect(User.sort_by_attr('oldest_sign_in').third).to eq(@user2)
-=======
-        expect(described_class.sort('oldest_sign_in').first).to eq(@user1)
-      end
-
-      it 'pushes users who never signed in to the end' do
-        expect(described_class.sort('oldest_sign_in').third).to eq(@user2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+        expect(described_class.sort_by_attr('oldest_sign_in').third).to eq(@user2)
       end
     end
 
     it 'sorts users in descending order by their creation time' do
-<<<<<<< HEAD
-      expect(User.sort_by_attr('created_desc').first).to eq(@user)
+      expect(described_class.sort_by_attr('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(User.sort_by_attr('created_asc').first).to eq(@user2)
+      expect(described_class.sort_by_attr('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(User.sort_by_attr(nil).first).to eq(@user2)
-=======
-      expect(described_class.sort('created_desc').first).to eq(@user)
-    end
-
-    it 'sorts users in ascending order by their creation time' do
-      expect(described_class.sort('created_asc').first).to eq(@user2)
-    end
-
-    it 'sorts users by id in descending order when nil is passed' do
-      expect(described_class.sort(nil).first).to eq(@user2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+      expect(described_class.sort_by_attr(nil).first).to eq(@user2)
     end
   end
 

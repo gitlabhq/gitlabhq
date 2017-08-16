@@ -54,24 +54,15 @@ module FilteredSearchHelpers
   # Iterates through each visual token inside
   # .tokens-container to make sure the correct names and values are rendered
   def expect_tokens(tokens)
-<<<<<<< HEAD
-    page.find '.filtered-search-box .tokens-container' do
-      page.all(:css, '.tokens-container li').each_with_index do |el, index|
-        if tokens[index]
-          token_name = tokens[index][:name]
-          token_value = tokens[index][:value]
-=======
     page.within '.filtered-search-box .tokens-container' do
       page.all(:css, '.tokens-container li .selectable').each_with_index do |el, index|
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
 
-          expect(el.find('.name')).to have_content(/#{Regexp.escape(token_name)}/i)
+        expect(el.find('.name')).to have_content(/#{Regexp.escape(token_name)}/i)
 
-          if token_value
-            expect(el.find('.value')).to have_content(/#{Regexp.escape(token_value)}/i)
-          end
+        if token_value
+          expect(el.find('.value')).to have_content(/#{Regexp.escape(token_value)}/i)
         end
       end
     end
