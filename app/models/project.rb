@@ -32,7 +32,7 @@ class Project < ActiveRecord::Base
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
 
-  delegate :base_dir, :disk_path, :ensure_storage_path_exist, :rename_repo, to: :storage
+  delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -62,8 +62,8 @@ class Project < ActiveRecord::Base
 
   # Storage specific hooks
   after_initialize :use_hashed_storage
-  after_create :ensure_storage_path_exist
-  after_save :ensure_storage_path_exist, if: :namespace_id_changed?
+  after_create :ensure_storage_path_exists
+  after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
   acts_as_taggable
 
@@ -1262,6 +1262,50 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def rename_repo
+    new_full_path = build_full_path
+
+    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+
+    if has_container_registry_tags?
+      Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
+
+      # we currently doesn't support renaming repository if it contains images in container registry
+      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
+    end
+
+    expire_caches_before_rename(full_path_was)
+
+    if storage.rename_repo
+      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
+      rename_repo_notify!
+      after_rename_repo
+    else
+      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+
+      # if we cannot move namespace directory we should rollback
+      # db changes in order to prevent out of sync between db and fs
+      raise StandardError.new('repository cannot be renamed')
+    end
+  end
+
+  def rename_repo_notify!
+    send_move_instructions(full_path_was)
+    expires_full_path_cache
+
+    self.old_path_with_namespace = full_path_was
+    SystemHooksService.new.execute_hooks_for(self, :rename)
+
+    reload_repository!
+  end
+
+  def after_rename_repo
+    path_before_change = previous_changes['path'].first
+
+    Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+  end
+
   def running_or_pending_build_count(force: false)
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
@@ -1418,6 +1462,10 @@ class Project < ActiveRecord::Base
     else
       self
     end
+  end
+
+  def full_path_was
+    File.join(namespace.full_path, previous_changes['path'].first)
   end
 
   alias_method :name_with_namespace, :full_name

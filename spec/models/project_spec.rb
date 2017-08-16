@@ -2334,11 +2334,11 @@ describe Project do
       end
     end
 
-    describe '#ensure_storage_path_exist' do
+    describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, project.base_dir)
 
-        project.ensure_storage_path_exist
+        project.ensure_storage_path_exists
       end
     end
 
@@ -2425,11 +2425,11 @@ describe Project do
       end
     end
 
-    describe '#ensure_storage_path_exist' do
+    describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '6b/86')
 
-        project.ensure_storage_path_exist
+        project.ensure_storage_path_exists
       end
     end
 
