@@ -18,7 +18,7 @@ class Spinach::Features::ProjectBuildsSummary < Spinach::FeatureSteps
   end
 
   step 'I click erase build button' do
-    click_link 'Erase'
+    accept_confirm { click_link 'Erase' }
   end
 
   step 'recent build has been erased' do

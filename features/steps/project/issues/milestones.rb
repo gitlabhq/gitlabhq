@@ -63,7 +63,7 @@ class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   end
 
   step 'I click link to remove milestone' do
-    accept_alert { click_link 'Delete' }
+    click_link 'Delete'
   end
 
   step 'I should see no milestones' do
