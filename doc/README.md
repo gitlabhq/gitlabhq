@@ -114,7 +114,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ### Migrate and import your projects from other platforms
 
-- [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Importing to GitLab](user/project/import/index.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
 ### Continuous Integration, Delivery, and Deployment
