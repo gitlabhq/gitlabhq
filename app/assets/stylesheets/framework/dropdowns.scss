@@ -729,6 +729,7 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     li {
+      display: block;
       padding: 0 1px;
 
       &:hover {
