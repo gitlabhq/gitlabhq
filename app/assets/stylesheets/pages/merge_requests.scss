@@ -610,6 +610,8 @@
 }
 
 .mr-version-controls {
+  @include new-style-dropdown;
+
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
