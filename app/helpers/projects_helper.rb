@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+    _("You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
       { project_name_with_namespace: project.name_with_namespace }
   end
 
@@ -234,6 +234,8 @@ module ProjectsHelper
   # If no limit is applied we'll just issue a COUNT since the result set could
   # be too large to load into memory.
   def any_projects?(projects)
+    return projects.any? if projects.is_a?(Array)
+
     if projects.limit_value
       projects.to_a.any?
     else

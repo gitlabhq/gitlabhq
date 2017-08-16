@@ -69,3 +69,28 @@ PostgreSQL provisioning can be disabled by setting the variable `DISABLE_POSTGRE
 [review-app]: ../review_apps/index.md
 [container-registry]: https://docs.gitlab.com/ce/user/project/container_registry.html
 [postgresql]: https://www.postgresql.org/
+
+## Auto Monitoring
+
+> Introduced in [GitLab 9.5](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13438).
+
+Apps auto-deployed using one the [Kubernetes templates](#supported-templates) can also be automatically monitored for:
+
+* Response Metrics: latency, throughput, error rate
+* System Metrics: CPU utilization, memory utilization
+
+Metrics are gathered from [nginx-ingress](../../user/project/integrations/prometheus_library/nginx_ingress.md) and [Kubernetes](../../user/project/integrations/prometheus_library/kubernetes.md).
+
+To view the metrics, open the [Monitoring dashboard for a deployed environment](../environments.md#monitoring-environments).
+
+![Auto Metrics](img/auto_monitoring.png)
+
+### Configuring Auto Monitoring
+
+If GitLab has been deployed using the [omnibus-gitlab](../../install/kubernetes/gitlab_omnibus.md) Helm chart, no configuration is required.
+
+If you have installed GitLab using a different method:
+
+1. [Deploy Prometheus](../../user/project/integrations/prometheus.md#configuring-your-own-prometheus-server-within-kubernetes) into your Kubernetes cluster
+1. If you would like response metrics, ensure you are running at least version 0.9.0 of NGINX Ingress and [enable Prometheus metrics](https://github.com/kubernetes/ingress/blob/master/examples/customization/custom-vts-metrics/nginx/nginx-vts-metrics-conf.yaml).
+1. Finally, [annotate](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) the NGINX Ingress deployment to be scraped by Prometheus using `prometheus.io/scrape: "true"` and `prometheus.io/port: "10254"`.

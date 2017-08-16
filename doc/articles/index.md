@@ -26,6 +26,7 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
+| [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md) | Tutorial | 2017-08-15 |
 | [Making CI Easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/) | Concepts | 2017/07/13 |
 | [Dockerizing GitLab Review Apps](https://about.gitlab.com/2017/07/11/dockerizing-review-apps/) | Concepts | 2017/07/11 |
 | [Continuous Integration: From Jenkins to GitLab Using Docker](https://about.gitlab.com/2017/07/27/docker-my-precious/) | Concepts | 2017/07/27 |

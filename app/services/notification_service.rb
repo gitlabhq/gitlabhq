@@ -10,9 +10,11 @@ class NotificationService
   # only if ssh key is not deploy key
   #
   # This is security email so it will be sent
-  # even if user disabled notifications
+  # even if user disabled notifications. However,
+  # it won't be sent to internal users like the
+  # ghost user or the EE support bot.
   def new_key(key)
-    if key.user
+    if key.user&.can?(:receive_notifications)
       mailer.new_ssh_key_email(key.id).deliver_later
     end
   end
@@ -22,14 +24,14 @@ class NotificationService
   # This is a security email so it will be sent even if the user user disabled
   # notifications
   def new_gpg_key(gpg_key)
-    if gpg_key.user
+    if gpg_key.user&.can?(:receive_notifications)
       mailer.new_gpg_key_email(gpg_key.id).deliver_later
     end
   end
 
   # Always notify user about email added to profile
   def new_email(email)
-    if email.user
+    if email.user&.can?(:receive_notifications)
       mailer.new_email_email(email.id).deliver_later
     end
   end
@@ -185,6 +187,8 @@ class NotificationService
 
   # Notify new user with email after creation
   def new_user(user, token = nil)
+    return true unless notifiable?(user, :mention)
+
     # Don't email omniauth created users
     mailer.new_user_email(user.id, token).deliver_later unless user.identities.any?
   end
@@ -206,19 +210,27 @@ class NotificationService
 
   # Members
   def new_access_request(member)
+    return true unless member.notifiable?(:subscription)
+
     mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
   end
 
   def decline_access_request(member)
+    return true unless member.notifiable?(:subscription)
+
     mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
   end
 
   # Project invite
   def invite_project_member(project_member, token)
+    return true unless project_member.notifiable?(:subscription)
+
     mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
 
   def accept_project_invite(project_member)
+    return true unless project_member.notifiable?(:subscription)
+
     mailer.member_invite_accepted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
@@ -232,10 +244,14 @@ class NotificationService
   end
 
   def new_project_member(project_member)
+    return true unless project_member.notifiable?(:mention, skip_read_ability: true)
+
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
   def update_project_member(project_member)
+    return true unless project_member.notifiable?(:mention)
+
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
@@ -249,6 +265,9 @@ class NotificationService
   end
 
   def decline_group_invite(group_member)
+    # always send this one, since it's a response to the user's own
+    # action
+
     mailer.member_invite_declined_email(
       group_member.real_source_type,
       group_member.group.id,
@@ -258,15 +277,19 @@ class NotificationService
   end
 
   def new_group_member(group_member)
+    return true unless group_member.notifiable?(:mention)
+
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def update_group_member(group_member)
+    return true unless group_member.notifiable?(:mention)
+
     mailer.member_access_granted_email(group_member.real_source_type, group_member.id).deliver_later
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = NotificationRecipientService.notifiable_users(project.team.members, :mention, project: project)
+    recipients = notifiable_users(project.team.members, :mention, project: project)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(
@@ -288,10 +311,14 @@ class NotificationService
   end
 
   def project_exported(project, current_user)
+    return true unless notifiable?(current_user, :mention, project: project)
+
     mailer.project_was_exported_email(current_user, project).deliver_later
   end
 
   def project_not_exported(project, current_user, errors)
+    return true unless notifiable?(current_user, :mention, project: project)
+
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
@@ -300,7 +327,7 @@ class NotificationService
 
     return unless mailer.respond_to?(email_template)
 
-    recipients ||= NotificationRecipientService.notifiable_users(
+    recipients ||= notifiable_users(
       [pipeline.user], :watch,
       custom_action: :"#{pipeline.status}_pipeline",
       target: pipeline
@@ -369,7 +396,7 @@ class NotificationService
 
   def relabeled_resource_email(target, labels, current_user, method)
     recipients = labels.flat_map { |l| l.subscribers(target.project) }
-    recipients = NotificationRecipientService.notifiable_users(
+    recipients = notifiable_users(
       recipients, :subscription,
       target: target,
       acting_user: current_user
@@ -400,5 +427,15 @@ class NotificationService
     if object.previous_changes.include?(attribute)
       object.previous_changes[attribute].first
     end
+  end
+
+  private
+
+  def notifiable?(*args)
+    NotificationRecipientService.notifiable?(*args)
+  end
+
+  def notifiable_users(*args)
+    NotificationRecipientService.notifiable_users(*args)
   end
 end

@@ -30,6 +30,10 @@ class GroupMember < Member
     'Group'
   end
 
+  def notifiable_options
+    { group: group }
+  end
+
   private
 
   def send_invite

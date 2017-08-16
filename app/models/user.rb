@@ -726,9 +726,9 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w[username skype linkedin twitter].each do |attr|
-      value = public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
-      public_send("#{attr}=", Sanitize.clean(value)) if value.present? # rubocop:disable GitlabSecurity/PublicSend
+    %i[skype linkedin twitter].each do |attr|
+      value = self[attr]
+      self[attr] = Sanitize.clean(value) if value.present?
     end
   end
 
@@ -1069,6 +1069,7 @@ class User < ActiveRecord::Base
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
+    return true unless can?(:receive_notifications)
     devise_mailer.send(notification, self, *args).deliver_later
   end
 

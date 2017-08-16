@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge requests filter clear button', js: true do
+feature 'Merge requests filter clear button', :js do
   include FilteredSearchHelpers
   include MergeRequestHelpers
   include IssueHelpers
@@ -9,8 +9,8 @@ feature 'Merge requests filter clear button', js: true do
   let!(:user) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:bug) { create(:label, project: project, name: 'bug')}
-  let!(:mr1) { create(:merge_request, title: "Feature", source_project: project, target_project: project, source_branch: "Feature", milestone: milestone, author: user, assignee: user) }
-  let!(:mr2) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "Bugfix1") }
+  let!(:mr1) { create(:merge_request, title: "Feature", source_project: project, target_project: project, source_branch: "improve/awesome", milestone: milestone, author: user, assignee: user) }
+  let!(:mr2) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "fix") }
 
   let(:merge_request_css) { '.merge-request' }
   let(:clear_search_css) { '.filtered-search-box .clear-search' }

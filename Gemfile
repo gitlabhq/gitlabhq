@@ -84,7 +84,7 @@ gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 0.17.0'
+gem 'kaminari', '~> 1.0'
 
 # HAML
 gem 'hamlit', '~> 2.6.1'
@@ -324,6 +324,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
+  gem 'rspec-parameterized'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'

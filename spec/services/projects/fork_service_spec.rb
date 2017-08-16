@@ -50,6 +50,14 @@ describe Projects::ForkService do
 
           expect(@from_project.avatar.file).to be_exists
         end
+
+        it 'flushes the forks count cache of the source project' do
+          expect(@from_project.forks_count).to be_zero
+
+          fork_project(@from_project, @to_user)
+
+          expect(@from_project.forks_count).to eq(1)
+        end
       end
     end
 
