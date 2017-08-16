@@ -165,16 +165,18 @@ $(() => {
       this.updateTooltip();
     },
     template: `
-      <button
-        class="btn btn-create pull-right prepend-left-10"
-        type="button"
-        data-placement="bottom"
-        :class="{ 'disabled': disabled }"
-        :title="tooltipTitle"
-        :aria-disabled="disabled"
-        @click="openModal">
-        Add issues
-      </button>
+      <div class="board-extra-actions">
+        <button
+          class="btn btn-create pull-right prepend-left-10"
+          type="button"
+          data-placement="bottom"
+          :class="{ 'disabled': disabled }"
+          :title="tooltipTitle"
+          :aria-disabled="disabled"
+          @click="openModal">
+          Add issues
+        </button>
+      </div>
     `,
   });
 });
