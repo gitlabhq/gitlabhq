@@ -84,6 +84,39 @@ describe Group do
         expect(group).not_to be_valid
       end
     end
+
+    describe '#visibility_level_allowed_by_parent' do
+      let(:parent) { create(:group, :internal) }
+      let(:sub_group) { build(:group, parent_id: parent.id) }
+
+      context 'without a parent' do
+        it 'is valid' do
+          sub_group.parent_id = nil
+
+          expect(sub_group).to be_valid
+        end
+      end
+
+      context 'with a parent' do
+        context 'when visibility of sub group is greater than the parent' do
+          it 'is invalid' do
+            sub_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+            expect(sub_group).to be_invalid
+          end
+        end
+
+        context 'when visibility of sub group is lower or equal to the parent' do
+          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE].each do |level|
+            it 'is valid' do
+              sub_group.visibility_level = level
+
+              expect(sub_group).to be_valid
+            end
+          end
+        end
+      end
+    end
   end
 
   describe '.visible_to_user' do

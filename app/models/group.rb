@@ -26,6 +26,7 @@ class Group < Namespace
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
+  validate :visibility_level_allowed_by_parent
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
@@ -100,6 +101,14 @@ class Group < Namespace
 
   def human_name
     full_name
+  end
+
+  def visibility_level_allowed_by_parent
+    return if parent_id.blank?
+
+    if parent && (visibility_level > parent.visibility_level)
+      errors.add(:visibility_level, "#{visibility} is not allowed since the parent group has a #{parent.visibility} visibility.")
+    end
   end
 
   def visibility_level_allowed_by_projects
