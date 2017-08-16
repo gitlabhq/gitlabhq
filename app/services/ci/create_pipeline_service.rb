@@ -12,8 +12,7 @@ module Ci
         tag: tag?,
         trigger_requests: Array(trigger_request),
         user: current_user,
-        pipeline_schedule: schedule,
-        protected: protected?
+        pipeline_schedule: schedule
       )
 
       result = validate(current_user,
@@ -174,10 +173,6 @@ module Ci
 
     def valid_sha?
       origin_sha && origin_sha != Gitlab::Git::BLANK_SHA
-    end
-
-    def protected?
-      project.protected_for?(ref)
     end
 
     def error(message, save: false)
