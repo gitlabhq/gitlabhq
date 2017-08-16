@@ -63,6 +63,9 @@ Depends on the situation, the illustration size can be the 3 types below:
 
 <img src="img/illustration-size-small.png" width=983px />
 
+**Illustration on mobile**
+- Keep the proportions in original ratio.
+
 #### Colors palette
 
 For consistency, we recommend choosing colors from our color palette.
