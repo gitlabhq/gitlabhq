@@ -10,7 +10,7 @@ feature 'Create Snippet', :js do
     fill_in 'project_snippet_title', with: 'My Snippet Title'
     fill_in 'project_snippet_description', with: 'My Snippet **Description**'
     page.within('.file-editor') do
-      find('.ace_editor').native.send_keys('Hello World!')
+      find('.ace_text-input').native.send_keys('Hello World!')
     end
   end
 
