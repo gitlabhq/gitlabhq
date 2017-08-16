@@ -402,6 +402,20 @@ header.navbar-gitlab-new {
   }
 }
 
+.breadcrumbs-list {
+  display: flex;
+  margin-bottom: 0;
+
+  > li {
+    display: flex;
+    align-items: center;
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+}
+
 .breadcrumbs-extra {
   display: flex;
   flex: 0 0 auto;
@@ -409,34 +423,10 @@ header.navbar-gitlab-new {
 }
 
 .breadcrumbs-sub-title {
-  margin: 2px 0;
-  font-size: 16px;
+  margin: 0;
+  font-size: $gl-font-size;
   font-weight: normal;
   line-height: 1;
-
-  ul {
-    margin: 0;
-  }
-
-  li {
-    display: inline-block;
-
-    &:not(:last-child) {
-      &::after {
-        content: "/";
-        margin: 0 2px 0 5px;
-        color: rgba($black, .65);
-      }
-    }
-
-    &:last-child a {
-      font-weight: 600;
-    }
-  }
-
-  a {
-    color: $gl-text-color;
-  }
 }
 
 .top-area {

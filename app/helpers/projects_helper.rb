@@ -58,7 +58,7 @@ module ProjectsHelper
         link_to(simple_sanitize(owner.name), user_path(owner))
       end
 
-    project_link = link_to project_path(project), { class: "project-item-select-holder" } do
+    project_link = link_to project_path(project), { class: ("project-item-select-holder" unless show_new_nav?) } do
       output =
         if show_new_nav?
           project_icon(project, alt: project.name, class: 'avatar-tile', width: 16, height: 16)
@@ -70,13 +70,18 @@ module ProjectsHelper
       output.html_safe
     end
 
-    if current_user
+    if show_new_nav?
+      namespace_link = content_tag "li", namespace_link
+      project_link = content_tag "li", project_link
+    end
+
+    if current_user && !show_new_nav?
       project_link << button_tag(type: 'button', class: 'dropdown-toggle-caret js-projects-dropdown-toggle', aria: { label: 'Toggle switch project dropdown' }, data: { target: '.js-dropdown-menu-projects', toggle: 'dropdown', order_by: 'last_activity_at' }) do
         icon("chevron-down")
       end
     end
 
-    "#{namespace_link} / #{project_link}".html_safe
+    "#{namespace_link} #{project_link}".html_safe
   end
 
   def remove_project_message(project)
