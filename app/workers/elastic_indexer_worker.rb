@@ -19,9 +19,9 @@ class ElasticIndexerWorker
       record.__elasticsearch__.client = client
 
       if klass.nested?
-        record.__elasticsearch__.__send__ "#{operation}_document", parent: record.es_parent
+        record.__elasticsearch__.__send__ "#{operation}_document", parent: record.es_parent # rubocop:disable GitlabSecurity/PublicSend
       else
-        record.__elasticsearch__.__send__ "#{operation}_document"
+        record.__elasticsearch__.__send__ "#{operation}_document" # rubocop:disable GitlabSecurity/PublicSend
       end
 
       update_issue_notes(record, options["changed_fields"]) if klass == Issue

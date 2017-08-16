@@ -23,7 +23,7 @@ module Ci
       end
 
       attributes = CLONE_ACCESSORS.map do |attribute|
-        [attribute, build.send(attribute)]
+        [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end
 
       attributes.push([:user, current_user])

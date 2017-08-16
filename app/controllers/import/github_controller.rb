@@ -64,7 +64,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def import_enabled?
-    __send__("#{provider}_import_enabled?")
+    __send__("#{provider}_import_enabled?") # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def new_import_url

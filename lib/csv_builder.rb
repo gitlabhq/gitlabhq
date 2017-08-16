@@ -81,7 +81,7 @@ class CsvBuilder
       if attribute.respond_to?(:call)
         excel_sanitize(attribute.call(object))
       else
-        excel_sanitize(object.public_send(attribute))
+        excel_sanitize(object.public_send(attribute)) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
   end

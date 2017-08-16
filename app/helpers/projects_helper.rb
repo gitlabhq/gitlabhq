@@ -149,15 +149,16 @@ module ProjectsHelper
     # Don't show option "everyone with access" if project is private
     options = project_feature_options
 
+    level = @project.project_feature.public_send(field) # rubocop:disable GitlabSecurity/PublicSend
+
     if @project.private?
-      level = @project.project_feature.send(field)
       disabled_option = ProjectFeature::ENABLED
       highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
     options = options_for_select(
       options.invert,
-      selected: highest_available_option || @project.project_feature.public_send(field),
+      selected: highest_available_option || level,
       disabled: disabled_option
     )
 
@@ -519,7 +520,7 @@ module ProjectsHelper
   end
 
   def filename_path(project, filename)
-    if project && blob = project.repository.send(filename)
+    if project && blob = project.repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
       project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)

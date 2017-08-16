@@ -1,3 +1,5 @@
+# rubocop:disable GitlabSecurity/PublicSend
+
 require_dependency Rails.root.join('lib/gitlab') # Load Gitlab as soon as possible
 
 class Settings < Settingslogic
