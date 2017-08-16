@@ -18,6 +18,7 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_quick_actions
     prevent :create_group
+    prevent :create_pipeline
   end
 
   rule { default }.policy do
@@ -26,6 +27,7 @@ class GlobalPolicy < BasePolicy
     enable :access_git
     enable :receive_notifications
     enable :use_quick_actions
+    enable :create_pipeline
   end
 
   rule { blocked | internal }.policy do
@@ -34,6 +36,7 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
     prevent :receive_notifications
     prevent :use_quick_actions
+    prevent :create_pipeline
   end
 
   rule { can_create_group }.policy do
