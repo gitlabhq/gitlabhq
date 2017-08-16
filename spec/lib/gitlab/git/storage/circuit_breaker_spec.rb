@@ -1,9 +1,30 @@
 require 'spec_helper'
 
 describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: true, broken_storage: true do
-  let(:circuit_breaker) { described_class.new('default') }
+  let(:storage_name) { 'default' }
+  let(:circuit_breaker) { described_class.new(storage_name) }
   let(:hostname) { Gitlab::Environment.hostname }
-  let(:cache_key) { "storage_accessible:default:#{hostname}" }
+  let(:cache_key) { "storage_accessible:#{storage_name}:#{hostname}" }
+
+  before do
+    # Override test-settings for the circuitbreaker with something more realistic
+    # for these specs.
+    stub_storage_settings('default' => {
+                            'path' => TestEnv.repos_path,
+                            'failure_count_threshold' => 10,
+                            'failure_wait_time' => 30,
+                            'failure_reset_time' => 1800,
+                            'storage_timeout' => 5
+                          },
+                          'broken' => {
+                            'path' => 'tmp/tests/non-existent-repositories',
+                            'failure_count_threshold' => 10,
+                            'failure_wait_time' => 30,
+                            'failure_reset_time' => 1800,
+                            'storage_timeout' => 5
+                          }
+                         )
+  end
 
   def value_from_redis(name)
     Gitlab::Git::Storage.redis.with do |redis|
@@ -96,14 +117,14 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
   end
 
   describe '#circuit_broken?' do
-    it 'is closed when there is no last failure' do
+    it 'is working when there is no last failure' do
       set_in_redis(:last_failure, nil)
       set_in_redis(:failure_count, 0)
 
       expect(circuit_breaker.circuit_broken?).to be_falsey
     end
 
-    it 'is open when there was a recent failure' do
+    it 'is broken when there was a recent failure' do
       Timecop.freeze do
         set_in_redis(:last_failure, 1.second.ago.to_f)
         set_in_redis(:failure_count, 1)
@@ -112,16 +133,34 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       end
     end
 
-    it 'is open when there are to many failures' do
+    it 'is broken when there are too many failures' do
       set_in_redis(:last_failure, 1.day.ago.to_f)
       set_in_redis(:failure_count, 200)
 
       expect(circuit_breaker.circuit_broken?).to be_truthy
     end
+
+    context 'the `failure_wait_time` is set to 0' do
+      before do
+        stub_storage_settings('default' => {
+                                'failure_wait_time' => 0,
+                                'path' => TestEnv.repos_path
+                              })
+      end
+
+      it 'is working even when there is a recent failure' do
+        Timecop.freeze do
+          set_in_redis(:last_failure, 0.seconds.ago.to_f)
+          set_in_redis(:failure_count, 1)
+
+          expect(circuit_breaker.circuit_broken?).to be_falsey
+        end
+      end
+    end
   end
 
   describe "storage_available?" do
-    context 'when the storage is available' do
+    context 'the storage is available' do
       it 'tracks that the storage was accessible an raises the error' do
         expect(circuit_breaker).to receive(:track_storage_accessible)
 
@@ -136,8 +175,8 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       end
     end
 
-    context 'when storage is not available' do
-      let(:circuit_breaker) { described_class.new('broken') }
+    context 'storage is not available' do
+      let(:storage_name) { 'broken' }
 
       it 'tracks that the storage was inaccessible' do
         expect(circuit_breaker).to receive(:track_storage_inaccessible)
@@ -158,8 +197,8 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       end
     end
 
-    context 'when the storage is not available' do
-      let(:circuit_breaker) { described_class.new('broken') }
+    context 'the storage is not available' do
+      let(:storage_name) { 'broken' }
 
       it 'raises an error' do
         expect(circuit_breaker).to receive(:track_storage_inaccessible)
