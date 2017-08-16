@@ -119,7 +119,7 @@ pipeline_variables:
 stages:
 - project
 - pipeline
-- commit_statuses
+- statuses
 - builds
 statuses:
 - project

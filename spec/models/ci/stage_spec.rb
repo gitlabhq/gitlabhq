@@ -9,9 +9,9 @@ describe Ci::Stage, :models do
       create(:commit_status, stage_id: stage.id)
     end
 
-    describe '#commit_statuses' do
+    describe '#statuses' do
       it 'returns all commit statuses' do
-        expect(stage.commit_statuses.count).to be 2
+        expect(stage.statuses.count).to be 2
       end
     end
 

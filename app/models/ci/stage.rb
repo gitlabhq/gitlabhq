@@ -10,7 +10,7 @@ module Ci
     belongs_to :project
     belongs_to :pipeline
 
-    has_many :commit_statuses, foreign_key: :stage_id
+    has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
 
     validates :project, presence: true, unless: :importing?
@@ -50,7 +50,7 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case commit_statuses.latest.status
+        case statuses.latest.status
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed
