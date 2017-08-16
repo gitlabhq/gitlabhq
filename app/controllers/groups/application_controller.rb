@@ -35,10 +35,6 @@ class Groups::ApplicationController < ApplicationController
   def build_canonical_path(group)
     params[:group_id] = group.to_param
 
-<<<<<<< HEAD
     url_for(safe_params)
-=======
-    url_for(params)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   end
 end

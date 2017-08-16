@@ -1,12 +1,8 @@
 require 'carrierwave/orm/activerecord'
 
-<<<<<<< HEAD
 class ProjectImportData < ApplicationRecord
-  belongs_to :project
-=======
-class ProjectImportData < ActiveRecord::Base
   belongs_to :project, inverse_of: :import_data
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,
                  marshal: true,

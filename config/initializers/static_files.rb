@@ -1,10 +1,6 @@
 app = Rails.application
 
-<<<<<<< HEAD
 if app.config.public_file_server.enabled
-=======
-if app.config.serve_static_files
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   # The `ActionDispatch::Static` middleware intercepts requests for static files
   # by checking if they exist in the `/public` directory.
   # We're replacing it with our `Gitlab::Middleware::Static` that does the same,

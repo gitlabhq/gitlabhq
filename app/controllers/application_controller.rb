@@ -117,14 +117,9 @@ class ApplicationController < ActionController::Base
   def log_exception(exception)
     Raven.capture_exception(exception) if sentry_enabled?
 
-<<<<<<< HEAD
     backtrace_cleaner = ActiveSupport::BacktraceCleaner.new
     application_trace = ActionDispatch::ExceptionWrapper.new(backtrace_cleaner, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
-=======
-    application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
-    application_trace.map! { |t| "  #{t}\n" }
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
   end
 

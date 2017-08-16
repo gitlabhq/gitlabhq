@@ -35,13 +35,9 @@ module Ci
         return error("Failed to persist the pipeline: #{e}")
       end
 
-<<<<<<< HEAD
-      cancel_pending_pipelines if project.enabled_auto_cancel_pending_pipelines?
-=======
       update_merge_requests_head_pipeline
 
-      cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+      cancel_pending_pipelines if project.enabled_auto_cancel_pending_pipelines?
 
       pipeline_created_counter.increment(source: source)
 

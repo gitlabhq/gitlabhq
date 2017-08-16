@@ -1,12 +1,8 @@
-<<<<<<< HEAD
 class NotificationSetting < ApplicationRecord
-=======
-class NotificationSetting < ActiveRecord::Base
   include IgnorableColumn
 
   ignore_column :events
 
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]
