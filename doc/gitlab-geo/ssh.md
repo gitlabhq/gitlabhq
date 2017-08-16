@@ -2,7 +2,7 @@
 
 By default, GitLab manages an `authorized_keys` file, which contains all the
 public SSH keys for users allowed to access GitLab. However, to maintain a
-single source of truth, Geo needs to be configured to peform SSH fingerprint
+single source of truth, Geo needs to be configured to perform SSH fingerprint
 lookups via database lookup. This approach is also much faster than scanning a
 file.
 
