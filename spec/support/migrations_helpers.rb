@@ -31,6 +31,21 @@ module MigrationsHelpers
     end
   end
 
+  def migration_schema_version
+    self.class.metadata[:schema] || previous_migration.version
+  end
+
+  def schema_migrate_down!
+    ActiveRecord::Migrator
+      .migrate(migrations_paths, migration_schema_version)
+    reset_column_in_migration_models
+  end
+
+  def schema_migrate_up!
+    ActiveRecord::Migrator.migrate(migrations_paths)
+    reset_column_in_migration_models
+  end
+
   def migrate!
     ActiveRecord::Migrator.up(migrations_paths) do |migration|
       migration.name == described_class.name
