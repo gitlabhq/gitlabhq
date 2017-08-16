@@ -19,6 +19,19 @@ Rails.application.routes.draw do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
+
+  end
+
+  # TODO: find a :only sort of option to generate only the routes we need
+  scope path: '/jira/login' do
+    use_doorkeeper do
+      controllers authorizations: 'oauth/jira/authorizations'
+      as authorizations: :jira_authorization
+    end
+
+    # Making the role of Github for Jira
+    get '/oauth/authorize_callback' => 'oauth/jira/authorizations#callback', as: :oauth_jira_callback
+    post '/oauth/access_token' => 'oauth/jira/authorizations#access_token'
   end
 
   namespace :oauth do
