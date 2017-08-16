@@ -1,6 +1,7 @@
 @import "framework/variables";
 @import 'framework/tw_bootstrap_variables';
 @import "bootstrap/variables";
+@import "framework/mixins";
 
 header.navbar-gitlab-new {
   color: $white-light;
@@ -293,45 +294,6 @@ header.navbar-gitlab-new {
   display: flex;
   min-height: 61px;
   color: $gl-text-color;
-  border-bottom: 1px solid $border-color;
-
-  .dropdown-toggle-caret {
-    position: relative;
-    top: -1px;
-    padding: 0 5px;
-    color: $gl-text-color-secondary;
-    font-size: 10px;
-    line-height: 1;
-    background: none;
-    border: 0;
-
-    &:focus {
-      outline: 0;
-    }
-  }
-
-  // TODO: fallback to global style
-  .dropdown-menu {
-    .divider {
-      margin: 6px 0;
-    }
-
-    li {
-      padding: 0 1px;
-
-      a {
-        border-radius: 0;
-        padding: 8px 16px;
-
-        &.is-focused,
-        &:hover,
-        &:active,
-        &:focus {
-          background-color: $gray-darker;
-        }
-      }
-    }
-  }
 }
 
 .breadcrumbs-container {
@@ -339,42 +301,14 @@ header.navbar-gitlab-new {
   width: 100%;
   position: relative;
   align-items: center;
-
-  .dropdown-menu-projects {
-    margin-top: -$gl-padding;
-    margin-left: $gl-padding;
-  }
+  border-bottom: 1px solid $border-color;
 }
 
 .breadcrumbs-links {
   flex: 1;
   min-width: 0;
   align-self: center;
-  color: $gl-text-color-quaternary;
-
-  a {
-    color: $gl-text-color-secondary;
-
-    &:not(:first-child),
-    &.group-path {
-      margin-left: 4px;
-    }
-
-    &:not(:last-of-type),
-    &.group-path {
-      margin-right: 3px;
-    }
-  }
-
-  .title {
-    display: inline-block;
-
-    > a {
-      &:last-of-type:not(:first-child) {
-        font-weight: 600;
-      }
-    }
-  }
+  color: $gl-text-color-secondary;
 
   .avatar-tile {
     margin-right: 5px;
@@ -409,11 +343,28 @@ header.navbar-gitlab-new {
   > li {
     display: flex;
     align-items: center;
+    position: relative;
+
+    &:not(:last-child) {
+      margin-right: 10px;
+    }
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
   }
 
   a {
-    color: $gl-text-color;
+    @include str-truncated(128px);
+    color: currentColor;
   }
+}
+
+.breadcrumbs-list-angle {
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .breadcrumbs-extra {
@@ -425,8 +376,12 @@ header.navbar-gitlab-new {
 .breadcrumbs-sub-title {
   margin: 0;
   font-size: $gl-font-size;
-  font-weight: normal;
+  font-weight: 600;
   line-height: 1;
+
+  a {
+    color: $gl-text-color;
+  }
 }
 
 .top-area {

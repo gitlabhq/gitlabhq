@@ -22,4 +22,12 @@ module BreadcrumbsHelper
 
     @breadcrumb_title = title
   end
+
+  def breadcrumb_list_item(link)
+    content_tag "li" do
+      output = link
+      output << icon("angle-right", class: "breadcrumbs-list-angle")
+      output
+    end
+  end
 end

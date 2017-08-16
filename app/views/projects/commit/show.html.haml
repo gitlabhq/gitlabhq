@@ -1,4 +1,5 @@
 - @no_container = true
+- breadcrumb_title "Commit #{@commit.short_id}"
 - container_class = !fluid_layout && diff_view == :inline ? 'container-limited' : ''
 - limited_container_width = fluid_layout ? '' : 'limit-container-width'
 - @content_class = limited_container_width

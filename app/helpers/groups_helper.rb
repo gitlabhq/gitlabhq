@@ -15,17 +15,27 @@ module GroupsHelper
     @has_group_title = true
     full_title = ''
 
-    group.ancestors.reverse.each do |parent|
-      full_title += group_title_link(parent, hidable: true)
-
-      full_title += '<span class="hidable"> / </span>'.html_safe
+    group.ancestors.reverse.each_with_index do |parent, index|
+      full_title += if show_new_nav?
+                      breadcrumb_list_item group_title_link(parent, hidable: index > 0)
+                    else
+                      group_title_link(parent, hidable: true)
+                    end
     end
 
-    full_title += group_title_link(group)
+    full_title += if show_new_nav?
+                    breadcrumb_list_item group_title_link(group)
+                  else
+                    group_title_link(group)
+                  end
     full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path') if name
 
-    content_tag :span, class: 'group-title' do
+    if show_new_nav?
       full_title.html_safe
+    else
+      content_tag :span, class: 'group-title' do
+        full_title.html_safe
+      end
     end
   end
 

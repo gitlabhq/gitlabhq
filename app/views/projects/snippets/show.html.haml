@@ -1,4 +1,5 @@
 - @content_class = "limit-container-width limited-inner-width-container" unless fluid_layout
+- breadcrumb_title "Snippet #{@snippet.to_reference}"
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
 
 = render 'shared/snippets/header'

@@ -71,8 +71,8 @@ module ProjectsHelper
     end
 
     if show_new_nav?
-      namespace_link = content_tag "li", namespace_link
-      project_link = content_tag "li", project_link
+      namespace_link = breadcrumb_list_item(namespace_link) if project.group.nil?
+      project_link = breadcrumb_list_item project_link
     end
 
     if current_user && !show_new_nav?
