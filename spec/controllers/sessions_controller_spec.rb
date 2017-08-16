@@ -264,8 +264,9 @@ describe SessionsController do
 
     it 'redirects correctly for referer on same host with params' do
       search_path = '/search?search=seed_project'
-      allow(controller.request).to receive(:referer)
-        .and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
+      headers = { 'HTTP_REFERER' => 'http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path } }
+
+      request.headers.merge! headers
 
       get(:new, redirect_to_referer: :yes)
 
