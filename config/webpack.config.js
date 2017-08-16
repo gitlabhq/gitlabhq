@@ -277,14 +277,9 @@ if (IS_PRODUCTION) {
     })
   );
 
-  // zopfli requires a lot of compute time and is disabled in CI
+  // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
-    try {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
-    } catch(err) {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
-    }
+    config.plugins.push(new CompressionPlugin());
   }
 }
 
