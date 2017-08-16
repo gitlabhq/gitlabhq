@@ -1813,8 +1813,7 @@ describe Project do
     it 'imports a project' do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
-      project.import_schedule
-
+      expect { project.import_schedule }.to change { project.import_jid }
       expect(project.reload.import_status).to eq('finished')
     end
 
@@ -1826,7 +1825,7 @@ describe Project do
         expect_any_instance_of(EE::Project).to receive(:force_import_job!)
         expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
 
-        project.import_schedule
+        expect { project.import_schedule }.to change { project.import_jid }
       end
     end
   end
@@ -1837,6 +1836,13 @@ describe Project do
 
       before do
         allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'resets project import_error' do
+        error_message = 'Some error'
+        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+
+        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
 
       it 'performs housekeeping when an import of a fresh project is completed' do
@@ -2047,24 +2053,28 @@ describe Project do
   end
 
   describe '#add_import_job' do
+    let!(:import_jid) { '123' }
+
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async)
-          .with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.disk_path, project.namespace.full_path)
+        expect(RepositoryForkWorker).to receive(:perform_async).with(
+          project.id,
+          forked_from_project.repository_storage_path,
+          forked_from_project.disk_path,
+          project.namespace.full_path).and_return(import_jid)
 
-        project.add_import_job
+        expect(project.add_import_job).to eq(import_jid)
       end
 
       context 'without mirror' do
         it 'returns nil' do
           project = create(:project)
 
-          expect(project.add_import_job).to be_nil
+          expect(project.add_import_job).to be nil
         end
       end
 
@@ -2072,9 +2082,8 @@ describe Project do
         it 'schedules RepositoryImportWorker' do
           project = create(:project, import_url: generate(:url))
 
-          expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
-
-          project.add_import_job
+          expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+          expect(project.add_import_job).to eq(import_jid)
         end
       end
 
@@ -2082,9 +2091,8 @@ describe Project do
         it 'schedules RepositoryUpdateMirrorWorker' do
           project = create(:project, :mirror, :repository)
 
-          expect(RepositoryUpdateMirrorWorker).to receive(:perform_async).with(project.id)
-
-          project.add_import_job
+          expect(RepositoryUpdateMirrorWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+          expect(project.add_import_job).to eq(import_jid)
         end
       end
     end
@@ -2093,9 +2101,8 @@ describe Project do
       it 'schedules a RepositoryImportWorker job' do
         project = create(:project, import_url: generate(:url))
 
-        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
-
-        project.add_import_job
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+        expect(project.add_import_job).to eq(import_jid)
       end
     end
   end
