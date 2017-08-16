@@ -88,6 +88,12 @@ gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
+# GraphQL API
+gem 'graphql', '~> 1.6.7'
+gem 'graphql-batch', '~> 0.3.4'
+gem 'graphql-preload', '~> 1.0.3'
+gem 'graphiql-rails', '~> 1.4.4', group: :development
+
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
 

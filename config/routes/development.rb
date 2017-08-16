@@ -10,4 +10,5 @@ if Rails.env.development?
   get '/rails/info'            => 'rails/info#index'
 
   mount LetterOpenerWeb::Engine, at: '/rails/letter_opener'
+  mount GraphiQL::Rails::Engine, at: '/rails/graphiql', graphql_path: '/api/graphql'
 end

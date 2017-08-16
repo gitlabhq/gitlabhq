@@ -369,6 +369,17 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
+    graphiql-rails (1.4.4)
+      rails
+    graphql (1.6.7)
+    graphql-batch (0.3.4)
+      graphql (>= 0.8, < 2)
+      promise.rb (~> 0.7.2)
+    graphql-preload (1.0.3)
+      activerecord (>= 3.2, < 6)
+      graphql (>= 1.5, < 2)
+      graphql-batch (~> 0.3)
+      promise.rb (~> 0.7)
     grpc (1.8.3)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
@@ -637,6 +648,7 @@ GEM
       unparser
     procto (0.0.3)
     prometheus-client-mmap (0.9.1)
+    promise.rb (0.7.3)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -1073,6 +1085,10 @@ DEPENDENCIES
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.1.0)
   grape_logging (~> 1.7)
+  graphiql-rails (~> 1.4.4)
+  graphql (~> 1.6.7)
+  graphql-batch (~> 0.3.4)
+  graphql-preload (~> 1.0.3)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
