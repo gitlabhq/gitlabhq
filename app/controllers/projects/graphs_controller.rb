@@ -58,6 +58,6 @@ class Projects::GraphsController < Projects::ApplicationController
       }
     end
 
-    render json: @log.to_json
+    render json: @log.to_json # rubocop:disable GitlabSecurity/JsonSerialization
   end
 end

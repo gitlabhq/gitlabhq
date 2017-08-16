@@ -33,7 +33,7 @@ class SearchController < ApplicationController
 
     @ref = params[:project_ref] if params[:project_ref].present?
 
-    render json: search_autocomplete_opts(term).to_json
+    render json: search_autocomplete_opts(term).to_json # rubocop:disable GitlabSecurity/JsonSerialization
   end
 
   private

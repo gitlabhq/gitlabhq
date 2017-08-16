@@ -41,7 +41,7 @@ module NotesHelper
       data[:note_type] = LegacyDiffNote.name
     else
       data[:note_type] = DiffNote.name
-      data[:position] = position.to_json
+      data[:position] = position.to_json # rubocop:disable GitlabSecurity/JsonSerialization
     end
 
     data

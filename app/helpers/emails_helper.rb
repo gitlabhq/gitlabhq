@@ -17,7 +17,7 @@ module EmailsHelper
         }
 
       content_tag :script, type: 'application/ld+json' do
-        data.to_json.html_safe
+        data.to_json.html_safe # rubocop:disable GitlabSecurity/JsonSerialization
       end
     end
   end

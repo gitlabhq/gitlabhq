@@ -170,7 +170,7 @@ class KubernetesService < DeploymentService
   def read_pods
     kubeclient = build_kubeclient!
 
-    kubeclient.get_pods(namespace: actual_namespace).as_json
+    kubeclient.get_pods(namespace: actual_namespace).as_json # rubocop:disable GitlabSecurity/JsonSerialization
   rescue KubeException => err
     raise err unless err.error_code == 404
     []

@@ -111,7 +111,7 @@ class SentNotification < ActiveRecord::Base
         line_code: self.line_code,
 
         # DiffNote
-        position: self.position.to_json
+        position: self.position.to_json # rubocop:disable GitlabSecurity/JsonSerialization
       )
     end
 

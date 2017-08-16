@@ -25,10 +25,12 @@ class DiffDiscussion < Discussion
     noteable.version_params_for(position.diff_refs)
   end
 
+  # rubocop:disable GitlabSecurity/JsonSerialization
   def reply_attributes
     super.merge(
       original_position: original_position.to_json,
       position: position.to_json
     )
   end
+  # rubocop:enable GitlabSecurity/JsonSerialization
 end

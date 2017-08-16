@@ -252,7 +252,7 @@ class ProjectsController < Projects::ApplicationController
       options['Commits'] = [ref]
     end
 
-    render json: options.to_json
+    render json: options.to_json # rubocop:disable GitlabSecurity/JsonSerialization
   end
 
   def preview_markdown

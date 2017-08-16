@@ -32,7 +32,7 @@ class CycleAnalytics
 
   def stats_per_stage
     STAGES.map do |stage_name|
-      self[stage_name].as_json
+      self[stage_name].as_json # rubocop:disable GitlabSecurity/JsonSerialization
     end
   end
 end

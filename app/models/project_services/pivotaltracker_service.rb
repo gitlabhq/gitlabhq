@@ -54,7 +54,7 @@ class PivotaltrackerService < Service
       }
       PivotaltrackerService.post(
         API_ENDPOINT,
-        body: message.to_json,
+        body: message.to_json, # rubocop:disable GitlabSecurity/JsonSerialization
         headers: {
           'Content-Type' => 'application/json',
           'X-TrackerToken' => token

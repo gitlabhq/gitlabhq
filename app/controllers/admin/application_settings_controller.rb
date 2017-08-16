@@ -25,7 +25,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
         render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
       end
-      format.json { render json: Gitlab::UsageData.to_json }
+      format.json { render json: Gitlab::UsageData.to_json } # rubocop:disable GitlabSecurity/JsonSerialization
     end
   end
 

@@ -108,7 +108,7 @@ module TodosHelper
       { id: project.id, text: project.name_with_namespace }
     end
 
-    projects.unshift({ id: '', text: 'Any Project' }).to_json
+    projects.unshift({ id: '', text: 'Any Project' }).to_json # rubocop:disable GitlabSecurity/JsonSerialization
   end
 
   def todo_types_options
