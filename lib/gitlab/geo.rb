@@ -84,17 +84,17 @@ module Gitlab
 
     def self.configure_primary_jobs!
       self.enable_all_cron_jobs!
-      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      SECONDARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.configure_secondary_jobs!
       self.disable_all_cron_jobs!
-      SECONDARY_JOBS.each { |job| self.send(job).try(:enable!) }
+      SECONDARY_JOBS.each { |job| self.__send__(job).try(:enable!) } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.disable_all_geo_jobs!
-      PRIMARY_JOBS.each { |job| self.send(job).try(:disable!) }
-      SECONDARY_JOBS.each { |job| self.send(job).try(:disable!) }
+      PRIMARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
+      SECONDARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.disable_all_cron_jobs!

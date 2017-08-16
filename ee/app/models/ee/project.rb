@@ -283,7 +283,7 @@ module EE
       super
 
       if group && feature_available?(:group_webhooks)
-        group.hooks.send(hooks_scope).each do |hook|
+        group.hooks.__send__(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
           hook.async_execute(data, hooks_scope.to_s)
         end
       end

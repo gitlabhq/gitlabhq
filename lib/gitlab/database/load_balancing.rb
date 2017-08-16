@@ -1,3 +1,5 @@
+# rubocop:disable GitlabSecurity/PublicSend
+
 module Gitlab
   module Database
     module LoadBalancing

@@ -27,7 +27,7 @@ class UploadedFile
   alias_method :local_path, :path
 
   def method_missing(method_name, *args, &block) #:nodoc:
-    @tempfile.__send__(method_name, *args, &block)
+    @tempfile.__send__(method_name, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to?(method_name, include_private = false) #:nodoc:

@@ -69,7 +69,7 @@ module Gitlab
                   instance_variable_set(ivar_name, {})
               end
 
-            key = __send__(cache_key_method_name, args)
+            key = __send__(cache_key_method_name, args) # rubocop:disable GitlabSecurity/PublicSend
 
             store.fetch(key) { store[key] = super(*args) }
           end

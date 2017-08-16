@@ -173,7 +173,7 @@ module Gitlab
 
       def initialize(options)
         %w(id name path size data mode commit_id binary).each do |key|
-          self.send("#{key}=", options[key.to_sym])
+          self.__send__("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         @loaded_all_data = false
