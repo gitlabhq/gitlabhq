@@ -1,6 +1,7 @@
 <script>
   import issueNoteEditedText from './issue_note_edited_text.vue';
   import issueNoteAwardsList from './issue_note_awards_list.vue';
+  import issueNoteAttachment from './issue_note_attachment.vue';
   import issueNoteForm from './issue_note_form.vue';
   import TaskList from '../../task_list';
   import autosave from '../mixins/autosave';
@@ -27,6 +28,7 @@
     components: {
       issueNoteEditedText,
       issueNoteAwardsList,
+      issueNoteAttachment,
       issueNoteForm,
     },
     computed: {
@@ -108,6 +110,10 @@
       :note-author-id="note.author.id"
       :awards="note.award_emoji"
       :toggle-award-path="note.toggle_award_path"
+      />
+    <issue-note-attachment
+      v-if="note.attachment.url"
+      :attachment="note.attachment"
       />
   </div>
 </template>
