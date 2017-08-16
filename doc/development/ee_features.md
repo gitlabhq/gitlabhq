@@ -56,29 +56,23 @@ because only one line is added to the CE class - the `include` statement.
 
 #### Overriding CE methods
 
-There are two ways for overriding a method that's defined in CE:
+To override a method present in the CE codebase, use `prepend`. It
+lets you override a method in a class with a method from a module, while
+still having access the class's implementation with `super`.
 
-- changing the method's body in place (not recommended)
-- override the method's body by using `prepend` which lets you override a
-  method in a class with a method from a module, and still access the class's
-  implementation with `super`.
-
-The `prepend` method should always be preferred but there are a few gotchas with it:
+There are a few gotchas with it:
 
 - you should always add a `raise NotImplementedError unless defined?(super)`
   guard clause in the "overrider" method to ensure that if the method gets
   renamed in CE, the EE override won't be silently forgotten.
-- when the "overrider" would add a line in the middle of the CE implementation,
-  it usually means that you'd better refactor the method to split it in
-  smaller methods that can be more easily and automatically overriden.
+- when the "overrider" would add a line in the middle of the CE
+  implementation, you should refactor the CE method and split it in
+  smaller methods.
 - when the original implementation contains a guard clause (e.g.
   `return unless condition`), it doesn't return from the overriden method (it's
   actually the same behavior as with method overridding via inheritance). In
   this case, it's usually better to create a "hook" method that is empty in CE,
   and with the EE-specific implementation in EE
-- sometimes for one-liner methods that don't change often it can be more
-  pragmatic to just change the method in place since conflicts resolution
-  should be trivial in this case. Use your best judgement!
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -98,13 +92,13 @@ the existing file:
 ```ruby
 class ApplicationController < ActionController::Base
   prepend EE::ApplicationController
-  [...]
+  # ...
 
   def after_sign_out_path_for(resource)
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  [...]
+  # ...
 end
 ```
 
@@ -148,6 +142,7 @@ In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
 def full_private_access?
+  raise NotImplementedError unless defined?(super)
   super || auditor?
 end
 ```
@@ -249,24 +244,20 @@ should remain working as-is when EE is running without a license.
 
 Instead place EE specs in the `/spec/ee/spec` folder.
 
-When doing this, rubocop might complain about the path not
-matching. So on the top-level `describe` append `# rubocop:disable
-RSpec/FilePath` to disable the cop for that line.
-
 ## JavaScript code in `assets/javascripts/`
 
 To separate EE-specific JS-files we can also move the files into an `ee` folder.
 
 For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
-ee counterpart
-`ee/app/assets/javascripts/protected_branches/ee/protected_branches_bundle.js`.
+EE counterpart
+`ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js`.
 
 That way we can create a separate webpack bundle in `webpack.config.js`:
 
 ```javascript
-ee_protected_branches: './protected_branches/ee/protected_branches_bundle.js',
-protected_tags:       './protected_tags',
+    protected_branches:    '~/protected_branches',
+    ee_protected_branches: 'ee/protected_branches/protected_branches_bundle.js',
 ```
 
 With the separate bundle in place, we can decide which bundle to load inside the
@@ -279,11 +270,11 @@ view, using the `page_specific_javascript_bundle_tag` helper.
 
 ## SCSS code in `assets/stylesheets`
 
-To separate EE-specific styles in SCSS files, If a component you're adding styles for,
+To separate EE-specific styles in SCSS files, if a component you're adding styles for
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
-within `ee/app/assets/stylesheets/ee` such that the file will only exist in EE codebase.
+within `app/assets/stylesheets`.
 
-In some cases, this is not entirely possible and creating dedicated SCSS file is an overkill,
+In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
 styles are usually kept in stylesheet that is common for both CE and EE, and it is wise
 to isolate such ruleset from rest of CE rules (along with adding comment describing the same)
