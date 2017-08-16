@@ -19,8 +19,8 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:context, :migration) do
-    DatabaseCleaner.strategy = :truncation
+  config.before(:each, :migration) do
+    DatabaseCleaner.strategy = :truncation, { cache_tables: false }
   end
 
   config.before(:each) do
