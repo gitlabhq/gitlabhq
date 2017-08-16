@@ -195,6 +195,30 @@ eos
     it { expect(data[:removed]).to eq([]) }
   end
 
+  describe '#cherry_pick_message' do
+    let(:regular_commit) { project.commit('video') }
+    let(:merge_commit) { project.commit('wip') }
+
+    context 'of a regular commit' do
+      it { expect(regular_commit.cherry_pick_message(project, 'master')).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
+    end
+
+    context 'of a merge commit' do
+      it do
+        expected_appended_text = <<~STR.rstrip
+
+
+          (cherry picked from commit b9238ee5bf1d7359dd3b8c89fd76c1c7f8b75aba)
+
+          6d664995 This commit will be fixupped against
+          64117577 fixup! This commit will be fixupped against
+        STR
+
+        expect(merge_commit.cherry_pick_message(project, 'master')).to include(expected_appended_text)
+      end
+    end
+  end
+
   describe '#reverts_commit?' do
     let(:another_commit) { double(:commit, revert_description: "This reverts commit #{commit.sha}") }
     let(:user) { commit.author }
