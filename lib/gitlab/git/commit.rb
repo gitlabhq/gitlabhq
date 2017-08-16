@@ -219,6 +219,16 @@ module Gitlab
 
           @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
         end
+
+        def shas_with_signatures(repository, shas)
+          shas.select do |sha|
+            begin
+              Rugged::Commit.extract_signature(repository.rugged, sha)
+            rescue Rugged::OdbError
+              false
+            end
+          end
+        end
       end
 
       def initialize(raw_commit, head = nil)
@@ -317,15 +327,6 @@ module Gitlab
         else
           raise NotImplementedError, "commit source doesn't support #parents"
         end
-      end
-
-      # Get the gpg signature of this commit.
-      #
-      # Ex.
-      #   commit.signature(repo)
-      #
-      def signature(repo)
-        Rugged::Commit.extract_signature(repo.rugged, sha)
       end
 
       def stats
