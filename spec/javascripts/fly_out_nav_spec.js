@@ -10,6 +10,7 @@ import {
   mousePos,
   getHideSubItemsInterval,
   documentMouseMove,
+  getHeaderHeight,
 } from '~/fly_out_nav';
 import bp from '~/breakpoints';
 
@@ -59,7 +60,7 @@ describe('Fly out sidebar navigation', () => {
 
   describe('getHideSubItemsInterval', () => {
     beforeEach(() => {
-      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: fixed; top: 0; left: 100px; height: 50px;"></div>';
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: fixed; top: 0; left: 100px; height: 150px;"></div>';
     });
 
     it('returns 0 if currentOpenMenu is nil', () => {
@@ -112,6 +113,7 @@ describe('Fly out sidebar navigation', () => {
         clientX: el.getBoundingClientRect().left + 20,
         clientY: el.getBoundingClientRect().top + 10,
       });
+      console.log(el);
 
       expect(
         getHideSubItemsInterval(),
@@ -245,7 +247,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top)}px, 0px)`);
+      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
