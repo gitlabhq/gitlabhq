@@ -14,7 +14,9 @@ export default {
 
   methods: {
     highlightFile() {
-      $(this.$el).find('.file-content').syntaxHighlight();
+      this.$nextTick(() => {
+        $(this.$el).find('.file-content').syntaxHighlight();
+      });
     },
   },
 
