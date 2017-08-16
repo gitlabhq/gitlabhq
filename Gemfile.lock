@@ -125,14 +125,10 @@ GEM
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-<<<<<<< HEAD
     colorize (0.8.1)
-=======
-    colorize (0.7.7)
     concord (0.1.5)
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     concurrent-ruby (1.0.5)
     concurrent-ruby-ext (1.0.5)
       concurrent-ruby (= 1.0.5)
@@ -322,7 +318,6 @@ GEM
       request_store (>= 1.0)
     google-api-client (0.9.28)
       addressable (~> 2.3)
-<<<<<<< HEAD
       googleauth (~> 0.5)
       httpclient (~> 2.7)
       hurley (~> 0.1)
@@ -330,16 +325,6 @@ GEM
       mime-types (>= 1.6)
       representable (~> 2.3.0)
       retriable (~> 2.0)
-=======
-      autoparse (~> 0.3)
-      extlib (~> 0.9)
-      faraday (~> 0.9)
-      googleauth (~> 0.3)
-      launchy (~> 2.4)
-      multi_json (~> 1.10)
-      retriable (~> 1.4)
-      signet (~> 0.6)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     google-protobuf (3.3.0)
     googleauth (0.5.1)
       faraday (~> 0.9)
@@ -410,12 +395,8 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-<<<<<<< HEAD
     httpclient (2.8.3)
     hurley (0.2)
-=======
-    httpclient (2.8.2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     i18n (0.8.6)
     ice_nine (0.11.2)
     influxdb (0.3.14)
@@ -440,13 +421,6 @@ GEM
     json-schema (2.6.2)
       addressable (~> 2.3.8)
     jwt (1.5.6)
-<<<<<<< HEAD
-    kaminari (0.17.0)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
-    kgio (2.11.0)
-    knapsack (1.11.1)
-=======
     kaminari (1.0.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.0.1)
@@ -459,9 +433,8 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
-    kgio (2.10.0)
-    knapsack (1.11.0)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+    kgio (2.11.0)
+    knapsack (1.11.1)
       rake
       timecop (>= 0.1.0)
     kubeclient (2.2.0)
@@ -498,13 +471,9 @@ GEM
     mail (2.6.6)
       mime-types (>= 1.16, < 4)
     mail_room (0.9.1)
-<<<<<<< HEAD
     memoist (0.16.0)
-=======
-    memoist (0.15.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     method_source (0.8.2)
     mime-types (2.99.3)
     mimemagic (0.3.2)
@@ -663,11 +632,7 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     pyu-ruby-sasl (0.0.3.3)
-<<<<<<< HEAD
     rack (2.0.3)
-=======
-    rack (1.6.8)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.4.1)
@@ -721,20 +686,13 @@ GEM
       rake
     raindrops (0.18.0)
     rake (12.0.0)
-<<<<<<< HEAD
     rblineprof (0.3.7)
-      debugger-ruby_core_source (~> 1.3)
-    rdoc (4.3.0)
-=======
-    rblineprof (0.3.6)
       debugger-ruby_core_source (~> 1.3)
     rbnacl (3.4.0)
       ffi
     rbnacl-libsodium (1.0.11)
       rbnacl (>= 3.0.1)
-    rdoc (4.2.2)
-      json (~> 1.4)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+    rdoc (4.3.0)
     re2 (1.1.1)
     recaptcha (3.4.0)
       json
@@ -789,15 +747,12 @@ GEM
     rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
-<<<<<<< HEAD
-=======
     rspec-parameterized (0.4.0)
       binding_of_caller
       parser
       proc_to_ast
       rspec (>= 2.13, < 4)
       unparser
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rspec-rails (3.6.0)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -806,11 +761,7 @@ GEM
       rspec-expectations (~> 3.6.0)
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
-<<<<<<< HEAD
     rspec-retry (0.4.6)
-=======
-    rspec-retry (0.4.5)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       rspec-core
     rspec-set (0.1.3)
     rspec-support (3.6.0)
@@ -826,11 +777,8 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-<<<<<<< HEAD
-=======
     rubocop-gitlab-security (0.0.6)
       rubocop (>= 0.47.1)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rubocop-rspec (1.15.1)
       rubocop (>= 0.42.0)
     ruby-fogbugz (0.2.1)
@@ -961,11 +909,7 @@ GEM
     underscore-rails (1.8.3)
     unf (0.1.4)
       unf_ext
-<<<<<<< HEAD
     unf_ext (0.0.7.4)
-=======
-    unf_ext (0.0.7.2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     unicode-display_width (1.3.0)
     unicorn (5.1.0)
       kgio (~> 2.6)
@@ -1086,20 +1030,12 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
-<<<<<<< HEAD
-  gitlab_omniauth-ldap (~> 2.0.3)
+  gitlab_omniauth-ldap (~> 2.0.4)
   gollum-lib (~> 4.2.5)
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
   google-api-client (~> 0.9.28)
-=======
-  gitlab_omniauth-ldap (~> 2.0.4)
-  gollum-lib (~> 4.2)
-  gollum-rugged_adapter (~> 0.4.4)
-  gon (~> 6.1.0)
-  google-api-client (~> 0.8.6)
   gpgme
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.0.0)
@@ -1131,12 +1067,8 @@ DEPENDENCIES
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.4.5)
   net-ldap
-<<<<<<< HEAD
-  nokogiri (~> 1.6.8.1)
-=======
   net-ssh (~> 4.1.0)
-  nokogiri (~> 1.6.7, >= 1.6.7.2)
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
+  nokogiri (~> 1.6.8.1)
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
   oj (~> 2.17.4)
@@ -1196,10 +1128,7 @@ DEPENDENCIES
   responders (~> 2.0)
   rouge (~> 2.0)
   rqrcode-rails3 (~> 0.1.7)
-<<<<<<< HEAD
-=======
   rspec-parameterized
->>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   rspec-rails (~> 3.6.0)
   rspec-retry (~> 0.4.5)
   rspec-set (~> 0.1.3)
