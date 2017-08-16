@@ -49,7 +49,7 @@ feature 'Dashboard shortcuts', :js do
     end
   end
 
-  def check_page_title(title)
-    expect(find('.header-content .title')).to have_content(title)
+  def ensure_active_main_tab(content)
+    expect(find('.nav-sidebar li.active')).to have_content(content)
   end
 end

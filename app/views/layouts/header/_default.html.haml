@@ -3,6 +3,7 @@
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
   .container-fluid
     .header-content
+<<<<<<< HEAD
       .dropdown.global-dropdown
         %button.global-dropdown-toggle{ type: 'button', 'data-toggle' => 'dropdown' }
           %span.sr-only Toggle navigation
@@ -19,6 +20,14 @@
 
       .title-container.js-title-container
         %h1.title{ class: ('initializing' if @has_group_title) }= title
+=======
+      %button.side-nav-toggle{ type: 'button', "aria-label" => "Toggle global navigation" }
+        %span.sr-only Toggle navigation
+        = icon('bars')
+      %button.navbar-toggle{ type: 'button' }
+        %span.sr-only Toggle navigation
+        = icon('ellipsis-v')
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
@@ -84,9 +93,18 @@
               %div
                 = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in btn-success'
 
+<<<<<<< HEAD
       %button.navbar-toggle{ type: 'button' }
         %span.sr-only Toggle navigation
         = icon('ellipsis-v')
+=======
+
+      %h1.title= title
+
+      .header-logo
+        = link_to root_path, class: 'home', title: 'Dashboard', id: 'logo' do
+          = brand_header_logo
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
 
       = yield :header_content
 

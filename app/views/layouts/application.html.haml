@@ -1,6 +1,7 @@
 !!! 5
 %html{ lang: I18n.locale, class: page_class }
   = render "layouts/head"
+<<<<<<< HEAD
   %body{ class: @body_class, data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}", find_file: find_file_path } }
     = render "layouts/init_auto_complete" if @gfm_form
     = render 'peek/bar'
@@ -8,6 +9,12 @@
       = render "layouts/header/new"
     - else
       = render "layouts/header/default", title: header_title
+=======
+  %body{ class: "#{user_application_theme}", data: { page: body_data_page, project: "#{@project.path if @project}", group: "#{@group.path if @group}" } }
+    = Gon::Base.render_data
+
+    = render "layouts/header/default", title: header_title
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
     = render 'layouts/page', sidebar: sidebar, nav: nav
 
     = yield :scripts_body

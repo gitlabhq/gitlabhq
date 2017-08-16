@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .page-with-sidebar{ class: page_with_sidebar_class }
   - if show_new_nav?
     - if defined?(nav) && nav
@@ -12,6 +13,32 @@
   .content-wrapper{ class: layout_nav_class }
     - if show_new_nav?
       .mobile-overlay
+=======
+.page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
+  .sidebar-wrapper.nicescroll
+    .sidebar-action-buttons
+      .nav-header-btn.toggle-nav-collapse{ title: "Open/Close" }
+        %span.sr-only Toggle navigation
+        = icon('bars')
+
+      %div{ class: "nav-header-btn pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: { placement: 'right', container: 'body' } }
+        %span.sr-only Toggle navigation pinning
+        = icon('fw thumb-tack')
+
+    - if defined?(sidebar) && sidebar
+      = render "layouts/nav/#{sidebar}"
+    - elsif current_user
+      = render 'layouts/nav/dashboard'
+    - else
+      = render 'layouts/nav/explore'
+
+  - if defined?(nav) && nav
+    .layout-nav
+      .container-fluid
+        = render "layouts/nav/#{nav}"
+  .content-wrapper{ class: "#{layout_nav_class}" }
+    = yield :sub_nav
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
     .alert-wrapper
       = render "layouts/broadcast"
       - if show_new_nav?

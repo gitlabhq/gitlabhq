@@ -322,11 +322,20 @@
       display: block;
     }
 
+<<<<<<< HEAD
     width: $gutter_collapsed_width;
     padding: 0;
 
     .block {
       width: $gutter_collapsed_width - 2px;
+=======
+    width: $sidebar_collapsed_width;
+    padding-top: 0;
+
+    .block {
+      width: $sidebar_collapsed_width - 2px;
+      margin-left: -19px;
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
       padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;

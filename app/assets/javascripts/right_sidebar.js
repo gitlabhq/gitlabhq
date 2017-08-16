@@ -23,15 +23,22 @@ import SidebarHeightManager from './sidebar_height_manager';
     };
 
     Sidebar.prototype.addEventListeners = function() {
+<<<<<<< HEAD
       SidebarHeightManager.init();
       const $document = $(document);
 
+=======
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
       $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
+<<<<<<< HEAD
 
       $document.on('click', '.js-sidebar-toggle', function(e, triggered) {
+=======
+      $(document).on('click', '.js-sidebar-toggle', function(e, triggered) {
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
         var $allGutterToggleIcons, $this, $thisIcon;
         e.preventDefault();
         $this = $(this);

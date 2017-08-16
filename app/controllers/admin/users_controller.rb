@@ -204,6 +204,7 @@ class Admin::UsersController < Admin::ApplicationController
       :provider,
       :remember_me,
       :skype,
+      :theme_id,
       :twitter,
       :username,
       :website_url

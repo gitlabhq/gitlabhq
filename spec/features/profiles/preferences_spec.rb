@@ -8,7 +8,7 @@ describe 'Profile > Preferences', :js do
     visit profile_preferences_path
   end
 
-  describe 'User changes their syntax highlighting theme' do
+  describe 'User changes their application theme', js: true do
     it 'creates a flash message' do
       choose 'user_color_scheme_id_5'
 

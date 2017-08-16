@@ -3,7 +3,24 @@
 = render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { class: 'row prepend-top-default js-preferences-form' } do |f|
+<<<<<<< HEAD
   .col-lg-4.profile-settings-sidebar
+=======
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Application theme
+    %p
+      This setting allows you to customize the appearance of the site, e.g. the sidebar.
+  .col-lg-9.application-theme
+    - Gitlab::Themes.each do |theme|
+      = label_tag do
+        .preview{ class: theme.css_class }
+        = f.radio_button :theme_id, theme.id
+        = theme.name
+  .col-sm-12
+    %hr
+  .col-lg-3.profile-settings-sidebar
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
     %h4.prepend-top-0
       Syntax highlighting theme
     %p

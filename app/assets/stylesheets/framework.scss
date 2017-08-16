@@ -4,6 +4,7 @@
 @import 'framework/tw_bootstrap';
 @import "framework/layout";
 
+<<<<<<< HEAD
 @import "framework/animations";
 @import "framework/avatar";
 @import "framework/asciidoctor";
@@ -39,6 +40,42 @@
 @import "framework/timeline";
 @import "framework/typography";
 @import "framework/zen";
+=======
+@import "framework/animations.scss";
+@import "framework/avatar.scss";
+@import "framework/asciidoctor.scss";
+@import "framework/blocks.scss";
+@import "framework/buttons.scss";
+@import "framework/badges.scss";
+@import "framework/calendar.scss";
+@import "framework/callout.scss";
+@import "framework/common.scss";
+@import "framework/dropdowns.scss";
+@import "framework/files.scss";
+@import "framework/filters.scss";
+@import "framework/flash.scss";
+@import "framework/forms.scss";
+@import "framework/gfm.scss";
+@import "framework/gitlab-theme.scss";
+@import "framework/header.scss";
+@import "framework/highlight.scss";
+@import "framework/issue_box.scss";
+@import "framework/jquery.scss";
+@import "framework/lists.scss";
+@import "framework/logo.scss";
+@import "framework/markdown_area.scss";
+@import "framework/mobile.scss";
+@import "framework/modal.scss";
+@import "framework/nav.scss";
+@import "framework/pagination.scss";
+@import "framework/panels.scss";
+@import "framework/selects.scss";
+@import "framework/sidebar.scss";
+@import "framework/tables.scss";
+@import "framework/timeline.scss";
+@import "framework/typography.scss";
+@import "framework/zen.scss";
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
 @import "framework/blank";
 @import "framework/wells";
 @import "framework/page-header";

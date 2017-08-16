@@ -1,0 +1,144 @@
+/**
+ * Styles the GitLab application with a specific color theme
+ *
+ * $color-light  -
+ * $color        -
+ * $color-darker -
+ * $color-dark   -
+ */
+@mixin gitlab-theme($color-light, $color, $color-darker, $color-dark) {
+  .page-with-sidebar {
+    .toggle-nav-collapse,
+    .pin-nav-btn {
+      color: $color-light;
+
+      &:hover {
+        color: $white-light;
+      }
+    }
+
+    .sidebar-wrapper {
+      background: $color-darker;
+    }
+
+    .sidebar-action-buttons {
+      color: $color-light;
+      background-color: lighten($color-darker, 5%);
+    }
+
+    .nav-sidebar {
+      li {
+        a {
+          color: $color-light;
+
+          &:hover,
+          &:focus,
+          &:active {
+            background: $color-dark;
+          }
+
+          i {
+            color: $color-light;
+          }
+
+          path,
+          polygon {
+            fill: $color-light;
+          }
+
+          .count {
+            color: $color-light;
+            background: $color-dark;
+          }
+
+          svg {
+            position: relative;
+            top: 3px;
+          }
+        }
+
+        &.separate-item {
+          border-top: 1px solid $color;
+        }
+
+        &.active a {
+          color: $white-light;
+          background: $color-dark;
+
+          &.no-highlight {
+            border: none;
+          }
+
+          i {
+            color: $white-light;
+          }
+
+          path,
+          polygon {
+            fill: $white-light;
+          }
+        }
+      }
+
+      .about-gitlab {
+        color: $color-light;
+      }
+    }
+  }
+}
+
+$theme-charcoal-light: #b9bbbe;
+$theme-charcoal: #485157;
+$theme-charcoal-dark: #3d454d;
+$theme-charcoal-darker: #383f45;
+
+$theme-blue-light: #becde9;
+$theme-blue: #2980b9;
+$theme-blue-dark: #1970a9;
+$theme-blue-darker: #096099;
+
+$theme-graphite-light: #ccc;
+$theme-graphite: #777;
+$theme-graphite-dark: #666;
+$theme-graphite-darker: #555;
+
+$theme-black-light: #979797;
+$theme-black: #373737;
+$theme-black-dark: #272727;
+$theme-black-darker: #222;
+
+$theme-green-light: #adc;
+$theme-green: #019875;
+$theme-green-dark: #018865;
+$theme-green-darker: #017855;
+
+$theme-violet-light: #98c;
+$theme-violet: #548;
+$theme-violet-dark: #436;
+$theme-violet-darker: #325;
+
+body {
+  &.ui_blue {
+    @include gitlab-theme($theme-blue-light, $theme-blue, $theme-blue-dark, $theme-blue-darker);
+  }
+
+  &.ui_charcoal {
+    @include gitlab-theme($theme-charcoal-light, $theme-charcoal, $theme-charcoal-dark, $theme-charcoal-darker);
+  }
+
+  &.ui_graphite {
+    @include gitlab-theme($theme-graphite-light, $theme-graphite, $theme-graphite-dark, $theme-graphite-darker);
+  }
+
+  &.ui_black {
+    @include gitlab-theme($theme-black-light, $theme-black, $theme-black-dark, $theme-black-darker);
+  }
+
+  &.ui_green {
+    @include gitlab-theme($theme-green-light, $theme-green, $theme-green-dark, $theme-green-darker);
+  }
+
+  &.ui_violet {
+    @include gitlab-theme($theme-violet-light, $theme-violet, $theme-violet-dark, $theme-violet-darker);
+  }
+}

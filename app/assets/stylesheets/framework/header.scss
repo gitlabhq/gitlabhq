@@ -132,6 +132,7 @@ header {
         }
       }
     }
+<<<<<<< HEAD
   }
 
   &.navbar-gitlab-new {
@@ -161,10 +162,26 @@ header {
     li {
       &.active a {
         font-weight: bold;
+=======
+
+    .side-nav-toggle {
+      position: absolute;
+      left: -10px;
+      margin: 7px 0;
+      font-size: 18px;
+      padding: 6px 10px;
+      border: none;
+      background-color: $gray-light;
+
+      &:hover {
+        background-color: $white-normal;
+        color: $gl-header-nav-hover-color;
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
       }
     }
   }
 
+<<<<<<< HEAD
   .global-dropdown-toggle {
     margin: 7px 0;
     font-size: 18px;
@@ -182,6 +199,8 @@ header {
     }
   }
 
+=======
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'
   .header-content {
     display: flex;
     justify-content: space-between;

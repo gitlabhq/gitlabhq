@@ -1,6 +1,8 @@
 /*
  * Layout
  */
+$sidebar_collapsed_width: 62px;
+$sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
@@ -590,6 +592,7 @@ Pipeline Graph
 */
 $stage-hover-bg: #eaf3fc;
 $stage-hover-border: #d1e7fc;
+<<<<<<< HEAD
 $action-icon-color: #d6d6d6;
 
 /*
@@ -645,3 +648,6 @@ Project Templates Icons
 $rails: #c00;
 $node: #353535;
 $java: #70ad51;
+=======
+$action-icon-color: #d6d6d6;
+>>>>>>> parent of aa792b91bb... Merge branch '26200-convert-sidebar-to-dropdown' into 'master'

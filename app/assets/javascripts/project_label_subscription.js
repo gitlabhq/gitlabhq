@@ -38,15 +38,13 @@
         this.$buttons.attr('data-status', newStatus);
         this.$buttons.find('> span').text(newAction);
 
-        this.$buttons.map((button) => {
+        for (const button of this.$buttons) {
           const $button = $(button);
 
           if ($button.attr('data-original-title')) {
             $button.tooltip('hide').attr('data-original-title', newAction).tooltip('fixTitle');
           }
-
-          return button;
-        });
+        }
       });
     }
   }
