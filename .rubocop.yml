@@ -1181,6 +1181,17 @@ GitlabSecurity/DeepMunge:
     - 'lib/**/*.rake'
     - 'spec/**/*'
 
+GitlabSecurity/JsonSerialization:
+  Enabled: true
+  Exclude:
+    - 'app/serializers/*'
+    - 'app/services/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'lib/**/*'
+    - 'features/**/*'
+    - 'spec/**/*'
+
 GitlabSecurity/PublicSend:
   Enabled: true
   Exclude:
