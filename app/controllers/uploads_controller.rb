@@ -89,7 +89,7 @@ class UploadsController < ApplicationController
 
       @uploader.retrieve_from_store!(params[:filename])
     else
-      @uploader = @model.send(upload_mount)
+      @uploader = @model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
 
       redirect_to @uploader.url unless @uploader.file_storage?
     end

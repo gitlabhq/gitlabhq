@@ -200,7 +200,7 @@ class Commit
   end
 
   def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)

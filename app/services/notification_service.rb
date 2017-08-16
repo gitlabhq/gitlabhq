@@ -1,3 +1,5 @@
+# rubocop:disable GitlabSecurity/PublicSend
+
 # NotificationService class
 #
 # Used for notifying users with emails about different events
