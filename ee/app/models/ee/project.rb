@@ -40,6 +40,7 @@ module EE
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirror, -> { where(mirror: true) }
+      scope :mirrors_to_sync, ->(freeze_at) { mirror.joins(:mirror_data).without_import_status(:scheduled, :started).where("next_execution_timestamp <= ?", freeze_at) }
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
       scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 

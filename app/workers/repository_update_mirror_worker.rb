@@ -5,6 +5,9 @@ class RepositoryUpdateMirrorWorker
   include Gitlab::ShellAdapter
   include DedicatedSidekiqQueue
 
+  LEASE_KEY = 'repository_update_mirror_worker_start_scheduler'.freeze
+  LEASE_TIMEOUT = 2.seconds
+
   # Retry not neccessary. It will try again at the next update interval.
   sidekiq_options retry: false, status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
@@ -30,10 +33,16 @@ class RepositoryUpdateMirrorWorker
     fail_mirror(project, ex.message)
     raise UpdateError, "#{ex.class}: #{ex.message}"
   ensure
-    UpdateAllMirrorsWorker.perform_async if Gitlab::Mirror.threshold_reached?
+    if !lease.exists? && Gitlab::Mirror.reschedule_immediately? && lease.try_obtain
+      UpdateAllMirrorsWorker.perform_async
+    end
   end
 
   private
+
+  def lease
+    @lease ||= ::Gitlab::ExclusiveLease.new(LEASE_KEY, timeout: LEASE_TIMEOUT)
+  end
 
   def start_mirror(project)
     if project.import_start
