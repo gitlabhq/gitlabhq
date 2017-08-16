@@ -644,7 +644,7 @@ import initChangesDropdown from './init_changes_dropdown';
     return Dispatcher;
   })();
 
-  $(function() {
+  $(window).on('load', function() {
     new Dispatcher();
   });
 }).call(window);
