@@ -989,7 +989,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(branch_commit.id, upstream_commit.id)
+      !rugged_is_ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -1000,7 +1000,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(upstream_commit.id, branch_commit.id)
+      !rugged_is_ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end
