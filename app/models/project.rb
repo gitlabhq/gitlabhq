@@ -574,7 +574,7 @@ class Project < ApplicationRecord
   end
 
   def valid_import_url?
-    valid? || errors.messages[:import_url].nil?
+    valid? || errors.messages[:import_url].blank?
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
