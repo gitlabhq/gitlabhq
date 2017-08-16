@@ -44,7 +44,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.json do
         render json: {
           html: view_to_html_string("projects/merge_requests/_merge_requests"),
-          labels: @labels.as_json(methods: :text_color)
+          labels: LabelSerializer.new.represent_appearance(@labels)
         }
       end
     end
