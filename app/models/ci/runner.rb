@@ -40,6 +40,11 @@ module Ci
 
     after_destroy :cleanup_runner_queue
 
+    enum access_level: {
+      protection_none: 0,
+      protection_full: 1
+    }
+
     # Searches for runners matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.

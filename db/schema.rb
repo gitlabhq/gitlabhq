@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "auto_canceled_by_id"
     t.boolean "retried"
     t.integer "stage_id"
+    t.boolean "protected"
   end
 
   add_index "ci_builds", ["auto_canceled_by_id"], name: "index_ci_builds_on_auto_canceled_by_id", using: :btree
@@ -336,7 +337,6 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.boolean "protected"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
@@ -372,9 +372,10 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.string "architecture"
     t.boolean "run_untagged", default: true, null: false
     t.boolean "locked", default: false, null: false
-    t.boolean "protected", default: false, null: false
+    t.integer "access_level", default: 0, null: false
   end
 
+  add_index "ci_runners", ["access_level"], name: "index_ci_runners_on_access_level", using: :btree
   add_index "ci_runners", ["contacted_at"], name: "index_ci_runners_on_contacted_at", using: :btree
   add_index "ci_runners", ["is_shared"], name: "index_ci_runners_on_is_shared", using: :btree
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
