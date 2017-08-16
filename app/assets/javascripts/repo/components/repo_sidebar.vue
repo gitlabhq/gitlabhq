@@ -27,7 +27,7 @@ export default {
     addPopEventListener() {
       window.addEventListener('popstate', () => {
         if (location.href.indexOf('#') > -1) return;
-        this.linkClicked({
+        this.fileClicked({
           url: location.href,
         });
       });
