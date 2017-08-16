@@ -219,4 +219,17 @@ describe 'Merge request', :js do
       expect(page).to have_field('remove-source-branch-input', disabled: true)
     end
   end
+
+  context 'ongoing merge process' do
+    it 'shows Merging state' do
+      allow_any_instance_of(MergeRequest).to receive(:merge_ongoing?).and_return(true)
+
+      visit project_merge_request_path(project, merge_request)
+
+      wait_for_requests
+
+      expect(page).not_to have_button('Merge')
+      expect(page).to have_content('This merge request is in the process of being merged')
+    end
+  end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Issue markdown toolbar', js: true do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue)   { create(:issue, project: project) }
   let(:user)    { create(:user) }
 

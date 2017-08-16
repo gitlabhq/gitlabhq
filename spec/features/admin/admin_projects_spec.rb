@@ -4,7 +4,7 @@ describe "Admin::Projects"  do
   include Select2Helper
 
   let(:user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:current_user) { create(:admin) }
 
   before do
@@ -12,7 +12,7 @@ describe "Admin::Projects"  do
   end
 
   describe "GET /admin/projects" do
-    let!(:archived_project) { create :empty_project, :public, :archived }
+    let!(:archived_project) { create :project, :public, :archived }
 
     before do
       expect(project).to be_persisted

@@ -15,7 +15,7 @@ describe Projects::PropagateServiceTemplate do
         })
     end
 
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     it 'creates services for projects' do
       expect(project.pushover_service).to be_nil
@@ -76,7 +76,7 @@ describe Projects::PropagateServiceTemplate do
       before do
         stub_const 'Projects::PropagateServiceTemplate::BATCH_SIZE', 3
 
-        project_total.times { create(:empty_project) }
+        project_total.times { create(:project) }
 
         described_class.propagate(service_template)
       end

@@ -45,7 +45,7 @@ describe CommitRange do
   end
 
   describe '#to_reference' do
-    let(:cross) { create(:empty_project, namespace: project.namespace) }
+    let(:cross) { create(:project, namespace: project.namespace) }
 
     it 'returns a String reference to the object' do
       expect(range.to_reference).to eq "#{full_sha_from}...#{full_sha_to}"
@@ -61,7 +61,7 @@ describe CommitRange do
   end
 
   describe '#reference_link_text' do
-    let(:cross) { create(:empty_project, namespace: project.namespace) }
+    let(:cross) { create(:project, namespace: project.namespace) }
 
     it 'returns a String reference to the object' do
       expect(range.reference_link_text).to eq "#{sha_from}...#{sha_to}"

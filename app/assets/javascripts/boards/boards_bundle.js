@@ -2,6 +2,7 @@
 /* global BoardService */
 /* global Flash */
 
+import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import FilteredSearchBoards from './filtered_search_boards';

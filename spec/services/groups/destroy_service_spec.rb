@@ -6,7 +6,7 @@ describe Groups::DestroyService do
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
-  let!(:project)      { create(:empty_project, namespace: group) }
+  let!(:project)      { create(:project, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group)}
   let!(:gitlab_shell) { Gitlab::Shell.new }
   let!(:remove_path)  { group.path + "+#{group.id}+deleted" }

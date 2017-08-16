@@ -4,7 +4,7 @@ feature 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }
-  let(:project) { create(:empty_project, :public, namespace: group) }
+  let(:project) { create(:project, :public, namespace: group) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
@@ -130,8 +130,8 @@ feature 'Issue Sidebar' do
         it 'adds new label' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: 'wontfix'
-            page.find(".suggest-colors a", match: :first).click
-            click_button 'Create'
+            page.find('.suggest-colors a', match: :first).trigger('click')
+            page.find('button', text: 'Create').trigger('click')
 
             page.within('.dropdown-page-one') do
               expect(page).to have_content 'wontfix'
@@ -142,8 +142,8 @@ feature 'Issue Sidebar' do
         it 'shows error message if label title is taken' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: label.title
-            page.find('.suggest-colors a', match: :first).click
-            click_button 'Create'
+            page.find('.suggest-colors a', match: :first).trigger('click')
+            page.find('button', text: 'Create').trigger('click')
 
             page.within('.dropdown-page-two') do
               expect(page).to have_content 'Title has already been taken'

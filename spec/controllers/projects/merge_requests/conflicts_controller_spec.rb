@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MergeRequests::ConflictsController do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::RetryPipelineService, '#execute' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
 

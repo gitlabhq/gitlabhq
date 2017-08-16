@@ -8,7 +8,7 @@ require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_pr
 # around this we use the TRUNCATE cleaning strategy.
 describe RenameReservedProjectNames, truncate: true do
   let(:migration) { described_class.new }
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   before do
     project.path = 'projects'

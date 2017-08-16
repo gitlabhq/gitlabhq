@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe NoteSummary do
-  let(:project)  { build(:empty_project) }
+  let(:project)  { build(:project) }
   let(:noteable) { build(:issue) }
   let(:user)     { build(:user) }
 

@@ -425,7 +425,7 @@ describe Group do
   end
 
   describe '#secret_variables_for' do
-    let(:project) { create(:empty_project, group: group) }
+    let(:project) { create(:project, group: group) }
 
     let!(:secret_variable) do
       create(:ci_group_variable, value: 'secret', group: group)

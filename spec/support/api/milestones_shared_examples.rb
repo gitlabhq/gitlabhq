@@ -50,7 +50,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
-      expect(json_response.map{ |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
+      expect(json_response.map { |m| m['id'] }).to match_array([closed_milestone.id, other_milestone.id])
     end
 
     it 'does not return any milestone if none found' do
@@ -239,7 +239,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
 
     describe 'confidential issues' do
-      let!(:public_project) { create(:empty_project, :public) }
+      let!(:public_project) { create(:project, :public) }
       let!(:context_group) { try(:group) }
       let!(:milestone) do
         context_group ? create(:milestone, group: context_group) : create(:milestone, project: public_project)

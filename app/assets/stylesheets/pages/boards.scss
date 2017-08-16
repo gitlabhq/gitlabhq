@@ -165,6 +165,7 @@
 
     .board-title {
       padding-top: ($gl-padding - 3px);
+      padding-bottom: $gl-padding;
     }
   }
 }
@@ -178,6 +179,7 @@
   position: relative;
   margin: 0;
   padding: $gl-padding;
+  padding-bottom: ($gl-padding + 3px);
   font-size: 1em;
   border-bottom: 1px solid $border-color;
 }

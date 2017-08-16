@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Ci::VariablePresenter do
   include Gitlab::Routing.url_helpers
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:variable) { create(:ci_variable, project: project) }
 
   subject(:presenter) do

@@ -4,7 +4,7 @@ describe 'admin/dashboard/index.html.haml' do
   include Devise::Test::ControllerHelpers
 
   before do
-    assign(:projects, create_list(:empty_project, 1))
+    assign(:projects, create_list(:project, 1))
     assign(:users, create_list(:user, 1))
     assign(:groups, create_list(:group, 1))
 

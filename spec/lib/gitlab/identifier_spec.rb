@@ -5,7 +5,7 @@ describe Gitlab::Identifier do
     Class.new { include Gitlab::Identifier }.new
   end
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
 

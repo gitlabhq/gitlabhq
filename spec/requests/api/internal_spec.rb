@@ -181,13 +181,12 @@ describe API::Internal do
 
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context "access granted" do
-      before do
-        project.team << [user, :developer]
-        Timecop.freeze
+      around do |example|
+        Timecop.freeze { example.run }
       end
 
-      after do
-        Timecop.return
+      before do
+        project.team << [user, :developer]
       end
 
       context 'with env passed as a JSON' do
@@ -301,7 +300,7 @@ describe API::Internal do
 
         context 'project as /namespace/project' do
           it do
-            pull(key, project_with_repo_path('/' + project.path_with_namespace))
+            pull(key, project_with_repo_path('/' + project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -312,7 +311,7 @@ describe API::Internal do
 
         context 'project as namespace/project' do
           it do
-            pull(key, project_with_repo_path(project.path_with_namespace))
+            pull(key, project_with_repo_path(project.full_path))
 
             expect(response).to have_http_status(200)
             expect(json_response["status"]).to be_truthy
@@ -350,7 +349,7 @@ describe API::Internal do
     end
 
     context "blocked user" do
-      let(:personal_project) { create(:empty_project, namespace: user.namespace) }
+      let(:personal_project) { create(:project, namespace: user.namespace) }
 
       before do
         user.block

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Milestones::CloseService do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
 
   before do

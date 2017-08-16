@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "GitLab Flavored Markdown" do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:fred) do
     create(:user, name: 'fred') do |user|

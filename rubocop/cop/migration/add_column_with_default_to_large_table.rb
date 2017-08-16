@@ -20,6 +20,7 @@ module RuboCop
           'necessary'.freeze
 
         LARGE_TABLES = %i[
+          ci_pipelines
           ci_builds
           events
           issues

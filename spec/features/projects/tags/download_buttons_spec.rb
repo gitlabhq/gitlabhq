@@ -5,7 +5,7 @@ feature 'Download buttons in tags page' do
   given(:role) { :developer }
   given(:status) { 'success' }
   given(:tag) { 'v1.0.0' }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   given(:pipeline) do
     create(:ci_pipeline,

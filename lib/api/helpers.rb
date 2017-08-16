@@ -16,6 +16,8 @@ module API
 
       @current_user = initial_current_user
 
+      Gitlab::I18n.locale = @current_user&.preferred_language
+
       sudo!
 
       @current_user
@@ -255,7 +257,15 @@ module API
       message << "  " << trace.join("\n  ")
 
       API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+
+      response_message =
+        if Rails.env.test?
+          message
+        else
+          '500 Internal Server Error'
+        end
+
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers

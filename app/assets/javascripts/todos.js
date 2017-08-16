@@ -52,6 +52,7 @@ export default class Todos {
   }
 
   updateRowStateClicked(e) {
+    e.stopPropagation();
     e.preventDefault();
 
     const target = e.target;
@@ -92,6 +93,7 @@ export default class Todos {
   }
 
   updateAllStateClicked(e) {
+    e.stopPropagation();
     e.preventDefault();
 
     const target = e.currentTarget;
@@ -142,6 +144,7 @@ export default class Todos {
     if (gl.utils.isMetaClick(e)) {
       const windowTarget = '_blank';
       const selected = e.target;
+      e.stopPropagation();
       e.preventDefault();
 
       if (selected.tagName === 'IMG') {

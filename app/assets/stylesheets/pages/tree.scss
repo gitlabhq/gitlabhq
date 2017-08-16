@@ -1,4 +1,5 @@
 .tree-holder {
+  @include new-style-dropdown;
 
   .nav-block {
     margin: 10px 0;
@@ -26,6 +27,10 @@
       .tree-ref-holder {
         float: left;
         margin-right: 15px;
+      }
+
+      .tree-ref-target-holder {
+        display: inline-block;
       }
 
       .repo-breadcrumb {
@@ -86,7 +91,7 @@
   }
 
   .add-to-tree {
-    vertical-align: top;
+    vertical-align: middle;
     padding: 6px 10px;
   }
 
@@ -215,6 +220,9 @@
 }
 
 .blob-upload-dropzone-previews {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: 2px;
   border-style: dashed;

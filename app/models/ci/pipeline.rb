@@ -317,7 +317,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
+        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.full_path)
       rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
         self.yaml_errors = e.message
         nil

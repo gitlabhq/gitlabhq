@@ -9,9 +9,9 @@ describe Gitlab::GithubImport::WikiFormatter do
 
   subject(:wiki) { described_class.new(project) }
 
-  describe '#path_with_namespace' do
+  describe '#disk_path' do
     it 'appends .wiki to project path' do
-      expect(wiki.path_with_namespace).to eq 'gitlabhq/gitlabhq.wiki'
+      expect(wiki.disk_path).to eq project.disk_path + '.wiki'
     end
   end
 

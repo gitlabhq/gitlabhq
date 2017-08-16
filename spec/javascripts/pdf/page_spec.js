@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 
 import Vue from 'vue';
-import pdfjsLib from 'pdfjs-dist';
-import workerSrc from 'vendor/pdf.worker';
+import pdfjsLib from 'vendor/pdf';
+import workerSrc from 'vendor/pdf.worker.min';
 
 import PageComponent from '~/pdf/page/index.vue';
 import testPDF from '../fixtures/blob/pdf/test.pdf';

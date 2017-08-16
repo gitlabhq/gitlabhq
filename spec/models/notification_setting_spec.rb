@@ -63,24 +63,20 @@ RSpec.describe NotificationSetting do
     end
   end
 
-  describe 'event_enabled?' do
+  describe '#event_enabled?' do
     before do
       subject.update!(user: create(:user))
     end
 
     context 'for an event with a matching column name' do
-      before do
-        subject.update!(events: { new_note: true }.to_json)
-      end
-
       it 'returns the value of the column' do
-        subject.update!(new_note: false)
+        subject.update!(new_note: true)
 
-        expect(subject.event_enabled?(:new_note)).to be(false)
+        expect(subject.event_enabled?(:new_note)).to be(true)
       end
 
       context 'when the column has a nil value' do
-        it 'returns the value from the events hash' do
+        it 'returns false' do
           expect(subject.event_enabled?(:new_note)).to be(false)
         end
       end

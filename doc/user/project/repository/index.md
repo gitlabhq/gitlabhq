@@ -2,7 +2,7 @@
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is what you use to store your codebase in GitLab and change it with version control.
-A repository is part of a project, which has a lot of other features.
+A repository is part of a [project](../index.md), which has a lot of other features.
 
 ## Create a repository
 
@@ -19,6 +19,8 @@ documentation.
 > **Important:**
 For security reasons, when using the command line, we strongly recommend
 you to [connect with GitLab via SSH](../../../ssh/README.md).
+
+## Files
 
 ## Create and edit files
 
@@ -46,6 +48,10 @@ it's easier to do so [via GitLab UI](web_editor.md):
 
 To get started with the command line, please read through the
 [command line basics documentation](../../../gitlab-basics/command-line-commands.md).
+
+### Find files
+
+Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
 ## Branches
 

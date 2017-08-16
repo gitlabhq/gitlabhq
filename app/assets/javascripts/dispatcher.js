@@ -8,6 +8,8 @@
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global Commit */
+/* global CommitsList */
+/* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 /* global GroupAvatar */
@@ -18,15 +20,20 @@
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
+/* global NewCommitForm */
+/* global NewBranchForm */
 /* global Project */
 /* global ProjectAvatar */
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
+/* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
+/* global ProjectImport */
 /* global Labels */
 /* global Shortcuts */
+/* global ShortcutsFindFile */
 /* global Sidebar */
 /* global ShortcutsWiki */
 
@@ -68,13 +75,11 @@ import initNotes from './init_notes';
 import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
+import UserFeatureHelper from './helpers/user_feature_helper';
+import initChangesDropdown from './init_changes_dropdown';
 
 (function() {
   var Dispatcher;
-
-  $(function() {
-    return new Dispatcher();
-  });
 
   Dispatcher = (function() {
     function Dispatcher() {
@@ -89,6 +94,7 @@ import GpgBadges from './gpg_badges';
       if (!page) {
         return false;
       }
+
       path = page.split(':');
       shortcut_handler = null;
 
@@ -132,6 +138,8 @@ import GpgBadges from './gpg_badges';
           .init();
       }
 
+      const filteredSearchEnabled = gl.FilteredSearchManager && document.querySelector('.filtered-search');
+
       switch (page) {
         case 'profiles:preferences:show':
           initExperimentalFlags();
@@ -148,7 +156,7 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
-          if (gl.FilteredSearchManager && document.querySelector('.filtered-search')) {
+          if (filteredSearchEnabled) {
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
@@ -176,10 +184,16 @@ import GpgBadges from './gpg_badges';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-        case 'groups:issues':
         case 'groups:merge_requests':
           new ProjectSelect();
           initLegacyFilters();
+          break;
+        case 'groups:issues':
+          if (filteredSearchEnabled) {
+            const filteredSearchManager = new gl.FilteredSearchManager('issues');
+            filteredSearchManager.setup();
+          }
+          new ProjectSelect();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -194,7 +208,6 @@ import GpgBadges from './gpg_badges';
           break;
         case 'explore:groups:index':
           new GroupsList();
-
           const landingElement = document.querySelector('.js-explore-groups-landing');
           if (!landingElement) break;
           const exploreGroupsLanding = new Landing(
@@ -216,6 +229,11 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          initChangesDropdown();
+          break;
+        case 'projects:branches:new':
+        case 'projects:branches:create':
+          new NewBranchForm($('.js-create-branch-form'), JSON.parse(document.getElementById('availableRefs').innerHTML));
           break;
         case 'projects:branches:index':
           gl.AjaxLoadingSpinner.init();
@@ -258,7 +276,7 @@ import GpgBadges from './gpg_badges';
         case 'projects:tags:new':
           new ZenMode();
           new gl.GLForm($('.tag-form'), true);
-          new RefSelectDropdown($('.js-branch-select'), window.gl.availableRefs);
+          new RefSelectDropdown($('.js-branch-select'));
           break;
         case 'projects:snippets:show':
           initNotes();
@@ -304,31 +322,45 @@ import GpgBadges from './gpg_badges';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          initChangesDropdown();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
           new MiniPipelineGraph({
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
-          break;
-        case 'projects:commits:show':
-          shortcut_handler = new ShortcutsNavigation();
-          GpgBadges.fetch();
+          $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
+          new gl.Activities();
           shortcut_handler = new ShortcutsNavigation();
+          break;
+        case 'projects:commits:show':
+          CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
+          shortcut_handler = new ShortcutsNavigation();
+          GpgBadges.fetch();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          if ($('#tree-slider').length) {
-            new TreeView();
-          }
-          if ($('.blob-viewer').length) {
-            new BlobViewer();
-          }
+
+          if ($('#tree-slider').length) new TreeView();
+          if ($('.blob-viewer').length) new BlobViewer();
+          if ($('.project-show-activity').length) new gl.Activities();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:edit':
           setupProjectEdit();
+          // Initialize expandable settings panels
+          initSettingsPanels();
+          break;
+        case 'projects:imports:show':
+          new ProjectImport();
+          break;
+        case 'projects:pipelines:new':
+          new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -381,13 +413,28 @@ import GpgBadges from './gpg_badges';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
+
+          if (UserFeatureHelper.isNewRepo()) break;
+
           new TreeView();
           new BlobViewer();
+          new NewCommitForm($('.js-create-dir-form'));
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:find_file:show':
+          const findElement = document.querySelector('.js-file-finder');
+          const projectFindFile = new ProjectFindFile($(".file-finder-holder"), {
+            url: findElement.dataset.fileFindUrl,
+            treeUrl: findElement.dataset.findTreeUrl,
+            blobUrlTemplate: findElement.dataset.blobUrlTemplate,
+          });
+          new ShortcutsFindFile(projectFindFile);
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
+          if (UserFeatureHelper.isNewRepo()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -468,7 +515,7 @@ import GpgBadges from './gpg_badges';
           new gl.DueDateSelectors();
           break;
       }
-      switch (path.first()) {
+      switch (path[0]) {
         case 'sessions':
         case 'omniauth_callbacks':
           if (!gon.u2f) break;
@@ -596,4 +643,8 @@ import GpgBadges from './gpg_badges';
 
     return Dispatcher;
   })();
+
+  $(function() {
+    new Dispatcher();
+  });
 }).call(window);

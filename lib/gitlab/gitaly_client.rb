@@ -100,5 +100,9 @@ module Gitlab
       path = Rails.root.join(SERVER_VERSION_FILE)
       path.read.chomp
     end
+
+    def self.encode(s)
+      s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
   end
 end

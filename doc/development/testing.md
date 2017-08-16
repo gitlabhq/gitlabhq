@@ -157,8 +157,9 @@ trade-off:
 
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
-  correctly. However if you run only unit tests without integration / system tests, you might [miss] the [big] [picture]!
-- Integration tests are a bit more expensive, but don't abuse them. A feature test
+  correctly. However if you run only unit tests without integration / system
+  tests, you might [miss] the [big] [picture]!
+- Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
   a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
@@ -188,23 +189,33 @@ Please consult the [dedicated "Frontend testing" guide](./fe_guide/testing.md).
 ### General Guidelines
 
 - Use a single, top-level `describe ClassName` block.
-- Use `described_class` instead of repeating the class name being described
-  (_this is enforced by RuboCop_).
 - Use `.method` to describe class methods and `#method` to describe instance
   methods.
 - Use `context` to test branching logic.
-- Use multi-line `do...end` blocks for `before` and `after`, even when it would
-  fit on a single line.
 - Don't assert against the absolute value of a sequence-generated attribute (see [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
-- Don't supply the `:each` argument to hooks since it's the default.
-- Prefer `not_to` to `to_not` (_this is enforced by RuboCop_).
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
-- Try to use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
+- Don't assert against the absolute value of a sequence-generated attribute (see
+  [Gotchas](gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+- Don't supply the `:each` argument to hooks since it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
+
+### Automatic retries and flaky tests detection
+
+On our CI, we use [rspec-retry] to automatically retry a failing example a few
+times (see [`spec/spec_helper.rb`] for the precise retries count).
+
+We also use a home-made `RspecFlaky::Listener` listener which records flaky
+examples in a JSON report file on `master` (`retrieve-tests-metadata` and `update-tests-metadata` jobs), and warns when a new flaky example
+is detected in any other branch (`flaky-examples-check` job). In the future, the
+`flaky-examples-check` job will not be allowed to fail.
+
+[rspec-retry]: https://github.com/NoRedInk/rspec-retry
+[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/spec_helper.rb
 
 ### `let` variables
 
@@ -268,6 +279,43 @@ end
 - Avoid scenario titles that add no information, such as "successfully".
 - Avoid scenario titles that repeat the feature title.
 
+### Table-based / Parameterized tests
+
+This style of testing is used to exercise one piece of code with a comprehensive
+range of inputs. By specifying the test case once, alongside a table of inputs
+and the expected output for each, your tests can be made easier to read and more
+compact.
+
+We use the [rspec-parameterized](https://github.com/tomykaira/rspec-parameterized)
+gem. A short example, using the table syntax and checking Ruby equality for a
+range of inputs, might look like this:
+
+```ruby
+describe "#==" do
+  using Rspec::Parameterized::TableSyntax
+
+  let(:project1) { create(:project) }
+  let(:project2) { create(:project) }
+  where(:a, :b, :result) do
+    1         | 1        | true
+    1         | 2        | false
+    true      | true     | true
+    true      | false    | false
+    project1  | project1 | true
+    project2  | project2 | true
+    project 1 | project2 | false
+  end
+
+  with_them do
+    it { expect(a == b).to eq(result) }
+
+    it 'is isomorphic' do
+      expect(b == a).to eq(result)
+    end
+  end
+end
+```
+
 ### Matchers
 
 Custom matchers should be created to clarify the intent and/or hide the
@@ -275,6 +323,15 @@ complexity of RSpec expectations.They should be placed under
 `spec/support/matchers/`. Matchers can be placed in subfolder if they apply to
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.
+
+#### have_gitlab_http_status
+
+Prefer `have_gitlab_http_status` over `have_http_status` because the former
+could also show the response body whenever the status mismatched. This would
+be very useful whenever some tests start breaking and we would love to know
+why without editing the source and rerun the tests.
+
+This is especially useful whenever it's showing 500 internal server error.
 
 ### Shared contexts
 
@@ -426,8 +483,6 @@ Here are some things to keep in mind regarding test performance:
 - `FactoryGirl.build(...)` and `.build_stubbed` are faster than `.create`.
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
-- Use `create(:empty_project)` instead of `create(:project)` when you don't need
-  the underlying Git repository. Filesystem operations are slow!
 - Don't mark a feature as requiring JavaScript (through `@javascript` in
   Spinach or `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!

@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Issues::DuplicateService do
   let(:user) { create(:user) }
-  let(:canonical_project) { create(:empty_project) }
-  let(:duplicate_project) { create(:empty_project) }
+  let(:canonical_project) { create(:project) }
+  let(:duplicate_project) { create(:project) }
 
   let(:canonical_issue) { create(:issue, project: canonical_project) }
   let(:duplicate_issue) { create(:issue, project: duplicate_project) }

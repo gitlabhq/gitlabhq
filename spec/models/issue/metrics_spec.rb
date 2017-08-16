@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Issue::Metrics do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   subject { create(:issue, project: project) }
 

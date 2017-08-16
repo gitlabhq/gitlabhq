@@ -43,6 +43,58 @@ describe Gitlab::Gpg do
       ).to eq []
     end
   end
+
+  describe '.current_home_dir' do
+    let(:default_home_dir) { GPGME::Engine.dirinfo('homedir') }
+
+    it 'returns the default value when no explicit home dir has been set' do
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+
+    it 'returns the explicitely set home dir' do
+      GPGME::Engine.home_dir = '/tmp/gpg'
+
+      expect(described_class.current_home_dir).to eq '/tmp/gpg'
+
+      GPGME::Engine.home_dir = GPGME::Engine.dirinfo('homedir')
+    end
+
+    it 'returns the default value when explicitely setting the home dir to nil' do
+      GPGME::Engine.home_dir = nil
+
+      expect(described_class.current_home_dir).to eq default_home_dir
+    end
+  end
+
+  describe '.using_tmp_keychain' do
+    it "the second thread does not change the first thread's directory" do
+      thread1 = Thread.new do
+        described_class.using_tmp_keychain do
+          dir = described_class.current_home_dir
+          sleep 0.1
+          expect(described_class.current_home_dir).to eq dir
+        end
+      end
+
+      thread2 = Thread.new do
+        described_class.using_tmp_keychain do
+          sleep 0.2
+        end
+      end
+
+      thread1.join
+      thread2.join
+    end
+
+    it 'allows recursive execution in the same thread' do
+      expect do
+        described_class.using_tmp_keychain do
+          described_class.using_tmp_keychain do
+          end
+        end
+      end.not_to raise_error(ThreadError)
+    end
+  end
 end
 
 describe Gitlab::Gpg::CurrentKeyChain do

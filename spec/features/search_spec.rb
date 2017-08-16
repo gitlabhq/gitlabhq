@@ -4,7 +4,7 @@ describe "Search"  do
   include FilteredSearchHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, assignees: [user]) }
   let!(:issue2) { create(:issue, project: project, author: user) }
 
@@ -20,7 +20,7 @@ describe "Search"  do
 
   context 'search filters', js: true do
     let(:group) { create(:group) }
-    let!(:group_project) { create(:empty_project, group: group) }
+    let!(:group_project) { create(:project, group: group) }
 
     before do
       group.add_owner(user)

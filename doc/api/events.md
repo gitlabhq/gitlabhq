@@ -79,7 +79,6 @@ Example response:
     "target_id":160,
     "target_type":"Issue",
     "author_id":25,
-    "data":null,
     "target_title":"Qui natus eos odio tempore et quaerat consequuntur ducimus cupiditate quis.",
     "created_at":"2017-02-09T10:43:19.667Z",
     "author":{
@@ -99,7 +98,6 @@ Example response:
     "target_id":159,
     "target_type":"Issue",
     "author_id":21,
-    "data":null,
     "target_title":"Nostrum enim non et sed optio illo deleniti non.",
     "created_at":"2017-02-09T10:43:19.426Z",
     "author":{
@@ -151,7 +149,6 @@ Example response:
     "target_id": 830,
     "target_type": "Issue",
     "author_id": 1,
-    "data": null,
     "target_title": "Public project search field",
     "author": {
       "name": "Dmitriy Zaporozhets",
@@ -166,7 +163,7 @@ Example response:
   {
     "title": null,
     "project_id": 15,
-    "action_name": "opened",
+    "action_name": "pushed",
     "target_id": null,
     "target_type": null,
     "author_id": 1,
@@ -179,31 +176,14 @@ Example response:
       "web_url": "http://localhost:3000/root"
     },
     "author_username": "john",
-    "data": {
-      "before": "50d4420237a9de7be1304607147aec22e4a14af7",
-      "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-      "ref": "refs/heads/master",
-      "user_id": 1,
-      "user_name": "Dmitriy Zaporozhets",
-      "repository": {
-        "name": "gitlabhq",
-        "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
-        "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
-        "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
-      },
-      "commits": [
-        {
-          "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "message": "Add simple search to projects in public area",
-          "timestamp": "2013-05-13T18:18:08+00:00",
-          "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
-          "author": {
-            "name": "Dmitriy Zaporozhets",
-            "email": "dmitriy.zaporozhets@gmail.com"
-          }
-        }
-      ],
-      "total_commits_count": 1
+    "push_data": {
+      "commit_count": 1,
+      "action": "pushed",
+      "ref_type": "branch",
+      "commit_from": "50d4420237a9de7be1304607147aec22e4a14af7",
+      "commit_to": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "ref": "master",
+      "commit_title": "Add simple search to projects in public area"
     },
     "target_title": null
   },
@@ -214,7 +194,6 @@ Example response:
     "target_id": 840,
     "target_type": "Issue",
     "author_id": 1,
-    "data": null,
     "target_title": "Finish & merge Code search PR",
     "author": {
       "name": "Dmitriy Zaporozhets",
@@ -233,7 +212,6 @@ Example response:
     "target_id": 1312,
     "target_type": "Note",
     "author_id": 1,
-    "data": null,
     "target_title": null,
     "created_at": "2015-12-04T10:33:58.089Z",
     "note": {
@@ -302,9 +280,9 @@ Example response:
     "project_id":1,
     "action_name":"opened",
     "target_id":160,
+    "target_iid":160,
     "target_type":"Issue",
     "author_id":25,
-    "data":null,
     "target_title":"Qui natus eos odio tempore et quaerat consequuntur ducimus cupiditate quis.",
     "created_at":"2017-02-09T10:43:19.667Z",
     "author":{
@@ -322,9 +300,9 @@ Example response:
     "project_id":1,
     "action_name":"opened",
     "target_id":159,
+    "target_iid":159,
     "target_type":"Issue",
     "author_id":21,
-    "data":null,
     "target_title":"Nostrum enim non et sed optio illo deleniti non.",
     "created_at":"2017-02-09T10:43:19.426Z",
     "author":{
@@ -336,6 +314,45 @@ Example response:
       "web_url":"https://gitlab.example.com/ted"
     },
     "author_username":"ted"
+  },
+  {
+    "title": null,
+    "project_id": 1,
+    "action_name": "commented on",
+    "target_id": 1312,
+    "target_iid": 1312,
+    "target_type": "Note",
+    "author_id": 1,
+    "data": null,
+    "target_title": null,
+    "created_at": "2015-12-04T10:33:58.089Z",
+    "note": {
+      "id": 1312,
+      "body": "What an awesome day!",
+      "attachment": null,
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+        "web_url": "http://localhost:3000/root"
+      },
+      "created_at": "2015-12-04T10:33:56.698Z",
+      "system": false,
+      "noteable_id": 377,
+      "noteable_type": "Issue",
+      "noteable_iid": 377
+    },
+    "author": {
+      "name": "Dmitriy Zaporozhets",
+      "username": "root",
+      "id": 1,
+      "state": "active",
+      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "http://localhost:3000/root"
+    },
+    "author_username": "root"
   }
 ]
 ```

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RepositoryCache do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:backend) { double('backend').as_null_object }
   let(:cache) { described_class.new('example', project.id, backend) }
 

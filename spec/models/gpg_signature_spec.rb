@@ -16,7 +16,7 @@ RSpec.describe GpgSignature do
   describe '#commit' do
     it 'fetches the commit through the project' do
       commit_sha = '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33'
-      project = create :project
+      project = create :project, :repository
       commit = create :commit, project: project
       gpg_signature = create :gpg_signature, commit_sha: commit_sha
 

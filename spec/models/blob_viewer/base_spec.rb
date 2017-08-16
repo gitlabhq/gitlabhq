@@ -3,7 +3,7 @@ require 'spec_helper'
 describe BlobViewer::Base do
   include FakeBlobHelpers
 
-  let(:project) { build(:empty_project) }
+  let(:project) { build(:project) }
 
   let(:viewer_class) do
     Class.new(described_class) do

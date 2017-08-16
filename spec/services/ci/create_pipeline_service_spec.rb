@@ -66,7 +66,7 @@ describe Ci::CreatePipelineService do
 
         context 'when there is no pipeline for source branch' do
           it "does not update merge request head pipeline" do
-            merge_request = create(:merge_request, source_branch: 'other_branch', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'feature', target_branch: "branch_1", source_project: project)
 
             head_pipeline = pipeline
 
@@ -75,7 +75,7 @@ describe Ci::CreatePipelineService do
         end
 
         context 'when merge request target project is different from source project' do
-          let!(:target_project) { create(:project) }
+          let!(:target_project) { create(:project, :repository) }
           let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
 
           it 'updates head pipeline for merge request' do

@@ -5,7 +5,7 @@ describe DiffDiscussion do
 
   subject { described_class.new([diff_note]) }
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 

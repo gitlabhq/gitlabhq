@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::ParticipantsService do
   describe '#groups' do
     describe 'avatar_url' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:group) { create(:group, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png')) }
       let(:user) { create(:user) }
       let!(:group_member) { create(:group_member, group: group, user: user) }

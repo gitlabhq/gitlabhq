@@ -4,7 +4,7 @@ describe 'New/edit issue', :js do
   include ActionView::Helpers::JavaScriptHelper
   include FormHelper
 
-  let!(:project)   { create(:empty_project) }
+  let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
   let!(:user2)     { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
@@ -276,7 +276,7 @@ describe 'New/edit issue', :js do
   describe 'sub-group project' do
     let(:group) { create(:group) }
     let(:nested_group_1) { create(:group, parent: group) }
-    let(:sub_group_project) { create(:empty_project, group: nested_group_1) }
+    let(:sub_group_project) { create(:project, group: nested_group_1) }
 
     before do
       sub_group_project.add_master(user)

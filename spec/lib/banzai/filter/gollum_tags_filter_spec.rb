@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::GollumTagsFilter do
   include FilterSpecHelper
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { double }
   let(:project_wiki) { ProjectWiki.new(project, user) }
 

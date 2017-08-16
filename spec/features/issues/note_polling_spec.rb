@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Issue notes polling', :js do
   include NoteInteractionHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
 
   describe 'creates' do
@@ -132,8 +132,6 @@ feature 'Issue notes polling', :js do
 
   def click_edit_action(note)
     note_element = find("#note_#{note.id}")
-
-    open_more_actions_dropdown(note)
 
     note_element.find('.js-note-edit').click
   end

@@ -26,7 +26,7 @@ feature 'Master views tags' do
   end
 
   context 'when project has tags' do
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :repository, namespace: user.namespace) }
     let(:repository) { project.repository }
 
     before do

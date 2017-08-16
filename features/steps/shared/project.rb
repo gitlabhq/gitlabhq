@@ -54,7 +54,7 @@ module SharedProject
 
   # Create an empty project without caring about the name
   step 'I own an empty project' do
-    @project = create(:empty_project,
+    @project = create(:project,
                       name: 'Empty Project', namespace: @user.namespace)
     @project.team << [@user, :master]
   end
@@ -71,28 +71,14 @@ module SharedProject
 
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
+    @event = create(:push_event, project: @project, author: @user)
 
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
-      ref: "refs/heads/fix",
-      user_id: @user.id,
-      user_name: @user.name,
-      repository: {
-        name: @project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
-
-    @event = Event.create(
-      project: @project,
-      action: Event::PUSHED,
-      data: data,
-      author_id: @user.id
-    )
+    create(:push_event_payload,
+           event: @event,
+           action: :created,
+           commit_to: '6d394385cf567f80a8fd85055db1ab4c5295806f',
+           ref: 'fix',
+           commit_count: 1)
   end
 
   step 'I should see project "Shop" activity feed' do
@@ -103,7 +89,7 @@ module SharedProject
   step 'I should see project settings' do
     expect(current_path).to eq edit_project_path(@project)
     expect(page).to have_content("Project name")
-    expect(page).to have_content("Sharing & Permissions")
+    expect(page).to have_content("Sharing and permissions")
   end
 
   def current_project
@@ -276,7 +262,7 @@ module SharedProject
   def user_owns_project(user_name:, project_name:, visibility: :private)
     user = user_exists(user_name, username: user_name.gsub(/\s/, '').underscore)
     project = Project.find_by(name: project_name)
-    project ||= create(:empty_project, visibility, name: project_name, namespace: user.namespace)
+    project ||= create(:project, visibility, name: project_name, namespace: user.namespace)
     project.team << [user, :master]
   end
 end

@@ -17,8 +17,8 @@ describe Gitlab::SlashCommands::Presenters::Deploy do
     end
   end
 
-  describe '#no_actions' do
-    subject { described_class.new(nil).no_actions }
+  describe '#action_not_found' do
+    subject { described_class.new(nil).action_not_found }
 
     it { is_expected.to have_key(:text) }
     it { is_expected.to have_key(:response_type) }
@@ -27,21 +27,7 @@ describe Gitlab::SlashCommands::Presenters::Deploy do
 
     it 'tells the user there is no action' do
       expect(subject[:response_type]).to be(:ephemeral)
-      expect(subject[:text]).to eq("No action found to be executed")
-    end
-  end
-
-  describe '#too_many_actions' do
-    subject { described_class.new([]).too_many_actions }
-
-    it { is_expected.to have_key(:text) }
-    it { is_expected.to have_key(:response_type) }
-    it { is_expected.to have_key(:status) }
-    it { is_expected.not_to have_key(:attachments) }
-
-    it 'tells the user there is no action' do
-      expect(subject[:response_type]).to be(:ephemeral)
-      expect(subject[:text]).to eq("Too many actions defined")
+      expect(subject[:text]).to eq "Couldn't find a deployment manual action."
     end
   end
 end

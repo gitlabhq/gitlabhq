@@ -25,8 +25,8 @@ feature 'issue move to another project' do
 
   context 'user has permission to move issue' do
     let!(:mr) { create(:merge_request, source_project: old_project) }
-    let(:new_project) { create(:empty_project) }
-    let(:new_project_search) { create(:empty_project) }
+    let(:new_project) { create(:project) }
+    let(:new_project_search) { create(:project) }
     let(:text) { "Text with #{mr.to_reference}" }
     let(:cross_reference) { old_project.to_reference(new_project) }
 
@@ -63,8 +63,8 @@ feature 'issue move to another project' do
     end
 
     context 'user does not have permission to move the issue to a project', js: true do
-      let!(:private_project) { create(:empty_project, :private) }
-      let(:another_project) { create(:empty_project) }
+      let!(:private_project) { create(:project, :private) }
+      let(:another_project) { create(:project) }
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do

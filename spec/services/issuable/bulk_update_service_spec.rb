@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Issuable::BulkUpdateService do
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
 
   def bulk_update(issuables, extra_params = {})
     bulk_update_params = extra_params
@@ -118,7 +118,7 @@ describe Issuable::BulkUpdateService do
     context 'when the new assignee ID is not present' do
       it 'does not unassign' do
         expect { bulk_update(issue, assignee_ids: []) }
-          .not_to change{ issue.reload.assignees }
+          .not_to change { issue.reload.assignees }
       end
     end
   end

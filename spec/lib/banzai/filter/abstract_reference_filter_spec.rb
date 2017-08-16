@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Banzai::Filter::AbstractReferenceFilter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   describe '#references_per_project' do
     it 'returns a Hash containing references grouped per project paths' do
-      doc = Nokogiri::HTML.fragment("#1 #{project.path_with_namespace}#2")
+      doc = Nokogiri::HTML.fragment("#1 #{project.full_path}#2")
       filter = described_class.new(doc, project: project)
 
       expect(filter).to receive(:object_class).exactly(4).times.and_return(Issue)
@@ -14,7 +14,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
       refs = filter.references_per_project
 
       expect(refs).to be_an_instance_of(Hash)
-      expect(refs[project.path_with_namespace]).to eq(Set.new(%w[1 2]))
+      expect(refs[project.full_path]).to eq(Set.new(%w[1 2]))
     end
   end
 
@@ -24,10 +24,10 @@ describe Banzai::Filter::AbstractReferenceFilter do
       filter = described_class.new(doc, project: project)
 
       expect(filter).to receive(:references_per_project)
-        .and_return({ project.path_with_namespace => Set.new(%w[1]) })
+        .and_return({ project.full_path => Set.new(%w[1]) })
 
       expect(filter.projects_per_reference)
-        .to eq({ project.path_with_namespace => project })
+        .to eq({ project.full_path => project })
     end
   end
 
@@ -37,7 +37,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
 
     context 'with RequestStore disabled' do
       it 'returns a list of Projects for a list of paths' do
-        expect(filter.find_projects_for_paths([project.path_with_namespace]))
+        expect(filter.find_projects_for_paths([project.full_path]))
           .to eq([project])
       end
 
@@ -49,7 +49,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
 
     context 'with RequestStore enabled', :request_store do
       it 'returns a list of Projects for a list of paths' do
-        expect(filter.find_projects_for_paths([project.path_with_namespace]))
+        expect(filter.find_projects_for_paths([project.full_path]))
           .to eq([project])
       end
 
@@ -88,7 +88,7 @@ describe Banzai::Filter::AbstractReferenceFilter do
       doc = Nokogiri::HTML.fragment('')
       filter = described_class.new(doc, project: project)
 
-      expect(filter.current_project_path).to eq(project.path_with_namespace)
+      expect(filter.current_project_path).to eq(project.full_path)
     end
   end
 end

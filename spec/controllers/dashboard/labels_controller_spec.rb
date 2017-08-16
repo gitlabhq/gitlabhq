@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Dashboard::LabelsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let!(:label)  { create(:label, project: project) }
 
@@ -11,7 +11,7 @@ describe Dashboard::LabelsController do
   end
 
   describe "#index" do
-    let!(:unrelated_label) { create(:label, project: create(:empty_project, :public)) }
+    let!(:unrelated_label) { create(:label, project: create(:project, :public)) }
 
     it 'returns global labels for projects the user has a relationship with' do
       get :index, format: :json

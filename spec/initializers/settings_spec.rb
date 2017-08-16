@@ -2,6 +2,17 @@ require 'spec_helper'
 require_relative '../../config/initializers/1_settings'
 
 describe Settings do
+  describe '#repositories' do
+    it 'assigns the default failure attributes' do
+      repository_settings = Gitlab.config.repositories.storages['broken']
+
+      expect(repository_settings['failure_count_threshold']).to eq(10)
+      expect(repository_settings['failure_wait_time']).to eq(30)
+      expect(repository_settings['failure_reset_time']).to eq(1800)
+      expect(repository_settings['storage_timeout']).to eq(5)
+    end
+  end
+
   describe '#host_without_www' do
     context 'URL with protocol' do
       it 'returns the host' do

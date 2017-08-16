@@ -232,7 +232,7 @@ describe API::V3::Users do
 
   describe 'GET /users/:id/events' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:note) { create(:note_on_issue, note: 'What an awesome day!', project: project) }
 
     before do
@@ -252,6 +252,31 @@ describe API::V3::Users do
     end
 
     context "as a user than can see the event's project" do
+      context 'when the list of events includes push events' do
+        let(:event) { create(:push_event, author: user, project: project) }
+        let!(:payload) { create(:push_event_payload, event: event) }
+        let(:payload_hash) { json_response[0]['push_data'] }
+
+        before do
+          get api("/users/#{user.id}/events?action=pushed", user)
+        end
+
+        it 'responds with HTTP 200 OK' do
+          expect(response).to have_http_status(200)
+        end
+
+        it 'includes the push payload as a Hash' do
+          expect(payload_hash).to be_an_instance_of(Hash)
+        end
+
+        it 'includes the push payload details' do
+          expect(payload_hash['commit_count']).to eq(payload.commit_count)
+          expect(payload_hash['action']).to eq(payload.action)
+          expect(payload_hash['ref_type']).to eq(payload.ref_type)
+          expect(payload_hash['commit_to']).to eq(payload.commit_to)
+        end
+      end
+
       context 'joined event' do
         it 'returns the "joined" event' do
           get v3_api("/users/#{user.id}/events", user)
@@ -276,7 +301,7 @@ describe API::V3::Users do
       end
 
       context 'when there are multiple events from different projects' do
-        let(:second_note) { create(:note_on_issue, project: create(:empty_project)) }
+        let(:second_note) { create(:note_on_issue, project: create(:project)) }
         let(:third_note) { create(:note_on_issue, project: project) }
 
         before do

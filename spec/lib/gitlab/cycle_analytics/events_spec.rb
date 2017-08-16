@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'cycle analytics events' do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:from_date) { 10.days.ago }
   let(:user) { create(:user, :admin) }
   let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }

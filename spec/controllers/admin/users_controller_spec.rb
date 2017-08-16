@@ -9,7 +9,7 @@ describe Admin::UsersController do
   end
 
   describe 'DELETE #user with projects' do
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
 
     before do
@@ -127,7 +127,7 @@ describe Admin::UsersController do
 
   describe 'POST create' do
     it 'creates the user' do
-      expect{ post :create, user: attributes_for(:user) }.to change{ User.count }.by(1)
+      expect { post :create, user: attributes_for(:user) }.to change { User.count }.by(1)
     end
 
     it 'shows only one error message for an invalid email' do

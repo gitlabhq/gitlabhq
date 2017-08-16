@@ -12,7 +12,7 @@ export default {
     return { emptyStateSVG };
   },
   template: `
-    <div class="mr-widget-body empty-state">
+    <div class="mr-widget-body mr-widget-empty-state">
       <div class="row">
         <div class="artwork col-sm-5 col-sm-push-7 col-xs-12 text-center">
           <span v-html="emptyStateSVG"></span>
@@ -29,12 +29,14 @@ export default {
             Currently there are no changes in this merge request's source branch.
             Please push new commits or use a different branch.
           </p>
-          <a
-            v-if="mr.newBlobPath"
-            :href="mr.newBlobPath"
-            class="btn btn-inverted btn-save">
-            Create file
-          </a>
+          <div>
+            <a
+              v-if="mr.newBlobPath"
+              :href="mr.newBlobPath"
+              class="btn btn-inverted btn-save">
+              Create file
+            </a>
+          </div>
         </div>
       </div>
     </div>

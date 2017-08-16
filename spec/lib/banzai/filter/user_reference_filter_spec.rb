@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Banzai::Filter::UserReferenceFilter do
   include FilterSpecHelper
 
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:user)      { create(:user) }
   let(:reference) { user.to_reference }
 

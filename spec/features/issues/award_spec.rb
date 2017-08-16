@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Issue awards', js: true do
   let(:user)      { create(:user) }
-  let(:project)   { create(:empty_project, :public) }
+  let(:project)   { create(:project, :public) }
   let(:issue)     { create(:issue, project: project) }
 
   describe 'logged in' do

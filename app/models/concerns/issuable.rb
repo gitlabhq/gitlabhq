@@ -16,6 +16,7 @@ module Issuable
   include TimeTrackable
   include Importable
   include Editable
+  include AfterCommitQueue
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests

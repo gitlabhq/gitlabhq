@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Projects > Issuables > Default sort order' do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   let(:first_created_issuable) { issuables.order_created_asc.first }
   let(:last_created_issuable) { issuables.order_created_desc.first }

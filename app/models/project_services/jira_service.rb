@@ -104,7 +104,7 @@ class JiraService < IssueTrackerService
   def close_issue(entity, external_issue)
     issue = jira_request { client.Issue.find(external_issue.iid) }
 
-    return if issue.nil? || issue.resolution.present? || !jira_issue_transition_id.present?
+    return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
 
     commit_id = if entity.is_a?(Commit)
                   entity.id
@@ -118,7 +118,7 @@ class JiraService < IssueTrackerService
     # may or may not be allowed. Refresh the issue after transition and check
     # if it is closed, so we don't have one comment for every commit.
     issue = jira_request { client.Issue.find(issue.key) } if transition_issue(issue)
-    add_issue_solved_comment(issue, commit_id, commit_url) if issue.resolution
+    add_issue_solved_comment(issue, commit_id, commit_url) if has_resolution?(issue)
   end
 
   def create_cross_reference_note(mentioned, noteable, author)
@@ -140,7 +140,7 @@ class JiraService < IssueTrackerService
         url: resource_url(user_path(author))
       },
       project: {
-        name: project.path_with_namespace,
+        name: project.full_path,
         url: resource_url(namespace_project_path(project.namespace, project)) # rubocop:disable Cop/ProjectPathHelper
       },
       entity: {
@@ -214,6 +214,10 @@ class JiraService < IssueTrackerService
     unless comment_exists?(issue, message)
       send_message(issue, message, link_props)
     end
+  end
+
+  def has_resolution?(issue)
+    issue.respond_to?(:resolution) && issue.resolution.present?
   end
 
   def comment_exists?(issue, message)

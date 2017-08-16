@@ -8,6 +8,7 @@ class MergeRequest < ActiveRecord::Base
   include CreatedAtFilterable
 
   ignore_column :position
+  ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -59,16 +60,6 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
-    end
-
-    after_transition any => :locked do |merge_request, transition|
-      merge_request.locked_at = Time.now
-      merge_request.save
-    end
-
-    after_transition locked: (any - :locked) do |merge_request, transition|
-      merge_request.locked_at = nil
-      merge_request.save
     end
 
     state :opened
@@ -171,7 +162,7 @@ class MergeRequest < ActiveRecord::Base
     target = unscoped.where(target_project_id: relation).select(:id)
     union  = Gitlab::SQL::Union.new([source, target])
 
-    where("merge_requests.id IN (#{union.to_sql})")
+    where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
@@ -392,6 +383,12 @@ class MergeRequest < ActiveRecord::Base
                'Source project is not a fork of the target project'
   end
 
+  def merge_ongoing?
+    return false unless merge_jid
+
+    Gitlab::SidekiqStatus.num_running([merge_jid]) > 0
+  end
+
   def closed_without_fork?
     closed? && source_project_missing?
   end
@@ -446,7 +443,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_diff_if_branch_changed
-    if source_branch_changed? || target_branch_changed?
+    if (source_branch_changed? || target_branch_changed?) &&
+        (source_branch_head && target_branch_head)
       reload_diff
     end
   end
@@ -630,7 +628,7 @@ class MergeRequest < ActiveRecord::Base
 
   def target_project_path
     if target_project
-      target_project.path_with_namespace
+      target_project.full_path
     else
       "(removed)"
     end
@@ -638,7 +636,7 @@ class MergeRequest < ActiveRecord::Base
 
   def source_project_path
     if source_project
-      source_project.path_with_namespace
+      source_project.full_path
     else
       "(removed)"
     end
@@ -725,12 +723,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def locked_long_ago?
-    return false unless locked?
-
-    locked_at.nil? || locked_at < (Time.now - 1.day)
-  end
-
   def has_ci?
     has_ci_integration = source_project.try(:ci_service)
     uses_gitlab_ci = all_pipelines.any?
@@ -801,11 +793,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def fetch_ref
-    target_project.repository.fetch_ref(
-      source_project.repository.path_to_repo,
-      "refs/heads/#{source_branch}",
-      ref_path
-    )
+    write_ref
     update_column(:ref_fetched, true)
   end
 
@@ -947,5 +935,18 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  private
+
+  def write_ref
+    target_project.repository.with_repo_branch_commit(
+      source_project.repository, source_branch) do |commit|
+        if commit
+          target_project.repository.write_ref(ref_path, commit.sha)
+        else
+          raise Rugged::ReferenceError, 'source repository is empty'
+        end
+      end
   end
 end

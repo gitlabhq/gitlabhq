@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Task Lists' do
   include Warden::Test::Helpers
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 
@@ -52,8 +52,8 @@ feature 'Task Lists' do
   before do
     Warden.test_mode!
 
-    project.team << [user, :master]
-    project.team << [user2, :guest]
+    project.add_master(user)
+    project.add_guest(user2)
 
     login_as(user)
   end

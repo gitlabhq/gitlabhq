@@ -4,7 +4,7 @@ describe Projects::DownloadService do
   describe 'File service' do
     before do
       @user = create(:user)
-      @project = create(:empty_project, creator_id: @user.id, namespace: @user.namespace)
+      @project = create(:project, creator_id: @user.id, namespace: @user.namespace)
     end
 
     context 'for a URL that is not on whitelist' do

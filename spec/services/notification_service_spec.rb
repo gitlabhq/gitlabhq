@@ -1,12 +1,10 @@
 require 'spec_helper'
 
-describe NotificationService do
-  include EmailHelpers
-
+describe NotificationService, :mailer do
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
-  around(:each) do |example|
+  around do |example|
     perform_enqueued_jobs do
       example.run
     end
@@ -14,7 +12,6 @@ describe NotificationService do
 
   shared_examples 'notifications for new mentions' do
     def send_notifications(*new_mentions)
-      reset_delivered_emails!
       notification.send(notification_method, mentionable, new_mentions, @u_disabled)
     end
 
@@ -83,12 +80,16 @@ describe NotificationService do
 
   describe 'Keys' do
     describe '#new_key' do
-      let!(:key) { create(:personal_key) }
+      let(:key_options) { {} }
+      let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
+      it { should_email(key.user) }
 
-      it 'sends email to key owner' do
-        expect{ notification.new_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+      describe 'never emails the ghost user' do
+        let(:key_options) { { user: User.ghost } }
+
+        it { should_not_email_anyone }
       end
     end
   end
@@ -100,7 +101,7 @@ describe NotificationService do
       it { expect(notification.new_gpg_key(key)).to be_truthy }
 
       it 'sends email to key owner' do
-        expect{ notification.new_gpg_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+        expect { notification.new_gpg_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -112,14 +113,14 @@ describe NotificationService do
       it { expect(notification.new_email(email)).to be_truthy }
 
       it 'sends email to email owner' do
-        expect{ notification.new_email(email) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
 
   describe 'Notes' do
     context 'issue note' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
@@ -137,11 +138,10 @@ describe NotificationService do
       describe '#new_note' do
         it do
           add_users_with_subscription(note.project, issue)
+          reset_delivered_emails!
 
           # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(8).times
-
-          reset_delivered_emails!
 
           notification.new_note(note)
 
@@ -165,8 +165,9 @@ describe NotificationService do
 
         it "emails the note author if they've opted into notifications about their activity" do
           add_users_with_subscription(note.project, issue)
-          note.author.notified_of_own_activity = true
           reset_delivered_emails!
+
+          note.author.notified_of_own_activity = true
 
           notification.new_note(note)
 
@@ -228,7 +229,7 @@ describe NotificationService do
     end
 
     context 'confidential issue note' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:author) { create(:user) }
       let(:assignee) { create(:user) }
       let(:non_member) { create(:user) }
@@ -260,7 +261,7 @@ describe NotificationService do
     end
 
     context 'issue note mention' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
@@ -303,12 +304,17 @@ describe NotificationService do
     end
 
     context 'project snippet note' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
       let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: snippet.project.id, note: '@all mentioned') }
 
       before do
         build_team(note.project)
+
+        # make sure these users can read the project snippet!
+        project.add_guest(@u_guest_watcher)
+        project.add_guest(@u_guest_custom)
+
         note.project.add_master(note.author)
         reset_delivered_emails!
       end
@@ -464,8 +470,8 @@ describe NotificationService do
 
   describe 'Issues' do
     let(:group) { create(:group) }
-    let(:project) { create(:empty_project, :public, namespace: group) }
-    let(:another_project) { create(:empty_project, :public, namespace: group) }
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:another_project) { create(:project, :public, namespace: group) }
     let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant' }
 
     before do
@@ -694,17 +700,6 @@ describe NotificationService do
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
-      it "emails subscribers of the issue's added labels only" do
-        notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
-
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
-      end
-
       it "emails the current user if they've opted into notifications about their activity" do
         subscriber_to_label_2.notified_of_own_activity = true
         notification.relabeled_issue(issue, [group_label_2, label_2], subscriber_to_label_2)
@@ -721,6 +716,12 @@ describe NotificationService do
       it "doesn't send email to anyone but subscribers of the given labels" do
         notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled)
 
+        should_not_email(subscriber_to_label_1)
+        should_not_email(subscriber_to_group_label_1)
+        should_not_email(subscriber_to_group_label_2_on_another_project)
+        should_email(subscriber_1_to_group_label_2)
+        should_email(subscriber_2_to_group_label_2)
+        should_email(subscriber_to_label_2)
         should_not_email(issue.assignees.first)
         should_not_email(issue.author)
         should_not_email(@u_watcher)
@@ -730,12 +731,6 @@ describe NotificationService do
         should_not_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
       end
 
       context 'confidential issues' do
@@ -866,7 +861,7 @@ describe NotificationService do
   describe 'Merge Requests' do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, :repository, namespace: group) }
-    let(:another_project) { create(:empty_project, :public, namespace: group) }
+    let(:another_project) { create(:project, :public, namespace: group) }
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
@@ -878,11 +873,6 @@ describe NotificationService do
     end
 
     describe '#new_merge_request' do
-      before do
-        update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
-        update_custom_notification(:new_merge_request, @u_custom_global)
-      end
-
       it do
         notification.new_merge_request(merge_request, @u_disabled)
 
@@ -1008,7 +998,7 @@ describe NotificationService do
       let!(:subscriber_to_label_1) { create(:user) { |u| label_1.toggle_subscription(u, project) } }
       let!(:subscriber_to_label_2) { create(:user) { |u| label_2.toggle_subscription(u, project) } }
 
-      it "emails subscribers of the merge request's added labels only" do
+      it "doesn't send email to anyone but subscribers of the given labels" do
         notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
 
         should_not_email(subscriber_to_label_1)
@@ -1017,11 +1007,6 @@ describe NotificationService do
         should_email(subscriber_1_to_group_label_2)
         should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
-      end
-
-      it "doesn't send email to anyone but subscribers of the given labels" do
-        notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled)
-
         should_not_email(merge_request.assignee)
         should_not_email(merge_request.author)
         should_not_email(@u_watcher)
@@ -1031,12 +1016,6 @@ describe NotificationService do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_lazy_participant)
-        should_not_email(subscriber_to_label_1)
-        should_not_email(subscriber_to_group_label_1)
-        should_not_email(subscriber_to_group_label_2_on_another_project)
-        should_email(subscriber_1_to_group_label_2)
-        should_email(subscriber_2_to_group_label_2)
-        should_email(subscriber_to_label_2)
       end
     end
 
@@ -1081,12 +1060,12 @@ describe NotificationService do
 
         should_email(merge_request.assignee)
         should_email(@u_watcher)
+        should_email(@u_guest_watcher)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
         should_email(@watcher_and_subscriber)
-        should_email(@u_guest_watcher)
-        should_email(@u_custom_global)
-        should_email(@u_guest_custom)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
@@ -1177,7 +1156,7 @@ describe NotificationService do
   end
 
   describe 'Projects' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       build_team(project)
@@ -1198,19 +1177,39 @@ describe NotificationService do
       end
     end
 
-    describe '#project_exported' do
-      it do
-        notification.project_exported(project, @u_disabled)
+    context 'user with notifications disabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_disabled)
 
-        should_only_email(@u_disabled)
+          should_not_email_anyone
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_disabled, ['error'])
+
+          should_not_email_anyone
+        end
       end
     end
 
-    describe '#project_not_exported' do
-      it do
-        notification.project_not_exported(project, @u_disabled, ['error'])
+    context 'user with notifications enabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_participating)
 
-        should_only_email(@u_disabled)
+          should_only_email(@u_participating)
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_participating, ['error'])
+
+          should_only_email(@u_participating)
+        end
       end
     end
   end
@@ -1221,7 +1220,7 @@ describe NotificationService do
       let(:group) { create(:group) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         group.add_owner(creator)
         group.add_developer(member, creator)
       end
@@ -1234,14 +1233,43 @@ describe NotificationService do
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
+
+    describe '#new_group_member' do
+      let(:group) { create(:group) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        GroupMember.create(
+          group: group,
+          user: added_user,
+          access_level: Gitlab::Access::GUEST
+        )
+      end
+
+      it 'sends a notification' do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
+
+        it 'does not send a notification' do
+          create_member!
+          should_not_email_anyone
+        end
+      end
+    end
   end
 
   describe 'ProjectMember' do
     describe '#decline_group_invite' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         project.add_developer(member, current_user: project.owner)
       end
 
@@ -1253,10 +1281,35 @@ describe NotificationService do
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
+
+    describe '#new_project_member' do
+      let(:project) { create(:project) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        create(:project_member, user: added_user, project: project)
+      end
+
+      it do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
+
+        it do
+          create_member!
+          should_not_email_anyone
+        end
+      end
+    end
   end
 
   context 'guest user in private project' do
-    let(:private_project) { create(:empty_project, :private) }
+    let(:private_project) { create(:project, :private) }
     let(:guest) { create(:user) }
     let(:developer) { create(:user) }
     let(:assignee) { create(:user) }

@@ -92,7 +92,7 @@ $(() => {
           });
       },
       selectDefaultStage() {
-        const stage = this.state.stages.first();
+        const stage = this.state.stages[0];
         this.selectStage(stage);
       },
       selectStage(stage) {

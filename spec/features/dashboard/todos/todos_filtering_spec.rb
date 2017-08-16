@@ -4,8 +4,8 @@ feature 'Dashboard > User filters todos', js: true do
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 
-  let(:project_1) { create(:empty_project, name: 'project_1') }
-  let(:project_2) { create(:empty_project, name: 'project_2') }
+  let(:project_1) { create(:project, name: 'project_1') }
+  let(:project_2) { create(:project, name: 'project_2') }
 
   let(:issue) { create(:issue, title: 'issue', project: project_1) }
 

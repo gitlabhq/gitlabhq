@@ -35,21 +35,21 @@ describe 'Create notes on issues', :js do
 
   context 'mentioning issue on a private project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
       let(:mention) { create(:issue, project: project) }
     end
   end
 
   context 'mentioning issue on an internal project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:project, :internal) }
       let(:mention) { create(:issue, project: project) }
     end
   end
 
   context 'mentioning issue on a public project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:mention) { create(:issue, project: project) }
     end
   end

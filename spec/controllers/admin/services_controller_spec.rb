@@ -8,7 +8,7 @@ describe Admin::ServicesController do
   end
 
   describe 'GET #edit' do
-    let!(:project) { create(:empty_project) }
+    let!(:project) { create(:project) }
 
     Service.available_services_names.each do |service_name|
       context "#{service_name}" do
@@ -27,7 +27,7 @@ describe Admin::ServicesController do
   end
 
   describe "#update" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let!(:service) do
       RedmineService.create(
         project: project,

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::SearchResults do
   let(:user) { create(:user) }
-  let!(:project) { create(:empty_project, name: 'foo') }
+  let!(:project) { create(:project, name: 'foo') }
   let!(:issue) { create(:issue, project: project, title: 'foo') }
 
   let!(:merge_request) do
@@ -42,7 +42,7 @@ describe Gitlab::SearchResults do
     end
 
     it 'includes merge requests from source and target projects' do
-      forked_project = create(:empty_project, forked_from_project: project)
+      forked_project = create(:project, forked_from_project: project)
       merge_request_2 = create(:merge_request, target_project: project, source_project: forked_project, title: 'foo')
 
       results = described_class.new(user, Project.where(id: forked_project.id), 'foo')
@@ -52,17 +52,17 @@ describe Gitlab::SearchResults do
   end
 
   it 'does not list issues on private projects' do
-    private_project = create(:empty_project, :private)
+    private_project = create(:project, :private)
     issue = create(:issue, project: private_project, title: 'foo')
 
     expect(results.objects('issues')).not_to include issue
   end
 
   describe 'confidential issues' do
-    let(:project_1) { create(:empty_project, :internal) }
-    let(:project_2) { create(:empty_project, :internal) }
-    let(:project_3) { create(:empty_project, :internal) }
-    let(:project_4) { create(:empty_project, :internal) }
+    let(:project_1) { create(:project, :internal) }
+    let(:project_2) { create(:project, :internal) }
+    let(:project_3) { create(:project, :internal) }
+    let(:project_4) { create(:project, :internal) }
     let(:query) { 'issue' }
     let(:limit_projects) { Project.where(id: [project_1.id, project_2.id, project_3.id]) }
     let(:author) { create(:user) }

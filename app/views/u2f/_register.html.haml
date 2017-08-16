@@ -37,7 +37,3 @@
           .col-md-3
             = hidden_field_tag 'u2f_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
             = submit_tag "Register U2F device", class: "btn btn-success"
-
-:javascript
-  var u2fRegister = new U2FRegister($("#js-register-u2f"), gon.u2f);
-  u2fRegister.start();

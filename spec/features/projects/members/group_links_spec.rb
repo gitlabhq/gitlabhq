@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Members > Anonymous user sees members', js: true do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   background do
     project.team << [user, :master]

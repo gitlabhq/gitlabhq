@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'Recent searches', js: true do
   include FilteredSearchHelpers
 
-  let(:project_1) { create(:empty_project, :public) }
-  let(:project_2) { create(:empty_project, :public) }
+  let(:project_1) { create(:project, :public) }
+  let(:project_2) { create(:project, :public) }
   let(:project_1_local_storage_key) { "#{project_1.full_path}-issue-recent-searches" }
 
   before do

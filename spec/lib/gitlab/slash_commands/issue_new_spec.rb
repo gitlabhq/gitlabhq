@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::SlashCommands::IssueNew do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { create(:user) }
     let(:regex_match) { described_class.match("issue create bird is the word") }
 

@@ -1088,6 +1088,9 @@ msgstr "私有"
 msgid "VisibilityLevel|Public"
 msgstr "公開"
 
+msgid "VisibilityLevel|Unknown"
+msgstr "未知"
+
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "權限不足。如需查看相關數據，請向管理員申請權限。"
 
@@ -1097,18 +1100,10 @@ msgstr "該階段的數據不足，無法顯示。"
 msgid "Withdraw Access Request"
 msgstr "取消權限申请"
 
-msgid ""
-"You are going to remove %{group_name}.\n"
-"Removed groups CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
-msgstr "即將刪除 %{group_name}。\n"
-"已刪除的群組無法恢復！\n"
-"確定繼續嗎？"
+msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
+msgstr "即將刪除 %{group_name}。已刪除的群組無法恢復！確定繼續嗎？"
 
-msgid ""
-"You are going to remove %{project_name_with_namespace}.\n"
-"Removed project CANNOT be restored!\n"
-"Are you ABSOLUTELY sure?"
+msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "即將要刪除 %{project_name_with_namespace}。已刪除的項目無法恢複！確定繼續嗎？"
 
 msgid ""

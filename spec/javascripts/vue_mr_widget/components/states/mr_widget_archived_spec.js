@@ -12,7 +12,7 @@ describe('MRWidgetArchived', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(el.querySelector('button').classList.contains('btn-success')).toBeTruthy();
       expect(el.querySelector('button').disabled).toBeTruthy();
-      expect(el.innerText).toContain('This project is archived, write access has been disabled.');
+      expect(el.innerText).toContain('This project is archived, write access has been disabled');
     });
   });
 });

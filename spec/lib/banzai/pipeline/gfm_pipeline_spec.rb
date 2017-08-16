@@ -36,7 +36,7 @@ describe Banzai::Pipeline::GfmPipeline do
       end
 
       it 'parses cross-project references to regular issues' do
-        other_project = create(:empty_project, :public)
+        other_project = create(:project, :public)
         issue = create(:issue, project: other_project)
         markdown = issue.to_reference(project, full: true)
 
@@ -74,7 +74,7 @@ describe Banzai::Pipeline::GfmPipeline do
       end
 
       it 'parses cross-project references to regular issues' do
-        other_project = create(:empty_project, :public)
+        other_project = create(:project, :public)
         issue = create(:issue, project: other_project)
         markdown = issue.to_reference(project, full: true)
 

@@ -12,7 +12,7 @@ feature 'Projects > Wiki > User updates wiki page' do
   end
 
   context 'in the user namespace' do
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     context 'the home page' do
       scenario 'success when the wiki content is not empty' do
@@ -55,7 +55,7 @@ feature 'Projects > Wiki > User updates wiki page' do
     scenario 'page has been updated since the user opened the edit page' do
       click_link 'Edit'
 
-      wiki_page.update('Update')
+      wiki_page.update(content: 'Update')
 
       click_button 'Save changes'
 
@@ -64,7 +64,7 @@ feature 'Projects > Wiki > User updates wiki page' do
   end
 
   context 'in a group namespace' do
-    let(:project) { create(:empty_project, namespace: create(:group, :public)) }
+    let(:project) { create(:project, namespace: create(:group, :public)) }
 
     scenario 'the home page' do
       click_link 'Edit'

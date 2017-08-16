@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Search bar', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
 

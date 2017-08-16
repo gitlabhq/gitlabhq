@@ -27,7 +27,7 @@ describe Import::GoogleCodeController do
     end
 
     it "assigns variables" do
-      @project = create(:empty_project, import_type: 'google_code', creator_id: user.id)
+      @project = create(:project, import_type: 'google_code', creator_id: user.id)
       stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status
@@ -38,7 +38,7 @@ describe Import::GoogleCodeController do
     end
 
     it "does not show already added project" do
-      @project = create(:empty_project, import_type: 'google_code', creator_id: user.id, import_source: 'vim')
+      @project = create(:project, import_type: 'google_code', creator_id: user.id, import_source: 'vim')
       stub_client(repos: [@repo], incompatible_repos: [])
 
       get :status

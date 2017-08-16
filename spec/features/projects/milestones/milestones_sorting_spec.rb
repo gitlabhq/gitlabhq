@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Milestones sorting', :js do
   include SortingHelper
   let(:user)    { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
   before do
     # Milestones

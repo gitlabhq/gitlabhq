@@ -10,7 +10,7 @@ describe 'Projects > Wiki > User views wiki in project page' do
 
   context 'when repository is disabled for project' do
     let(:project) do
-      create(:empty_project,
+      create(:project,
              :repository_disabled,
              :merge_requests_disabled,
              :builds_disabled)

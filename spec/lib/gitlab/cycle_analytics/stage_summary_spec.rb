@@ -15,7 +15,7 @@ describe Gitlab::CycleAnalytics::StageSummary do
     end
 
     it "doesn't find issues from other projects" do
-      Timecop.freeze(5.days.from_now) { create(:issue, project: create(:empty_project)) }
+      Timecop.freeze(5.days.from_now) { create(:issue, project: create(:project)) }
 
       expect(subject.first[:value]).to eq(0)
     end

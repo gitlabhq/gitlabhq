@@ -27,4 +27,15 @@ describe MergeWorker do
       expect(source_project.repository.branch_names).not_to include('markdown')
     end
   end
+
+  it 'persists merge_jid' do
+    merge_request = create(:merge_request, merge_jid: nil)
+    user = create(:user)
+    worker = described_class.new
+
+    allow(worker).to receive(:jid) { '999' }
+
+    expect { worker.perform(merge_request.id, user.id, {}) }
+      .to change { merge_request.reload.merge_jid }.from(nil).to('999')
+  end
 end

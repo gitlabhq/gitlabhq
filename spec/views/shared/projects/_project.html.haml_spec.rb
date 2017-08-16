@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'shared/projects/_project.html.haml' do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   it 'should render creator avatar if project has a creator' do
     render 'shared/projects/project', use_creator_avatar: true, project: project

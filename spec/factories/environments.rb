@@ -2,12 +2,10 @@ FactoryGirl.define do
   factory :environment, class: Environment do
     sequence(:name) { |n| "environment#{n}" }
 
-    project factory: :empty_project
+    association :project, :repository
     sequence(:external_url) { |n| "https://env#{n}.example.gitlab.com" }
 
     trait :with_review_app do |environment|
-      project
-
       transient do
         ref 'master'
       end

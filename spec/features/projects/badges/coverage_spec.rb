@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'test coverage badge' do
   given!(:user) { create(:user) }
-  given!(:project) { create(:empty_project, :private) }
+  given!(:project) { create(:project, :private) }
 
   context 'when user has access to view badge' do
     background do

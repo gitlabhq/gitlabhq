@@ -42,7 +42,7 @@ describe PipelineDetailsEntity do
     end
 
     context 'when pipeline is retryable' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       let(:pipeline) do
         create(:ci_pipeline, status: :success, project: project)
@@ -70,7 +70,7 @@ describe PipelineDetailsEntity do
     end
 
     context 'when pipeline is cancelable' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       let(:pipeline) do
         create(:ci_pipeline, status: :running, project: project)

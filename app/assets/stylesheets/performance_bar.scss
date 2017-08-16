@@ -3,9 +3,16 @@
 @import "peek/views/rblineprof";
 
 #peek {
-  height: 35px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: 2000;
+  overflow-x: hidden;
+
+  height: $performance-bar-height;
   background: $black;
-  line-height: 35px;
+  line-height: $performance-bar-height;
   color: $perf-bar-text;
 
   &.disabled {
@@ -25,7 +32,8 @@
   }
 
   .wrapper {
-    width: 1000px;
+    width: 80%;
+    height: $performance-bar-height;
     margin: 0 auto;
   }
 

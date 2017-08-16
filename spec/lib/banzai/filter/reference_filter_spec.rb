@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Banzai::Filter::ReferenceFilter do
-  let(:project) { build(:project) }
+  let(:project) { build_stubbed(:project) }
 
   describe '#each_node' do
     it 'iterates over the nodes in a document' do

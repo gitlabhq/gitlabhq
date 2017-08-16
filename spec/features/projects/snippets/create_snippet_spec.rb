@@ -4,7 +4,7 @@ feature 'Create Snippet', :js do
   include DropzoneHelper
 
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   def fill_form
     fill_in 'project_snippet_title', with: 'My Snippet Title'

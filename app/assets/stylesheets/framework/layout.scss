@@ -109,14 +109,16 @@ body {
   }
 }
 
+.page-with-sidebar > .content-wrapper {
+  min-height: calc(100vh - #{$header-height});
+}
 
-/* The following prevents side effects related to iOS Safari's implementation of -webkit-overflow-scrolling: touch,
-which is applied to the body by jquery.nicescroling plugin to force hardware acceleration for momentum scrolling. Side
-effects are commonly related to inconsisent z-index behavior (e.g. tooltips). By applying the following to direct children
-of the body element here, we negate cascading side effects but allow momentum scrolling to be applied to the body  */
+.with-performance-bar .page-with-sidebar {
+  margin-top: $header-height + $performance-bar-height;
+}
 
-.navbar,
-.page-gutter,
-.page-with-sidebar {
-  -webkit-overflow-scrolling: auto;
+.vertical-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
 }

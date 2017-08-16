@@ -14,7 +14,7 @@ describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controll
     clean_frontend_fixtures('abuse_reports/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

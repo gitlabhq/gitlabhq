@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Discussion Comments Merge Request', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Charts do
   context "pipeline_times" do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:chart) { Ci::Charts::PipelineTime.new(project) }
 
     subject { chart.pipeline_times }

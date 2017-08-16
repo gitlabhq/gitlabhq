@@ -1,3 +1,6 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('pipelines_charts')
+
 %h4= _("Pipelines charts")
 %p
   &nbsp;
@@ -26,31 +29,8 @@
     = _("Jobs for last year")
   %canvas#yearChart.padded{ height: 250 }
 
-- [:week, :month, :year].each do |scope|
-  :javascript
-    var data = {
-      labels : #{@charts[scope].labels.to_json},
-      datasets : [
-        {
-          fillColor : "#7f8fa4",
-          strokeColor : "#7f8fa4",
-          pointColor : "#7f8fa4",
-          pointStrokeColor : "#EEE",
-          data : #{@charts[scope].total.to_json}
-        },
-        {
-          fillColor : "#44aa22",
-          strokeColor : "#44aa22",
-          pointColor : "#44aa22",
-          pointStrokeColor : "#fff",
-          data : #{@charts[scope].success.to_json}
-        }
-      ]
-    }
-    var ctx = $("##{scope}Chart").get(0).getContext("2d");
-    var options = { scaleOverlay: true, responsive: true, maintainAspectRatio: false };
-    if (window.innerWidth < 768) {
-      // Scale fonts if window width lower than 768px (iPad portrait)
-      options.scaleFontSize = 8
-    }
-    new Chart(ctx).Line(data, options);
+%script#pipelinesChartsData{ type: "application/json" }
+  - chartData = []
+  - [:week, :month, :year].each do |scope|
+    - chartData.push({ 'scope' => scope, 'labels' => @charts[scope].labels, 'totalValues' => @charts[scope].total, 'successValues' => @charts[scope].success })
+  = chartData.to_json.html_safe

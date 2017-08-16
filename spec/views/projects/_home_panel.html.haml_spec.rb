@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'projects/_home_panel' do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
 
   let(:notification_settings) do
     user&.notification_settings_for(project)

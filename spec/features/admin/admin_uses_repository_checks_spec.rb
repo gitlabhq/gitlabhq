@@ -9,7 +9,7 @@ feature 'Admin uses repository checks' do
   end
 
   scenario 'to trigger a single check' do
-    project = create(:empty_project)
+    project = create(:project)
     visit_admin_project_page(project)
 
     page.within('.repository-check') do
@@ -20,7 +20,7 @@ feature 'Admin uses repository checks' do
   end
 
   scenario 'to see a single failed repository check' do
-    project = create(:empty_project)
+    project = create(:project)
     project.update_columns(
       last_repository_check_failed: true,
       last_repository_check_at: Time.now

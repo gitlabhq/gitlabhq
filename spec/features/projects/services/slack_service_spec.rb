@@ -3,7 +3,7 @@ require 'spec_helper'
 feature 'Projects > Slack service > Setup events' do
   let(:user) { create(:user) }
   let(:service) { SlackService.new }
-  let(:project) { create(:empty_project, slack_service: service) }
+  let(:project) { create(:project, slack_service: service) }
 
   background do
     service.fields

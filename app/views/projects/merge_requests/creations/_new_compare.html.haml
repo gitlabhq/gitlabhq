@@ -41,7 +41,7 @@
           - projects = target_projects(@project)
           .merge-request-select.dropdown
             = f.hidden_field :target_project_id
-            = dropdown_toggle f.object.target_project.path_with_namespace, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
+            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", field_name: "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted? }, { toggle_class: "js-compare-dropdown js-target-project" }
             .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
               = dropdown_title("Select target project")
               = dropdown_filter("Search projects")

@@ -7,6 +7,6 @@ FactoryGirl.define do
       protected true
     end
 
-    project factory: :empty_project
+    project
   end
 end

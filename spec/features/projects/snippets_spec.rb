@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Project snippets', :js do
   context 'when the project has snippets' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let!(:snippets) { create_list(:project_snippet, 2, :public, author: project.owner, project: project) }
     let!(:other_snippet) { create(:project_snippet) }
 

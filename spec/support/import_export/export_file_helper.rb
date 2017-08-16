@@ -6,7 +6,7 @@ module ExportFileHelper
   ObjectWithParent = Struct.new(:object, :parent, :key_found)
 
   def setup_project
-    project = create(:project, :public)
+    project = create(:project, :public, :repository)
 
     create(:release, project: project)
 

@@ -1,8 +1,53 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
+/* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+import _ from 'underscore';
 import { isObject } from './lib/utils/type_utility';
 
-var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote;
+var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
+
+GitLabDropdownInput = (function() {
+  function GitLabDropdownInput(input, options) {
+    var $inputContainer, $clearButton;
+    var _this = this;
+    this.input = input;
+    this.options = options;
+    this.fieldName = this.options.fieldName || 'field-name';
+    $inputContainer = this.input.parent();
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear');
+    $clearButton.on('click', (function(_this) {
+      // Clear click
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.input.val('').trigger('input').focus();
+      };
+    })(this));
+
+    this.input
+    .on('keydown', function (e) {
+      var keyCode = e.which;
+      if (keyCode === 13 && !options.elIsInput) {
+        e.preventDefault();
+      }
+    })
+    .on('input', function(e) {
+      var val = e.currentTarget.value || _this.options.inputFieldName;
+      val = val.split(' ').join('-') // replaces space with dash
+        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
+        .replace(/(-)\1+/g, '-'); // replace repeated dashes
+      _this.cb(_this.options.fieldName, val, {}, true);
+      _this.input.closest('.dropdown')
+        .find('.dropdown-toggle-text')
+        .text(val);
+    });
+  }
+
+  GitLabDropdownInput.prototype.onInput = function(cb) {
+    this.cb = cb;
+  };
+
+  return GitLabDropdownInput;
+})();
 
 GitLabDropdownFilter = (function() {
   var ARROW_KEY_CODES, BLUR_KEYCODES, HAS_VALUE_CLASS;
@@ -114,7 +159,7 @@ GitLabDropdownFilter = (function() {
     } else {
       elements = this.options.elements();
       if (search_text) {
-        return elements.each(function() {
+        elements.each(function() {
           var $el, matches;
           $el = $(this);
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
@@ -127,8 +172,10 @@ GitLabDropdownFilter = (function() {
           }
         });
       } else {
-        return elements.show().removeClass('option-hidden');
+        elements.show().removeClass('option-hidden');
       }
+
+      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -188,7 +235,7 @@ GitLabDropdownRemote = (function() {
 })();
 
 GitLabDropdown = (function() {
-  var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
+  var ACTIVE_CLASS, FILTER_INPUT, NO_FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
 
   LOADING_CLASS = "is-loading";
 
@@ -206,7 +253,9 @@ GitLabDropdown = (function() {
 
   CURSOR_SELECT_SCROLL_PADDING = 5;
 
-  FILTER_INPUT = '.dropdown-input .dropdown-input-field';
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field:not(.dropdown-no-filter)';
+
+  NO_FILTER_INPUT = '.dropdown-input .dropdown-input-field.dropdown-no-filter';
 
   function GitLabDropdown(el1, options) {
     var searchFields, selector, self;
@@ -221,6 +270,7 @@ GitLabDropdown = (function() {
     this.dropdown = selector != null ? $(selector) : $(this.el).parent();
     // Set Defaults
     this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
+    this.noFilterInput = this.options.noFilterInput || this.getElement(NO_FILTER_INPUT);
     this.highlight = !!this.options.highlight;
     this.filterInputBlur = this.options.filterInputBlur != null
       ? this.options.filterInputBlur
@@ -258,6 +308,10 @@ GitLabDropdown = (function() {
           instance: this,
         });
       }
+    }
+    if (this.noFilterInput.length) {
+      this.plainInput = new GitLabDropdownInput(this.noFilterInput, this.options);
+      this.plainInput.onInput(this.addInput.bind(this));
     }
     // Init filterable
     if (this.options.filterable) {
@@ -730,10 +784,16 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
     if (this.options.filterable) {
-      $(':focus').blur();
-
       this.dropdown.one('transitionend', () => {
-        this.filterInput.focus();
+        const initialScrollTop = $(window).scrollTop();
+
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
+
+        if ($(window).scrollTop() < initialScrollTop) {
+          $(window).scrollTop(initialScrollTop);
+        }
       });
 
       if (triggerFocus) {
@@ -744,9 +804,13 @@ GitLabDropdown = (function() {
     }
   };
 
-  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
+  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
     var $input;
     // Create hidden input for form
+    if (single) {
+      $('input[name="' + fieldName + '"]').remove();
+    }
+
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
@@ -762,7 +826,7 @@ GitLabDropdown = (function() {
       $input.attr('data-meta', selectedObject[this.options.inputMeta]);
     }
 
-    return this.dropdown.before($input);
+    this.dropdown.before($input).trigger('change');
   };
 
   GitLabDropdown.prototype.selectRowAtIndex = function(index) {

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QuickActions::InterpretService do
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:developer) { create(:user) }
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
@@ -9,13 +9,13 @@ describe QuickActions::InterpretService do
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
+  let(:service) { described_class.new(project, developer) }
 
   before do
     project.team << [developer, :developer]
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(project, developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     shared_examples 'reopen command' do
@@ -270,6 +270,22 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'shrug command' do
+      it 'appends ¯\_(ツ)_/¯ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::SHRUG)
+      end
+    end
+
+    shared_examples 'tableflip command' do
+      it 'appends (╯°□°)╯︵ ┻━┻ to the comment' do
+        new_content, _ = service.execute(content, issuable)
+
+        expect(new_content).to end_with(described_class::TABLEFLIP)
+      end
+    end
+
     it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
@@ -396,6 +412,26 @@ describe QuickActions::InterpretService do
           _, updates = service.execute(content, issue)
 
           expect(updates[:assignee_ids]).to match_array([developer.id])
+        end
+      end
+
+      context 'Merge Request' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, merge_request)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
+        end
+      end
+    end
+
+    context 'assign command with me alias' do
+      let(:content) { "/assign me" }
+
+      context 'Issue' do
+        it 'fetches assignee and populates assignee_ids if content contains /assign' do
+          _, updates = service.execute(content, issue)
+
+          expect(updates).to eq(assignee_ids: [developer.id])
         end
       end
 
@@ -667,7 +703,7 @@ describe QuickActions::InterpretService do
 
       context 'cross project references' do
         it_behaves_like 'duplicate command' do
-          let(:other_project) { create(:empty_project, :public) }
+          let(:other_project) { create(:project, :public) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
           let(:issuable) { issue }
@@ -679,7 +715,7 @@ describe QuickActions::InterpretService do
         end
 
         it_behaves_like 'empty command' do
-          let(:other_project) { create(:empty_project, :private) }
+          let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
           let(:content) { "/duplicate #{issue_duplicate.to_reference(project)}" }
@@ -772,6 +808,30 @@ describe QuickActions::InterpretService do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
         end
+      end
+    end
+
+    context '/shrug command' do
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug people are people' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'shrug command' do
+        let(:content) { '/shrug' }
+        let(:issuable) { issue }
+      end
+    end
+
+    context '/tableflip command' do
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip curse your sudden but enviable betrayal' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'tableflip command' do
+        let(:content) { '/tableflip' }
+        let(:issuable) { issue }
       end
     end
 

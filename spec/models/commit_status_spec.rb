@@ -425,7 +425,7 @@ describe CommitStatus do
       end
 
       it "raise exception when trying to update" do
-        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+        expect { commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
       end
     end
 

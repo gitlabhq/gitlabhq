@@ -210,11 +210,11 @@ describe MarkupHelper do
 
   describe '#cross_project_reference' do
     it 'shows the full MR reference' do
-      expect(helper.cross_project_reference(project, merge_request)).to include(project.path_with_namespace)
+      expect(helper.cross_project_reference(project, merge_request)).to include(project.full_path)
     end
 
     it 'shows the full issue reference' do
-      expect(helper.cross_project_reference(project, issue)).to include(project.path_with_namespace)
+      expect(helper.cross_project_reference(project, issue)).to include(project.full_path)
     end
   end
 end

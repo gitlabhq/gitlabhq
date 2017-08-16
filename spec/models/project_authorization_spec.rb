@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe ProjectAuthorization do
   let(:user) { create(:user) }
-  let(:project1) { create(:empty_project) }
-  let(:project2) { create(:empty_project) }
+  let(:project1) { create(:project) }
+  let(:project2) { create(:project) }
 
   describe '.insert_authorizations' do
     it 'inserts the authorizations' do

@@ -4,7 +4,7 @@ feature 'Dashboard Issues filtering', :js do
   include SortingHelper
 
   let(:user)      { create(:user) }
-  let(:project)   { create(:empty_project) }
+  let(:project)   { create(:project) }
   let(:milestone) { create(:milestone, project: project) }
 
   let!(:issue)  { create(:issue, project: project, author: user, assignees: [user]) }

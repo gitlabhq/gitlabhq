@@ -57,7 +57,7 @@ describe Member do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:empty_project, :public, :access_requestable)
+      project = create(:project, :public, :access_requestable)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
@@ -516,7 +516,7 @@ describe Member do
 
   describe "destroying a record", truncate: true do
     it "refreshes user's authorized projects" do
-      project = create(:empty_project, :private)
+      project = create(:project, :private)
       user    = create(:user)
       member  = project.team << [user, :reporter]
 

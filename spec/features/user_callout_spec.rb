@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User Callouts', js: true do
   let(:user) { create(:user) }
   let(:another_user) { create(:user) }
-  let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, path: 'gitlab', name: 'sample') }
 
   before do
     sign_in(user)

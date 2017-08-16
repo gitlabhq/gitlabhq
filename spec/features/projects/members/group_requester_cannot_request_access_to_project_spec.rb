@@ -4,7 +4,7 @@ feature 'Projects > Members > Group requester cannot request access to project',
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public, :access_requestable) }
-  let(:project) { create(:empty_project, :public, :access_requestable, namespace: group) }
+  let(:project) { create(:project, :public, :access_requestable, namespace: group) }
 
   background do
     group.add_owner(owner)

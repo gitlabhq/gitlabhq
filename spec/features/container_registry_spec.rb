@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "Container Registry" do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:container_repository) do
     create(:container_repository, name: 'my/image')

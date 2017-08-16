@@ -15,7 +15,7 @@ describe Event do
   end
 
   describe 'Callbacks' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     describe 'after_create :reset_project_activity' do
       it 'calls the reset_project_activity method' do
@@ -53,7 +53,7 @@ describe Event do
   end
 
   describe "Push event" do
-    let(:project) { create(:empty_project, :private) }
+    let(:project) { create(:project, :private) }
     let(:user) { project.owner }
     let(:event) { create_push_event(project, user) }
 
@@ -111,7 +111,7 @@ describe Event do
   end
 
   describe '#visible_to_user?' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:non_member) { create(:user) }
     let(:member) { create(:user) }
     let(:guest) { create(:user) }
@@ -143,7 +143,7 @@ describe Event do
       end
 
       context 'private project' do
-        let(:project) { create(:empty_project, :private) }
+        let(:project) { create(:project, :private) }
 
         it do
           aggregate_failures do
@@ -213,7 +213,7 @@ describe Event do
     end
 
     context 'merge request diff note event' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:merge_request) { create(:merge_request, source_project: project, author: author, assignee: assignee) }
       let(:note_on_merge_request) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project) }
       let(:target) { note_on_merge_request }
@@ -228,7 +228,7 @@ describe Event do
       end
 
       context 'private project' do
-        let(:project) { create(:empty_project, :private) }
+        let(:project) { create(:project, :private) }
 
         it do
           expect(event.visible_to_user?(non_member)).to eq false
@@ -260,7 +260,7 @@ describe Event do
   end
 
   describe '#reset_project_activity' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
@@ -304,27 +304,15 @@ describe Event do
     end
   end
 
-  def create_push_event(project, user, attrs = {})
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/master",
-      user_id: user.id,
-      user_name: user.name,
-      repository: {
-        name: project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
+  def create_push_event(project, user)
+    event = create(:push_event, project: project, author: user)
 
-    described_class.create({
-      project: project,
-      action: described_class::PUSHED,
-      data: data,
-      author_id: user.id
-    }.merge!(attrs))
+    create(:push_event_payload,
+           event: event,
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 0,
+           ref: 'master')
+
+    event
   end
 end

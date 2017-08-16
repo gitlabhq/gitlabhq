@@ -4,7 +4,7 @@ describe 'Reportable note on commit', :js do
   include RepoHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.add_master(user)

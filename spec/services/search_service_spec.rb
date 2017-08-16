@@ -7,13 +7,13 @@ describe SearchService do
   let(:inaccessible_group) { create(:group, :private) }
   let!(:group_member) { create(:group_member, group: accessible_group, user: user) }
 
-  let!(:accessible_project) { create(:empty_project, :private, name: 'accessible_project') }
-  let!(:inaccessible_project) { create(:empty_project, :private, name: 'inaccessible_project') }
+  let!(:accessible_project) { create(:project, :private, name: 'accessible_project') }
+  let!(:inaccessible_project) { create(:project, :private, name: 'inaccessible_project') }
   let(:note) { create(:note_on_issue, project: accessible_project) }
 
   let(:snippet) { create(:snippet, author: user) }
-  let(:group_project) { create(:empty_project, group: accessible_group, name: 'group_project') }
-  let(:public_project) { create(:empty_project, :public, name: 'public_project') }
+  let(:group_project) { create(:project, group: accessible_group, name: 'group_project') }
+  let(:public_project) { create(:project, :public, name: 'public_project') }
 
   before do
     accessible_project.add_master(user)
@@ -28,7 +28,7 @@ describe SearchService do
       end
 
       it 'returns the project for guests' do
-        search_project = create :empty_project
+        search_project = create :project
         search_project.add_guest(user)
 
         project = described_class.new(user, project_id: search_project.id).project

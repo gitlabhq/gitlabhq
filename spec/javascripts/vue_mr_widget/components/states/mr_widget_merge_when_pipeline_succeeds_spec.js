@@ -162,10 +162,10 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
     it('should have correct elements', () => {
       expect(el.classList.contains('mr-widget-body')).toBeTruthy();
-      expect(el.innerText).toContain('to be merged automatically when the pipeline succeeds.');
+      expect(el.innerText).toContain('to be merged automatically when the pipeline succeeds');
       expect(el.innerText).toContain('The changes will be merged into');
       expect(el.innerText).toContain(targetBranch);
-      expect(el.innerText).toContain('The source branch will not be removed.');
+      expect(el.innerText).toContain('The source branch will not be removed');
       expect(el.querySelector('.js-cancel-auto-merge').innerText).toContain('Cancel automatic merge');
       expect(el.querySelector('.js-cancel-auto-merge').getAttribute('disabled')).toBeFalsy();
       expect(el.querySelector('.js-remove-source-branch').innerText).toContain('Remove source branch');
@@ -186,8 +186,8 @@ describe('MRWidgetMergeWhenPipelineSucceeds', () => {
 
       Vue.nextTick(() => {
         const normalizedText = el.innerText.replace(/\s+/g, ' ');
-        expect(normalizedText).toContain('The source branch will be removed.');
-        expect(normalizedText).not.toContain('The source branch will not be removed.');
+        expect(normalizedText).toContain('The source branch will be removed');
+        expect(normalizedText).not.toContain('The source branch will not be removed');
         done();
       });
     });

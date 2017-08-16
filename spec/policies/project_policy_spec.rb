@@ -7,7 +7,7 @@ describe ProjectPolicy do
   let(:master) { create(:user) }
   let(:owner) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:empty_project, :public, namespace: owner.namespace) }
+  let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   let(:guest_permissions) do
     %i[
@@ -82,7 +82,7 @@ describe ProjectPolicy do
   end
 
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
-    project = create(:empty_project, :private)
+    project = create(:project, :private)
     issue   = create(:issue, project: project)
     user    = issue.author
 
@@ -129,7 +129,7 @@ describe ProjectPolicy do
 
   context 'when a project has pending invites, and the current user is anonymous' do
     let(:group) { create(:group, :public) }
-    let(:project) { create(:empty_project, :public, namespace: group) }
+    let(:project) { create(:project, :public, namespace: group) }
     let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
     let(:anonymous_permissions) { guest_permissions - user_permissions }
 
@@ -146,7 +146,7 @@ describe ProjectPolicy do
   end
 
   context 'abilities for non-public projects' do
-    let(:project) { create(:empty_project, namespace: owner.namespace) }
+    let(:project) { create(:project, namespace: owner.namespace) }
 
     subject { described_class.new(current_user, project) }
 
