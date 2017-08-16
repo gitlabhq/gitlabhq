@@ -132,14 +132,14 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.before(:example, :migration) do
+  config.before(:context, :migration) do |example|
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
 
     reset_column_in_migration_models
   end
 
-  config.after(:example, :migration) do
+  config.after(:context, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
 
     reset_column_in_migration_models

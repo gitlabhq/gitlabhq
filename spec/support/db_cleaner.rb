@@ -19,7 +19,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
   end
 
-  config.before(:each, :migration) do
+  config.before(:context, :migration) do
     DatabaseCleaner.strategy = :truncation
   end
 
