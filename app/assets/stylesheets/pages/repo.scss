@@ -133,6 +133,7 @@
           text-align: center;
           vertical-align: middle;
           text-decoration: none;
+          margin-right: 1px;
 
           &.close {
             width: auto;
@@ -147,7 +148,10 @@
           float: right;
           margin-top: 3px;
           margin-left: 15px;
-          color: $gray-darkest;
+          color: $dropdown-title-btn-color;
+          &:hover {
+            color: darken($dropdown-title-btn-color, 15%);
+          }
         }
 
         .unsaved-icon {
