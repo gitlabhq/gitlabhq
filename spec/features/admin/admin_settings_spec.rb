@@ -97,7 +97,7 @@ feature 'Admin updates settings' do
   context 'sign-in restrictions', :js do
     it 'de-activates oauth sign-in source' do
       find('.btn', text: 'GitLab.com').click
-      
+
       expect(find('.btn', text: 'GitLab.com')).not_to have_css('.active')
     end
   end

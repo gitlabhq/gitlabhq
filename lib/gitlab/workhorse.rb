@@ -127,7 +127,7 @@ module Gitlab
 
       def send_artifacts_entry(build, entry)
         file = build.artifacts_file
-        archive = 
+        archive =
           if file.file_storage?
             file.path
           else

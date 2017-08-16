@@ -171,7 +171,7 @@ feature 'Project mirror', js: true do
           click_without_sidekiq 'Save changes'
 
           expect(page).to have_content(key.fingerprint)
-          expect(page).to have_content("Verified by #{h(user.name)} less than a minute ago") 
+          expect(page).to have_content("Verified by #{h(user.name)} less than a minute ago")
         end
       end
     end

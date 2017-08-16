@@ -252,6 +252,10 @@ Layout/Tab:
 Layout/TrailingBlankLines:
   Enabled: true
 
+# Avoid trailing whitespace.
+Layout/TrailingWhitespace:
+  Enabled: true
+
 # Style #######################################################################
 
 # Check the naming of accessor methods for get_/set_.

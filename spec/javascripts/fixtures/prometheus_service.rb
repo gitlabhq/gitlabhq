@@ -7,7 +7,7 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project)   { create(:project_empty_repo, namespace: namespace, path: 'services-project') }
   let!(:service)  { create(:prometheus_service, project: project) }
-  
+
   render_views
 
   before(:all) do

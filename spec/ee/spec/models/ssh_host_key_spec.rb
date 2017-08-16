@@ -55,7 +55,7 @@ describe SshHostKey do
       expected = [key1, key2]
         .map { |data| Gitlab::KeyFingerprint.new(data) }
         .each_with_index
-        .map { |key, i| { bits: key.bits, fingerprint: key.fingerprint, type: key.type, index: i } } 
+        .map { |key, i| { bits: key.bits, fingerprint: key.fingerprint, type: key.type, index: i } }
 
       expect(ssh_host_key.fingerprints.as_json).to eq(expected)
     end
