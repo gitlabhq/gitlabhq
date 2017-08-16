@@ -61,7 +61,7 @@ module API
         service_args = [user_project, current_user, protected_branch_params]
 
         protected_branch = ::ProtectedBranches::CreateService.new(*service_args).execute
-        
+
         if protected_branch.persisted?
           present protected_branch, with: Entities::ProtectedBranch, project: user_project
         else

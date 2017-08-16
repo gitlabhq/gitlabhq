@@ -14,7 +14,7 @@ class RedirectRoute < ActiveRecord::Base
              else
                'redirect_routes.path = ? OR redirect_routes.path LIKE ?'
              end
-             
+
     where(wheres, path, "#{sanitize_sql_like(path)}/%")
   end
 end

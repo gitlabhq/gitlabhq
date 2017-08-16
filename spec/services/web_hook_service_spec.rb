@@ -144,7 +144,7 @@ describe WebHookService do
 
   describe '#async_execute' do
     let(:system_hook) { create(:system_hook) }
-    
+
     it 'enqueue WebHookWorker' do
       expect(Sidekiq::Client).to receive(:enqueue).with(WebHookWorker, project_hook.id, data, 'push_hooks')
 
