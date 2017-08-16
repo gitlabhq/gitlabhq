@@ -151,7 +151,7 @@
   outline: none;
 
   &.open {
-    background: $gray-light;
+    background-color: darken($gray-light, 10%);
     box-shadow: inset 0 0 2px rgba($black, 0.2);
   }
 

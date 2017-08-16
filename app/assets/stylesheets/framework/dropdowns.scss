@@ -782,3 +782,7 @@
     margin-top: 2px;
   }
 }
+
+.breadcrumbs-list {
+  @include new-style-dropdown;
+}

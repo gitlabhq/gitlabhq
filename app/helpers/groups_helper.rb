@@ -16,11 +16,19 @@ module GroupsHelper
     full_title = ''
 
     group.ancestors.reverse.each_with_index do |parent, index|
-      full_title += if show_new_nav?
-                      breadcrumb_list_item group_title_link(parent, hidable: index > 0)
-                    else
-                      group_title_link(parent, hidable: true)
-                    end
+      if show_new_nav? && index > 0
+        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false), location: :before)
+      else
+        full_title += if show_new_nav?
+                        breadcrumb_list_item group_title_link(parent, hidable: false)
+                      else
+                        group_title_link(parent, hidable: true)
+                      end
+      end
+    end
+
+    if show_new_nav?
+      full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
     end
 
     full_title += if show_new_nav?
@@ -78,7 +86,7 @@ module GroupsHelper
   def group_title_link(group, hidable: false)
     link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
       output =
-        if show_new_nav?
+        if show_new_nav? && group.try(:avatar_url)
           image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
         else
           ""

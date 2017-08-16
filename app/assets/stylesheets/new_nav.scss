@@ -315,19 +315,11 @@ header.navbar-gitlab-new {
     border: 1px solid $border-color;
     border-radius: 50%;
     vertical-align: sub;
-
-    &.identicon {
-      float: left;
-      width: 16px;
-      height: 16px;
-      margin-top: 2px;
-      font-size: 10px;
-    }
   }
 
   .text-expander {
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 0;
+    margin-right: 2px;
 
     > i {
       position: relative;
@@ -352,11 +344,11 @@ header.navbar-gitlab-new {
     &:not(:first-child) {
       margin-left: 10px;
     }
-  }
 
-  a {
-    @include str-truncated(128px);
-    color: currentColor;
+    > a {
+      @include str-truncated(128px);
+      color: currentColor;
+    }
   }
 }
 

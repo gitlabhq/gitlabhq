@@ -10,14 +10,13 @@
     .breadcrumbs-links.js-title-container
       %ul.list-unstyled.breadcrumbs-list
         - unless hide_top_links
-          - if content_for?(:header_title_before)
-            %li= yield :header_title_before
           = header_title
-          - if @breadcrumbs_extra_links
-            - @breadcrumbs_extra_links.each do |extra|
-              %li= link_to extra[:text], extra[:link]
+        - if @breadcrumbs_extra_links
+          - @breadcrumbs_extra_links.each do |extra|
+            = breadcrumb_list_item link_to(extra[:text], extra[:link])
+        = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
         %li
-          %h2.breadcrumbs-sub-title= link_to @breadcrumb_title, breadcrumb_link
+          %h2.breadcrumbs-sub-title= @breadcrumb_title
     - if content_for?(:breadcrumbs_extra)
       .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
     = yield :header_content

@@ -142,6 +142,7 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
+import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
 
@@ -178,6 +179,8 @@ $(function () {
   var $flash = $('.flash-container');
   var bootstrapBreakpoint = bp.getBreakpointSize();
   var fitSidebarForSize;
+
+  initBreadcrumbs();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
