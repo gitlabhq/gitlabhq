@@ -43,6 +43,7 @@ Naming/FileName:
     - 'config/**/*'
     - 'lib/generators/**/*'
     - 'ee/lib/generators/**/*'
+    - 'app/graphql/**/*'
   IgnoreExecutableScripts: true
   AllowedAcronyms:
     - EE
