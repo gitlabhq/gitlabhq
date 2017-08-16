@@ -1,5 +1,9 @@
 # How to create a project in GitLab
 
+>**Notes:**
+- For a list of words that are not allowed to be used as project names see the
+  [reserved names][reserved].
+
 1. In your dashboard, click the green **New project** button or use the plus
    icon in the upper right corner of the navigation bar.
 
@@ -26,3 +30,4 @@
 1. Click **Create project**.
 
 [import it]: ../workflow/importing/README.md
+[reserved]:  ../user/reserved_names.md
