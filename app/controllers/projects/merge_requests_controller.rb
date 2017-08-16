@@ -67,11 +67,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
-        if @merge_request.locked_long_ago?
-          @merge_request.unlock_mr
-          @merge_request.close
-        end
-
         labels
 
         set_pipeline_variables
@@ -223,8 +218,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
             if can?(current_user, :read_environment, environment) && environment.has_metrics?
               metrics_project_environment_deployment_path(environment.project, environment, deployment)
             end
-          
-          metrics_monitoring_url = 
+
+          metrics_monitoring_url =
             if can?(current_user, :read_environment, environment)
               environment_metrics_path(environment)
             end

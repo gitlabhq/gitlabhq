@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Boards::Issues::CreateService, services: true do
+describe Boards::Issues::CreateService do
   describe '#execute' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:board)   { create(:board, project: project) }
     let(:user)    { create(:user) }
     let(:label)   { create(:label, project: project, name: 'in-progress') }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::StopEnvironmentsService, services: true do
+describe Ci::StopEnvironmentsService do
   let(:project) { create(:project, :private, :repository) }
   let(:user) { create(:user) }
 

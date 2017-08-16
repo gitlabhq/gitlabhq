@@ -77,6 +77,15 @@ describe('AjaxCache', () => {
     });
   });
 
+  describe('override', () => {
+    it('overrides existing cache', () => {
+      AjaxCache.internalStorage.endpoint = 'existing-endpoint';
+      AjaxCache.override('endpoint', 'new-endpoint');
+
+      expect(AjaxCache.internalStorage.endpoint).toEqual('new-endpoint');
+    });
+  });
+
   describe('retrieve', () => {
     let ajaxSpy;
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-describe SystemCheck::SimpleExecutor, lib: true do
+describe SystemCheck::SimpleExecutor do
   class SimpleCheck < SystemCheck::BaseCheck
     set_name 'my simple check'
 
@@ -240,7 +240,7 @@ describe SystemCheck::SimpleExecutor, lib: true do
 
     context 'when there is an exception' do
       it 'rescues the exception' do
-        expect{ subject.run_check(BugousCheck) }.not_to raise_exception
+        expect { subject.run_check(BugousCheck) }.not_to raise_exception
       end
     end
   end

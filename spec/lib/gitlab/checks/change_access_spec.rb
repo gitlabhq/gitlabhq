@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Checks::ChangeAccess, lib: true do
+describe Gitlab::Checks::ChangeAccess do
   describe '#exec' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }

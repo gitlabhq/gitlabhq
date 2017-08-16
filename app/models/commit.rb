@@ -55,7 +55,8 @@ class Commit
     end
 
     def from_hash(hash, project)
-      new(Gitlab::Git::Commit.new(hash), project)
+      raw_commit = Gitlab::Git::Commit.new(project.repository.raw, hash)
+      new(raw_commit, project)
     end
 
     def valid_hash?(key)
@@ -199,7 +200,7 @@ class Commit
   end
 
   def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)
@@ -233,6 +234,14 @@ class Commit
 
     @statuses[ref] = pipelines.latest_status(ref)
   end
+
+  def signature
+    return @signature if defined?(@signature)
+
+    @signature = gpg_commit.signature
+  end
+
+  delegate :has_signature?, to: :gpg_commit
 
   def revert_branch_name
     "revert-#{short_id}"
@@ -312,21 +321,11 @@ class Commit
   end
 
   def raw_diffs(*args)
-    if Gitlab::GitalyClient.feature_enabled?(:commit_raw_diffs)
-      Gitlab::GitalyClient::CommitService.new(project.repository).diff_from_parent(self, *args)
-    else
-      raw.diffs(*args)
-    end
+    raw.diffs(*args)
   end
 
   def raw_deltas
-    @deltas ||= Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
-      if is_enabled
-        Gitlab::GitalyClient::CommitService.new(project.repository).commit_deltas(self)
-      else
-        raw.deltas
-      end
-    end
+    @deltas ||= raw.deltas
   end
 
   def diffs(diff_options = nil)
@@ -383,11 +382,16 @@ class Commit
     MergeRequestsFinder.new(user, project_id: project.id).find_by(merge_commit_sha: id) if merge_commit?
   end
 
+<<<<<<< HEAD
   # This method is called by ActiveRecord when you "touch" the child object
   # As Rails 5 got smarter about touching parents we need to have this placeholder.
   # As Commit class represents a "virtual" object and it never persists in database
   # we don't have to do anything here.
   # see https://github.com/rails/rails/commit/e7c48db509f1b712c2a72a3ff7f27e3e8b7b4868
   def touch_later(*names)
+=======
+  def gpg_commit
+    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   end
 end

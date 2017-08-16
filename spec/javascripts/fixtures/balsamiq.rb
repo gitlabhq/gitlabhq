@@ -4,7 +4,7 @@ describe 'Balsamiq file', '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project) { create(:project, namespace: namespace, path: 'balsamiq-project') }
+  let(:project) { create(:project, :repository, namespace: namespace, path: 'balsamiq-project') }
 
   before(:all) do
     clean_frontend_fixtures('blob/balsamiq/')

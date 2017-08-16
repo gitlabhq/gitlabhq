@@ -241,6 +241,7 @@ class ApplicationSetting < ApplicationRecord
       performance_bar_allowed_group_id: nil,
       plantuml_enabled: false,
       plantuml_url: nil,
+      project_export_enabled: true,
       recaptcha_enabled: false,
       repository_checks_enabled: true,
       repository_storages: ['default'],
@@ -315,7 +316,9 @@ class ApplicationSetting < ApplicationRecord
     Array(read_attribute(:repository_storages))
   end
 
+  # DEPRECATED
   # repository_storage is still required in the API. Remove in 9.0
+  # Still used in API v3
   def repository_storage
     repository_storages.first
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'admin deploy keys', type: :feature do
+RSpec.describe 'admin deploy keys' do
   let!(:deploy_key) { create(:deploy_key, public: true) }
   let!(:another_deploy_key) { create(:another_deploy_key, public: true) }
 

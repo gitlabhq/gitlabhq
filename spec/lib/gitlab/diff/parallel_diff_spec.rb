@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::ParallelDiff, lib: true do
+describe Gitlab::Diff::ParallelDiff do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

@@ -23,7 +23,7 @@ describe VersionCheckHelper do
       end
 
       it 'should have a js prefixed css class' do
-        expect(@image_tag).to match(/class="js-version-status-badge"/)
+        expect(@image_tag).to match(/class="js-version-status-badge lazy"/)
       end
 
       it 'should have a VersionCheck url as the src' do

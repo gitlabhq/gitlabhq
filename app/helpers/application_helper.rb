@@ -264,7 +264,11 @@ module ApplicationHelper
   end
 
   def page_class
-    "issue-boards-page" if current_controller?(:boards)
+    class_names = []
+    class_names << 'issue-boards-page' if current_controller?(:boards)
+    class_names << 'with-performance-bar' if performance_bar_enabled?
+
+    class_names
   end
 
   # Returns active css class when condition returns true
@@ -300,5 +304,13 @@ module ApplicationHelper
 
   def show_new_nav?
     cookies["new_nav"] == "true"
+  end
+
+  def collapsed_sidebar?
+    cookies["sidebar_collapsed"] == "true"
+  end
+
+  def show_new_repo?
+    cookies["new_repo"] == "true" && body_data_page != 'projects:show'
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::FileFinder, lib: true do
+describe Gitlab::FileFinder do
   describe '#find' do
     let(:project) { create(:project, :public, :repository) }
     let(:finder) { described_class.new(project, project.default_branch) }

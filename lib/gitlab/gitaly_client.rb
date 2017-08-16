@@ -55,7 +55,7 @@ module Gitlab
     def self.call(storage, service, rpc, request)
       metadata = request_metadata(storage)
       metadata = yield(metadata) if block_given?
-      stub(service, storage).send(rpc, request, metadata)
+      stub(service, storage).__send__(rpc, request, metadata) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.request_metadata(storage)
@@ -99,6 +99,10 @@ module Gitlab
     def self.expected_server_version
       path = Rails.root.join(SERVER_VERSION_FILE)
       path.read.chomp
+    end
+
+    def self.encode(s)
+      s.dup.force_encoding(Encoding::ASCII_8BIT)
     end
   end
 end

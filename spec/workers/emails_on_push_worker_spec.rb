@@ -1,8 +1,7 @@
 require 'spec_helper'
 
-describe EmailsOnPushWorker do
+describe EmailsOnPushWorker, :mailer do
   include RepoHelpers
-  include EmailHelpers
   include EmailSpec::Matchers
 
   let(:project) { create(:project, :repository) }
@@ -90,7 +89,6 @@ describe EmailsOnPushWorker do
 
     context "when there is an SMTP error" do
       before do
-        reset_delivered_emails!
         allow(Notify).to receive(:repository_push_email).and_raise(Net::SMTPFatalError)
         allow(subject).to receive_message_chain(:logger, :info)
         perform
@@ -114,8 +112,6 @@ describe EmailsOnPushWorker do
         allow_any_instance_of(Mail::TestMailer).to receive(:deliver!).and_wrap_original do |original, mail|
           original.call(Mail.new(mail.encoded))
         end
-
-        reset_delivered_emails!
       end
 
       it "sends the mail to each of the recipients" do

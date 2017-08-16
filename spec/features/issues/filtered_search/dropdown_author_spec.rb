@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
@@ -121,16 +121,20 @@ describe 'Dropdown author', js: true, feature: true do
     it 'fills in the author username when the author has not been filtered' do
       click_author(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user_jacob.username}" }])
+      expect_tokens([author_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_tokens([author_token(user.name)])
       expect_filtered_search_input_empty
     end
   end
@@ -149,7 +153,7 @@ describe 'Dropdown author', js: true, feature: true do
       find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: user.username }])
+      expect_tokens([author_token(user.username)])
       expect_filtered_search_input_empty
     end
   end

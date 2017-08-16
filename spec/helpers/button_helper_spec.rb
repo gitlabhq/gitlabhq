@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ButtonHelper do
   describe 'http_clone_button' do
     let(:user) { create(:user) }
-    let(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
     let(:has_tooltip_class) { 'has-tooltip' }
 
     def element

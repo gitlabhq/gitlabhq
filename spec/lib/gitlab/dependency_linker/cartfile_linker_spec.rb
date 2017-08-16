@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Gitlab::DependencyLinker::CartfileLinker, lib: true do
+describe Gitlab::DependencyLinker::CartfileLinker do
   describe '.support?' do
     it 'supports Cartfile' do
       expect(described_class.support?('Cartfile')).to be_truthy

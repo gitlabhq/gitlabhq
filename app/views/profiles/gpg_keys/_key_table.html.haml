@@ -1,0 +1,11 @@
+- is_admin = local_assigns.fetch(:admin, false)
+
+- if @gpg_keys.any?
+  %ul.well-list
+    = render partial: 'profiles/gpg_keys/key', collection: @gpg_keys, locals: { is_admin: is_admin }
+- else
+  %p.settings-message.text-center
+    - if is_admin
+      There are no GPG keys associated with this account.
+    - else
+      There are no GPG keys with access to your account.

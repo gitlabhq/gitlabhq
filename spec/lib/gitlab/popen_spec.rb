@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Gitlab::Popen', lib: true, no_db: true do
+describe 'Gitlab::Popen' do
   let(:path) { Rails.root.join('tmp').to_s }
 
   before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::AssignIssuesService, services: true do
+describe MergeRequests::AssignIssuesService do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project) }

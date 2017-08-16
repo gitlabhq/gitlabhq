@@ -1,7 +1,21 @@
 require 'spec_helper'
 
-describe Gitlab::Utils, lib: true do
-  delegate :to_boolean, :boolean_to_yes_no, to: :described_class
+describe Gitlab::Utils do
+  delegate :to_boolean, :boolean_to_yes_no, :slugify, to: :described_class
+
+  describe '.slugify' do
+    {
+      'TEST' => 'test',
+      'project_with_underscores' => 'project-with-underscores',
+      'namespace/project' =>  'namespace-project',
+      'a' * 70 => 'a' * 63,
+      'test_trailing_' => 'test-trailing'
+    }.each do |original, expected|
+      it "slugifies #{original} to #{expected}" do
+        expect(slugify(original)).to eq(expected)
+      end
+    end
+  end
 
   describe '.to_boolean' do
     it 'accepts booleans' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Only allow merge requests to be merged if the pipeline succeeds', feature: true, js: true do
+feature 'Only allow merge requests to be merged if the pipeline succeeds', js: true do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 
@@ -43,7 +43,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
           wait_for_requests
 
           expect(page).to have_button 'Merge when pipeline succeeds'
-          expect(page).not_to have_button 'Select merge moment'
+          expect(page).not_to have_button '.js-merge-moment'
         end
       end
 
@@ -56,7 +56,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
           wait_for_requests
 
           expect(page).to have_css('button[disabled="disabled"]', text: 'Merge')
-          expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
+          expect(page).to have_content('Please retry the job or push a new commit to fix the failure')
         end
       end
 
@@ -69,7 +69,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
           wait_for_requests
 
           expect(page).not_to have_button 'Merge'
-          expect(page).to have_content('Please retry the job or push a new commit to fix the failure.')
+          expect(page).to have_content('Please retry the job or push a new commit to fix the failure')
         end
       end
 
@@ -113,7 +113,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', featu
 
           expect(page).to have_button 'Merge when pipeline succeeds'
 
-          click_button 'Select merge moment'
+          page.find('.js-merge-moment').click
           expect(page).to have_content 'Merge immediately'
         end
       end

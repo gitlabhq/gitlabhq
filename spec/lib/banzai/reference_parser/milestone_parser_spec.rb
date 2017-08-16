@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Banzai::ReferenceParser::MilestoneParser, lib: true do
+describe Banzai::ReferenceParser::MilestoneParser do
   include ReferenceParserHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   subject { described_class.new(project, user) }

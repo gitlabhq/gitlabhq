@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Login', feature: true do
+feature 'Login' do
   describe 'initial login after setup' do
     it 'allows the initial admin to create a password' do
       # This behavior is dependent on there only being one user

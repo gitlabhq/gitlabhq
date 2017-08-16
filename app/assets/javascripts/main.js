@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global bp */
 /* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
@@ -7,7 +6,6 @@
 import jQuery from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
@@ -16,14 +14,10 @@ import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
 
-// extensions
-import './extensions/array';
-
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
@@ -35,9 +29,6 @@ import './shortcuts_navigation';
 import './shortcuts_find_file';
 import './shortcuts_issuable';
 import './shortcuts_network';
-
-// behaviors
-import './behaviors/';
 
 // templates
 import './templates/issuable_template_selector';
@@ -56,6 +47,9 @@ import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
 import './lib/utils/url_utility';
 
+// behaviors
+import './behaviors/';
+
 // u2f
 import './u2f/authenticate';
 import './u2f/error';
@@ -71,7 +65,7 @@ import './api';
 import './aside';
 import './autosave';
 import loadAwardsHandler from './awards_handler';
-import './breakpoints';
+import bp from './breakpoints';
 import './broadcast_message';
 import './build';
 import './build_artifacts';
@@ -86,7 +80,6 @@ import './copy_as_gfm';
 import './copy_to_clipboard';
 import './create_label';
 import './diff';
-import './dispatcher';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
@@ -139,26 +132,31 @@ import './project_select';
 import './project_show';
 import './project_variables';
 import './projects_list';
-import './render_gfm';
+import './syntax_highlight';
 import './render_math';
+import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './snippets_list';
 import './star';
 import './subscription';
 import './subscription_select';
-import './syntax_highlight';
+
+import './dispatcher';
 
 // eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+
+Dropzone.autoDiscover = false;
 
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -246,6 +244,11 @@ $(function () {
     placement: function (tip, el) {
       return $(el).data('placement') || 'bottom';
     }
+  });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
@@ -347,4 +350,14 @@ $(function () {
   gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

@@ -52,10 +52,10 @@ const createComponent = () => {
 };
 
 const messages = {
-  loadingMetrics: 'Loading deployment statistics.',
+  loadingMetrics: 'Loading deployment statistics',
   hasMetrics: 'Memory usage unchanged from 0MB to 0MB',
-  loadFailed: 'Failed to load deployment statistics.',
-  metricsUnavailable: 'Deployment statistics are not available currently.',
+  loadFailed: 'Failed to load deployment statistics',
+  metricsUnavailable: 'Deployment statistics are not available currently',
 };
 
 describe('MemoryUsage', () => {

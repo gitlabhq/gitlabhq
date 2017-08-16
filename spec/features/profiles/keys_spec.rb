@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > SSH Keys', feature: true do
+feature 'Profile > SSH Keys' do
   let(:user) { create(:user) }
 
   before do

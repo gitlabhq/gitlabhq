@@ -154,8 +154,13 @@ describe Issuable do
     end
   end
 
+<<<<<<< HEAD
   describe "#sort_by_attr" do
     let(:project) { create(:empty_project) }
+=======
+  describe "#sort" do
+    let(:project) { create(:project) }
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
 
     context "by milestone due date" do
       # Correct order is:
@@ -296,11 +301,11 @@ describe Issuable do
   end
 
   describe '#labels_array' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
-    before(:each) do
+    before do
       issue.labels << bug
     end
 
@@ -310,7 +315,7 @@ describe Issuable do
   end
 
   describe '#user_notes_count' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issue1) { create(:issue, project: project) }
     let(:issue2) { create(:issue, project: project) }
 
@@ -340,7 +345,7 @@ describe Issuable do
   end
 
   describe '.order_due_date_and_labels_priority' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     def create_issue(milestone, labels)
       create(:labeled_issue, milestone: milestone, labels: labels, project: project)
@@ -394,7 +399,7 @@ describe Issuable do
   end
 
   describe ".with_label" do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:bug) { create(:label, project: project, title: 'bug') }
     let(:feature) { create(:label, project: project, title: 'feature') }
     let(:enhancement) { create(:label, project: project, title: 'enhancement') }
@@ -402,7 +407,7 @@ describe Issuable do
     let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
     let(:issue3) { create(:issue, title: "Feature1", project: project) }
 
-    before(:each) do
+    before do
       issue1.labels << bug
       issue1.labels << feature
       issue2.labels << bug

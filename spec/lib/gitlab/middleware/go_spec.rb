@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::Go, lib: true do
+describe Gitlab::Middleware::Go do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
 

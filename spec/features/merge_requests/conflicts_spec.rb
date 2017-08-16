@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Merge request conflict resolution', js: true, feature: true do
+feature 'Merge request conflict resolution', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     # In order to have the diffs collapsed, we need to disable the increase feature
@@ -28,10 +28,11 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_requests
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
+
+      wait_for_requests
 
       click_on 'Changes'
       wait_for_requests
@@ -69,9 +70,11 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       end
 
       click_button 'Commit conflict resolution'
-      wait_for_requests
+
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
+
+      wait_for_requests
 
       click_on 'Changes'
       wait_for_requests
@@ -140,11 +143,12 @@ feature 'Merge request conflict resolution', js: true, feature: true do
         end
 
         click_button 'Commit conflict resolution'
-        wait_for_requests
 
         expect(page).to have_content('All merge conflicts were resolved')
 
         merge_request.reload_diff
+
+        wait_for_requests
 
         click_on 'Changes'
         wait_for_requests

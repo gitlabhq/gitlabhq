@@ -212,7 +212,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    result = MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
+    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
@@ -255,18 +255,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
-  def redirect_to_external_issue_tracker
-    external = @project.external_issue_tracker
-
-    return unless external
-
-    if action_name == 'new'
-      redirect_to external.new_issue_path
-    else
-      redirect_to external.issue_tracker_path
-    end
   end
 
   def issue_params

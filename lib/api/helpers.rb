@@ -16,6 +16,8 @@ module API
 
       @current_user = initial_current_user
 
+      Gitlab::I18n.locale = @current_user&.preferred_language
+
       sudo!
 
       @current_user
@@ -255,7 +257,15 @@ module API
       message << "  " << trace.join("\n  ")
 
       API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+
+      response_message =
+        if Rails.env.test?
+          message
+        else
+          '500 Internal Server Error'
+        end
+
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers
@@ -336,12 +346,14 @@ module API
       env['warden']
     end
 
+    # Check if the request is GET/HEAD, or if CSRF token is valid.
+    def verified_request?
+      Gitlab::RequestForgeryProtection.verified?(env)
+    end
+
     # Check the Rails session for valid authentication details
-    #
-    # Until CSRF protection is added to the API, disallow this method for
-    # state-changing endpoints
     def find_user_from_warden
-      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
+      warden.try(:authenticate) if verified_request?
     end
 
     def initial_current_user

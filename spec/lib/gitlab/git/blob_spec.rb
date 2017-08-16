@@ -78,12 +78,18 @@ describe Gitlab::Git::Blob, seed_helper: true do
     context 'large file' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg') }
       let(:blob_size) { 111803 }
+      let(:stub_limit) { 1000 }
+
+      before do
+        stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', stub_limit)
+      end
 
       it { expect(blob.size).to eq(blob_size) }
-      it { expect(blob.data.length).to eq(blob_size) }
+      it { expect(blob.data.length).to eq(stub_limit) }
 
       it 'check that this test is sane' do
-        expect(blob.size).to be <= Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
+        # It only makes sense to test limiting if the blob is larger than the limit.
+        expect(blob.size).to be > Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE
       end
 
       it 'can load all data' do
@@ -143,6 +149,77 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
     context 'when the blob_raw Gitaly feature is disabled', skip_gitaly_mock: true do
       it_behaves_like 'finding blobs by ID'
+    end
+  end
+
+  describe '.batch' do
+    let(:blob_references) do
+      [
+        [SeedRepo::Commit::ID, "files/ruby/popen.rb"],
+        [SeedRepo::Commit::ID, 'six']
+      ]
+    end
+
+    subject { described_class.batch(repository, blob_references) }
+
+    it { expect(subject.size).to eq(blob_references.size) }
+
+    context 'first blob' do
+      let(:blob) { subject[0] }
+
+      it { expect(blob.id).to eq(SeedRepo::RubyBlob::ID) }
+      it { expect(blob.name).to eq(SeedRepo::RubyBlob::NAME) }
+      it { expect(blob.path).to eq("files/ruby/popen.rb") }
+      it { expect(blob.commit_id).to eq(SeedRepo::Commit::ID) }
+      it { expect(blob.data[0..10]).to eq(SeedRepo::RubyBlob::CONTENT[0..10]) }
+      it { expect(blob.size).to eq(669) }
+      it { expect(blob.mode).to eq("100644") }
+    end
+
+    context 'second blob' do
+      let(:blob) { subject[1] }
+
+      it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
+      it { expect(blob.data).to eq('') }
+      it 'does not mark the blob as binary' do
+        expect(blob).not_to be_binary
+      end
+    end
+
+    context 'limiting' do
+      subject { described_class.batch(repository, blob_references, blob_size_limit: blob_size_limit) }
+
+      context 'default' do
+        let(:blob_size_limit) { nil }
+
+        it 'limits to MAX_DATA_DISPLAY_SIZE' do
+          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+          expect(subject.first.data.size).to eq(100)
+        end
+      end
+
+      context 'positive' do
+        let(:blob_size_limit) { 10 }
+
+        it { expect(subject.first.data.size).to eq(10) }
+      end
+
+      context 'zero' do
+        let(:blob_size_limit) { 0 }
+
+        it { expect(subject.first.data).to eq('') }
+      end
+
+      context 'negative' do
+        let(:blob_size_limit) { -1 }
+
+        it 'ignores MAX_DATA_DISPLAY_SIZE' do
+          stub_const('Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE', 100)
+
+          expect(subject.first.data.size).to eq(669)
+        end
+      end
     end
   end
 

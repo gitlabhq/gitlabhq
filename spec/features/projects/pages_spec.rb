@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Pages', feature: true do
-  given(:project) { create(:empty_project) }
+feature 'Pages' do
+  given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :master }
 

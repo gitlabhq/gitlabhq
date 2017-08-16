@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'User wants to create a file', feature: true do
-  let(:project) { create(:project) }
+feature 'User wants to create a file' do
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   background do

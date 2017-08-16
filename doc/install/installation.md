@@ -66,6 +66,9 @@ Install the required packages (needed to compile Ruby and native extensions to R
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils pkg-config cmake
 
+Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
+you can [install re2 manually](https://github.com/google/re2/wiki/Install).
+
 If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
     sudo apt-get install libkrb5-dev
@@ -77,7 +80,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.8.4 or higher
+    # Make sure Git is version 2.13.0 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -168,8 +171,10 @@ are out of date, so we'll need to install through the following commands:
     curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
     sudo apt-get install -y nodejs
 
-    # install yarn
-    curl --location https://yarnpkg.com/install.sh | bash -
+    curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    sudo apt-get update
+    sudo apt-get install yarn
 
 Visit the official websites for [node](https://nodejs.org/en/download/package-manager/) and [yarn](https://yarnpkg.com/en/docs/install/) if you have any trouble with these steps.
 
@@ -294,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 9-5-stable gitlab
 
-**Note:** You can change `9-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `9-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -505,14 +510,16 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+
+### Compile GetText PO files
+
+    sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
+    sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+
 ### Compile Assets
 
     sudo -u git -H yarn install --production --pure-lockfile
     sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production NODE_ENV=production
-
-### Compile GetText PO files
-
-    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Start Your GitLab Instance
 

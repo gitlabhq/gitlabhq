@@ -5,8 +5,8 @@ describe SnippetsFinder do
   let(:user1) { create :user }
   let(:group) { create :group, :public }
 
-  let(:project1) { create(:empty_project, :public,  group: group) }
-  let(:project2) { create(:empty_project, :private, group: group) }
+  let(:project1) { create(:project, :public,  group: group) }
+  let(:project2) { create(:project, :private, group: group) }
 
   context 'all snippets visible to a user' do
     let!(:snippet1) { create(:personal_snippet, :private) }

@@ -15,7 +15,7 @@ gem 'default_value_for', '~> 3.0.2'
 gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
-gem 'rugged', '~> 0.25.1.1'
+gem 'rugged', '~> 0.26.0'
 gem 'grape-route-helpers', '~> 2.0.0'
 
 gem 'faraday', '~> 0.12'
@@ -58,10 +58,13 @@ gem 'validates_hostname', '~> 1.0.6'
 # Browser detection
 gem 'browser', '~> 2.2'
 
+# GPG
+gem 'gpgme'
+
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.0.3', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
@@ -81,7 +84,7 @@ gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 0.17.0'
+gem 'kaminari', '~> 1.0'
 
 # HAML
 gem 'hamlit', '~> 2.6.1'
@@ -283,7 +286,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta9'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -308,7 +311,7 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
-  gem 'fuubar', '~> 2.0.0'
+  gem 'fuubar', '~> 2.2.0'
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.7.0'
@@ -318,6 +321,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
+  gem 'rspec-parameterized'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'
@@ -335,10 +339,11 @@ group :development, :test do
   gem 'spring-commands-rspec', '~> 1.0.4'
   gem 'spring-commands-spinach', '~> 1.1.0'
 
-  gem 'rubocop', '~> 0.47.1', require: false
-  gem 'rubocop-rspec', '~> 1.15.0', require: false
+  gem 'rubocop', '~> 0.49.1', require: false
+  gem 'rubocop-rspec', '~> 1.15.1', require: false
+  gem 'rubocop-gitlab-security', '~> 0.0.6', require: false
   gem 'scss_lint', '~> 0.54.0', require: false
-  gem 'haml_lint', '~> 0.21.0', require: false
+  gem 'haml_lint', '~> 0.26.0', require: false
   gem 'simplecov', '~> 0.14.0', require: false
   gem 'flay', '~> 2.8.0', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -350,7 +355,7 @@ group :development, :test do
 
   gem 'activerecord_sane_schema_dumper', '1.0'
 
-  gem 'stackprof', '~> 0.2.10'
+  gem 'stackprof', '~> 0.2.10', require: false
 end
 
 group :test do
@@ -385,8 +390,18 @@ gem 'health_check', '~> 2.6.0'
 gem 'vmstat', '~> 2.3.0'
 gem 'sys-filesystem', '~> 1.1.6'
 
+# SSH host key support
+gem 'net-ssh', '~> 4.1.0'
+
+# Required for ED25519 SSH host key support
+group :ed25519 do
+  gem 'rbnacl-libsodium'
+  gem 'rbnacl', '~> 3.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
+end
+
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.18.0'
+gem 'gitaly', '~> 0.27.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

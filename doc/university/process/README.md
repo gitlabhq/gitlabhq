@@ -27,4 +27,4 @@ please submit a merge request to add an upcoming class, assign to
 1. Please upload any video recordings to our Youtube channel. We prefer them to
    be public, if needed they can be unlisted but if so they should be linked from
    this page.
-1. Please create a merge request and assign to [SeanPackham](https://gitlab.com/u/SeanPackham).
+1. Please create a merge request and assign to [Erica](https://gitlab.com/u/Erica).

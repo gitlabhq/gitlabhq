@@ -57,7 +57,7 @@ describe BuildDetailsEntity do
 
       context 'when merge request is from a fork' do
         let(:fork_project) do
-          create(:empty_project, forked_from_project: project)
+          create(:project, forked_from_project: project)
         end
 
         let(:pipeline) { create(:ci_pipeline, project: fork_project) }

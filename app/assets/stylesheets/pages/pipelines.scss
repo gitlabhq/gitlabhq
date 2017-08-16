@@ -220,7 +220,11 @@
     position: relative;
     vertical-align: middle;
     height: 22px;
-    margin: 3px 6px 3px 0;
+    margin: 3px 0;
+
+    + .stage-container {
+      margin-left: 6px;
+    }
 
     // Hack to show a button tooltip inline
     button.has-tooltip + .tooltip {
@@ -820,6 +824,7 @@ button.mini-pipeline-graph-dropdown-toggle {
  * Top arrow in the dropdown in the mini pipeline graph
  */
 .mini-pipeline-graph-dropdown-menu {
+  z-index: 200;
 
   &::before,
   &::after {

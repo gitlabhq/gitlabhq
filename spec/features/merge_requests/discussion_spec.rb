@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request Discussions', feature: true do
+feature 'Merge Request Discussions' do
   before do
     sign_in(create(:admin))
   end
@@ -26,7 +26,7 @@ feature 'Merge Request Discussions', feature: true do
 
     let(:outdated_diff_refs) { project.commit("874797c3a73b60d2187ed6e2fcabd289ff75171e").diff_refs }
 
-    before(:each) do
+    before do
       visit project_merge_request_path(project, merge_request)
     end
 
@@ -71,7 +71,7 @@ feature 'Merge Request Discussions', feature: true do
       end
     end
 
-    before(:each) do
+    before do
       visit project_merge_request_path(project, merge_request)
     end
 

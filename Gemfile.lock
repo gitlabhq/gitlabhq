@@ -2,6 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.3.2)
+    abstract_type (0.0.7)
     ace-rails-ap (4.1.2)
     actioncable (5.0.4)
       actionpack (= 5.0.4)
@@ -44,6 +45,9 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (4.0.0)
       activerecord (>= 4.0)
+    adamantium (0.2.0)
+      ice_nine (~> 0.11.0)
+      memoizable (~> 0.4.0)
     addressable (2.3.8)
     after_commit_queue (1.3.0)
       activerecord (>= 3.0)
@@ -73,6 +77,7 @@ GEM
     babosa (1.0.2)
     base32 (0.3.2)
     bcrypt (3.1.11)
+    bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
     better_errors (2.1.1)
       coderay (>= 1.0.0)
@@ -120,7 +125,14 @@ GEM
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
+<<<<<<< HEAD
     colorize (0.8.1)
+=======
+    colorize (0.7.7)
+    concord (0.1.5)
+      adamantium (~> 0.2.0)
+      equalizer (~> 0.0.9)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     concurrent-ruby (1.0.5)
     concurrent-ruby-ext (1.0.5)
       concurrent-ruby (= 1.0.5)
@@ -245,8 +257,8 @@ GEM
     foreman (0.78.0)
       thor (~> 0.19.1)
     formatador (0.2.5)
-    fuubar (2.0.0)
-      rspec (~> 3.0)
+    fuubar (2.2.0)
+      rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
@@ -264,7 +276,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly (0.18.0)
+    gitaly (0.27.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.0)
     github-linguist (4.7.6)
@@ -283,7 +295,7 @@ GEM
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
     gitlab-markup (1.5.1)
-    gitlab_omniauth-ldap (2.0.3)
+    gitlab_omniauth-ldap (2.0.4)
       net-ldap (~> 0.16)
       omniauth (~> 1.3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
@@ -310,6 +322,7 @@ GEM
       request_store (>= 1.0)
     google-api-client (0.9.28)
       addressable (~> 2.3)
+<<<<<<< HEAD
       googleauth (~> 0.5)
       httpclient (~> 2.7)
       hurley (~> 0.1)
@@ -317,6 +330,16 @@ GEM
       mime-types (>= 1.6)
       representable (~> 2.3.0)
       retriable (~> 2.0)
+=======
+      autoparse (~> 0.3)
+      extlib (~> 0.9)
+      faraday (~> 0.9)
+      googleauth (~> 0.3)
+      launchy (~> 2.4)
+      multi_json (~> 1.10)
+      retriable (~> 1.4)
+      signet (~> 0.6)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     google-protobuf (3.3.0)
     googleauth (0.5.1)
       faraday (~> 0.9)
@@ -326,6 +349,8 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    gpgme (2.0.13)
+      mini_portile2 (~> 2.1)
     grape (0.19.2)
       activesupport
       builder
@@ -348,10 +373,11 @@ GEM
       googleauth (~> 0.5.1)
     haml (4.0.7)
       tilt
-    haml_lint (0.21.0)
-      haml (~> 4.0)
+    haml_lint (0.26.0)
+      haml (>= 4.0, < 5.1)
+      rainbow
       rake (>= 10, < 13)
-      rubocop (>= 0.47.0)
+      rubocop (>= 0.49.0)
       sysexits (~> 1.1)
     hamlit (2.6.2)
       temple (~> 0.7.6)
@@ -384,8 +410,12 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+<<<<<<< HEAD
     httpclient (2.8.3)
     hurley (0.2)
+=======
+    httpclient (2.8.2)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     i18n (0.8.6)
     ice_nine (0.11.2)
     influxdb (0.3.14)
@@ -410,11 +440,28 @@ GEM
     json-schema (2.6.2)
       addressable (~> 2.3.8)
     jwt (1.5.6)
+<<<<<<< HEAD
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.11.0)
     knapsack (1.11.1)
+=======
+    kaminari (1.0.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.0.1)
+      kaminari-activerecord (= 1.0.1)
+      kaminari-core (= 1.0.1)
+    kaminari-actionview (1.0.1)
+      actionview
+      kaminari-core (= 1.0.1)
+    kaminari-activerecord (1.0.1)
+      activerecord
+      kaminari-core (= 1.0.1)
+    kaminari-core (1.0.1)
+    kgio (2.10.0)
+    knapsack (1.11.0)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       rake
       timecop (>= 0.1.0)
     kubeclient (2.2.0)
@@ -451,7 +498,13 @@ GEM
     mail (2.6.6)
       mime-types (>= 1.16, < 4)
     mail_room (0.9.1)
+<<<<<<< HEAD
     memoist (0.16.0)
+=======
+    memoist (0.15.0)
+    memoizable (0.4.2)
+      thread_safe (~> 0.3, >= 0.3.1)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     method_source (0.8.2)
     mime-types (2.99.3)
     mimemagic (0.3.2)
@@ -467,6 +520,7 @@ GEM
       mustermann (~> 1.0.0)
     mysql2 (0.4.5)
     net-ldap (0.16.0)
+    net-ssh (4.1.0)
     netrc (0.11.0)
     nio4r (2.1.0)
     nokogiri (1.6.8.1)
@@ -539,6 +593,7 @@ GEM
       rubypants (~> 0.2)
     orm_adapter (0.5.0)
     os (0.9.6)
+    parallel (1.12.0)
     paranoia (2.3.1)
       activerecord (>= 4.0, < 5.2)
     parser (2.4.0.0)
@@ -591,7 +646,12 @@ GEM
     premailer-rails (1.9.7)
       actionmailer (>= 3, < 6)
       premailer (~> 1.7, >= 1.7.9)
-    prometheus-client-mmap (0.7.0.beta10)
+    proc_to_ast (0.1.0)
+      coderay
+      parser
+      unparser
+    procto (0.0.3)
+    prometheus-client-mmap (0.7.0.beta11)
       mmap2 (~> 2.2, >= 2.2.7)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -603,7 +663,11 @@ GEM
     pry-rails (0.3.6)
       pry (>= 0.10.4)
     pyu-ruby-sasl (0.0.3.3)
+<<<<<<< HEAD
     rack (2.0.3)
+=======
+    rack (1.6.8)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.4.1)
@@ -657,9 +721,20 @@ GEM
       rake
     raindrops (0.18.0)
     rake (12.0.0)
+<<<<<<< HEAD
     rblineprof (0.3.7)
       debugger-ruby_core_source (~> 1.3)
     rdoc (4.3.0)
+=======
+    rblineprof (0.3.6)
+      debugger-ruby_core_source (~> 1.3)
+    rbnacl (3.4.0)
+      ffi
+    rbnacl-libsodium (1.0.11)
+      rbnacl (>= 3.0.1)
+    rdoc (4.2.2)
+      json (~> 1.4)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     re2 (1.1.1)
     recaptcha (3.4.0)
       json
@@ -714,6 +789,15 @@ GEM
     rspec-mocks (3.6.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.6.0)
+<<<<<<< HEAD
+=======
+    rspec-parameterized (0.4.0)
+      binding_of_caller
+      parser
+      proc_to_ast
+      rspec (>= 2.13, < 4)
+      unparser
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rspec-rails (3.6.0)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
@@ -722,7 +806,11 @@ GEM
       rspec-expectations (~> 3.6.0)
       rspec-mocks (~> 3.6.0)
       rspec-support (~> 3.6.0)
+<<<<<<< HEAD
     rspec-retry (0.4.6)
+=======
+    rspec-retry (0.4.5)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       rspec-core
     rspec-set (0.1.3)
     rspec-support (3.6.0)
@@ -731,12 +819,18 @@ GEM
       pg
       rails
       sqlite3
-    rubocop (0.47.1)
+    rubocop (0.49.1)
+      parallel (~> 1.10)
       parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
+<<<<<<< HEAD
+=======
+    rubocop-gitlab-security (0.0.6)
+      rubocop (>= 0.47.1)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     rubocop-rspec (1.15.1)
       rubocop (>= 0.42.0)
     ruby-fogbugz (0.2.1)
@@ -752,7 +846,7 @@ GEM
     rubyzip (1.2.1)
     rufus-scheduler (3.4.2)
       et-orbi (~> 1.0)
-    rugged (0.25.1.1)
+    rugged (0.26.0)
     safe_yaml (1.0.4)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -867,7 +961,11 @@ GEM
     underscore-rails (1.8.3)
     unf (0.1.4)
       unf_ext
+<<<<<<< HEAD
     unf_ext (0.0.7.4)
+=======
+    unf_ext (0.0.7.2)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     unicode-display_width (1.3.0)
     unicorn (5.1.0)
       kgio (~> 2.6)
@@ -876,6 +974,14 @@ GEM
       get_process_mem (~> 0)
       unicorn (>= 4, < 6)
     uniform_notifier (1.10.0)
+    unparser (0.2.6)
+      abstract_type (~> 0.0.7)
+      adamantium (~> 0.2.0)
+      concord (~> 0.1.5)
+      diff-lcs (~> 1.3)
+      equalizer (~> 0.0.9)
+      parser (>= 2.3.1.2, < 2.5)
+      procto (~> 0.0.2)
     url_safe_base64 (0.2.2)
     validates_hostname (1.0.7)
       activerecord (>= 3.0)
@@ -925,6 +1031,7 @@ DEPENDENCIES
   awesome_print (~> 1.2.0)
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
+  bcrypt_pbkdf (~> 1.0)
   benchmark-ips (~> 2.3.0)
   better_errors (~> 2.1.0)
   binding_of_caller (~> 0.7.2)
@@ -969,25 +1076,34 @@ DEPENDENCIES
   fog-rackspace (~> 0.1.1)
   font-awesome-rails (~> 4.7)
   foreman (~> 0.78.0)
-  fuubar (~> 2.0.0)
+  fuubar (~> 2.2.0)
   gemnasium-gitlab-service (~> 0.2)
   gemojione (~> 3.0)
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly (~> 0.18.0)
+  gitaly (~> 0.27.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.5.1)
+<<<<<<< HEAD
   gitlab_omniauth-ldap (~> 2.0.3)
   gollum-lib (~> 4.2.5)
   gollum-rugged_adapter (~> 0.4.4)
   gon (~> 6.1.0)
   google-api-client (~> 0.9.28)
+=======
+  gitlab_omniauth-ldap (~> 2.0.4)
+  gollum-lib (~> 4.2)
+  gollum-rugged_adapter (~> 0.4.4)
+  gon (~> 6.1.0)
+  google-api-client (~> 0.8.6)
+  gpgme
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   grape (~> 0.19.2)
   grape-entity (~> 0.6.0)
   grape-route-helpers (~> 2.0.0)
-  haml_lint (~> 0.21.0)
+  haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
@@ -1001,7 +1117,7 @@ DEPENDENCIES
   jquery-rails (~> 4.3.1)
   json-schema (~> 2.6.2)
   jwt (~> 1.5.6)
-  kaminari (~> 0.17.0)
+  kaminari (~> 1.0)
   knapsack (~> 1.11.0)
   kubeclient (~> 2.2.0)
   letter_opener_web (~> 1.3.0)
@@ -1015,7 +1131,12 @@ DEPENDENCIES
   mousetrap-rails (~> 1.4.6)
   mysql2 (~> 0.4.5)
   net-ldap
+<<<<<<< HEAD
   nokogiri (~> 1.6.8.1)
+=======
+  net-ssh (~> 4.1.0)
+  nokogiri (~> 1.6.7, >= 1.6.7.2)
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   oauth2 (~> 1.4)
   octokit (~> 4.6.2)
   oj (~> 2.17.4)
@@ -1048,7 +1169,7 @@ DEPENDENCIES
   pg (~> 0.18.2)
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.7.0.beta9)
+  prometheus-client-mmap (~> 0.7.0.beta11)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)
@@ -1062,6 +1183,8 @@ DEPENDENCIES
   rainbow (~> 2.2)
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
+  rbnacl (~> 3.2)
+  rbnacl-libsodium
   rdoc (~> 4.2)
   re2 (~> 1.1.1)
   recaptcha (~> 3.0)
@@ -1073,17 +1196,22 @@ DEPENDENCIES
   responders (~> 2.0)
   rouge (~> 2.0)
   rqrcode-rails3 (~> 0.1.7)
+<<<<<<< HEAD
+=======
+  rspec-parameterized
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
   rspec-rails (~> 3.6.0)
   rspec-retry (~> 0.4.5)
   rspec-set (~> 0.1.3)
   rspec_profiling (~> 0.0.5)
-  rubocop (~> 0.47.1)
-  rubocop-rspec (~> 1.15.0)
+  rubocop (~> 0.49.1)
+  rubocop-gitlab-security (~> 0.0.6)
+  rubocop-rspec (~> 1.15.1)
   ruby-fogbugz (~> 0.2.1)
   ruby-prof (~> 0.16.2)
   ruby_parser (~> 3.8)
   rufus-scheduler (~> 3.4)
-  rugged (~> 0.25.1.1)
+  rugged (~> 0.26.0)
   sanitize (~> 2.0)
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.54.0)

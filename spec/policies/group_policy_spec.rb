@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupPolicy, models: true do
+describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }

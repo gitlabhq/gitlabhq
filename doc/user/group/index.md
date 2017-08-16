@@ -42,7 +42,7 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 
 For example, consider a user called John:
 
-1. John creates his account on GitLab.com with the username `jonh`;
+1. John creates his account on GitLab.com with the username `john`;
 his profile will be accessed under `https://gitlab.example.com/john`
 1. John creates a group for his team with the groupname `john-team`;
 his group and its projects will be accessed under `https://gitlab.example.com/john-team`
@@ -153,6 +153,14 @@ Find this option under your project's settings.
 
 GitLab administrators can use the admin interface to move any project to any namespace if needed.
 
+## Sharing a project with a group
+
+You can [share your projects with a group](../project/members/share_project_with_groups.md)
+and give your group members access to the project all at once.
+
+Alternatively, with [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
+you can [lock the sharing with group feature](#share-with-group-lock-ees-eep).
+
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
@@ -189,7 +197,7 @@ Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#
 
 In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
 it is possible to prevent projects in a group from [sharing
-a project with another group](../../workflow/share_projects_with_other_groups.md).
+a project with another group](../project/members/share_project_with_groups.md).
 This allows for tighter control over project access.
 
 Learn more about [Share with group lock](https://docs.gitlab.com/ee/user/group/index.html#share-with-group-lock-ees-eep).

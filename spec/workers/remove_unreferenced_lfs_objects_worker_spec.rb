@@ -6,8 +6,8 @@ describe RemoveUnreferencedLfsObjectsWorker do
   describe '#perform' do
     let!(:unreferenced_lfs_object1) { create(:lfs_object, oid: '1') }
     let!(:unreferenced_lfs_object2) { create(:lfs_object, oid: '2') }
-    let!(:project1) { create(:empty_project, lfs_enabled: true) }
-    let!(:project2) { create(:empty_project, lfs_enabled: true) }
+    let!(:project1) { create(:project, lfs_enabled: true) }
+    let!(:project2) { create(:project, lfs_enabled: true) }
     let!(:referenced_lfs_object1) { create(:lfs_object, oid: '3') }
     let!(:referenced_lfs_object2) { create(:lfs_object, oid: '4') }
     let!(:lfs_objects_project1_1) do

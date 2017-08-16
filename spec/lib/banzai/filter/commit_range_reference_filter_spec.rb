@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
+describe Banzai::Filter::CommitRangeReferenceFilter do
   include FilterSpecHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -100,7 +100,7 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
 
   context 'cross-project / cross-namespace complete reference' do
     let(:project2)  { create(:project, :public, :repository) }
-    let(:reference) { "#{project2.path_with_namespace}@#{commit1.id}...#{commit2.id}" }
+    let(:reference) { "#{project2.full_path}@#{commit1.id}...#{commit2.id}" }
 
     it 'links to a valid reference' do
       doc = reference_filter("See #{reference}")
@@ -113,20 +113,20 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
       doc = reference_filter("Fixed (#{reference}.)")
 
       expect(doc.css('a').first.text)
-        .to eql("#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}")
+        .to eql("#{project2.full_path}@#{commit1.short_id}...#{commit2.short_id}")
     end
 
     it 'has valid text' do
       doc = reference_filter("Fixed (#{reference}.)")
 
-      expect(doc.text).to eql("Fixed (#{project2.path_with_namespace}@#{commit1.short_id}...#{commit2.short_id}.)")
+      expect(doc.text).to eql("Fixed (#{project2.full_path}@#{commit1.short_id}...#{commit2.short_id}.)")
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.path_with_namespace}@#{commit1.id.reverse}...#{commit2.id}"
+      exp = act = "Fixed #{project2.full_path}@#{commit1.id.reverse}...#{commit2.id}"
       expect(reference_filter(act).to_html).to eq exp
 
-      exp = act = "Fixed #{project2.path_with_namespace}@#{commit1.id}...#{commit2.id.reverse}"
+      exp = act = "Fixed #{project2.full_path}@#{commit1.id}...#{commit2.id.reverse}"
       expect(reference_filter(act).to_html).to eq exp
     end
   end

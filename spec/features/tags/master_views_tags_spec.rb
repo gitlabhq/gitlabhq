@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master views tags', feature: true do
+feature 'Master views tags' do
   let(:user) { create(:user) }
 
   before do
@@ -26,7 +26,7 @@ feature 'Master views tags', feature: true do
   end
 
   context 'when project has tags' do
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :repository, namespace: user.namespace) }
     let(:repository) { project.repository }
 
     before do

@@ -58,29 +58,54 @@ class FilteredSearchVisualTokens {
     `;
   }
 
+  static setTokenStyle(tokenContainer, backgroundColor, textColor) {
+    const token = tokenContainer;
+
+    // Labels with linear gradient should not override default background color
+    if (backgroundColor.indexOf('linear-gradient') === -1) {
+      token.style.backgroundColor = backgroundColor;
+    }
+
+    token.style.color = textColor;
+
+    if (textColor === '#FFFFFF') {
+      const removeToken = token.querySelector('.remove-token');
+      removeToken.classList.add('inverted');
+    }
+
+    return token;
+  }
+
+  static preprocessLabel(labelsEndpoint, labels) {
+    let processed = labels;
+
+    if (!labels.preprocessed) {
+      processed = gl.DropdownUtils.duplicateLabelPreprocessing(labels);
+      AjaxCache.override(labelsEndpoint, processed);
+      processed.preprocessed = true;
+    }
+
+    return processed;
+  }
+
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
     const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
     const labelsEndpoint = `${baseEndpoint}/labels.json`;
 
     return AjaxCache.retrieve(labelsEndpoint)
-    .then((labels) => {
-      const matchingLabel = (labels || []).find(label => `~${gl.DropdownUtils.getEscapedText(label.title)}` === tokenValue);
+      .then(FilteredSearchVisualTokens.preprocessLabel.bind(null, labelsEndpoint))
+      .then((labels) => {
+        const matchingLabel = (labels || []).find(label => `~${gl.DropdownUtils.getEscapedText(label.title)}` === tokenValue);
 
-      if (!matchingLabel) {
-        return;
-      }
+        if (!matchingLabel) {
+          return;
+        }
 
-      const tokenValueStyle = tokenValueContainer.style;
-      tokenValueStyle.backgroundColor = matchingLabel.color;
-      tokenValueStyle.color = matchingLabel.text_color;
-
-      if (matchingLabel.text_color === '#FFFFFF') {
-        const removeToken = tokenValueContainer.querySelector('.remove-token');
-        removeToken.classList.add('inverted');
-      }
-    })
-    .catch(() => new Flash('An error occurred while fetching label colors.'));
+        FilteredSearchVisualTokens
+          .setTokenStyle(tokenValueContainer, matchingLabel.color, matchingLabel.text_color);
+      })
+      .catch(() => new Flash('An error occurred while fetching label colors.'));
   }
 
   static updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Internal Snippets', feature: true, js: true do
+feature 'Internal Snippets', js: true do
   let(:internal_snippet) { create(:personal_snippet, :internal) }
 
   describe 'normal user' do

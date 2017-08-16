@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Merge Request filtering by Milestone', feature: true do
+feature 'Merge Request filtering by Milestone' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let(:project)   { create(:project, :public) }
+  let(:project)   { create(:project, :public, :repository) }
   let!(:user)     { create(:user)}
   let(:milestone) { create(:milestone, project: project) }
 
@@ -25,7 +25,7 @@ feature 'Merge Request filtering by Milestone', feature: true do
     visit_merge_requests(project)
     input_filtered_search('milestone:none')
 
-    expect_tokens([{ name: 'milestone', value: 'none' }])
+    expect_tokens([milestone_token('none', false)])
     expect_filtered_search_input_empty
 
     expect(page).to have_issuable_counts(open: 1, closed: 0, all: 1)

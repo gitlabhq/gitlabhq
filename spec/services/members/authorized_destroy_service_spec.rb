@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Members::AuthorizedDestroyService, services: true do
+describe Members::AuthorizedDestroyService do
   let(:member_user) { create(:user) }
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:group) { create(:group, :public) }
-  let(:group_project) { create(:empty_project, :public, group: group) }
+  let(:group_project) { create(:project, :public, group: group) }
 
   def number_of_assigned_issuables(user)
     Issue.assigned_to(user).count + MergeRequest.assigned_to(user).count

@@ -18,7 +18,7 @@ class Admin::ProjectsFinder
   end
 
   def execute
-    items = Project.with_statistics
+    items = Project.without_deleted.with_statistics
     items = items.in_namespace(namespace_id) if namespace_id.present?
     items = items.where(visibility_level: visibility_level) if visibility_level.present?
     items = items.with_push if with_push.present?

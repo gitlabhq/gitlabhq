@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Signup', feature: true do
+feature 'Signup' do
   describe 'signup with no errors' do
     context "when sending confirmation email" do
       before do

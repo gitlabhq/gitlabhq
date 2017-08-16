@@ -28,7 +28,7 @@ describe Projects::ServicesController do
 
     context 'success' do
       context 'with empty project' do
-        let(:project) { create(:empty_project) }
+        let(:project) { create(:project) }
 
         context 'with chat notification service' do
           let(:service) { project.create_microsoft_teams_service(webhook: 'http://webhook.com') }

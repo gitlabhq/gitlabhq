@@ -1,14 +1,9 @@
-/* global Breakpoints */
-
-import 'vendor/jquery.nicescroll';
-import './breakpoints';
+import bp from './breakpoints';
 
 export default class Wikis {
   constructor() {
-    this.bp = Breakpoints.get();
     this.sidebarEl = document.querySelector('.js-wiki-sidebar');
     this.sidebarExpanded = false;
-    $(this.sidebarEl).niceScroll();
 
     const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
     for (let i = 0; i < sidebarToggles.length; i += 1) {
@@ -43,15 +38,15 @@ export default class Wikis {
     this.renderSidebar();
   }
 
-  sidebarCanCollapse() {
-    const bootstrapBreakpoint = this.bp.getBreakpointSize();
+  static sidebarCanCollapse() {
+    const bootstrapBreakpoint = bp.getBreakpointSize();
     return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
   }
 
   renderSidebar() {
     if (!this.sidebarEl) return;
     const { classList } = this.sidebarEl;
-    if (this.sidebarExpanded || !this.sidebarCanCollapse()) {
+    if (this.sidebarExpanded || !Wikis.sidebarCanCollapse()) {
       if (!classList.contains('right-sidebar-expanded')) {
         classList.remove('right-sidebar-collapsed');
         classList.add('right-sidebar-expanded');

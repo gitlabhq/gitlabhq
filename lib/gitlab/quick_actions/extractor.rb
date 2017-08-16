@@ -46,6 +46,8 @@ module Gitlab
           end
         end
 
+        content, commands = perform_substitutions(content, commands)
+
         [content.strip, commands]
       end
 
@@ -108,6 +110,26 @@ module Gitlab
               (?:\n|$)
             )
         }mx
+      end
+
+      def perform_substitutions(content, commands)
+        return unless content
+
+        substitution_definitions = self.command_definitions.select do |definition|
+          definition.is_a?(Gitlab::QuickActions::SubstitutionDefinition)
+        end
+
+        substitution_definitions.each do |substitution|
+          match_data = substitution.match(content)
+          if match_data
+            command = [substitution.name.to_s]
+            command << match_data[1] unless match_data[1].empty?
+            commands << command
+          end
+          content = substitution.perform_substitution(self, content)
+        end
+
+        [content, commands]
       end
 
       def command_names(opts)

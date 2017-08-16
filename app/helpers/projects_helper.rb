@@ -80,7 +80,7 @@ module ProjectsHelper
   end
 
   def remove_project_message(project)
-    _("You are going to remove %{project_name_with_namespace}.\nRemoved project CANNOT be restored!\nAre you ABSOLUTELY sure?") %
+    _("You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?") %
       { project_name_with_namespace: project.name_with_namespace }
   end
 
@@ -149,15 +149,16 @@ module ProjectsHelper
     # Don't show option "everyone with access" if project is private
     options = project_feature_options
 
+    level = @project.project_feature.public_send(field) # rubocop:disable GitlabSecurity/PublicSend
+
     if @project.private?
-      level = @project.project_feature.send(field)
       disabled_option = ProjectFeature::ENABLED
       highest_available_option = ProjectFeature::PRIVATE if level == disabled_option
     end
 
     options = options_for_select(
       options.invert,
-      selected: highest_available_option || @project.project_feature.public_send(field),
+      selected: highest_available_option || level,
       disabled: disabled_option
     )
 
@@ -223,6 +224,28 @@ module ProjectsHelper
     else
       link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path
     end
+  end
+
+  # Returns true if any projects are present.
+  #
+  # If the relation has a LIMIT applied we'll cast the relation to an Array
+  # since repeated any? checks would otherwise result in multiple COUNT queries
+  # being executed.
+  #
+  # If no limit is applied we'll just issue a COUNT since the result set could
+  # be too large to load into memory.
+  def any_projects?(projects)
+    return projects.any? if projects.is_a?(Array)
+
+    if projects.limit_value
+      projects.to_a.any?
+    else
+      projects.except(:offset).any?
+    end
+  end
+
+  def has_projects_or_name?(projects, params)
+    !!(params[:name] || any_projects?(projects))
   end
 
   private
@@ -398,7 +421,7 @@ module ProjectsHelper
     if project
       import_path = "/Home/Stacks/import"
 
-      repo = project.path_with_namespace
+      repo = project.full_path
       branch ||= project.default_branch
       sha ||= project.commit.short_id
 
@@ -458,7 +481,7 @@ module ProjectsHelper
 
   def readme_cache_key
     sha = @project.commit.try(:sha) || 'nil'
-    [@project.path_with_namespace, sha, "readme"].join('-')
+    [@project.full_path, sha, "readme"].join('-')
   end
 
   def current_ref
@@ -466,7 +489,7 @@ module ProjectsHelper
   end
 
   def filename_path(project, filename)
-    if project && blob = project.repository.send(filename)
+    if project && blob = project.repository.public_send(filename) # rubocop:disable GitlabSecurity/PublicSend
       project_blob_path(
         project,
         tree_join(project.default_branch, blob.name)

@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe LfsObjectsProject, models: true do
+describe LfsObjectsProject do
   subject { create(:lfs_objects_project, project: project) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }

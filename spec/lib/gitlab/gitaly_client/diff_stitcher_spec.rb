@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GitalyClient::DiffStitcher, lib: true do
+describe Gitlab::GitalyClient::DiffStitcher do
   describe 'enumeration' do
     it 'combines segregated diff messages together' do
       diff_1 = OpenStruct.new(

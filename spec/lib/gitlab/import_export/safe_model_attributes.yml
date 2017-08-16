@@ -36,6 +36,14 @@ Event:
 - updated_at
 - action
 - author_id
+PushEventPayload:
+- commit_count
+- action
+- ref_type
+- commit_from
+- commit_to
+- ref
+- commit_title
 Note:
 - id
 - note
@@ -145,7 +153,6 @@ MergeRequest:
 - iid
 - description
 - position
-- locked_at
 - updated_by_id
 - merge_error
 - merge_params
@@ -195,6 +202,7 @@ MergeRequestDiffFile:
 - a_mode
 - b_mode
 - too_large
+- binary
 Ci::Pipeline:
 - id
 - project_id

@@ -18,6 +18,12 @@ module Gitlab
         Gitlab.config.ldap.servers.values
       end
 
+      def self.available_servers
+        return [] unless enabled?
+
+        Array.wrap(servers.first)
+      end
+
       def self.providers
         servers.map { |server| server['provider_name'] }
       end

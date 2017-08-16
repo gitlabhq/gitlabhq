@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Issuables Close/Reopen/Report toggle', :feature do
+describe 'Issuables Close/Reopen/Report toggle' do
   let(:user) { create(:user) }
 
   shared_examples 'an issuable close/reopen/report toggle' do
@@ -42,7 +42,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
   end
 
   context 'on an issue' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:issuable) { create(:issue, project: project) }
 
     before do
@@ -59,7 +59,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
     end
 
     context 'when user doesnt have permission to update' do
-      let(:cant_project) { create(:empty_project) }
+      let(:cant_project) { create(:project) }
       let(:cant_issuable) { create(:issue, project: cant_project) }
 
       before do
@@ -79,7 +79,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
   end
 
   context 'on a merge request' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
     let(:issuable) { create(:merge_request, source_project: project) }
 
     before do
@@ -96,7 +96,7 @@ describe 'Issuables Close/Reopen/Report toggle', :feature do
     end
 
     context 'when user doesnt have permission to update' do
-      let(:cant_project) { create(:project) }
+      let(:cant_project) { create(:project, :repository) }
       let(:cant_issuable) { create(:merge_request, source_project: cant_project) }
 
       before do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users', feature: true, js: true do
+feature 'Users', js: true do
   let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
 
   scenario 'GET /users/sign_in creates a new user account' do
@@ -73,7 +73,7 @@ feature 'Users', feature: true, js: true do
     let(:loading_icon) { '.fa.fa-spinner' }
     let(:username_input) { 'new_user_username' }
 
-    before(:each) do
+    before do
       visit new_user_session_path
       click_link 'Register'
     end
@@ -104,7 +104,7 @@ feature 'Users', feature: true, js: true do
   end
 
   def errors_on_page(page)
-    page.find('#error_explanation').find('ul').all('li').map{ |item| item.text }.join("\n")
+    page.find('#error_explanation').find('ul').all('li').map { |item| item.text }.join("\n")
   end
 
   def number_of_errors_on_page(page)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Profile > Personal Access Tokens', feature: true, js: true do
+describe 'Profile > Personal Access Tokens', js: true do
   let(:user) { create(:user) }
 
   def active_personal_access_tokens

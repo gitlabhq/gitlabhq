@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::SQL::Union, lib: true do
+describe Gitlab::SQL::Union do
   let(:relation_1) { User.where(email: 'alice@example.com').select(:id) }
   let(:relation_2) { User.where(email: 'bob@example.com').select(:id) }
 
@@ -19,7 +19,7 @@ describe Gitlab::SQL::Union, lib: true do
       empty_relation = User.none
       union = described_class.new([empty_relation, relation_1, relation_2])
 
-      expect{User.where("users.id IN (#{union.to_sql})").to_a}.not_to raise_error
+      expect {User.where("users.id IN (#{union.to_sql})").to_a}.not_to raise_error
       expect(union.to_sql).to eq("#{to_sql(relation_1)}\nUNION\n#{to_sql(relation_2)}")
     end
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Authentication, lib: true do
+describe Gitlab::LDAP::Authentication do
   let(:user)     { create(:omniauth_user, extern_uid: dn) }
   let(:dn)       { 'uid=john,ou=people,dc=example,dc=com' }
   let(:login)    { 'john' }

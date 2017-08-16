@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe ApplicationSetting, models: true do
-  let(:setting) { ApplicationSetting.create_from_defaults }
+describe ApplicationSetting do
+  let(:setting) { described_class.create_from_defaults }
 
   it { expect(setting).to be_valid }
   it { expect(setting.uuid).to be_present }
@@ -159,10 +159,10 @@ describe ApplicationSetting, models: true do
     context 'redis unavailable' do
       it 'returns an ApplicationSetting' do
         allow(Rails.cache).to receive(:fetch).and_call_original
-        allow(ApplicationSetting).to receive(:last).and_return(:last)
+        allow(described_class).to receive(:last).and_return(:last)
         expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(ArgumentError)
 
-        expect(ApplicationSetting.current).to eq(:last)
+        expect(described_class.current).to eq(:last)
       end
     end
   end

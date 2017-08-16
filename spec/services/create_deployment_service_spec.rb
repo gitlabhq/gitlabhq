@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CreateDeploymentService, services: true do
+describe CreateDeploymentService do
   let(:user) { create(:user) }
   let(:options) { nil }
 
@@ -19,6 +19,10 @@ describe CreateDeploymentService, services: true do
   end
 
   let(:service) { described_class.new(job) }
+
+  before do
+    allow_any_instance_of(Deployment).to receive(:create_ref)
+  end
 
   describe '#execute' do
     subject { service.execute }

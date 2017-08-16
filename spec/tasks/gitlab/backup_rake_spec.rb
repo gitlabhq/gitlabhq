@@ -117,9 +117,9 @@ describe 'gitlab:app namespace rake task' do
 
     describe 'backup creation and deletion using custom_hooks' do
       let(:project) { create(:project, :repository) }
-      let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
+      let(:user_backup_path) { "repositories/#{project.disk_path}" }
 
-      before(:each) do
+      before do
         @origin_cd = Dir.pwd
 
         path = File.join(project.repository.path_to_repo, filename)
@@ -130,7 +130,7 @@ describe 'gitlab:app namespace rake task' do
         create_backup
       end
 
-      after(:each) do
+      after do
         ENV["SKIP"] = ""
         FileUtils.rm(@backup_tar)
         Dir.chdir(@origin_cd)
@@ -261,8 +261,8 @@ describe 'gitlab:app namespace rake task' do
           %W{tar -tvf #{@backup_tar} repositories}
         )
         expect(exit_status).to eq(0)
-        expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
-        expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
+        expect(tar_contents).to match("repositories/#{project_a.disk_path}.bundle")
+        expect(tar_contents).to match("repositories/#{project_b.disk_path}.bundle")
       end
     end
   end # backup_create task

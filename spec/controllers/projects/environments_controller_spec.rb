@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::EnvironmentsController do
   set(:user) { create(:user) }
-  set(:project) { create(:empty_project) }
+  set(:project) { create(:project) }
 
   set(:environment) do
     create(:environment, name: 'production', project: project)

@@ -13,7 +13,7 @@ describe Mentionable do
   end
 
   describe 'references' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:mentionable) { Example.new }
 
     it 'excludes JIRA references' do
@@ -48,10 +48,10 @@ describe Issue, "Mentionable" do
 
   describe '#referenced_mentionables' do
     context 'with an issue on a private project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project) }
       let(:public_issue) { create(:issue, project: project) }
-      let(:private_project) { create(:empty_project, :private) }
+      let(:private_project) { create(:project, :private) }
       let(:private_issue) { create(:issue, project: private_project) }
       let(:user) { create(:user) }
 
@@ -102,7 +102,7 @@ describe Issue, "Mentionable" do
   end
 
   describe '#create_new_cross_references!' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:author)  { create(:author) }
     let(:issues)  { create_list(:issue, 2, project: project, author: author) }
 
@@ -204,7 +204,7 @@ describe Commit, 'Mentionable' do
     end
 
     context 'with external issue tracker' do
-      let(:project) { create(:jira_project) }
+      let(:project) { create(:jira_project, :repository) }
 
       it 'is true if external issues referenced' do
         allow(commit.raw).to receive(:message).and_return 'JIRA-123'

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'Filter merge requests', feature: true do
+describe 'Filter merge requests' do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
-  let!(:project)   { create(:project) }
+  let!(:project)   { create(:project, :repository) }
   let!(:group)     { create(:group) }
   let!(:user)      { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
@@ -12,7 +12,7 @@ describe 'Filter merge requests', feature: true do
   let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     group.add_developer(user)
     sign_in(user)
     create(:merge_request, source_project: project, target_project: project)
@@ -25,7 +25,12 @@ describe 'Filter merge requests', feature: true do
 
     def expect_assignee_visual_tokens
       wait_for_requests
+<<<<<<< HEAD
       expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
+=======
+
+      expect_tokens([assignee_token(user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       expect_filtered_search_input_empty
     end
 
@@ -58,7 +63,7 @@ describe 'Filter merge requests', feature: true do
     let(:search_query) { "milestone:%\"#{milestone.title}\"" }
 
     def expect_milestone_visual_tokens
-      expect_tokens([{ name: 'milestone', value: "%\"#{milestone.title}\"" }])
+      expect_tokens([milestone_token("\"#{milestone.title}\"")])
       expect_filtered_search_input_empty
     end
 
@@ -92,7 +97,7 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search('label:none')
 
       expect_mr_list_count(1)
-      expect_tokens([{ name: 'label', value: 'none' }])
+      expect_tokens([label_token('none', false)])
       expect_filtered_search_input_empty
     end
 
@@ -100,7 +105,7 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search("label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_tokens([{ name: 'label', value: "~#{label.title}" }])
+      expect_tokens([label_token(label.title)])
       expect_filtered_search_input_empty
     end
 
@@ -108,10 +113,7 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search("label:~\"#{wontfix.title}\" label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_tokens([
-        { name: 'label', value: "~\"#{wontfix.title}\"" },
-        { name: 'label', value: "~#{label.title}" }
-      ])
+      expect_tokens([label_token("\"#{wontfix.title}\""), label_token(label.title)])
       expect_filtered_search_input_empty
     end
 
@@ -119,16 +121,13 @@ describe 'Filter merge requests', feature: true do
       input_filtered_search("label:~\"#{wontfix.title}\"")
 
       expect_mr_list_count(0)
-      expect_tokens([{ name: 'label', value: "~\"#{wontfix.title}\"" }])
+      expect_tokens([label_token("\"#{wontfix.title}\"")])
       expect_filtered_search_input_empty
 
       input_filtered_search_keys("label:~#{label.title}")
 
       expect_mr_list_count(0)
-      expect_tokens([
-        { name: 'label', value: "~\"#{wontfix.title}\"" },
-        { name: 'label', value: "~#{label.title}" }
-      ])
+      expect_tokens([label_token("\"#{wontfix.title}\""), label_token(label.title)])
       expect_filtered_search_input_empty
     end
   end
@@ -145,10 +144,15 @@ describe 'Filter merge requests', feature: true do
     context 'assignee and label', js: true do
       def expect_assignee_label_visual_tokens
         wait_for_requests
+<<<<<<< HEAD
         expect_tokens([
           { name: 'assignee', value: "#{user.name}" },
           { name: 'label', value: "~#{label.title}" }
         ])
+=======
+
+        expect_tokens([assignee_token(user.name), label_token(label.title)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
         expect_filtered_search_input_empty
       end
 
@@ -172,7 +176,7 @@ describe 'Filter merge requests', feature: true do
 
   describe 'filter merge requests by text' do
     before do
-      create(:merge_request, title: "Bug", source_project: project, target_project: project, source_branch: "bug")
+      create(:merge_request, title: "Bug", source_project: project, target_project: project, source_branch: "wip")
 
       bug_label = create(:label, project: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
@@ -181,7 +185,7 @@ describe 'Filter merge requests', feature: true do
         title: "Bug 2",
         source_project: project,
         target_project: project,
-        source_branch: "bug2",
+        source_branch: "fix",
         milestone: milestone,
         author: user,
         assignee: user)
@@ -216,7 +220,7 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(' label:~bug')
 
         expect_mr_list_count(1)
-        expect_tokens([{ name: 'label', value: '~bug' }])
+        expect_tokens([label_token('bug')])
         expect_filtered_search_input('Bug')
       end
 
@@ -229,7 +233,7 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(' milestone:%8')
 
         expect_mr_list_count(1)
-        expect_tokens([{ name: 'milestone', value: '%8' }])
+        expect_tokens([milestone_token('8')])
         expect_filtered_search_input('Bug')
       end
 
@@ -242,8 +246,15 @@ describe 'Filter merge requests', feature: true do
         input_filtered_search_keys(" assignee:@#{user.username}")
 
         expect_mr_list_count(1)
+<<<<<<< HEAD
         wait_for_requests
         expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
+=======
+
+        wait_for_requests
+
+        expect_tokens([assignee_token(user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
         expect_filtered_search_input('Bug')
       end
 
@@ -255,20 +266,26 @@ describe 'Filter merge requests', feature: true do
 
         input_filtered_search_keys(" author:@#{user.username}")
 
+        wait_for_requests
+
         expect_mr_list_count(1)
+<<<<<<< HEAD
         wait_for_requests
         expect_tokens([{ name: 'author', value: "#{user.name}" }])
+=======
+        expect_tokens([author_token(user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
         expect_filtered_search_input('Bug')
       end
     end
   end
 
-  describe 'filter merge requests and sort', js: true do
+  describe 'filter merge requests and sort', :js do
     before do
       bug_label = create(:label, project: project, title: 'bug')
 
-      mr1 = create(:merge_request, title: "Frontend", source_project: project, target_project: project, source_branch: "Frontend")
-      mr2 = create(:merge_request, title: "Bug 2", source_project: project, target_project: project, source_branch: "bug2")
+      mr1 = create(:merge_request, title: "Frontend", source_project: project, target_project: project, source_branch: "wip")
+      mr2 = create(:merge_request, title: "Bug 2", source_project: project, target_project: project, source_branch: "fix")
 
       mr1.labels << bug_label
       mr2.labels << bug_label
@@ -297,7 +314,13 @@ describe 'Filter merge requests', feature: true do
     it 'filter by current user' do
       visit project_merge_requests_path(project, assignee_id: user.id)
 
+<<<<<<< HEAD
       expect_tokens([{ name: 'assignee', value: "#{user.name}" }])
+=======
+      wait_for_requests
+
+      expect_tokens([assignee_token(user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       expect_filtered_search_input_empty
     end
 
@@ -308,7 +331,12 @@ describe 'Filter merge requests', feature: true do
       visit project_merge_requests_path(project, assignee_id: new_user.id)
 
       wait_for_requests
+<<<<<<< HEAD
       expect_tokens([{ name: 'assignee', value: "#{new_user.name}" }])
+=======
+
+      expect_tokens([assignee_token(new_user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       expect_filtered_search_input_empty
     end
   end
@@ -318,7 +346,12 @@ describe 'Filter merge requests', feature: true do
       visit project_merge_requests_path(project, author_id: user.id)
 
       wait_for_requests
+<<<<<<< HEAD
       expect_tokens([{ name: 'author', value: "#{user.name}" }])
+=======
+
+      expect_tokens([author_token(user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       expect_filtered_search_input_empty
     end
 
@@ -329,7 +362,12 @@ describe 'Filter merge requests', feature: true do
       visit project_merge_requests_path(project, author_id: new_user.id)
 
       wait_for_requests
+<<<<<<< HEAD
       expect_tokens([{ name: 'author', value: "#{new_user.name}" }])
+=======
+
+      expect_tokens([author_token(new_user.name)])
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
       expect_filtered_search_input_empty
     end
   end

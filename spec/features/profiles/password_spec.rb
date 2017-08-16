@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Profile > Password', feature: true do
+describe 'Profile > Password' do
   context 'Password authentication enabled' do
     let(:user) { create(:user, password_automatically_set: true) }
 

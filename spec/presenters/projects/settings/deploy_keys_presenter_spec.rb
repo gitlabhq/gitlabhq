@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Settings::DeployKeysPresenter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 

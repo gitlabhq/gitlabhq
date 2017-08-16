@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Download buttons in tags page', feature: true do
+feature 'Download buttons in tags page' do
   given(:user) { create(:user) }
   given(:role) { :developer }
   given(:status) { 'success' }
   given(:tag) { 'v1.0.0' }
-  given(:project) { create(:project) }
+  given(:project) { create(:project, :repository) }
 
   given(:pipeline) do
     create(:ci_pipeline,

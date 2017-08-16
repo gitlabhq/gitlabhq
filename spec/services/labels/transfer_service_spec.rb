@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Labels::TransferService, services: true do
+describe Labels::TransferService do
   describe '#execute' do
     let(:user)    { create(:admin) }
     let(:group_1) { create(:group) }
     let(:group_2) { create(:group) }
     let(:group_3) { create(:group) }
-    let(:project_1) { create(:empty_project, namespace: group_2) }
-    let(:project_2) { create(:empty_project, namespace: group_3) }
+    let(:project_1) { create(:project, namespace: group_2) }
+    let(:project_2) { create(:project, namespace: group_3) }
 
     let(:group_label_1) { create(:group_label, group: group_1, name: 'Group Label 1') }
     let(:group_label_2) { create(:group_label, group: group_1, name: 'Group Label 2') }

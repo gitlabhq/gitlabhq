@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitStatus, :models do
+describe CommitStatus do
   let(:project) { create(:project, :repository) }
 
   let(:pipeline) do
@@ -425,7 +425,7 @@ describe CommitStatus, :models do
       end
 
       it "raise exception when trying to update" do
-        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+        expect { commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
       end
     end
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::Position, lib: true do
+describe Gitlab::Diff::Position do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'Template Undo Button', js: true do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
@@ -20,7 +20,7 @@ feature 'Template Undo Button', js: true do
     end
   end
 
-  context 'creating a non-matching file' do 
+  context 'creating a non-matching file' do
     before do
       visit project_new_blob_path(project, 'master')
       select_file_template_type('LICENSE')

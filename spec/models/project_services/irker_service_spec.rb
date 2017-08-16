@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'socket'
 require 'json'
 
-describe IrkerService, models: true do
+describe IrkerService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -27,7 +27,7 @@ describe IrkerService, models: true do
   end
 
   describe 'Execute' do
-    let(:irker) { IrkerService.new }
+    let(:irker) { described_class.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:sample_data) do

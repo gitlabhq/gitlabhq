@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Gitlab::SlashCommands::IssueSearch, service: true do
+describe Gitlab::SlashCommands::IssueSearch do
   describe '#execute' do
     let!(:issue) { create(:issue, project: project, title: 'find me') }
     let!(:confidential) { create(:issue, :confidential, project: project, title: 'mepmep find') }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:user) { issue.author }
     let(:regex_match) { described_class.match("issue search find") }
 

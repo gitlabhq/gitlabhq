@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Banzai::Filter::WikiLinkFilter, lib: true do
+describe Banzai::Filter::WikiLinkFilter do
   include FilterSpecHelper
 
   let(:namespace) { build_stubbed(:namespace, name: "wiki_link_ns") }
-  let(:project)   { build_stubbed(:empty_project, :public, name: "wiki_link_project", namespace: namespace) }
+  let(:project)   { build_stubbed(:project, :public, name: "wiki_link_project", namespace: namespace) }
   let(:user) { double }
   let(:wiki) { ProjectWiki.new(project, user) }
 

@@ -441,13 +441,25 @@ There are a few rules that apply to the usage of refs policy:
 * `only` and `except` are inclusive. If both `only` and `except` are defined
    in a job specification, the ref is filtered by `only` and `except`.
 * `only` and `except` allow the use of regular expressions.
-* `only` and `except` allow the use of special keywords:
-`api`, `branches`, `external`, `tags`, `pushes`, `schedules`, `triggers`, and `web`
 * `only` and `except` allow to specify a repository path to filter jobs for
    forks.
 
+In addition, `only` and `except` allow the use of special keywords:
+
+| **Value** |  **Description**  |
+| --------- |  ---------------- |
+| `branches`  | When a branch is pushed.  |
+| `tags`      | When a tag is pushed.  |
+| `api`       | When pipeline has been triggered by a second pipelines API (not triggers API).  |
+| `external`  | When using CI services other than GitLab. |
+| `pipelines` | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
+| `pushes`    | Pipeline is triggered by a `git push` by the user. |
+| `schedules` | For [scheduled pipelines][schedules]. |
+| `triggers`  | For pipelines created using a trigger token. |
+| `web`       | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
+
 In the example below, `job` will run only for refs that start with `issue-`,
-whereas all branches will be skipped.
+whereas all branches will be skipped:
 
 ```yaml
 job:
@@ -460,7 +472,7 @@ job:
 ```
 
 In this example, `job` will run only for refs that are tagged, or if a build is
-explicitly requested via an API trigger or a [Pipeline Schedule](../../user/project/pipelines/schedules.md).
+explicitly requested via an API trigger or a [Pipeline Schedule][schedules]:
 
 ```yaml
 job:
@@ -1532,3 +1544,4 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-3442]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3442
+[schedules]: ../../user/project/pipelines/schedules.md

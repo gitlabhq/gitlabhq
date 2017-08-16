@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::NoteMessage, models: true do
+describe ChatMessage::NoteMessage do
   subject { described_class.new(args) }
 
   let(:color) { '#345' }

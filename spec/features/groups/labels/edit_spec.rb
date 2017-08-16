@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Edit group label', feature: true do
+feature 'Edit group label' do
   given(:user)  { create(:user) }
   given(:group) { create(:group) }
   given(:label) { create(:group_label, group: group) }

@@ -4,7 +4,7 @@ describe Ci::API::Triggers do
   describe 'POST /projects/:project_id/refs/:ref/trigger' do
     let!(:trigger_token) { 'secure token' }
     let!(:project) { create(:project, :repository, ci_id: 10) }
-    let!(:project2) { create(:empty_project, ci_id: 11) }
+    let!(:project2) { create(:project, ci_id: 11) }
 
     let!(:trigger) do
       create(:ci_trigger,

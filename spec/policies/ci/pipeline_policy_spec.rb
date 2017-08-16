@@ -10,7 +10,7 @@ describe Ci::PipelinePolicy, :models do
 
   describe 'rules' do
     describe 'rules for protected ref' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         project.add_developer(user)

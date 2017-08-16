@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Gitlab::Regex, lib: true do
+describe Gitlab::Regex do
   describe '.project_name_regex' do
     subject { described_class.project_name_regex }
 

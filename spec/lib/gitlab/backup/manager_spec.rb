@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Backup::Manager, lib: true do
+describe Backup::Manager do
   include StubENV
 
   let(:progress) { StringIO.new }
@@ -211,6 +211,58 @@ describe Backup::Manager, lib: true do
         expect(Kernel).to have_received(:system)
           .with("tar", "-xf", "1451606400_2016_01_01_1.2.3_gitlab_backup.tar")
         expect(progress).to have_received(:puts).with(a_string_matching('done'))
+      end
+    end
+  end
+
+  describe '#upload' do
+    let(:backup_file) { Tempfile.new('backup', Gitlab.config.backup.path) }
+    let(:backup_filename) { File.basename(backup_file.path) }
+
+    before do
+      allow(subject).to receive(:tar_file).and_return(backup_filename)
+
+      stub_backup_setting(
+        upload: {
+          connection: {
+            provider: 'AWS',
+            aws_access_key_id: 'id',
+            aws_secret_access_key: 'secret'
+          },
+          remote_directory: 'directory',
+          multipart_chunk_size: 104857600,
+          encryption: nil,
+          storage_class: nil
+        }
+      )
+
+      # the Fog mock only knows about directories we create explicitly
+      Fog.mock!
+      connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
+      connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+    end
+
+    context 'target path' do
+      it 'uses the tar filename by default' do
+        expect_any_instance_of(Fog::Collection).to receive(:create)
+          .with(hash_including(key: backup_filename))
+          .and_return(true)
+
+        Dir.chdir(Gitlab.config.backup.path) do
+          subject.upload
+        end
+      end
+
+      it 'adds the DIRECTORY environment variable if present' do
+        stub_env('DIRECTORY', 'daily')
+
+        expect_any_instance_of(Fog::Collection).to receive(:create)
+          .with(hash_including(key: "daily/#{backup_filename}"))
+          .and_return(true)
+
+        Dir.chdir(Gitlab.config.backup.path) do
+          subject.upload
+        end
       end
     end
   end

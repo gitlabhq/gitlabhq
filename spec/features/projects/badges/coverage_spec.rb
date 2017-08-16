@@ -55,7 +55,7 @@ feature 'test coverage badge' do
   end
 
   def create_pipeline
-    opts = { project: project, ref: 'master', sha: project.commit.id }
+    opts = { project: project }
 
     create(:ci_pipeline, opts).tap do |pipeline|
       yield pipeline

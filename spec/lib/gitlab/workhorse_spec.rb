@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Workhorse, lib: true do
+describe Gitlab::Workhorse do
   let(:project)    { create(:project, :repository) }
   let(:repository) { project.repository }
 
@@ -63,13 +63,13 @@ describe Gitlab::Workhorse, lib: true do
     end
 
     context 'without ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal) }
+      subject { described_class.terminal_websocket(terminal) }
 
       it { is_expected.to eq(workhorse) }
     end
 
     context 'with ca_pem' do
-      subject { Gitlab::Workhorse.terminal_websocket(terminal(ca_pem: "foo")) }
+      subject { described_class.terminal_websocket(terminal(ca_pem: "foo")) }
 
       it { is_expected.to eq(workhorse(ca_pem: "foo")) }
     end
@@ -202,7 +202,6 @@ describe Gitlab::Workhorse, lib: true do
     context 'when Gitaly is enabled' do
       let(:gitaly_params) do
         {
-          GitalyAddress: Gitlab::GitalyClient.address('default'),
           GitalyServer: {
             address: Gitlab::GitalyClient.address('default'),
             token: Gitlab::GitalyClient.token('default')
@@ -217,7 +216,9 @@ describe Gitlab::Workhorse, lib: true do
       it 'includes a Repository param' do
         repo_param = { Repository: {
           storage_name: 'default',
-          relative_path: project.full_path + '.git'
+          relative_path: project.full_path + '.git',
+          git_object_directory: '',
+          git_alternate_object_directories: []
         } }
 
         expect(subject).to include(repo_param)

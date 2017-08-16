@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Todo, models: true do
+describe Todo do
   let(:issue) { create(:issue) }
 
   describe 'relationships' do

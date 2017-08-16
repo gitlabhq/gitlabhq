@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::CreateService, services: true do
+describe MergeRequests::CreateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
@@ -46,6 +46,16 @@ describe MergeRequests::CreateService, services: true do
         }
 
         expect(Todo.where(attributes).count).to be_zero
+      end
+
+      it 'creates exactly 1 create MR event' do
+        attributes = {
+          action: Event::CREATED,
+          target_id: @merge_request.id,
+          target_type: @merge_request.class.name
+        }
+
+        expect(Event.where(attributes).count).to eq(1)
       end
 
       context 'when merge request is assigned to someone' do

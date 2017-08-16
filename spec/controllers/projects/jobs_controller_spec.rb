@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::JobsController do
   include ApiHelpers
 
-  let(:project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:user) { create(:user) }
 

@@ -112,7 +112,7 @@ GitLab from source respectively.
 
 >**Note:**
 Be careful to choose a port different than the one that Registry listens to (`5000` by default),
-otherwise you will run into conflicts .
+otherwise you will run into conflicts.
 
 ---
 

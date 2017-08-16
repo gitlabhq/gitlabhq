@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe TeamcityService, :use_clean_rails_memory_store_caching, models: true do
+describe TeamcityService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   let(:teamcity_url) { 'http://gitlab.com/teamcity' }
 
   subject(:service) do
     described_class.create(
-      project: create(:empty_project),
+      project: create(:project),
       properties: {
         teamcity_url: teamcity_url,
         username: 'mic',

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::CreateTriggerRequestService, services: true do
+describe Ci::CreateTriggerRequestService do
   let(:service) { described_class }
   let(:project) { create(:project, :repository) }
   let(:trigger) { create(:ci_trigger, project: project, owner: owner) }

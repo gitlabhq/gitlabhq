@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe DiffDiscussion, model: true do
+describe DiffDiscussion do
   include RepoHelpers
 
   subject { described_class.new([diff_note]) }
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:diff_note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
 

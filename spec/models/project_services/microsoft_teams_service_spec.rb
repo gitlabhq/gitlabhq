@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MicrosoftTeamsService, models: true do
+describe MicrosoftTeamsService do
   let(:chat_service) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
 

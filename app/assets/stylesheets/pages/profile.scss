@@ -391,3 +391,26 @@ table.u2f-registrations {
     margin-bottom: 0;
   }
 }
+
+.gpg-email-badge {
+  display: inline;
+  margin-right: $gl-padding / 2;
+
+  .gpg-email-badge-email {
+    display: inline;
+    margin-right: $gl-padding / 4;
+  }
+
+  .label-verification-status {
+    border-width: 1px;
+    border-style: solid;
+
+    &.verified {
+      @include green-status-color;
+    }
+
+    &.unverified {
+      @include status-color($gray-dark, $gray, $common-gray-dark);
+    }
+  }
+}

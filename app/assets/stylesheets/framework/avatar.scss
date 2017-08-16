@@ -88,6 +88,10 @@
   overflow: hidden;
   display: flex;
 
+  a {
+    display: flex;
+  }
+
   .avatar {
     border-radius: 0;
     border: none;
@@ -96,6 +100,8 @@
     margin: 0;
     align-self: center;
   }
+
+  &.s40 { min-width: 40px; min-height: 40px; }
 }
 
 .avatar-counter {

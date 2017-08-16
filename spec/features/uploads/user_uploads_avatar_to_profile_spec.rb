@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User uploads avatar to profile', feature: true do
+feature 'User uploads avatar to profile' do
   scenario 'they see their new avatar' do
     user = create(:user)
     sign_in(user)

@@ -8,8 +8,13 @@ module Projects
 
     def async_execute
       project.update_attribute(:pending_delete, true)
+<<<<<<< HEAD
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params.to_hash)
       Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
+=======
+      job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
+      Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
+>>>>>>> ba89ee1f7d9e126dc6306a857da5abe816a18047
     end
 
     def execute
@@ -40,7 +45,7 @@ module Projects
     private
 
     def repo_path
-      project.path_with_namespace
+      project.disk_path
     end
 
     def wiki_path
@@ -127,7 +132,9 @@ module Projects
     def flush_caches(project)
       project.repository.before_delete
 
-      Repository.new(wiki_path, project).before_delete
+      Repository.new(wiki_path, project, disk_path: repo_path).before_delete
+
+      Projects::ForksCountService.new(project).delete_cache
     end
   end
 end

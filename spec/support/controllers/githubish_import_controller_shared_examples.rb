@@ -56,7 +56,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "assigns variables" do
-    project = create(:empty_project, import_type: provider, creator_id: user.id)
+    project = create(:project, import_type: provider, creator_id: user.id)
     stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo])
 
     get :status
@@ -69,7 +69,7 @@ shared_examples 'a GitHub-ish import controller: GET status' do
   end
 
   it "does not show already added project" do
-    project = create(:empty_project, import_type: provider, creator_id: user.id, import_source: 'asd/vim')
+    project = create(:project, import_type: provider, creator_id: user.id, import_source: 'asd/vim')
     stub_client(repos: [repo], orgs: [])
 
     get :status

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Saml::User, lib: true do
+describe Gitlab::Saml::User do
   let(:saml_user) { described_class.new(auth_hash) }
   let(:gl_user) { saml_user.gl_user }
   let(:uid) { 'my-uid' }
@@ -109,7 +109,7 @@ describe Gitlab::Saml::User, lib: true do
           end
 
           it 'does not throw an error' do
-            expect{ saml_user.save }.not_to raise_error
+            expect { saml_user.save }.not_to raise_error
           end
         end
 
@@ -119,7 +119,7 @@ describe Gitlab::Saml::User, lib: true do
           end
 
           it 'throws an error' do
-            expect{ saml_user.save }.to raise_error StandardError
+            expect { saml_user.save }.to raise_error StandardError
           end
         end
       end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Top Plus Menu', feature: true, js: true do
+feature 'Top Plus Menu', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }

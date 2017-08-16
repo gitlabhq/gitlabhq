@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GroupUrlConstrainer, lib: true do
+describe GroupUrlConstrainer do
   let!(:group) { create(:group, path: 'gitlab') }
 
   describe '#matches?' do

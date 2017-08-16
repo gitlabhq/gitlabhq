@@ -66,80 +66,49 @@ For more use cases please check our [Technical Articles](../articles/index.md).
 
 ## Projects
 
-In GitLab, you can create projects for numerous reasons, such as, host
+In GitLab, you can create [projects](project/index.md) for numerous reasons, such as, host
 your code, use it as an issue tracker, collaborate on code, and continuously
 build, test, and deploy your app with built-in GitLab CI/CD. Or, you can do
 it all at once, from one single project.
 
-### Issues
-
-Explore the best of GitLab [Issues](project/issues/index.md).
-
-### Merge Requests
-
-Collanorate on code, gather reviews, live preview changes per branch, and
-request approvals with [Merge Requests](project/merge_requests/index.md).
-
-### Milestones
-
-Work on multiple issues and merge requests towards the same target date
-with [Milestones](project/milestones/index.md).
-
-### GitLab Pages
-
-Publish your static site directly from GitLab with [GitLab Pages](project/pages/index.md). You
-can [build, test, and deploy any Static Site Generator](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/) with Pages.
-
-### Container Registry
-
-Build and deploy Docker images with [GitLab Container Registry](project/container_registry.md).
+- [Repositories](project/repository/index.md): Host your codebase in
+repositories with version control and as part of a fully integrated platform.
+- [Issues](project/issues/index.md): Explore the best of GitLab Issues' features.
+- [Merge Requests](project/merge_requests/index.md): Collaborate on code,
+reviews, live preview changes per branch, and request approvals with Merge Requests.
+- [Milestones](project/milestones/index.md): Work on multiple issues and merge
+requests towards the same target date with Milestones.
 
 ## GitLab CI/CD
 
 Use built-in [GitLab CI/CD](../ci/README.md) to test, build, and deploy your applications
 directly from GitLab. No third-party integrations needed.
 
-### Auto Deploy
-
-Deploy your application out-of-the-box with [GitLab Auto Deploy](../ci/autodeploy/index.md).
-
-### Review Apps
-
-Live-preview the changes introduced by a merge request with [Review Apps](../ci/review_apps/index.md).
-
-## Groups
-
-With GitLab [Groups](group/index.md) you can assemble related projects together
-and grant members access to several projects at once.
-
-### Subgroups
-
-Groups can also be nested in [subgroups](group/subgroups/index.md).
+- [GitLab Auto Deploy](../ci/autodeploy/index.md): Deploy your application out-of-the-box with GitLab Auto Deploy.
+- [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
+- [GitLab Pages](project/pages/index.md): Publish your static site directly from
+GitLab with Gitlab Pages. You can build, test, and deploy any Static Site Generator with Pages.
+- [GitLab Container Registry](project/container_registry.md): Build and deploy Docker
+images with Container Registry.
 
 ## Account
 
 There is a lot you can customize and configure
 to enjoy the best of GitLab.
 
-Manage your user settings to change your personal info,
-personal access tokens, authorized applications, integrations, etc.
+- [Settings](profile/index.md): Manage your user settings to change your personal info,
+personal access tokens, authorized applications, etc.
+- [Authentication](../topics/authentication/index.md): Read through the authentication
+methods available in GitLab.
+- [Permissions](permissions.md): Learn the different set of permissions levels for each
+user type (guest, reporter, developer, master, owner).
 
-### Authentication
+## Groups
 
-Read through the [authentication](../topics/authentication/index.md) methods available in GitLab.
+With GitLab [Groups](group/index.md) you can assemble related projects together
+and grant members access to several projects at once.
 
-### Permissions
-
-Learn the different set of [permissions](permissions.md) for user type (guest, reporter, developer, master, owner).
-
-## Integrations
-
-[Integrate GitLab](../integration/README.md) with your preferred tool,
-such as Trello, JIRA, etc.
-
-## Git and GitLab
-
-Learn what is [Git](../topics/git/index.md) and its best practices.
+Groups can also be nested in [subgroups](group/subgroups/index.md).
 
 ## Discussions
 
@@ -163,6 +132,11 @@ requests you're assigned to.
 you have quick access to. You can also gather feedback on them through
 [discussions](#discussions).
 
+## Integrations
+
+[Integrate GitLab](../integration/README.md) with your preferred tool,
+such as Trello, JIRA, etc.
+
 ## Webhooks
 
 Configure [webhooks](project/integrations/webhooks.html) to listen for
@@ -173,3 +147,6 @@ POST request with data to the webhook URL.
 
 Automate GitLab via [API](../api/README.html).
 
+## Git and GitLab
+
+Learn what is [Git](../topics/git/index.md) and its best practices.

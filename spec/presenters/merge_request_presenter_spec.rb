@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MergeRequestPresenter do
   let(:resource) { create :merge_request, source_project: project }
-  let(:project) { create :empty_project }
+  let(:project) { create :project }
   let(:user) { create(:user) }
 
   describe '#ci_status' do
@@ -71,7 +71,7 @@ describe MergeRequestPresenter do
   end
 
   describe '#conflict_resolution_path' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:user) { create :user }
     let(:presenter) { described_class.new(resource, current_user: user) }
     let(:path) { presenter.conflict_resolution_path }
@@ -105,7 +105,7 @@ describe MergeRequestPresenter do
   end
 
   context 'issues links' do
-    let(:project) { create(:project, :private, creator: user, namespace: user.namespace) }
+    let(:project) { create(:project, :private, :repository, creator: user, namespace: user.namespace) }
     let(:issue_a) { create(:issue, project: project) }
     let(:issue_b) { create(:issue, project: project) }
 

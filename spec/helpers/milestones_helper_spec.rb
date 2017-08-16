@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe MilestonesHelper do
   describe '#milestones_filter_dropdown_path' do
-    let(:project) { create(:empty_project) }
-    let(:project2) { create(:empty_project) }
+    let(:project) { create(:project) }
+    let(:project2) { create(:project) }
     let(:group) { create(:group) }
 
     context 'when @project present' do
@@ -57,7 +57,7 @@ describe MilestonesHelper do
   end
 
   describe '#milestone_counts' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:counts) { helper.milestone_counts(project.milestones) }
 
     context 'when there are milestones' do

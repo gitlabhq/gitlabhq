@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Banzai::Filter::IssuableStateFilter, lib: true do
+describe Banzai::Filter::IssuableStateFilter do
   include ActionView::Helpers::UrlHelper
   include FilterSpecHelper
 
   let(:user) { create(:user) }
   let(:context) { { current_user: user, issuable_state_filter_enabled: true } }
   let(:closed_issue) { create_issue(:closed) }
-  let(:project) { create(:empty_project, :public) }
-  let(:other_project) { create(:empty_project, :public) }
+  let(:project) { create(:project, :public) }
+  let(:other_project) { create(:project, :public) }
 
   def create_link(text, data)
     link_to(text, '', class: 'gfm has-tooltip', data: data)
@@ -107,14 +107,6 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
       expect(doc.css('a').last.text).to eq(issue.to_reference)
     end
 
-    it 'ignores reopened issue references' do
-      issue = create_issue(:reopened)
-      link = create_link(issue.to_reference, issue: issue.id, reference_type: 'issue')
-      doc = filter(link, context)
-
-      expect(doc.css('a').last.text).to eq(issue.to_reference)
-    end
-
     it 'appends state to closed issue references' do
       link = create_link(closed_issue.to_reference, issue: closed_issue.id, reference_type: 'issue')
       doc = filter(link, context)
@@ -139,7 +131,7 @@ describe Banzai::Filter::IssuableStateFilter, lib: true do
     end
 
     it 'ignores reopened merge request references' do
-      merge_request = create_merge_request(:reopened)
+      merge_request = create_merge_request(:opened)
 
       link = create_link(
         merge_request.to_reference,

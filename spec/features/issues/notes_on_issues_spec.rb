@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Create notes on issues', :js, :feature do
+describe 'Create notes on issues', :js do
   let(:user) { create(:user) }
 
   shared_examples 'notes with reference' do
@@ -56,21 +56,21 @@ describe 'Create notes on issues', :js, :feature do
 
   context 'mentioning merge request on a private project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:project, :private) }
+      let(:project) { create(:project, :private, :repository) }
       let(:mention) { create(:merge_request, source_project: project) }
     end
   end
 
   context 'mentioning merge request on an internal project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:project, :internal) }
+      let(:project) { create(:project, :internal, :repository) }
       let(:mention) { create(:merge_request, source_project: project) }
     end
   end
 
   context 'mentioning merge request on a public project' do
     it_behaves_like 'notes with reference' do
-      let(:project) { create(:project, :public) }
+      let(:project) { create(:project, :public, :repository) }
       let(:mention) { create(:merge_request, source_project: project) }
     end
   end

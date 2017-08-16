@@ -5,7 +5,14 @@ shared_examples 'issuable record that supports quick actions in its description 
   include QuickActionsHelpers
 
   let(:master) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) do
+    case issuable_type
+    when :merge_request
+      create(:project, :public, :repository)
+    when :issue
+      create(:project, :public)
+    end
+  end
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
   let!(:label_bug) { create(:label, project: project, title: 'bug') }
   let!(:label_feature) { create(:label, project: project, title: 'feature') }
@@ -270,6 +277,17 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(page).to have_content 'Commands applied'
 
         expect(issuable.subscribed?(master, project)).to be_falsy
+      end
+    end
+
+    context "with a note assigning the #{issuable_type} to the current user" do
+      it "assigns the #{issuable_type} to the current user" do
+        write_note("/assign me")
+
+        expect(page).not_to have_content '/assign me'
+        expect(page).to have_content 'Commands applied'
+
+        expect(issuable.reload.assignees).to eq [master]
       end
     end
   end

@@ -6,7 +6,7 @@ import './filtered_search_dropdown';
 
 class DropdownNonUser extends gl.FilteredSearchDropdown {
   constructor(options = {}) {
-    const { input, endpoint, symbol } = options;
+    const { input, endpoint, symbol, preprocessing } = options;
     super(options);
     this.symbol = symbol;
     this.config = {
@@ -14,6 +14,7 @@ class DropdownNonUser extends gl.FilteredSearchDropdown {
         endpoint,
         method: 'setData',
         loadingTemplate: this.loadingTemplate,
+        preprocessing,
         onError() {
           /* eslint-disable no-new */
           new Flash('An error occured fetching the dropdown data.');

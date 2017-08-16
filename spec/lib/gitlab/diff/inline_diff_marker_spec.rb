@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::InlineDiffMarker, lib: true do
+describe Gitlab::Diff::InlineDiffMarker do
   describe '#mark' do
     context "when the rich text is html safe" do
       let(:raw) { "abc 'def'" }

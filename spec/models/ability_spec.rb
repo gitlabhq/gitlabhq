@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Ability, lib: true do
+describe Ability do
   context 'using a nil subject' do
     it 'has no permissions' do
-      expect(Ability.policy_for(nil, nil)).to be_banned
+      expect(described_class.policy_for(nil, nil)).to be_banned
     end
   end
 
   describe '.can_edit_note?' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:note) { create(:note_on_issue, project: project) }
 
     context 'using an anonymous user' do
@@ -66,7 +66,7 @@ describe Ability, lib: true do
   describe '.users_that_can_read_project' do
     context 'using a public project' do
       it 'returns all the users' do
-        project = create(:empty_project, :public)
+        project = create(:project, :public)
         user = build(:user)
 
         expect(described_class.users_that_can_read_project([user], project))
@@ -75,7 +75,7 @@ describe Ability, lib: true do
     end
 
     context 'using an internal project' do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:project, :internal) }
 
       it 'returns users that are administrators' do
         user = build(:user, admin: true)
@@ -126,7 +126,7 @@ describe Ability, lib: true do
     end
 
     context 'using a private project' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       it 'returns users that are administrators' do
         user = build(:user, admin: true)
@@ -253,7 +253,7 @@ describe Ability, lib: true do
   end
 
   describe '.project_disabled_features_rules' do
-    let(:project) { create(:empty_project, :wiki_disabled) }
+    let(:project) { create(:project, :wiki_disabled) }
 
     subject { described_class.policy_for(project.owner, project) }
 

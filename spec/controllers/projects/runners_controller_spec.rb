@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::RunnersController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:runner) { create(:ci_runner) }
 
   let(:params) do

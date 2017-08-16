@@ -25,6 +25,18 @@ module Referable
     to_reference(from_project)
   end
 
+  def referable_inspect
+    if respond_to?(:id)
+      "#<#{self.class.name} id:#{id} #{to_reference(full: true)}>"
+    else
+      "#<#{self.class.name} #{to_reference(full: true)}>"
+    end
+  end
+
+  def inspect
+    referable_inspect
+  end
+
   module ClassMethods
     # The character that prefixes the actual reference identifier
     #

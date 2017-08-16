@@ -11,7 +11,7 @@ describe('MRWidgetNotAllowed', () => {
       expect(vm.$el.classList.contains('mr-widget-body')).toBeTruthy();
       expect(vm.$el.querySelector('button').getAttribute('disabled')).toBeTruthy();
       expect(vm.$el.innerText).toContain('Ready to be merged automatically.');
-      expect(vm.$el.innerText).toContain('Ask someone with write access to this repository to merge this request.');
+      expect(vm.$el.innerText).toContain('Ask someone with write access to this repository to merge this request');
     });
   });
 });

@@ -8,9 +8,9 @@ describe ConversationalDevelopmentIndex::MetricPresenter do
     it 'includes instance score, leader score and percentage score' do
       issues_card = subject.cards.first
 
-      expect(issues_card.instance_score).to eq 1.234
-      expect(issues_card.leader_score).to eq 9.256
-      expect(issues_card.percentage_score).to be_within(0.1).of(13.3)
+      expect(issues_card.instance_score).to eq(1.234)
+      expect(issues_card.leader_score).to eq(9.256)
+      expect(issues_card.percentage_score).to eq(13.331)
     end
   end
 

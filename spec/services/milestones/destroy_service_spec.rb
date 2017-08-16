@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Milestones::DestroyService, services: true do
+describe Milestones::DestroyService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }

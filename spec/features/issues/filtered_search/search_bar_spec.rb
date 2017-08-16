@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Search bar', js: true, feature: true do
+describe 'Search bar', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
   let(:filtered_search) { find('.filtered-search') }
 
@@ -32,7 +32,7 @@ describe 'Search bar', js: true, feature: true do
     it 'selects item' do
       filtered_search.native.send_keys(:down, :down, :enter)
 
-      expect_tokens([{ name: 'author' }])
+      expect_tokens([author_token])
       expect_filtered_search_input_empty
     end
   end

@@ -12,7 +12,7 @@ module API
       end
 
       def expose_url(path)
-        url_options = Rails.application.routes.default_url_options
+        url_options = Gitlab::Application.routes.default_url_options
         protocol, host, port = url_options.slice(:protocol, :host, :port).values
 
         URI::HTTP.build(scheme: protocol, host: host, port: port, path: path).to_s

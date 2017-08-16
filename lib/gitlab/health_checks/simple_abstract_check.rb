@@ -15,14 +15,13 @@ module Gitlab
       end
 
       def metrics
-        with_timing method(:check) do |result, elapsed|
-          Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless is_successful?(result)
-          [
-            metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),
-            metric("#{metric_prefix}_success", is_successful?(result) ? 1 : 0),
-            metric("#{metric_prefix}_latency_seconds", elapsed)
-          ]
-        end
+        result, elapsed = with_timing(&method(:check))
+        Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless is_successful?(result)
+        [
+          metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),
+          metric("#{metric_prefix}_success", is_successful?(result) ? 1 : 0),
+          metric("#{metric_prefix}_latency_seconds", elapsed)
+        ]
       end
 
       private

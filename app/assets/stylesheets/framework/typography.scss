@@ -19,9 +19,9 @@
   }
 
   img.js-lazy-loaded {
-    min-width: none;
-    min-height: none;
-    background-color: none;
+    min-width: inherit;
+    min-height: inherit;
+    background-color: inherit;
   }
 
   p a:not(.no-attachment-icon) img {
@@ -338,6 +338,8 @@ a > code {
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }
+
+@include new-style-dropdown('.git-revision-dropdown');
 
 /**
  * Apply Markdown typography

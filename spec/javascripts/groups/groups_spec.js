@@ -64,6 +64,19 @@ describe('Groups Component', () => {
       expect(lists[2].querySelector('#group-1120').textContent).toContain(groups.id1119.subGroups.id1120.name);
     });
 
+    it('should render group identicon when group avatar is not present', () => {
+      const avatar = component.$el.querySelector('#group-12 .avatar-container .avatar');
+      expect(avatar.nodeName).toBe('DIV');
+      expect(avatar.classList.contains('identicon')).toBeTruthy();
+      expect(avatar.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
+    });
+
+    it('should render group avatar when group avatar is present', () => {
+      const avatar = component.$el.querySelector('#group-1120 .avatar-container .avatar');
+      expect(avatar.nodeName).toBe('IMG');
+      expect(avatar.classList.contains('identicon')).toBeFalsy();
+    });
+
     it('should remove prefix of parent group', () => {
       expect(component.$el.querySelector('#group-12 #group-1128 .title').textContent).toContain('level2 / level3 / level4');
     });

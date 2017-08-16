@@ -1,11 +1,7 @@
 require 'spec_helper'
 
 describe 'User edits files' do
-  let(:fork_message) do
-    "You're not allowed to make changes to this project directly. "\
-    "A fork of this project has been created that you can make changes in, so you can submit a merge request."
-  end
-  let(:project) { create(:project, name: 'Shop') }
+  let(:project) { create(:project, :repository, name: 'Shop') }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }
   let(:project_tree_path_root_ref) { project_tree_path(project, project.repository.root_ref) }
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
@@ -24,6 +20,9 @@ describe 'User edits files' do
     it 'inserts a content of a file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+
+      wait_for_requests
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
       expect(evaluate_script('ace.edit("editor").getValue()')).to eq('*.rbca')
@@ -39,6 +38,9 @@ describe 'User edits files' do
     it 'commits an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+
+      wait_for_requests
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')
@@ -53,6 +55,9 @@ describe 'User edits files' do
     it 'commits an edited file to a new branch', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+
+      wait_for_requests
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       fill_in(:branch_name, with: 'new_branch_name', visible: true)
@@ -69,6 +74,9 @@ describe 'User edits files' do
     it 'shows the diff of an edited file', js: true do
       click_link('.gitignore')
       find('.js-edit-blob').click
+
+      wait_for_requests
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       click_link('Preview changes')
 
@@ -91,7 +99,12 @@ describe 'User edits files' do
 
       click_link('Fork')
 
-      expect(page).to have_content(fork_message)
+      expect(page).to have_content(
+        "You're not allowed to make changes to this project directly. "\
+        "A fork of this project has been created that you can make changes in, so you can submit a merge request."
+      )
+
+      wait_for_requests
 
       execute_script("ace.edit('editor').setValue('*.rbca')")
 
@@ -106,6 +119,9 @@ describe 'User edits files' do
       expect(page).to have_button('Cancel')
 
       click_link('Fork')
+
+      wait_for_requests
+
       execute_script("ace.edit('editor').setValue('*.rbca')")
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Commit changes')

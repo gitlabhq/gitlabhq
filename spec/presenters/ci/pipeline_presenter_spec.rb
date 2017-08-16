@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::PipelinePresenter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   subject(:presenter) do

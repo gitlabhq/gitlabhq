@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::LineProfiler, lib: true do
+describe Gitlab::Sherlock::LineProfiler do
   let(:profiler) { described_class.new }
 
   describe '#profile' do

@@ -33,7 +33,7 @@
       Suggestions:
       %code= 'gitlab'
       %code= @project.path # Path contains no spaces, but dashes
-      %code= @project.path_with_namespace
+      %code= @project.full_path
     %p
       Reserved:
       = link_to 'https://docs.mattermost.com/help/messaging/executing-commands.html#built-in-commands', target: '__blank' do

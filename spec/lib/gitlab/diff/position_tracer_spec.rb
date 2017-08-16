@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Diff::PositionTracer, lib: true do
+describe Gitlab::Diff::PositionTracer do
   # Douwe's diary                                    New York City, 2016-06-28
   # --------------------------------------------------------------------------
   #

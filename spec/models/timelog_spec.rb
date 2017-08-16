@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Timelog, type: :model do
+RSpec.describe Timelog do
   subject { build(:timelog) }
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }

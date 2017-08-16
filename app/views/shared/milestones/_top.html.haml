@@ -23,7 +23,7 @@
     .pull-right
       - if can?(current_user, :admin_milestones, group)
         - if milestone.is_group_milestone?
-          = link_to edit_group_milestone_path(group, milestone.iid), class: "btn btn btn-grouped" do
+          = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do
             Edit
         - if milestone.active?
           = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-grouped btn-close"

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'projects/tags/index', :view do
-  let(:project) { create(:project) }
+describe 'projects/tags/index' do
+  let(:project) { create(:project, :repository) }
 
   before do
     assign(:project, project)

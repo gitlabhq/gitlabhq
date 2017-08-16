@@ -23,7 +23,7 @@ describe GroupsHelper do
 
   describe 'group_lfs_status' do
     let(:group) { create(:group) }
-    let!(:project) { create(:empty_project, namespace_id: group.id) }
+    let!(:project) { create(:project, namespace_id: group.id) }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
@@ -47,7 +47,7 @@ describe GroupsHelper do
 
     context 'more than one project in group' do
       before do
-        create(:empty_project, namespace_id: group.id)
+        create(:project, namespace_id: group.id)
       end
 
       context 'LFS enabled in group' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe AbuseReport, type: :model do
+RSpec.describe AbuseReport do
   subject     { create(:abuse_report) }
   let(:user)  { create(:admin) }
 

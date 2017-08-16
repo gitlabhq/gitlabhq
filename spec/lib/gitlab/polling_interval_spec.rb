@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::PollingInterval, lib: true do
+describe Gitlab::PollingInterval do
   let(:polling_interval) { described_class }
 
   describe '.set_header' do

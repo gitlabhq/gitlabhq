@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BasePolicy, models: true do
+describe BasePolicy do
   describe '.class_for' do
     it 'detects policy class based on the subject ancestors' do
       expect(DeclarativePolicy.class_for(GenericCommitStatus.new)).to eq(CommitStatusPolicy)

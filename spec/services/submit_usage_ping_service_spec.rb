@@ -46,6 +46,8 @@ describe SubmitUsagePingService do
         .by(1)
 
       expect(ConversationalDevelopmentIndex::Metric.last.leader_issues).to eq 10.2
+      expect(ConversationalDevelopmentIndex::Metric.last.instance_issues).to eq 3.2
+      expect(ConversationalDevelopmentIndex::Metric.last.percentage_issues).to eq 31.37
     end
   end
 
@@ -60,6 +62,7 @@ describe SubmitUsagePingService do
       conv_index: {
         leader_issues: 10.2,
         instance_issues: 3.2,
+        percentage_issues: 31.37,
 
         leader_notes: 25.3,
         instance_notes: 23.2,
@@ -86,7 +89,9 @@ describe SubmitUsagePingService do
         instance_projects_prometheus_active: 0.30,
 
         leader_service_desk_issues: 15.8,
-        instance_service_desk_issues: 15.1
+        instance_service_desk_issues: 15.1,
+
+        non_existing_column: 'value'
       }
     }
   end

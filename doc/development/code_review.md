@@ -11,6 +11,8 @@ There are a few rules to get your merge request accepted:
     **approved by a [frontend maintainer][projects]**.
   1. If your merge request includes frontend and backend changes [^1], it must
     be **approved by a [frontend and a backend maintainer][projects]**.
+  1. If your merge request includes a new dependency or a filesystem change, it must
+    be **approved by a [Build team member][team]**. See [how to work with the Build team][build handbook] for more details.
 1. To lower the amount of merge requests maintainers need to review, you can
   ask or assign any [reviewers][projects] for a first review.
   1. If you need some guidance (e.g. it's your first merge request), feel free
@@ -194,3 +196,4 @@ Largely based on the [thoughtbot code review guide].
 
 [projects]: https://about.gitlab.com/handbook/engineering/projects/
 [team]: https://about.gitlab.com/team/
+[build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build

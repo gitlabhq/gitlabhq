@@ -30,8 +30,8 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
     expect(@merge_request.target_branch).to eq "master"
-    expect(page).to have_content @forked_project.path_with_namespace
-    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @forked_project.full_path
+    expect(page).to have_content @project.full_path
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
 
@@ -43,10 +43,10 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content('Target branch')
 
     first('.js-source-project').click
-    first('.dropdown-source-project a', text: @forked_project.path_with_namespace)
+    first('.dropdown-source-project a', text: @forked_project.full_path)
 
     first('.js-target-project').click
-    first('.dropdown-target-project a', text: @project.path_with_namespace)
+    first('.dropdown-target-project a', text: @project.full_path)
 
     first('.js-source-branch').click
     wait_for_requests
@@ -81,8 +81,8 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     expect(@merge_request.source_project).to eq @forked_project
     expect(@merge_request.source_branch).to eq "fix"
     expect(@merge_request.target_branch).to eq "master"
-    expect(page).to have_content @forked_project.path_with_namespace
-    expect(page).to have_content @project.path_with_namespace
+    expect(page).to have_content @forked_project.full_path
+    expect(page).to have_content @project.full_path
     expect(page).to have_content @merge_request.source_branch
     expect(page).to have_content @merge_request.target_branch
   end

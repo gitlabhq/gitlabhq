@@ -65,8 +65,8 @@ describe "Admin Runners" do
     let(:runner) { FactoryGirl.create :ci_runner }
 
     before do
-      @project1 = FactoryGirl.create(:empty_project)
-      @project2 = FactoryGirl.create(:empty_project)
+      @project1 = FactoryGirl.create(:project)
+      @project2 = FactoryGirl.create(:project)
       visit admin_runner_path(runner)
     end
 

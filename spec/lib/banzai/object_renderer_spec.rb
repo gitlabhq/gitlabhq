@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Banzai::ObjectRenderer do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:renderer) { described_class.new(project, user, custom_value: 'value') }
   let(:object) { Note.new(note: 'hello', note_html: '<p dir="auto">hello</p>', cached_markdown_version: CacheMarkdownField::CACHE_VERSION) }
@@ -28,7 +28,7 @@ describe Banzai::ObjectRenderer do
 
     it 'passes context to PostProcessPipeline' do
       another_user = create(:user)
-      another_project = create(:empty_project)
+      another_project = create(:project)
       object = Note.new(
         note: 'hello',
         note_html: 'hello',

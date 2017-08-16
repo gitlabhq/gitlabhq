@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::Runner, models: true do
+describe Ci::Runner do
   describe 'validation' do
     context 'when runner is not allowed to pick untagged jobs' do
       context 'when runner does not have tags' do
@@ -37,7 +37,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '#assign_to' do
-    let!(:project) { FactoryGirl.create :empty_project }
+    let!(:project) { FactoryGirl.create :project }
     let!(:shared_runner) { FactoryGirl.create(:ci_runner, :shared) }
 
     before do
@@ -50,7 +50,7 @@ describe Ci::Runner, models: true do
   end
 
   describe '.online' do
-    subject { Ci::Runner.online }
+    subject { described_class.online }
 
     before do
       @runner1 = FactoryGirl.create(:ci_runner, :shared, contacted_at: 1.year.ago)
@@ -339,8 +339,8 @@ describe Ci::Runner, models: true do
 
   describe '.assignable_for' do
     let(:runner) { create(:ci_runner) }
-    let(:project) { create(:empty_project) }
-    let(:another_project) { create(:empty_project) }
+    let(:project) { create(:project) }
+    let(:another_project) { create(:project) }
 
     before do
       project.runners << runner
@@ -352,13 +352,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give shared runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -366,13 +366,13 @@ describe Ci::Runner, models: true do
 
     context 'with unlocked runner' do
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does give a specific runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to contain_exactly(runner) }
       end
@@ -384,13 +384,13 @@ describe Ci::Runner, models: true do
       end
 
       context 'does not give owned runner' do
-        subject { Ci::Runner.assignable_for(project) }
+        subject { described_class.assignable_for(project) }
 
         it { is_expected.to be_empty }
       end
 
       context 'does not give a locked runner' do
-        subject { Ci::Runner.assignable_for(another_project) }
+        subject { described_class.assignable_for(another_project) }
 
         it { is_expected.to be_empty }
       end
@@ -400,8 +400,8 @@ describe Ci::Runner, models: true do
   describe "belongs_to_one_project?" do
     it "returns false if there are two projects runner assigned to" do
       runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:empty_project)
-      project1 = FactoryGirl.create(:empty_project)
+      project = FactoryGirl.create(:project)
+      project1 = FactoryGirl.create(:project)
       project.runners << runner
       project1.runners << runner
 
@@ -410,7 +410,7 @@ describe Ci::Runner, models: true do
 
     it "returns true" do
       runner = FactoryGirl.create(:ci_runner)
-      project = FactoryGirl.create(:empty_project)
+      project = FactoryGirl.create(:project)
       project.runners << runner
 
       expect(runner.belongs_to_one_project?).to be_truthy

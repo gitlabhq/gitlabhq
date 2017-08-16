@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::I18n, lib: true do
+describe Gitlab::I18n do
   let(:user) { create(:user, preferred_language: 'es') }
 
   describe '.locale=' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::GroupVariable, models: true do
+describe Ci::GroupVariable do
   subject { build(:ci_group_variable) }
 
   it { is_expected.to include_module(HasVariable) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UserActivities, :clean_gitlab_redis_shared_state, lib: true do
+describe Gitlab::UserActivities, :clean_gitlab_redis_shared_state do
   let(:now) { Time.now }
 
   describe '.record' do

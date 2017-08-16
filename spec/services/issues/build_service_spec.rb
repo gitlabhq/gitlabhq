@@ -1,6 +1,6 @@
 require 'spec_helper.rb'
 
-describe Issues::BuildService, services: true do
+describe Issues::BuildService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

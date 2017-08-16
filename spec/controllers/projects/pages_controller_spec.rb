@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::PagesController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   let(:request_params) do
     {

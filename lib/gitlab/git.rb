@@ -10,7 +10,7 @@ module Gitlab
       include Gitlab::EncodingHelper
 
       def ref_name(ref)
-        encode! ref.sub(/\Arefs\/(tags|heads)\//, '')
+        encode! ref.sub(/\Arefs\/(tags|heads|remotes)\//, '')
       end
 
       def branch_name(ref)

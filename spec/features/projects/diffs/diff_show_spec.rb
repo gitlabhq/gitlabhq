@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff file viewer', :js, feature: true do
+feature 'Diff file viewer', :js do
   let(:project) { create(:project, :public, :repository) }
 
   def visit_commit(sha, anchor: nil)

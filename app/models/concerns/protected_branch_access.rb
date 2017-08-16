@@ -1,6 +1,12 @@
 module ProtectedBranchAccess
   extend ActiveSupport::Concern
 
+  ALLOWED_ACCESS_LEVELS ||= [
+    Gitlab::Access::MASTER,
+    Gitlab::Access::DEVELOPER,
+    Gitlab::Access::NO_ACCESS
+  ].freeze
+
   included do
     include ProtectedRefAccess
 
@@ -9,11 +15,7 @@ module ProtectedBranchAccess
     delegate :project, to: :protected_branch
 
     validates :access_level, presence: true, inclusion: {
-      in: [
-        Gitlab::Access::MASTER,
-        Gitlab::Access::DEVELOPER,
-        Gitlab::Access::NO_ACCESS
-      ]
+      in: ALLOWED_ACCESS_LEVELS
     }
 
     def self.human_access_levels

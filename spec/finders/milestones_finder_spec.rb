@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe MilestonesFinder do
   let(:group) { create(:group) }
-  let(:project_1) { create(:empty_project, namespace: group) }
-  let(:project_2) { create(:empty_project, namespace: group) }
+  let(:project_1) { create(:project, namespace: group) }
+  let(:project_2) { create(:project, namespace: group) }
   let!(:milestone_1) { create(:milestone, group: group, title: 'one test', due_date: Date.today) }
   let!(:milestone_2) { create(:milestone, group: group) }
   let!(:milestone_3) { create(:milestone, project: project_1, state: 'active', due_date: Date.tomorrow) }

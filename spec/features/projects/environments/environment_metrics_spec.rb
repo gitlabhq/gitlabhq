@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Environment > Metrics', :feature do
+feature 'Environment > Metrics' do
   include PrometheusHelpers
 
   given(:user) { create(:user) }

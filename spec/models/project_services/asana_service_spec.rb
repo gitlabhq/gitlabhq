@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AsanaService, models: true do
+describe AsanaService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -18,7 +18,7 @@ describe AsanaService, models: true do
 
   describe 'Execute' do
     let(:user) { create(:user) }
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     def create_data_for_commits(*messages)
       {
@@ -35,7 +35,7 @@ describe AsanaService, models: true do
     end
 
     before do
-      @asana = AsanaService.new
+      @asana = described_class.new
       allow(@asana).to receive_messages(
         project: project,
         project_id: project.id,

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User uploads avatar to group', feature: true do
+feature 'User uploads avatar to group' do
   scenario 'they see the new avatar' do
     user = create(:user)
     group = create(:group)

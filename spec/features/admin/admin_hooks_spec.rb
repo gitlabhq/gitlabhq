@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Admin::Hooks', feature: true do
+describe 'Admin::Hooks' do
   before do
     @project = create(:project)
     sign_in(create(:admin))

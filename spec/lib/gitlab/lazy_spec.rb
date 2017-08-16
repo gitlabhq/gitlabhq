@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Lazy, lib: true do
+describe Gitlab::Lazy do
   let(:dummy) { double(:dummy) }
 
   context 'when not calling any methods' do

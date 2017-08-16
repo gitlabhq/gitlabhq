@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe SentNotificationsController, type: :controller do
+describe SentNotificationsController do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:sent_notification) { create(:sent_notification, project: project, noteable: issue, recipient: user) }
 
   let(:issue) do

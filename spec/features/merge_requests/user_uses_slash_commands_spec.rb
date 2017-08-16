@@ -1,12 +1,7 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses quick actions', feature: true, js: true do
+feature 'Merge Requests > User uses quick actions', js: true do
   include QuickActionsHelpers
-
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
-  let(:merge_request) { create(:merge_request, source_project: project) }
-  let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :merge_request do
     let(:issuable) { create(:merge_request, source_project: project) }
@@ -14,6 +9,11 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
   end
 
   describe 'merge-request-only commands' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -129,7 +129,7 @@ feature 'Merge Requests > User uses quick actions', feature: true, js: true do
     end
 
     describe '/target_branch command in merge request' do
-      let(:another_project) { create(:project, :public) }
+      let(:another_project) { create(:project, :public, :repository) }
       let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
 
       before do

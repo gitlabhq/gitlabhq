@@ -45,13 +45,17 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   end
 
   def load_projects(finder_params)
-    ProjectsFinder.new(params: finder_params, current_user: current_user)
-      .execute.includes(:route, namespace: :route)
+    ProjectsFinder
+      .new(params: finder_params, current_user: current_user)
+      .execute
+      .includes(:route, :creator, namespace: :route)
   end
 
   def load_events
-    @events = Event.in_projects(load_projects(params.merge(non_public: true)))
-    @events = event_filter.apply_filter(@events).with_associations
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    projects = load_projects(params.merge(non_public: true))
+
+    @events = EventCollection
+      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 end

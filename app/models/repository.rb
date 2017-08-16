@@ -4,7 +4,7 @@ class Repository
   include Gitlab::ShellAdapter
   include RepositoryMirroring
 
-  attr_accessor :path_with_namespace, :project
+  attr_accessor :full_path, :disk_path, :project
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -48,25 +48,30 @@ class Repository
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+        __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+      end
     end
   end
 
-  def initialize(path_with_namespace, project)
-    @path_with_namespace = path_with_namespace
+  def initialize(full_path, project, disk_path: nil)
+    @full_path = full_path
+    @disk_path = disk_path || full_path
     @project = project
   end
 
   def raw_repository
-    return nil unless path_with_namespace
+    return nil unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
 
+  alias_method :raw, :raw_repository
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(repository_storage_path, path_with_namespace + ".git")
+      File.join(repository_storage_path, disk_path + '.git')
     )
   end
 
@@ -129,16 +134,13 @@ class Repository
       return []
     end
 
-    ref ||= root_ref
-
-    args = %W(
-      #{Gitlab.config.git.bin_path} log #{ref} --pretty=%H --skip #{offset}
-      --max-count #{limit} --grep=#{query} --regexp-ignore-case
-    )
-    args = args.concat(%W(-- #{path})) if path.present?
-
-    git_log_results = Gitlab::Popen.popen(args, path_to_repo).first.lines
-    git_log_results.map { |c| commit(c.chomp) }.compact
+    raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
+      if is_enabled
+        find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+      else
+        find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+      end
+    end
   end
 
   def find_branch(name, fresh_repo: true)
@@ -224,7 +226,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -235,6 +237,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -300,7 +306,7 @@ class Repository
 
     expire_method_caches(to_refresh)
 
-    to_refresh.each { |method| send(method) }
+    to_refresh.each { |method| send(method) } # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -439,9 +445,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -457,10 +463,6 @@ class Repository
     nil
   end
 
-  def blob_by_oid(oid)
-    Gitlab::Git::Blob.raw(self, oid)
-  end
-
   def root_ref
     if raw_repository
       raw_repository.root_ref
@@ -473,7 +475,7 @@ class Repository
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
-    return false unless path_with_namespace
+    return false unless full_path
 
     Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
       if enabled
@@ -616,17 +618,26 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    sha = last_commit_id_for_path(sha, path)
-    commit(sha)
+    raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+      if is_enabled
+        last_commit_for_path_by_gitaly(sha, path)
+      else
+        last_commit_for_path_by_rugged(sha, path)
+      end
+    end
   end
 
-  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/383
   def last_commit_id_for_path(sha, path)
     key = path.blank? ? "last_commit_id_for_path:#{sha}" : "last_commit_id_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      args = %W(#{Gitlab.config.git.bin_path} rev-list --max-count=1 #{sha} -- #{path})
-      Gitlab::Popen.popen(args, path_to_repo).first.strip
+      raw_repository.gitaly_migrate(:last_commit_for_path) do |is_enabled|
+        if is_enabled
+          last_commit_for_path_by_gitaly(sha, path).id
+        else
+          last_commit_id_for_path_by_shelling_out(sha, path)
+        end
+      end
     end
   end
 
@@ -681,8 +692,8 @@ class Repository
   end
 
   def refs_contains_sha(ref_type, sha)
-    args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
-    names = Gitlab::Popen.popen(args, path_to_repo).first
+    args = %W(#{ref_type} --contains #{sha})
+    names = run_git(args).first
 
     if names.respond_to?(:split)
       names = names.split("\n").map(&:strip)
@@ -760,14 +771,14 @@ class Repository
       index = Gitlab::Git::Index.new(raw_repository)
 
       if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
+        index.read_tree(start_commit.rugged_commit.tree)
         parents = [start_commit.sha]
       else
         parents = []
       end
 
       actions.each do |options|
-        index.public_send(options.delete(:action), options)
+        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       options = {
@@ -947,7 +958,7 @@ class Repository
       if is_enabled
         raw_repository.is_ancestor?(ancestor_id, descendant_id)
       else
-        merge_base_commit(ancestor_id, descendant_id) == ancestor_id
+        rugged_is_ancestor?(ancestor_id, descendant_id)
       end
     end
   end
@@ -960,15 +971,17 @@ class Repository
     return [] if empty_repo? || query.blank?
 
     offset = 2
-    args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
-    Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
+    args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
+
+    run_git(args).first.scrub.split(/^--$/)
   end
 
   def search_files_by_name(query, ref)
     return [] if empty_repo? || query.blank?
 
-    args = %W(#{Gitlab.config.git.bin_path} ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
-    Gitlab::Popen.popen(args, path_to_repo).first.lines.map(&:strip)
+    args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
+
+    run_git(args).first.lines.map(&:strip)
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
@@ -978,12 +991,10 @@ class Repository
       if start_repository == self
         start_branch_name
       else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
+        tmp_ref = fetch_ref(
           start_repository.path_to_repo,
           "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
+          "refs/tmp/#{SecureRandom.hex}/head"
         )
 
         start_repository.commit(start_branch_name).sha
@@ -1009,12 +1020,17 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(repository_storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(repository_storage_path, disk_path, remote, forced: forced, no_tags: no_tags)
   end
 
   def fetch_ref(source_path, source_ref, target_ref)
-    args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    Gitlab::Popen.popen(args, path_to_repo)
+    args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
+    message, status = run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)
@@ -1095,6 +1111,12 @@ class Repository
 
   private
 
+  def run_git(args)
+    circuit_breaker.perform do
+      Gitlab::Popen.popen([Gitlab.config.git.bin_path, *args], path_to_repo)
+    end
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1104,11 +1126,14 @@ class Repository
   end
 
   def refs_directory_exists?
-    File.exist?(File.join(path_to_repo, 'refs'))
+    circuit_breaker.perform do
+      File.exist?(File.join(path_to_repo, 'refs'))
+    end
   end
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
+    # TODO: should we use UUIDs here? We could move repositories without clearing this cache
+    @cache ||= RepositoryCache.new(full_path, @project.id)
   end
 
   def tags_sorted_by_committed_date
@@ -1131,7 +1156,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
+    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
   end
 
   def create_commit(params = {})
@@ -1140,11 +1165,51 @@ class Repository
     Rugged::Commit.create(rugged, params)
   end
 
+  def last_commit_for_path_by_gitaly(sha, path)
+    c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
+    commit(c)
+  end
+
+  def last_commit_for_path_by_rugged(sha, path)
+    sha = last_commit_id_for_path_by_shelling_out(sha, path)
+    commit(sha)
+  end
+
+  def last_commit_id_for_path_by_shelling_out(sha, path)
+    args = %W(rev-list --max-count=1 #{sha} -- #{path})
+    run_git(args).first.strip
+  end
+
   def repository_storage_path
     @project.repository_storage_path
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, path_with_namespace + '.git')
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git')
+  end
+
+  def circuit_breaker
+    @circuit_breaker ||= Gitlab::Git::Storage::CircuitBreaker.for_storage(project.repository_storage)
+  end
+
+  def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+    ref ||= root_ref
+
+    args = %W(
+      log #{ref} --pretty=%H --skip #{offset}
+      --max-count #{limit} --grep=#{query} --regexp-ignore-case
+    )
+    args = args.concat(%W(-- #{path})) if path.present?
+
+    git_log_results = run_git(args).first.lines
+
+    git_log_results.map { |c| commit(c.chomp) }.compact
+  end
+
+  def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+    raw_repository
+      .gitaly_commit_client
+      .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+      .map { |c| commit(c) }
   end
 end

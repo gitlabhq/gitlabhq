@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/jobs/show', :view do
+describe 'projects/jobs/show' do
   let(:project) { create(:project, :repository) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 

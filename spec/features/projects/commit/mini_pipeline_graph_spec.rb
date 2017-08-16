@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-feature 'Mini Pipeline Graph in Commit View', :js, :feature do
+feature 'Mini Pipeline Graph in Commit View', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   before do
     sign_in(user)

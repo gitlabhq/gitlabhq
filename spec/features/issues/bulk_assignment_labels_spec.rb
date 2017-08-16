@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > Labels bulk assignment', feature: true do
+feature 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
@@ -353,7 +353,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
     context 'cannot bulk assign labels' do
       it do
-        expect(page).not_to have_button 'Edit Issues'
+        expect(page).not_to have_button 'Edit issues'
         expect(page).not_to have_css '.check-all-issues'
         expect(page).not_to have_css '.issue-check'
       end
@@ -411,7 +411,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
 
   def enable_bulk_update
     visit project_issues_path(project)
-    click_button 'Edit Issues'
+    click_button 'Edit issues'
   end
 
   def disable_bulk_update

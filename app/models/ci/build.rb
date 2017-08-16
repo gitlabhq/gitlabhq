@@ -194,10 +194,7 @@ module Ci
     #   * Maximum length is 63 bytes
     #   * First/Last Character is not a hyphen
     def ref_slug
-      ref.to_s
-          .downcase
-          .gsub(/[^a-z0-9]/, '-')[0..62]
-          .gsub(/(\A-+|-+\z)/, '')
+      Gitlab::Utils.slugify(ref.to_s)
     end
 
     # Variables whose value does not depend on environment
@@ -219,6 +216,7 @@ module Ci
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
       variables += secret_variables(environment: environment)
       variables += trigger_request.user_variables if trigger_request
+      variables += pipeline.variables.map(&:to_runner_variable)
       variables += pipeline.pipeline_schedule.job_variables if pipeline.pipeline_schedule
       variables += persisted_environment_variables if environment
 

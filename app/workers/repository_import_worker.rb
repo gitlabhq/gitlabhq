@@ -16,7 +16,7 @@ class RepositoryImportWorker
 
     Gitlab::Metrics.add_event(:import_repository,
                               import_url: @project.import_url,
-                              path: @project.path_with_namespace)
+                              path: @project.full_path)
 
     project.update_columns(import_jid: self.jid, import_error: nil)
 

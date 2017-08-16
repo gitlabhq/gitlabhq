@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe NotificationSettingsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }
 
@@ -99,7 +99,7 @@ describe NotificationSettingsController do
     end
 
     context 'not authorized' do
-      let(:private_project) { create(:empty_project, :private) }
+      let(:private_project) { create(:project, :private) }
 
       before do
         sign_in(user)

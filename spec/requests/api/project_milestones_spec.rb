@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe API::ProjectMilestones do
   let(:user) { create(:user) }
-  let!(:project) { create(:empty_project, namespace: user.namespace ) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 

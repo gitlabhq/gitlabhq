@@ -5,9 +5,9 @@ feature 'Dashboard Merge Requests' do
   include SortingHelper
 
   let(:current_user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
-  let(:public_project) { create(:empty_project, :public, :repository) }
+  let(:public_project) { create(:project, :public, :repository) }
   let(:forked_project) { Projects::ForkService.new(public_project, current_user).execute }
 
   before do
@@ -16,7 +16,7 @@ feature 'Dashboard Merge Requests' do
   end
 
   context 'new merge request dropdown' do
-    let(:project_with_disabled_merge_requests) { create(:empty_project, :merge_requests_disabled) }
+    let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
     before do
       project_with_disabled_merge_requests.add_master(current_user)

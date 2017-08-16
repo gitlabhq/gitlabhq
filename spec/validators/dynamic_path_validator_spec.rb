@@ -86,7 +86,7 @@ describe DynamicPathValidator do
     end
 
     it 'updating to an invalid path is not allowed' do
-      project = create(:empty_project)
+      project = create(:project)
       project.path = 'update'
 
       validator.validate_each(project, :path, 'update')

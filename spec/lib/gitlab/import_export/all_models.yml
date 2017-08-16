@@ -22,6 +22,7 @@ events:
 - author
 - project
 - target
+- push_event_payload
 notes:
 - award_emoji
 - project
@@ -102,6 +103,7 @@ pipelines:
 - statuses
 - builds
 - trigger_requests
+- variables
 - auto_canceled_by
 - auto_canceled_pipelines
 - auto_canceled_jobs
@@ -112,6 +114,8 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+pipeline_variables:
+- pipeline
 stages:
 - project
 - pipeline
@@ -269,3 +273,5 @@ timelogs:
 - issue
 - merge_request
 - user
+push_event_payload:
+- event

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::UrlBuilder, lib: true do
+describe Gitlab::UrlBuilder do
   describe '.build' do
     context 'when passing a Commit' do
       it 'returns a proper URL' do
@@ -8,7 +8,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
         url = described_class.build(commit)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.path_with_namespace}/commit/#{commit.id}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{commit.project.full_path}/commit/#{commit.id}"
       end
     end
 
@@ -18,7 +18,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
         url = described_class.build(issue)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.path_with_namespace}/issues/#{issue.iid}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/issues/#{issue.iid}"
       end
     end
 
@@ -28,7 +28,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
         url = described_class.build(merge_request)
 
-        expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.path_with_namespace}/merge_requests/#{merge_request.iid}"
+        expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}"
       end
     end
 
@@ -39,7 +39,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.path_with_namespace}/commit/#{note.commit_id}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/commit/#{note.commit_id}#note_#{note.id}"
         end
       end
 
@@ -49,7 +49,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.path_with_namespace}/commit/#{note.commit_id}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{note.project.full_path}/commit/#{note.commit_id}#note_#{note.id}"
         end
       end
 
@@ -60,7 +60,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.path_with_namespace}/issues/#{issue.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.full_path}/issues/#{issue.iid}#note_#{note.id}"
         end
       end
 
@@ -71,7 +71,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.path_with_namespace}/merge_requests/#{merge_request.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}#note_#{note.id}"
         end
       end
 
@@ -82,7 +82,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.path_with_namespace}/merge_requests/#{merge_request.iid}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{merge_request.project.full_path}/merge_requests/#{merge_request.iid}#note_#{note.id}"
         end
       end
 
@@ -93,7 +93,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
           url = described_class.build(note)
 
-          expect(url).to eq "#{Settings.gitlab['url']}/#{project_snippet.project.path_with_namespace}/snippets/#{note.noteable_id}#note_#{note.id}"
+          expect(url).to eq "#{Settings.gitlab['url']}/#{project_snippet.project.full_path}/snippets/#{note.noteable_id}#note_#{note.id}"
         end
       end
 
@@ -110,7 +110,7 @@ describe Gitlab::UrlBuilder, lib: true do
 
       context 'on another object' do
         it 'returns a proper URL' do
-          project = build_stubbed(:empty_project)
+          project = build_stubbed(:project)
 
           expect { described_class.build(project) }
             .to raise_error(NotImplementedError, 'No URL builder defined for Project')

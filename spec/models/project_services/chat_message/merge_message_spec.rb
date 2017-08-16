@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::MergeMessage, models: true do
+describe ChatMessage::MergeMessage do
   subject { described_class.new(args) }
 
   let(:args) do

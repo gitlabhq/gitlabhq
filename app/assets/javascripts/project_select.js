@@ -1,5 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
 import Api from './api';
+import ProjectSelectComboButton from './project_select_combo_button';
 
 (function() {
   this.ProjectSelect = (function() {
@@ -58,7 +59,8 @@ import Api from './api';
         if (this.includeGroups) {
           placeholder += " or group";
         }
-        return $(select).select2({
+
+        $(select).select2({
           placeholder: placeholder,
           minimumInputLength: 0,
           query: (function(_this) {
@@ -96,21 +98,18 @@ import Api from './api';
             };
           })(this),
           id: function(project) {
-            return project.web_url;
+            return JSON.stringify({
+              name: project.name,
+              url: project.web_url,
+            });
           },
           text: function(project) {
             return project.name_with_namespace || project.name;
           },
           dropdownCssClass: "ajax-project-dropdown"
         });
-      });
 
-      $('.new-project-item-select-button').on('click', function() {
-        $('.project-item-select', this.parentNode).select2('open');
-      });
-
-      $('.project-item-select').on('click', function() {
-        window.location = `${$(this).val()}/${this.dataset.relativePath}`;
+        return new ProjectSelectComboButton(select);
       });
     }
 

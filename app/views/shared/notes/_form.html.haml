@@ -10,6 +10,7 @@
   = hidden_field_tag :line_type
   = hidden_field_tag :merge_request_diff_head_sha, @note.noteable.try(:diff_head_sha)
   = hidden_field_tag :in_reply_to_discussion_id
+  = hidden_field_tag :note_project_id
 
   = note_target_fields(@note)
   = f.hidden_field :noteable_type

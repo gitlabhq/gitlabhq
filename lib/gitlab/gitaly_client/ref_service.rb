@@ -10,6 +10,18 @@ module Gitlab
         @storage = repository.storage
       end
 
+      def branches
+        request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
+            Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
+          end
+        end
+      end
+
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
         response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request)
@@ -52,6 +64,12 @@ module Gitlab
         consume_branches_response(response)
       end
 
+      def tags
+        request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request)
+        consume_tags_response(response)
+      end
+
       private
 
       def consume_refs_response(response)
@@ -74,6 +92,24 @@ module Gitlab
               encode!(gitaly_branch.name.dup),
               gitaly_branch.commit_id,
               commit_from_local_branches_response(gitaly_branch)
+            )
+          end
+        end
+      end
+
+      def consume_tags_response(response)
+        response.flat_map do |message|
+          message.tags.map do |gitaly_tag|
+            if gitaly_tag.target_commit.present?
+              gitaly_commit = Gitlab::Git::Commit.decorate(@repository, gitaly_tag.target_commit)
+            end
+
+            Gitlab::Git::Tag.new(
+              @repository,
+              encode!(gitaly_tag.name.dup),
+              gitaly_tag.id,
+              gitaly_commit,
+              encode!(gitaly_tag.message.chomp)
             )
           end
         end
@@ -103,7 +139,7 @@ module Gitlab
           committer_email: response.commit_committer.email.dup
         }
 
-        Gitlab::Git::Commit.decorate(hash)
+        Gitlab::Git::Commit.decorate(@repository, hash)
       end
     end
   end

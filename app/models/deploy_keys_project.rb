@@ -12,7 +12,7 @@ class DeployKeysProject < ApplicationRecord
 
   def destroy_orphaned_deploy_key
     return unless self.deploy_key.destroyed_when_orphaned? && self.deploy_key.orphaned?
-    
+
     self.deploy_key.destroy
   end
 end

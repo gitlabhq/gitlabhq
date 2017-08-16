@@ -6,7 +6,7 @@ describe Projects::RepositoriesController do
   describe "GET archive" do
     context 'as a guest' do
       it 'responds with redirect in correct format' do
-        get :archive, namespace_id: project.namespace, project_id: project, format: "zip"
+        get :archive, namespace_id: project.namespace, project_id: project, format: "zip", ref: 'master'
 
         expect(response.header["Content-Type"]).to start_with('text/html')
         expect(response).to be_redirect

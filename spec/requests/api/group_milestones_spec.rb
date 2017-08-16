@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::GroupMilestones do
   let(:user) { create(:user) }
   let(:group) { create(:group, :private) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
   let!(:closed_milestone) { create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone') }
   let!(:milestone) { create(:milestone, group: group, title: 'version2', description: 'open milestone') }

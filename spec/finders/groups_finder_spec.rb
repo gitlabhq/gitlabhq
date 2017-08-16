@@ -80,7 +80,7 @@ describe GroupsFinder do
 
           context 'authorized to private project' do
             context 'project one level deep' do
-              let!(:subproject) { create(:empty_project, :private, namespace: private_subgroup) }
+              let!(:subproject) { create(:project, :private, namespace: private_subgroup) }
               before do
                 subproject.add_guest(user)
               end
@@ -98,7 +98,7 @@ describe GroupsFinder do
 
             context 'project two levels deep' do
               let!(:private_subsubgroup) { create(:group, :private, parent: private_subgroup) }
-              let!(:subsubproject) { create(:empty_project, :private, namespace: private_subsubgroup) }
+              let!(:subsubproject) { create(:project, :private, namespace: private_subsubgroup) }
               before do
                 subsubproject.add_guest(user)
               end

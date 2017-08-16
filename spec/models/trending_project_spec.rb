@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe TrendingProject do
   let(:user) { create(:user) }
-  let(:public_project1) { create(:empty_project, :public) }
-  let(:public_project2) { create(:empty_project, :public) }
-  let(:public_project3) { create(:empty_project, :public) }
-  let(:private_project) { create(:empty_project, :private) }
-  let(:internal_project) { create(:empty_project, :internal) }
+  let(:public_project1) { create(:project, :public) }
+  let(:public_project2) { create(:project, :public) }
+  let(:public_project3) { create(:project, :public) }
+  let(:private_project) { create(:project, :private) }
+  let(:internal_project) { create(:project, :internal) }
 
   before do
     3.times do

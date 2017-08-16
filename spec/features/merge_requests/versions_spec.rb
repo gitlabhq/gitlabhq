@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request versions', js: true, feature: true do
+feature 'Merge Request versions', js: true do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
   let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }

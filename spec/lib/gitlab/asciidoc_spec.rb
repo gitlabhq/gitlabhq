@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'nokogiri'
 
 module Gitlab
-  describe Asciidoc, lib: true do
+  describe Asciidoc do
     let(:input) { '<b>ascii</b>' }
     let(:context) { {} }
     let(:html) { 'H<sub>2</sub>O' }

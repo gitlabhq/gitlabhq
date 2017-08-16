@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::CiAccess, lib: true do
-  let(:access) { Gitlab::CiAccess.new }
+describe Gitlab::CiAccess do
+  let(:access) { described_class.new }
 
   describe '#can_do_action?' do
     context 'when action is :build_download_code' do

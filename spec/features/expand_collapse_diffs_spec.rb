@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Expand and collapse diffs', js: true, feature: true do
+feature 'Expand and collapse diffs', js: true do
   let(:branch) { 'expand-collapse-diffs' }
   let(:project) { create(:project, :repository) }
 

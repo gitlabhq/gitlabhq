@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CampfireService, models: true do
+describe CampfireService do
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -29,7 +29,7 @@ describe CampfireService, models: true do
     let(:project) { create(:project, :repository) }
 
     before do
-      @campfire_service = CampfireService.new
+      @campfire_service = described_class.new
       allow(@campfire_service).to receive_messages(
         project_id: project.id,
         project: project,

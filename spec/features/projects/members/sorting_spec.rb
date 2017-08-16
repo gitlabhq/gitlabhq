@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Sorting', feature: true do
+feature 'Projects > Members > Sorting' do
   let(:master)    { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
-  let(:project)   { create(:empty_project, namespace: master.namespace, creator: master) }
+  let(:project)   { create(:project, namespace: master.namespace, creator: master) }
 
   background do
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)

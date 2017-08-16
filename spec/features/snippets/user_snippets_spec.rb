@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User Snippets', feature: true do
+feature 'User Snippets' do
   let(:author) { create(:user) }
   let!(:public_snippet) { create(:personal_snippet, :public, author: author, title: "This is a public snippet") }
   let!(:internal_snippet) { create(:personal_snippet, :internal, author: author, title: "This is an internal snippet") }

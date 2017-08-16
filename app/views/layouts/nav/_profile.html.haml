@@ -43,6 +43,10 @@
       = link_to profile_keys_path, title: 'SSH Keys' do
         %span
           SSH Keys
+    = nav_link(controller: :gpg_keys) do
+      = link_to profile_gpg_keys_path, title: 'GPG Keys' do
+        %span
+          GPG Keys
     = nav_link(controller: :preferences) do
       = link_to profile_preferences_path, title: 'Preferences' do
         %span

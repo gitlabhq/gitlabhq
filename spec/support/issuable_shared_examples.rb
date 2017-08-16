@@ -21,15 +21,15 @@ shared_examples 'system notes for milestones' do
       create(:group_member, group: group, user: user)
     end
 
-    it 'does not create system note' do
+    it 'creates a system note' do
       expect do
         update_issuable(milestone: group_milestone)
-      end.not_to change { Note.system.count }
+      end.to change { Note.system.count }.by(1)
     end
   end
 
   context 'project milestones' do
-    it 'creates system note' do
+    it 'creates a system note' do
       expect do
         update_issuable(milestone: create(:milestone))
       end.to change { Note.system.count }.by(1)

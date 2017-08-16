@@ -3,8 +3,8 @@ require 'spec_helper'
 feature 'Merge Request button' do
   shared_examples 'Merge request button only shown when allowed' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
-    let(:forked_project) { create(:project, :public, forked_from_project: project) }
+    let(:project) { create(:project, :public, :repository) }
+    let(:forked_project) { create(:project, :public, :repository, forked_from_project: project) }
 
     context 'not logged in' do
       it 'does not show Create merge request button' do

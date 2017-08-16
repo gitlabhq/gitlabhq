@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'instrument_classes', lib: true do
+describe 'instrument_classes' do
   let(:config) { double(:config) }
 
   let(:unicorn_sampler) { double(:unicorn_sampler) }

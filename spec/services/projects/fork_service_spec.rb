@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ForkService, services: true do
+describe Projects::ForkService do
   describe 'fork by user' do
     before do
       @from_user = create(:user)
@@ -49,6 +49,14 @@ describe Projects::ForkService, services: true do
           expect(to_project).to be_persisted
 
           expect(@from_project.avatar.file).to be_exists
+        end
+
+        it 'flushes the forks count cache of the source project' do
+          expect(@from_project.forks_count).to be_zero
+
+          fork_project(@from_project, @to_user)
+
+          expect(@from_project.forks_count).to eq(1)
         end
       end
     end

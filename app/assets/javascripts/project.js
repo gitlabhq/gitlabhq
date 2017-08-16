@@ -6,21 +6,27 @@ import Cookies from 'js-cookie';
 (function() {
   this.Project = (function() {
     function Project() {
-      $('ul.clone-options-dropdown a').click(function() {
-        var url;
-        if ($(this).hasClass('active')) {
-          return;
-        }
-        $('.active').not($(this)).removeClass('active');
-        $(this).toggleClass('active');
-        url = $("#project_clone").val();
-        $('#project_clone').val(url);
+      const $cloneOptions = $('ul.clone-options-dropdown');
+      const $projectCloneField = $('#project_clone');
+      const $cloneBtnText = $('a.clone-dropdown-btn span');
+
+      const selectedCloneOption = $cloneBtnText.text().trim();
+      if (selectedCloneOption.length > 0) {
+        $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
+      }
+
+      $('a', $cloneOptions).on('click', (e) => {
+        const $this = $(e.currentTarget);
+        const url = $this.attr('href');
+
+        e.preventDefault();
+
+        $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+        $this.toggleClass('is-active');
+        $projectCloneField.val(url);
+        $cloneBtnText.text($this.text());
+
         return $('.clone').text(url);
-      // Git protocol switcher
-      // Remove the active class for all buttons (ssh, http, kerberos if shown)
-      // Add the active class for the clicked button
-      // Update the input field
-      // Update the command line instructions
       });
       // Ref switcher
       this.initRefSwitcher();
@@ -84,6 +90,7 @@ import Cookies from 'js-cookie';
           filterable: true,
           filterRemote: true,
           filterByText: true,
+          inputFieldName: $dropdown.data('input-field-name'),
           fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var li = refListItem.cloneNode(false);
@@ -117,9 +124,14 @@ import Cookies from 'js-cookie';
             e.preventDefault();
             if ($('input[name="ref"]').length) {
               var $form = $dropdown.closest('form');
+
+              var $visit = $dropdown.data('visit');
+              var shouldVisit = $visit ? true : $visit;
               var action = $form.attr('action');
               var divider = action.indexOf('?') === -1 ? '?' : '&';
-              gl.utils.visitUrl(action + '' + divider + '' + $form.serialize());
+              if (shouldVisit) {
+                gl.utils.visitUrl(`${action}${divider}${$form.serialize()}`);
+              }
             }
           }
         });

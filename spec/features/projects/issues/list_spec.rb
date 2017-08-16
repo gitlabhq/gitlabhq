@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature 'Issues List' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   background do
     project.team << [user, :developer]

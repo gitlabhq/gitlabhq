@@ -1,3 +1,8 @@
+# This class is deprecated because we're closing Ci::TriggerRequest.
+# New class is PipelineTriggerService (app/services/ci/pipeline_trigger_service.rb)
+# which is integrated with Ci::PipelineVariable instaed of Ci::TriggerRequest.
+# We remove this class after we removed v1 and v3 API. This class is still being
+# referred by such legacy code.
 module Ci
   module CreateTriggerRequestService
     Result = Struct.new(:trigger_request, :pipeline)

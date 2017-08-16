@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import deploymentComponent from '~/vue_merge_request_widget/components/mr_widget_deployment';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
-import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
 
 const deploymentMockData = [
   {
@@ -40,15 +39,6 @@ describe('MRWidgetDeployment', () => {
 
       expect(service.type instanceof Object).toBeTruthy();
       expect(service.required).toBeTruthy();
-    });
-  });
-
-  describe('computed', () => {
-    describe('svg', () => {
-      it('should have the proper SVG icon', () => {
-        const vm = createComponent(deploymentMockData);
-        expect(vm.svg).toEqual(statusIconEntityMap.icon_status_success);
-      });
     });
   });
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'OAuth Login', js: true do
+feature 'OAuth Login', :js, :allow_forgery_protection do
   include DeviseHelpers
 
   def enter_code(code)

@@ -2,6 +2,7 @@
 
 - content_for :page_specific_javascripts do
   - if @snippet && current_user
+    -# haml-lint:disable InlineJavaScript
     :javascript
       window.uploads_path = "#{upload_path('personal_snippet', id: @snippet.id)}";
 

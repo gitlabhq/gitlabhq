@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::DeployKeys do
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
-  let(:project)     { create(:empty_project, creator_id: user.id) }
-  let(:project2)    { create(:empty_project, creator_id: user.id) }
+  let(:project)     { create(:project, creator_id: user.id) }
+  let(:project2)    { create(:project, creator_id: user.id) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
@@ -182,7 +182,7 @@ describe API::DeployKeys do
         delete api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin)
 
         expect(response).to have_http_status(204)
-      end.to change{ project.deploy_keys.count }.by(-1)
+      end.to change { project.deploy_keys.count }.by(-1)
     end
 
     it 'returns 404 Not Found with invalid ID' do
@@ -193,7 +193,7 @@ describe API::DeployKeys do
   end
 
   describe 'POST /projects/:id/deploy_keys/:key_id/enable' do
-    let(:project2) { create(:empty_project) }
+    let(:project2) { create(:project) }
 
     context 'when the user can admin the project' do
       it 'enables the key' do

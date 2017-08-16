@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe WikiPages::UpdateService, services: true do
-  let(:project) { create(:empty_project) }
+describe WikiPages::UpdateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:page) { create(:wiki_page) }
 
@@ -9,7 +9,8 @@ describe WikiPages::UpdateService, services: true do
     {
       content: 'New content for wiki page',
       format: 'markdown',
-      message: 'New wiki message'
+      message: 'New wiki message',
+      title: 'New Title'
     }
   end
 
@@ -27,6 +28,7 @@ describe WikiPages::UpdateService, services: true do
       expect(updated_page.message).to eq(opts[:message])
       expect(updated_page.content).to eq(opts[:content])
       expect(updated_page.format).to eq(opts[:format].to_sym)
+      expect(updated_page.title).to eq(opts[:title])
     end
 
     it 'executes webhooks' do

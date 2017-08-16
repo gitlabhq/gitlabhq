@@ -90,7 +90,7 @@ describe API::MergeRequests do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
 
@@ -99,7 +99,7 @@ describe API::MergeRequests do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
@@ -108,7 +108,7 @@ describe API::MergeRequests do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['updated_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['updated_at'] }
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
@@ -117,7 +117,7 @@ describe API::MergeRequests do
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(json_response.length).to eq(3)
-          response_dates = json_response.map{ |merge_request| merge_request['created_at'] }
+          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
           expect(response_dates).to eq(response_dates.sort)
         end
       end
@@ -312,18 +312,20 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:fork_project) { create(:empty_project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
-      let!(:unrelated_project) { create(:empty_project,  namespace: create(:user).namespace, creator_id: user2.id) }
+      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
-      before :each do |each|
-        fork_project.team << [user2, :reporter]
+      before do
+        fork_project.add_reporter(user2)
+
+        allow_any_instance_of(MergeRequest).to receive(:write_ref)
       end
 
       it "returns merge_request" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
           title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
           author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['description']).to eq('Test description for Test merge_request')
       end
@@ -334,7 +336,7 @@ describe API::MergeRequests do
         expect(fork_project.forked_from_project).to eq(project)
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
       end
 
@@ -348,25 +350,25 @@ describe API::MergeRequests do
              author: user2,
              target_project_id: project.id
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
       end
 
       it "returns 400 when source_branch is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when target_branch is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when title is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       context 'when target_branch is specified' do
@@ -377,7 +379,7 @@ describe API::MergeRequests do
                source_branch: 'markdown',
                author: user,
                target_project_id: fork_project.id
-          expect(response).to have_http_status(422)
+          expect(response).to have_gitlab_http_status(422)
         end
 
         it 'returns 422 if targeting a different fork' do
@@ -387,14 +389,14 @@ describe API::MergeRequests do
                source_branch: 'markdown',
                author: user2,
                target_project_id: unrelated_project.id
-          expect(response).to have_http_status(422)
+          expect(response).to have_gitlab_http_status(422)
         end
       end
 
       it "returns 201 when target_branch is specified and for the same project" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
       end
     end
   end
@@ -635,7 +637,7 @@ describe API::MergeRequests do
     end
 
     it 'handles external issues' do
-      jira_project = create(:jira_project, :public, name: 'JIR_EXT1')
+      jira_project = create(:jira_project, :public, :repository, name: 'JIR_EXT1')
       issue = ExternalIssue.new("#{jira_project.name}-123", jira_project)
       merge_request = create(:merge_request, :simple, author: user, assignee: user, source_project: jira_project)
       merge_request.update_attribute(:description, "Closes #{issue.to_reference(jira_project)}")
@@ -650,7 +652,7 @@ describe API::MergeRequests do
     end
 
     it 'returns 403 if the user has no access to the merge request' do
-      project = create(:empty_project, :private)
+      project = create(:project, :private, :repository)
       merge_request = create(:merge_request, :simple, source_project: project)
       guest = create(:user)
       project.team << [guest, :guest]

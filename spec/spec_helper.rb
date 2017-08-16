@@ -8,6 +8,7 @@ require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
+require 'rspec-parameterized'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -49,7 +50,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
   config.include StubConfiguration
-  config.include EmailHelpers, type: :mailer
+  config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -59,6 +60,7 @@ RSpec.configure do |config|
   config.include Gitlab::Routing, type: :routing
   config.include MigrationsHelpers, :migration
   config.include StubFeatureFlags
+  config.include StubENV
 
   config.infer_spec_type_from_file_location!
 
@@ -68,7 +70,14 @@ RSpec.configure do |config|
 
   config.raise_errors_for_deprecations!
 
+  if ENV['CI']
+    # This includes the first try, i.e. tests will be run 4 times before failing.
+    config.default_retry_count = 4
+    config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
+  end
+
   config.before(:suite) do
+    Timecop.safe_mode = true
     TestEnv.init
   end
 
@@ -92,10 +101,8 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
-  if ENV['CI']
-    config.around(:each) do |ex|
-      ex.run_with_retry retry: 2
-    end
+  config.before(:example, :mailer) do
+    reset_delivered_emails!
   end
 
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
@@ -128,10 +135,14 @@ RSpec.configure do |config|
   config.before(:example, :migration) do
     ActiveRecord::Migrator
       .migrate(migrations_paths, previous_migration.version)
+
+    reset_column_in_migration_models
   end
 
   config.after(:example, :migration) do
     ActiveRecord::Migrator.migrate(migrations_paths)
+
+    reset_column_in_migration_models
   end
 
   config.around(:each, :nested_groups) do |example|

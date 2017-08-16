@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard shortcuts', :feature, :js do
+feature 'Dashboard shortcuts', :js do
   context 'logged in' do
     before do
       sign_in(create(:user))

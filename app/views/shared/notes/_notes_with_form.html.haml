@@ -22,5 +22,4 @@
     = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes')
     to comment
 
-:javascript
-  var notes = new Notes("#{notes_url}", #{@notes.map(&:id).to_json}, #{Time.now.to_i}, "#{diff_view}", #{autocomplete})
+%script.js-notes-data{ type: "application/json" }= initial_notes_data(autocomplete).to_json.html_safe
