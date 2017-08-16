@@ -1,9 +1,9 @@
+require 'prometheus/client/support/unicorn'
+
 module Gitlab
   module Metrics
     module Samplers
       class RubySampler < BaseSampler
-        COUNTS = [:count, :minor_gc_count, :major_gc_count]
-
         def metrics
           @metrics ||= init_metrics
         end
@@ -32,25 +32,30 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:samples_total] = Gitlab::Metrics.counter(with_prefix(:sampler, :total), 'Total count of samples')
+          metrics[:sampler_duration] = Gitlab::Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', source_label)
           metrics[:total_time] = Gitlab::Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
             metrics[key] = Gitlab::Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
           end
 
           metrics[:objects_total] = Gitlab::Metrics.gauge(with_prefix(:objects, :total), 'Objects total', labels.merge(class: nil), :livesum)
+          metrics[:memory_usage] = Gitlab::Metrics.gauge(with_prefix(:memory, :usage_total), 'Memory used total', labels, :livesum)
+          metrics[:file_descriptors] = Gitlab::Metrics.gauge(with_prefix(:file, :descriptors_total), 'File descriptors total', labels, :livesum)
 
           metrics
         end
 
         def sample
-
-          metrics[:samples_total].increment(labels)
+          start_time = System.monotonic_time
           sample_gc
           sample_objects
-        rescue => ex
-          puts ex
 
+          metrics[:memory_usage].set(labels, System.memory_usage)
+          metrics[:file_descriptors].set(labels, System.file_descriptor_count)
+
+          metrics[:sampler_duration].observe(source_label, (System.monotonic_time - start_time) / 1000.0)
+        ensure
+          GC::Profiler.clear
         end
 
         private
@@ -64,13 +69,13 @@ module Gitlab
         end
 
         def sample_objects
-          ss_objects.each do |name, count|
+          list_objects.each do |name, count|
             metrics[:objects_total].set(labels.merge(class: name), count)
           end
         end
 
         if Metrics.mri?
-          def ss_objects
+          def list_objects
             sample = Allocations.to_hash
             counts = sample.each_with_object({}) do |(klass, count), hash|
               name = klass.name
@@ -85,11 +90,9 @@ module Gitlab
             counts
           end
         else
-          def ss_objects
-
+          def list_objects
           end
         end
-
 
         def source_label
           if Sidekiq.server?
@@ -101,11 +104,10 @@ module Gitlab
 
         def worker_label
           return {} unless defined?(Unicorn::Worker)
-          worker = if defined?(Unicorn::Worker)
-                     ObjectSpace.each_object(Unicorn::Worker)&.first
-                   end
-          if worker
-            { unicorn: worker.nr }
+          worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
+
+          if worker_no
+            { unicorn: worker_no }
           else
             { unicorn: 'master' }
           end
