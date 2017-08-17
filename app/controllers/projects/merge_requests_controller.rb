@@ -136,6 +136,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.json do
+        # FIXME (rspeicher): no whitelist for `MergeRequest`
+        # FIXME (rspeicher): no whitelist for `Milestone`
+        # FIXME (rspeicher): no whitelist for `Label`
         render json: @merge_request.to_json(
           include: {
             milestone: {},

@@ -12,6 +12,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     respond_to do |format|
       format.html { redirect_to_repository_settings(@project) }
       format.json do
+        # FIXME (rspeicher): `as_json`
         render json: Projects::Settings::DeployKeysPresenter.new(@project, current_user: current_user).as_json
       end
     end
