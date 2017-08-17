@@ -4,7 +4,7 @@ module Boards
       def execute(list)
         @board = list.board
         @old_position = list.position
-        @new_position = params[:position]
+        @new_position = params[:position].to_i
 
         return false unless list.movable?
         return false unless valid_move?
