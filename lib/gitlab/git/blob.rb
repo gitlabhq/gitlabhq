@@ -54,7 +54,7 @@ module Gitlab
         # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
         # full blob contents are returned. If blob_size_limit >= 0 then each blob will
         # contain no more than limit bytes in its data attribute.
-        # 
+        #
         # Keep in mind that this method may allocate a lot of memory. It is up
         # to the caller to limit the number of blobs and blob_size_limit.
         #
@@ -173,7 +173,7 @@ module Gitlab
 
       def initialize(options)
         %w(id name path size data mode commit_id binary).each do |key|
-          self.send("#{key}=", options[key.to_sym])
+          self.__send__("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         @loaded_all_data = false

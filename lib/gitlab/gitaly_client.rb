@@ -55,7 +55,7 @@ module Gitlab
     def self.call(storage, service, rpc, request)
       metadata = request_metadata(storage)
       metadata = yield(metadata) if block_given?
-      stub(service, storage).send(rpc, request, metadata)
+      stub(service, storage).__send__(rpc, request, metadata) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def self.request_metadata(storage)

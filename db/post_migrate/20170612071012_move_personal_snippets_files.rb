@@ -10,7 +10,7 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
     return unless file_storage?
 
     @source_relative_location = File.join('/uploads', 'personal_snippet')
-    @destination_relative_location = File.join('/uploads', 'system', 'personal_snippet')
+    @destination_relative_location = File.join('/uploads', '-', 'system', 'personal_snippet')
 
     move_personal_snippet_files
   end
@@ -18,7 +18,7 @@ class MovePersonalSnippetsFiles < ActiveRecord::Migration
   def down
     return unless file_storage?
 
-    @source_relative_location = File.join('/uploads', 'system', 'personal_snippet')
+    @source_relative_location = File.join('/uploads', '-', 'system', 'personal_snippet')
     @destination_relative_location = File.join('/uploads', 'personal_snippet')
 
     move_personal_snippet_files

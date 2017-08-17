@@ -1,12 +1,20 @@
 module Gitlab
   module Gpg
     class Commit
-      attr_reader :commit
+      def self.for_commit(commit)
+        new(commit.project, commit.sha)
+      end
 
-      def initialize(commit)
-        @commit = commit
+      def initialize(project, sha)
+        @project = project
+        @sha = sha
 
-        @signature_text, @signed_text = commit.raw.signature(commit.project.repository)
+        @signature_text, @signed_text =
+          begin
+            Rugged::Commit.extract_signature(project.repository.rugged, sha)
+          rescue Rugged::OdbError
+            nil
+          end
       end
 
       def has_signature?
@@ -16,18 +24,20 @@ module Gitlab
       def signature
         return unless has_signature?
 
-        cached_signature = GpgSignature.find_by(commit_sha: commit.sha)
-        return cached_signature if cached_signature.present?
+        return @signature if @signature
 
-        using_keychain do |gpg_key|
-          create_cached_signature!(gpg_key)
-        end
+        cached_signature = GpgSignature.find_by(commit_sha: @sha)
+        return @signature = cached_signature if cached_signature.present?
+
+        @signature = create_cached_signature!
       end
 
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
           cached_signature.update_attributes!(attributes(gpg_key))
         end
+
+        @signature = cached_signature
       end
 
       private
@@ -55,16 +65,18 @@ module Gitlab
         end
       end
 
-      def create_cached_signature!(gpg_key)
-        GpgSignature.create!(attributes(gpg_key))
+      def create_cached_signature!
+        using_keychain do |gpg_key|
+          GpgSignature.create!(attributes(gpg_key))
+        end
       end
 
       def attributes(gpg_key)
         user_infos = user_infos(gpg_key)
 
         {
-          commit_sha: commit.sha,
-          project: commit.project,
+          commit_sha: @sha,
+          project: @project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],

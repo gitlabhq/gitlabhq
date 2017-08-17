@@ -46,6 +46,7 @@
 
 ## Databases
 
+- [Merge Request Checklist](database_merge_request_checklist.md)
 - [What requires downtime?](what_requires_downtime.md)
 - [Adding database indexes](adding_database_indexes.md)
 - [Post Deployment Migrations](post_deployment_migrations.md)
@@ -56,6 +57,9 @@
 - [Background Migrations](background_migrations.md)
 - [Storing SHA1 Hashes As Binary](sha1_as_binary.md)
 - [Iterating Tables In Batches](iterating_tables_in_batches.md)
+- [Ordering Table Columns](ordering_table_columns.md)
+- [Verifying Database Capabilities](verifying_database_capabilities.md)
+- [Hash Indexes](hash_indexes.md)
 
 ## i18n
 

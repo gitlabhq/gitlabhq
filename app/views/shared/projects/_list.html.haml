@@ -23,6 +23,6 @@
           = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
           %strong= pluralize(@private_forks_count, 'private fork')
           %span &nbsp;you have no access to.
-    = paginate(projects, remote: remote, theme: "gitlab") if projects.respond_to? :total_pages
+    = paginate_collection(projects, remote: remote)
   - else
     .nothing-here-block No projects found

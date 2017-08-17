@@ -1,10 +1,16 @@
 import Cookies from 'js-cookie';
 import {
   calculateTop,
-  hideSubLevelItems,
   showSubLevelItems,
   canShowSubItems,
   canShowActiveSubItems,
+  mouseEnterTopItems,
+  mouseLeaveTopItem,
+  setOpenMenu,
+  mousePos,
+  getHideSubItemsInterval,
+  documentMouseMove,
+  getHeaderHeight,
 } from '~/fly_out_nav';
 import bp from '~/breakpoints';
 
@@ -18,11 +24,14 @@ describe('Fly out sidebar navigation', () => {
     document.body.appendChild(el);
 
     spyOn(bp, 'getBreakpointSize').and.callFake(() => breakpointSize);
+
+    setOpenMenu(null);
   });
 
   afterEach(() => {
-    el.remove();
+    document.body.innerHTML = '';
     breakpointSize = 'lg';
+    mousePos.length = 0;
   });
 
   describe('calculateTop', () => {
@@ -49,61 +58,153 @@ describe('Fly out sidebar navigation', () => {
     });
   });
 
-  describe('hideSubLevelItems', () => {
+  describe('getHideSubItemsInterval', () => {
     beforeEach(() => {
-      el.innerHTML = '<div class="sidebar-sub-level-items"></div>';
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: fixed; top: 0; left: 100px; height: 150px;"></div>';
     });
 
-    it('hides subitems', () => {
-      hideSubLevelItems(el);
+    it('returns 0 if currentOpenMenu is nil', () => {
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+    });
+
+    it('returns 0 when mouse above sub-items', () => {
+      showSubLevelItems(el);
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: el.getBoundingClientRect().top,
+      });
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: el.getBoundingClientRect().top - 50,
+      });
 
       expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('');
+        getHideSubItemsInterval(),
+      ).toBe(0);
     });
 
-    it('does not hude subitems on mobile', () => {
-      breakpointSize = 'xs';
+    it('returns 0 when mouse is below sub-items', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
 
-      hideSubLevelItems(el);
+      showSubLevelItems(el);
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: el.getBoundingClientRect().top,
+      });
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: (el.getBoundingClientRect().top - subItems.getBoundingClientRect().height) + 50,
+      });
 
       expect(
-        el.querySelector('.sidebar-sub-level-items').style.display,
-      ).not.toBe('none');
+        getHideSubItemsInterval(),
+      ).toBe(0);
     });
 
-    it('removes is-over class', () => {
+    it('returns 300 when mouse is moved towards sub-items', () => {
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: el.getBoundingClientRect().top,
+      });
+      showSubLevelItems(el);
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left + 20,
+        clientY: el.getBoundingClientRect().top + 10,
+      });
+      console.log(el);
+
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(300);
+    });
+  });
+
+  describe('mouseLeaveTopItem', () => {
+    beforeEach(() => {
       spyOn(el.classList, 'remove');
+    });
 
-      hideSubLevelItems(el);
+    it('removes is-over class if currentOpenMenu is null', () => {
+      mouseLeaveTopItem(el);
 
       expect(
         el.classList.remove,
       ).toHaveBeenCalledWith('is-over');
     });
 
-    it('removes is-above class from sub-items', () => {
-      const subItems = el.querySelector('.sidebar-sub-level-items');
+    it('removes is-over class if currentOpenMenu is null & there are sub-items', () => {
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute;"></div>';
 
-      spyOn(subItems.classList, 'remove');
-
-      hideSubLevelItems(el);
-
-      expect(
-        subItems.classList.remove,
-      ).toHaveBeenCalledWith('is-above');
-    });
-
-    it('does nothing if el has no sub-items', () => {
-      el.innerHTML = '';
-
-      spyOn(el.classList, 'remove');
-
-      hideSubLevelItems(el);
+      mouseLeaveTopItem(el);
 
       expect(
         el.classList.remove,
-      ).not.toHaveBeenCalledWith();
+      ).toHaveBeenCalledWith('is-over');
+    });
+
+    it('does not remove is-over class if currentOpenMenu is the passed in sub-items', () => {
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute;"></div>';
+
+      setOpenMenu(el.querySelector('.sidebar-sub-level-items'));
+      mouseLeaveTopItem(el);
+
+      expect(
+        el.classList.remove,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('mouseEnterTopItems', () => {
+    beforeEach(() => {
+      jasmine.clock().install();
+
+      el.innerHTML = '<div class="sidebar-sub-level-items" style="position: absolute; top: 0; left: 100px; height: 200px;"></div>';
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+
+    it('shows sub-items after 0ms if no menu is open', () => {
+      mouseEnterTopItems(el);
+
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+
+      jasmine.clock().tick(0);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).toBe('block');
+    });
+
+    it('shows sub-items after 300ms if a menu is currently open', () => {
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left,
+        clientY: el.getBoundingClientRect().top,
+      });
+
+      setOpenMenu(el.querySelector('.sidebar-sub-level-items'));
+
+      documentMouseMove({
+        clientX: el.getBoundingClientRect().left + 20,
+        clientY: el.getBoundingClientRect().top + 10,
+      });
+
+      mouseEnterTopItems(el);
+
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(300);
+
+      jasmine.clock().tick(300);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).toBe('block');
     });
   });
 
@@ -132,7 +233,7 @@ describe('Fly out sidebar navigation', () => {
       ).not.toBe('block');
     });
 
-    it('does not shows sub-items', () => {
+    it('shows sub-items', () => {
       showSubLevelItems(el);
 
       expect(
@@ -146,7 +247,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top)}px, 0px)`);
+      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {

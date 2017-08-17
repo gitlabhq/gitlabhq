@@ -25,7 +25,7 @@
               .form-group
                 = f.label :template_project, class: 'label-light' do
                   Create from template
-                  = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: "What’s included in a template?" }, title: "What’s included in a template?", class: 'has-tooltip', data: { placement: 'top'}
+                  = link_to icon('question-circle'), help_page_path("gitlab-basics/create-project"), target: '_blank', aria: { label: "What’s included in a template?" }, title: "What’s included in a template?", class: 'has-tooltip', data: { placement: 'top'}
                 %div
                   = render 'project_templates', f: f
           .second-column

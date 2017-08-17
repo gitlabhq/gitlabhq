@@ -90,15 +90,19 @@ from your fork to the upstream project
 
 ## Import or export a project
 
-- Import a project from:
-  - [GitHub to GitLab](../../workflow/importing/import_projects_from_github.md)
-  - [BitBucket to GitLab](../../workflow/importing/import_projects_from_bitbucket.md)
-  - [Gitea to GitLab](../../workflow/importing/import_projects_from_gitea.md)
-  - [FogBugz to GitLab](../../workflow/importing/import_projects_from_fogbugz.md)
+- [Import a project](import/index.md) from:
+  - [GitHub to GitLab](import/github.md)
+  - [BitBucket to GitLab](import/bitbucket.md)
+  - [Gitea to GitLab](import/gitea.md)
+  - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Leave a project
+## Project's members
+
+Learn how to [add members to your projects](members/index.md).
+
+### Leave a project
 
 **Leave project** will only display on the project's dashboard
 when a project is part of a group (under a

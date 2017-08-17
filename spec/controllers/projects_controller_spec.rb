@@ -578,6 +578,118 @@ describe ProjectsController do
     end
   end
 
+  describe '#export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#download_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        get :download_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#remove_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :remove_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#generate_new_export' do
+    before do
+      sign_in(user)
+
+      project.add_master(user)
+    end
+
+    context 'when project export is enabled' do
+      it 'returns 302' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when project export is disabled' do
+      before do
+        stub_application_setting(project_export_enabled?: false)
+      end
+
+      it 'returns 404' do
+        post :generate_new_export, namespace_id: project.namespace, id: project
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
   def project_moved_message(redirect_route, project)
     "Project '#{redirect_route.path}' was moved to '#{project.full_path}'. Please update any links and bookmarks that may still have the old path."
   end

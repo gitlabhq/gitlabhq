@@ -1,5 +1,0 @@
----
-title: Fix an order of operations for CI connection error message in merge request
-  widget
-merge_request: 13252
-author:

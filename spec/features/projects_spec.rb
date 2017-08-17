@@ -18,7 +18,7 @@ feature 'Project' do
         click_button "Create project"
       end
 
-      expect(page).to have_content 'This project Loading..'
+      expect(page).to have_content template.name
     end
   end
 
