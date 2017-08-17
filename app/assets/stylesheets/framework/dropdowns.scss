@@ -792,3 +792,5 @@
     margin-top: 2px;
   }
 }
+
+@include new-style-dropdown('.js-namespace-select + ');
