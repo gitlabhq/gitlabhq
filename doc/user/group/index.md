@@ -57,6 +57,10 @@ By doing so:
 
 ## Create a new group
 
+> **Notes:**
+- For a list of words that are not allowed to be used as group names see the
+  [reserved names][reserved].
+
 You can create a group in GitLab from:
 
 1. The Groups page: expand the left menu, click **Groups**, and click the green button **New group**:
@@ -214,3 +218,4 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 
 [permissions]: ../permissions.md#permissions
 [ee]: https://about.gitlab.com/products/
+[reserved]:  ../reserved_names.md
