@@ -98,7 +98,11 @@ from your fork to the upstream project
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Leave a project
+## Project's members
+
+Learn how to [add members to your projects](members/index.md).
+
+### Leave a project
 
 **Leave project** will only display on the project's dashboard
 when a project is part of a group (under a

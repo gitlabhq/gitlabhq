@@ -153,6 +153,14 @@ Find this option under your project's settings.
 
 GitLab administrators can use the admin interface to move any project to any namespace if needed.
 
+## Sharing a project with a group
+
+You can [share your projects with a group](../project/members/share_project_with_groups.md)
+and give your group members access to the project all at once.
+
+Alternatively, with [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
+you can [lock the sharing with group feature](#share-with-group-lock-ees-eep).
+
 ## Manage group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
@@ -203,7 +211,7 @@ request to add new user to project through API will not be possible.
 
 In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
 it is possible to prevent projects in a group from [sharing
-a project with another group](../../workflow/share_projects_with_other_groups.md).
+a project with another group](../project/members/share_project_with_groups.md).
 This allows for tighter control over project access.
 
 For example, consider you have two distinct teams (Group A and Group B)

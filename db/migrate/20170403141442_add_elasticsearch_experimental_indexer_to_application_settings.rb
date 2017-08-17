@@ -1,3 +1,4 @@
+# rubocop:disable Migration/SaferBooleanColumn
 class AddElasticsearchExperimentalIndexerToApplicationSettings < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

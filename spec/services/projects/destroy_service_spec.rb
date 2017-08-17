@@ -155,13 +155,13 @@ describe Projects::DestroyService do
       context 'when `execute` raises unexpected error' do
         before do
           expect_any_instance_of(Project)
-            .to receive(:destroy!).and_raise(Exception.new("Other error message"))
+            .to receive(:destroy!).and_raise(Exception.new('Other error message'))
         end
 
         it 'allows error to bubble up and rolls back project deletion' do
           expect do
             Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
-          end.to raise_error
+          end.to raise_error(Exception, 'Other error message')
 
           expect(project.reload.pending_delete).to be(false)
           expect(project.delete_error).to include("Other error message")

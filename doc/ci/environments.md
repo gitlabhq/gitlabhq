@@ -607,10 +607,9 @@ exist, you should see something like:
 - With GitLab 9.2, all deployments to an environment are shown directly on the
   monitoring dashboard
 
-If you have enabled Prometheus for collecting metrics, you can monitor the performance behavior of your app
-through the environments.
+If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
-Once configured, GitLab will attempt to retrieve performance metrics for any
+Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear on the environment's
 detail page.

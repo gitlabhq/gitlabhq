@@ -1056,6 +1056,14 @@ describe API::V3::Projects do
         expect(project_fork_target.forked?).to be_truthy
       end
 
+      it 'refreshes the forks count cachce' do
+        expect(project_fork_source.forks_count).to be_zero
+
+        post v3_api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+
+        expect(project_fork_source.forks_count).to eq(1)
+      end
+
       it 'fails if forked_from project which does not exist' do
         post v3_api("/projects/#{project_fork_target.id}/fork/9999", admin)
         expect(response).to have_http_status(404)
