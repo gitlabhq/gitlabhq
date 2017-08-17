@@ -440,7 +440,9 @@ unless Settings.repositories.storages['default']
   Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
 end
 
-Settings.repositories.storages.values.each do |storage|
+Settings.repositories.storages.each do |key, storage|
+  storage = Settingslogic.new(storage)
+
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
   # Set failure defaults
@@ -454,6 +456,8 @@ Settings.repositories.storages.values.each do |storage|
   storage['failure_reset_time'] = storage['failure_reset_time'].to_i
   # We might want to have a timeout shorter than 1 second.
   storage['storage_timeout'] = storage['storage_timeout'].to_f
+
+  Settings.repositories.storages[key] = storage
 end
 
 #

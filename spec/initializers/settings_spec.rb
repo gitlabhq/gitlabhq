@@ -27,6 +27,15 @@ describe Settings do
       expect(repository_settings['failure_reset_time']).to eq(1800)
       expect(repository_settings['storage_timeout']).to eq(5)
     end
+
+    it 'can be accessed with dot syntax all the way down' do
+      expect(Gitlab.config.repositories.storages.broken.failure_count_threshold).to eq(10)
+    end
+
+    it 'can be accessed in a very specific way that breaks without reassigning each element with Settingslogic' do
+      storage_settings = Gitlab.config.repositories.storages['broken']
+      expect(storage_settings.failure_count_threshold).to eq(10)
+    end
   end
 
   describe '#host_without_www' do
