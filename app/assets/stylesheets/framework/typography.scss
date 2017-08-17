@@ -18,7 +18,8 @@
     background-color: $gray-lightest;
   }
 
-  img.js-lazy-loaded {
+  img.js-lazy-loaded,
+  img.emoji {
     min-width: inherit;
     min-height: inherit;
     background-color: inherit;
