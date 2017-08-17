@@ -2,7 +2,16 @@ class StuckImportJobsWorker
   include Sidekiq::Worker
   include CronjobQueue
 
-  IMPORT_EXPIRATION = 15.hours.to_i
+  IMPORT_JOBS_EXPIRATION = 15.hours.to_i
+
+  def perform
+    project_without_jid_count = mark_projects_without_jid_as_failed!
+    project_with_jid_count = mark_projects_with_jid_as_failed!
+
+    Gitlab::Metrics.add_event(:stuck_import_jobs,
+                             projects_without_jid_count: projects_without_jid_count,
+                             projects_with_jid_count: projects_with_jid_count)
+  end
 
   def perform
     stuck_projects.find_in_batches(batch_size: 500) do |group|
@@ -21,17 +30,46 @@ class StuckImportJobsWorker
 
   private
 
-  def stuck_projects
-    Project.select('id, import_jid').with_import_status(:started).where.not(import_jid: nil)
+  def mark_projects_without_jid_as_failed!
+    started_projects_without_jid.each do |project|
+      project.mark_import_as_failed(error_message)
+    end.count
   end
 
-  def fail_batch!(completed_jids, completed_ids)
-    Project.where(id: completed_ids).update_all(import_status: 'failed', import_error: error_message)
+  def mark_projects_with_jid_as_failed!
+    completed_jids_count = 0
 
-    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_jids.join(', ')}")
+    started_projects_with_jid.find_in_batches(batch_size: 500) do |group|
+      jids = group.map(&:import_jid)
+
+      completed_jids = Gitlab::SidekiqStatus.completed_jids(jids).to_set
+
+      if completed_jids.any?
+        completed_jids_count += completed_jids.count
+        group.each do |project|
+          project.mark_import_as_failed(error_message) if completed_jids.include?(project.import_jid)
+        end
+
+        Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_jids.to_a.join(', ')}")
+      end
+    end
+
+    completed_jids_count
+  end
+
+  def started_projects
+    Project.with_import_status(:started)
+  end
+
+  def started_project_with_jid
+    started_projects.where.not(import_jid: nil)
+  end
+
+  def started_project_without_jid
+    started_projects.where(import_jid: nil)
   end
 
   def error_message
-    "Import timed out. Import took longer than #{IMPORT_EXPIRATION} seconds"
+    "Import timed out. Import took longer than #{IMPORT_JOBS_EXPIRATION} seconds"
   end
 end
