@@ -664,10 +664,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def projects_sorted_by_activity
-    authorized_projects.sorted_by_activity
-  end
-
   def several_namespaces?
     owned_groups.any? || masters_groups.any?
   end
