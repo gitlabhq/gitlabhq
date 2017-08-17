@@ -60,15 +60,21 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
-        entry = response.first
-        return unless entry.oid.present?
 
-        if entry.type == :BLOB
-          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
-          entry.data += rest_of_data
+        entry = nil
+        data = ''
+        response.each do |msg|
+          if entry.nil?
+            entry = msg
+
+            break unless entry.type == :BLOB
+          end
+
+          data << msg.data
         end
+        entry.data = data
 
-        entry
+        entry unless entry.oid.blank?
       end
 
       def tree_entries(repository, revision, path)

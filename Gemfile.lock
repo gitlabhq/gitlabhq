@@ -356,7 +356,7 @@ GEM
       activesupport
       grape (>= 0.16.0)
       rake
-    grpc (1.4.0)
+    grpc (1.4.5)
       google-protobuf (~> 3.1)
       googleauth (~> 0.5.1)
     haml (4.0.7)
