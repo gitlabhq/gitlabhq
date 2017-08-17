@@ -8,4 +8,4 @@
     .dropdown-menu
       %ul
         - @breadcrumb_dropdown_links[dropdown_location].each_with_index do |link, index|
-          %li{ style: "text-indent: #{[index * 15, 60].min}px;"}= link
+          %li{ style: "text-indent: #{[index * 15, 60].min}px;" }= link
