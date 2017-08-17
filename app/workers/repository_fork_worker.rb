@@ -5,13 +5,16 @@ class RepositoryForkWorker
   include Gitlab::ShellAdapter
   include DedicatedSidekiqQueue
 
+  sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
+
   def perform(project_id, forked_from_repository_storage_path, source_path, target_path)
+    project = Project.find(project_id)
+
+    return unless start_fork(project)
+
     Gitlab::Metrics.add_event(:fork_repository,
                               source_path: source_path,
                               target_path: target_path)
-
-    project = Project.find(project_id)
-    project.import_start
 
     result = gitlab_shell.fork_repository(forked_from_repository_storage_path, source_path,
                                           project.repository_storage_path, target_path)
@@ -32,6 +35,13 @@ class RepositoryForkWorker
   end
 
   private
+
+  def start_fork(project)
+    return true if project.import_start
+
+    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
+    false
+  end
 
   def fail_fork(project, message)
     Rails.logger.error(message)
