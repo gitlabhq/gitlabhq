@@ -408,7 +408,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
 
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
 
           new TreeView();
           new BlobViewer();
@@ -428,7 +428,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
