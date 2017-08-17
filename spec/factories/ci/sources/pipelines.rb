@@ -7,7 +7,7 @@ FactoryGirl.define do
     end
 
     source_job factory: :ci_build
-  
+
     pipeline factory: :ci_empty_pipeline
   end
 end

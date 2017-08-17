@@ -38,7 +38,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   end
 
   def real_object_store
-    subject.public_send(:"#{field}_store")
+    subject.public_send(:"#{field}_store") # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def object_store
@@ -47,7 +47,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def object_store=(value)
     @storage = nil
-    subject.public_send(:"#{field}_store=", value)
+    subject.public_send(:"#{field}_store=", value) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def use_file

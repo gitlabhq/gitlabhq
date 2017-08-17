@@ -8,13 +8,13 @@
 .is-confidential {
   color: $orange-600;
   background-color: $orange-50;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }
 
 .is-not-confidential {
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }

@@ -56,7 +56,7 @@ class Spinach::Features::AdminLicense < Spinach::FeatureSteps
 
     license = build(:gitlab_license)
     File.write(path, license.export)
-    
+
     attach_file 'license_data_file', path
     click_button "Upload license"
   end

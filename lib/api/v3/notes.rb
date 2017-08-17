@@ -22,7 +22,7 @@ module API
             use :pagination
           end
           get ":id/#{noteables_str}/:noteable_id/notes" do
-            noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+            noteable = user_project.public_send(noteables_str.to_sym).find(params[:noteable_id]) # rubocop:disable GitlabSecurity/PublicSend
 
             if can?(current_user, noteable_read_ability_name(noteable), noteable)
               # We exclude notes that are cross-references and that cannot be viewed
@@ -50,7 +50,7 @@ module API
             requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
           end
           get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-            noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+            noteable = user_project.public_send(noteables_str.to_sym).find(params[:noteable_id]) # rubocop:disable GitlabSecurity/PublicSend
             note = noteable.notes.find(params[:note_id])
             can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
 
@@ -76,7 +76,7 @@ module API
               noteable_id: params[:noteable_id]
             }
 
-            noteable = user_project.send(noteables_str.to_sym).find(params[:noteable_id])
+            noteable = user_project.public_send(noteables_str.to_sym).find(params[:noteable_id]) # rubocop:disable GitlabSecurity/PublicSend
 
             if can?(current_user, noteable_read_ability_name(noteable), noteable)
               if params[:created_at] && (current_user.admin? || user_project.owner == current_user)

@@ -19,7 +19,7 @@ module Geo
       ::Gitlab::Geo.secondary_nodes.each do |node|
         next unless node.enabled?
 
-        notify_url = node.send(notify_url_method.to_sym)
+        notify_url = node.__send__(notify_url_method.to_sym) # rubocop:disable GitlabSecurity/PublicSend
         success, details = notify(notify_url, content)
 
         unless success

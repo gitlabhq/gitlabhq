@@ -32,7 +32,7 @@ describe 'gitlab:artifacts namespace rake task' do
           stub_artifacts_object_storage
           job
         end
-        
+
         it "migrates file to remote storage" do
           subject
 

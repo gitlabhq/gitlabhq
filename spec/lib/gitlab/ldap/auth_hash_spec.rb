@@ -4,8 +4,8 @@ describe Gitlab::LDAP::AuthHash do
   let(:auth_hash) do
     described_class.new(
       OmniAuth::AuthHash.new(
-        uid: '123456', 
-        provider: 'ldapmain', 
+        uid: '123456',
+        provider: 'ldapmain',
         info: info,
         extra: {
           raw_info: raw_info
@@ -33,11 +33,11 @@ describe Gitlab::LDAP::AuthHash do
 
   context "without overridden attributes" do
     it "has the correct username" do
-      expect(auth_hash.username).to eq("123456") 
+      expect(auth_hash.username).to eq("123456")
     end
 
     it "has the correct name" do
-      expect(auth_hash.name).to eq("Smith, J.") 
+      expect(auth_hash.name).to eq("Smith, J.")
     end
   end
 
@@ -54,11 +54,11 @@ describe Gitlab::LDAP::AuthHash do
     end
 
     it "has the correct username" do
-      expect(auth_hash.username).to eq("johnsmith@example.com") 
+      expect(auth_hash.username).to eq("johnsmith@example.com")
     end
 
     it "has the correct name" do
-      expect(auth_hash.name).to eq("John Smith") 
+      expect(auth_hash.name).to eq("John Smith")
     end
   end
 end

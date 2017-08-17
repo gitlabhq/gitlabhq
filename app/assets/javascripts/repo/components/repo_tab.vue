@@ -18,8 +18,8 @@ const RepoTab = {
     },
     changedClass() {
       const tabChangedObj = {
-        'fa-times': !this.tab.changed,
-        'fa-circle': this.tab.changed,
+        'fa-times close-icon': !this.tab.changed,
+        'fa-circle unsaved-icon': this.tab.changed,
       };
       return tabChangedObj;
     },
@@ -28,9 +28,9 @@ const RepoTab = {
   methods: {
     tabClicked: Store.setActiveFiles,
 
-    xClicked(file) {
+    closeTab(file) {
       if (file.changed) return;
-      this.$emit('xclicked', file);
+      this.$emit('tabclosed', file);
     },
   },
 };
@@ -39,11 +39,19 @@ export default RepoTab;
 </script>
 
 <template>
+<<<<<<< HEAD
 <li>
   <a
     href="#0"
     class="close"
     @click.prevent="xClicked(tab)"
+=======
+<li @click="tabClicked(tab)">
+  <a
+    href="#0"
+    class="close"
+    @click.stop.prevent="closeTab(tab)"
+>>>>>>> upstream/master
     :aria-label="closeLabel">
     <i
       class="fa"

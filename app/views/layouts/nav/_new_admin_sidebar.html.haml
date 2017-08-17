@@ -111,7 +111,7 @@
       = link_to admin_license_path, title: 'License' do
         .nav-icon-container
           = custom_icon('license')
-        %span
+        %span.nav-item-name
           License
 
     - if akismet_enabled?
@@ -126,14 +126,14 @@
       = link_to admin_push_rule_path, title: 'Push Rules' do
         .nav-icon-container
           = custom_icon('push_rules')
-        %span
+        %span.nav-item-name
           Push Rules
 
     = nav_link(controller: :geo_nodes) do
       = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
         .nav-icon-container
           = custom_icon('geo_nodes')
-        %span
+        %span.nav-item-name
           Geo Nodes
 
     = nav_link(controller: :deploy_keys) do

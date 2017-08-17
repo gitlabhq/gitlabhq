@@ -3,7 +3,7 @@ class AdminEmailsWorker
   include DedicatedSidekiqQueue
 
   def perform(recipient_id, subject, body)
-    recipient_list(recipient_id).pluck(:id).uniq.each do |user_id| 
+    recipient_list(recipient_id).pluck(:id).uniq.each do |user_id|
       Notify.send_admin_notification(user_id, subject, body).deliver_later
     end
   end

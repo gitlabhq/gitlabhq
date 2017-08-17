@@ -55,7 +55,9 @@ class Repository
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+        __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+      end
     end
   end
 
@@ -450,9 +452,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -783,7 +785,7 @@ class Repository
       end
 
       actions.each do |options|
-        index.public_send(options.delete(:action), options)
+        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       options = {
@@ -987,7 +989,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(branch_commit.id, upstream_commit.id)
+      !rugged_is_ancestor?(branch_commit.id, upstream_commit.id)
     else
       false
     end
@@ -998,7 +1000,7 @@ class Repository
     upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
 
     if upstream_commit
-      !is_ancestor?(upstream_commit.id, branch_commit.id)
+      !rugged_is_ancestor?(upstream_commit.id, branch_commit.id)
     else
       false
     end

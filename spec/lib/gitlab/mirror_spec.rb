@@ -64,25 +64,59 @@ describe Gitlab::Mirror do
     end
   end
 
-  describe '#threshold_reached?' do
+  describe '#reschedule_immediately?' do
     let(:mirror_capacity_threshold) { current_application_settings.mirror_capacity_threshold }
 
-    it 'returns true if available capacity surpassed defined threshold' do
-      expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold + 1)
+    context 'with number of mirrors to sync equal to the available capacity' do
+      it 'returns true if available capacity surpassed defined threshold' do
+        available_capacity = mirror_capacity_threshold + 1
 
-      expect(described_class.threshold_reached?).to eq(true)
+        expect(described_class).to receive(:available_capacity).and_return(available_capacity)
+        expect(described_class).to receive(:mirrors_ready_to_sync_count).and_return(available_capacity)
+
+        expect(described_class.reschedule_immediately?).to eq(true)
+      end
+
+      it 'returns true if available capacity is equal to the defined threshold' do
+        expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold)
+        expect(described_class).to receive(:mirrors_ready_to_sync_count).and_return(mirror_capacity_threshold)
+
+        expect(described_class.reschedule_immediately?).to eq(true)
+      end
     end
 
-    it 'returns true if available capacity is equal to the defined threshold' do
-      expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold)
+    context 'with number of mirrors to sync surpassing the available capacity' do
+      it 'returns true if available capacity surpassed defined threshold' do
+        available_capacity = mirror_capacity_threshold + 1
 
-      expect(described_class.threshold_reached?).to eq(true)
+        expect(described_class).to receive(:available_capacity).and_return(available_capacity)
+        expect(described_class).to receive(:mirrors_ready_to_sync_count).and_return(available_capacity + 1)
+
+        expect(described_class.reschedule_immediately?).to eq(true)
+      end
+
+      it 'returns true if available capacity is equal to the defined threshold' do
+        expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold)
+        expect(described_class).to receive(:mirrors_ready_to_sync_count).and_return(mirror_capacity_threshold + 1)
+
+        expect(described_class.reschedule_immediately?).to eq(true)
+      end
+    end
+
+    it 'returns false if mirrors ready to sync is below the available capacity' do
+      expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold + 1)
+      expect(described_class).to receive(:mirrors_ready_to_sync_count).and_return(mirror_capacity_threshold)
+
+      expect(described_class.reschedule_immediately?).to eq(false)
     end
 
     it 'returns false if available capacity is below the defined threshold' do
-      expect(described_class).to receive(:available_capacity).and_return(mirror_capacity_threshold - 1)
+      available_capacity = mirror_capacity_threshold - 1
 
-      expect(described_class.threshold_reached?).to eq(false)
+      expect(described_class).to receive(:available_capacity).and_return(available_capacity)
+      expect(described_class).not_to receive(:mirrors_ready_to_sync_count)
+
+      expect(described_class.reschedule_immediately?).to eq(false)
     end
 
     after do

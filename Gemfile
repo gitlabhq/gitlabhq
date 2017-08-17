@@ -154,8 +154,6 @@ end
 
 # State machine
 gem 'state_machines-activerecord', '~> 0.4.0'
-# Run events after state machine commits
-gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 4.0'

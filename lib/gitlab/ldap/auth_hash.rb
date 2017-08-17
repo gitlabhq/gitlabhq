@@ -17,7 +17,7 @@ module Gitlab
           value = value.first if value
           break if value.present?
         end
-        
+
         return super unless value
 
         Gitlab::Utils.force_utf8(value)

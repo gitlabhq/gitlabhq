@@ -289,7 +289,7 @@ module Gitlab
 
         opts.last[:page] = current_page(resource_type)
 
-        client.public_send(resource_type, *opts) do |resources|
+        client.public_send(resource_type, *opts) do |resources| # rubocop:disable GitlabSecurity/PublicSend
           yield resources
           increment_page(resource_type)
         end
