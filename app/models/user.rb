@@ -642,11 +642,6 @@ class User < ActiveRecord::Base
     @personal_projects_count ||= personal_projects.count
   end
 
-  def projects_limit_percent
-    return 100 if projects_limit.zero?
-    (personal_projects.count.to_f / projects_limit) * 100
-  end
-
   def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
