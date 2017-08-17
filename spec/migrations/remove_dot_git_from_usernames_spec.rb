@@ -51,7 +51,6 @@ describe RemoveDotGitFromUsernames do
     namespace.path = path
     namespace.save!(validate: false)
 
-    user.username = path
-    user.save!(validate: false)
+    user.update_column(:username, path)
   end
 end
