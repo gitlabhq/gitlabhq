@@ -30,7 +30,7 @@ module API
         links << %(<#{request_url}?#{request_params.to_query}>; rel="prev") unless paginated_data.first_page?
 
         request_params[:page] = paginated_data.current_page + 1
-        links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page?
+        links << %(<#{request_url}?#{request_params.to_query}>; rel="next") unless paginated_data.last_page? || paginated_data.out_of_range?
 
         request_params[:page] = 1
         links << %(<#{request_url}?#{request_params.to_query}>; rel="first")
