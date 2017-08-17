@@ -269,6 +269,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def discussions_rendered_on_frontend?
+    true
+  end
+
   private
 
   # Returns `true` if the given User can read the current Issue.

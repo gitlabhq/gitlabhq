@@ -24,6 +24,10 @@ module Noteable
     DiscussionNote::NOTEABLE_TYPES.include?(base_class_name)
   end
 
+  def discussions_rendered_on_frontend?
+    false
+  end
+
   def discussion_notes
     notes
   end

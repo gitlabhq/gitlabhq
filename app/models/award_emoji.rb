@@ -37,7 +37,7 @@ class AwardEmoji < ActiveRecord::Base
   end
 
   def expire_etag_cache
-    return unless awardable.is_a?(Note)
+    return unless awardable.respond_to?(:expire_etag_cache)
 
     awardable.expire_etag_cache
   end

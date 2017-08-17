@@ -18,7 +18,7 @@ module NotesActions
     @notes = prepare_notes_for_rendering(@notes)
 
     notes_json[:notes] =
-      if noteable.is_a?(Issue)
+      if noteable.discussions_rendered_on_frontend?
         note_serializer.represent(@notes)
       else
         @notes.map { |note| note_json(note) }
@@ -87,7 +87,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if noteable.is_a?(Issue)
+      if noteable.discussions_rendered_on_frontend?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
