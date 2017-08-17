@@ -77,7 +77,6 @@
         const data = {
           endpoint: this.note.path,
           note: {
-            view: 'full_data',
             target_type: 'issue',
             target_id: this.note.noteable_id,
             note: { note: noteText },

@@ -18,8 +18,7 @@ module NotesActions
     @notes = prepare_notes_for_rendering(@notes)
 
     notes_json[:notes] =
-      case params[:view]
-      when 'full_data'
+      if noteable.is_a?(Issue)
         note_serializer.represent(@notes)
       else
         @notes.map { |note| note_json(note) }
@@ -88,8 +87,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      case params[:view]
-      when 'full_data'
+      if noteable.is_a?(Issue)
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
@@ -179,8 +177,6 @@ module NotesActions
   end
 
   def set_polling_interval_header
-    return unless noteable.is_a?(Issue)
-
     Gitlab::PollingInterval.set_header(response, interval: 6_000)
   end
 

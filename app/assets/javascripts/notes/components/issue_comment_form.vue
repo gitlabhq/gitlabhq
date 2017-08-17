@@ -110,7 +110,6 @@
             endpoint: this.endpoint,
             flashContainer: this.$el,
             data: {
-              view: 'full_data',
               note: {
                 noteable_type: constants.NOTEABLE_TYPE,
                 noteable_id: this.getIssueData.id,
