@@ -2311,6 +2311,29 @@ describe Project do
     end
   end
 
+  describe '#remove_pages' do
+    let(:project) { create(:project) }
+    let(:pages_path) { project.pages_path }
+
+    around do |example|
+      FileUtils.mkdir_p(pages_path)
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(pages_path)
+      end
+    end
+
+    it 'is a no-op when there is no namespace' do
+      project.update_column(:namespace_id, nil)
+
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
+
+      project.remove_pages
+    end
+  end
+
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)

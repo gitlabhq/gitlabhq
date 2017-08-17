@@ -1224,6 +1224,9 @@ class Project < ActiveRecord::Base
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
+    # Projects with a missing namespace cannot have their pages removed
+    return unless namespace
+
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
