@@ -21,8 +21,9 @@ module IssueLinks
       end
     end
 
+    # Returns a Boolean indicating if the Issue was related.
     def relate_issues(referenced_issue)
-      IssueLink.create(source: @issue, target: referenced_issue)
+      IssueLink.new(source: @issue, target: referenced_issue).save
     end
 
     def create_notes(referenced_issue)

@@ -1,0 +1,5 @@
+---
+title: Create system notes only if issue was successfully related
+merge_request:
+author:
+type: fixed
