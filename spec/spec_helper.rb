@@ -132,7 +132,7 @@ RSpec.configure do |config|
     Sidekiq.redis(&:flushall)
   end
 
-  config.before(:context, :migration) do
+  config.before(:each, :migration) do
     schema_migrate_down!
   end
 
