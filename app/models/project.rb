@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
   end
 
   before_destroy :remove_private_deploy_keys
-  after_destroy :remove_pages
+  after_destroy -> { run_after_commit { remove_pages } }
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
@@ -1224,6 +1224,9 @@ class Project < ActiveRecord::Base
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
+    # Projects with a missing namespace cannot have their pages removed
+    return unless namespace
+
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
