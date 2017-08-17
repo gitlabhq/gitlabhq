@@ -71,13 +71,13 @@
           'js-note-target-reopen': !this.isIssueOpen,
         };
       },
-      markdownDocsUrl() {
-        return this.getNotesData.markdownDocs;
+      markdownDocsPath() {
+        return this.getNotesData.markdownDocsPath;
       },
-      quickActionsDocsUrl() {
-        return this.getNotesData.quickActionsDocs;
+      quickActionsDocsPath() {
+        return this.getNotesData.quickActionsDocsPath;
       },
-      markdownPreviewUrl() {
+      markdownPreviewPath() {
         return this.getIssueData.preview_note_path;
       },
       author() {
@@ -231,9 +231,9 @@
               <div class="flash-container error-alert timeline-content"></div>
               <confidentialIssue v-if="isConfidentialIssue" />
               <markdown-field
-                :markdown-preview-url="markdownPreviewUrl"
-                :markdown-docs="markdownDocsUrl"
-                :quick-actions-docs="quickActionsDocsUrl"
+                :markdown-preview-path="markdownPreviewPath"
+                :markdown-docs-path="markdownDocsPath"
+                :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
                 :is-confidential-issue="isConfidentialIssue">
                 <textarea

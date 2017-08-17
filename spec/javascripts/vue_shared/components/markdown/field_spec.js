@@ -16,8 +16,8 @@ describe('Markdown field component', () => {
       },
       template: `
         <field-component
-          marodown-preview-url="/preview"
-          markdown-docs="/docs"
+          markdown-preview-path="/preview"
+          markdown-docs-path="/docs"
         >
           <textarea
             slot="textarea"

@@ -5,12 +5,12 @@
 
   export default {
     props: {
-      markdownPreviewUrl: {
+      markdownPreviewPath: {
         type: String,
         required: false,
         default: '',
       },
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
@@ -19,7 +19,7 @@
         required: false,
         default: true,
       },
-      quickActionsDocs: {
+      quickActionsDocsPath: {
         type: String,
         required: false,
       },
@@ -52,7 +52,7 @@
         } else {
           this.markdownPreviewLoading = true;
           this.$http.post(
-            this.markdownPreviewUrl,
+            this.markdownPreviewPath,
             {
               /*
                 Can't use `$refs` as the component is technically in the parent component
@@ -117,8 +117,8 @@
           </i>
         </a>
         <markdown-toolbar
-          :markdown-docs="markdownDocs"
-          :quick-actions-docs="quickActionsDocs"
+          :markdown-docs-path="markdownDocsPath"
+          :quick-actions-docs-path="quickActionsDocsPath"
           />
       </div>
     </div>

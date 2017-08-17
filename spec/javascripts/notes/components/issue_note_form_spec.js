@@ -53,8 +53,8 @@ describe('issue_note_form component', () => {
     });
 
     it('should link to markdown docs', () => {
-      const { markdownDocs } = notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${markdownDocs}"]`).textContent.trim()).toEqual('Markdown');
+      const { markdownDocsPath } = notesDataMock;
+      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual('Markdown');
     });
 
     describe('keyboard events', () => {

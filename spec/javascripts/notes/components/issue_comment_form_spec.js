@@ -46,13 +46,13 @@ describe('issue_comment_form component', () => {
       });
 
       it('should link to markdown docs', () => {
-        const { markdownDocs } = notesDataMock;
-        expect(vm.$el.querySelector(`a[href="${markdownDocs}"]`).textContent.trim()).toEqual('Markdown');
+        const { markdownDocsPath } = notesDataMock;
+        expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual('Markdown');
       });
 
       it('should link to quick actions docs', () => {
-        const { quickActionsDocs } = notesDataMock;
-        expect(vm.$el.querySelector(`a[href="${quickActionsDocs}"]`).textContent.trim()).toEqual('quick actions');
+        const { quickActionsDocsPath } = notesDataMock;
+        expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual('quick actions');
       });
 
       describe('edit mode', () => {

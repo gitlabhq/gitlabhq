@@ -10,7 +10,7 @@
         type: Object,
         required: true,
       },
-      projectsAutocompleteUrl: {
+      projectsAutocompletePath: {
         type: String,
         required: true,
       },
@@ -20,7 +20,7 @@
 
       $moveDropdown.select2({
         ajax: {
-          url: this.projectsAutocompleteUrl,
+          url: this.projectsAutocompletePath,
           quietMillis: 125,
           data(term, page, context) {
             return {

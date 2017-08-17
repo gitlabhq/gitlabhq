@@ -2,10 +2,10 @@
 export const notesDataMock = {
   discussionsPath: '/gitlab-org/gitlab-ce/issues/26/discussions.json',
   lastFetchedAt: '1501862675',
-  markdownDocs: '/help/user/markdown',
+  markdownDocsPath: '/help/user/markdown',
   newSessionPath: '/users/sign_in?redirect_to_referer=yes',
   notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes',
-  quickActionsDocs: '/help/user/project/quick_actions',
+  quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
 };
 

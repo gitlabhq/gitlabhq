@@ -52,14 +52,14 @@
       noteHash() {
         return `#note_${this.noteId}`;
       },
-      markdownPreviewUrl() {
+      markdownPreviewPath() {
         return this.getIssueDataByProp('preview_note_path');
       },
-      markdownDocsUrl() {
-        return this.getNotesDataByProp('markdownDocs');
+      markdownDocsPath() {
+        return this.getNotesDataByProp('markdownDocsPath');
       },
-      quickActionsDocsUrl() {
-        return !this.isEditing ? this.getNotesDataByProp('quickActionsDocs') : undefined;
+      quickActionsDocsPath() {
+        return !this.isEditing ? this.getNotesDataByProp('quickActionsDocsPath') : undefined;
       },
       currentUserId() {
         return this.getUserDataByProp('id');
@@ -124,9 +124,9 @@
       class="edit-note common-note-form js-quick-submit gfm-form">
       <confidentialIssue v-if="isConfidentialIssue" />
       <markdown-field
-        :markdown-preview-url="markdownPreviewUrl"
-        :markdown-docs="markdownDocsUrl"
-        :quick-actions-docs="quickActionsDocsUrl"
+        :markdown-preview-path="markdownPreviewPath"
+        :markdown-docs-path="markdownDocsPath"
+        :quick-actions-docs-path="quickActionsDocsPath"
         :add-spacing-classes="false">
         <textarea
           id="note_note"

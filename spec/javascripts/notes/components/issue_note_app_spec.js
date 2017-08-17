@@ -204,13 +204,13 @@ describe('issue_note_app', () => {
     });
 
     it('should render markdown docs url', () => {
-      const { markdownDocs } = mockData.notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${markdownDocs}"]`).textContent.trim()).toEqual('Markdown');
+      const { markdownDocsPath } = mockData.notesDataMock;
+      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual('Markdown');
     });
 
     it('should render quick action docs url', () => {
-      const { quickActionsDocs } = mockData.notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${quickActionsDocs}"]`).textContent.trim()).toEqual('quick actions');
+      const { quickActionsDocsPath } = mockData.notesDataMock;
+      expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual('quick actions');
     });
   });
 
@@ -227,11 +227,11 @@ describe('issue_note_app', () => {
     it('should render markdown docs url', (done) => {
       setTimeout(() => {
         vm.$el.querySelector('.js-note-edit').click();
-        const { markdownDocs } = mockData.notesDataMock;
+        const { markdownDocsPath } = mockData.notesDataMock;
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector(`.edit-note a[href="${markdownDocs}"]`).textContent.trim(),
+            vm.$el.querySelector(`.edit-note a[href="${markdownDocsPath}"]`).textContent.trim(),
           ).toEqual('Markdown is supported');
           done();
         });
@@ -241,11 +241,11 @@ describe('issue_note_app', () => {
     it('should not render quick actions docs url', (done) => {
       setTimeout(() => {
         vm.$el.querySelector('.js-note-edit').click();
-        const { quickActionsDocs } = mockData.notesDataMock;
+        const { quickActionsDocsPath } = mockData.notesDataMock;
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector(`.edit-note a[href="${quickActionsDocs}"]`),
+            vm.$el.querySelector(`.edit-note a[href="${quickActionsDocsPath}"]`),
           ).toEqual(null);
           done();
         });

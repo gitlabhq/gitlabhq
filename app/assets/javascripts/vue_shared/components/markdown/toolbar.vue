@@ -1,11 +1,11 @@
 <script>
   export default {
     props: {
-      markdownDocs: {
+      markdownDocsPath: {
         type: String,
         required: true,
       },
-      quickActionsDocs: {
+      quickActionsDocsPath: {
         type: String,
         required: false,
       },
@@ -16,24 +16,24 @@
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
-      <template v-if="!quickActionsDocs && markdownDocs">
+      <template v-if="!quickActionsDocsPath && markdownDocsPath">
         <a
-          :href="markdownDocs"
+          :href="markdownDocsPath"
           target="_blank"
           tabindex="-1">
           Markdown is supported
         </a>
       </template>
-      <template v-if="quickActionsDocs && markdownDocs">
+      <template v-if="quickActionsDocsPath && markdownDocsPath">
          <a
-          :href="markdownDocs"
+          :href="markdownDocsPath"
           target="_blank"
           tabindex="-1">
           Markdown
         </a>
         and
          <a
-          :href="quickActionsDocs"
+          :href="quickActionsDocsPath"
           target="_blank"
           tabindex="-1">
           quick actions
