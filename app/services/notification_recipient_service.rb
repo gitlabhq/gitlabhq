@@ -53,7 +53,7 @@ module NotificationRecipientService
         users, type = pair
 
         if users.is_a?(ActiveRecord::Relation)
-          users = users.includes(:notification_settings)
+          users = users.includes(:notification_settings).to_a
         end
 
         users = Array(users)
