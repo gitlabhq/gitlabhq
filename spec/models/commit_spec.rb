@@ -196,25 +196,52 @@ eos
   end
 
   describe '#cherry_pick_message' do
-    let(:regular_commit) { project.commit('video') }
-    let(:merge_commit) { project.commit('wip') }
+    let(:user) { create(:user) }
 
     context 'of a regular commit' do
-      it { expect(regular_commit.cherry_pick_message(project, 'master')).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
+      let(:commit) { project.commit('video') }
+
+      it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
     end
 
     context 'of a merge commit' do
+      let(:repository) { project.repository }
+
+      let(:commit_options) do
+        author = repository.user_to_committer(user)
+        commit_options = { message: 'Test message', committer: author, author: author }
+      end
+
+      let(:merge_commit) do
+        merge_request = create(:merge_request,
+                               source_branch: 'feature',
+                               target_branch: 'master',
+                               source_project: project,
+                               author: user)
+
+        merge_commit_id = repository.merge(user,
+                                           merge_request.diff_head_sha,
+                                           merge_request,
+                                           commit_options)
+
+        merge_commit = repository.commit(merge_commit_id)
+
+        # Manually mark as completed.
+        #
+        merge_request.update(merge_commit_sha: merge_commit_id)
+
+        merge_commit
+      end
+
       it do
         expected_appended_text = <<~STR.rstrip
 
+          (cherry picked from commit #{merge_commit.sha})
 
-          (cherry picked from commit b9238ee5bf1d7359dd3b8c89fd76c1c7f8b75aba)
-
-          6d664995 This commit will be fixupped against
-          64117577 fixup! This commit will be fixupped against
+          0b4bc9a4 Feature added
         STR
 
-        expect(merge_commit.cherry_pick_message(project, 'master')).to include(expected_appended_text)
+        expect(merge_commit.cherry_pick_message(user)).to include(expected_appended_text)
       end
     end
   end
