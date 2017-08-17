@@ -212,7 +212,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, merge_request_params).execute
+    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
@@ -286,15 +286,5 @@ class Projects::IssuesController < Projects::ApplicationController
     end
 
     redirect_to new_user_session_path, notice: notice
-  end
-
-  private
-
-  def merge_request_params
-    { 
-      issue_iid: issue.iid,
-      label_ids: issue.label_ids,
-      milestone_id: issue.milestone_id
-    }
   end
 end

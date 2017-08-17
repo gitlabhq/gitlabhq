@@ -3,22 +3,11 @@ require 'spec_helper'
 describe MergeRequests::CreateFromIssueService do
   let(:project) { create(:project, :repository) }
   let(:user)    { create(:user) }
-  let(:issue)   { create(:issue, project: project) }
-  let(:milestone) { create(:milestone, project: project) }
-  let(:labels) { create_pair(:label, project: project) }
-  
+  let(:label_ids) { create_pair(:label, project: project).map(&:id) }
+  let(:milestone_id) { create(:milestone, project: project).id }
+  let(:issue)   { create(:issue, project: project, milestone_id: milestone_id) }
+
   subject(:service) { described_class.new(project, user, issue_iid: issue.iid) }
-  subject(:service2) do 
-    described_class.new(
-      project,
-      user, 
-      {
-        issue_iid: issue.iid,
-        milestone_id: milestone.id,
-        label_ids: labels.map(&:id)
-      }
-    )
-  end
 
   before do
     project.add_developer(user)
@@ -38,16 +27,18 @@ describe MergeRequests::CreateFromIssueService do
       described_class.new(project, user, issue_iid: -1).execute
     end
 
-    it "can inherit labels" do
-      result = service2.execute
+    it "inherits labels" do
+      issue.assign_attributes(label_ids: label_ids)
 
-      expect(result[:merge_request].label_ids).to eq(labels.map(&:id))
+      result = service.execute
+
+      expect(result[:merge_request].label_ids).to eq(label_ids)
     end
 
-    it "can inherit milestones" do
-      result = service2.execute
+    it "inherits milestones" do
+      result = service.execute
 
-      expect(result[:merge_request].milestone_id).to eq(milestone.id)
+      expect(result[:merge_request].milestone_id).to eq(milestone_id)
     end
 
     it 'delegates the branch creation to CreateBranchService' do
