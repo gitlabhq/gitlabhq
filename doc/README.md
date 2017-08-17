@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# GitLab Documentation
+# GitLab Magic
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
