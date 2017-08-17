@@ -32,6 +32,7 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -935,6 +936,10 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def update_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
 
   private
