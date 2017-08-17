@@ -126,6 +126,8 @@ module Gitlab
       # This is to work around a bug in libgit2 that causes in-memory refs to
       # be stale/invalid when packed-refs is changed.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/474
       def find_branch(name, force_reload = false)
         reload_rugged if force_reload
 
