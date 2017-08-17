@@ -107,7 +107,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Total', '0')
-          expect_header('X-Total-Pages', '0')
+          expect_header('X-Total-Pages', '1')
           expect_header('X-Per-Page', '2')
           expect_header('X-Page', '1')
           expect_header('X-Next-Page', '')
@@ -118,6 +118,7 @@ describe API::Helpers::Pagination do
             expect(val).to include('rel="last"')
             expect(val).not_to include('rel="prev"')
             expect(val).not_to include('rel="next"')
+            expect(val).not_to include('page=0')
           end
 
           subject.paginate(resource)
