@@ -407,13 +407,14 @@ module Elasticsearch
           query_hash = {
             query: {
               bool: {
-                must: [{
+                must: {
                   simple_query_string: {
                     fields: fields,
                     query: query,
-                    default_operator: :or
+                    default_operator: :and
                   }
-                }]
+                },
+                filter: [{ term: { 'commit.type' => 'commit' } }]
               }
             },
             size: per,
@@ -426,7 +427,7 @@ module Elasticsearch
           end
 
           if options[:repository_id]
-            query_hash[:query][:bool][:filter] = {
+            query_hash[:query][:bool][:filter] << {
               terms: {
                 'commit.rid' => [options[:repository_id]].flatten
               }
@@ -434,7 +435,6 @@ module Elasticsearch
           end
 
           if options[:additional_filter]
-            query_hash[:query][:bool][:filter] ||= []
             query_hash[:query][:bool][:filter] << options[:additional_filter]
           end
 
@@ -474,14 +474,13 @@ module Elasticsearch
                     default_operator: :and,
                     fields: %w[blob.content blob.file_name]
                   }
-                }
+                },
+                filter: [{ term: { 'blob.type' => 'blob' } }]
               }
             },
             size: per,
             from: per * (page - 1)
           }
-
-          query_hash[:query][:bool][:filter] = []
 
           if options[:repository_id]
             query_hash[:query][:bool][:filter] << {
@@ -492,7 +491,6 @@ module Elasticsearch
           end
 
           if options[:additional_filter]
-            query_hash[:query][:bool][:filter] ||= []
             query_hash[:query][:bool][:filter] << options[:additional_filter]
           end
 
