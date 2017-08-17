@@ -1,5 +1,6 @@
 - @no_container = true
-- breadcrumb_title "Enviroment '#{@environment.name}'"
+- add_to_breadcrumbs "Environments", project_environments_path(@project)
+- breadcrumb_title @environment.name
 - page_title "Environments"
 = render "projects/pipelines/head"
 

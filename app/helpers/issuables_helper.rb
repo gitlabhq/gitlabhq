@@ -126,12 +126,21 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = content_tag(:strong, class: "identifier") do
-      concat("#{text} ")
-      concat(to_url_reference(issuable))
+    output = ""
+
+    unless show_new_nav?
+      output << content_tag(:strong, class: "identifier") do
+        concat("#{text} ")
+        concat(to_url_reference(issuable))
+      end
     end
 
-    output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+    opened_text = if show_new_nav?
+                    "Opened"
+                  else
+                    " opened"
+                  end
+    output << "#{opened_text} #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
@@ -141,7 +150,7 @@ module IssuablesHelper
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "hidden-xs hidden-sm")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "hidden-md hidden-lg")
 
-    output
+    output.html_safe
   end
 
   def issuable_todo(issuable)

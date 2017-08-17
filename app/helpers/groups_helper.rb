@@ -22,7 +22,7 @@ module GroupsHelper
         full_title += if show_new_nav?
                         breadcrumb_list_item group_title_link(parent, hidable: false)
                       else
-                        group_title_link(parent, hidable: true)
+                        "#{group_title_link(parent, hidable: true)} <span class='hidable'> / </span>".html_safe
                       end
       end
     end

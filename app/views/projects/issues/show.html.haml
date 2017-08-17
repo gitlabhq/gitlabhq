@@ -1,5 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- breadcrumb_title "Issues #{@issue.to_reference}"
+- add_to_breadcrumbs "Issues", project_issues_path(@project)
+- breadcrumb_title @issue.to_reference
 - page_title           "#{@issue.title} (#{@issue.to_reference})", "Issues"
 - page_description     @issue.description
 - page_card_attributes @issue.card_attributes

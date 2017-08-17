@@ -81,7 +81,7 @@ module ProjectsHelper
       end
     end
 
-    "#{namespace_link} #{project_link}".html_safe
+    "#{namespace_link} #{('/' unless show_new_nav?)} #{project_link}".html_safe
   end
 
   def remove_project_message(project)

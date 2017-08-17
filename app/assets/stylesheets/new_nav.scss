@@ -330,6 +330,7 @@ header.navbar-gitlab-new {
 
 .breadcrumbs-list {
   display: flex;
+  flex-wrap: wrap;
   margin-bottom: 0;
 
   > li {
@@ -338,11 +339,7 @@ header.navbar-gitlab-new {
     position: relative;
 
     &:not(:last-child) {
-      margin-right: 10px;
-    }
-
-    &:not(:first-child) {
-      margin-left: 10px;
+      margin-right: 20px;
     }
 
     > a {

@@ -14,7 +14,8 @@ export default () => {
   topLevelLinks.forEach(el => addTooltipToEl(el));
 
   $expander.closest('.dropdown')
-    .on('show.bs.dropdown hide.bs.dropdown', () => {
-      $expander.toggleClass('open');
+    .on('show.bs.dropdown hide.bs.dropdown', (e) => {
+      $('.js-breadcrumbs-collapsed-expander', e.currentTarget).toggleClass('open')
+        .tooltip('hide');
     });
 };
