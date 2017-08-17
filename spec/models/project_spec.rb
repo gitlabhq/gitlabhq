@@ -2413,13 +2413,13 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq('6b/86')
+        expect(project.base_dir).to eq('@hashed/6b/86')
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = '6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
+        hashed_path = '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'
 
         expect(project.disk_path).to eq(hashed_path)
       end
@@ -2427,7 +2427,7 @@ describe Project do
 
     describe '#ensure_storage_path_exists' do
       it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '6b/86')
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, '@hashed/6b/86')
 
         project.ensure_storage_path_exists
       end

@@ -1,7 +1,9 @@
 module Storage
   class HashedProject
     attr_accessor :project
-    delegate :namespace, :gitlab_shell, :repository_storage_path, to: :project
+    delegate :gitlab_shell, :repository_storage_path, to: :project
+
+    ROOT_PATH_PREFIX = '@hashed'.freeze
 
     def initialize(project)
       @project = project
@@ -11,7 +13,7 @@ module Storage
     #
     # @return [String] directory where repository is stored
     def base_dir
-      "#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
+      "#{ROOT_PATH_PREFIX}/#{disk_hash[0..1]}/#{disk_hash[2..3]}" if disk_hash
     end
 
     # Disk path is used to build repository and project's wiki path on disk
