@@ -64,7 +64,6 @@ module Gitlab
       end
 
       delegate  :empty?,
-                :bare?,
                 to: :rugged
 
       delegate :exists?, to: :gitaly_repository_client
@@ -231,10 +230,6 @@ module Gitlab
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
-      end
-
-      def has_commits?
-        !empty?
       end
 
       # Discovers the default branch based on the repository's available branches
@@ -594,11 +589,6 @@ module Gitlab
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
-      # Return an array of this repository's remote names
-      def remote_names
-        rugged.remotes.each_name.to_a
-      end
-
       # Delete the specified remote from this repository.
       def remote_delete(remote_name)
         rugged.remotes.delete(remote_name)
@@ -616,16 +606,6 @@ module Gitlab
       def remote_update(remote_name, options = {})
         # TODO: Implement other remote options
         rugged.remotes.set_url(remote_name, options[:url]) if options[:url]
-      end
-
-      # Fetch the specified remote
-      def fetch(remote_name)
-        rugged.remotes[remote_name].fetch
-      end
-
-      # Push +*refspecs+ to the remote identified by +remote_name+.
-      def push(remote_name, *refspecs)
-        rugged.remotes[remote_name].push(refspecs)
       end
 
       AUTOCRLF_VALUES = {
