@@ -17,7 +17,7 @@
 - elsif !current_user
   .disabled-comment.text-center.prepend-top-default
     Please
-    = link_to "register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-register-link'
+    = link_to "register", new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'), class: 'js-register-link'
     or
     = link_to "sign in", new_session_path(:user, redirect_to_referer: 'yes'), class: 'js-sign-in-link'
     to comment
