@@ -36,14 +36,28 @@ module MigrationsHelpers
   end
 
   def schema_migrate_down!
-    ActiveRecord::Migrator
-      .migrate(migrations_paths, migration_schema_version)
+    disable_migrations_output do
+      ActiveRecord::Migrator.migrate(migrations_paths,
+                                     migration_schema_version)
+    end
+
     reset_column_in_migration_models
   end
 
   def schema_migrate_up!
-    ActiveRecord::Migrator.migrate(migrations_paths)
+    disable_migrations_output do
+      ActiveRecord::Migrator.migrate(migrations_paths)
+    end
+
     reset_column_in_migration_models
+  end
+
+  def disable_migrations_output
+    ActiveRecord::Migration.verbose = false
+
+    yield
+  ensure
+    ActiveRecord::Migration.verbose = true
   end
 
   def migrate!
