@@ -3,6 +3,11 @@
   transition: opacity $sidebar-transition-duration;
 }
 
+body[data-page='projects:tree:show'] .content-wrapper,
+body[data-page='projects:blob:show'] .content-wrapper {
+  padding: 0;
+}
+
 .monaco-loader {
   position: absolute;
   top: 0;
@@ -54,13 +59,13 @@
 
   .tree-content-holder {
     display: flex;
-    max-height: 100vh;
+    max-height: 80vh;
     min-height: 300px;
     overflow: auto;
   }
 
   .tree-content-holder-mini {
-    height: 100vh;
+    height: 80vh;
   }
 
   .panel-right {
