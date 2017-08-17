@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# GitLab Docum
+# GitLab Documentation
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
