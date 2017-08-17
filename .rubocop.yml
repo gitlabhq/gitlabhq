@@ -1184,8 +1184,8 @@ GitlabSecurity/DeepMunge:
 GitlabSecurity/JsonSerialization:
   Enabled: true
   Exclude:
-    - 'app/serializers/*'
-    - 'app/services/*'
+    - 'app/serializers/**/*'
+    - 'app/services/**/*'
     - 'config/**/*'
     - 'db/**/*'
     - 'lib/**/*'
