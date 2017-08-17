@@ -51,7 +51,7 @@ export default {
       this.commitMessage = '';
       this.editMode = false;
       this.openedFiles.forEach(f => f.changed = false);
-
+      Store.setViewToPreview();
       window.scrollTo(0, 0);
     },
   },
