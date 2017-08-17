@@ -1,0 +1,5 @@
+---
+title: Fix issue boards focus button not being visible to guest users
+merge_request:
+author:
+type: fixed
