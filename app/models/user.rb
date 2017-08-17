@@ -837,7 +837,7 @@ class User < ActiveRecord::Base
     create_namespace!(path: username, name: username) unless namespace
 
     if username_changed?
-      namespace.update_attributes(path: username, name: username)
+      namespace.update_attributes!(path: username, name: username)
     end
   end
 
