@@ -112,7 +112,7 @@
       :toggle-award-path="note.toggle_award_path"
       />
     <issue-note-attachment
-      v-if="note.attachment.url"
+      v-if="note.attachment"
       :attachment="note.attachment"
       />
   </div>

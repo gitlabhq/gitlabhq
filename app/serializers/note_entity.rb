@@ -53,7 +53,7 @@ class NoteEntity < API::Entities::Note
     end
   end
 
-  expose :attachment, using: NoteAttachmentEntity
+  expose :attachment, using: NoteAttachmentEntity, if: -> (note, _) { note.attachment? }
   expose :delete_attachment_path, if: -> (note, _) { note.attachment? } do |note|
     delete_attachment_project_note_path(note.project, note)
   end
