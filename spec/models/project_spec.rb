@@ -2313,6 +2313,7 @@ describe Project do
 
   describe '#remove_pages' do
     let(:project) { create(:project) }
+    let(:namespace) { project.namespace }
     let(:pages_path) { project.pages_path }
 
     around do |example|
@@ -2324,6 +2325,14 @@ describe Project do
       end
     end
 
+    it 'removes the pages directory' do
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
+      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
+
+      project.remove_pages
+    end
+
     it 'is a no-op when there is no namespace' do
       project.update_column(:namespace_id, nil)
 
@@ -2331,6 +2340,12 @@ describe Project do
       expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
 
       project.remove_pages
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_pages).and_call_original
+
+      project.destroy
     end
   end
 

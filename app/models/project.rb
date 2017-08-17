@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
   end
 
   before_destroy :remove_private_deploy_keys
-  after_destroy :remove_pages
+  after_destroy -> { run_after_commit { remove_pages } }
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
