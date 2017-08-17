@@ -34,17 +34,7 @@ export default {
 
   watch: {
     editMode() {
-<<<<<<< HEAD
-      if (this.editMode) {
-        $('.project-refs-form').addClass('disabled');
-        $('.js-tree-ref-target-holder').show();
-      } else {
-        $('.project-refs-form').removeClass('disabled');
-        $('.js-tree-ref-target-holder').hide();
-      }
-=======
       this.toggleProjectRefsForm();
->>>>>>> upstream/master
     },
   },
 };

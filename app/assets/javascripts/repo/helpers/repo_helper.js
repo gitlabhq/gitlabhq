@@ -37,13 +37,6 @@ const RepoHelper = {
 
   getFileExtension(fileName) {
     return fileName.split('.').pop();
-<<<<<<< HEAD
-  },
-
-  getBranch() {
-    return $('button.dropdown-menu-toggle').attr('data-ref');
-=======
->>>>>>> upstream/master
   },
 
   getLanguageIDForFile(file, langs) {
@@ -142,10 +135,6 @@ const RepoHelper = {
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-<<<<<<< HEAD
-      // RepoHelper.setLoading(false, loadingData);
-=======
->>>>>>> upstream/master
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;

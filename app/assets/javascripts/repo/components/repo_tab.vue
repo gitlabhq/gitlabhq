@@ -39,19 +39,11 @@ export default RepoTab;
 </script>
 
 <template>
-<<<<<<< HEAD
-<li>
-  <a
-    href="#0"
-    class="close"
-    @click.prevent="xClicked(tab)"
-=======
 <li @click="tabClicked(tab)">
   <a
     href="#0"
     class="close"
     @click.stop.prevent="closeTab(tab)"
->>>>>>> upstream/master
     :aria-label="closeLabel">
     <i
       class="fa"

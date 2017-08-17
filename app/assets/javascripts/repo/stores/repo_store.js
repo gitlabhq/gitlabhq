@@ -6,11 +6,8 @@ const RepoStore = {
   monaco: {},
   monacoLoading: false,
   service: '',
-<<<<<<< HEAD
-=======
   canCommit: false,
   onTopOfBranch: false,
->>>>>>> upstream/master
   editMode: false,
   isTree: false,
   isRoot: false,
