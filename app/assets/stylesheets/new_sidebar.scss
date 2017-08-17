@@ -103,7 +103,6 @@ $new-sidebar-collapsed-width: 50px;
 
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
-    overflow-x: hidden;
 
     .badge,
     .project-title {
@@ -111,7 +110,11 @@ $new-sidebar-collapsed-width: 50px;
     }
 
     .nav-item-name {
-      opacity: 0;
+      display: none;
+    }
+
+    .sidebar-top-level-items > li > a {
+      min-height: 44px;
     }
   }
 
