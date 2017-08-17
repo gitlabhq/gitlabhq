@@ -443,7 +443,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_diff_if_branch_changed
-    if source_branch_changed? || target_branch_changed?
+    if (source_branch_changed? || target_branch_changed?) &&
+        (source_branch_head && target_branch_head)
       reload_diff
     end
   end
@@ -792,11 +793,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def fetch_ref
-    target_project.repository.fetch_ref(
-      source_project.repository.path_to_repo,
-      "refs/heads/#{source_branch}",
-      ref_path
-    )
+    write_ref
     update_column(:ref_fetched, true)
   end
 
@@ -938,5 +935,18 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  private
+
+  def write_ref
+    target_project.repository.with_repo_branch_commit(
+      source_project.repository, source_branch) do |commit|
+        if commit
+          target_project.repository.write_ref(ref_path, commit.sha)
+        else
+          raise Rugged::ReferenceError, 'source repository is empty'
+        end
+      end
   end
 end

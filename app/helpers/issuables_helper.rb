@@ -174,7 +174,14 @@ module IssuablesHelper
   end
 
   def assigned_issuables_count(issuable_type)
-    current_user.public_send("assigned_open_#{issuable_type}_count")
+    case issuable_type
+    when :issues
+      current_user.assigned_open_issues_count
+    when :merge_requests
+      current_user.assigned_open_merge_requests_count
+    else
+      raise ArgumentError, "invalid issuable `#{issuable_type}`"
+    end
   end
 
   def issuable_filter_params
@@ -296,10 +303,6 @@ module IssuablesHelper
 
   def sidebar_gutter_collapsed?
     cookies[:collapsed_gutter] == 'true'
-  end
-
-  def base_issuable_scope(issuable)
-    issuable.project.send(issuable.class.table_name).send(issuable_state_scope(issuable))
   end
 
   def issuable_state_scope(issuable)

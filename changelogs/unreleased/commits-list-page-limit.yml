@@ -1,0 +1,5 @@
+---
+title: Fix commit list not loading the correct page when scrolling
+merge_request:
+author:
+type: fixed

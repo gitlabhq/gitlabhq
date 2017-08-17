@@ -6,7 +6,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def index
     params[:sort] ||= 'latest_activity_desc'
     @sort = params[:sort]
-    @projects = load_projects.page(params[:page])
+    @projects = load_projects
 
     respond_to do |format|
       format.html
@@ -21,7 +21,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   def trending
     params[:trending] = true
     @sort = params[:sort]
-    @projects = load_projects.page(params[:page])
+    @projects = load_projects
 
     respond_to do |format|
       format.html
@@ -34,7 +34,7 @@ class Explore::ProjectsController < Explore::ApplicationController
   end
 
   def starred
-    @projects = load_projects.reorder('star_count DESC').page(params[:page])
+    @projects = load_projects.reorder('star_count DESC')
 
     respond_to do |format|
       format.html
@@ -50,6 +50,9 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   def load_projects
     ProjectsFinder.new(current_user: current_user, params: params)
-      .execute.includes(:route, namespace: :route)
+      .execute
+      .includes(:route, namespace: :route)
+      .page(params[:page])
+      .without_count
   end
 end

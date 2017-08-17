@@ -3,7 +3,7 @@
 > **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
 > **Author:** [Achilleas Pipinellis](https://gitlab.com/axil) ||
-> **Publication date:** 2016/06/28
+> **Publication date:** 2016-06-28
 
 ## Introduction
 

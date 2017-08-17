@@ -289,7 +289,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
     end
 
-    context 'no submodules at commit' do
+    context 'no .gitmodules at commit' do
+      let(:ref) { '9596bc54a6f0c0c98248fe97077eb5ccf48a98d0' }
+
+      it { expect(submodule_url('six')).to eq(nil) }
+    end
+
+    context 'no gitlink entry' do
       let(:ref) { '6d39438' }
 
       it { expect(submodule_url('six')).to eq(nil) }
@@ -986,7 +992,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(9)
+      expect(repository.branch_count).to eq(10)
     end
   end
 
@@ -1002,7 +1008,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(master_file_paths).to include("files/html/500.html")
     end
 
-    it "dose not read submodule directory and empty directory of master branch" do
+    it "does not read submodule directory and empty directory of master branch" do
       expect(master_file_paths).not_to include("six")
     end
 

@@ -141,17 +141,21 @@ the stable branch are:
 * Fixes for security issues
 * New or updated translations (as long as they do not touch application code)
 
-Any merge requests cherry-picked into the stable branch for a previous release
-will also be picked into the latest stable branch. These fixes will be shipped
-in the next RC for that release if it is before the 22nd. If the fixes are are
-completed on or after the 22nd, they will be shipped in a patch for that
-release.
-
 During the feature freeze all merge requests that are meant to go into the upcoming
 release should have the correct milestone assigned _and_ have the label
 ~"Pick into Stable" set, so that release managers can find and pick them.
 Merge requests without a milestone and this label will
 not be merged into any stable branches.
+
+Fixes marked like this will be shipped in the next RC for that release. Once
+the final RC has been prepared ready for release on the 22nd, further fixes
+marked ~"Pick into Stable" will go into a patch for that release.
+
+If a merge request is to be picked into more than one release it will also need
+the ~"Pick into Backports" label set to remind the release manager to change
+the milestone after cherry-picking. As before, it should still have the
+~"Pick into Stable" label and the milestone of the highest release it will be
+picked into.
 
 ### Asking for an exception
 

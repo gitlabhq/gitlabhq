@@ -2310,4 +2310,52 @@ describe Project do
       end
     end
   end
+
+  describe '#remove_pages' do
+    let(:project) { create(:project) }
+    let(:namespace) { project.namespace }
+    let(:pages_path) { project.pages_path }
+
+    around do |example|
+      FileUtils.mkdir_p(pages_path)
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(pages_path)
+      end
+    end
+
+    it 'removes the pages directory' do
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
+      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
+
+      project.remove_pages
+    end
+
+    it 'is a no-op when there is no namespace' do
+      project.update_column(:namespace_id, nil)
+
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
+
+      project.remove_pages
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_pages).and_call_original
+
+      project.destroy
+    end
+  end
+
+  describe '#forks_count' do
+    it 'returns the number of forks' do
+      project = build(:project)
+
+      allow(project.forks).to receive(:count).and_return(1)
+
+      expect(project.forks_count).to eq(1)
+    end
+  end
 end

@@ -16,7 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
-gem 'grape-route-helpers', '~> 2.0.0'
+gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -76,7 +76,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.2'
+gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -84,7 +84,7 @@ gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 0.17.0'
+gem 'kaminari', '~> 1.0'
 
 # HAML
 gem 'hamlit', '~> 2.6.1'
@@ -232,7 +232,7 @@ gem 'ace-rails-ap', '~> 4.1.0'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.7.3'
+gem 'charlock_holmes', '~> 0.7.5'
 
 # Faster JSON
 gem 'oj', '~> 2.17.4'
@@ -324,6 +324,7 @@ group :development, :test do
   gem 'spinach-rerun-reporter', '~> 0.0.2'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
+  gem 'rspec-parameterized'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.7.0'

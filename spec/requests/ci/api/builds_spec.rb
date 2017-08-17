@@ -130,7 +130,7 @@ describe Ci::API::Builds do
           register_builds info: { platform: :darwin }
 
           expect(response).to have_http_status(201)
-      
+
           expect(json_response["options"]).to be_empty
         end
       end

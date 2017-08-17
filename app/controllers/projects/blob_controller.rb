@@ -198,6 +198,10 @@ class Projects::BlobController < Projects::ApplicationController
     json = blob_json(@blob)
     return render_404 unless json
 
+    path_segments = @path.split('/')
+    path_segments.pop
+    tree_path = path_segments.join('/')
+
     render json: json.merge(
       path: blob.path,
       name: blob.name,
@@ -212,6 +216,7 @@ class Projects::BlobController < Projects::ApplicationController
       raw_path: project_raw_path(project, @id),
       blame_path: project_blame_path(project, @id),
       commits_path: project_commits_path(project, @id),
+      tree_path: project_tree_path(project, File.join(@ref, tree_path)),
       permalink: project_blob_path(project, File.join(@commit.id, @path))
     )
   end

@@ -16,11 +16,13 @@ describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits' do
-    context 'authorized user' do
+    let(:route) { "/projects/#{project_id}/repository/commits" }
+
+    shared_examples_for 'project commits' do
       it "returns project commits" do
         commit = project.repository.commit
 
-        get api("/projects/#{project_id}/repository/commits", user)
+        get api(route, current_user)
 
         expect(response).to have_http_status(200)
         expect(response).to match_response_schema('public_api/v4/commits')
@@ -32,7 +34,7 @@ describe API::Commits do
       it 'include correct pagination headers' do
         commit_count = project.repository.count_commits(ref: 'master').to_s
 
-        get api("/projects/#{project_id}/repository/commits", user)
+        get api(route, current_user)
 
         expect(response).to include_pagination_headers
         expect(response.headers['X-Total']).to eq(commit_count)
@@ -40,140 +42,151 @@ describe API::Commits do
       end
     end
 
-    context "unauthorized user" do
-      it "does not return project commits" do
-        get api("/projects/#{project_id}/repository/commits")
+    context 'when unauthenticated', 'and project is public' do
+      let(:project) { create(:project, :public, :repository) }
 
-        expect(response).to have_http_status(404)
+      it_behaves_like 'project commits'
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route) }
+        let(:message) { '404 Project Not Found' }
       end
     end
 
-    context "since optional parameter" do
-      it "returns project commits since provided parameter" do
-        commits = project.repository.commits("master")
-        after = commits.second.created_at
+    context 'when authenticated', 'as a master' do
+      let(:current_user) { user }
 
-        get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
+      it_behaves_like 'project commits'
 
-        expect(json_response.size).to eq 2
-        expect(json_response.first["id"]).to eq(commits.first.id)
-        expect(json_response.second["id"]).to eq(commits.second.id)
-      end
+      context "since optional parameter" do
+        it "returns project commits since provided parameter" do
+          commits = project.repository.commits("master")
+          after = commits.second.created_at
 
-      it 'include correct pagination headers' do
-        commits = project.repository.commits("master")
-        after = commits.second.created_at
-        commit_count = project.repository.count_commits(ref: 'master', after: after).to_s
+          get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
 
-        get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
-
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
-        expect(response.headers['X-Page']).to eql('1')
-      end
-    end
-
-    context "until optional parameter" do
-      it "returns project commits until provided parameter" do
-        commits = project.repository.commits("master")
-        before = commits.second.created_at
-
-        get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
-
-        if commits.size >= 20
-          expect(json_response.size).to eq(20)
-        else
-          expect(json_response.size).to eq(commits.size - 1)
+          expect(json_response.size).to eq 2
+          expect(json_response.first["id"]).to eq(commits.first.id)
+          expect(json_response.second["id"]).to eq(commits.second.id)
         end
 
-        expect(json_response.first["id"]).to eq(commits.second.id)
-        expect(json_response.second["id"]).to eq(commits.third.id)
+        it 'include correct pagination headers' do
+          commits = project.repository.commits("master")
+          after = commits.second.created_at
+          commit_count = project.repository.count_commits(ref: 'master', after: after).to_s
+
+          get api("/projects/#{project_id}/repository/commits?since=#{after.utc.iso8601}", user)
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count)
+          expect(response.headers['X-Page']).to eql('1')
+        end
       end
 
-      it 'include correct pagination headers' do
-        commits = project.repository.commits("master")
-        before = commits.second.created_at
-        commit_count = project.repository.count_commits(ref: 'master', before: before).to_s
+      context "until optional parameter" do
+        it "returns project commits until provided parameter" do
+          commits = project.repository.commits("master")
+          before = commits.second.created_at
 
-        get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
+          get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
-        expect(response.headers['X-Page']).to eql('1')
-      end
-    end
+          if commits.size >= 20
+            expect(json_response.size).to eq(20)
+          else
+            expect(json_response.size).to eq(commits.size - 1)
+          end
 
-    context "invalid xmlschema date parameters" do
-      it "returns an invalid parameter error message" do
-        get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
+          expect(json_response.first["id"]).to eq(commits.second.id)
+          expect(json_response.second["id"]).to eq(commits.third.id)
+        end
 
-        expect(response).to have_http_status(400)
-        expect(json_response['error']).to eq('since is invalid')
-      end
-    end
+        it 'include correct pagination headers' do
+          commits = project.repository.commits("master")
+          before = commits.second.created_at
+          commit_count = project.repository.count_commits(ref: 'master', before: before).to_s
 
-    context "path optional parameter" do
-      it "returns project commits matching provided path parameter" do
-        path = 'files/ruby/popen.rb'
-        commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
+          get api("/projects/#{project_id}/repository/commits?until=#{before.utc.iso8601}", user)
 
-        get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
-
-        expect(json_response.size).to eq(3)
-        expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count)
+          expect(response.headers['X-Page']).to eql('1')
+        end
       end
 
-      it 'include correct pagination headers' do
-        path = 'files/ruby/popen.rb'
-        commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
+      context "invalid xmlschema date parameters" do
+        it "returns an invalid parameter error message" do
+          get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
 
-        get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
-
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
-        expect(response.headers['X-Page']).to eql('1')
-      end
-    end
-
-    context 'with pagination params' do
-      let(:page) { 1 }
-      let(:per_page) { 5 }
-      let(:ref_name) { 'master' }
-      let!(:request) do
-        get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
+          expect(response).to have_http_status(400)
+          expect(json_response['error']).to eq('since is invalid')
+        end
       end
 
-      it 'returns correct headers' do
-        commit_count = project.repository.count_commits(ref: ref_name).to_s
+      context "path optional parameter" do
+        it "returns project commits matching provided path parameter" do
+          path = 'files/ruby/popen.rb'
+          commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
 
-        expect(response).to include_pagination_headers
-        expect(response.headers['X-Total']).to eq(commit_count)
-        expect(response.headers['X-Page']).to eq('1')
-        expect(response.headers['Link']).to match(/page=1&per_page=5/)
-        expect(response.headers['Link']).to match(/page=2&per_page=5/)
+          get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+          expect(json_response.size).to eq(3)
+          expect(json_response.first["id"]).to eq("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count)
+        end
+
+        it 'include correct pagination headers' do
+          path = 'files/ruby/popen.rb'
+          commit_count = project.repository.count_commits(ref: 'master', path: path).to_s
+
+          get api("/projects/#{project_id}/repository/commits?path=#{path}", user)
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count)
+          expect(response.headers['X-Page']).to eql('1')
+        end
       end
 
-      context 'viewing the first page' do
-        it 'returns the first 5 commits' do
-          commit = project.repository.commit
+      context 'with pagination params' do
+        let(:page) { 1 }
+        let(:per_page) { 5 }
+        let(:ref_name) { 'master' }
+        let!(:request) do
+          get api("/projects/#{project_id}/repository/commits?page=#{page}&per_page=#{per_page}&ref_name=#{ref_name}", user)
+        end
 
-          expect(json_response.size).to eq(per_page)
-          expect(json_response.first['id']).to eq(commit.id)
+        it 'returns correct headers' do
+          commit_count = project.repository.count_commits(ref: ref_name).to_s
+
+          expect(response).to include_pagination_headers
+          expect(response.headers['X-Total']).to eq(commit_count)
           expect(response.headers['X-Page']).to eq('1')
+          expect(response.headers['Link']).to match(/page=1&per_page=5/)
+          expect(response.headers['Link']).to match(/page=2&per_page=5/)
         end
-      end
 
-      context 'viewing the third page' do
-        let(:page) { 3 }
+        context 'viewing the first page' do
+          it 'returns the first 5 commits' do
+            commit = project.repository.commit
 
-        it 'returns the third 5 commits' do
-          commit = project.repository.commits('HEAD', offset: (page - 1) * per_page).first
+            expect(json_response.size).to eq(per_page)
+            expect(json_response.first['id']).to eq(commit.id)
+            expect(response.headers['X-Page']).to eq('1')
+          end
+        end
 
-          expect(json_response.size).to eq(per_page)
-          expect(json_response.first['id']).to eq(commit.id)
-          expect(response.headers['X-Page']).to eq('3')
+        context 'viewing the third page' do
+          let(:page) { 3 }
+
+          it 'returns the third 5 commits' do
+            commit = project.repository.commits('HEAD', offset: (page - 1) * per_page).first
+
+            expect(json_response.size).to eq(per_page)
+            expect(json_response.first['id']).to eq(commit.id)
+            expect(response.headers['X-Page']).to eq('3')
+          end
         end
       end
     end

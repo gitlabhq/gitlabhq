@@ -28,6 +28,8 @@ Gitlab::Seeder.quiet do
 
   project = Project.find_by_full_path('gitlab-org/gitlab-test')
 
+  next if project.empty_repo? # We don't have repository on CI
+
   params = {
     source_branch: 'feature',
     target_branch: 'master',

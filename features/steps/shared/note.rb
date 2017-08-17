@@ -11,8 +11,8 @@ module SharedNote
       note = find('.note')
       note.hover
 
-      note.find('.more-actions').click
-      note.find('.more-actions .dropdown-menu li', match: :first)
+      find('.more-actions').click
+      find('.more-actions .dropdown-menu li', match: :first)
 
       find(".js-note-delete").click
     end
@@ -146,9 +146,6 @@ module SharedNote
     page.within(".main-notes-list") do
       note = find('.note')
       note.hover
-
-      note.find('.more-actions').click
-      note.find('.more-actions .dropdown-menu li', match: :first)
 
       note.find('.js-note-edit').click
     end

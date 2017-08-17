@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-phantomjs-2.1-node-7.1-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-7.1-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-233-with-yarn"
@@ -226,6 +226,7 @@ update-tests-metadata:
 
 flaky-examples-check:
   <<: *dedicated-runner
+  <<: *except-docs
   image: ruby:2.3-alpine
   services: []
   before_script: []
@@ -473,7 +474,6 @@ db:rollback-mysql:
   variables:
     SIZE: "1"
     SETUP_DB: "false"
-    RAILS_ENV: "development"
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
@@ -522,7 +522,7 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.7-chrome-59.0-node-7.1-postgresql-9.6"
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-59.0-node-7.1-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"

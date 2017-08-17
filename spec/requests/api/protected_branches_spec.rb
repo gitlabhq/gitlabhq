@@ -96,7 +96,7 @@ describe API::ProtectedBranches do
   describe 'POST /projects/:id/protected_branches' do
     let(:branch_name) { 'new_branch' }
 
-    context 'when authenticated as a master' do 
+    context 'when authenticated as a master' do
       before do
         project.add_master(user)
       end
@@ -221,7 +221,7 @@ describe API::ProtectedBranches do
 
     context 'when branch has a wildcard in its name' do
       let(:protected_name) { 'feature*' }
-      
+
       it "unprotects a wildcard branch" do
         delete api("/projects/#{project.id}/protected_branches/#{branch_name}", user)
 

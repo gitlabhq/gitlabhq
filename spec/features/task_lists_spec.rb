@@ -52,8 +52,8 @@ feature 'Task Lists' do
   before do
     Warden.test_mode!
 
-    project.team << [user, :master]
-    project.team << [user2, :guest]
+    project.add_master(user)
+    project.add_guest(user2)
 
     login_as(user)
   end
