@@ -332,8 +332,8 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
-# Convert upload connection settings to use symbol keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
