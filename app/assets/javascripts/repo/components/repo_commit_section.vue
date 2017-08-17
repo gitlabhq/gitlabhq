@@ -50,6 +50,8 @@ export default {
       this.changedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
+      this.openedFiles.forEach(f => f.changed = false);
+
       window.scrollTo(0, 0);
     },
   },
