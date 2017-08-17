@@ -46,7 +46,7 @@ describe 'Edit Project Settings' do
     context 'when changing project name' do
       it 'renames the repository' do
         rename_project(project, name: 'bar')
-        expect(find('h1.title')).to have_content(project.name)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
 
       context 'with emojis' do
@@ -74,7 +74,7 @@ describe 'Edit Project Settings' do
         new_path = namespace_project_path(project.namespace, 'bar')
         visit new_path
         expect(current_path).to eq(new_path)
-        expect(find('h1.title')).to have_content(project.name)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
 
       specify 'the project is accessible via a redirect from the old path' do
@@ -83,7 +83,7 @@ describe 'Edit Project Settings' do
         new_path = namespace_project_path(project.namespace, 'bar')
         visit old_path
         expect(current_path).to eq(new_path)
-        expect(find('h1.title')).to have_content(project.name)
+        expect(find('.breadcrumbs')).to have_content(project.name)
       end
 
       context 'and a new project is added with the same path' do
@@ -93,7 +93,7 @@ describe 'Edit Project Settings' do
           new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
           visit old_path
           expect(current_path).to eq(old_path)
-          expect(find('h1.title')).to have_content(new_project.name)
+          expect(find('.breadcrumbs')).to have_content(new_project.name)
         end
       end
     end
@@ -120,7 +120,7 @@ describe 'Edit Project Settings' do
       new_path = namespace_project_path(group, project)
       visit new_path
       expect(current_path).to eq(new_path)
-      expect(find('h1.title')).to have_content(project.name)
+      expect(find('.breadcrumbs')).to have_content(project.name)
     end
 
     specify 'the project is accessible via a redirect from the old path' do
@@ -129,7 +129,7 @@ describe 'Edit Project Settings' do
       new_path = namespace_project_path(group, project)
       visit old_path
       expect(current_path).to eq(new_path)
-      expect(find('h1.title')).to have_content(project.name)
+      expect(find('.breadcrumbs')).to have_content(project.name)
     end
 
     context 'and a new project is added with the same path' do
@@ -139,7 +139,7 @@ describe 'Edit Project Settings' do
         new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
         expect(current_path).to eq(old_path)
-        expect(find('h1.title')).to have_content(new_project.name)
+        expect(find('.breadcrumbs')).to have_content(new_project.name)
       end
     end
   end

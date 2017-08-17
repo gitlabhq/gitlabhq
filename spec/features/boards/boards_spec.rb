@@ -145,6 +145,8 @@ describe 'Issue Boards', js: true do
       click_button 'Add list'
       wait_for_requests
 
+      find('.dropdown-menu-close').click
+
       page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end

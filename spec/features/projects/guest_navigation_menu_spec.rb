@@ -13,7 +13,7 @@ describe 'Guest navigation menu' do
   it 'shows allowed tabs only' do
     visit project_path(project)
 
-    within('.layout-nav') do
+    within('.nav-sidebar') do
       expect(page).to have_content 'Project'
       expect(page).to have_content 'Issues'
       expect(page).to have_content 'Wiki'
