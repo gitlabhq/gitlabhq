@@ -5,6 +5,8 @@
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import tooltip from '../../vue_shared/directives/tooltip';
+  import editSvg from 'icons/_icon_pencil.svg';
+  import ellipsisSvg from 'icons/_ellipsis_v.svg';
 
   export default {
     name: 'issueNoteActions',
@@ -74,6 +76,8 @@
       this.emojiSmiling = emojiSmiling;
       this.emojiSmile = emojiSmile;
       this.emojiSmiley = emojiSmiley;
+      this.editSvg = editSvg;
+      this.ellipsisSvg = ellipsisSvg;
     },
   };
 </script>
@@ -83,55 +87,62 @@
     <span
       v-if="accessLevel"
       class="note-role">{{accessLevel}}</span>
-    <a
-      v-tooltip
-      v-if="canAddAwardEmoji"
-      :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
-      class="note-action-button note-emoji-button js-add-award js-note-emoji"
-      data-position="right"
-      href="#"
-      title="Add reaction">
-        <loading-icon :inline="true" />
-        <span
-          v-html="emojiSmiling"
-          class="link-highlight award-control-icon-neutral">
-        </span>
-        <span
-          v-html="emojiSmiley"
-          class="link-highlight award-control-icon-positive">
-        </span>
-        <span
-          v-html="emojiSmile"
-          class="link-highlight award-control-icon-super-positive">
-        </span>
-    </a>
+    <div class="note-actions-item">
+      <a
+        v-tooltip
+        v-if="canAddAwardEmoji"
+        :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
+        class="note-action-button note-emoji-button js-add-award js-note-emoji"
+        data-position="right"
+        data-placement="bottom"
+        data-container="body"
+        href="#"
+        title="Add reaction">
+          <loading-icon :inline="true" />
+          <span
+            v-html="emojiSmiling"
+            class="link-highlight award-control-icon-neutral">
+          </span>
+          <span
+            v-html="emojiSmiley"
+            class="link-highlight award-control-icon-positive">
+          </span>
+          <span
+            v-html="emojiSmile"
+            class="link-highlight award-control-icon-super-positive">
+          </span>
+      </a>
+    </div>
+    <div class="note-actions-item">
+      <button
+        @click="onEdit"
+        v-tooltip
+        type="button"
+        title="Edit comment"
+        class="note-action-button js-note-edit btn btn-transparent"
+        data-container="body"
+        data-placement="bottom">
+          <span
+            v-html="editSvg"
+            class="link-highlight"></span>
+      </button>
+    </div>
     <div
       v-if="shouldShowActionsDropdown"
-      class="dropdown more-actions">
+      class="dropdown more-actions note-actions-item">
       <button
         v-tooltip
         type="button"
         title="More actions"
         class="note-action-button more-actions-toggle btn btn-transparent"
         data-toggle="dropdown"
-        data-container="body">
-          <i
-            aria-hidden="true"
-            class="fa fa-ellipsis-v icon">
-          </i>
+        data-container="body"
+        data-placement="bottom">
+          <span
+            class="icon"
+            v-html="ellipsisSvg"></span>
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
-        <template v-if="canEdit">
-          <li>
-            <button
-              @click="onEdit"
-              type="button"
-              class="btn btn-transparent js-note-edit">
-              Edit comment
-            </button>
-          </li>
-          <li class="divider"></li>
-        </template>
         <li v-if="canReportAsAbuse">
           <a :href="reportAbusePath">
             Report as abuse
