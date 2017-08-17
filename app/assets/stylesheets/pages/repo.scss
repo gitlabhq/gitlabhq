@@ -143,10 +143,9 @@
         a {
           @include str-truncated(100px);
           color: $black;
-          text-align: center;
+          text-align: left;
           vertical-align: middle;
           text-decoration: none;
-          margin-right: 40px;
           max-width: 100px;
 
           &.close {
