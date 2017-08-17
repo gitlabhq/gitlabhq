@@ -1,33 +1,25 @@
 require 'spec_helper'
 
 describe CreateGpgSignatureWorker do
+  let(:project) { create(:project, :repository) }
+
   context 'when GpgKey is found' do
-    it 'calls Commit#signature' do
-      commit_sha = '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33'
-      project = create :project
-      commit = instance_double(Commit)
+    let(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
 
-      allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
-      allow(project).to receive(:commit).with(commit_sha).and_return(commit)
+    it 'calls Gitlab::Gpg::Commit#signature' do
+      expect(Gitlab::Gpg::Commit).to receive(:new).with(project, commit_sha).and_call_original
 
-      expect(commit).to receive(:signature)
+      expect_any_instance_of(Gitlab::Gpg::Commit).to receive(:signature)
 
       described_class.new.perform(commit_sha, project.id)
     end
   end
 
   context 'when Commit is not found' do
-    let(:nonexisting_commit_sha) { 'bogus' }
-    let(:project) { create :project }
+    let(:nonexisting_commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a34' }
 
     it 'does not raise errors' do
       expect { described_class.new.perform(nonexisting_commit_sha, project.id) }.not_to raise_error
-    end
-
-    it 'does not call Commit#signature' do
-      expect_any_instance_of(Commit).not_to receive(:signature)
-
-      described_class.new.perform(nonexisting_commit_sha, project.id)
     end
   end
 
@@ -38,8 +30,8 @@ describe CreateGpgSignatureWorker do
       expect { described_class.new.perform(anything, nonexisting_project_id) }.not_to raise_error
     end
 
-    it 'does not call Commit#signature' do
-      expect_any_instance_of(Commit).not_to receive(:signature)
+    it 'does not call Gitlab::Gpg::Commit#signature' do
+      expect_any_instance_of(Gitlab::Gpg::Commit).not_to receive(:signature)
 
       described_class.new.perform(anything, nonexisting_project_id)
     end

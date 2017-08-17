@@ -920,14 +920,14 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data, hooks_scope = :push_hooks)
-    hooks.send(hooks_scope).each do |hook|
+    hooks.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
       hook.async_execute(data, hooks_scope.to_s)
     end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
-    services.send(hooks_scope).each do |service|
+    services.public_send(hooks_scope).each do |service| # rubocop:disable GitlabSecurity/PublicSend
       service.async_execute(data)
     end
   end
@@ -1282,12 +1282,16 @@ class Project < ActiveRecord::Base
     status.zero?
   end
 
+  def full_path_slug
+    Gitlab::Utils.slugify(full_path.to_s)
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]

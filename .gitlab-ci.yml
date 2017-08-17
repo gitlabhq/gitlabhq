@@ -474,7 +474,6 @@ db:rollback-mysql:
   variables:
     SIZE: "1"
     SETUP_DB: "false"
-    RAILS_ENV: "development"
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git

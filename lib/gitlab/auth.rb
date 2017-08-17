@@ -101,7 +101,7 @@ module Gitlab
         if Service.available_services_names.include?(underscored_service)
           # We treat underscored_service as a trusted input because it is included
           # in the Service.available_services_names whitelist.
-          service = project.public_send("#{underscored_service}_service")
+          service = project.public_send("#{underscored_service}_service") # rubocop:disable GitlabSecurity/PublicSend
 
           if service && service.activated? && service.valid_token?(password)
             Gitlab::Auth::Result.new(nil, project, :ci, build_authentication_abilities)
@@ -149,7 +149,7 @@ module Gitlab
 
       def abilities_for_scope(scopes)
         scopes.map do |scope|
-          self.public_send(:"#{scope}_scope_authentication_abilities")
+          self.public_send(:"#{scope}_scope_authentication_abilities") # rubocop:disable GitlabSecurity/PublicSend
         end.flatten.uniq
       end
 

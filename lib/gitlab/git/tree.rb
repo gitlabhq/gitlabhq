@@ -89,7 +89,7 @@ module Gitlab
 
       def initialize(options)
         %w(id root_id name path type mode commit_id).each do |key|
-          self.send("#{key}=", options[key.to_sym])
+          self.send("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

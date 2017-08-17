@@ -18,7 +18,7 @@ module TestHooks
       end
 
       error_message = catch(:validation_error) do
-        sample_data = self.__send__(trigger_data_method)
+        sample_data = self.__send__(trigger_data_method) # rubocop:disable GitlabSecurity/PublicSend
 
         return hook.execute(sample_data, trigger)
       end

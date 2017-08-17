@@ -89,7 +89,7 @@ describe 'gitlab:gitaly namespace rake task' do
 
           it 'calls make in the gitaly directory without BUNDLE_PATH' do
             expect(main_object).to receive(:run_command!).with(command_preamble + ['make']).and_return(true)
-  
+
             run_rake_task('gitlab:gitaly:install', clone_path)
           end
         end

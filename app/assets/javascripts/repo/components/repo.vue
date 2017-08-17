@@ -43,15 +43,18 @@ export default {
 </script>
 
 <template>
-  <div class="repository-view tree-content-holder">
-    <repo-sidebar/><div v-if="isMini"
-    class="panel-right"
-    :class="{'edit-mode': editMode}">
-      <repo-tabs/>
-      <component
-        :is="currentBlobView"
-        class="blob-viewer-container"/>
-      <repo-file-buttons/>
+  <div class="repository-view">
+    <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isMini}">
+      <repo-sidebar/>
+      <div v-if="isMini"
+      class="panel-right"
+      :class="{'edit-mode': editMode}">
+        <repo-tabs/>
+        <component
+          :is="currentBlobView"
+          class="blob-viewer-container"/>
+        <repo-file-buttons/>
+      </div>
     </div>
     <repo-commit-section/>
     <popup-dialog

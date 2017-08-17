@@ -47,14 +47,26 @@
   margin: 20px;
 }
 
-.repository-view.tree-content-holder {
+.repository-view {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
   color: $almost-black;
 
+  .tree-content-holder {
+    display: flex;
+    max-height: 100vh;
+    min-height: 300px;
+  }
+
+  .tree-content-holder-mini {
+    height: 100vh;
+  }
+
   .panel-right {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     width: 80%;
+    height: 100%;
 
     .monaco-editor.vs {
       .line-numbers {
@@ -85,16 +97,17 @@
     }
 
     .blob-viewer-container {
-      height: calc(100vh - 62px);
+      flex: 1;
       overflow: auto;
     }
 
     #tabs {
+      flex-shrink: 0;
+      display: flex;
+      width: 100%;
       padding-left: 0;
       margin-bottom: 0;
-      display: flex;
       white-space: nowrap;
-      width: 100%;
       overflow-y: hidden;
       overflow-x: auto;
 
@@ -222,14 +235,12 @@
   }
 
   #sidebar {
+    flex: 1;
+    height: 100%;
 
     &.sidebar-mini {
-      display: inline-block;
-      vertical-align: top;
       width: 20%;
       border-right: 1px solid $white-normal;
-      min-height: 475px;
-      height: calc(100vh + 20px);
       overflow: auto;
     }
 

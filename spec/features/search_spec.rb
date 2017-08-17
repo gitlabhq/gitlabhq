@@ -195,37 +195,33 @@ describe "Search"  do
 
         it 'takes user to her issues page when issues assigned is clicked' do
           find('.dropdown-menu').click_link 'Issues assigned to me'
-          sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([assignee_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her issues page when issues authored is clicked' do
           find('.dropdown-menu').click_link "Issues I've created"
-          sleep 2
 
           expect(page).to have_selector('.filtered-search')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([author_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR assigned is clicked' do
           find('.dropdown-menu').click_link 'Merge requests assigned to me'
-          sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+          expect_tokens([assignee_token(user.name)])
           expect_filtered_search_input_empty
         end
 
         it 'takes user to her MR page when MR authored is clicked' do
           find('.dropdown-menu').click_link "Merge requests I've created"
-          sleep 2
 
           expect(page).to have_selector('.merge-requests-holder')
-          expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+          expect_tokens([author_token(user.name)])
           expect_filtered_search_input_empty
         end
       end
