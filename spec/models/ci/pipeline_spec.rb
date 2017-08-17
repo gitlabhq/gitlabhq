@@ -1330,7 +1330,7 @@ describe Ci::Pipeline, :mailer do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {
             artifacts: {

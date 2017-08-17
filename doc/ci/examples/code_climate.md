@@ -5,10 +5,10 @@ GitLab CI and Docker.
 
 First, you need GitLab Runner with [docker-in-docker executor][dind].
 
-Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `codeclimate`:
+Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `codequality` or `codeclimate`(DEPRECATED):
 
 ```yaml
-codeclimate:
+codequality:
   image: docker:latest
   variables:
     DOCKER_DRIVER: overlay
@@ -22,7 +22,7 @@ codeclimate:
     paths: [codeclimate.json]
 ```
 
-This will create a `codeclimate` job in your CI pipeline and will allow you to
+This will create a `codequality` job in your CI pipeline and will allow you to
 download and analyze the report artifact in JSON format.
 
 For GitLab [Enterprise Edition Starter][ee] users, this information can be automatically

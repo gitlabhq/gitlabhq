@@ -112,7 +112,7 @@ describe Ci::Build do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {
             artifacts: {
@@ -130,7 +130,7 @@ describe Ci::Build do
         create(
           :ci_build,
           :artifacts,
-          name: 'codeclimate',
+          name: 'codequality',
           pipeline: pipeline,
           options: {}
         )
