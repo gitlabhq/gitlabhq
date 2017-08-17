@@ -4,14 +4,17 @@ import Store from '../stores/repo_store';
 
 export default {
   data: () => Store,
+
   mounted() {
     this.highlightFile();
 
     $(this.$el)
       .off('click', '.diff-line-num', Helper.diffLineNumClickWrapper)
       .on('click', '.diff-line-num', Helper.diffLineNumClickWrapper);
-      Helper.highLightIfCurrentLine();
+
+    Helper.highLightIfCurrentLine();
   },
+
   computed: {
     html() {
       return this.activeFile.html;
@@ -33,7 +36,7 @@ export default {
     },
 
     activeFile: {
-      handler(obj) {
+      handler() {
         Helper.highLightIfCurrentLine();
       },
       deep: true,

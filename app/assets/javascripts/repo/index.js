@@ -30,7 +30,7 @@ function setInitialStore(data) {
   Store.service = Service;
   Store.service.url = data.url;
 
-  if(window.location.hash) {
+  if (window.location.hash) {
     Store.hashToSet = window.location.hash;
   }
 

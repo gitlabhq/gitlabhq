@@ -86,7 +86,7 @@ const RepoStore = {
         }).catch(Helper.loadingError);
     }
     url = file.url;
-    if(file.currentLine) {
+    if (file.currentLine) {
       url = `${url}${file.currentLine}`;
     }
 
@@ -99,7 +99,7 @@ const RepoStore = {
     activeFile.active = file.url === activeFile.url;
 
     if (activeFile.active) {
-      if(RepoStore.hashToSet) {
+      if (RepoStore.hashToSet) {
         activeFile.currentLine = RepoStore.hashToSet;
         RepoStore.hashToSet = false;
       }
