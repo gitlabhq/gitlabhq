@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# Hello World
+# GitLab Doc
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
