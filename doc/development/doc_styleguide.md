@@ -113,13 +113,12 @@ merge request.
 
 ## Links
 
-- If a link makes the paragraph to span across multiple lines, do not use
-  the regular Markdown approach: `[Text](https://example.com)`. Instead use
-  `[Text][identifier]` and at the very bottom of the document add:
-  `[identifier]: https://example.com`. This is another way to create Markdown
-  links which keeps the document clear and concise. Bonus points if you also
-  add an alternative text: `[identifier]: https://example.com "Alternative text"`
-  that appears when hovering your mouse on a link
+- Use the regular inline link markdown markup `[Text](https://example.com)`.
+  It's easier to read, review, and maintain.
+- If there's a link that repeats several times through the same document,
+  you can use `[Text][identifier]` and at the bottom of the section or the
+  document add: `[identifier]: https://example.com`, in which case, we do
+  encourage you to also add an alternative text: `[identifier]: https://example.com "Alternative text"` that appears when hovering your mouse on a link.
 
 ### Linking to inline docs
 
