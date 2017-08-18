@@ -1090,5 +1090,18 @@ module API
       expose :failing_on_hosts
       expose :total_failures
     end
+
+    class GithubRepoOwner < Grape::Entity
+      expose :id
+      expose :login do |project|
+        project.namespace&.name
+      end
+    end
+
+    class GithubUserRepo < Grape::Entity
+      expose :id
+      expose :owner, using: GithubRepoOwner, unless: -> (project, options) { project.group }
+      expose :name
+    end
   end
 end

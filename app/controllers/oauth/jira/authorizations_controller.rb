@@ -1,5 +1,5 @@
-# This controller's role is to mimic the Gitlab OAuth flow routes for Jira DVCS
-# integration.
+# This controller's role is to mimic and rewire the Gitlab OAuth
+# flow routes for Jira DVCS integration.
 # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2381
 #
 class Oauth::Jira::AuthorizationsController < ActionController::Base
@@ -24,8 +24,7 @@ class Oauth::Jira::AuthorizationsController < ActionController::Base
                     .slice(:code, :client_id, :client_secret)
                     .merge(grant_type: 'authorization_code', redirect_uri: oauth_jira_callback_url)
 
-    auth_response =
-      HTTParty.post(oauth_token_url, body: auth_params)
+    auth_response = HTTParty.post(oauth_token_url, body: auth_params)
 
     # TODO: join url params in a better way
     token = "access_token=" +
