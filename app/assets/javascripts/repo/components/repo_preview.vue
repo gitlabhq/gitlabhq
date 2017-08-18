@@ -5,12 +5,14 @@ import Store from '../stores/repo_store';
 export default {
   data: () => Store,
   mounted() {
-    $(this.$el).find('.file-content').syntaxHighlight();
+    const $el = $(this.$el);
 
-    $(this.$el)
+    $el.find('.file-content').syntaxHighlight();
+    $el
       .off('click', '.diff-line-num', Helper.diffLineNumClickWrapper)
       .on('click', '.diff-line-num', Helper.diffLineNumClickWrapper);
-      Helper.highLightIfCurrentLine();
+
+    Helper.highLightIfCurrentLine();
   },
   computed: {
     html() {
