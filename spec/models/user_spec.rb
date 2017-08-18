@@ -2063,9 +2063,14 @@ describe User do
           context 'when there is a validation error (namespace name taken) while updating namespace' do
             let!(:conflicting_namespace) { create(:group, name: new_username, path: 'quz') }
 
-            it "causes the user save to fail" do
+            it 'causes the user save to fail' do
               expect(user.update_attributes(username: new_username)).to be_falsey
               expect(user.namespace.errors.messages[:name].first).to eq('has already been taken')
+            end
+
+            it 'adds the namespace errors to the user' do
+              user.update_attributes(username: new_username)
+              expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
             end
           end
         end
