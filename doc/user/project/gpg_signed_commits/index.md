@@ -23,7 +23,7 @@ For a signature to be verified two prerequisites need to be met:
 
 1. On the upper right corner, click on your avatar and go to your **Settings**.
 
-    ![Settings dropdown](../../gitlab-basics/img/profile_settings.png)
+    ![Settings dropdown](../../../gitlab-basics/img/profile_settings.png)
 
 1. Navigate to the **GPG keys** tab.
 
