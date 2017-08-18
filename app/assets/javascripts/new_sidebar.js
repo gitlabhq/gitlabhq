@@ -43,10 +43,12 @@ export default class NewNavSidebar {
   }
 
   toggleCollapsedSidebar(collapsed) {
-    this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
+    const breakpoint = bp.getBreakpointSize();
+
     if (this.$sidebar.length) {
+      this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
       this.$page.toggleClass('page-with-new-sidebar', !collapsed);
-      this.$page.toggleClass('page-with-icon-sidebar', collapsed);
+      this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
     NewNavSidebar.setCollapsedCookie(collapsed);
   }

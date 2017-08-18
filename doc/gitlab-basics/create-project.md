@@ -1,5 +1,9 @@
 # How to create a project in GitLab
 
+>**Notes:**
+- For a list of words that are not allowed to be used as project names see the
+  [reserved names][reserved].
+
 1. In your dashboard, click the green **New project** button or use the plus
    icon in the upper right corner of the navigation bar.
 
@@ -25,4 +29,12 @@
 
 1. Click **Create project**.
 
+## From a template
+
+To kickstart your development GitLab projects can be started from a template.
+For example, one of the templates included is Ruby on Rails. When filling out the 
+form for new projects, click the 'Ruby on Rails' button. During project creation,
+this will import a Ruby on Rails template with GitLab CI preconfigured.
+
 [import it]: ../workflow/importing/README.md
+[reserved]:  ../user/reserved_names.md

@@ -2053,7 +2053,11 @@ describe Project do
   end
 
   describe '#add_import_job' do
+<<<<<<< HEAD
     let!(:import_jid) { '123' }
+=======
+    let(:import_jid) { '123' }
+>>>>>>> upstream/master
 
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
@@ -2066,6 +2070,7 @@ describe Project do
           forked_from_project.repository_storage_path,
           forked_from_project.disk_path,
           project.namespace.full_path).and_return(import_jid)
+<<<<<<< HEAD
 
         expect(project.add_import_job).to eq(import_jid)
       end
@@ -2094,6 +2099,10 @@ describe Project do
           expect(RepositoryUpdateMirrorWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
           expect(project.add_import_job).to eq(import_jid)
         end
+=======
+
+        expect(project.add_import_job).to eq(import_jid)
+>>>>>>> upstream/master
       end
     end
 
@@ -2796,6 +2805,44 @@ describe Project do
 
         expect(project.deploy_keys).to include(key)
       end
+    end
+  end
+
+  describe '#remove_pages' do
+    let(:project) { create(:project) }
+    let(:namespace) { project.namespace }
+    let(:pages_path) { project.pages_path }
+
+    around do |example|
+      FileUtils.mkdir_p(pages_path)
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(pages_path)
+      end
+    end
+
+    it 'removes the pages directory' do
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
+      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
+
+      project.remove_pages
+    end
+
+    it 'is a no-op when there is no namespace' do
+      project.update_column(:namespace_id, nil)
+
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
+
+      project.remove_pages
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_pages).and_call_original
+
+      project.destroy
     end
   end
 

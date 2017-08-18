@@ -9,8 +9,13 @@ class StuckImportJobsWorker
     projects_with_jid_count = mark_projects_with_jid_as_failed!
 
     Gitlab::Metrics.add_event(:stuck_import_jobs,
+<<<<<<< HEAD
                               projects_without_jid_count: projects_without_jid_count,
                               projects_with_jid_count: projects_with_jid_count)
+=======
+                             projects_without_jid_count: projects_without_jid_count,
+                             projects_with_jid_count: projects_with_jid_count)
+>>>>>>> upstream/master
   end
 
   private

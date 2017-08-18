@@ -51,9 +51,13 @@ export default {
   class="modal popup-dialog"
   role="dialog"
   tabindex="-1">
+<<<<<<< HEAD
   <div
     class="modal-dialog"
     role="document">
+=======
+  <div class="modal-dialog" role="document">
+>>>>>>> upstream/master
     <div class="modal-content">
       <div class="modal-header">
         <button type="button"
@@ -74,8 +78,12 @@ export default {
           @click="emitSubmit(false)">
             {{closeButtonLabel}}
         </button>
+<<<<<<< HEAD
         <button
           type="button"
+=======
+        <button type="button"
+>>>>>>> upstream/master
           class="btn"
           :class="btnKindClass"
           @click="emitSubmit(true)">

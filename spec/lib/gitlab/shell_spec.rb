@@ -429,28 +429,41 @@ describe Gitlab::Shell do
   end
 
   describe 'projects commands' do
-    let(:projects_path) { 'tmp/tests/shell-projects-test/bin/gitlab-projects' }
+    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
+    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
+    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
 
     before do
-      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-projects-test')
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
     describe '#add_repository' do
-      it 'returns true when the command succeeds' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'add-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return([nil, 0])
+      it 'creates a repository' do
+        created_path = File.join(TestEnv.repos_path, 'project', 'path.git')
+        hooks_path = File.join(created_path, 'hooks')
 
-        expect(gitlab_shell.add_repository('current/storage', 'project/path')).to be true
+        begin
+          result = gitlab_shell.add_repository(TestEnv.repos_path, 'project/path')
+
+          repo_stat = File.stat(created_path) rescue nil
+          hooks_stat = File.lstat(hooks_path) rescue nil
+          hooks_dir = File.realpath(hooks_path)
+        ensure
+          FileUtils.rm_rf(created_path)
+        end
+
+        expect(result).to be_truthy
+        expect(repo_stat.mode & 0o777).to eq(0o770)
+        expect(hooks_stat.symlink?).to be_truthy
+        expect(hooks_dir).to eq(gitlab_shell_hooks_path)
       end
 
       it 'returns false when the command fails' do
-        expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'add-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return(["error", 1])
+        expect(FileUtils).to receive(:mkdir_p).and_raise(Errno::EEXIST)
 
-        expect(gitlab_shell.add_repository('current/storage', 'project/path')).to be false
+        expect(gitlab_shell.add_repository('current/storage', 'project/path')).to be_falsy
       end
     end
 

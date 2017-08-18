@@ -9,7 +9,7 @@ module BlobViewer
     end
 
     def manager_url
-      'https://getcomposer.com/'
+      'https://getcomposer.org/'
     end
 
     def package_name

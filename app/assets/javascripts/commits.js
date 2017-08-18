@@ -17,7 +17,7 @@ window.CommitsList = (function() {
       }
     });
 
-    Pager.init(limit, false, false, this.processCommits);
+    Pager.init(parseInt(limit, 10), false, false, this.processCommits);
 
     this.content = $("#commits-list");
     this.searchField = $("#commits-search");

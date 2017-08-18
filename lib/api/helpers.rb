@@ -317,7 +317,7 @@ module API
 
     def uploaded_file(field, uploads_path)
       if params[field]
-        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        bad_request!("#{field} is not a file") unless params[field][:filename]
         return params[field]
       end
 
