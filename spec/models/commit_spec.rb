@@ -209,7 +209,7 @@ eos
 
       let(:commit_options) do
         author = repository.user_to_committer(user)
-        commit_options = { message: 'Test message', committer: author, author: author }
+        { message: 'Test message', committer: author, author: author }
       end
 
       let(:merge_commit) do
