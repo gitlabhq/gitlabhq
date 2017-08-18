@@ -56,6 +56,22 @@ B. Consider you're a web developer writing a webpage for your company's:
 1. Once approved, your merge request is [squashed and merged](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/) (Squash and Merge is available in GitLab Enterprise Edition Starter)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
+
+## Merge request list views, searching, and filtering
+
+View all the merge requests within a project by navigating to **Project > Merge Requests**. 
+There are tabs to quickly filter by open, merged, and closed merge requests.
+
+![Project merge requests list view](img/project_merge_requests_list_view.png)
+
+View all the merge requests in a group (that is, all the merge requests across all projects in that
+group) by navigating to **Group > Merge Requests**. This view also has the open, merged, and closed
+merge request tabs.
+
+![Group Issues list view](img/group_merge_requests_list_view.png)
+
+In both these list views, [search and filter the results]().
+
 ## Authorization for merge requests
 
 There are two main ways to have a merge request flow with GitLab:
