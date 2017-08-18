@@ -1,13 +1,13 @@
 # Issues
 
-The GitLab Issue Tracker is an advanced and complete tool
+GitLab issues is an advanced and complete tool
 for tracking the evolution of a new idea or the process
 of solving a problem.
 
 It allows you, your team, and your collaborators to share
 and discuss proposals before and while implementing them.
 
-Issues and the GitLab Issue Tracker are available in all
+GitLab issues is available in all
 [GitLab Products](https://about.gitlab.com/products/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
@@ -46,13 +46,20 @@ Create [issue templates](#issue-templates) to make collaboration consistent and
 containing all information you need. For example, you can create a template
 for feature proposals and another one for bug reports.
 
-## Issue Tracker
+## Issue list views, searching, and filtering
 
-The issue tracker is the collection of opened and closed issues created in a project.
+View all the issues within a project by navigating to **Project > Issues**. 
+There are tabs to quickly filter by open and closed issues.
 
-![Issue tracker](img/issue_tracker.png)
+![Project issues list view](img/project_issues_list_view.png)
 
-Find the issue tracker by navigating to your **Project's Dashboard** > **Issues**.
+View all the issues in a group (that is, all the issues across all projects in that
+group) by navigating to **Group > Issues**. This view also has the open and closed
+issue tabs.
+
+![Group Issues list view](img/group_issues_list_view.png)
+
+In both these list views, [search and filter the results]().
 
 ## GitLab Issues Functionalities
 
