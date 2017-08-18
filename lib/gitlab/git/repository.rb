@@ -596,11 +596,13 @@ module Gitlab
       # Delete the specified remote from this repository.
       def remote_delete(remote_name)
         rugged.remotes.delete(remote_name)
+        nil
       end
 
-      # Add a new remote to this repository.  Returns a Rugged::Remote object
+      # Add a new remote to this repository.
       def remote_add(remote_name, url)
         rugged.remotes.create(remote_name, url)
+        nil
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -610,6 +612,7 @@ module Gitlab
       def remote_update(remote_name, url:)
         # TODO: Implement other remote options
         rugged.remotes.set_url(remote_name, url)
+        nil
       end
 
       AUTOCRLF_VALUES = {
