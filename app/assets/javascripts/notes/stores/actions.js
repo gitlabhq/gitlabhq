@@ -201,6 +201,7 @@ export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, n
 
 export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
   const { endpoint, awardName } = data;
+
   return service
     .toggleAward(endpoint, { name: awardName })
     .then(res => res.json())
