@@ -64,13 +64,15 @@ There are tabs to quickly filter by open, merged, and closed merge requests.
 
 ![Project merge requests list view](img/project_merge_requests_list_view.png)
 
+[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-project)
+
 View all the merge requests in a group (that is, all the merge requests across all projects in that
 group) by navigating to **Group > Merge Requests**. This view also has the open, merged, and closed
 merge request tabs.
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
-In both these list views, [search and filter the results]().
+[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-group)
 
 ## Authorization for merge requests
 
