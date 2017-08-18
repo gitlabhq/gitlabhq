@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe MergeRequests::CreateFromIssueService do
   let(:project) { create(:project, :repository) }
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
   let(:label_ids) { create_pair(:label, project: project).map(&:id) }
   let(:milestone_id) { create(:milestone, project: project).id }
-  let(:issue)   { create(:issue, project: project, milestone_id: milestone_id) }
+  let(:issue) { create(:issue, project: project, milestone_id: milestone_id) }
 
   subject(:service) { described_class.new(project, user, issue_iid: issue.iid) }
 
