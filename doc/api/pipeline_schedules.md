@@ -278,6 +278,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
 }
 ```
 
+## Pipeline schedule variable
+
+> [Introduced][ce-34518] in GitLab 10.0.
+
 ## Create a new pipeline schedule variable
 
 Create a new variable of a pipeline schedule.
@@ -299,35 +303,8 @@ curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=N
 
 ```json
 {
-    "id": 13,
-    "description": "Test schedule pipeline",
-    "ref": "master",
-    "cron": "* * * * *",
-    "cron_timezone": "Asia/Tokyo",
-    "next_run_at": "2017-05-19T13:41:00.000Z",
-    "active": true,
-    "created_at": "2017-05-19T13:31:08.849Z",
-    "updated_at": "2017-05-19T13:40:17.727Z",
-    "last_pipeline": {
-        "id": 332,
-        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
-        "status": "pending"
-    },
-    "owner": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
-    },
-    "variables": [
-        {
-            "key": "NEW_VARIABLE",
-            "value": "new value"
-        }
-    ]
+    "key": "NEW_VARIABLE",
+    "value": "new value"
 }
 ```
 
@@ -352,35 +329,8 @@ curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=
 
 ```json
 {
-    "id": 13,
-    "description": "Test schedule pipeline",
-    "ref": "master",
-    "cron": "* * * * *",
-    "cron_timezone": "Asia/Tokyo",
-    "next_run_at": "2017-05-19T13:41:00.000Z",
-    "active": true,
-    "created_at": "2017-05-19T13:31:08.849Z",
-    "updated_at": "2017-05-19T13:40:17.727Z",
-    "last_pipeline": {
-        "id": 332,
-        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
-        "status": "pending"
-    },
-    "owner": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
-    },
-    "variables": [
-        {
-            "key": "NEW_VARIABLE",
-            "value": "updated value"
-        }
-    ]
+    "key": "NEW_VARIABLE",
+    "value": "updated value"
 }
 ```
 
@@ -403,30 +353,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
 ```
 
 ```json
-{
-    "id": 13,
-    "description": "Test schedule pipeline",
-    "ref": "master",
-    "cron": "* * * * *",
-    "cron_timezone": "Asia/Tokyo",
-    "next_run_at": "2017-05-19T13:41:00.000Z",
-    "active": true,
-    "created_at": "2017-05-19T13:31:08.849Z",
-    "updated_at": "2017-05-19T13:40:17.727Z",
-    "last_pipeline": {
-        "id": 332,
-        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "master",
-        "status": "pending"
-    },
-    "owner": {
-        "name": "Administrator",
-        "username": "root",
-        "id": 1,
-        "state": "active",
-        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "https://gitlab.example.com/root"
-    },
-    "variables": []
-}
+// Empty
 ```
+
+[ce-34518]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34518
