@@ -571,6 +571,8 @@ module Gitlab
       end
 
       # Delete the specified branch from the repository
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
         rugged.branches.delete(branch_name)
       end
@@ -580,6 +582,8 @@ module Gitlab
       # Examples:
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
