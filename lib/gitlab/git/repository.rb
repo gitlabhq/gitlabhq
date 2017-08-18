@@ -204,21 +204,26 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        !!rugged.tags[name]
+        gitaly_migrate(:ref_exists_tags) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/tags/#{name}")
+          else
+            rugged_tag_exists?(name)
+          end
+        end
       end
 
       # Returns true if the given branch exists
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        rugged.branches.exists?(name)
-
-      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
-      # Whatever code calls this method shouldn't have to deal with that so
-      # instead we just return `false` (which is true since a branch doesn't
-      # exist when it has an invalid name).
-      rescue Rugged::ReferenceError
-        false
+        gitaly_migrate(:ref_exists_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/heads/#{name}")
+          else
+            rugged_branch_exists?(name)
+          end
+        end
       end
 
       # Returns an Array of branch and tag names
@@ -993,6 +998,34 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def gitaly_ref_exists?(ref_name)
+        gitaly_ref_client.ref_exists?(ref_name)
+      end
+
+      # Returns true if the given tag exists
+      #
+      # name - The name of the tag as a String.
+      def rugged_tag_exists?(name)
+        !!rugged.tags[name]
+      end
+
+      # Returns true if the given branch exists
+      #
+      # name - The name of the branch as a String.
+      def rugged_branch_exists?(name)
+        rugged.branches.exists?(name)
+
+      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
+      # Whatever code calls this method shouldn't have to deal with that so
+      # instead we just return `false` (which is true since a branch doesn't
+      # exist when it has an invalid name).
+      rescue Rugged::ReferenceError
+        false
       end
 
       def gitaly_copy_gitattributes(revision)
