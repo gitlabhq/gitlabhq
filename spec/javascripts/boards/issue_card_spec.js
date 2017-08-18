@@ -278,6 +278,25 @@ describe('Issue card component', () => {
           nodes.includes(label1.color),
         ).toBe(true);
       });
+
+      it('does not render label if label does not have an ID', (done) => {
+        component.issue.addLabel(new ListLabel({
+          title: 'closed',
+        }));
+
+        Vue.nextTick()
+          .then(() => {
+            expect(
+              component.$el.querySelectorAll('.label').length,
+            ).toBe(2);
+            expect(
+              component.$el.textContent,
+            ).not.toContain('closed');
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
 });
