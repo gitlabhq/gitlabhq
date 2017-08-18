@@ -1,5 +1,3 @@
-/* global __webpack_public_path__ */
-
 import monacoContext from 'monaco-editor/dev/vs/loader';
 import monacoLoader from '~/repo/monaco_loader';
 
