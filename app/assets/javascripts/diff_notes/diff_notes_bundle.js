@@ -21,6 +21,7 @@ $(() => {
   const ResolveBtnComponent = Vue.extend(resolveBtn);
   const ResolveDiscussionBtn = Vue.extend(resolveDiscussionBtn);
   const JumpToDiscussionBtn = Vue.extend(jumpToDiscussionBtn);
+  const idleCallback = requestIdleCallback || setTimeout;
 
   window.gl = window.gl || {};
   window.gl.diffNoteApps = {};
@@ -31,7 +32,8 @@ $(() => {
     const resolveBtns = document.querySelectorAll('.js-resolve-btn-mount');
 
     if (resolveBtns) {
-      resolveBtns.forEach((el) => {
+      for (let i = 0; i < resolveBtns.length; i += 1) {
+        const el = resolveBtns[i];
         const {
           discussionId,
           noteId,
@@ -53,11 +55,17 @@ $(() => {
             noteTruncated,
             resolvedBy,
           },
-        }).$mount(el);
+        }).$mount();
 
         if (noteId) {
           gl.diffNoteApps[`note_${noteId}`] = tmpApp;
         }
+      }
+
+      idleCallback(() => {
+        Object.keys(gl.diffNoteApps).forEach((noteId) => {
+          $('.js-resolve-btn-mount', `#${noteId}`).replaceWith(gl.diffNoteApps[noteId].$el);
+        });
       });
     }
   };
@@ -66,19 +74,29 @@ $(() => {
     const discussionBtns = document.querySelectorAll('.js-resolve-discussion-btn');
 
     if (discussionBtns) {
-      discussionBtns.forEach((el) => {
+      const apps = [];
+      for (let i = 0; i < discussionBtns.length; i += 1) {
+        const el = discussionBtns[i];
         const {
           discussionId,
           mergeRequestId,
           canResolve,
         } = el.dataset;
-        return new ResolveDiscussionBtn({
+        const app = new ResolveDiscussionBtn({
           propsData: {
             discussionId,
             mergeRequestId: parseInt(mergeRequestId, 10),
             canResolve: gl.utils.convertPermissionToBoolean(canResolve),
           },
-        }).$mount(el);
+        }).$mount();
+        apps.push(app);
+      }
+
+      idleCallback(() => {
+        apps.forEach((app, i) => {
+          const holder = discussionBtns[i];
+          holder.parentNode.replaceChild(app.$el, holder);
+        });
       });
     }
   };
@@ -87,11 +105,16 @@ $(() => {
     const jumpBtns = document.querySelectorAll('.js-jump-to-discussion');
 
     if (jumpBtns) {
-      jumpBtns.forEach(el => new JumpToDiscussionBtn({
-        propsData: {
-          discussionId: el.dataset.discussionId,
-        },
-      }).$mount(el));
+      for (let i = 0; i < jumpBtns.length; i += 1) {
+        const el = jumpBtns[i];
+        const app = new JumpToDiscussionBtn({
+          propsData: {
+            discussionId: el.dataset.discussionId,
+          },
+        }).$mount();
+
+        idleCallback(() => el.replaceWith(app.$el));
+      }
     }
   };
 
@@ -106,19 +129,15 @@ $(() => {
       $(this).replaceWith(tmpApp.$el);
     });
 
-    const $components = $(COMPONENT_SELECTOR).filter(function () {
-      return $(this).closest('resolve-count').length !== 1;
-    });
-
-    if ($components) {
-      $components.each(function () {
-        const $this = $(this);
-        const tmp = Vue.extend({
-          template: $this.get(0).outerHTML
-        });
-        return new tmp().$mount(this);
-      });
-    }
+    // if ($components) {
+    //   $components.each(function () {
+    //     const $this = $(this);
+    //     const tmp = Vue.extend({
+    //       template: $this.get(0).outerHTML
+    //     });
+    //     return new tmp().$mount(this);
+    //   });
+    // }
 
     compileResolveBtns();
     compileResolveDiscussionBtns();
