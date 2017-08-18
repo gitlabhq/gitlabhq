@@ -699,10 +699,11 @@ describe Gitlab::GitAccess do
         allow(License).to receive(:block_changes?).and_return(true)
       end
 
-      # All permissions are `false`
-      permissions_matrix = Hash.new(Hash.new(false))
+      # Only check admin; if an admin can't do it, other roles can't either
+      matrix = permissions_matrix[:admin].dup
+      matrix.each { |key, _| matrix[key] = false }
 
-      run_permission_checks(permissions_matrix)
+      run_permission_checks(admin: matrix)
     end
 
     context "when in a secondary gitlab geo node" do
@@ -712,10 +713,11 @@ describe Gitlab::GitAccess do
         allow(Gitlab::Geo).to receive(:secondary?) { true }
       end
 
-      # All permissions are `false`
-      permissions_matrix = Hash.new(Hash.new(false))
+      # Only check admin; if an admin can't do it, other roles can't either
+      matrix = permissions_matrix[:admin].dup
+      matrix.each { |key, _| matrix[key] = false }
 
-      run_permission_checks(permissions_matrix)
+      run_permission_checks(admin: matrix)
     end
 
     describe "push_rule_check" do
