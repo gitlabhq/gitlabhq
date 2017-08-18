@@ -47,36 +47,40 @@
       toggleMarkdownPreview() {
         this.previewMarkdown = !this.previewMarkdown;
 
+        /*
+          Can't use `$refs` as the component is technically in the parent component
+          so we access the VNode & then get the element
+        */
+        const text = this.$slots.textarea[0].elm.value;
+
         if (!this.previewMarkdown) {
           this.markdownPreview = '';
         } else {
-          this.markdownPreviewLoading = true;
-          this.$http.post(
-            this.markdownPreviewPath,
-            {
-              /*
-                Can't use `$refs` as the component is technically in the parent component
-                so we access the VNode & then get the element
-              */
-              text: this.$slots.textarea[0].elm.value,
-            },
-          )
-          .then(resp => resp.json())
-          .then((data) => {
-            this.markdownPreviewLoading = false;
-            this.markdownPreview = data.body || 'Nothing to preview.';
-
-            if (data.references) {
-              this.referencedCommands = data.references.commands;
-              this.referencedUsers = data.references.users;
-            }
-
-            this.$nextTick(() => {
-              $(this.$refs['markdown-preview']).renderGFM();
-            });
-          })
-          .catch(() => new Flash('Error loading markdown preview'));
+          if (text) {
+            this.markdownPreviewLoading = true;
+            this.$http.post(this.markdownPreviewPath, { text })
+              .then(resp => resp.json())
+              .then((data) => {
+                this.renderMarkdown(data);
+              })
+              .catch(() => new Flash('Error loading markdown preview'));
+          } else {
+            this.renderMarkdown();
+          }
         }
+      },
+      renderMarkdown(data = {}) {
+        this.markdownPreviewLoading = false;
+        this.markdownPreview = data.body || 'Nothing to preview.';
+
+        if (data.references) {
+          this.referencedCommands = data.references.commands;
+          this.referencedUsers = data.references.users;
+        }
+
+        this.$nextTick(() => {
+          $(this.$refs['markdown-preview']).renderGFM();
+        });
       },
     },
     mounted() {
