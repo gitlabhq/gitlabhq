@@ -87,10 +87,11 @@
     <span
       v-if="accessLevel"
       class="note-role">{{accessLevel}}</span>
-    <div class="note-actions-item">
+    <div
+      v-if="canAddAwardEmoji"
+      class="note-actions-item">
       <a
         v-tooltip
-        v-if="canAddAwardEmoji"
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         data-position="right"
@@ -113,7 +114,9 @@
           </span>
       </a>
     </div>
-    <div class="note-actions-item">
+    <div
+      v-if="canEdit"
+      class="note-actions-item">
       <button
         @click="onEdit"
         v-tooltip
