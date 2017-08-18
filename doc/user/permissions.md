@@ -192,12 +192,12 @@ instance and project. In addition, all admins can use the admin interface under
 | Action                                | Guest, Reporter | Developer   | Master   | Admin  |
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
-| Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
+| Retry or cancel job                   |                 | ✓ [^6]      | ✓ [^6]   | ✓      |
+| Erase job artifacts and trace         |                 |             | ✓ [^6]   | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
 | Add specific runners                  |                 |             | ✓        | ✓      |
-| Erase jobs                            |                 |             | ✓        | ✓      |
 | Add shared runners                    |                 |             |          | ✓      |
 | See events in the system              |                 |             |          | ✓      |
 | Admin interface                       |                 |             |          | ✓      |
@@ -251,5 +251,6 @@ only.
 [^3]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^4]: Only if user is not external one.
 [^5]: Only if user is a member of the project.
+[^6]: Only if user has a permission to merge/push to the ref (branch/tag)
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
