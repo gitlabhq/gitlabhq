@@ -55,6 +55,24 @@
       newNotePath() {
         return this.getIssueData.create_note_path;
       },
+      lastUpdatedBy() {
+        const { notes } = this.note;
+
+        if (notes.length > 1) {
+          return notes[notes.length - 1].author;
+        }
+
+        return null;
+      },
+      lastUpdatedAt() {
+        const { notes } = this.note;
+
+        if (notes.length > 1) {
+          return notes[notes.length - 1].created_at;
+        }
+
+        return null;
+      }
     },
     methods: {
       ...mapActions([
@@ -152,9 +170,9 @@
               class="discussion"
               />
             <issue-note-edited-text
-              v-if="note.last_updated_by"
-              :edited-at="note.last_updated_at"
-              :edited-by="note.last_updated_by"
+              v-if="lastUpdatedBy"
+              :edited-at="lastUpdatedAt"
+              :edited-by="lastUpdatedBy"
               action-text="Last updated"
               class-name="discussion-headline-light js-discussion-headline"
               />
