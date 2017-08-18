@@ -110,9 +110,27 @@ describe Ci::CreatePipelineService do
             allow_any_instance_of(Ci::Pipeline)
               .to receive(:latest?).and_return(false)
 
-            pipeline
+            execute_service
 
             expect(merge_request.reload.head_pipeline).to be_nil
+          end
+        end
+
+        context 'when pipeline has errors' do
+          before do
+            stub_ci_pipeline_yaml_file('some invalid syntax')
+          end
+
+          it 'updates merge request head pipeline reference' do
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: 'feature',
+                                                   source_project: project)
+
+            head_pipeline = execute_service
+
+            expect(head_pipeline).to be_persisted
+            expect(head_pipeline.yaml_errors).to be_present
+            expect(merge_request.reload.head_pipeline).to eq head_pipeline
           end
         end
       end
