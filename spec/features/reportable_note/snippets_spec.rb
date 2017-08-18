@@ -17,6 +17,6 @@ describe 'Reportable note on snippets', :js do
       visit project_snippet_path(project, snippet)
     end
 
-    it_behaves_like 'reportable note', 'snippets'
+    it_behaves_like 'reportable note', 'snippet'
   end
 end
