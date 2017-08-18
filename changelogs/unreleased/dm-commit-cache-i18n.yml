@@ -1,0 +1,5 @@
+---
+title: Add current locale to commit partial cache key
+merge_request:
+author:
+type: fixed
