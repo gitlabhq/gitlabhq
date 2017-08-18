@@ -198,6 +198,10 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+
+    &.is-replying {
+      padding-bottom: $gl-padding;
+    }
   }
 }
 

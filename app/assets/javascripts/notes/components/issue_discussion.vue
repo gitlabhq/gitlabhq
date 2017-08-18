@@ -173,7 +173,9 @@
                     />
                 </ul>
                 <div class="flash-container"></div>
-                <div class="discussion-reply-holder">
+                <div
+                  :class="{ 'is-replying': isReplying }"
+                  class="discussion-reply-holder">
                   <button
                     v-if="canReply && !isReplying"
                     @click="showReplyForm"
