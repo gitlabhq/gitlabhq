@@ -453,24 +453,22 @@ describe Gitlab::GitAccess do
 
     # Run permission checks for a group
     def self.run_group_permission_checks(permissions_matrix)
-      permissions_matrix.keys.each do |role|
-        describe "#{role} access" do
-          before do
-            project.project_group_links.create(
-              group: group, group_access: Gitlab::Access.sym_options[role]
-            )
-          end
+      permissions_matrix.each_pair do |role, matrix|
+        it "has the correct permissions for group #{role}s" do
+          project
+            .project_group_links
+            .create(group: group, group_access: Gitlab::Access.sym_options[role])
 
-          permissions_matrix[role].each do |action, allowed|
-            context action.to_s do
-              subject { access.send(:check_push_access!, changes[action]) }
+          aggregate_failures do
+            matrix.each do |action, allowed|
+              check = -> { access.send(:check_push_access!, changes[action]) }
 
-              it do
-                if allowed
-                  expect { subject }.not_to raise_error
-                else
-                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
-                end
+              if allowed
+                expect(&check).not_to raise_error,
+                  -> { "expected #{action} to be allowed" }
+              else
+                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                  -> { "expected #{action} to be disallowed" }
               end
             end
           end
