@@ -269,6 +269,32 @@ feature 'Environments page', :js do
     end
   end
 
+  describe 'environments folders' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging/review-1',
+                           state: :available)
+      create(:environment, project: project,
+                           name: 'staging/review-2',
+                           state: :available)
+    end
+
+    scenario 'users unfurls an environment folder' do
+      visit_environments(project)
+
+      expect(page).not_to have_content 'review-1'
+      expect(page).not_to have_content 'review-2'
+      expect(page).to have_content 'staging 2'
+
+      within('.folder-row') do
+        find('.folder-name', text: 'staging').click
+      end
+
+      expect(page).to have_content 'review-1'
+      expect(page).to have_content 'review-2'
+    end
+  end
+
   def have_terminal_button
     have_link(nil, href: terminal_project_environment_path(project, environment))
   end
