@@ -115,7 +115,7 @@ class ChatNotificationService < Service
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
-    self.public_send(field_name)
+    self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def build_event_channels

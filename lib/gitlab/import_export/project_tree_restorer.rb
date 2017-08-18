@@ -1,6 +1,9 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
+      # Relations which cannot have both group_id and project_id at the same time
+      RESTRICT_PROJECT_AND_GROUP = %i(milestones).freeze
+
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
         @user = user
@@ -118,9 +121,11 @@ module Gitlab
       end
 
       def create_relation(relation, relation_hash_list)
+        relation_type = relation.to_sym
+
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
-          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: parsed_relation_hash(relation_hash),
+          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation_type,
+                                                       relation_hash: parsed_relation_hash(relation_hash, relation_type),
                                                        members_mapper: members_mapper,
                                                        user: @user,
                                                        project: restored_project)
@@ -129,8 +134,16 @@ module Gitlab
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
       end
 
-      def parsed_relation_hash(relation_hash)
-        relation_hash.merge!('group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id)
+      def parsed_relation_hash(relation_hash, relation_type)
+        if RESTRICT_PROJECT_AND_GROUP.include?(relation_type)
+          params = {}
+          params['group_id'] = restored_project.group.try(:id) if relation_hash['group_id']
+          params['project_id'] = restored_project.id if relation_hash['project_id']
+        else
+          params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
+        end
+
+        relation_hash.merge(params)
       end
     end
   end

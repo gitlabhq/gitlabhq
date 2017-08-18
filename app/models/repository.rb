@@ -48,7 +48,9 @@ class Repository
     alias_method(original, name)
 
     define_method(name) do
-      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) { __send__(original) }
+      cache_method_output(name, fallback: fallback, memoize_only: memoize_only) do
+        __send__(original) # rubocop:disable GitlabSecurity/PublicSend
+      end
     end
   end
 
@@ -63,6 +65,8 @@ class Repository
 
     @raw_repository ||= initialize_raw_repository
   end
+
+  alias_method :raw, :raw_repository
 
   # Return absolute path to repository
   def path_to_repo
@@ -222,7 +226,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      write_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -233,6 +237,10 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def write_ref(ref_path, sha)
+    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -298,7 +306,7 @@ class Repository
 
     expire_method_caches(to_refresh)
 
-    to_refresh.each { |method| send(method) }
+    to_refresh.each { |method| send(method) } # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -437,9 +445,9 @@ class Repository
   def method_missing(m, *args, &block)
     if m == :lookup && !block_given?
       lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.send(m, *args, &block)
+      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.send(m, *args, &block)
+      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -763,14 +771,14 @@ class Repository
       index = Gitlab::Git::Index.new(raw_repository)
 
       if start_commit
-        index.read_tree(start_commit.raw_commit.tree)
+        index.read_tree(start_commit.rugged_commit.tree)
         parents = [start_commit.sha]
       else
         parents = []
       end
 
       actions.each do |options|
-        index.public_send(options.delete(:action), options)
+        index.public_send(options.delete(:action), options) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       options = {
@@ -983,12 +991,10 @@ class Repository
       if start_repository == self
         start_branch_name
       else
-        tmp_ref = "refs/tmp/#{SecureRandom.hex}/head"
-
-        fetch_ref(
+        tmp_ref = fetch_ref(
           start_repository.path_to_repo,
           "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          tmp_ref
+          "refs/tmp/#{SecureRandom.hex}/head"
         )
 
         start_repository.commit(start_branch_name).sha
@@ -1019,7 +1025,12 @@ class Repository
 
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-    run_git(args)
+    message, status = run_git(args)
+
+    # Make sure ref was created, and raise Rugged::ReferenceError when not
+    raise Rugged::ReferenceError, message if status != 0
+
+    target_ref
   end
 
   def create_ref(ref, ref_path)

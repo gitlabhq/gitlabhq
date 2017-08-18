@@ -5,6 +5,8 @@ import Store from '../stores/repo_store';
 import '../../flash';
 
 const RepoHelper = {
+  monacoInstance: null,
+
   getDefaultActiveFile() {
     return {
       active: true,
@@ -35,19 +37,23 @@ const RepoHelper = {
   ? window.performance
   : Date,
 
-  getBranch() {
-    return $('button.dropdown-menu-toggle').attr('data-ref');
+  getFileExtension(fileName) {
+    return fileName.split('.').pop();
   },
 
   getLanguageIDForFile(file, langs) {
-    const ext = file.name.split('.').pop();
+    const ext = RepoHelper.getFileExtension(file.name);
     const foundLang = RepoHelper.findLanguage(ext, langs);
 
     return foundLang ? foundLang.id : 'plaintext';
   },
 
-  getFilePathFromFullPath(fullPath, branch) {
-    return fullPath.split(`${Store.projectUrl}/blob/${branch}`)[1];
+  setMonacoModelFromLanguage() {
+    RepoHelper.monacoInstance.setModel(null);
+    const languages = RepoHelper.monaco.languages.getLanguages();
+    const languageID = RepoHelper.getLanguageIDForFile(Store.activeFile, languages);
+    const newModel = RepoHelper.monaco.editor.createModel(Store.blobRaw, languageID);
+    RepoHelper.monacoInstance.setModel(newModel);
   },
 
   findLanguage(ext, langs) {
@@ -60,11 +66,11 @@ const RepoHelper = {
 
     file.opened = true;
     file.icon = 'fa-folder-open';
-    RepoHelper.toURL(file.url, file.name);
+    RepoHelper.updateHistoryEntry(file.url, file.name);
     return file;
   },
 
-  isKindaBinary() {
+  isRenderable() {
     const okExts = ['md', 'svg'];
     return okExts.indexOf(Store.activeFile.extension) > -1;
   },
@@ -78,22 +84,8 @@ const RepoHelper = {
     .catch(RepoHelper.loadingError);
   },
 
-  toggleFakeTab(loading, file) {
-    if (loading) return Store.addPlaceholderFile();
-    return Store.removeFromOpenedFiles(file);
-  },
-
-  setLoading(loading, file) {
-    if (Service.url.indexOf('blob') > -1) {
-      Store.loading.blob = loading;
-      return RepoHelper.toggleFakeTab(loading, file);
-    }
-
-    if (Service.url.indexOf('tree') > -1) Store.loading.tree = loading;
-
-    return undefined;
-  },
-
+  // when you open a directory you need to put the directory files under
+  // the directory... This will merge the list of the current directory and the new list.
   getNewMergedList(inDirectory, currentList, newList) {
     const newListSorted = newList.sort(this.compareFilesCaseInsensitive);
     if (!inDirectory) return newListSorted;
@@ -102,6 +94,9 @@ const RepoHelper = {
     return RepoHelper.mergeNewListToOldList(newListSorted, currentList, inDirectory, indexOfFile);
   },
 
+  // within the get new merged list this does the merging of the current list of files
+  // and the new list of files. The files are never "in" another directory they just
+  // appear like they are because of the margin.
   mergeNewListToOldList(newList, oldList, inDirectory, indexOfFile) {
     newList.reverse().forEach((newFile) => {
       const fileIndex = indexOfFile + 1;
@@ -137,21 +132,17 @@ const RepoHelper = {
     return isRoot;
   },
 
-  getContent(treeOrFile, cb) {
+  getContent(treeOrFile) {
     let file = treeOrFile;
-    // const loadingData = RepoHelper.setLoading(true);
     return Service.getContent()
     .then((response) => {
       const data = response.data;
-      // RepoHelper.setLoading(false, loadingData);
-      if (cb) cb();
       Store.isTree = RepoHelper.isTree(data);
       if (!Store.isTree) {
         if (!file) file = data;
         Store.binary = data.binary;
 
         if (data.binary) {
-          Store.binaryMimeType = data.mime_type;
           // file might be undefined
           RepoHelper.setBinaryDataAsBase64(data);
           Store.setViewToPreview();
@@ -190,19 +181,14 @@ const RepoHelper = {
   setFile(data, file) {
     const newFile = data;
 
-    newFile.url = file.url || location.pathname;
     newFile.url = file.url;
-    if (newFile.render_error === 'too_large') {
+    if (newFile.render_error === 'too_large' || newFile.render_error === 'collapsed') {
       newFile.tooLarge = true;
     }
     newFile.newContent = '';
 
     Store.addToOpenedFiles(newFile);
     Store.setActiveFiles(newFile);
-  },
-
-  toFA(icon) {
-    return `fa-${icon}`;
   },
 
   serializeBlob(blob) {
@@ -228,7 +214,7 @@ const RepoHelper = {
       type,
       name,
       url,
-      icon: RepoHelper.toFA(icon),
+      icon: `fa-${icon}`,
       level: 0,
       loading: false,
     };
@@ -246,48 +232,30 @@ const RepoHelper = {
     setTimeout(() => {
       const tabs = document.getElementById('tabs');
       if (!tabs) return;
-      tabs.scrollLeft = 12000;
+      tabs.scrollLeft = tabs.scrollWidth;
     }, 200);
   },
 
   dataToListOfFiles(data) {
-    const a = [];
-
-    // push in blobs
-    data.blobs.forEach((blob) => {
-      a.push(RepoHelper.serializeBlob(blob));
-    });
-
-    data.trees.forEach((tree) => {
-      a.push(RepoHelper.serializeTree(tree));
-    });
-
-    data.submodules.forEach((submodule) => {
-      a.push(RepoHelper.serializeSubmodule(submodule));
-    });
-
-    return a;
+    const { blobs, trees, submodules } = data;
+    return [
+      ...blobs.map(blob => RepoHelper.serializeBlob(blob)),
+      ...trees.map(tree => RepoHelper.serializeTree(tree)),
+      ...submodules.map(submodule => RepoHelper.serializeSubmodule(submodule)),
+    ];
   },
 
   genKey() {
     return RepoHelper.Time.now().toFixed(3);
   },
 
-  getStateKey() {
-    return RepoHelper.key;
-  },
-
-  setStateKey(key) {
-    RepoHelper.key = key;
-  },
-
-  toURL(url, title) {
+  updateHistoryEntry(url, title) {
     const history = window.history;
 
     RepoHelper.key = RepoHelper.genKey();
 
     history.pushState({ key: RepoHelper.key }, '', url);
-    if(window.location.hash) {
+    if (window.location.hash) {
       window.location.hash = window.location.hash;
     }
 

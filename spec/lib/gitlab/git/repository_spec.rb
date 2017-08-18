@@ -289,7 +289,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
     end
 
-    context 'no submodules at commit' do
+    context 'no .gitmodules at commit' do
+      let(:ref) { '9596bc54a6f0c0c98248fe97077eb5ccf48a98d0' }
+
+      it { expect(submodule_url('six')).to eq(nil) }
+    end
+
+    context 'no gitlink entry' do
       let(:ref) { '6d39438' }
 
       it { expect(submodule_url('six')).to eq(nil) }
@@ -422,11 +428,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "should fail if we create an existing branch" do
       @repo.create_branch('duplicated_branch', 'master')
-      expect{@repo.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
+      expect {@repo.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
     end
 
     it "should fail if we create a branch from a non existing ref" do
-      expect{@repo.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
+      expect {@repo.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
     end
 
     after(:all) do
@@ -505,17 +511,22 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe "#log" do
-    commit_with_old_name = nil
-    commit_with_new_name = nil
-    rename_commit = nil
+    let(:commit_with_old_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
+    end
+    let(:commit_with_new_name) do
+      Gitlab::Git::Commit.decorate(repository, @commit_with_new_name_id)
+    end
+    let(:rename_commit) do
+      Gitlab::Git::Commit.decorate(repository, @rename_commit_id)
+    end
 
     before(:context) do
       # Add new commits so that there's a renamed file in the commit history
       repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH).rugged
-
-      commit_with_old_name = Gitlab::Git::Commit.decorate(new_commit_edit_old_file(repo))
-      rename_commit = Gitlab::Git::Commit.decorate(new_commit_move_file(repo))
-      commit_with_new_name = Gitlab::Git::Commit.decorate(new_commit_edit_new_file(repo))
+      @commit_with_old_name_id = new_commit_edit_old_file(repo)
+      @rename_commit_id = new_commit_move_file(repo)
+      @commit_with_new_name_id = new_commit_edit_new_file(repo)
     end
 
     after(:context) do
@@ -754,7 +765,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
       def commit_files(commit)
-        commit.diff_from_parent.deltas.flat_map do |delta|
+        commit.rugged_diff_from_parent.deltas.flat_map do |delta|
           [delta.old_file[:path], delta.new_file[:path]].uniq.compact
         end
       end
@@ -981,7 +992,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe '#branch_count' do
     it 'returns the number of branches' do
-      expect(repository.branch_count).to eq(9)
+      expect(repository.branch_count).to eq(10)
     end
   end
 
@@ -997,7 +1008,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(master_file_paths).to include("files/html/500.html")
     end
 
-    it "dose not read submodule directory and empty directory of master branch" do
+    it "does not read submodule directory and empty directory of master branch" do
       expect(master_file_paths).not_to include("six")
     end
 
@@ -1018,7 +1029,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context "with no .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("master")
       end
 
@@ -1026,13 +1037,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(File.exist?(attributes_path)).to be_falsey
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
       end
 
@@ -1045,13 +1056,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(contents).to eq("*.md binary\n")
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with updated .gitattrbutes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
         repository.copy_gitattributes("gitattributes-updated")
       end
@@ -1065,13 +1076,13 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(contents).to eq("*.txt binary\n")
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end
 
     context "with no .gitattrbutes in HEAD but with previous info/attributes" do
-      before(:each) do
+      before do
         repository.copy_gitattributes("gitattributes")
         repository.copy_gitattributes("master")
       end
@@ -1080,7 +1091,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect(File.exist?(attributes_path)).to be_falsey
       end
 
-      after(:each) do
+      after do
         FileUtils.rm_rf(attributes_path)
       end
     end

@@ -13,7 +13,7 @@ describe Projects::BranchesController, '(JavaScript fixtures)', type: :controlle
     clean_frontend_fixtures('branches/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

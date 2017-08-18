@@ -143,7 +143,7 @@ module Gitlab
         hash = {}
 
         SERIALIZE_KEYS.each do |key|
-          hash[key] = send(key)
+          hash[key] = send(key) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         hash
@@ -221,7 +221,7 @@ module Gitlab
         raw_diff = hash.symbolize_keys
 
         SERIALIZE_KEYS.each do |key|
-          send(:"#{key}=", raw_diff[key.to_sym])
+          send(:"#{key}=", raw_diff[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

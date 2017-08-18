@@ -10,6 +10,18 @@ module Gitlab
         @repository = repository
       end
 
+      def ls_files(revision)
+        request = Gitaly::ListFilesRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_files, request)
+        response.flat_map do |msg|
+          msg.paths.map { |d| d.dup.force_encoding(Encoding::UTF_8) }
+        end
+      end
+
       def is_ancestor(ancestor_id, child_id)
         request = Gitaly::CommitIsAncestorRequest.new(
           repository: @gitaly_repo,
@@ -29,35 +41,40 @@ module Gitlab
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request)
-        Gitlab::Git::DiffCollection.new(GitalyClient::DiffStitcher.new(response), options.merge(from_gitaly: true))
+        GitalyClient::DiffStitcher.new(response)
       end
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(commit_diff_request_params(commit))
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
-        response.flat_map do |msg|
-          msg.deltas.map { |d| Gitlab::Git::Diff.new(d) }
-        end
+
+        response.flat_map { |msg| msg.deltas }
       end
 
       def tree_entry(ref, path, limit = nil)
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: ref,
-          path: path.dup.force_encoding(Encoding::ASCII_8BIT),
+          path: GitalyClient.encode(path),
           limit: limit.to_i
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
-        entry = response.first
-        return unless entry.oid.present?
 
-        if entry.type == :BLOB
-          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
-          entry.data += rest_of_data
+        entry = nil
+        data = ''
+        response.each do |msg|
+          if entry.nil?
+            entry = msg
+
+            break unless entry.type == :BLOB
+          end
+
+          data << msg.data
         end
+        entry.data = data
 
-        entry
+        entry unless entry.oid.blank?
       end
 
       def tree_entries(repository, revision, path)
@@ -100,15 +117,14 @@ module Gitlab
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
-          revision: revision.force_encoding(Encoding::ASCII_8BIT),
-          path: path.to_s.force_encoding(Encoding::ASCII_8BIT)
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path.to_s)
         )
 
         gitaly_commit = GitalyClient.call(@repository.storage, :commit_service, :last_commit_for_path, request).commit
         return unless gitaly_commit
 
-        commit = GitalyClient::Commit.new(@repository, gitaly_commit)
-        Gitlab::Git::Commit.new(commit)
+        Gitlab::Git::Commit.new(@repository, gitaly_commit)
       end
 
       def between(from, to)
@@ -167,10 +183,21 @@ module Gitlab
         response.reduce("") { |memo, msg| memo << msg.data }
       end
 
+      def find_commit(revision)
+        request = Gitaly::FindCommitRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
+
+        response.commit
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
-        parent_id = commit.parents[0]&.id || EMPTY_TREE_ID
+        parent_id = commit.parent_ids.first || EMPTY_TREE_ID
 
         {
           repository: @gitaly_repo,
@@ -183,8 +210,7 @@ module Gitlab
       def consume_commits_response(response)
         response.flat_map do |message|
           message.commits.map do |gitaly_commit|
-            commit = GitalyClient::Commit.new(@repository, gitaly_commit)
-            Gitlab::Git::Commit.new(commit)
+            Gitlab::Git::Commit.new(@repository, gitaly_commit)
           end
         end
       end

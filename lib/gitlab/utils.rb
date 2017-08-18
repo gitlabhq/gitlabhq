@@ -14,6 +14,19 @@ module Gitlab
       str.force_encoding(Encoding::UTF_8)
     end
 
+    # A slugified version of the string, suitable for inclusion in URLs and
+    # domain names. Rules:
+    #
+    #   * Lowercased
+    #   * Anything not matching [a-z0-9-] is replaced with a -
+    #   * Maximum length is 63 bytes
+    #   * First/Last Character is not a hyphen
+    def slugify(str)
+      return str.downcase
+        .gsub(/[^a-z0-9]/, '-')[0..62]
+        .gsub(/(\A-+|-+\z)/, '')
+    end
+
     def to_boolean(value)
       return value if [true, false].include?(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i

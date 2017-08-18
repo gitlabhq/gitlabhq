@@ -1,5 +1,8 @@
 module API
   class Files < Grape::API
+    # Prevents returning plain/text responses for files with .txt extension
+    after_validation { content_type "application/json" }
+
     helpers do
       def commit_params(attrs)
         {

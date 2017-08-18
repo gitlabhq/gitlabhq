@@ -8,8 +8,8 @@ describe API::Projects do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project2) { create(:project, path: 'project2', namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
@@ -1063,6 +1063,14 @@ describe API::Projects do
         expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
         expect(project_fork_target.forked_project_link).not_to be_nil
         expect(project_fork_target.forked?).to be_truthy
+      end
+
+      it 'refreshes the forks count cachce' do
+        expect(project_fork_source.forks_count).to be_zero
+
+        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+
+        expect(project_fork_source.forks_count).to eq(1)
       end
 
       it 'fails if forked_from project which does not exist' do

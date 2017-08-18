@@ -15,7 +15,7 @@ describe WebHookService do
   let(:service_instance) { described_class.new(project_hook, data, 'push_hooks') }
 
   describe '#execute' do
-    before(:each) do
+    before do
       project.hooks << [project_hook]
 
       WebMock.stub_request(:post, project_hook.url)
@@ -144,7 +144,7 @@ describe WebHookService do
 
   describe '#async_execute' do
     let(:system_hook) { create(:system_hook) }
-    
+
     it 'enqueue WebHookWorker' do
       expect(Sidekiq::Client).to receive(:enqueue).with(WebHookWorker, project_hook.id, data, 'push_hooks')
 

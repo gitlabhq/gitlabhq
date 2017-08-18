@@ -17,7 +17,7 @@ export default RepoFileOptions;
 </script>
 
 <template>
-<tr v-if="isMini" class="repo-file-options">
+  <tr v-if="isMini" class="repo-file-options">
     <td>
       <span class="title">{{projectName}}</span>
     </td>

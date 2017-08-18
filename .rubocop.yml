@@ -1,5 +1,6 @@
 require:
   - rubocop-rspec
+  - rubocop-gitlab-security
   - ./rubocop/rubocop
 
 inherit_from: .rubocop_todo.yml
@@ -206,6 +207,13 @@ Layout/SpaceAroundKeyword:
 Layout/SpaceAroundOperators:
   Enabled: true
 
+# Checks that block braces have or don't have a space before the opening
+# brace depending on configuration.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+# SupportedStyles: space, no_space
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
 # No spaces before commas.
 Layout/SpaceBeforeComma:
   Enabled: true
@@ -241,6 +249,10 @@ Layout/Tab:
 
 # Checks trailing blank lines and final newline.
 Layout/TrailingBlankLines:
+  Enabled: true
+
+# Avoid trailing whitespace.
+Layout/TrailingWhitespace:
   Enabled: true
 
 # Style #######################################################################
@@ -1037,7 +1049,7 @@ RSpec/BeforeAfterAll:
 RSpec/DescribeClass:
   Enabled: false
 
-# Use `described_class` for tested class / module.
+# Checks that the second argument to `describe` specifies a method.
 RSpec/DescribeMethod:
   Enabled: false
 
@@ -1045,8 +1057,7 @@ RSpec/DescribeMethod:
 RSpec/DescribeSymbol:
   Enabled: true
 
-# Checks that the second argument to top level describe is the tested method
-# name.
+# Checks that tests use `described_class`.
 RSpec/DescribedClass:
   Enabled: true
 
@@ -1090,6 +1101,11 @@ RSpec/FilePath:
 # Checks if there are focused specs.
 RSpec/Focus:
   Enabled: true
+
+# Checks the arguments passed to `before`, `around`, and `after`.
+RSpec/HookArgument:
+  Enabled: true
+  EnforcedStyle: implicit
 
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: is_expected, should
@@ -1156,3 +1172,39 @@ RSpec/SubjectStub:
 # Prefer using verifying doubles over normal doubles.
 RSpec/VerifiedDoubles:
   Enabled: false
+
+# GitlabSecurity ##############################################################
+
+GitlabSecurity/DeepMunge:
+  Enabled: true
+  Exclude:
+    - 'lib/**/*.rake'
+    - 'spec/**/*'
+
+GitlabSecurity/PublicSend:
+  Enabled: true
+  Exclude:
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'features/**/*'
+    - 'lib/**/*.rake'
+    - 'qa/**/*'
+    - 'spec/**/*'
+
+GitlabSecurity/RedirectToParamsUpdate:
+  Enabled: true
+  Exclude:
+    - 'lib/**/*.rake'
+    - 'spec/**/*'
+
+GitlabSecurity/SqlInjection:
+  Enabled: true
+  Exclude:
+    - 'lib/**/*.rake'
+    - 'spec/**/*'
+
+GitlabSecurity/SystemCommandInjection:
+  Enabled: true
+  Exclude:
+    - 'lib/**/*.rake'
+    - 'spec/**/*'

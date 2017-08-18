@@ -55,7 +55,7 @@ class ProjectFeature < ActiveRecord::Base
   end
 
   def access_level(feature)
-    public_send(ProjectFeature.access_level_attribute(feature))
+    public_send(ProjectFeature.access_level_attribute(feature)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def builds_enabled?
@@ -80,7 +80,7 @@ class ProjectFeature < ActiveRecord::Base
   # which cannot be higher than repository access level
   def repository_children_level
     validator = lambda do |field|
-      level = public_send(field) || ProjectFeature::ENABLED
+      level = public_send(field) || ProjectFeature::ENABLED # rubocop:disable GitlabSecurity/PublicSend
       not_allowed = level > repository_access_level
       self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed
     end

@@ -85,6 +85,8 @@ module Gitlab
           diff_hash.tap do |hash|
             diff_text = hash[:diff]
 
+            hash[:too_large] = !!hash[:too_large]
+
             if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
               hash[:binary] = true
               hash[:diff] = [diff_text].pack('m0')

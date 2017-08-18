@@ -40,6 +40,14 @@ The same process is valid for merge requests. Navigate to your project's **Merge
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
+## Issues and merge requests per group
+
+Similar to **Issues and merge requests per project**, you can also search for issues
+within a group. Navigate to a group's **Issues** tab and query search results in
+the same way as you do for projects.
+
+![filter issues in a group](img/group_issues_filter.png)
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.

@@ -153,7 +153,7 @@ module API
           render_api_error!('Scope contains invalid value', 400)
         end
 
-        runners.send(scope)
+        runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def get_runner(id)

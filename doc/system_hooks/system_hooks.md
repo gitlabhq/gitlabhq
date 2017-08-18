@@ -31,7 +31,7 @@ X-Gitlab-Event: System Hook
                 "path": "storecloud",
  "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
-  "project_visibility": "private",
+  "project_visibility": "private"
 }
 ```
 
@@ -48,7 +48,7 @@ X-Gitlab-Event: System Hook
                 "path": "underscore",
  "path_with_namespace": "jsmith/underscore",
           "project_id": 73,
-  "project_visibility": "internal",
+  "project_visibility": "internal"
 }
 ```
 
@@ -66,7 +66,7 @@ X-Gitlab-Event: System Hook
                "owner_name": "John Smith",
               "owner_email": "johnsmith@gmail.com",
        "project_visibility": "internal",
-  "old_path_with_namespace": "jsmith/overscore",
+  "old_path_with_namespace": "jsmith/overscore"
 }
 ```
 
@@ -84,7 +84,7 @@ X-Gitlab-Event: System Hook
                "owner_name": "John Smith",
               "owner_email": "johnsmith@gmail.com",
        "project_visibility": "internal",
-  "old_path_with_namespace": "jsmith/overscore",
+  "old_path_with_namespace": "jsmith/overscore"
 }
 ```
 
@@ -101,7 +101,7 @@ X-Gitlab-Event: System Hook
                 "path": "storecloud",
  "path_with_namespace": "jsmith/storecloud",
           "project_id": 74,
-  "project_visibility": "private",
+  "project_visibility": "private"
 }
 ```
 
@@ -121,7 +121,7 @@ X-Gitlab-Event: System Hook
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private",
+          "project_visibility": "private"
 }
 ```
 
@@ -141,7 +141,7 @@ X-Gitlab-Event: System Hook
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private",
+          "project_visibility": "private"
 }
 ```
 

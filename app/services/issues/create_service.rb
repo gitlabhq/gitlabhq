@@ -16,6 +16,7 @@ module Issues
       spam_check(issue, current_user)
       issue.move_to_end
 
+      # current_user (defined in BaseService) is not available within run_after_commit block
       user = current_user
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id)

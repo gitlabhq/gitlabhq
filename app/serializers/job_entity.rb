@@ -46,6 +46,6 @@ class JobEntity < Grape::Entity
   end
 
   def path_to(route, build)
-    send("#{route}_path", build.project.namespace, build.project, build)
+    send("#{route}_path", build.project.namespace, build.project, build) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

@@ -2,8 +2,8 @@
 /* global GitLab */
 /* global Autosave */
 /* global dateFormat */
-/* global Pikaday */
 
+import Pikaday from 'pikaday';
 import UsersSelect from './users_select';
 import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';

@@ -29,6 +29,10 @@
         margin-right: 15px;
       }
 
+      .tree-ref-target-holder {
+        display: inline-block;
+      }
+
       .repo-breadcrumb {
         li:last-of-type {
           position: relative;
@@ -216,6 +220,9 @@
 }
 
 .blob-upload-dropzone-previews {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   border: 2px;
   border-style: dashed;

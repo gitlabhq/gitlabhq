@@ -1,0 +1,4 @@
+---
+title: Don't rename namespace called system when upgrading from 9.1.x to 9.5
+merge_request: 13228
+author:
