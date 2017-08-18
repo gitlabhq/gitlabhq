@@ -347,7 +347,7 @@ $(function () {
   loadAwardsHandler();
   new Aside();
 
-  gl.utils.renderTimeago();
+  // gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 

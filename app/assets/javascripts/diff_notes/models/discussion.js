@@ -9,10 +9,13 @@ class DiscussionModel {
     this.notes = {};
     this.loading = false;
     this.canResolve = false;
+    this.resolved = false;
   }
 
   createNote (noteObj) {
     Vue.set(this.notes, noteObj.noteId, new NoteModel(this.id, noteObj));
+
+    this.resolved = noteObj.resolved;
   }
 
   deleteNote (noteId) {
@@ -28,36 +31,29 @@ class DiscussionModel {
   }
 
   isResolved () {
-    for (const noteId in this.notes) {
-      const note = this.notes[noteId];
-
-      if (!note.resolved) {
-        return false;
-      }
-    }
-    return true;
+    return _.every(this.notes, note => note.resolved);
   }
 
   resolveAllNotes (resolved_by) {
-    for (const noteId in this.notes) {
-      const note = this.notes[noteId];
-
+    _.each(this.notes, (note) => {
       if (!note.resolved) {
-        note.resolved = true;
-        note.resolved_by = resolved_by;
+        note.resolved = true; // eslint-disable-line no-param-reassign
+        note.resolved_by = resolved_by; // eslint-disable-line no-param-reassign
       }
-    }
+    });
+
+    this.resolved = true;
   }
 
   unResolveAllNotes () {
-    for (const noteId in this.notes) {
-      const note = this.notes[noteId];
-
+    _.each(this.notes, (note) => {
       if (note.resolved) {
-        note.resolved = false;
-        note.resolved_by = null;
+        note.resolved = false; // eslint-disable-line no-param-reassign
+        note.resolved_by = null; // eslint-disable-line no-param-reassign
       }
-    }
+    });
+
+    this.resolved = false;
   }
 
   updateHeadline (data) {

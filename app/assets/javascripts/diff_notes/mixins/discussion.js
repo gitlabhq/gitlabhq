@@ -8,26 +8,22 @@ window.DiscussionMixins = {
     resolvedDiscussionCount: function () {
       let resolvedCount = 0;
 
-      for (const discussionId in this.discussions) {
-        const discussion = this.discussions[discussionId];
-
-        if (discussion.isResolved()) {
+      _.each(this.discussions, (discussion) => {
+        if (discussion.resolved) {
           resolvedCount += 1;
         }
-      }
+      });
 
       return resolvedCount;
     },
     unresolvedDiscussionCount: function () {
       let unresolvedCount = 0;
 
-      for (const discussionId in this.discussions) {
-        const discussion = this.discussions[discussionId];
-
-        if (!discussion.isResolved()) {
+      _.each(this.discussions, (discussion) => {
+        if (!discussion.resolved) {
           unresolvedCount += 1;
         }
-      }
+      });
 
       return unresolvedCount;
     }

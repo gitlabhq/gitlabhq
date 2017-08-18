@@ -26,11 +26,10 @@ window.CommentsStore = {
 
     discussion.createNote(noteObj);
   },
-  update: function (discussionId, noteId, resolved, resolved_by) {
-    const discussion = this.state[discussionId];
-    const note = discussion.getNote(noteId);
+  update: function (discussion, note, resolved, resolved_by) {
     note.resolved = resolved;
     note.resolved_by = resolved_by;
+    discussion.resolved = discussion.isResolved();
   },
   delete: function (discussionId, noteId) {
     const discussion = this.state[discussionId];

@@ -5,13 +5,13 @@ import Vue from 'vue';
 import resolveBtn from './components/resolve_btn.vue';
 import resolveDiscussionBtn from './components/resolve_discussion_btn.vue';
 import jumpToDiscussionBtn from './components/jump_to_discussion.vue';
+import resolveCount from './components/resolve_count.vue';
 import './models/discussion';
 import './models/note';
 import './stores/comments';
 import './services/resolve';
 import './mixins/discussion';
 import './components/comment_resolve_btn';
-import './components/resolve_count';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
 
@@ -148,10 +148,22 @@ $(() => {
   gl.diffNotesCompileComponents();
 
   new Vue({
-    el: '#resolve-count-app',
+    el: document.getElementById('resolve-count-app'),
     components: {
-      'resolve-count': ResolveCount
-    }
+      resolveCount,
+    },
+    data() {
+      return {
+        loggedOut: gl.utils.convertPermissionToBoolean(this.$options.el.dataset.loggedOut),
+      };
+    },
+    render(createElement) {
+      return createElement('resolve-count', {
+        props: {
+          loggedOut: true,
+        },
+      });
+    },
   });
 
   $(window).trigger('resize.nav');

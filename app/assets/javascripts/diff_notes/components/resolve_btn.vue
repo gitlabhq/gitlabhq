@@ -46,11 +46,12 @@
     data() {
       return {
         loading: false,
+        discussions: CommentsStore.state,
       };
     },
     computed: {
       discussion() {
-        return CommentsStore.state[this.discussionId];
+        return this.discussions[this.discussionId];
       },
       note() {
         return this.discussion ? this.discussion.getNote(this.noteId) : {};
@@ -94,7 +95,7 @@
 
             const resolvedBy = data ? data.resolved_by : null;
 
-            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolvedBy);
+            CommentsStore.update(this.discussion, this.note, !this.isResolved, resolvedBy);
             this.discussion.updateHeadline(data);
             gl.mrWidget.checkStatus();
           })
@@ -123,8 +124,7 @@
 
 <template>
   <div class="note-actions-item">
-    <button v-tooltip
-      data-container="body"
+    <button data-container="body"
       class="note-action-button line-resolve-btn"
       type="button"
       :class="{ 'is-active': isResolved, 'is-disabled': !canResolve }"
