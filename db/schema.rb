@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170811203342) do
+ActiveRecord::Schema.define(version: 20170818174141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -705,8 +705,6 @@ ActiveRecord::Schema.define(version: 20170811203342) do
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
@@ -726,7 +724,6 @@ ActiveRecord::Schema.define(version: 20170811203342) do
   add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
 
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
-    t.datetime "created_at", null: false
     t.integer "branches_affected", null: false
     t.integer "tags_affected", null: false
     t.integer "project_id", null: false
