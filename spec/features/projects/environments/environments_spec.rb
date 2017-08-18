@@ -102,7 +102,7 @@ feature 'Environments page', :js do
       end
 
       it 'does not show stip button when environment is not stoppable' do
-         expect(page).not_to have_selector('.stop-env-link')
+        expect(page).not_to have_selector('.stop-env-link')
       end
     end
 
@@ -112,7 +112,6 @@ feature 'Environments page', :js do
       given!(:deployment) do
         create(:deployment, environment: environment,
                             sha: project.commit.id)
-
       end
 
       it 'shows deployment SHA and internal ID' do
