@@ -14,7 +14,7 @@ describe 'Guest navigation menu' do
     visit project_path(project)
 
     within('.nav-sidebar') do
-      expect(page).to have_content 'Project'
+      expect(page).to have_content 'Overview'
       expect(page).to have_content 'Issues'
       expect(page).to have_content 'Wiki'
 

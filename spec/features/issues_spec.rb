@@ -577,7 +577,9 @@ describe 'Issues' do
       it 'redirects to signin then back to new issue after signin' do
         visit project_issues_path(project)
 
-        click_link 'New issue'
+        page.within '.breadcrumbs' do
+          click_link 'New issue'
+        end
 
         expect(current_path).to eq new_user_session_path
 
