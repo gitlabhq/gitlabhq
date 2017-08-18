@@ -8,35 +8,31 @@ class CleanupNonexistingNamespacePendingDeleteProjects < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+
+    include ::EachBatch
+  end
+
+  class Namespace < ActiveRecord::Base
+    self.table_name = 'namespaces'
+  end
+
   def up
-    @offset = 0
-
-    loop do
-      ids = pending_delete_batch
-
-      break if ids.empty?
-
-      args = ids.map { |id| Array(id) }
+    find_projects.each_batch do |batch|
+      args = batch.pluck(:id).map { |id| [id] }
 
       NamespacelessProjectDestroyWorker.bulk_perform_async(args)
-
-      @offset += 1
     end
   end
 
   def down
-    # noop
+    # NOOP
   end
 
   private
 
-  def pending_delete_batch
-    connection.exec_query(find_batch).map { |row| row['id'].to_i }
-  end
-
-  BATCH_SIZE = 5000
-
-  def find_batch
+  def find_projects
     projects = Project.arel_table
     namespaces = Namespace.arel_table
 
@@ -44,11 +40,15 @@ class CleanupNonexistingNamespacePendingDeleteProjects < ActiveRecord::Migration
                         .where(namespaces[:id].eq(projects[:namespace_id]))
                         .exists.not
 
-    projects.project(projects[:id])
-      .where(projects[:pending_delete].eq(true))
+    # SELECT "projects"."id"
+    # FROM "projects"
+    # WHERE "projects"."pending_delete" = 't'
+    #   AND (NOT (EXISTS
+    #               (SELECT 1
+    #                FROM "namespaces"
+    #                WHERE "namespaces"."id" = "projects"."namespace_id")))
+    Project.where(projects[:pending_delete].eq(true))
       .where(namespace_query)
-      .skip(@offset * BATCH_SIZE)
-      .take(BATCH_SIZE)
-      .to_sql
+      .select(:id)
   end
 end
