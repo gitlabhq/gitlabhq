@@ -122,7 +122,7 @@ const RepoStore = {
     activeFile.active = file.url === activeFile.url;
 
     if (activeFile.active) {
-      if(RepoStore.hashToSet) {
+      if (RepoStore.hashToSet) {
         activeFile.currentLine = RepoStore.hashToSet;
         RepoStore.hashToSet = false;
       }

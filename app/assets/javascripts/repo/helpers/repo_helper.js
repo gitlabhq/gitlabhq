@@ -1,4 +1,5 @@
 /* global Flash */
+import $ from 'jquery';
 import Service from '../services/repo_service';
 import Store from '../stores/repo_store';
 import '../../flash';
@@ -296,27 +297,26 @@ const RepoHelper = {
   },
 
   highLightIfCurrentLine() {
-    if(Store.activeFile.currentLine) {
+    if (Store.activeFile.currentLine) {
       RepoHelper.highlightLine(Store.activeFile.currentLine.split('#L')[1]);
     }
   },
 
-  //outside the vue context
   diffLineNumClickWrapper(e) {
     const lineClicked = $(e.target).attr('data-line-number');
     RepoHelper.highlightLine(lineClicked);
   },
 
   highlightLine(lineNumber) {
-    $('span.line').css('background', '#FFF')
-    $(`#LC${lineNumber}`).css('background', '#F8EEC7');
+    $('span.line').css('background', '#FFF');
+    $(`.diff-line-num#LC${lineNumber}`).css('background', '#F8EEC7');
   },
 
   findOpenedFileFromActive() {
     return Store.openedFiles.find(openedFile => Store.activeFile.url === openedFile.url);
   },
 
-  loadingError(e) {
+  loadingError() {
     Flash('Unable to load the file at this time.');
   },
 };
