@@ -223,7 +223,7 @@ import '~/lib/utils/url_utility';
     });
   });
 
-  fdescribe('GitLabDropdownInput', () => {
+  describe('GitLabDropdownInput', () => {
     describe('class constructor', () => {
       it('calls bindEvents', () => {
         const options = {};

@@ -3,9 +3,9 @@
 import _ from 'underscore';
 import { isObject } from './lib/utils/type_utility';
 
-var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
+var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote;
 
-GitLabDropdownInput = (function() {
+const GitLabDropdownInput = (function() {
   function GitLabDropdownInput(input, options) {
     var $inputContainer, $clearButton;
     var _this = this;
@@ -34,7 +34,7 @@ GitLabDropdownInput = (function() {
     this.input
     .on('keydown', function (e) {
       var keyCode = e.which;
-      if (keyCode === 13 && !options.elIsInput) {
+      if (keyCode === 13 && !this.options.elIsInput) {
         e.preventDefault();
       }
     })
