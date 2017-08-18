@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::MarkdownFilter, lib: true do
+describe Banzai::Filter::MarkdownFilter do
   include FilterSpecHelper
 
   context 'code block' do

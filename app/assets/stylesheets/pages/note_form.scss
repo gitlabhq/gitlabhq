@@ -28,7 +28,7 @@
 .note-edit-form {
   .note-form-actions {
     position: relative;
-    margin: $gl-padding 0;
+    margin: $gl-padding 0 0;
   }
 
   .note-preview-holder {
@@ -104,28 +104,63 @@
 }
 
 .confidential-issue-warning {
-  background-color: $gray-normal;
-  border-radius: 3px;
+  color: $orange-600;
+  background-color: $orange-50;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  border: 1px solid $border-gray-normal;
+  border-bottom: none;
   padding: 3px 12px;
   margin: auto;
-  margin-top: 0;
-  text-align: center;
-  font-size: 12px;
+  align-items: center;
+}
 
-  @media (max-width: $screen-sm-max) {
-    // On smaller devices the warning becomes the fourth item in the list,
-    // rather than centering, and grows to span the full width of the
-    // comment area.
-    order: 4;
-    -webkit-order: 4;
-    margin: 6px auto;
-    width: 100%;
+.confidential-value {
+  .fa {
+    background-color: inherit;
   }
 }
 
+.confidential-warning-message {
+  line-height: 1.5;
+  padding: 16px;
+
+  .confidential-warning-message-actions {
+    display: flex;
+
+    button {
+      flex-grow: 1;
+    }
+  }
+}
+
+.confidential-issue-warning + .md-area {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 .discussion-form {
-  padding: $gl-padding-top $gl-padding;
+  padding: $gl-padding-top $gl-padding $gl-padding;
   background-color: $white-light;
+}
+
+.discussion-notes .disabled-comment {
+  padding: 6px 0;
+}
+
+.notes.notes-form > li.timeline-entry {
+  @include notes-media('max', $screen-sm-max) {
+    padding: 0;
+  }
+
+  .timeline-content {
+    @include notes-media('max', $screen-sm-max) {
+      margin: 0;
+    }
+  }
+
+  .timeline-entry-inner {
+    border: 0;
+  }
 }
 
 .note-edit-form {
@@ -164,10 +199,6 @@
 
 .discussion-body,
 .diff-file {
-  .notes .note {
-    padding: 10px 15px;
-  }
-
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
@@ -277,6 +308,7 @@
 .toolbar-text {
   font-size: 14px;
   line-height: 16px;
+  margin-top: 2px;
 
   @media (min-width: $screen-md-min) {
     float: left;
@@ -323,7 +355,6 @@
       color: $white-light;
       padding-right: 2px;
       margin-top: 2px;
-      pointer-events: none;
     }
   }
 
@@ -333,56 +364,6 @@
     width: 298px;
   }
 
-  .description {
-    display: inline-block;
-    white-space: normal;
-    margin-left: 8px;
-    padding-right: 33px;
-  }
-
-  li {
-    padding-top: 6px;
-
-    & > a {
-      margin: 0;
-      padding: 0;
-      color: inherit;
-      border-radius: 0;
-      text-overflow: inherit;
-
-      &:hover,
-      &:focus {
-        background-color: inherit;
-        color: inherit;
-      }
-    }
-
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
-    }
-
-    &.droplab-item-selected i {
-      visibility: visible;
-    }
-
-    i {
-      visibility: hidden;
-    }
-  }
-
-  i {
-    display: inline-block;
-    vertical-align: top;
-    padding-top: 2px;
-  }
-
-  .divider {
-    margin: 0 8px;
-    padding: 0;
-    border-top: $gray-darkest;
-  }
 
   @media (max-width: $screen-xs-max) {
     display: flex;
@@ -401,4 +382,46 @@
       width: auto;
     }
   }
+}
+
+.uploading-container {
+  float: right;
+
+  @media (max-width: $screen-xs-max) {
+    float: left;
+    margin-top: 5px;
+  }
+}
+
+.uploading-error-icon,
+.uploading-error-message {
+  color: $gl-text-red;
+}
+
+.uploading-error-message {
+  @media (max-width: $screen-xs-max) {
+    &::after {
+      content: "\a";
+      white-space: pre;
+    }
+  }
+}
+
+.uploading-progress {
+  margin-right: 5px;
+}
+
+.attach-new-file,
+.button-attach-file,
+.retry-uploading-link {
+  color: $gl-link-color;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.markdown-selector {
+  color: $gl-link-color;
 }

@@ -4,7 +4,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :project, required: true, validate: true
   belongs_to :environment, required: true, validate: true
   belongs_to :user
-  belongs_to :deployable, polymorphic: true
+  belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   validates :sha, presence: true
   validates :ref, presence: true
@@ -12,6 +12,7 @@ class Deployment < ActiveRecord::Base
   delegate :name, to: :environment, prefix: true
 
   after_create :create_ref
+  after_create :invalidate_cache
 
   def commit
     project.commit(sha)
@@ -31,6 +32,10 @@ class Deployment < ActiveRecord::Base
 
   def create_ref
     project.repository.create_ref(ref, ref_path)
+  end
+
+  def invalidate_cache
+    environment.expire_etag_cache
   end
 
   def manual_actions
@@ -53,10 +58,10 @@ class Deployment < ActiveRecord::Base
   def update_merge_request_metrics!
     return unless environment.update_merge_request_metrics?
 
-    merge_requests = project.merge_requests.
-                     joins(:metrics).
-                     where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil }).
-                     where("merge_request_metrics.merged_at <= ?", self.created_at)
+    merge_requests = project.merge_requests
+                     .joins(:metrics)
+                     .where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil })
+                     .where("merge_request_metrics.merged_at <= ?", self.created_at)
 
     if previous_deployment
       merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
@@ -71,22 +76,22 @@ class Deployment < ActiveRecord::Base
         merge_requests.map(&:id)
       end
 
-    MergeRequest::Metrics.
-      where(merge_request_id: merge_request_ids, first_deployed_to_production_at: nil).
-      update_all(first_deployed_to_production_at: self.created_at)
+    MergeRequest::Metrics
+      .where(merge_request_id: merge_request_ids, first_deployed_to_production_at: nil)
+      .update_all(first_deployed_to_production_at: self.created_at)
   end
 
   def previous_deployment
     @previous_deployment ||=
-      project.deployments.joins(:environment).
-      where(environments: { name: self.environment.name }, ref: self.ref).
-      where.not(id: self.id).
-      take
+      project.deployments.joins(:environment)
+      .where(environments: { name: self.environment.name }, ref: self.ref)
+      .where.not(id: self.id)
+      .take
   end
 
   def stop_action
-    return nil unless on_stop.present?
-    return nil unless manual_actions
+    return unless on_stop.present?
+    return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
@@ -97,6 +102,27 @@ class Deployment < ActiveRecord::Base
 
   def formatted_deployment_time
     created_at.to_time.in_time_zone.to_s(:medium)
+  end
+
+  def has_metrics?
+    project.monitoring_service.present?
+  end
+
+  def metrics
+    return {} unless has_metrics?
+
+    project.monitoring_service.deployment_metrics(self)
+  end
+
+  def has_additional_metrics?
+    project.prometheus_service.present?
+  end
+
+  def additional_metrics
+    return {} unless project.prometheus_service.present?
+
+    metrics = project.prometheus_service.additional_deployment_metrics(self)
+    metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
   private

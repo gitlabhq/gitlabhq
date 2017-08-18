@@ -1,15 +1,17 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, no-underscore-dangle, one-var-declaration-per-line, object-shorthand, no-unused-vars, no-new, comma-dangle, consistent-return, quotes, dot-notation, quote-props, prefer-arrow-callback, max-len */
 /* global Flash */
 
-require('./flash');
-require('~/lib/utils/text_utility');
-require('vendor/jquery.waitforimages');
-require('./task_list');
+import 'vendor/jquery.waitforimages';
+import '~/lib/utils/text_utility';
+import './flash';
+import TaskList from './task_list';
+import CreateMergeRequestDropdown from './create_merge_request_dropdown';
+import IssuablesHelper from './helpers/issuables_helper';
 
 class Issue {
   constructor() {
     if ($('a.btn-close').length) {
-      this.taskList = new gl.TaskList({
+      this.taskList = new TaskList({
         dataType: 'issue',
         fieldName: 'description',
         selector: '.detail-page-description',
@@ -18,64 +20,102 @@ class Issue {
           document.querySelector('#task_status_short').innerText = result.task_status_short;
         }
       });
-      Issue.initIssueBtnEventListeners();
+      this.initIssueBtnEventListeners();
     }
 
     Issue.$btnNewBranch = $('#new-branch');
+    Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
     Issue.initMergeRequests();
     Issue.initRelatedBranches();
-    Issue.initCanCreateBranch();
+
+    this.closeButtons = $('a.btn-close');
+    this.reopenButtons = $('a.btn-reopen');
+
+    this.initCloseReopenReport();
+
+    if (Issue.createMrDropdownWrap) {
+      this.createMergeRequestDropdown = new CreateMergeRequestDropdown(Issue.createMrDropdownWrap);
+    }
   }
 
-  static initIssueBtnEventListeners() {
+  initIssueBtnEventListeners() {
     const issueFailMessage = 'Unable to update this issue at this time.';
 
-    const closeButtons = $('a.btn-close');
-    const isClosedBadge = $('div.status-box-closed');
-    const isOpenBadge = $('div.status-box-open');
-    const projectIssuesCounter = $('.issue_counter');
-    const reopenButtons = $('a.btn-reopen');
-
-    return closeButtons.add(reopenButtons).on('click', function(e) {
-      var $this, shouldSubmit, url;
+    return $(document).on('click', 'a.btn-close, a.btn-reopen', (e) => {
+      var $button, shouldSubmit, url;
       e.preventDefault();
       e.stopImmediatePropagation();
-      $this = $(this);
-      shouldSubmit = $this.hasClass('btn-comment');
+      $button = $(e.currentTarget);
+      shouldSubmit = $button.hasClass('btn-comment');
       if (shouldSubmit) {
-        Issue.submitNoteForm($this.closest('form'));
+        Issue.submitNoteForm($button.closest('form'));
       }
-      $this.prop('disabled', true);
-      Issue.setNewBranchButtonState(true, null);
-      url = $this.attr('href');
+
+      this.disableCloseReopenButton($button);
+
+      url = $button.attr('href');
       return $.ajax({
         type: 'PUT',
         url: url
-      }).fail(function(jqXHR, textStatus, errorThrown) {
-        new Flash(issueFailMessage);
-        Issue.initCanCreateBranch();
-      }).done(function(data, textStatus, jqXHR) {
+      })
+      .fail(() => new Flash(issueFailMessage))
+      .done((data) => {
+        const isClosedBadge = $('div.status-box-closed');
+        const isOpenBadge = $('div.status-box-open');
+        const projectIssuesCounter = $('.issue_counter');
+
         if ('id' in data) {
           $(document).trigger('issuable:change');
 
-          const isClosed = $this.hasClass('btn-close');
-          closeButtons.toggleClass('hidden', isClosed);
-          reopenButtons.toggleClass('hidden', !isClosed);
+          const isClosed = $button.hasClass('btn-close');
           isClosedBadge.toggleClass('hidden', !isClosed);
           isOpenBadge.toggleClass('hidden', isClosed);
+
+          this.toggleCloseReopenButton(isClosed);
 
           let numProjectIssues = Number(projectIssuesCounter.text().replace(/[^\d]/, ''));
           numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
           projectIssuesCounter.text(gl.text.addDelimiter(numProjectIssues));
+
+          if (this.createMergeRequestDropdown) {
+            if (isClosed) {
+              this.createMergeRequestDropdown.unavailable();
+              this.createMergeRequestDropdown.disable();
+            } else {
+              // We should check in case a branch was created in another tab
+              this.createMergeRequestDropdown.checkAbilityToCreateBranch();
+            }
+          }
         } else {
           new Flash(issueFailMessage);
         }
-
-        $this.prop('disabled', false);
-        Issue.initCanCreateBranch();
+      })
+      .then(() => {
+        this.disableCloseReopenButton($button, false);
       });
     });
+  }
+
+  initCloseReopenReport() {
+    this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
+
+    if (this.closeButtons) this.closeButtons = this.closeButtons.not('.issuable-close-button');
+    if (this.reopenButtons) this.reopenButtons = this.reopenButtons.not('.issuable-close-button');
+  }
+
+  disableCloseReopenButton($button, shouldDisable) {
+    if (this.closeReopenReportToggle) {
+      this.closeReopenReportToggle.setDisable(shouldDisable);
+    } else {
+      $button.prop('disabled', shouldDisable);
+    }
+  }
+
+  toggleCloseReopenButton(isClosed) {
+    if (this.closeReopenReportToggle) this.closeReopenReportToggle.updateButton(isClosed);
+    this.closeButtons.toggleClass('hidden', isClosed);
+    this.reopenButtons.toggleClass('hidden', !isClosed);
   }
 
   static submitNoteForm(form) {
@@ -108,29 +148,6 @@ class Issue {
         return $container.html(data.html);
       }
     });
-  }
-
-  static initCanCreateBranch() {
-    // If the user doesn't have the required permissions the container isn't
-    // rendered at all.
-    if (Issue.$btnNewBranch.length === 0) {
-      return;
-    }
-    return $.getJSON(Issue.$btnNewBranch.data('path')).fail(function() {
-      Issue.setNewBranchButtonState(false, false);
-      new Flash('Failed to check if a new branch can be created.');
-    }).done(function(data) {
-      Issue.setNewBranchButtonState(false, data.can_create_branch);
-    });
-  }
-
-  static setNewBranchButtonState(isPending, canCreate) {
-    if (Issue.$btnNewBranch.length === 0) {
-      return;
-    }
-
-    Issue.$btnNewBranch.find('.available').toggle(!isPending && canCreate);
-    Issue.$btnNewBranch.find('.unavailable').toggle(!isPending && !canCreate);
   }
 }
 

@@ -9,6 +9,7 @@ Feature: Search
     Given I search for "Sho"
     Then I should see "Shop" project link
 
+  @javascript
   Scenario: I should see issues I am looking for
     And project has issues
     When I search for "Foo"
@@ -16,6 +17,7 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see merge requests I am looking for
     And project has merge requests
     When I search for "Foo"
@@ -23,6 +25,7 @@ Feature: Search
     Then I should see "Foo" link in the search results
     And I should not see "Bar" link in the search results
 
+  @javascript
   Scenario: I should see milestones I am looking for
     And project has milestones
     When I search for "Foo"
@@ -78,6 +81,7 @@ Feature: Search
     And I search for "Sho"
     Then I should see "Shop" project link
 
+  @javascript
   Scenario: I logout and should see issues I am looking for
     Given project "Shop" is public
     And I logout directly

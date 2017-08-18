@@ -9,11 +9,11 @@ module Notes
       # We execute commands (extracted from `params[:note]`) on the noteable
       # **before** we save the note because if the note consists of commands
       # only, there is no need be create a note!
-      slash_commands_service = SlashCommandsService.new(project, current_user)
+      quick_actions_service = QuickActionsService.new(project, current_user)
 
-      if slash_commands_service.supported?(note)
+      if quick_actions_service.supported?(note)
         options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
-        content, command_params = slash_commands_service.extract_commands(note, options)
+        content, command_params = quick_actions_service.extract_commands(note, options)
 
         only_commands = content.empty?
 
@@ -30,7 +30,7 @@ module Notes
       end
 
       if command_params.present?
-        slash_commands_service.execute(command_params, note)
+        quick_actions_service.execute(command_params, note)
 
         # We must add the error after we call #save because errors are reset
         # when #save is called

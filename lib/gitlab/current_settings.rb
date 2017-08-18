@@ -8,38 +8,55 @@ module Gitlab
       end
     end
 
-    def ensure_application_settings!
-      return fake_application_settings unless connect_to_db?
-
-      unless ENV['IN_MEMORY_APPLICATION_SETTINGS'] == 'true'
-        begin
-          settings = ::ApplicationSetting.current
-        # In case Redis isn't running or the Redis UNIX socket file is not available
-        rescue ::Redis::BaseError, ::Errno::ENOENT
-          settings = ::ApplicationSetting.last
-        end
-
-        settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
-      end
-
-      settings || in_memory_application_settings
-    end
-
     delegate :sidekiq_throttling_enabled?, to: :current_application_settings
 
-    def in_memory_application_settings
-      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)
-    # In case migrations the application_settings table is not created yet,
-    # we fallback to a simple OpenStruct
-    rescue ActiveRecord::StatementInvalid, ActiveRecord::UnknownAttributeError
-      fake_application_settings
-    end
-
-    def fake_application_settings
-      OpenStruct.new(::ApplicationSetting.defaults)
+    def fake_application_settings(defaults = ::ApplicationSetting.defaults)
+      FakeApplicationSettings.new(defaults)
     end
 
     private
+
+    def ensure_application_settings!
+      return in_memory_application_settings if ENV['IN_MEMORY_APPLICATION_SETTINGS'] == 'true'
+
+      cached_application_settings || uncached_application_settings
+    end
+
+    def cached_application_settings
+      begin
+        ::ApplicationSetting.cached
+      rescue ::Redis::BaseError, ::Errno::ENOENT, ::Errno::EADDRNOTAVAIL
+        # In case Redis isn't running or the Redis UNIX socket file is not available
+      end
+    end
+
+    def uncached_application_settings
+      return fake_application_settings unless connect_to_db?
+
+      db_settings = ::ApplicationSetting.current
+
+      # If there are pending migrations, it's possible there are columns that
+      # need to be added to the application settings. To prevent Rake tasks
+      # and other callers from failing, use any loaded settings and return
+      # defaults for missing columns.
+      if ActiveRecord::Migrator.needs_migration?
+        defaults = ::ApplicationSetting.defaults
+        defaults.merge!(db_settings.attributes.symbolize_keys) if db_settings.present?
+        return fake_application_settings(defaults)
+      end
+
+      return db_settings if db_settings.present?
+
+      ::ApplicationSetting.create_from_defaults || in_memory_application_settings
+    end
+
+    def in_memory_application_settings
+      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)
+    rescue ActiveRecord::StatementInvalid, ActiveRecord::UnknownAttributeError
+      # In case migrations the application_settings table is not created yet,
+      # we fallback to a simple OpenStruct
+      fake_application_settings
+    end
 
     def connect_to_db?
       # When the DBMS is not available, an exception (e.g. PG::ConnectionBad) is raised

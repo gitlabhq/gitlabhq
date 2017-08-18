@@ -1,13 +1,13 @@
 class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
-  include MarkdownPreview
 
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
   before_action :project, except: [:index, :new, :create]
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -35,7 +35,7 @@ class ProjectsController < Projects::ApplicationController
 
       redirect_to(
         project_path(@project),
-        notice: "Project '#{@project.name}' was successfully created."
+        notice: _("Project '%{project_name}' was successfully created.") % { project_name: @project.name }
       )
     else
       render 'new'
@@ -50,11 +50,14 @@ class ProjectsController < Projects::ApplicationController
 
     respond_to do |format|
       if result[:status] == :success
-        flash[:notice] = "Project '#{@project.name}' was successfully updated."
+        flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+
         format.html do
           redirect_to(edit_project_path(@project))
         end
       else
+        flash[:alert] = result[:message]
+
         format.html { render 'edit' }
       end
 
@@ -77,7 +80,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_fork_project, @project)
 
     if ::Projects::UnlinkForkService.new(@project, current_user).execute
-      flash[:notice] = 'The fork relationship has been removed.'
+      flash[:notice] = _('The fork relationship has been removed.')
     end
   end
 
@@ -93,12 +96,12 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to namespace_project_import_path(@project.namespace, @project)
+      redirect_to project_import_path(@project)
       return
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project #{@project.name} queued for deletion."
+      flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
     respond_to do |format|
@@ -109,7 +112,7 @@ class ProjectsController < Projects::ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
     end
   end
@@ -118,11 +121,11 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:alert] = "Project '#{@project.name_with_namespace}' will be deleted."
+    flash[:alert] = _("Project '%{project_name}' will be deleted.") % { project_name: @project.name_with_namespace }
 
-    redirect_to dashboard_projects_path
+    redirect_to dashboard_projects_path, status: 302
   rescue Projects::DestroyService::DestroyError => ex
-    redirect_to edit_project_path(@project), alert: ex.message
+    redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
 
   def new_issue_address
@@ -157,7 +160,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       project_path(@project),
-      notice: "Housekeeping successfully started"
+      notice: _("Housekeeping successfully started")
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(
@@ -171,7 +174,7 @@ class ProjectsController < Projects::ApplicationController
 
     redirect_to(
       edit_project_path(@project),
-      notice: "Project export started. A download link will be sent by email."
+      notice: _("Project export started. A download link will be sent by email.")
     )
   end
 
@@ -183,16 +186,16 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export link has expired. Please generate a new export from your project settings."
+        alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
   end
 
   def remove_export
     if @project.remove_exports
-      flash[:notice] = "Project export has been deleted."
+      flash[:notice] = _("Project export has been deleted.")
     else
-      flash[:alert] = "Project export could not be deleted."
+      flash[:alert] = _("Project export could not be deleted.")
     end
     redirect_to(edit_project_path(@project))
   end
@@ -203,7 +206,7 @@ class ProjectsController < Projects::ApplicationController
     else
       redirect_to(
         edit_project_path(@project),
-        alert: "Project export could not be deleted."
+        alert: _("Project export could not be deleted.")
       )
     end
   end
@@ -218,21 +221,34 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def refs
-    branches = BranchesFinder.new(@repository, params).execute.map(&:name)
+    find_refs = params['find']
 
-    options = {
-      'Branches' => branches.take(100),
-    }
+    find_branches = true
+    find_tags = true
+    find_commits = true
 
-    unless @repository.tag_count.zero?
-      tags = TagsFinder.new(@repository, params).execute.map(&:name)
+    unless find_refs.nil?
+      find_branches = find_refs.include?('branches')
+      find_tags = find_refs.include?('tags')
+      find_commits = find_refs.include?('commits')
+    end
 
-      options['Tags'] = tags.take(100)
+    options = {}
+
+    if find_branches
+      branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
+      options[s_('RefSwitcher|Branches')] = branches
+    end
+
+    if find_tags && @repository.tag_count.nonzero?
+      tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
+
+      options[s_('RefSwitcher|Tags')] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
     ref = Addressable::URI.unescape(params[:ref])
-    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+    if find_commits && ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
       options['Commits'] = [ref]
     end
 
@@ -240,7 +256,15 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def preview_markdown
-    render_markdown_preview(params[:text])
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
+
+    render json: {
+      body: view_context.markdown(result[:text]),
+      references: {
+        users: result[:users],
+        commands: view_context.markdown(result[:commands])
+      }
+    }
   end
 
   private
@@ -250,7 +274,7 @@ class ProjectsController < Projects::ApplicationController
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
-    if @project.feature_available?(:repository, current_user)
+    if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
       render 'projects/empty' if @project.empty_repo?
     else
@@ -278,18 +302,19 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def load_events
-    @events = @project.events.recent
-    @events = event_filter.apply_filter(@events).with_associations
-    limit = (params[:limit] || 20).to_i
-    @events = @events.limit(limit).offset(params[:offset] || 0)
+    projects = Project.where(id: @project.id)
+
+    @events = EventCollection
+      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 
   def project_params
     params.require(:project)
-      .permit(project_params_ce)
+      .permit(project_params_attributes)
   end
 
-  def project_params_ce
+  def project_params_attributes
     [
       :avatar,
       :build_allow_git_fetch,
@@ -314,6 +339,7 @@ class ProjectsController < Projects::ApplicationController
       :runners_token,
       :tag_list,
       :visibility_level,
+      :template_name,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -357,5 +383,16 @@ class ProjectsController < Projects::ApplicationController
 
   def project_view_files_allowed?
     !project.empty_repo? && can?(current_user, :download_code, project)
+  end
+
+  def build_canonical_path(project)
+    params[:namespace_id] = project.namespace.to_param
+    params[:id] = project.to_param
+
+    url_for(params)
+  end
+
+  def project_export_enabled
+    render_404 unless current_application_settings.project_export_enabled?
   end
 end

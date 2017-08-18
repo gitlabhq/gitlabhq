@@ -13,6 +13,14 @@ describe Gitlab::Ci::Config::Entry::Variables do
         it 'returns hash with key value strings' do
           expect(entry.value).to eq config
         end
+
+        context 'with numeric keys and values in the config' do
+          let(:config) { { 10 => 20 } }
+
+          it 'converts numeric key and numeric value into strings' do
+            expect(entry.value).to eq('10' => '20')
+          end
+        end
       end
 
       describe '#errors' do

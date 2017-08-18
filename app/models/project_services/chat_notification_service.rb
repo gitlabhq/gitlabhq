@@ -21,10 +21,6 @@ class ChatNotificationService < Service
     end
   end
 
-  def can_test?
-    valid?
-  end
-
   def self.supported_events
     %w[push issue confidential_issue merge_request note tag_push
        pipeline wiki_page]
@@ -36,10 +32,10 @@ class ChatNotificationService < Service
 
   def default_fields
     [
-      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
+      { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}", required: true },
       { type: 'text', name: 'username', placeholder: 'e.g. GitLab' },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'checkbox', name: 'notify_only_default_branch' },
+      { type: 'checkbox', name: 'notify_only_default_branch' }
     ]
   end
 
@@ -119,7 +115,7 @@ class ChatNotificationService < Service
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
-    self.public_send(field_name)
+    self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def build_event_channels
@@ -150,7 +146,7 @@ class ChatNotificationService < Service
 
   def notify_for_ref?(data)
     return true if data[:object_attributes][:tag]
-    return true unless notify_only_default_branch
+    return true unless notify_only_default_branch?
 
     data[:object_attributes][:ref] == project.default_branch
   end

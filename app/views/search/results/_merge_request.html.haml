@@ -9,7 +9,6 @@
     .pull-right= merge_request.to_reference
   - if merge_request.description.present?
     .description.term
-      = preserve do
-        = search_md_sanitize(merge_request, :description)
+      = search_md_sanitize(merge_request, :description)
   %span.light
     #{merge_request.project.name_with_namespace}

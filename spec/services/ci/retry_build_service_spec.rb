@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Ci::RetryBuildService, :services do
+describe Ci::RetryBuildService do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -22,15 +22,27 @@ describe Ci::RetryBuildService, :services do
     %i[type lock_version target_url base_tags
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id].freeze
+       user_id auto_canceled_by_id retried].freeze
 
   shared_examples 'build duplication' do
+    let(:stage) do
+      # TODO, we still do not have factory for new stages, we will need to
+      # switch existing factory to persist stages, instead of using LegacyStage
+      #
+      Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+    end
+
     let(:build) do
       create(:ci_build, :failed, :artifacts_expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
-             :teardown_environment, :triggered, :trace,
-             description: 'some build', pipeline: pipeline,
-             auto_canceled_by: create(:ci_empty_pipeline))
+             :triggered, :trace, :teardown_environment,
+             description: 'my-job', stage: 'test',  pipeline: pipeline,
+             auto_canceled_by: create(:ci_empty_pipeline)) do |build|
+               ##
+               # TODO, workaround for FactoryGirl limitation when having both
+               # stage (text) and stage_id (integer) columns in the table.
+               build.stage_id = stage.id
+             end
     end
 
     describe 'clone accessors' do
@@ -73,6 +85,8 @@ describe Ci::RetryBuildService, :services do
 
     context 'when user has ability to execute build' do
       before do
+        stub_not_protect_default_branch
+
         project.add_developer(user)
       end
 
@@ -115,10 +129,12 @@ describe Ci::RetryBuildService, :services do
   end
 
   describe '#reprocess' do
-    let(:new_build) { service.reprocess(build) }
+    let(:new_build) { service.reprocess!(build) }
 
     context 'when user has ability to execute build' do
       before do
+        stub_not_protect_default_branch
+
         project.add_developer(user)
       end
 
@@ -131,11 +147,16 @@ describe Ci::RetryBuildService, :services do
       it 'does not enqueue the new build' do
         expect(new_build).to be_created
       end
+
+      it 'does mark old build as retried' do
+        expect(new_build).to be_latest
+        expect(build.reload).to be_retried
+      end
     end
 
     context 'when user does not have ability to execute build' do
       it 'raises an error' do
-        expect { service.reprocess(build) }
+        expect { service.reprocess!(build) }
           .to raise_error Gitlab::Access::AccessDeniedError
       end
     end

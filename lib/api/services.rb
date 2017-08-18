@@ -304,13 +304,13 @@ module API
           required: true,
           name: :url,
           type: String,
-          desc: 'The URL to the JIRA project which is being linked to this GitLab project, e.g., https://jira.example.com'
+          desc: 'The base URL to the JIRA instance web interface which is being linked to this GitLab project. E.g., https://jira.example.com'
         },
         {
-          required: true,
-          name: :project_key,
+          required: false,
+          name: :api_url,
           type: String,
-          desc: 'The short identifier for your JIRA project, all uppercase, e.g., PROJ'
+          desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
           required: false,
@@ -356,7 +356,7 @@ module API
           name: :ca_pem,
           type: String,
           desc: 'A custom certificate authority bundle to verify the Kubernetes cluster with (PEM format)'
-        },
+        }
       ],
       'mattermost-slash-commands' => [
         {
@@ -559,7 +559,7 @@ module API
       SlackService,
       MattermostService,
       MicrosoftTeamsService,
-      TeamcityService,
+      TeamcityService
     ]
 
     if Rails.env.development?
@@ -577,7 +577,7 @@ module API
       service_classes += [
         MockCiService,
         MockDeploymentService,
-        MockMonitoringService,
+        MockMonitoringService
       ]
     end
 
@@ -679,7 +679,7 @@ module API
 
     trigger_services.each do |service_slug, settings|
       helpers do
-        def chat_command_service(project, service_slug, params)
+        def slash_command_service(project, service_slug, params)
           project.services.active.where(template: false).find do |service|
             service.try(:token) == params[:token] && service.to_param == service_slug.underscore
           end
@@ -704,7 +704,7 @@ module API
           # This is not accurate, but done to prevent leakage of the project names
           not_found!('Service') unless project
 
-          service = chat_command_service(project, service_slug, params)
+          service = slash_command_service(project, service_slug, params)
           result = service.try(:trigger, params)
 
           if result

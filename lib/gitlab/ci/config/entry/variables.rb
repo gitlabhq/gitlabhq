@@ -15,6 +15,10 @@ module Gitlab
           def self.default
             {}
           end
+
+          def value
+            Hash[@config.map { |key, value| [key.to_s, value.to_s] }]
+          end
         end
       end
     end

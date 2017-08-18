@@ -14,14 +14,17 @@ module Projects
 
       def define_runners_variables
         @project_runners = @project.runners.ordered
-        @assignable_runners = current_user.ci_authorized_runners.
-          assignable_for(project).ordered.page(params[:page]).per(20)
+        @assignable_runners = current_user.ci_authorized_runners
+          .assignable_for(project).ordered.page(params[:page]).per(20)
         @shared_runners = Ci::Runner.shared.active
         @shared_runners_count = @shared_runners.count(:all)
       end
 
       def define_secret_variables
-        @variable = Ci::Variable.new
+        @variable = Ci::Variable.new(project: project)
+          .present(current_user: current_user)
+        @variables = project.variables.order_key_asc
+          .map { |variable| variable.present(current_user: current_user) }
       end
 
       def define_triggers_variables
@@ -32,7 +35,7 @@ module Projects
       def define_badges_variables
         @ref = params[:ref] || @project.default_branch || 'master'
 
-        @badges = [Gitlab::Badge::Build::Status,
+        @badges = [Gitlab::Badge::Pipeline::Status,
                    Gitlab::Badge::Coverage::Report]
 
         @badges.map! do |badge|

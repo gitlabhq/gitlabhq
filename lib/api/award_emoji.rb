@@ -88,6 +88,7 @@ module API
 
             unauthorized! unless award.user == current_user || current_user.admin?
 
+            status 204
             award.destroy
           end
         end

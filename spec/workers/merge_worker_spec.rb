@@ -15,7 +15,7 @@ describe MergeWorker do
     it 'clears cache of source repo after removing source branch' do
       expect(source_project.repository.branch_names).to include('markdown')
 
-      MergeWorker.new.perform(
+      described_class.new.perform(
         merge_request.id, merge_request.author_id,
         commit_message: 'wow such merge',
         should_remove_source_branch: true)
@@ -26,5 +26,16 @@ describe MergeWorker do
       source_project.repository.expire_branches_cache
       expect(source_project.repository.branch_names).not_to include('markdown')
     end
+  end
+
+  it 'persists merge_jid' do
+    merge_request = create(:merge_request, merge_jid: nil)
+    user = create(:user)
+    worker = described_class.new
+
+    allow(worker).to receive(:jid) { '999' }
+
+    expect { worker.perform(merge_request.id, user.id, {}) }
+      .to change { merge_request.reload.merge_jid }.from(nil).to('999')
   end
 end

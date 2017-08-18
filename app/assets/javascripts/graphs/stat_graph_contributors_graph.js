@@ -1,8 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
-
+import _ from 'underscore';
 import d3 from 'd3';
 
-const bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
 
@@ -95,7 +94,7 @@ export const ContributorsMasterGraph = (function(superClass) {
 
   function ContributorsMasterGraph(data1) {
     this.data = data1;
-    this.update_content = bind(this.update_content, this);
+    this.update_content = this.update_content.bind(this);
     this.width = $('.content').width() - 70;
     this.height = 200;
     this.x = null;

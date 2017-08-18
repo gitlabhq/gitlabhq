@@ -1,3 +1,4 @@
+# rubocop:disable Migration/Datetime
 class AddClosedAtToIssues < ActiveRecord::Migration
   DOWNTIME = false
 

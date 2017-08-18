@@ -2,5 +2,5 @@
   Issue was moved to another project.
 %p
   New issue:
-  = link_to namespace_project_issue_url(@new_project.namespace, @new_project, @new_issue) do
+  = link_to project_issue_url(@new_project, @new_issue) do
     = @new_issue.title

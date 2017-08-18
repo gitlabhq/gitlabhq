@@ -4,9 +4,10 @@ module Gitlab
       class << self
         def repository(repository_storage, relative_path)
           Gitaly::Repository.new(
-            path: File.join(Gitlab.config.repositories.storages[repository_storage]['path'], relative_path),
             storage_name: repository_storage,
             relative_path: relative_path,
+            git_object_directory: Gitlab::Git::Env['GIT_OBJECT_DIRECTORY'].to_s,
+            git_alternate_object_directories: Array.wrap(Gitlab::Git::Env['GIT_ALTERNATE_OBJECT_DIRECTORIES'])
           )
         end
       end

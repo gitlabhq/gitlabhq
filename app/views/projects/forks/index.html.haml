@@ -34,7 +34,7 @@
           = custom_icon('icon_fork')
           %span Fork
       - else
-        = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-new' do
+        = link_to new_project_fork_path(@project), title: "Fork project", class: 'btn btn-new' do
           = custom_icon('icon_fork')
           %span Fork
 

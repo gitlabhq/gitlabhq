@@ -2,9 +2,11 @@ module API
   module V3
     class Users < Grape::API
       include PaginationParams
+      include APIGuard
+
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
 
       before do
-        allow_access_with_scope :read_user if request.get?
         authenticate!
       end
 
@@ -50,13 +52,13 @@ module API
           if user.persisted?
             present user, with: ::API::Entities::UserPublic
           else
-            conflict!('Email has already been taken') if User.
-                where(email: user.email).
-                count > 0
+            conflict!('Email has already been taken') if User
+                .where(email: user.email)
+                .count > 0
 
-            conflict!('Username has already been taken') if User.
-                where(username: user.username).
-                count > 0
+            conflict!('Username has already been taken') if User
+                .where(username: user.username)
+                .count > 0
 
             render_validation_error!(user)
           end
@@ -137,11 +139,11 @@ module API
           user = User.find_by(id: params[:id])
           not_found!('User') unless user
 
-          events = user.events.
-            merge(ProjectsFinder.new(current_user: current_user).execute).
-            references(:project).
-            with_associations.
-            recent
+          events = user.events
+            .merge(ProjectsFinder.new(current_user: current_user).execute)
+            .references(:project)
+            .with_associations
+            .recent
 
           present paginate(events), with: ::API::V3::Entities::Event
         end

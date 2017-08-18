@@ -50,11 +50,11 @@ describe 'View on environment', js: true do
         let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: branch_name) }
 
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+          visit diffs_project_merge_request_path(project, merge_request)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -66,11 +66,11 @@ describe 'View on environment', js: true do
 
       context 'when visiting a comparison for the branch' do
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit namespace_project_compare_path(project.namespace, project, from: 'master', to: branch_name)
+          visit project_compare_path(project, from: 'master', to: branch_name)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -80,11 +80,11 @@ describe 'View on environment', js: true do
 
       context 'when visiting a comparison for the commit' do
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit namespace_project_compare_path(project.namespace, project, from: 'master', to: sha)
+          visit project_compare_path(project, from: 'master', to: sha)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -94,11 +94,11 @@ describe 'View on environment', js: true do
 
       context 'when visiting a blob on the branch' do
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit namespace_project_blob_path(project.namespace, project, File.join(branch_name, file_path))
+          visit project_blob_path(project, File.join(branch_name, file_path))
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -108,11 +108,11 @@ describe 'View on environment', js: true do
 
       context 'when visiting a blob on the commit' do
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit namespace_project_blob_path(project.namespace, project, File.join(sha, file_path))
+          visit project_blob_path(project, File.join(sha, file_path))
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do
@@ -122,11 +122,11 @@ describe 'View on environment', js: true do
 
       context 'when visiting the commit' do
         before do
-          login_as(user)
+          sign_in(user)
 
-          visit namespace_project_commit_path(project.namespace, project, sha)
+          visit project_commit_path(project, sha)
 
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'has a "View on env" button' do

@@ -35,6 +35,11 @@ module CapybaraHelpers
     visit 'about:blank'
     visit url
   end
+
+  # Simulate a browser restart by clearing the session cookie.
+  def clear_browser_session
+    page.driver.remove_cookie('_gitlab_session')
+  end
 end
 
 RSpec.configure do |config|

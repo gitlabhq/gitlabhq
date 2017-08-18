@@ -1,34 +1,31 @@
 require 'rails_helper'
 
-describe 'Issue Boards', feature: true, js: true do
-  include WaitForVueResource
-
+describe 'Issue Boards', js: true do
   let(:user)         { create(:user) }
-  let(:project)      { create(:empty_project, :public) }
+  let(:user2)        { create(:user) }
+  let(:project)      { create(:project, :public) }
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
   let!(:bug)         { create(:label, project: project, name: 'Bug') }
   let!(:regression)  { create(:label, project: project, name: 'Regression') }
   let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
-  let!(:issue1)      { create(:labeled_issue, project: project, assignee: user, milestone: milestone, labels: [development], relative_position: 2) }
+  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], milestone: milestone, labels: [development], relative_position: 2) }
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card) { first('.board').first('.card') }
+  let(:card) { find('.board:nth-child(2)').first('.card') }
 
-  before do
-    Timecop.freeze
-
-    project.team << [user, :master]
-
-    login_as(user)
-
-    visit namespace_project_board_path(project.namespace, project, board)
-    wait_for_vue_resource
+  around do |example|
+    Timecop.freeze { example.run }
   end
 
-  after do
-    Timecop.return
+  before do
+    project.add_master(user)
+
+    sign_in(user)
+
+    visit project_board_path(project, board)
+    wait_for_requests
   end
 
   it 'shows sidebar when clicking issue' do
@@ -73,11 +70,27 @@ describe 'Issue Boards', feature: true, js: true do
       click_button 'Remove from board'
     end
 
-    wait_for_vue_resource
+    wait_for_requests
 
-    page.within(first('.board')) do
+    page.within(find('.board:nth-child(2)')) do
       expect(page).to have_selector('.card', count: 1)
     end
+  end
+
+  it 'does not show remove button for backlog or closed issues' do
+    create(:issue, project: project)
+    create(:issue, :closed, project: project)
+
+    visit project_board_path(project, board)
+    wait_for_requests
+
+    click_card(find('.board:nth-child(1)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
+
+    click_card(find('.board:nth-child(3)').first('.card'))
+
+    expect(find('.issue-boards-sidebar')).not_to have_button 'Remove from board'
   end
 
   context 'assignee' do
@@ -87,12 +100,12 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link user.name
 
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         expect(page).to have_content(user.name)
@@ -102,19 +115,19 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'removes the assignee' do
-      card_two = first('.board').find('.card:nth-child(2)')
+      card_two = find('.board:nth-child(2)').find('.card:nth-child(2)')
       click_card(card_two)
 
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link 'Unassigned'
-
-          wait_for_vue_resource
         end
+
+        wait_for_requests
 
         expect(page).to have_content('No assignee')
       end
@@ -128,9 +141,9 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
 
-        click_link 'assign yourself'
+        click_button 'assign yourself'
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content(user.name)
       end
@@ -138,31 +151,31 @@ describe 'Issue Boards', feature: true, js: true do
       expect(card).to have_selector('.avatar')
     end
 
-    it 'resets assignee dropdown' do
+    it 'updates assignee dropdown' do
       click_card(card)
 
       page.within('.assignee') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         page.within('.dropdown-menu-user') do
           click_link user.name
 
-          wait_for_vue_resource
+          wait_for_requests
         end
 
         expect(page).to have_content(user.name)
       end
 
-      page.within(first('.board')) do
-        find('.card:nth-child(2)').click
+      page.within(find('.board:nth-child(2)')) do
+        find('.card:nth-child(2)').trigger('click')
       end
 
       page.within('.assignee') do
         click_link 'Edit'
 
-        expect(page).not_to have_selector('.is-active')
+        expect(find('.dropdown-menu')).to have_selector('.is-active')
       end
     end
   end
@@ -174,11 +187,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.milestone') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link milestone.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.value') do
           expect(page).to have_content(milestone.title)
@@ -192,11 +205,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.milestone') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link "No Milestone"
 
-        wait_for_vue_resource
+        wait_for_requests
 
         page.within('.value') do
           expect(page).not_to have_content(milestone.title)
@@ -214,7 +227,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         click_button Date.today.day
 
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content(Date.today.to_s(:medium))
       end
@@ -228,11 +241,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link bug.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -242,7 +255,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 2)
+      expect(card).to have_selector('.label', count: 3)
       expect(card).to have_content(bug.title)
     end
 
@@ -252,12 +265,12 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link bug.title
         click_link regression.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -268,7 +281,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).to have_selector('.label', count: 3)
+      expect(card).to have_selector('.label', count: 4)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
     end
@@ -279,11 +292,11 @@ describe 'Issue Boards', feature: true, js: true do
       page.within('.labels') do
         click_link 'Edit'
 
-        wait_for_ajax
+        wait_for_requests
 
         click_link stretch.title
 
-        wait_for_vue_resource
+        wait_for_requests
 
         find('.dropdown-menu-close-icon').click
 
@@ -293,7 +306,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
-      expect(card).not_to have_selector('.label')
+      expect(card).to have_selector('.label', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
   end
@@ -304,7 +317,7 @@ describe 'Issue Boards', feature: true, js: true do
 
       page.within('.subscription') do
         click_button 'Subscribe'
-        wait_for_ajax
+        wait_for_requests
         expect(page).to have_content("Unsubscribe")
       end
     end

@@ -14,6 +14,30 @@ class Event < ActiveRecord::Base
   DESTROYED = 10
   EXPIRED   = 11 # User left project due to expiry
 
+  ACTIONS = HashWithIndifferentAccess.new(
+    created:    CREATED,
+    updated:    UPDATED,
+    closed:     CLOSED,
+    reopened:   REOPENED,
+    pushed:     PUSHED,
+    commented:  COMMENTED,
+    merged:     MERGED,
+    joined:     JOINED,
+    left:       LEFT,
+    destroyed:  DESTROYED,
+    expired:    EXPIRED
+  ).freeze
+
+  TARGET_TYPES = HashWithIndifferentAccess.new(
+    issue:          Issue,
+    milestone:      Milestone,
+    merge_request:  MergeRequest,
+    note:           Note,
+    project:        Project,
+    snippet:        Snippet,
+    user:           User
+  ).freeze
+
   RESET_PROJECT_ACTIVITY_INTERVAL = 1.hour
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
@@ -23,26 +47,60 @@ class Event < ActiveRecord::Base
 
   belongs_to :author, class_name: "User"
   belongs_to :project
-  belongs_to :target, polymorphic: true
+  belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  has_one :push_event_payload, foreign_key: :event_id
 
   # For Hash only
-  serialize :data
+  serialize :data # rubocop:disable Cop/ActiveRecordSerialize
 
   # Callbacks
   after_create :reset_project_activity
+  after_create :set_last_repository_updated_at, if: :push?
+  after_create :replicate_event_for_push_events_migration
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
 
-  scope :in_projects, ->(projects) do
-    where(project_id: projects.pluck(:id)).recent
+  scope :in_projects, -> (projects) do
+    sub_query = projects
+      .except(:order)
+      .select(1)
+      .where('projects.id = events.project_id')
+
+    where('EXISTS (?)', sub_query).recent
   end
 
-  scope :with_associations, -> { includes(:author, :project, project: :namespace).preload(:target) }
+  scope :with_associations, -> do
+    # We're using preload for "push_event_payload" as otherwise the association
+    # is not always available (depending on the query being built).
+    includes(:author, :project, project: :namespace)
+      .preload(:target, :push_event_payload)
+  end
+
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
 
+  self.inheritance_column = 'action'
+
   class << self
+    def find_sti_class(action)
+      if action.to_i == PUSHED
+        PushEvent
+      else
+        Event
+      end
+    end
+
+    def subclass_from_attributes(attrs)
+      # Without this Rails will keep calling this method on the returned class,
+      # resulting in an infinite loop.
+      return unless self == Event
+
+      action = attrs.with_indifferent_access[inheritance_column].to_i
+
+      PushEvent if action == PUSHED
+    end
+
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
@@ -53,6 +111,14 @@ class Event < ActiveRecord::Base
 
     def limit_recent(limit = 20, offset = nil)
       recent.limit(limit).offset(offset)
+    end
+
+    def actions
+      ACTIONS.keys
+    end
+
+    def target_types
+      TARGET_TYPES.keys
     end
   end
 
@@ -257,6 +323,16 @@ class Event < ActiveRecord::Base
     @commits ||= (data[:commits] || []).reverse
   end
 
+  def commit_title
+    commit = commits.last
+
+    commit[:message] if commit
+  end
+
+  def commit_id
+    commit_to || commit_from
+  end
+
   def commits_count
     data[:total_commits_count] || commits.count || 0
   end
@@ -343,18 +419,33 @@ class Event < ActiveRecord::Base
     # At this point it's possible for multiple threads/processes to try to
     # update the project. Only one query should actually perform the update,
     # hence we add the extra WHERE clause for last_activity_at.
-    Project.unscoped.where(id: project_id).
-      where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago).
-      update_all(last_activity_at: created_at)
+    Project.unscoped.where(id: project_id)
+      .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
+      .update_all(last_activity_at: created_at)
   end
 
   def authored_by?(user)
     user ? author_id == user.id : false
   end
 
+  # We're manually replicating data into the new table since database triggers
+  # are not dumped to db/schema.rb. This could mean that a new installation
+  # would not have the triggers in place, thus losing events data in GitLab
+  # 10.0.
+  def replicate_event_for_push_events_migration
+    new_attributes = attributes.with_indifferent_access.except(:title, :data)
+
+    EventForMigration.create!(new_attributes)
+  end
+
   private
 
   def recent_update?
     project.last_activity_at > RESET_PROJECT_ACTIVITY_INTERVAL.ago
+  end
+
+  def set_last_repository_updated_at
+    Project.unscoped.where(id: project_id)
+      .update_all(last_repository_updated_at: created_at)
   end
 end

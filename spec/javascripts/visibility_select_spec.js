@@ -1,8 +1,6 @@
-require('~/visibility_select');
+import VisibilitySelect from '~/visibility_select';
 
 (() => {
-  const VisibilitySelect = gl.VisibilitySelect;
-
   describe('VisibilitySelect', function () {
     const lockedElement = document.createElement('div');
     lockedElement.dataset.helpBlock = 'lockedHelpBlock';
@@ -22,7 +20,7 @@ require('~/visibility_select');
       spyOn(Element.prototype, 'querySelector').and.callFake(selector => mockElements[selector]);
     });
 
-    describe('#constructor', function () {
+    describe('constructor', function () {
       beforeEach(function () {
         this.visibilitySelect = new VisibilitySelect(mockElements.container);
       });
@@ -48,7 +46,7 @@ require('~/visibility_select');
       });
     });
 
-    describe('#init', function () {
+    describe('init', function () {
       describe('if there is a select', function () {
         beforeEach(function () {
           this.visibilitySelect = new VisibilitySelect(mockElements.container);
@@ -85,7 +83,7 @@ require('~/visibility_select');
       });
     });
 
-    describe('#updateHelpText', function () {
+    describe('updateHelpText', function () {
       beforeEach(function () {
         this.visibilitySelect = new VisibilitySelect(mockElements.container);
         this.visibilitySelect.init();

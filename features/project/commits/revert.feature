@@ -5,12 +5,14 @@ Feature: Revert Commits
     And I own a project
     And I visit my project's commits page
 
+  @javascript
   Scenario: I revert a commit
     Given I click on commit link
     And I click on the revert button
     And I revert the changes directly
     Then I should see the revert commit notice
 
+  @javascript
   Scenario: I revert a commit that was previously reverted
     Given I click on commit link
     And I click on the revert button
@@ -21,6 +23,7 @@ Feature: Revert Commits
     And I revert the changes directly
     Then I should see a revert error
 
+  @javascript
   Scenario: I revert a commit in a new merge request
     Given I click on commit link
     And I click on the revert button

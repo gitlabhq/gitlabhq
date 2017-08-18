@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 export default class ProtectedTagDropdown {
   /**
    * @param {Object} options containing
@@ -10,7 +12,7 @@ export default class ProtectedTagDropdown {
     this.$dropdown = options.$dropdown;
     this.$dropdownContainer = this.$dropdown.parent();
     this.$dropdownFooter = this.$dropdownContainer.find('.dropdown-footer');
-    this.$protectedTag = this.$dropdownContainer.find('.create-new-protected-tag');
+    this.$protectedTag = this.$dropdownContainer.find('.js-create-new-protected-tag');
 
     this.buildDropdown();
     this.bindEvents();
@@ -39,8 +41,8 @@ export default class ProtectedTagDropdown {
         return _.escape(protectedTag.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
-      clicked: (item, $el, e) => {
-        e.preventDefault();
+      clicked: (options) => {
+        options.e.preventDefault();
         this.onSelect();
       },
     });
@@ -73,7 +75,7 @@ export default class ProtectedTagDropdown {
       };
 
       this.$dropdownContainer
-        .find('.create-new-protected-tag code')
+        .find('.js-create-new-protected-tag code')
         .text(tagName);
     }
 

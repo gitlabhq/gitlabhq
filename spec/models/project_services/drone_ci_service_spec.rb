@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DroneCiService, models: true, caching: true do
+describe DroneCiService, :use_clean_rails_memory_store_caching do
   include ReactiveCachingHelpers
 
   describe 'associations' do
@@ -10,7 +10,9 @@ describe DroneCiService, models: true, caching: true do
 
   describe 'validations' do
     context 'active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:drone_url) }
@@ -18,7 +20,9 @@ describe DroneCiService, models: true, caching: true do
     end
 
     context 'inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:token) }
       it { is_expected.not_to validate_presence_of(:drone_url) }
@@ -39,7 +43,7 @@ describe DroneCiService, models: true, caching: true do
     let(:build_page) { "#{drone_url}/gitlab/#{path}/redirect/commits/#{sha}?branch=#{branch}" }
     let(:commit_status_path) { "#{drone_url}/gitlab/#{path}/commits/#{sha}?branch=#{branch}&access_token=#{token}" }
 
-    before(:each) do
+    before do
       allow(drone).to receive_messages(
         project_id: project.id,
         project: project,

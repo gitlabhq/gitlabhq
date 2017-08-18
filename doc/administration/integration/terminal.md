@@ -32,7 +32,7 @@ In brief:
 
 As web terminals use WebSockets, every HTTP/HTTPS reverse proxy in front of
 Workhorse needs to be configured to pass the `Connection` and `Upgrade` headers
-through to the next one in the chain. If you installed Gitlab using Omnibus, or
+through to the next one in the chain. If you installed GitLab using Omnibus, or
 from source, starting with GitLab 8.15, this should be done by the default
 configuration, so there's no need for you to do anything.
 
@@ -58,7 +58,7 @@ document for more details.
 If you'd like to disable web terminal support in GitLab, just stop passing
 the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
 proxy in the chain. For most users, this will be the NGINX server bundled with
-Omnibus Gitlab, in which case, you need to:
+Omnibus GitLab, in which case, you need to:
 
 * Find the `nginx['proxy_set_headers']` section of your `gitlab.rb` file
 * Ensure the whole block is uncommented, and then comment out or remove the

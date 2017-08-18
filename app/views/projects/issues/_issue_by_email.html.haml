@@ -20,7 +20,7 @@
         %p
           The subject will be used as the title of the new issue, and the message will be the description.
 
-          = link_to 'Slash commands', help_page_path('user/project/slash_commands'), target: '_blank', tabindex: -1
+          = link_to 'Quick actions', help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
           and styling with
           = link_to 'Markdown', help_page_path('user/markdown'), target: '_blank', tabindex: -1
           are supported.
@@ -30,5 +30,5 @@
 
           Anyone who gets ahold of it can create issues as if they were you.
           You should
-          = link_to 'reset it', new_issue_address_namespace_project_path(@project.namespace, @project), class: 'incoming-email-token-reset'
+          = link_to 'reset it', new_issue_address_project_path(@project), class: 'incoming-email-token-reset'
           if that ever happens.

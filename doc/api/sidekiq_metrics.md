@@ -1,4 +1,4 @@
-# Sidekiq Metrics
+# Sidekiq Metrics API
 
 >**Note:** This endpoint is only available on GitLab 8.9 and above.
 

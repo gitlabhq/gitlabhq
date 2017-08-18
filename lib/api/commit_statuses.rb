@@ -68,7 +68,14 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
+        pipeline = @project.pipeline_for(ref, commit.sha)
+        unless pipeline
+          pipeline = @project.pipelines.create!(
+            source: :external,
+            sha: commit.sha,
+            ref: ref,
+            user: current_user)
+        end
 
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: @project,
@@ -100,6 +107,9 @@ module API
           else
             render_api_error!('invalid state', 400)
           end
+
+          MergeRequest.where(source_project: @project, source_branch: ref)
+            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e

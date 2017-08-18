@@ -36,3 +36,10 @@ slow jobs blocking work (even for different jobs) on the shared queue.
 
 Each Sidekiq worker must be tested using RSpec, just like any other class. These
 tests should be placed in `spec/workers`.
+
+## Removing or renaming queues
+
+Try to avoid renaming or removing queues in minor and patch releases. 
+During online update instance can have pending jobs and removing the queue can 
+lead to those jobs being stuck forever. If you can't write migration for those 
+Sidekiq jobs, please consider doing rename or remove queue in major release only. 

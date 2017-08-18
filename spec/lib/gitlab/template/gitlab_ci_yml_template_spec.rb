@@ -25,7 +25,7 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
     it 'returns the GitlabCiYml object of a valid file' do
       ruby = subject.find('Ruby')
 
-      expect(ruby).to be_a Gitlab::Template::GitlabCiYmlTemplate
+      expect(ruby).to be_a described_class
       expect(ruby.name).to eq('Ruby')
     end
   end

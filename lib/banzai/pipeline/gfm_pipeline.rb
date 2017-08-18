@@ -16,6 +16,7 @@ module Banzai
           Filter::MathFilter,
           Filter::UploadLinkFilter,
           Filter::VideoLinkFilter,
+          Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           Filter::EmojiFilter,
           Filter::TableOfContentsFilter,

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Boards::IssuesController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:board)   { create(:board, project: project) }
   let(:user)    { create(:user) }
   let(:guest)   { create(:user) }
@@ -34,7 +34,7 @@ describe Projects::Boards::IssuesController do
           issue = create(:labeled_issue, project: project, labels: [planning])
           create(:labeled_issue, project: project, labels: [planning])
           create(:labeled_issue, project: project, labels: [development], due_date: Date.tomorrow)
-          create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
+          create(:labeled_issue, project: project, labels: [development], assignees: [johndoe])
           issue.subscribe(johndoe, project)
 
           list_issues user: user, board: board, list: list2

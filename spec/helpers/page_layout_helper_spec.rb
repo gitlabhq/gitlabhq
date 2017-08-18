@@ -60,7 +60,7 @@ describe PageLayoutHelper do
     %w(project user group).each do |type|
       context "with @#{type} assigned" do
         it "uses #{type.titlecase} avatar if available" do
-          object = double(avatar_url: 'http://example.com/uploads/avatar.png')
+          object = double(avatar_url: 'http://example.com/uploads/-/system/avatar.png')
           assign(type, object)
 
           expect(helper.page_image).to eq object.avatar_url
@@ -86,8 +86,8 @@ describe PageLayoutHelper do
     it 'raises ArgumentError when given more than two attributes' do
       map = { foo: 'foo', bar: 'bar', baz: 'baz' }
 
-      expect { helper.page_card_attributes(map) }.
-        to raise_error(ArgumentError, /more than two attributes/)
+      expect { helper.page_card_attributes(map) }
+        .to raise_error(ArgumentError, /more than two attributes/)
     end
 
     it 'rejects blank values' do

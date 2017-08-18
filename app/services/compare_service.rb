@@ -17,18 +17,18 @@ class CompareService
       start_branch_name) do |commit|
       break unless commit
 
-      compare(commit.sha, target_project, target_branch, straight)
+      compare(commit.sha, target_project, target_branch, straight: straight)
     end
   end
 
   private
 
-  def compare(source_sha, target_project, target_branch, straight)
+  def compare(source_sha, target_project, target_branch, straight:)
     raw_compare = Gitlab::Git::Compare.new(
       target_project.repository.raw_repository,
       target_branch,
       source_sha,
-      straight
+      straight: straight
     )
 
     Compare.new(raw_compare, target_project, straight: straight)

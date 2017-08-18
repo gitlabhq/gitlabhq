@@ -13,7 +13,9 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
-  before { project.team << [user, :developer] }
+  before do
+    project.team << [user, :developer]
+  end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
@@ -29,6 +31,15 @@ describe API::Files do
         expect(json_response['file_name']).to eq('popen.rb')
         expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
+      end
+
+      it 'returns json when file has txt extension' do
+        file_path = "bar%2Fbranch-test.txt"
+
+        get api(route(file_path), current_user), params
+
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to eq('application/json')
       end
 
       it 'returns file by commit sha' do
@@ -78,7 +89,7 @@ describe API::Files do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository files' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -151,7 +162,7 @@ describe API::Files do
 
     context 'when unauthenticated', 'and project is public' do
       it_behaves_like 'repository raw files' do
-        let(:project) { create(:project, :public) }
+        let(:project) { create(:project, :public, :repository) }
         let(:current_user) { nil }
       end
     end
@@ -203,8 +214,8 @@ describe API::Files do
     end
 
     it "returns a 400 if editor fails to create file" do
-      allow_any_instance_of(Repository).to receive(:create_file).
-        and_raise(Repository::CommitError, 'Cannot create file')
+      allow_any_instance_of(Repository).to receive(:create_file)
+        .and_raise(Repository::CommitError, 'Cannot create file')
 
       post api(route("any%2Etxt"), user), valid_params
 
@@ -218,6 +229,7 @@ describe API::Files do
         post api(route("new_file_with_author%2Etxt"), user), valid_params
 
         expect(response).to have_http_status(201)
+        expect(response.content_type).to eq('application/json')
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -256,6 +268,25 @@ describe API::Files do
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
       expect(last_commit.author_name).to eq(user.name)
+    end
+
+    it "returns a 400 bad request if update existing file with stale last commit id" do
+      params_with_stale_id = valid_params.merge(last_commit_id: 'stale')
+
+      put api(route(file_path), user), params_with_stale_id
+
+      expect(response).to have_http_status(400)
+      expect(json_response['message']).to eq('You are attempting to update a file that has changed since you started editing it.')
+    end
+
+    it "updates existing file in project repo with accepts correct last commit id" do
+      last_commit = Gitlab::Git::Commit
+                        .last_for_path(project.repository, 'master', URI.unescape(file_path))
+      params_with_correct_id = valid_params.merge(last_commit_id: last_commit.id)
+
+      put api(route(file_path), user), params_with_correct_id
+
+      expect(response).to have_http_status(200)
     end
 
     it "returns a 400 bad request if no params given" do
@@ -329,7 +360,7 @@ describe API::Files do
     end
     let(:get_params) do
       {
-        ref: 'master',
+        ref: 'master'
       }
     end
 

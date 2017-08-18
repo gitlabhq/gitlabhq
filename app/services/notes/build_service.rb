@@ -3,8 +3,8 @@ module Notes
     def execute
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
 
-      if project && in_reply_to_discussion_id.present?
-        discussion = project.notes.find_discussion(in_reply_to_discussion_id)
+      if in_reply_to_discussion_id.present?
+        discussion = find_discussion(in_reply_to_discussion_id)
 
         unless discussion
           note = Note.new
@@ -20,6 +20,20 @@ module Notes
       note.author = current_user
 
       note
+    end
+
+    def find_discussion(discussion_id)
+      if project
+        project.notes.find_discussion(discussion_id)
+      else
+        # only PersonalSnippets can have discussions without project association
+        discussion = Note.find_discussion(discussion_id)
+        noteable = discussion.noteable
+
+        return nil unless noteable.is_a?(PersonalSnippet) && can?(current_user, :comment_personal_snippet, noteable)
+
+        discussion
+      end
     end
   end
 end

@@ -1,5 +1,4 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
-/* global bp */
 /* global Flash */
 /* global ConfirmDangerModal */
 /* global Aside */
@@ -7,7 +6,6 @@
 import jQuery from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Pikaday from 'pikaday';
 import Dropzone from 'dropzone';
 import Sortable from 'vendor/Sortable';
 
@@ -16,14 +14,10 @@ import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 import 'vendor/fuzzaldrin-plus';
 
-// extensions
-import './extensions/array';
-
 // expose common libraries as globals (TODO: remove these)
 window.jQuery = jQuery;
 window.$ = jQuery;
 window._ = _;
-window.Pikaday = Pikaday;
 window.Dropzone = Dropzone;
 window.Sortable = Sortable;
 
@@ -35,13 +29,6 @@ import './shortcuts_navigation';
 import './shortcuts_find_file';
 import './shortcuts_issuable';
 import './shortcuts_network';
-
-// behaviors
-import './behaviors/';
-
-// blob
-import './blob/create_branch_dropdown';
-import './blob/target_branch_dropdown';
 
 // templates
 import './templates/issuable_template_selector';
@@ -56,11 +43,12 @@ import './lib/utils/animate';
 import './lib/utils/bootstrap_linked_tabs';
 import './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/notify';
 import './lib/utils/pretty_time';
 import './lib/utils/text_utility';
-import './lib/utils/type_utility';
 import './lib/utils/url_utility';
+
+// behaviors
+import './behaviors/';
 
 // u2f
 import './u2f/authenticate';
@@ -76,8 +64,8 @@ import './ajax_loading_spinner';
 import './api';
 import './aside';
 import './autosave';
-import AwardsHandler from './awards_handler';
-import './breakpoints';
+import loadAwardsHandler from './awards_handler';
+import bp from './breakpoints';
 import './broadcast_message';
 import './build';
 import './build_artifacts';
@@ -92,12 +80,10 @@ import './copy_as_gfm';
 import './copy_to_clipboard';
 import './create_label';
 import './diff';
-import './dispatcher';
 import './dropzone_input';
 import './due_date_select';
 import './files_comment_button';
 import './flash';
-import './gfm_auto_complete';
 import './gl_dropdown';
 import './gl_field_error';
 import './gl_field_errors';
@@ -107,24 +93,22 @@ import './group_label_subscription';
 import './groups_select';
 import './header';
 import './importer_status';
-import './issuable';
+import './issuable_index';
 import './issuable_context';
 import './issuable_form';
 import './issue';
 import './issue_status_select';
-import './issues_bulk_assignment';
 import './label_manager';
 import './labels';
 import './labels_select';
 import './layout_nav';
+import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import './logo';
 import './member_expiration_date';
 import './members';
 import './merge_request';
 import './merge_request_tabs';
-import './merge_request_widget';
-import './merged_buttons';
 import './milestone';
 import './milestone_select';
 import './mini_pipeline_graph_dropdown';
@@ -148,41 +132,31 @@ import './project_select';
 import './project_show';
 import './project_variables';
 import './projects_list';
-import './render_gfm';
+import './syntax_highlight';
 import './render_math';
+import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './signin_tabs_memoizer';
-import './single_file_diff';
 import './smart_interval';
-import './snippets_list';
 import './star';
-import './subbable_resource';
 import './subscription';
 import './subscription_select';
-import './syntax_highlight';
-import './task_list';
-import './todos';
-import './tree';
-import './usage_ping';
-import './user';
-import './user_tabs';
-import './username_validator';
-import './users_select';
-import './version_check_image';
-import './visibility_select';
-import './wikis';
-import './zen_mode';
 
-// eslint-disable-next-line global-require
+import './dispatcher';
+
+// eslint-disable-next-line global-require, import/no-commonjs
 if (process.env.NODE_ENV !== 'production') require('./test_utils/');
+
+Dropzone.autoDiscover = false;
 
 document.addEventListener('beforeunload', function () {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
   $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  // Close any open popover
+  $('[data-toggle="popover"]').popover('destroy');
 });
 
 window.addEventListener('hashchange', gl.utils.handleLocationHash);
@@ -190,6 +164,11 @@ window.addEventListener('load', function onLoad() {
   window.removeEventListener('load', onLoad, false);
   gl.utils.handleLocationHash();
 }, false);
+
+gl.lazyLoader = new LazyLoader({
+  scrollContainer: window,
+  observerNode: '#content-body'
+});
 
 $(function () {
   var $body = $('body');
@@ -266,6 +245,11 @@ $(function () {
       return $(el).data('placement') || 'bottom';
     }
   });
+  // Initialize popovers
+  $body.popover({
+    selector: '[data-toggle="popover"]',
+    trigger: 'focus'
+  });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
   // Form submitter
@@ -309,12 +293,7 @@ $(function () {
     return $container.remove();
   // Commit show suppressed diff
   });
-  $('.navbar-toggle').on('click', function () {
-    $('.header-content .title').toggle();
-    $('.header-content .header-logo').toggle();
-    $('.header-content .navbar-collapse').toggle();
-    return $('.navbar-toggle').toggleClass('active');
-  });
+  $('.navbar-toggle').on('click', () => $('.header-content').toggleClass('menu-expanded'));
   // Show/hide comments on diff
   $body.on('click', '.js-toggle-diff-comments', function (e) {
     var $this = $(this);
@@ -365,10 +344,20 @@ $(function () {
   $window.off('resize.app').on('resize.app', function () {
     return fitSidebarForSize();
   });
-  gl.awardsHandler = new AwardsHandler();
+  loadAwardsHandler();
   new Aside();
 
-  gl.utils.initTimeagoTimeout();
+  gl.utils.renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
+
+  $('form.filter-form').on('submit', function (event) {
+    const link = document.createElement('a');
+    link.href = this.action;
+
+    const action = `${this.action}${link.search === '' ? '?' : '&'}`;
+
+    event.preventDefault();
+    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+  });
 });

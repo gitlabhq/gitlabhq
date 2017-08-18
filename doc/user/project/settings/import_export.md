@@ -9,6 +9,9 @@
 >    application settings (`/admin/application_settings`) under 'Import sources'.
 >    Ask your administrator if you don't see the **GitLab export** button when
 >    creating a new project.
+>  - Starting with GitLab 10.0, administrators can disable the project export option
+>    on the GitLab instance in application settings (`/admin/application_settings`)
+>    under 'Visibility and Access Controls'.
 >  - You can find some useful raketasks if you are an administrator in the
 >    [import_export](../../../administration/raketasks/project_import_export.md)
 >    raketask.
@@ -27,13 +30,15 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version | Import/Export version |
 | -------- | -------- |
-| 8.17.0 to current  | 0.1.6    |
-| 8.13.0   | 0.1.5    |
-| 8.12.0   | 0.1.4    |
-| 8.10.3   | 0.1.3    |
-| 8.10.0   | 0.1.2    |
-| 8.9.5    | 0.1.1    |
-| 8.9.0    | 0.1.0    |
+| 9.4.0 to current | 0.1.8 |
+| 9.2.0    | 0.1.7 |
+| 8.17.0   | 0.1.6 |
+| 8.13.0   | 0.1.5 |
+| 8.12.0   | 0.1.4 |
+| 8.10.3   | 0.1.3 |
+| 8.10.0   | 0.1.2 |
+| 8.9.5    | 0.1.1 |
+| 8.9.0    | 0.1.0 |
 
  > The table reflects what GitLab version we updated the Import/Export version at.
  > For instance, 8.10.3 and 8.11 will have the same Import/Export version (0.1.3)

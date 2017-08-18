@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import timeAgo from '~/pipelines/components/time_ago';
+import timeAgo from '~/pipelines/components/time_ago.vue';
 
 describe('Timeago component', () => {
   let TimeAgo;

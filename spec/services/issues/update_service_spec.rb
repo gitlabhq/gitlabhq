@@ -1,20 +1,18 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe Issues::UpdateService, services: true do
-  include EmailHelpers
-
+describe Issues::UpdateService, :mailer do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:label) { create(:label, project: project) }
   let(:label2) { create(:label) }
 
   let(:issue) do
     create(:issue, title: 'Old title',
                    description: "for #{user2.to_reference}",
-                   assignee_id: user3.id,
+                   assignee_ids: [user3.id],
                    project: project)
   end
 
@@ -31,6 +29,13 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      issue
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_issue(opts)
       described_class.new(project, user, opts).execute(issue)
     end
@@ -40,7 +45,7 @@ describe Issues::UpdateService, services: true do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: [user2.id],
           state_event: 'close',
           label_ids: [label.id],
           due_date: Date.tomorrow
@@ -53,15 +58,22 @@ describe Issues::UpdateService, services: true do
         expect(issue).to be_valid
         expect(issue.title).to eq 'New title'
         expect(issue.description).to eq 'Also please fix'
-        expect(issue.assignee).to eq user2
+        expect(issue.assignees).to match_array([user2])
         expect(issue).to be_closed
         expect(issue.labels).to match_array [label]
         expect(issue.due_date).to eq Date.tomorrow
       end
 
+      it 'updates open issue counter for assignees when issue is reassigned' do
+        update_issue(assignee_ids: [user2.id])
+
+        expect(user3.assigned_open_issues_count).to eq 0
+        expect(user2.assigned_open_issues_count).to eq 1
+      end
+
       it 'sorts issues as specified by parameters' do
-        issue1 = create(:issue, project: project, assignee_id: user3.id)
-        issue2 = create(:issue, project: project, assignee_id: user3.id)
+        issue1 = create(:issue, project: project, assignees: [user3])
+        issue2 = create(:issue, project: project, assignees: [user3])
 
         [issue, issue1, issue2].each do |issue|
           issue.move_to_end
@@ -87,7 +99,7 @@ describe Issues::UpdateService, services: true do
           expect(issue).to be_valid
           expect(issue.title).to eq 'New title'
           expect(issue.description).to eq 'Also please fix'
-          expect(issue.assignee).to eq user3
+          expect(issue.assignees).to match_array [user3]
           expect(issue.labels).to be_empty
           expect(issue.milestone).to be_nil
           expect(issue.due_date).to be_nil
@@ -132,12 +144,23 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    context 'when description changed' do
+      it 'creates system note about description change' do
+        update_issue(description: 'Changed description')
+
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
+      end
+    end
+
     context 'when issue turns confidential' do
       let(:opts) do
         {
           title: 'New title',
           description: 'Also please fix',
-          assignee_id: user2.id,
+          assignee_ids: [user2],
           state_event: 'close',
           label_ids: [label.id],
           confidential: true
@@ -163,12 +186,12 @@ describe Issues::UpdateService, services: true do
       it 'does not update assignee_id with unauthorized users' do
         project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_issue(confidential: true)
-        non_member        = create(:user)
-        original_assignee = issue.assignee
+        non_member = create(:user)
+        original_assignees = issue.assignees
 
-        update_issue(assignee_id: non_member.id)
+        update_issue(assignee_ids: [non_member.id])
 
-        expect(issue.reload.assignee_id).to eq(original_assignee.id)
+        expect(issue.reload.assignees).to eq(original_assignees)
       end
     end
 
@@ -205,7 +228,7 @@ describe Issues::UpdateService, services: true do
 
       context 'when is reassigned' do
         before do
-          update_issue(assignee: user2)
+          update_issue(assignees: [user2])
         end
 
         it 'marks previous assignee todos as done' do
@@ -228,13 +251,13 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_issue(milestone: create(:milestone))
-        end
-
         it 'marks todos as done' do
+          update_issue(milestone: create(:milestone))
+
           expect(todo.reload.done?).to eq true
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do
@@ -270,7 +293,9 @@ describe Issues::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { issue.labels << label }
+        before do
+          issue.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
@@ -304,7 +329,9 @@ describe Issues::UpdateService, services: true do
       it { expect(issue.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_issue(description: "- [x] Task 1\n- [X] Task 2") }
+        before do
+          update_issue(description: "- [x] Task 1\n- [X] Task 2")
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -312,6 +339,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -327,6 +357,9 @@ describe Issues::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -336,10 +369,12 @@ describe Issues::UpdateService, services: true do
           update_issue(description: "- [x] Task 1\n- [ ] Task 3\n- [ ] Task 2")
         end
 
-        it 'does not create a system note' do
-          note = find_note('marked the task **Task 2** as incomplete')
+        it 'does not create a system note for the task' do
+          task_note = find_note('marked the task **Task 2** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
       end
 
@@ -350,9 +385,11 @@ describe Issues::UpdateService, services: true do
         end
 
         it 'does not create a system note referencing the position the old item' do
-          note = find_note('marked the task **Two** as incomplete')
+          task_note = find_note('marked the task **Two** as incomplete')
+          description_notes = find_notes('description')
 
-          expect(note).to be_nil
+          expect(task_note).to be_nil
+          expect(description_notes.length).to eq(2)
         end
 
         it 'does not generate a new note at all' do
@@ -382,7 +419,9 @@ describe Issues::UpdateService, services: true do
       context 'when remove_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label, label3]) }
+        before do
+          issue.update_attributes(labels: [label, label3])
+        end
 
         it 'ignores the label_ids parameter' do
           expect(result.label_ids).not_to be_empty
@@ -396,7 +435,9 @@ describe Issues::UpdateService, services: true do
       context 'when add_label_ids and remove_label_ids are passed' do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
-        before { issue.update_attributes(labels: [label]) }
+        before do
+          issue.update_attributes(labels: [label])
+        end
 
         it 'adds the passed labels' do
           expect(result.label_ids).to include(label3.id)
@@ -408,9 +449,65 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    context 'updating asssignee_id' do
+      it 'does not update assignee when assignee_id is invalid' do
+        update_issue(assignee_ids: [-1])
+
+        expect(issue.reload.assignees).to eq([user3])
+      end
+
+      it 'unassigns assignee when user id is 0' do
+        update_issue(assignee_ids: [0])
+
+        expect(issue.reload.assignees).to be_empty
+      end
+
+      it 'does not update assignee_id when user cannot read issue' do
+        update_issue(assignee_ids: [create(:user).id])
+
+        expect(issue.reload.assignees).to eq([user3])
+      end
+
+      context "when issuable feature is private" do
+        levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+        levels.each do |level|
+          it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            assignee = create(:user)
+            project.update(visibility_level: level)
+            feature_visibility_attr = :"#{issue.model_name.plural}_access_level"
+            project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
+
+            expect { update_issue(assignee_ids: [assignee.id]) }.not_to change { issue.assignees }
+          end
+        end
+      end
+    end
+
     context 'updating mentions' do
       let(:mentionable) { issue }
-      include_examples 'updating mentions', Issues::UpdateService
+      include_examples 'updating mentions', described_class
+    end
+
+    context 'duplicate issue' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      context 'invalid canonical_issue_id' do
+        it 'does not call the duplicate service' do
+          expect(Issues::DuplicateService).not_to receive(:new)
+
+          update_issue(canonical_issue_id: 123456789)
+        end
+      end
+
+      context 'valid canonical_issue_id' do
+        it 'calls the duplicate service with both issues' do
+          expect_any_instance_of(Issues::DuplicateService)
+            .to receive(:execute).with(issue, canonical_issue)
+
+          update_issue(canonical_issue_id: canonical_issue.id)
+        end
+      end
     end
 
     include_examples 'issuable update service' do

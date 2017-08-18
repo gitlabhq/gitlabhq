@@ -1,10 +1,10 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
+# rubocop:disable Migration/UpdateColumnInBatches
 class ResetRelativePositionForIssue < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+
+  disable_ddl_transaction!
 
   def up
     update_column_in_batches(:issues, :relative_position, nil) do |table, query|
@@ -13,5 +13,6 @@ class ResetRelativePositionForIssue < ActiveRecord::Migration
   end
 
   def down
+    # noop
   end
 end

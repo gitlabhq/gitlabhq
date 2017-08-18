@@ -17,7 +17,7 @@ module Banzai
 
       def url_for_object(snippet, project)
         h = Gitlab::Routing.url_helpers
-        h.namespace_project_snippet_url(project.namespace, project, snippet,
+        h.project_snippet_url(project, snippet,
                                         only_path: context[:only_path])
       end
     end

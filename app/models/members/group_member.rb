@@ -25,13 +25,13 @@ class GroupMember < Member
     source
   end
 
-  def access_field
-    access_level
-  end
-
   # Because source_type is `Namespace`...
   def real_source_type
     'Group'
+  end
+
+  def notifiable_options
+    { group: group }
   end
 
   private

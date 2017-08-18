@@ -5,15 +5,33 @@ module Gitlab
   # a README or a CONTRIBUTING file.
   module FileDetector
     PATTERNS = {
+      # Project files
       readme: /\Areadme/i,
       changelog: /\A(changelog|history|changes|news)/i,
       license: /\A(licen[sc]e|copying)(\..+|\z)/i,
       contributing: /\Acontributing/i,
       version: 'version',
+      avatar: /\Alogo\.(png|jpg|gif)\z/,
+
+      # Configuration files
       gitignore: '.gitignore',
       koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
-      avatar: /\Alogo\.(png|jpg|gif)\z/
+      route_map: 'route-map.yml',
+
+      # Dependency files
+      cartfile: /\ACartfile/,
+      composer_json: 'composer.json',
+      gemfile: /\A(Gemfile|gems\.rb)\z/,
+      gemfile_lock: 'Gemfile.lock',
+      gemspec: /\.gemspec\z/,
+      godeps_json: 'Godeps.json',
+      package_json: 'package.json',
+      podfile: 'Podfile',
+      podspec_json: /\.podspec\.json\z/,
+      podspec: /\.podspec\z/,
+      requirements_txt: /requirements\.txt\z/,
+      yarn_lock: 'yarn.lock'
     }.freeze
 
     # Returns an Array of file types based on the given paths.

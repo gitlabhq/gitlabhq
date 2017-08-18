@@ -38,11 +38,11 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
     activities = activities(day.at_beginning_of_day, day.at_end_of_day, page: page)
 
     update_sql =
-      Arel::UpdateManager.new(ActiveRecord::Base).
-        table(users_table).
-        set(users_table[:last_activity_on] => day.to_date).
-        where(users_table[:username].in(activities.map(&:first))).
-        to_sql
+      Arel::UpdateManager.new(ActiveRecord::Base)
+        .table(users_table)
+        .set(users_table[:last_activity_on] => day.to_date)
+        .where(users_table[:username].in(activities.map(&:first)))
+        .to_sql
 
     connection.exec_update(update_sql, self.class.name, [])
 
@@ -56,7 +56,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
   end
 
   def activities(from, to, page: 1)
-    Gitlab::Redis.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.zrangebyscore(USER_ACTIVITY_SET_KEY, from.to_i, to.to_i,
         with_scores: true,
         limit: limit(page))
@@ -64,7 +64,7 @@ class MigrateUserActivitiesToUsersLastActivityOn < ActiveRecord::Migration
   end
 
   def activities_count(from, to)
-    Gitlab::Redis.with do |redis|
+    Gitlab::Redis::SharedState.with do |redis|
       redis.zcount(USER_ACTIVITY_SET_KEY, from.to_i, to.to_i)
     end
   end

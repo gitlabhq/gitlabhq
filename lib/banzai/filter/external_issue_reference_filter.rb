@@ -3,6 +3,8 @@ module Banzai
     # HTML filter that replaces external issue tracker references with links.
     # References are ignored if the project doesn't use an external issue
     # tracker.
+    #
+    # This filter does not support cross-project references.
     class ExternalIssueReferenceFilter < ReferenceFilter
       self.reference_type = :external_issue
 
@@ -87,16 +89,16 @@ module Banzai
       end
 
       def issue_reference_pattern
-        external_issues_cached(:issue_reference_pattern)
+        external_issues_cached(:external_issue_reference_pattern)
       end
 
       private
 
       def external_issues_cached(attribute)
-        return project.public_send(attribute) unless RequestStore.active?
+        return project.public_send(attribute) unless RequestStore.active? # rubocop:disable GitlabSecurity/PublicSend
 
         cached_attributes = RequestStore[:banzai_external_issues_tracker_attributes] ||= Hash.new { |h, k| h[k] = {} }
-        cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil?
+        cached_attributes[project.id][attribute] = project.public_send(attribute) if cached_attributes[project.id][attribute].nil? # rubocop:disable GitlabSecurity/PublicSend
         cached_attributes[project.id][attribute]
       end
     end

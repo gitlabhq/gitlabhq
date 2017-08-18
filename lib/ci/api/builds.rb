@@ -29,7 +29,7 @@ module Ci
           if result.valid?
             if result.build
               Gitlab::Metrics.add_event(:build_found,
-                                        project: result.build.project.path_with_namespace)
+                                        project: result.build.project.full_path)
 
               present result.build, with: Entities::BuildDetails
             else
@@ -64,7 +64,7 @@ module Ci
           build.trace.set(params[:trace]) if params[:trace]
 
           Gitlab::Metrics.add_event(:update_build,
-                                    project: build.project.path_with_namespace)
+                                    project: build.project.full_path)
 
           case params[:state].to_s
           when 'success'
@@ -88,7 +88,7 @@ module Ci
         patch ":id/trace.txt" do
           build = authenticate_build!
 
-          error!('400 Missing header Content-Range', 400) unless request.headers.has_key?('Content-Range')
+          error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']
           content_range = content_range.split('-')
 
@@ -187,12 +187,12 @@ module Ci
           build = authenticate_build!
           artifacts_file = build.artifacts_file
 
-          unless artifacts_file.file_storage?
-            return redirect_to build.artifacts_file.url
-          end
-
           unless artifacts_file.exists?
             not_found!
+          end
+
+          unless artifacts_file.file_storage?
+            return redirect_to build.artifacts_file.url
           end
 
           present_file!(artifacts_file.path, artifacts_file.filename)

@@ -18,8 +18,8 @@ class GemnasiumService < Service
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: 'Your personal API KEY on gemnasium.com ' },
-      { type: 'text', name: 'token', placeholder: 'The project\'s slug on gemnasium.com' }
+      { type: 'text', name: 'api_key', placeholder: 'Your personal API KEY on gemnasium.com ', required: true },
+      { type: 'text', name: 'token', placeholder: 'The project\'s slug on gemnasium.com', required: true }
     ]
   end
 

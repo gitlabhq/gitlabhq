@@ -1,8 +1,7 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
-    target_project = event.project.forked_from_project || event.project
-    new_namespace_project_merge_request_path(
-      event.project.namespace,
+    target_project = event.project.default_merge_request_target
+    project_new_merge_request_path(
       event.project,
       new_mr_from_push_event(event, target_project)
     )
@@ -17,14 +16,6 @@ module MergeRequestsHelper
         target_branch: target_project.repository.root_ref
       }
     }
-  end
-
-  def mr_widget_refresh_url(mr)
-    if mr && mr.target_project
-      merge_widget_refresh_namespace_project_merge_request_url(mr.target_project.namespace, mr.target_project, mr)
-    else
-      ''
-    end
   end
 
   def mr_css_classes(mr)
@@ -49,69 +40,23 @@ module MergeRequestsHelper
 
   def merge_path_description(merge_request, separator)
     if merge_request.for_fork?
-      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.path_with_namespace}:#{@merge_request.target_branch}"
+      "Project:Branches: #{@merge_request.source_project_path}:#{@merge_request.source_branch} #{separator} #{@merge_request.target_project.full_path}:#{@merge_request.target_branch}"
     else
       "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
     end
   end
 
-  def issues_sentence(issues)
-    # Issuable sorter will sort local issues, then issues from the same
-    # namespace, then all other issues.
-    issues = Gitlab::IssuableSorter.sort(@project, issues).map do |issue|
-      issue.to_reference(@project)
-    end
-    issues.to_sentence
-  end
-
-  def mr_closes_issues
-    @mr_closes_issues ||= @merge_request.closes_issues(current_user)
-  end
-
-  def mr_issues_mentioned_but_not_closing
-    @mr_issues_mentioned_but_not_closing ||= @merge_request.issues_mentioned_but_not_closing(current_user)
-  end
-
   def mr_change_branches_path(merge_request)
-    new_namespace_project_merge_request_path(
-      @project.namespace, @project,
+    project_new_merge_request_path(
+      @project,
       merge_request: {
         source_project_id: merge_request.source_project_id,
         target_project_id: merge_request.target_project_id,
         source_branch: merge_request.source_branch,
-        target_branch: merge_request.target_branch,
+        target_branch: merge_request.target_branch
       },
       change_branches: true
     )
-  end
-
-  def mr_assign_issues_link
-    issues = MergeRequests::AssignIssuesService.new(@project,
-                                                    current_user,
-                                                    merge_request: @merge_request,
-                                                    closes_issues: mr_closes_issues
-                                                   ).assignable_issues
-    path = assign_related_issues_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-    if issues.present?
-      pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
-      link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
-    end
-  end
-
-  def source_branch_with_namespace(merge_request)
-    namespace = merge_request.source_project_namespace
-    branch = merge_request.source_branch
-
-    if merge_request.source_branch_exists?
-      namespace = link_to(namespace, project_path(merge_request.source_project))
-      branch = link_to(branch, namespace_project_commits_path(merge_request.source_project.namespace, merge_request.source_project, merge_request.source_branch))
-    end
-
-    if merge_request.for_fork?
-      namespace + ":" + branch
-    else
-      branch
-    end
   end
 
   def format_mr_branch_names(merge_request)
@@ -127,14 +72,16 @@ module MergeRequestsHelper
     end
   end
 
+  def target_projects(project)
+    [project, project.default_merge_request_target].uniq
+  end
+
   def merge_request_button_visibility(merge_request, closed)
     return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
 
   def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
-    diffs_namespace_project_merge_request_path(
-      project.namespace, project, merge_request,
-      diff_id: merge_request_diff.id, start_sha: start_sha)
+    diffs_project_merge_request_path(project, merge_request, diff_id: merge_request_diff.id, start_sha: start_sha)
   end
 
   def version_index(merge_request_diff)

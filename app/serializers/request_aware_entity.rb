@@ -3,6 +3,7 @@ module RequestAwareEntity
 
   included do
     include Gitlab::Routing
+    include GitlabRoutingHelper
     include Gitlab::Allowable
   end
 

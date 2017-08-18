@@ -79,16 +79,16 @@ class ProjectMember < Member
     end
   end
 
-  def access_field
-    access_level
-  end
-
   def project
     source
   end
 
   def owner?
     project.owner == user
+  end
+
+  def notifiable_options
+    { project: project }
   end
 
   private

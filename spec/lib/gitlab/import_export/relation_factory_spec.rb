@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::ImportExport::RelationFactory, lib: true do
-  let(:project) { create(:empty_project) }
+describe Gitlab::ImportExport::RelationFactory do
+  let(:project) { create(:project) }
   let(:members_mapper) { double('members_mapper').as_null_object }
   let(:user) { create(:admin) }
   let(:created_object) do
@@ -33,7 +33,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
         'tag_push_events' => false,
         'note_events' => true,
         'enable_ssl_verification' => true,
-        'build_events' => false,
+        'job_events' => false,
         'wiki_page_events' => true,
         'token' => token
       }
@@ -95,7 +95,7 @@ describe Gitlab::ImportExport::RelationFactory, lib: true do
         'random_id' => 99,
         'milestone_id' => 99,
         'project_id' => 99,
-        'user_id' => 99,
+        'user_id' => 99
       }
     end
 

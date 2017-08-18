@@ -6,10 +6,11 @@ class Spinach::Features::RevertCommits < Spinach::FeatureSteps
   include RepoHelpers
 
   step 'I click on commit link' do
-    visit namespace_project_commit_path(@project.namespace, @project, sample_commit.id)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I click on the revert button' do
+    find(".header-action-buttons .dropdown").click
     find("a[href='#modal-revert-commit']").click
   end
 

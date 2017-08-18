@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe 'issuable list', feature: true do
-  let(:project) { create(:empty_project) }
+describe 'issuable list' do
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   issuable_types = [:issue, :merge_request]
 
   before do
     project.add_user(user, :developer)
-    login_as(user)
+    sign_in(user)
     issuable_types.each { |type| create_issuables(type) }
   end
 
@@ -39,9 +39,9 @@ describe 'issuable list', feature: true do
 
   def visit_issuable_list(issuable_type)
     if issuable_type == :issue
-      visit namespace_project_issues_path(project.namespace, project)
+      visit project_issues_path(project)
     else
-      visit namespace_project_merge_requests_path(project.namespace, project)
+      visit project_merge_requests_path(project)
     end
   end
 
@@ -52,6 +52,9 @@ describe 'issuable list', feature: true do
           create(:issue, project: project, author: user)
         else
           create(:merge_request, source_project: project, source_branch: generate(:branch))
+          source_branch = FFaker::Name.name
+          pipeline = create(:ci_empty_pipeline, project: project, ref: source_branch, status: %w(running failed success).sample, sha: 'any')
+          create(:merge_request, title: FFaker::Lorem.sentence, source_project: project, source_branch: source_branch, head_pipeline: pipeline)
         end
 
       2.times do

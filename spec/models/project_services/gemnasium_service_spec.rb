@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GemnasiumService, models: true do
+describe GemnasiumService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -8,14 +8,18 @@ describe GemnasiumService, models: true do
 
   describe 'Validations' do
     context 'when service is active' do
-      before { subject.active = true }
+      before do
+        subject.active = true
+      end
 
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:api_key) }
     end
 
     context 'when service is inactive' do
-      before { subject.active = false }
+      before do
+        subject.active = false
+      end
 
       it { is_expected.not_to validate_presence_of(:token) }
       it { is_expected.not_to validate_presence_of(:api_key) }
@@ -27,7 +31,7 @@ describe GemnasiumService, models: true do
     let(:project) { create(:project, :repository) }
 
     before do
-      @gemnasium_service = GemnasiumService.new
+      @gemnasium_service = described_class.new
       allow(@gemnasium_service).to receive_messages(
         project_id: project.id,
         project: project,

@@ -24,10 +24,10 @@
 }
 
 @mixin scrolling-links() {
-  white-space: nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+  display: flex;
 
   &::-webkit-scrollbar {
     display: none;
@@ -35,6 +35,7 @@
 }
 
 .nav-links {
+  display: flex;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -42,17 +43,16 @@
   border-bottom: 1px solid $border-color;
 
   li {
-    display: inline-block;
+    display: flex;
 
     a {
-      display: inline-block;
       padding: $gl-btn-padding;
       padding-bottom: 11px;
-      margin-bottom: -1px;
       font-size: 14px;
       line-height: 28px;
       color: $gl-text-color-secondary;
       border-bottom: 2px solid transparent;
+      white-space: nowrap;
 
       &:hover,
       &:active,
@@ -85,10 +85,10 @@
     .container-fluid {
       background-color: $gray-normal;
       margin-bottom: 0;
+      display: flex;
     }
 
     li {
-
       &.active a {
         border-bottom: none;
         color: $link-underline-blue;
@@ -137,9 +137,9 @@
   }
 
   .nav-links {
-    display: inline-block;
     margin-bottom: 0;
     border-bottom: none;
+    float: left;
 
     &.wide {
       width: 100%;
@@ -161,6 +161,8 @@
   }
 
   .nav-controls {
+    @include new-style-dropdown;
+
     display: inline-block;
     float: right;
     text-align: right;
@@ -182,20 +184,18 @@
       }
     }
 
+    &.nav-controls-new-nav {
+      > .dropdown {
+        margin-right: 0;
+      }
+    }
+
     > .btn-grouped {
       float: none;
     }
 
     .icon-label {
       display: none;
-    }
-
-    .btn,
-    .dropdown,
-    .dropdown-toggle,
-    input,
-    form {
-      height: 35px;
     }
 
     input {
@@ -253,7 +253,6 @@
 
       // Applies on /dashboard/issues
       .project-item-select-holder {
-        display: block;
         margin: 0;
       }
     }
@@ -285,12 +284,38 @@
   }
 }
 
+.project-item-select-holder.btn-group {
+  display: flex;
+  max-width: 350px;
+  overflow: hidden;
+
+  @media(max-width: $screen-xs-max) {
+    width: 100%;
+    max-width: none;
+  }
+
+  .new-project-item-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .new-project-item-select-button {
+    width: 32px;
+  }
+}
+
+.new-project-item-select-button .fa-caret-down {
+  margin-left: 2px;
+}
+
 .layout-nav {
   width: 100%;
   background: $gray-light;
   border-bottom: 1px solid $border-color;
   transition: padding $sidebar-transition-duration;
   text-align: center;
+  margin-top: $header-height;
 
   .container-fluid {
     position: relative;
@@ -324,7 +349,7 @@
       position: absolute;
       top: 7px;
       right: 15px;
-      z-index: 2;
+      z-index: 300;
 
       li.active {
         font-weight: bold;
@@ -336,6 +361,10 @@
     border-bottom: none;
     height: 51px;
 
+    @media (min-width: $screen-sm-min) {
+      justify-content: center;
+    }
+
     li {
       a {
         padding-top: 10px;
@@ -344,8 +373,16 @@
   }
 }
 
+.with-performance-bar .layout-nav {
+  margin-top: $header-height + $performance-bar-height;
+}
+
 .scrolling-tabs-container {
   position: relative;
+
+  .merge-request-tabs-container & {
+    overflow: hidden;
+  }
 
   .nav-links {
     @include scrolling-links();
@@ -428,14 +465,30 @@
       top: ($header-height + 1) * 3;
 
       &.affix {
-        top: 0;
+        top: $header-height;
       }
     }
   }
 }
 
-.activities {
-  .nav-block {
+.with-performance-bar .page-with-layout-nav {
+  .right-sidebar {
+    top: ($header-height + 1) * 2 + $performance-bar-height;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3 + $performance-bar-height;
+
+      &.affix {
+        top: $header-height + $performance-bar-height;
+      }
+    }
+  }
+}
+
+.nav-block {
+  &.activities {
     border-bottom: 1px solid $border-color;
 
     .nav-links {
@@ -483,10 +536,6 @@
 
 .inner-page-scroll-tabs {
   position: relative;
-
-  .nav-links {
-    padding-bottom: 1px;
-  }
 
   .fade-right {
     @include fade(left, $white-light);

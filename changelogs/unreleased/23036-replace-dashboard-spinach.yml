@@ -1,0 +1,4 @@
+---
+title: Replaces dashboard/dashboard.feature spinach with rspec
+merge_request: 12876
+author: Alexander Randa (@randaalex)

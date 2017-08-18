@@ -118,7 +118,7 @@ module Banzai
         end
 
         if path
-          content_tag(:img, nil, src: path, class: 'gfm')
+          content_tag(:img, nil, data: { src: path }, class: 'gfm')
         end
       end
 

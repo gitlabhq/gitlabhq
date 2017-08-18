@@ -30,7 +30,7 @@
                         = namespace.human_name
                 - else
                   .fork-thumbnail
-                    = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), method: "POST" do
+                    = link_to project_forks_path(@project, namespace_key: namespace.id), method: "POST" do
                       - if /no_((\w*)_)*avatar/.match(avatar)
                         .no-avatar
                           = icon 'question'

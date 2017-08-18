@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::GoogleCodeImport::Importer, lib: true do
+describe Gitlab::GoogleCodeImport::Importer do
   let(:mapped_user) { create(:user, username: "thilo123") }
   let(:raw_data) { JSON.parse(fixture_file("GoogleCodeProjectHosting.json")) }
   let(:client) { Gitlab::GoogleCodeImport::Client.new(raw_data) }
@@ -10,7 +10,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
       'user_map' => { 'thilo...' => "@#{mapped_user.username}" }
     }
   end
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   subject { described_class.new(project) }
 
@@ -49,7 +49,7 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
       expect(issue).not_to be_nil
       expect(issue.iid).to eq(169)
       expect(issue.author).to eq(project.creator)
-      expect(issue.assignee).to eq(mapped_user)
+      expect(issue.assignees).to eq([mapped_user])
       expect(issue.state).to eq("closed")
       expect(issue.label_names).to include("Priority: Medium")
       expect(issue.label_names).to include("Status: Fixed")

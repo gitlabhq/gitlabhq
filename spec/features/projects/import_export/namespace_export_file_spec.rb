@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Import/Export - Namespace export file cleanup', feature: true, js: true do
+feature 'Import/Export - Namespace export file cleanup', js: true do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   background do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -16,7 +16,7 @@ feature 'Import/Export - Namespace export file cleanup', feature: true, js: true
 
   context 'admin user' do
     before do
-      login_as(:admin)
+      sign_in(create(:admin))
     end
 
     context 'moving the namespace' do
@@ -48,13 +48,13 @@ feature 'Import/Export - Namespace export file cleanup', feature: true, js: true
     end
 
     def setup_export_project
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Export project')
 
       click_link 'Export project'
 
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
 
       expect(page).to have_content('Download export')
     end

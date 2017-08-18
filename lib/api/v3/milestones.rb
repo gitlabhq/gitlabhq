@@ -39,7 +39,7 @@ module API
         end
 
         desc 'Get all issues for a single project milestone' do
-          success ::API::Entities::Issue
+          success ::API::V3::Entities::Issue
         end
         params do
           requires :milestone_id, type: Integer, desc: 'The ID of a project milestone'
@@ -56,7 +56,7 @@ module API
           }
 
           issues = IssuesFinder.new(current_user, finder_params).execute
-          present paginate(issues), with: ::API::Entities::Issue, current_user: current_user, project: user_project
+          present paginate(issues), with: ::API::V3::Entities::Issue, current_user: current_user, project: user_project
         end
       end
     end

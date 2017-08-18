@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Contributions Calendar', :feature, :js do
+feature 'Contributions Calendar', :js do
   let(:user) { create(:user) }
-  let(:contributed_project) { create(:empty_project, :public) }
+  let(:contributed_project) { create(:project, :public) }
   let(:issue_note) { create(:note, project: contributed_project) }
 
   # Ex/ Sunday Jan 1, 2016
@@ -42,14 +42,14 @@ feature 'Contributions Calendar', :feature, :js do
   end
 
   def push_code_contribution
-    push_params = {
-      project: contributed_project,
-      action: Event::PUSHED,
-      author_id: user.id,
-      data: { commit_count: 3 }
-    }
+    event = create(:push_event, project: contributed_project, author: user)
 
-    Event.create(push_params)
+    create(:push_event_payload,
+           event: event,
+           commit_from: '11f9ac0a48b62cef25eedede4c1819964f08d5ce',
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 3,
+           ref: 'master')
   end
 
   def note_comment_contribution
@@ -68,13 +68,13 @@ feature 'Contributions Calendar', :feature, :js do
   end
 
   before do
-    login_as user
+    sign_in user
   end
 
   describe 'calendar day selection' do
     before do
       visit user.username
-      wait_for_ajax
+      wait_for_requests
     end
 
     it 'displays calendar' do
@@ -86,7 +86,7 @@ feature 'Contributions Calendar', :feature, :js do
 
       before do
         cells[0].click
-        wait_for_ajax
+        wait_for_requests
         @first_day_activities = selected_day_activities
       end
 
@@ -97,7 +97,7 @@ feature 'Contributions Calendar', :feature, :js do
       describe 'select another calendar day' do
         before do
           cells[1].click
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'displays different calendar day activities' do
@@ -108,7 +108,7 @@ feature 'Contributions Calendar', :feature, :js do
       describe 'deselect calendar day' do
         before do
           cells[0].click
-          wait_for_ajax
+          wait_for_requests
         end
 
         it 'hides calendar day activities' do
@@ -122,7 +122,7 @@ feature 'Contributions Calendar', :feature, :js do
     shared_context 'visit user page' do
       before do
         visit user.username
-        wait_for_ajax
+        wait_for_requests
       end
     end
 

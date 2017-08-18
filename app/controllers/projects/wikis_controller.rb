@@ -1,6 +1,4 @@
 class Projects::WikisController < Projects::ApplicationController
-  include MarkdownPreview
-
   before_action :authorize_read_wiki!
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
   before_action :authorize_admin_wiki!, only: :destroy
@@ -51,12 +49,15 @@ class Projects::WikisController < Projects::ApplicationController
 
     if @page.valid?
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, @page),
+        project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'
       )
     else
       render 'edit'
     end
+  rescue WikiPage::PageChangedError
+    @conflict = true
+    render 'edit'
   end
 
   def create
@@ -64,7 +65,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     if @page.persisted?
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, @page),
+        project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'
       )
     else
@@ -77,7 +78,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     unless @page
       redirect_to(
-        namespace_project_wiki_path(@project.namespace, @project, :home),
+        project_wiki_path(@project, :home),
         notice: "Page not found"
       )
     end
@@ -87,19 +88,23 @@ class Projects::WikisController < Projects::ApplicationController
     @page = @project_wiki.find_page(params[:id])
     WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
-    redirect_to(
-      namespace_project_wiki_path(@project.namespace, @project, :home),
-      notice: "Page was successfully deleted"
-    )
+    redirect_to project_wiki_path(@project, :home),
+                status: 302,
+                notice: "Page was successfully deleted"
   end
 
   def git_access
   end
 
   def preview_markdown
-    context = { pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id] }
+    result = PreviewMarkdownService.new(@project, current_user, params).execute
 
-    render_markdown_preview(params[:text], context)
+    render json: {
+      body: view_context.markdown(result[:text], pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id]),
+      references: {
+        users: result[:users]
+      }
+    }
   end
 
   private
@@ -117,6 +122,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def wiki_params
-    params.require(:wiki).permit(:title, :content, :format, :message)
+    params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)
   end
 end

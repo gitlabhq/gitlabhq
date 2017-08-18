@@ -3,11 +3,11 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:index]
   before_action :no_cache_headers, except: [:index]
 
-  def build
-    build_status = Gitlab::Badge::Build::Status
+  def pipeline
+    pipeline_status = Gitlab::Badge::Pipeline::Status
       .new(project, params[:ref])
 
-    render_badge build_status
+    render_badge pipeline_status
   end
 
   def coverage

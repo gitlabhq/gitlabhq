@@ -3,7 +3,10 @@ describe JSONWebToken::Token do
 
   context 'custom parameters' do
     let(:value) { 'value' }
-    before { token[:key] = value }
+
+    before do
+      token[:key] = value
+    end
 
     it { expect(token[:key]).to eq(value) }
     it { expect(token.payload).to include(key: value) }

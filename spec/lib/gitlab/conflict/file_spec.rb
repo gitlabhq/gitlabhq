@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Conflict::File, lib: true do
+describe Gitlab::Conflict::File do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
@@ -10,7 +10,7 @@ describe Gitlab::Conflict::File, lib: true do
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, merge_request: merge_request) }
+  let(:conflict_file) { described_class.new(merge_file_result, conflict, merge_request: merge_request) }
 
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
@@ -43,8 +43,8 @@ describe Gitlab::Conflict::File, lib: true do
       end
 
       it 'returns a file containing only the chosen parts of the resolved sections' do
-        expect(resolved_lines.chunk { |line| line.type || 'both' }.map(&:first)).
-          to eq(%w(both new both old both new both))
+        expect(resolved_lines.chunk { |line| line.type || 'both' }.map(&:first))
+          .to eq(%w(both new both old both new both))
       end
     end
 
@@ -52,14 +52,14 @@ describe Gitlab::Conflict::File, lib: true do
       empty_hash = section_keys.map { |key| [key, nil] }.to_h
       invalid_hash = section_keys.map { |key| [key, 'invalid'] }.to_h
 
-      expect { conflict_file.resolve_lines({}) }.
-        to raise_error(Gitlab::Conflict::File::MissingResolution)
+      expect { conflict_file.resolve_lines({}) }
+        .to raise_error(Gitlab::Conflict::File::MissingResolution)
 
-      expect { conflict_file.resolve_lines(empty_hash) }.
-        to raise_error(Gitlab::Conflict::File::MissingResolution)
+      expect { conflict_file.resolve_lines(empty_hash) }
+        .to raise_error(Gitlab::Conflict::File::MissingResolution)
 
-      expect { conflict_file.resolve_lines(invalid_hash) }.
-        to raise_error(Gitlab::Conflict::File::MissingResolution)
+      expect { conflict_file.resolve_lines(invalid_hash) }
+        .to raise_error(Gitlab::Conflict::File::MissingResolution)
     end
   end
 
@@ -220,7 +220,7 @@ end
 FILE
       end
 
-      let(:conflict_file) { Gitlab::Conflict::File.new({ data: file }, conflict, merge_request: merge_request) }
+      let(:conflict_file) { described_class.new({ data: file }, conflict, merge_request: merge_request) }
       let(:sections) { conflict_file.sections }
 
       it 'sets the correct match line headers' do
@@ -250,8 +250,8 @@ FILE
 
   describe '#as_json' do
     it 'includes the blob path for the file' do
-      expect(conflict_file.as_json[:blob_path]).
-        to eq("/#{project.full_path}/blob/#{our_commit.oid}/files/ruby/regex.rb")
+      expect(conflict_file.as_json[:blob_path])
+        .to eq("/#{project.full_path}/blob/#{our_commit.oid}/files/ruby/regex.rb")
     end
 
     it 'includes the blob icon for the file' do
@@ -264,8 +264,8 @@ FILE
       end
 
       it 'includes the detected language of the conflict file' do
-        expect(conflict_file.as_json(full_content: true)[:blob_ace_mode]).
-          to eq('ruby')
+        expect(conflict_file.as_json(full_content: true)[:blob_ace_mode])
+          .to eq('ruby')
       end
     end
   end

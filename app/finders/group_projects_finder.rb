@@ -29,35 +29,69 @@ class GroupProjectsFinder < ProjectsFinder
   private
 
   def init_collection
-    only_owned  = options.fetch(:only_owned, false)
-    only_shared = options.fetch(:only_shared, false)
+    projects = if current_user
+                 collection_with_user
+               else
+                 collection_without_user
+               end
 
-    projects = []
+    union(projects)
+  end
 
-    if current_user
-      if group.users.include?(current_user)
-        projects << group.projects unless only_shared
-        projects << group.shared_projects unless only_owned
+  def collection_with_user
+    if group.users.include?(current_user)
+      if only_shared?
+        [shared_projects]
+      elsif only_owned?
+        [owned_projects]
       else
-        unless only_shared
-          projects << group.projects.visible_to_user(current_user)
-          projects << group.projects.public_to_user(current_user)
-        end
-
-        unless only_owned
-          projects << group.shared_projects.visible_to_user(current_user)
-          projects << group.shared_projects.public_to_user(current_user)
-        end
+        [shared_projects, owned_projects]
       end
     else
-      projects << group.projects.public_only unless only_shared
-      projects << group.shared_projects.public_only unless only_owned
+      if only_shared?
+        [shared_projects.public_or_visible_to_user(current_user)]
+      elsif only_owned?
+        [owned_projects.public_or_visible_to_user(current_user)]
+      else
+        [
+          owned_projects.public_or_visible_to_user(current_user),
+          shared_projects.public_or_visible_to_user(current_user)
+        ]
+      end
     end
+  end
 
-    projects
+  def collection_without_user
+    if only_shared?
+      [shared_projects.public_only]
+    elsif only_owned?
+      [owned_projects.public_only]
+    else
+      [shared_projects.public_only, owned_projects.public_only]
+    end
   end
 
   def union(items)
-    find_union(items, Project)
+    if items.one?
+      items.first
+    else
+      find_union(items, Project)
+    end
+  end
+
+  def only_owned?
+    options.fetch(:only_owned, false)
+  end
+
+  def only_shared?
+    options.fetch(:only_shared, false)
+  end
+
+  def owned_projects
+    group.projects
+  end
+
+  def shared_projects
+    group.shared_projects
   end
 end

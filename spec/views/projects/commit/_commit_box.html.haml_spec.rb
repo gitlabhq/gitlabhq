@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'projects/commit/_commit_box.html.haml', :view do
+describe 'projects/commit/_commit_box.html.haml' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

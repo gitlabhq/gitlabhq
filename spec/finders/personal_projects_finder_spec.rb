@@ -4,14 +4,14 @@ describe PersonalProjectsFinder do
   let(:source_user)     { create(:user) }
   let(:current_user)    { create(:user) }
   let(:finder)          { described_class.new(source_user) }
-  let!(:public_project) { create(:empty_project, :public, namespace: source_user.namespace) }
+  let!(:public_project) { create(:project, :public, namespace: source_user.namespace) }
 
   let!(:private_project) do
-    create(:empty_project, :private, namespace: source_user.namespace, path: 'mepmep')
+    create(:project, :private, namespace: source_user.namespace, path: 'mepmep')
   end
 
   let!(:internal_project) do
-    create(:empty_project, :internal, namespace: source_user.namespace, path: 'C')
+    create(:project, :internal, namespace: source_user.namespace, path: 'C')
   end
 
   before do
@@ -32,7 +32,9 @@ describe PersonalProjectsFinder do
     end
 
     context 'external' do
-      before { current_user.update_attributes(external: true) }
+      before do
+        current_user.update_attributes(external: true)
+      end
 
       it { is_expected.to eq([private_project, public_project]) }
     end

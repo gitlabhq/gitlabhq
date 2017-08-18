@@ -1,3 +1,5 @@
+# Gitaly note: JV: will probably be migrated indirectly by migrating the call sites.
+
 module Gitlab
   module Git
     class RevList
@@ -15,6 +17,8 @@ module Gitlab
       end
 
       # This methods returns an array of missed references
+      #
+      # Should become obsolete after https://gitlab.com/gitlab-org/gitaly/issues/348.
       def missed_ref
         execute([*base_args, '--max-count=1', oldrev, "^#{newrev}"])
       end

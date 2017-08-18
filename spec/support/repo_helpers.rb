@@ -92,11 +92,11 @@ eos
     changes = [
       {
         line_code: 'a5cc2925ca8258af241be7e5b0381edf30266302_20_20',
-        file_path: '.gitignore',
+        file_path: '.gitignore'
       },
       {
         line_code: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_6',
-        file_path: '.gitmodules',
+        file_path: '.gitmodules'
       }
     ]
 

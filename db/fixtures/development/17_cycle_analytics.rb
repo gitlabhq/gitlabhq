@@ -190,7 +190,7 @@ class Gitlab::Seeder::CycleAnalytics
       service = Ci::CreatePipelineService.new(merge_request.project,
                                               @user,
                                               ref: "refs/heads/#{merge_request.source_branch}")
-      pipeline = service.execute(ignore_skip_ci: true, save_on_errors: false)
+      pipeline = service.execute(:push, ignore_skip_ci: true, save_on_errors: false)
 
       pipeline.run!
       Timecop.travel rand(1..6).hours.from_now
@@ -212,12 +212,9 @@ class Gitlab::Seeder::CycleAnalytics
     merge_requests.each do |merge_request|
       Timecop.travel 12.hours.from_now
 
-      CreateDeploymentService.new(merge_request.project, @user, {
-                                    environment: 'production',
-                                    ref: 'master',
-                                    tag: false,
-                                    sha: @project.repository.commit('master').sha
-                                  }).execute
+      job = merge_request.head_pipeline.builds.where.not(environment: nil).last
+
+      CreateDeploymentService.new(job).execute
     end
   end
 end

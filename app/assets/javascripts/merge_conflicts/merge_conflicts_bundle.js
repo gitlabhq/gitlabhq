@@ -2,14 +2,14 @@
 /* global Flash */
 
 import Vue from 'vue';
-
-require('./merge_conflict_store');
-require('./merge_conflict_service');
-require('./mixins/line_conflict_utils');
-require('./mixins/line_conflict_actions');
-require('./components/diff_file_editor');
-require('./components/inline_conflict_lines');
-require('./components/parallel_conflict_lines');
+import initIssuableSidebar from '../init_issuable_sidebar';
+import './merge_conflict_store';
+import './merge_conflict_service';
+import './mixins/line_conflict_utils';
+import './mixins/line_conflict_actions';
+import './components/diff_file_editor';
+import './components/inline_conflict_lines';
+import './components/parallel_conflict_lines';
 
 $(() => {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
@@ -19,6 +19,8 @@ $(() => {
     conflictsPath: conflictsEl.dataset.conflictsPath,
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
   });
+
+  initIssuableSidebar();
 
   gl.MergeConflictsResolverApp = new Vue({
     el: '#conflicts',

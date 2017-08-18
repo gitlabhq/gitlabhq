@@ -1,13 +1,12 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, no-underscore-dangle, one-var, one-var-declaration-per-line, consistent-return, dot-notation, quote-props, comma-dangle, object-shorthand, max-len, prefer-arrow-callback */
 /* global MergeRequestTabs */
 
-require('vendor/jquery.waitforimages');
-require('./task_list');
-require('./merge_request_tabs');
+import 'vendor/jquery.waitforimages';
+import TaskList from './task_list';
+import './merge_request_tabs';
+import IssuablesHelper from './helpers/issuables_helper';
 
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.MergeRequest = (function() {
     function MergeRequest(opts) {
       // Initialize MergeRequest behavior
@@ -16,18 +15,21 @@ require('./merge_request_tabs');
       //   action - String, current controller action
       //
       this.opts = opts != null ? opts : {};
-      this.submitNoteForm = bind(this.submitNoteForm, this);
+      this.submitNoteForm = this.submitNoteForm.bind(this);
       this.$el = $('.merge-request');
       this.$('.show-all-commits').on('click', (function(_this) {
         return function() {
           return _this.showAllCommits();
         };
       })(this));
+
       this.initTabs();
       this.initMRBtnListeners();
       this.initCommitMessageListeners();
+      this.closeReopenReportToggle = IssuablesHelper.initCloseReopenReport();
+
       if ($("a.btn-close").length) {
-        this.taskList = new gl.TaskList({
+        this.taskList = new TaskList({
           dataType: 'merge_request',
           fieldName: 'description',
           selector: '.detail-page-description',
@@ -66,11 +68,15 @@ require('./merge_request_tabs');
         if (shouldSubmit && $this.data('submitted')) {
           return;
         }
+
+        if (this.closeReopenReportToggle) this.closeReopenReportToggle.setDisable();
+
         if (shouldSubmit) {
           if ($this.hasClass('btn-comment-and-close') || $this.hasClass('btn-comment-and-reopen')) {
             e.preventDefault();
             e.stopImmediatePropagation();
-            return _this.submitNoteForm($this.closest('form'), $this);
+
+            _this.submitNoteForm($this.closest('form'), $this);
           }
         }
       });
@@ -104,6 +110,21 @@ require('./merge_request_tabs');
         $('.js-with-description-hint').show();
         $('.js-without-description-hint').hide();
       });
+    };
+
+    MergeRequest.prototype.updateStatusText = function(classToRemove, classToAdd, newStatusText) {
+      $('.detail-page-header .status-box')
+        .removeClass(classToRemove)
+        .addClass(classToAdd)
+        .find('span')
+        .text(newStatusText);
+    };
+
+    MergeRequest.prototype.decreaseCounter = function(by = 1) {
+      const $el = $('.nav-links .js-merge-counter');
+      const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
+
+      $el.text(gl.text.addDelimiter(count));
     };
 
     return MergeRequest;

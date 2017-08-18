@@ -72,6 +72,21 @@ To enable the Google OAuth2 OmniAuth provider you must register your application
 
 1.  Change 'YOUR_APP_SECRET' to the client secret from the Google Developer page from step 10.
 
+1.  Make sure that you configure GitLab to use an FQDN as Google will not accept raw IP addresses.
+
+    For Omnibus packages:
+
+    ```ruby
+    external_url 'https://gitlab.example.com' 
+    ```
+
+    For installations from source:
+
+    ```yaml
+    gitlab:
+      host: https://gitlab.example.com
+    ```
+
 1.  Save the configuration file.
 
 1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you

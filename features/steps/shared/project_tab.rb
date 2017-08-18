@@ -32,6 +32,10 @@ module SharedProjectTab
     ensure_active_main_tab('Wiki')
   end
 
+  step 'the active main tab should be Members' do
+    ensure_active_main_tab('Members')
+  end
+
   step 'the active main tab should be Settings' do
     ensure_active_main_tab('Settings')
   end

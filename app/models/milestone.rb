@@ -18,18 +18,32 @@ class Milestone < ActiveRecord::Base
   cache_markdown_field :description
 
   belongs_to :project
+  belongs_to :group
+
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
-  has_many :participants, -> { distinct.reorder('users.name') }, through: :issues, source: :assignee
-  has_many :events, as: :target, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :of_groups, ->(ids) { where(group_id: ids) }
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
-  scope :of_projects, ->(ids) { where(project_id: ids) }
+  scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  validates :title, presence: true, uniqueness: { scope: :project_id }
-  validates :project, presence: true
+  scope :for_projects_and_groups, -> (project_ids, group_ids) do
+    conditions = []
+    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+
+    where(conditions.reduce(:or))
+  end
+
+  validates :group, presence: true, unless: :project
+  validates :project, presence: true, unless: :group
+
+  validate :uniqueness_of_title, if: :title_changed?
+  validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
 
   strip_attributes :title
@@ -63,6 +77,14 @@ class Milestone < ActiveRecord::Base
       pattern = "%#{query}%"
 
       where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+    end
+
+    def filter_by_state(milestones, state)
+      case state
+      when 'closed' then milestones.closed
+      when 'all' then milestones
+      else milestones.active
+      end
     end
   end
 
@@ -99,12 +121,16 @@ class Milestone < ActiveRecord::Base
     if Gitlab::Database.postgresql?
       rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
-      rel.
-        group(:project_id).
-        having('due_date = MIN(due_date)').
-        pluck(:id, :project_id, :due_date).
-        map(&:first)
+      rel
+        .group(:project_id)
+        .having('due_date = MIN(due_date)')
+        .pluck(:id, :project_id, :due_date)
+        .map(&:first)
     end
+  end
+
+  def participants
+    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
   def self.sort(method)
@@ -123,7 +149,9 @@ class Milestone < ActiveRecord::Base
   end
 
   ##
-  # Returns the String necessary to reference this Milestone in Markdown
+  # Returns the String necessary to reference this Milestone in Markdown. Group
+  # milestones only support name references, and do not support cross-project
+  # references.
   #
   # format - Symbol format to use (default: :iid, optional: :name)
   #
@@ -135,10 +163,16 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
   def to_reference(from_project = nil, format: :iid, full: false)
+    return if is_group_milestone? && format != :name
+
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
-    "#{project.to_reference(from_project, full: full)}#{reference}"
+    if project
+      "#{project.to_reference(from_project, full: full)}#{reference}"
+    else
+      reference
+    end
   end
 
   def reference_link_text(from_project = nil)
@@ -147,6 +181,10 @@ class Milestone < ActiveRecord::Base
 
   def milestoneish_ids
     id
+  end
+
+  def for_display
+    self
   end
 
   def can_be_closed?
@@ -161,39 +199,44 @@ class Milestone < ActiveRecord::Base
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
 
-  # Sorts the issues for the given IDs.
-  #
-  # This method runs a single SQL query using a CASE statement to update the
-  # position of all issues in the current milestone (scoped to the list of IDs).
-  #
-  # Given the ids [10, 20, 30] this method produces a SQL query something like
-  # the following:
-  #
-  #     UPDATE issues
-  #     SET position = CASE
-  #       WHEN id = 10 THEN 1
-  #       WHEN id = 20 THEN 2
-  #       WHEN id = 30 THEN 3
-  #       ELSE position
-  #     END
-  #     WHERE id IN (10, 20, 30);
-  #
-  # This method expects that the IDs given in `ids` are already Fixnums.
-  def sort_issues(ids)
-    pairs = []
+  def safe_title
+    title.to_slug.normalize.to_s
+  end
 
-    ids.each_with_index do |id, index|
-      pairs << id
-      pairs << index + 1
-    end
+  def parent
+    group || project
+  end
 
-    conditions = 'WHEN id = ? THEN ? ' * ids.length
+  def is_group_milestone?
+    group_id.present?
+  end
 
-    issues.where(id: ids).
-      update_all(["position = CASE #{conditions} ELSE position END", *pairs])
+  def is_project_milestone?
+    project_id.present?
   end
 
   private
+
+  # Milestone titles must be unique across project milestones and group milestones
+  def uniqueness_of_title
+    if project
+      relation = Milestone.for_projects_and_groups([project_id], [project.group&.id])
+    elsif group
+      project_ids = group.projects.map(&:id)
+      relation = Milestone.for_projects_and_groups(project_ids, [group.id])
+    end
+
+    title_exists = relation.find_by_title(title)
+    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+  end
+
+  # Milestone should be either a project milestone or a group milestone
+  def milestone_type_check
+    if group_id && project_id
+      field = project_id_changed? ? :project_id : :group_id
+      errors.add(field, "milestone should belong either to a project or a group.")
+    end
+  end
 
   def milestone_format_reference(format = :iid)
     raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)

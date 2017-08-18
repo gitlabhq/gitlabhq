@@ -1,7 +1,7 @@
 require 'spec_helper'
 include ImportExport::CommonUtil
 
-describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
+describe Gitlab::ImportExport::ProjectTreeRestorer do
   describe 'restore project tree' do
     before(:context) do
       @user = create(:user)
@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       RSpec::Mocks.with_temporary_scope do
         @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
-        @project = create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end
@@ -28,6 +28,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(project.project_feature.snippets_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
+      end
+
+      it 'has the project html description' do
+        expect(Project.find_by_path('project').description_html).to eq('description')
       end
 
       it 'has the same label associated to two issues' do
@@ -82,8 +86,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
       it 'has the correct data for merge request st_diffs' do
         # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
+        # one MergeRequestDiff uses the new format, where st_diffs is expected to be nil
 
-        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(9)
+        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(8)
+      end
+
+      it 'has the correct data for merge request diff files' do
+        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
+      end
+
+      it 'has the correct data for merge request diff commits in serialised and table formats' do
+        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
+        expect(MergeRequestDiffCommit.count).to eq(6)
       end
 
       it 'has the correct time for merge request st_commits' do
@@ -164,12 +178,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   context 'Light JSON' do
     let(:user) { create(:user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
-    let!(:project) { create(:empty_project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+    let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do
-      allow(ImportExport).to receive(:project_filename).and_return('project.light.json')
+      project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+
       allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
     end
 
@@ -181,7 +196,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
           restored_project_json
 
-          expect(shared.errors.first).not_to include('test')
+          expect(shared.errors.first).to be_nil
         end
       end
     end
@@ -196,7 +211,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
     context 'with group' do
       let!(:project) do
-        create(:empty_project,
+        create(:project,
                :builds_disabled,
                :issues_disabled,
                name: 'project',
@@ -205,15 +220,42 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
       end
 
       before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+
         restored_project_json
       end
 
-      it 'has group labels' do
-        expect(GroupLabel.count).to eq(1)
+      it 'correctly restores project' do
+        expect(restored_project_json).to be_truthy
+        expect(shared.errors).to be_empty
+      end
+
+      it 'has labels' do
+        expect(project.labels.count).to eq(2)
+      end
+
+      it 'creates group label' do
+        expect(project.group.labels.count).to eq(1)
       end
 
       it 'has label priorities' do
-        expect(GroupLabel.first.priorities).not_to be_empty
+        expect(project.labels.first.priorities).not_to be_empty
+      end
+
+      it 'has milestones' do
+        expect(project.milestones.count).to eq(1)
+      end
+
+      it 'has issue' do
+        expect(project.issues.count).to eq(1)
+        expect(project.issues.first.labels.count).to eq(2)
+      end
+
+      it 'has issue with group label and project label' do
+        labels = project.issues.first.labels
+
+        expect(labels.where(type: "GroupLabel").count).to eq(1)
+        expect(labels.where(type: "ProjectLabel").count).to eq(1)
       end
     end
   end

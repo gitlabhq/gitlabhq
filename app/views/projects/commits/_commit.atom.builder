@@ -1,6 +1,6 @@
 xml.entry do
-  xml.id      namespace_project_commit_url(@project.namespace, @project, id: commit.id)
-  xml.link    href: namespace_project_commit_url(@project.namespace, @project, id: commit.id)
+  xml.id      project_commit_url(@project, id: commit.id)
+  xml.link    href: project_commit_url(@project, id: commit.id)
   xml.title   truncate(commit.title, length: 80)
   xml.updated commit.committed_date.xmlschema
   xml.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon(commit.author_email))

@@ -1,13 +1,12 @@
 require 'spec_helper'
 
-describe Ci::Trigger, models: true do
-  let(:project) { create :empty_project }
+describe Ci::Trigger do
+  let(:project) { create :project }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:owner) }
     it { is_expected.to have_many(:trigger_requests) }
-    it { is_expected.to have_one(:trigger_schedule) }
   end
 
   describe 'before_validation' do

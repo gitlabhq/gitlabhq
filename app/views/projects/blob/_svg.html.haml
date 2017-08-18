@@ -1,9 +1,0 @@
-- if blob.size_within_svg_limits?
-  -# We need to scrub SVG but we cannot do so in the RawController: it would
-  -# be wrong/strange if RawController modified the data.
-  - blob.load_all_data!(@repository)
-  - blob = sanitize_svg(blob)
-  .file-content.image_file
-    %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}", alt: blob.name }
-- else
-  = render 'too_large'

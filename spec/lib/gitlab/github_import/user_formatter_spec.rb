@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::GithubImport::UserFormatter, lib: true do
+describe Gitlab::GithubImport::UserFormatter do
   let(:client) { double }
   let(:octocat) { double(id: 123456, login: 'octocat', email: 'octocat@example.com') }
 

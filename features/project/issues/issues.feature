@@ -12,11 +12,13 @@ Feature: Project Issues
     Given I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
+  @javascript
   Scenario: I should see closed issues
     Given I click link "Closed"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
 
+  @javascript
   Scenario: I should see all issues
     Given I click link "All"
     Then I should see "Release 0.3" in issues
@@ -82,6 +84,7 @@ Feature: Project Issues
 
   # Markdown
 
+  @javascript
   Scenario: Headers inside the description should have ids generated for them.
     Given I visit issue page "Release 0.4"
     Then Header "Description header" should have correct id and link

@@ -1,12 +1,33 @@
 require 'spec_helper'
 
-feature 'Project', feature: true do
-  describe 'description' do
-    let(:project) { create(:project, :repository) }
-    let(:path)    { namespace_project_path(project.namespace, project) }
+feature 'Project' do
+  describe 'creating from template' do
+    let(:user)    { create(:user) }
+    let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
-      login_as(:admin)
+      sign_in user
+      visit new_project_path
+    end
+
+    it "allows creation from templates" do
+      page.choose(template.name)
+      fill_in("project_path", with: template.name)
+
+      page.within '#content-body' do
+        click_button "Create project"
+      end
+
+      expect(page).to have_content template.name
+    end
+  end
+
+  describe 'description' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
     end
 
     it 'parses Markdown' do
@@ -36,12 +57,12 @@ feature 'Project', feature: true do
 
   describe 'remove forked relationship', js: true do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     before do
-      login_with user
+      sign_in user
       create(:forked_project_link, forked_to_project: project)
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
     end
 
     it 'removes fork' do
@@ -57,12 +78,12 @@ feature 'Project', feature: true do
 
   describe 'removal', js: true do
     let(:user)    { create(:user, username: 'test', name: 'test') }
-    let(:project) { create(:empty_project, namespace: user.namespace, name: 'project1') }
+    let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 
     before do
-      login_with(user)
+      sign_in(user)
       project.team << [user, :master]
-      visit edit_namespace_project_path(project.namespace, project)
+      visit edit_project_path(project)
     end
 
     it 'removes a project' do
@@ -76,12 +97,12 @@ feature 'Project', feature: true do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
+    let(:project) { create(:project, namespace: user.namespace) }
 
     before do
-      login_with(user)
+      sign_in(user)
       project.add_user(user, Gitlab::Access::MASTER)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'clicks toggle and shows dropdown', js: true do
@@ -92,16 +113,16 @@ feature 'Project', feature: true do
 
   describe 'project title' do
     let(:user)    { create(:user) }
-    let(:project) { create(:empty_project, namespace: user.namespace) }
-    let(:project2) { create(:empty_project, namespace: user.namespace, path: 'test') }
+    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project2) { create(:project, namespace: user.namespace, path: 'test') }
     let(:issue) { create(:issue, project: project) }
 
     context 'on issues page', js: true do
       before do
-        login_with(user)
+        sign_in(user)
         project.add_user(user, Gitlab::Access::MASTER)
         project2.add_user(user, Gitlab::Access::MASTER)
-        visit namespace_project_issue_path(project.namespace, project, issue)
+        visit project_issue_path(project, issue)
       end
 
       it 'clicks toggle and shows dropdown' do
@@ -123,8 +144,8 @@ feature 'Project', feature: true do
 
     before do
       project.team << [user, :master]
-      login_as user
-      visit namespace_project_path(project.namespace, project)
+      sign_in user
+      visit project_path(project)
     end
 
     it 'has working links to files' do
@@ -143,6 +164,21 @@ feature 'Project', feature: true do
       click_link('645f6c4c')
 
       expect(page.status_code).to eq(200)
+    end
+  end
+
+  describe 'activity view' do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    before do
+      project.team << [user, :master]
+      sign_in user
+      visit project_path(project)
+    end
+
+    it 'loads activity', :js do
+      expect(page).to have_selector('.event-item')
     end
   end
 

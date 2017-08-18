@@ -46,7 +46,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as the author' do
-        before { sign_in(user) }
+        before do
+          sign_in(user)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -57,7 +59,9 @@ describe Projects::SnippetsController do
       end
 
       context 'when signed in as a project member' do
-        before { sign_in(user2) }
+        before do
+          sign_in(user2)
+        end
 
         it 'renders the snippet' do
           get :index, namespace_id: project.namespace, project_id: project
@@ -78,8 +82,18 @@ describe Projects::SnippetsController do
       post :create, {
         namespace_id: project.namespace.to_param,
         project_id: project,
-        project_snippet: { title: 'Title', content: 'Content' }.merge(snippet_params)
+        project_snippet: { title: 'Title', content: 'Content', description: 'Description' }.merge(snippet_params)
       }.merge(additional_params)
+
+      Snippet.last
+    end
+
+    it 'creates the snippet correctly' do
+      snippet = create_snippet(project, visibility_level: Snippet::PRIVATE)
+
+      expect(snippet.title).to eq('Title')
+      expect(snippet.content).to eq('Content')
+      expect(snippet.description).to eq('Description')
     end
 
     context 'when the snippet is spam' do
@@ -89,21 +103,21 @@ describe Projects::SnippetsController do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }.
-            to change { Snippet.count }.by(1)
+          expect { create_snippet(project, visibility_level: Snippet::PRIVATE) }
+            .to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-            not_to change { Snippet.count }
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
+            .not_to change { Snippet.count }
           expect(response).to render_template(:new)
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :new with recaptcha disabled' do
@@ -134,7 +148,7 @@ describe Projects::SnippetsController do
                            { spam_log_id: spam_logs.last.id,
                              recaptcha_verification: true })
 
-            expect(response).to redirect_to(Snippet.last)
+            expect(response).to redirect_to(project_snippet_path(project, Snippet.last))
           end
         end
       end
@@ -169,8 +183,8 @@ describe Projects::SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'updates the snippet' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { snippet.reload.title }.to('Foo')
+          expect { update_snippet(title: 'Foo') }
+            .to change { snippet.reload.title }.to('Foo')
         end
       end
 
@@ -178,13 +192,13 @@ describe Projects::SnippetsController do
         let(:visibility_level) { Snippet::PUBLIC }
 
         it 'rejects the shippet' do
-          expect { update_snippet(title: 'Foo') }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo') }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo') }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo') }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -214,7 +228,7 @@ describe Projects::SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(project_snippet_path(project, snippet))
           end
         end
       end
@@ -223,13 +237,13 @@ describe Projects::SnippetsController do
         let(:visibility_level) { Snippet::PRIVATE }
 
         it 'rejects the shippet' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            not_to change { snippet.reload.title }
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .not_to change { snippet.reload.title }
         end
 
         it 'creates a spam log' do
-          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -259,7 +273,7 @@ describe Projects::SnippetsController do
                                      { spam_log_id: spam_logs.last.id,
                                        recaptcha_verification: true })
 
-            expect(response).to redirect_to(snippet)
+            expect(response).to redirect_to(project_snippet_path(project, snippet))
           end
         end
       end
@@ -307,7 +321,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as the author' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -318,7 +334,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in as a project member' do
-          before { sign_in(user2) }
+          before do
+            sign_in(user2)
+          end
 
           it 'renders the snippet' do
             get action, namespace_id: project.namespace, project_id: project, id: project_snippet.to_param
@@ -339,7 +357,9 @@ describe Projects::SnippetsController do
         end
 
         context 'when signed in' do
-          before { sign_in(user) }
+          before do
+            sign_in(user)
+          end
 
           it 'responds with status 404' do
             get action, namespace_id: project.namespace, project_id: project, id: 42

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::CreateService, '#execute', services: true do
+describe Groups::CreateService, '#execute' do
   let!(:user) { create(:user) }
   let!(:group_params) { { path: "group_path", visibility_level: Gitlab::VisibilityLevel::PUBLIC } }
 
@@ -14,7 +14,9 @@ describe Groups::CreateService, '#execute', services: true do
     end
 
     context "cannot create group with restricted visibility level" do
-      before { allow_any_instance_of(ApplicationSetting).to receive(:restricted_visibility_levels).and_return([Gitlab::VisibilityLevel::PUBLIC]) }
+      before do
+        allow_any_instance_of(ApplicationSetting).to receive(:restricted_visibility_levels).and_return([Gitlab::VisibilityLevel::PUBLIC])
+      end
 
       it { is_expected.not_to be_persisted }
     end
@@ -25,7 +27,9 @@ describe Groups::CreateService, '#execute', services: true do
     let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
 
     context 'as group owner' do
-      before { group.add_owner(user) }
+      before do
+        group.add_owner(user)
+      end
 
       it { is_expected.to be_persisted }
     end

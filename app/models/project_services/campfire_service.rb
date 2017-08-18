@@ -18,7 +18,7 @@ class CampfireService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' },
+      { type: 'text', name: 'token',     placeholder: '', required: true },
       { type: 'text', name: 'subdomain', placeholder: '' },
       { type: 'text', name: 'room',      placeholder: '' }
     ]
@@ -76,7 +76,7 @@ class CampfireService < Service
   # Returns a list of rooms, or [].
   # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
   def rooms(auth)
-    res = self.class.get("/rooms.json", auth) 
+    res = self.class.get("/rooms.json", auth)
     res.code == 200 ? res["rooms"] : []
   end
 

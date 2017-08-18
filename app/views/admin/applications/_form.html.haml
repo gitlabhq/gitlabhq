@@ -6,6 +6,7 @@
     .col-sm-10
       = f.text_field :name, class: 'form-control'
       = doorkeeper_errors_for application, :name
+
   = content_tag :div, class: 'form-group' do
     = f.label :redirect_uri, class: 'col-sm-2 control-label'
     .col-sm-10
@@ -18,6 +19,13 @@
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
+
+  = content_tag :div, class: 'form-group' do
+    = f.label :trusted, class: 'col-sm-2 control-label'
+    .col-sm-10
+      = f.check_box :trusted
+      %span.help-block
+        Trusted applications are automatically authorized on GitLab OAuth flow.
 
   .form-group
     = f.label :scopes, class: 'col-sm-2 control-label'

@@ -8,14 +8,14 @@
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 
-require('~/lib/utils/url_utility');
-require('~/boards/models/issue');
-require('~/boards/models/label');
-require('~/boards/models/list');
-require('~/boards/models/user');
-require('~/boards/services/board_service');
-require('~/boards/stores/boards_store');
-require('./mock_data');
+import '~/lib/utils/url_utility';
+import '~/boards/models/issue';
+import '~/boards/models/label';
+import '~/boards/models/list';
+import '~/boards/models/assignee';
+import '~/boards/services/board_service';
+import '~/boards/stores/boards_store';
+import './mock_data';
 
 describe('Store', () => {
   beforeEach(() => {
@@ -212,7 +212,8 @@ describe('Store', () => {
         title: 'Testing',
         iid: 2,
         confidential: false,
-        labels: []
+        labels: [],
+        assignees: [],
       });
       const list = gl.issueBoards.BoardsStore.addList(listObj);
 

@@ -3,11 +3,14 @@
 /* global DropzoneInput */
 /* global autosize */
 
+import GfmAutoComplete from './gfm_auto_complete';
+
 window.gl = window.gl || {};
 
-function GLForm(form) {
+function GLForm(form, enableGFM = false) {
   this.form = form;
   this.textarea = this.form.find('textarea.js-gfm-input');
+  this.enableGFM = enableGFM;
   // Before we start, we should clean up any previous data for this form
   this.destroy();
   // Setup the form
@@ -18,6 +21,9 @@ function GLForm(form) {
 GLForm.prototype.destroy = function() {
   // Clean form listeners
   this.clearEventListeners();
+  if (this.autoComplete) {
+    this.autoComplete.destroy();
+  }
   return this.form.data('gl-form', null);
 };
 
@@ -30,13 +36,20 @@ GLForm.prototype.setupForm = function() {
     this.form.addClass('gfm-form');
     // remove notify commit author checkbox for non-commit notes
     gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
-
-    gl.GfmAutoComplete.setup(this.form.find('.js-gfm-input'));
+    this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
+    this.autoComplete.setup(this.form.find('.js-gfm-input'), {
+      emojis: true,
+      members: this.enableGFM,
+      issues: this.enableGFM,
+      milestones: this.enableGFM,
+      mergeRequests: this.enableGFM,
+      labels: this.enableGFM,
+    });
     new DropzoneInput(this.form);
     autosize(this.textarea);
-    // form and textarea event listeners
-    this.addEventListeners();
   }
+  // form and textarea event listeners
+  this.addEventListeners();
   gl.text.init(this.form);
   // hide discard button
   this.form.find('.js-note-discard').hide();

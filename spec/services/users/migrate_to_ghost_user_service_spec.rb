@@ -1,22 +1,38 @@
 require 'spec_helper'
 
-describe Users::MigrateToGhostUserService, services: true do
+describe Users::MigrateToGhostUserService do
   let!(:user)      { create(:user) }
-  let!(:project)   { create(:project) }
+  let!(:project)   { create(:project, :repository) }
   let(:service)    { described_class.new(user) }
 
   context "migrating a user's associated records to the ghost user" do
     context 'issues'  do
-      include_examples "migrating a deleted user's associated records to the ghost user", Issue do
-        let(:created_record) { create(:issue, project: project, author: user) }
-        let(:assigned_record) { create(:issue, project: project, assignee: user) }
+      context 'deleted user is present as both author and edited_user' do
+        include_examples "migrating a deleted user's associated records to the ghost user", Issue, [:author, :last_edited_by] do
+          let(:created_record) do
+            create(:issue, project: project, author: user, last_edited_by: user)
+          end
+        end
+      end
+
+      context 'deleted user is present only as edited_user' do
+        include_examples "migrating a deleted user's associated records to the ghost user", Issue, [:last_edited_by] do
+          let(:created_record) { create(:issue, project: project, author: create(:user), last_edited_by: user) }
+        end
       end
     end
 
     context 'merge requests' do
-      include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest do
-        let(:created_record) { create(:merge_request, source_project: project, author: user, target_branch: "first") }
-        let(:assigned_record) { create(:merge_request, source_project: project, assignee: user, target_branch: 'second') }
+      context 'deleted user is present as both author and merge_user' do
+        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest, [:author, :merge_user] do
+          let(:created_record) { create(:merge_request, source_project: project, author: user, merge_user: user, target_branch: "first") }
+        end
+      end
+
+      context 'deleted user is present only as both merge_user' do
+        include_examples "migrating a deleted user's associated records to the ghost user", MergeRequest, [:merge_user] do
+          let(:created_record) { create(:merge_request, source_project: project, merge_user: user, target_branch: "first") }
+        end
       end
     end
 
@@ -33,9 +49,8 @@ describe Users::MigrateToGhostUserService, services: true do
     end
 
     context 'award emoji' do
-      include_examples "migrating a deleted user's associated records to the ghost user", AwardEmoji do
+      include_examples "migrating a deleted user's associated records to the ghost user", AwardEmoji, [:user] do
         let(:created_record) { create(:award_emoji, user: user) }
-        let(:author_alias) { :user }
 
         context "when the awardable already has an award emoji of the same name assigned to the ghost user" do
           let(:awardable) { create(:issue) }

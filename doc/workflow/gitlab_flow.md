@@ -67,7 +67,7 @@ With GitLab flow we offer additional guidance for these questions.
 ![Master branch and production branch with arrow that indicate deployments](production_branch.png)
 
 GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
-This is possible for SaaS applications but there are many cases where this is not possible.
+This is possible for e.g. SaaS applications, but there are many cases where this is not possible.
 One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass App Store validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
 In these cases you can make a production branch that reflects the deployed code.
@@ -91,7 +91,6 @@ This workflow where commits only flow downstream ensures that everything has bee
 If you need to cherry-pick a commit with a hotfix it is common to develop it on a feature branch and merge it into master with a merge request, do not delete the feature branch.
 If master is good to go (it should be if you are practicing [continuous delivery](http://martinfowler.com/bliki/ContinuousDelivery.html)) you then merge it to the other branches.
 If this is not possible because more manual testing is required you can send merge requests from the feature branch to the downstream branches.
-An 'extreme' version of environment branches are setting up an environment for each feature branch as done by [Teatro](https://teatro.io/).
 
 ## Release branches with GitLab flow
 
@@ -134,7 +133,7 @@ If the assigned person does not feel comfortable they can close the merge reques
 In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](http://docs.gitlab.com/ce/permissions/permissions.html).
 So if you want to merge it into a protected branch you assign it to someone with master authorizations.
 
-## Issues with GitLab flow
+## Issue tracking with GitLab flow
 
 ![Merge request with the branch name 15-require-a-password-to-change-it and assignee field shown](merge_request.png)
 
@@ -173,9 +172,9 @@ It is possible that one feature branch solves more than one issue.
 
 ![Merge request showing the linked issues that will be closed](close_issue_mr.png)
 
-Linking to the issue can happen by mentioning them from commit messages (fixes #14, closes #67, etc.) or from the merge request description.
-In GitLab this creates a comment in the issue that the merge requests mentions the issue.
-And the merge request shows the linked issues.
+Linking to issues can happen by mentioning them in commit messages (fixes #14, closes #67, etc.) or in the merge request description.
+GitLab then creates links to the mentioned issues and creates comments in the corresponding issues linking back to the merge request.
+
 These issues are closed once code is merged into the default branch.
 
 If you only want to make the reference without closing the issue you can also just mention it: "Duck typing is preferred. #12".
@@ -300,7 +299,7 @@ If there are no merge conflicts and the feature branches are short lived the ris
 If there are merge conflicts you merge the master branch into the feature branch and the CI server will rerun the tests.
 If you have long lived feature branches that last for more than a few days you should make your issues smaller.
 
-## Merging in other code
+## Working with feature branches
 
 ![Shell output showing git pull output](git_pull.png)
 

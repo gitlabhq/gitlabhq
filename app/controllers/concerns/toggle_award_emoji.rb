@@ -22,7 +22,8 @@ module ToggleAwardEmoji
   def to_todoable(awardable)
     case awardable
     when Note
-      awardable.noteable
+      # we don't create todos for personal snippet comments for now
+      awardable.for_personal_snippet? ? nil : awardable.noteable
     when MergeRequest, Issue
       awardable
     when Snippet

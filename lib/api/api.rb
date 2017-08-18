@@ -2,10 +2,14 @@ module API
   class API < Grape::API
     include APIGuard
 
+    allow_access_with_scope :api
+    prefix :api
+
     version %w(v3 v4), using: :path
 
     version 'v3', using: :path do
       helpers ::API::V3::Helpers
+      helpers ::API::Helpers::CommonHelpers
 
       mount ::API::V3::AwardEmoji
       mount ::API::V3::Boards
@@ -43,7 +47,10 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { allow_access_with_scope :api }
+    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
+
+    # The locale is set to the current user's locale when `current_user` is loaded
+    after { Gitlab::I18n.use_default_locale }
 
     rescue_from Gitlab::Access::AccessDeniedError do
       rack_response({ 'message' => '403 Forbidden' }.to_json, 403)
@@ -77,6 +84,10 @@ module API
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
     helpers ::SentryHelper
     helpers ::API::Helpers
+    helpers ::API::Helpers::CommonHelpers
+
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
 
     # Keep in alphabetical order
     mount ::API::AccessRequests
@@ -84,11 +95,14 @@ module API
     mount ::API::Boards
     mount ::API::Branches
     mount ::API::BroadcastMessages
+    mount ::API::CircuitBreakers
     mount ::API::Commits
     mount ::API::CommitStatuses
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::Events
+    mount ::API::Features
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Internal
@@ -100,14 +114,17 @@ module API
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
-    mount ::API::Milestones
+    mount ::API::ProjectMilestones
+    mount ::API::GroupMilestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
     mount ::API::Pipelines
+    mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectSnippets
+    mount ::API::ProtectedBranches
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
@@ -124,6 +141,7 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::GroupVariables
     mount ::API::Version
 
     route :any, '*path' do

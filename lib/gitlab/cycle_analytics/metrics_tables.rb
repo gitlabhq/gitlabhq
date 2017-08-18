@@ -13,6 +13,10 @@ module Gitlab
         MergeRequestDiff.arel_table
       end
 
+      def mr_diff_commits_table
+        MergeRequestDiffCommit.arel_table
+      end
+
       def mr_closing_issues_table
         MergeRequestsClosingIssues.arel_table
       end

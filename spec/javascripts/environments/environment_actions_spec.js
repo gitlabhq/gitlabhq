@@ -4,7 +4,6 @@ import actionsComp from '~/environments/components/environment_actions.vue';
 describe('Actions Component', () => {
   let ActionsComponent;
   let actionsMock;
-  let spy;
   let component;
 
   beforeEach(() => {
@@ -26,33 +25,29 @@ describe('Actions Component', () => {
       },
     ];
 
-    spy = jasmine.createSpy('spy').and.returnValue(Promise.resolve());
     component = new ActionsComponent({
       propsData: {
         actions: actionsMock,
-        service: {
-          postAction: spy,
-        },
       },
     }).$mount();
   });
 
+  describe('computed', () => {
+    it('title', () => {
+      expect(component.title).toEqual('Deploy to...');
+    });
+  });
+
   it('should render a dropdown button with icon and title attribute', () => {
     expect(component.$el.querySelector('.fa-caret-down')).toBeDefined();
-    expect(component.$el.querySelector('.dropdown-new').getAttribute('title')).toEqual('Deploy to...');
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('data-original-title')).toEqual('Deploy to...');
+    expect(component.$el.querySelector('.dropdown-new').getAttribute('aria-label')).toEqual('Deploy to...');
   });
 
   it('should render a dropdown with the provided list of actions', () => {
     expect(
       component.$el.querySelectorAll('.dropdown-menu li').length,
     ).toEqual(actionsMock.length);
-  });
-
-  it('should call the service when an action is clicked', () => {
-    component.$el.querySelector('.dropdown').click();
-    component.$el.querySelector('.js-manual-action-link').click();
-
-    expect(spy).toHaveBeenCalledWith(actionsMock[0].play_path);
   });
 
   it('should render a disabled action when it\'s not playable', () => {

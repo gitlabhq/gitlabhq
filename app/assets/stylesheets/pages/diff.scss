@@ -1,38 +1,6 @@
 // Common
 .diff-file {
-  border: 1px solid $border-color;
   margin-bottom: $gl-padding;
-  border-radius: 3px;
-
-  .commit-short-id {
-    font-family: $regular_font;
-    font-weight: 400;
-  }
-
-  .diff-header {
-    position: relative;
-    background: $gray-light;
-    border-bottom: 1px solid $border-color;
-    padding: 10px 16px;
-    color: $gl-text-color;
-    z-index: 10;
-    border-radius: 3px 3px 0 0;
-
-    .diff-title {
-      font-family: $monospace_font;
-      word-break: break-all;
-      display: block;
-
-      .file-mode {
-        color: $file-mode-changed;
-      }
-    }
-
-    .commit-short-id {
-      font-family: $monospace_font;
-      font-size: smaller;
-    }
-  }
 
   .file-title,
   .file-title-flex-parent {
@@ -52,8 +20,6 @@
   }
 
   .diff-content {
-    overflow: auto;
-    overflow-y: hidden;
     background: $white-light;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
@@ -125,8 +91,8 @@
 
     .old_line,
     .new_line {
+      @include user-select(none);
       margin: 0;
-      padding: 0;
       border: none;
       padding: 0 5px;
       border-right: 1px solid;
@@ -134,7 +100,6 @@
       min-width: 35px;
       max-width: 50px;
       width: 35px;
-      @include user-select(none);
 
       a {
         float: left;
@@ -183,14 +148,10 @@
         }
       }
     }
-
-    .text-file.diff-wrap-lines table .line_holder td span {
-      white-space: pre-wrap;
-    }
   }
 
   .image {
-    background: $diff-image-bg;
+    background: $file-image-bg;
     text-align: center;
     padding: 30px;
 
@@ -393,12 +354,12 @@
       }
 
       &.active {
+        cursor: default;
+        color: $gl-text-color;
+
         &:hover {
           text-decoration: none;
         }
-
-        cursor: default;
-        color: $gl-text-color;
       }
 
       &.disabled {
@@ -425,12 +386,6 @@
   float: right;
 }
 
-.diffs {
-  .content-block {
-    border-bottom: none;
-  }
-}
-
 .files-changed {
   border-bottom: none;
 }
@@ -440,12 +395,11 @@
   background-color: transparent;
   border: 0;
   color: $gl-link-color;
-  transition: color 0.1s linear;
+  font-weight: 600;
 
   &:hover,
   &:focus {
     outline: none;
-    text-decoration: underline;
     color: $gl-link-hover-color;
   }
 }
@@ -519,6 +473,7 @@
   height: 19px;
   width: 19px;
   margin-left: -15px;
+  z-index: 100;
 
   &:hover {
     .diff-comment-avatar,
@@ -534,7 +489,7 @@
           transform: translateX((($i * $x-pos) - $x-pos));
 
           &:hover {
-            transform: translateX((($i * $x-pos) - $x-pos)) scale(1.2);
+            transform: translateX((($i * $x-pos) - $x-pos));
           }
         }
       }
@@ -576,14 +531,7 @@
 
 .diff-comments-more-count,
 .diff-notes-collapse {
-  background-color: $gray-darkest;
-  color: $white-light;
-  border: 1px solid $white-light;
-  border-radius: 1em;
-  font-family: $regular_font;
-  font-size: 9px;
-  line-height: 17px;
-  text-align: center;
+  @extend .avatar-counter;
 }
 
 .diff-notes-collapse {
@@ -592,6 +540,7 @@
   height: 19px;
   padding: 0;
   transition: transform .1s ease-out;
+  z-index: 100;
 
   svg {
     position: absolute;
@@ -605,11 +554,80 @@
     fill: $white-light;
   }
 
-  &:hover {
-    transform: scale(1.2);
-  }
-
   &:focus {
     outline: 0;
   }
+}
+
+.diff-files-changed {
+  .inline-parallel-buttons {
+    position: relative;
+    z-index: 1;
+  }
+
+  .commit-stat-summary {
+    @include new-style-dropdown;
+
+    @media (min-width: $screen-sm-min) {
+      margin-left: -$gl-padding;
+      padding-left: $gl-padding;
+      background-color: $white-light;
+    }
+  }
+
+  @media (min-width: $screen-sm-min) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 34px;
+    background-color: $white-light;
+    z-index: 190;
+
+    &.diff-files-changed-merge-request {
+      top: 84px;
+    }
+
+    + .files,
+    + .alert {
+      margin-top: 1px;
+    }
+
+    &:not(.is-stuck) .diff-stats-additions-deletions-collapsed {
+      display: none;
+    }
+
+    &.is-stuck {
+      padding-top: 0;
+      padding-bottom: 0;
+      border-bottom: 1px solid $white-dark;
+      transform: translateY(16px);
+
+      .diff-stats-additions-deletions-expanded,
+      .inline-parallel-buttons {
+        display: none;
+      }
+
+      + .files,
+      + .alert {
+        margin-top: 30px;
+      }
+    }
+  }
+}
+
+.diff-file-changes {
+  width: 450px;
+  z-index: 150;
+
+  @media (min-width: $screen-sm-min) {
+    left: $gl-padding;
+  }
+
+  a {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.diff-file-changes-path {
+  @include str-truncated(78%);
 }

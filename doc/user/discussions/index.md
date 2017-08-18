@@ -10,7 +10,7 @@ You can leave a comment in the following places:
 - commits
 - commit diffs
 
-The comment area supports [Markdown] and [slash commands]. One can edit their
+The comment area supports [Markdown] and [quick actions]. One can edit their
 own comment at any time, and anyone with [Master access level][permissions] or
 higher can also edit a comment made by someone else.
 
@@ -146,5 +146,5 @@ comments in greater detail.
 [discussion-view]: img/discussion_view.png
 [discussions-resolved]: img/discussions_resolved.png
 [markdown]: ../markdown.md
-[slash commands]: ../project/slash_commands.md
+[quick actions]: ../project/quick_actions.md
 [permissions]: ../permissions.md

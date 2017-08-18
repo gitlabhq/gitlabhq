@@ -1,4 +1,5 @@
 class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
+  include WaitForRequests
   include SharedAuthentication
   include SharedPaths
   include SharedGroup
@@ -38,7 +39,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     expect(page).to have_content('Milestone GL-113')
     expect(page).to have_content('Issues 3 Open: 3 Closed: 0')
     issue = Milestone.find_by(name: 'GL-113').issues.first
-    expect(page).to have_link(issue.title, href: namespace_project_issue_path(issue.project.namespace, issue.project, issue))
+    expect(page).to have_link(issue.title, href: project_issue_path(issue.project, issue))
   end
 
   step 'I fill milestone name' do
@@ -53,14 +54,9 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     click_button "Create milestone"
   end
 
-  step 'milestone in each project should be created' do
+  step 'group milestone should be created' do
     group = Group.find_by(name: 'Owned')
-    expect(page).to have_content "Milestone v2.9.0"
-    expect(group.projects).to be_present
-
-    group.projects.each do |project|
-      expect(page).to have_content project.name
-    end
+    expect(page).to have_content group.milestones.find_by_title('v2.9.0').title
   end
 
   step 'I should see the "bug" label' do
@@ -90,6 +86,8 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I should see the list of labels' do
+    wait_for_requests
+
     page.within('#tab-labels') do
       expect(page).to have_content 'bug'
       expect(page).to have_content 'feature'
@@ -102,7 +100,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
     group = owned_group
 
     %w(gitlabhq gitlab-ci cookbook-gitlab).each do |path|
-      project = create(:empty_project, path: path, group: group)
+      project = create(:project, path: path, group: group)
       milestone = create :milestone, title: "Version 7.2", project: project
 
       create(:label, project: project, title: 'bug')
@@ -110,7 +108,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
       create :issue,
         project: project,
-        assignee: current_user,
+        assignees: [current_user],
         author: current_user,
         milestone: milestone
 
@@ -122,7 +120,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
 
       issue = create :issue,
         project: project,
-        assignee: current_user,
+        assignees: [current_user],
         author: current_user,
         milestone: milestone
 

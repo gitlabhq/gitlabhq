@@ -1,5 +1,0 @@
-- content_for :page_specific_javascripts do
-  = page_specific_javascript_bundle_tag('common_vue')
-  = page_specific_javascript_bundle_tag('notebook_viewer')
-
-.file-content#js-notebook-viewer{ data: { endpoint: namespace_project_raw_path(@project.namespace, @project, @id) } }

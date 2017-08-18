@@ -1,5 +1,7 @@
+/* eslint-disable import/no-unresolved */
+
 import renderPDF from '~/blob/pdf';
-import testPDF from './test.pdf';
+import testPDF from '../../fixtures/blob/pdf/test.pdf';
 
 describe('PDF renderer', () => {
   let viewer;
@@ -59,7 +61,7 @@ describe('PDF renderer', () => {
 
   describe('error getting file', () => {
     beforeEach((done) => {
-      viewer.dataset.endpoint = 'invalid/endpoint';
+      viewer.dataset.endpoint = 'invalid/path/to/file.pdf';
       app = renderPDF();
 
       checkLoaded(done);

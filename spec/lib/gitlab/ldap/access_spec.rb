@@ -1,8 +1,18 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Access, lib: true do
-  let(:access) { Gitlab::LDAP::Access.new user }
+describe Gitlab::LDAP::Access do
+  let(:access) { described_class.new user }
   let(:user) { create(:omniauth_user) }
+
+  describe '.allowed?' do
+    it 'updates the users `last_credential_check_at' do
+      expect(access).to receive(:allowed?) { true }
+      expect(described_class).to receive(:open).and_yield(access)
+
+      expect { described_class.allowed?(user) }
+        .to change { user.last_credential_check_at }
+    end
+  end
 
   describe '#allowed?' do
     subject { access.allowed? }

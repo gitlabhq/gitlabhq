@@ -1,6 +1,6 @@
 /* eslint-disable space-before-function-paren, no-var, no-return-assign, quotes */
 
-require('~/syntax_highlight');
+import '~/syntax_highlight';
 
 (function() {
   describe('Syntax Highlighter', function() {

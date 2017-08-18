@@ -53,7 +53,8 @@
         "properties": {
           "id": { "type": "integer" },
           "iid": { "type": "integer" },
-          "project_id": { "type": "integer" },
+          "project_id": { "type": ["integer", "null"] },
+          "group_id": { "type": ["integer", "null"] },
           "title": { "type": "string" },
           "description": { "type": ["string", "null"] },
           "state": { "type": "string" },

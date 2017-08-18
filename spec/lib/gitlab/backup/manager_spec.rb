@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Backup::Manager, lib: true do
+describe Backup::Manager do
   include StubENV
 
   let(:progress) { StringIO.new }
@@ -24,8 +24,9 @@ describe Backup::Manager, lib: true do
   describe '#remove_old' do
     let(:files) do
       [
-        '1451606400_2016_01_01_gitlab_backup.tar',
-        '1451520000_2015_12_31_gitlab_backup.tar',
+        '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
+        '1451520000_2015_12_31_4.5.6_gitlab_backup.tar',
+        '1451510000_2015_12_30_gitlab_backup.tar',
         '1450742400_2015_12_22_gitlab_backup.tar',
         '1449878400_gitlab_backup.tar',
         '1449014400_gitlab_backup.tar',
@@ -58,6 +59,7 @@ describe Backup::Manager, lib: true do
 
     context 'when there are no files older than keep_time' do
       before do
+        # Set to 30 days
         allow(Gitlab.config.backup).to receive(:keep_time).and_return(2592000)
 
         subject.remove_old
@@ -74,19 +76,24 @@ describe Backup::Manager, lib: true do
 
     context 'when keep_time is set to remove files' do
       before do
+        # Set to 1 second
         allow(Gitlab.config.backup).to receive(:keep_time).and_return(1)
 
         subject.remove_old
       end
 
-      it 'removes matching files with a human-readable timestamp' do
+      it 'removes matching files with a human-readable versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[1])
+      end
+
+      it 'removes matching files with a human-readable non-versioned timestamp' do
         expect(FileUtils).to have_received(:rm).with(files[2])
+        expect(FileUtils).to have_received(:rm).with(files[3])
       end
 
       it 'removes matching files without a human-readable timestamp' do
-        expect(FileUtils).to have_received(:rm).with(files[3])
         expect(FileUtils).to have_received(:rm).with(files[4])
+        expect(FileUtils).to have_received(:rm).with(files[5])
       end
 
       it 'does not remove files that are not old enough' do
@@ -94,11 +101,11 @@ describe Backup::Manager, lib: true do
       end
 
       it 'does not remove non-matching files' do
-        expect(FileUtils).not_to have_received(:rm).with(files[5])
+        expect(FileUtils).not_to have_received(:rm).with(files[6])
       end
 
       it 'prints a done message' do
-        expect(progress).to have_received(:puts).with('done. (4 removed)')
+        expect(progress).to have_received(:puts).with('done. (5 removed)')
       end
     end
 
@@ -117,10 +124,11 @@ describe Backup::Manager, lib: true do
         expect(FileUtils).to have_received(:rm).with(files[2])
         expect(FileUtils).to have_received(:rm).with(files[3])
         expect(FileUtils).to have_received(:rm).with(files[4])
+        expect(FileUtils).to have_received(:rm).with(files[5])
       end
 
       it 'sets the correct removed count' do
-        expect(progress).to have_received(:puts).with('done. (3 removed)')
+        expect(progress).to have_received(:puts).with('done. (4 removed)')
       end
 
       it 'prints the error from file that could not be removed' do
@@ -150,8 +158,8 @@ describe Backup::Manager, lib: true do
       before do
         allow(Dir).to receive(:glob).and_return(
           [
-            '1451606400_2016_01_01_gitlab_backup.tar',
-            '1451520000_2015_12_31_gitlab_backup.tar',
+            '1451606400_2016_01_01_1.2.3_gitlab_backup.tar',
+            '1451520000_2015_12_31_gitlab_backup.tar'
           ]
         )
       end
@@ -187,22 +195,74 @@ describe Backup::Manager, lib: true do
       before do
         allow(Dir).to receive(:glob).and_return(
           [
-            '1451606400_2016_01_01_gitlab_backup.tar'
+            '1451606400_2016_01_01_1.2.3_gitlab_backup.tar'
           ]
         )
         allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
         allow(YAML).to receive(:load_file).and_return(gitlab_version: Gitlab::VERSION)
 
-        stub_env('BACKUP', '1451606400_2016_01_01')
+        stub_env('BACKUP', '1451606400_2016_01_01_1.2.3')
       end
 
       it 'unpacks the file' do
         subject.unpack
 
         expect(Kernel).to have_received(:system)
-          .with("tar", "-xf", "1451606400_2016_01_01_gitlab_backup.tar")
+          .with("tar", "-xf", "1451606400_2016_01_01_1.2.3_gitlab_backup.tar")
         expect(progress).to have_received(:puts).with(a_string_matching('done'))
+      end
+    end
+  end
+
+  describe '#upload' do
+    let(:backup_file) { Tempfile.new('backup', Gitlab.config.backup.path) }
+    let(:backup_filename) { File.basename(backup_file.path) }
+
+    before do
+      allow(subject).to receive(:tar_file).and_return(backup_filename)
+
+      stub_backup_setting(
+        upload: {
+          connection: {
+            provider: 'AWS',
+            aws_access_key_id: 'id',
+            aws_secret_access_key: 'secret'
+          },
+          remote_directory: 'directory',
+          multipart_chunk_size: 104857600,
+          encryption: nil,
+          storage_class: nil
+        }
+      )
+
+      # the Fog mock only knows about directories we create explicitly
+      Fog.mock!
+      connection = ::Fog::Storage.new(Gitlab.config.backup.upload.connection.symbolize_keys)
+      connection.directories.create(key: Gitlab.config.backup.upload.remote_directory)
+    end
+
+    context 'target path' do
+      it 'uses the tar filename by default' do
+        expect_any_instance_of(Fog::Collection).to receive(:create)
+          .with(hash_including(key: backup_filename))
+          .and_return(true)
+
+        Dir.chdir(Gitlab.config.backup.path) do
+          subject.upload
+        end
+      end
+
+      it 'adds the DIRECTORY environment variable if present' do
+        stub_env('DIRECTORY', 'daily')
+
+        expect_any_instance_of(Fog::Collection).to receive(:create)
+          .with(hash_including(key: "daily/#{backup_filename}"))
+          .and_return(true)
+
+        Dir.chdir(Gitlab.config.backup.path) do
+          subject.upload
+        end
       end
     end
   end

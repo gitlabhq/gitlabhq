@@ -54,7 +54,11 @@
   .mr-widget-pipeline-graph {
     display: inline-block;
     vertical-align: middle;
-    margin: 0 -6px 0 0;
+    margin-right: 4px;
+
+    .stage-cell .stage-container {
+      margin: 3px 3px 3px 0;
+    }
 
     .dropdown-menu {
       margin-top: 11px;
@@ -163,7 +167,6 @@
 
 .avatar-cell {
   width: 46px;
-  padding-left: 10px;
 
   img {
     margin-right: 0;
@@ -175,7 +178,6 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-grow: 1;
-  padding-left: 10px;
 
   .merge-request-branches & {
     flex-direction: column;
@@ -208,11 +210,11 @@
       margin-left: $gl-padding;
     }
   }
-}
 
-.commit-short-id {
-  font-family: $monospace_font;
-  font-weight: 600;
+  .commit-sha {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
 .commit,
@@ -230,7 +232,7 @@
     margin: 10px 0;
     background: $gray-light;
     display: none;
-    white-space: pre-line;
+    white-space: pre-wrap;
     word-break: normal;
 
     pre {
@@ -252,8 +254,8 @@
     }
 
     .committed_ago {
-      float: right;
       @extend .cgray;
+      float: right;
     }
   }
 }
@@ -273,11 +275,75 @@
     }
   }
 
-  .commit-id {
+  .commit-sha {
     color: $gl-link-color;
   }
 
   .commit-row-message {
     color: $gl-text-color;
   }
+}
+
+
+.gpg-status-box {
+  &:empty {
+    display: none;
+  }
+
+  &.valid {
+    @include green-status-color;
+  }
+
+  &.invalid {
+    @include status-color($gray-dark, $gray, $common-gray-dark);
+    border-color: $common-gray-light;
+  }
+}
+
+.gpg-popover-status {
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+  line-height: 1.5;
+}
+
+.gpg-popover-icon {
+  // same margin as .s32.avatar
+  margin-right: $btn-side-margin;
+
+  &.valid {
+    svg {
+      border: 1px solid $brand-success;
+
+      fill: $brand-success;
+    }
+  }
+
+  &.invalid {
+    svg {
+      border: 1px solid $common-gray-light;
+
+      fill: $common-gray-light;
+    }
+  }
+
+  svg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
+  }
+}
+
+.gpg-popover-user-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: $gl-padding / 2;
+  text-decoration: none;
+  color: $gl-text-color;
+}
+
+.commit .gpg-popover-help-link {
+  display: block;
+  color: $link-color;
 }

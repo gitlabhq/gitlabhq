@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true, feature: true do
+describe 'Dropdown author', js: true do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
@@ -16,7 +16,7 @@ describe 'Dropdown author', js: true, feature: true do
     end
 
     sleep 0.5
-    wait_for_ajax
+    wait_for_requests
   end
 
   def dropdown_author_size
@@ -31,10 +31,10 @@ describe 'Dropdown author', js: true, feature: true do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -65,7 +65,7 @@ describe 'Dropdown author', js: true, feature: true do
     it 'should load all the authors when opened' do
       send_keys_to_filtered_search('author:')
 
-      expect(dropdown_author_size).to eq(3)
+      expect(dropdown_author_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
@@ -121,16 +121,39 @@ describe 'Dropdown author', js: true, feature: true do
     it 'fills in the author username when the author has not been filtered' do
       click_author(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user_jacob.username}" }])
+      expect_tokens([author_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
     it 'fills in the author username when the author has been filtered' do
       click_author(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_author, visible: false)
-      expect_tokens([{ name: 'author', value: "@#{user.username}" }])
+      expect_tokens([author_token(user.name)])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('author:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-author .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_author, visible: false)
+      expect_tokens([author_token(user.username)])
       expect_filtered_search_input_empty
     end
   end

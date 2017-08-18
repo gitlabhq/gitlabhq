@@ -16,12 +16,10 @@ class Projects::MattermostsController < Projects::ApplicationController
 
     if result
       flash[:notice] = 'This service is now configured'
-      redirect_to edit_namespace_project_service_path(
-        @project.namespace, @project, service)
+      redirect_to edit_project_service_path(@project, service)
     else
       flash[:alert] = message || 'Failed to configure service'
-      redirect_to new_namespace_project_mattermost_path(
-        @project.namespace, @project)
+      redirect_to new_project_mattermost_path(@project)
     end
   end
 

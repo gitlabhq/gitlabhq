@@ -1,0 +1,33 @@
+= form_for [@project.namespace.becomes(Namespace), @project, @protected_branch], html: { class: 'new-protected-branch js-new-protected-branch' } do |f|
+  .panel.panel-default
+    .panel-heading
+      %h3.panel-title
+        Protect a branch
+    .panel-body
+      .form-horizontal
+        = form_errors(@protected_branch)
+        .form-group
+          = f.label :name, class: 'col-md-2 text-right' do
+            Branch:
+          .col-md-10
+            = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
+            .help-block
+              = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
+              such as
+              %code *-stable
+              or
+              %code production/*
+              are supported
+        .form-group
+          %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
+            Allowed to merge:
+          .col-md-10
+            = yield :merge_access_levels
+        .form-group
+          %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
+            Allowed to push:
+          .col-md-10
+            = yield :push_access_levels
+
+    .panel-footer
+      = f.submit 'Protect', class: 'btn-create btn', disabled: true

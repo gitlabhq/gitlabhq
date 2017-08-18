@@ -22,7 +22,7 @@ class Todo < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project
-  belongs_to :target, polymorphic: true, touch: true
+  belongs_to :target, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
@@ -70,9 +70,9 @@ class Todo < ActiveRecord::Base
 
       highest_priority = highest_label_priority(params).to_sql
 
-      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
-        order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
-        order('todos.created_at')
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority")
+        .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
+        .order('todos.created_at')
     end
   end
 
@@ -82,6 +82,10 @@ class Todo < ActiveRecord::Base
 
   def build_failed?
     action == BUILD_FAILED
+  end
+
+  def assigned?
+    action == ASSIGNED
   end
 
   def action_name
@@ -115,6 +119,14 @@ class Todo < ActiveRecord::Base
     else
       target.to_reference(full: true)
     end
+  end
+
+  def self_added?
+    author == user
+  end
+
+  def self_assigned?
+    assigned? && self_added?
   end
 
   private

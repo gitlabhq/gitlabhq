@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe NotificationSettingsController do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }
 
@@ -58,7 +58,10 @@ describe NotificationSettingsController do
 
             expect(response.status).to eq 200
             expect(notification_setting.level).to eq("custom")
-            expect(notification_setting.events).to eq(custom_events)
+
+            custom_events.each do |event, value|
+              expect(notification_setting.event_enabled?(event)).to eq(value)
+            end
           end
         end
       end
@@ -86,15 +89,21 @@ describe NotificationSettingsController do
 
             expect(response.status).to eq 200
             expect(notification_setting.level).to eq("custom")
-            expect(notification_setting.events).to eq(custom_events)
+
+            custom_events.each do |event, value|
+              expect(notification_setting.event_enabled?(event)).to eq(value)
+            end
           end
         end
       end
     end
 
     context 'not authorized' do
-      let(:private_project) { create(:empty_project, :private) }
-      before { sign_in(user) }
+      let(:private_project) { create(:project, :private) }
+
+      before do
+        sign_in(user)
+      end
 
       it 'returns 404' do
         post :create,
@@ -120,7 +129,9 @@ describe NotificationSettingsController do
     end
 
     context 'when authorized' do
-      before{ sign_in(user) }
+      before do
+        sign_in(user)
+      end
 
       it 'returns success' do
         put :update,
@@ -152,7 +163,9 @@ describe NotificationSettingsController do
     context 'not authorized' do
       let(:other_user) { create(:user) }
 
-      before { sign_in(other_user) }
+      before do
+        sign_in(other_user)
+      end
 
       it 'returns 404' do
         put :update,

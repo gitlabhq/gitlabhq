@@ -1,37 +1,41 @@
 require 'spec_helper'
 
-describe WikiPages::UpdateService, services: true do
-  let(:project) { create(:empty_project) }
+describe WikiPages::UpdateService do
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:wiki_page) { create(:wiki_page) }
+  let(:page) { create(:wiki_page) }
+
   let(:opts) do
     {
       content: 'New content for wiki page',
       format: 'markdown',
-      message: 'New wiki message'
+      message: 'New wiki message',
+      title: 'New Title'
     }
   end
-  let(:service) { described_class.new(project, user, opts) }
+
+  subject(:service) { described_class.new(project, user, opts) }
+
+  before do
+    project.add_developer(user)
+  end
 
   describe '#execute' do
-    context "valid params" do
-      before do
-        allow(service).to receive(:execute_hooks)
-        project.add_master(user)
-      end
+    it 'updates the wiki page' do
+      updated_page = service.execute(page)
 
-      subject { service.execute(wiki_page) }
+      expect(updated_page).to be_valid
+      expect(updated_page.message).to eq(opts[:message])
+      expect(updated_page.content).to eq(opts[:content])
+      expect(updated_page.format).to eq(opts[:format].to_sym)
+      expect(updated_page.title).to eq(opts[:title])
+    end
 
-      it 'updates the wiki page' do
-        is_expected.to be_valid
-        expect(subject.content).to eq(opts[:content])
-        expect(subject.format).to eq(opts[:format].to_sym)
-        expect(subject.message).to eq(opts[:message])
-      end
+    it 'executes webhooks' do
+      expect(service).to receive(:execute_hooks).once
+        .with(instance_of(WikiPage), 'update')
 
-      it 'executes webhooks' do
-        expect(service).to have_received(:execute_hooks).once.with(subject, 'update')
-      end
+      service.execute(page)
     end
   end
 end

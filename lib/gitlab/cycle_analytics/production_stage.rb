@@ -15,12 +15,16 @@ module Gitlab
         :production
       end
 
+      def title
+        s_('CycleAnalyticsStage|Production')
+      end
+
       def legend
-        "Related Issues"
+        _("Related Issues")
       end
 
       def description
-        "From issue creation until deploy to production"
+        _("From issue creation until deploy to production")
       end
 
       def query

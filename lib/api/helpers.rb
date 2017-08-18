@@ -16,6 +16,8 @@ module API
 
       @current_user = initial_current_user
 
+      Gitlab::I18n.locale = @current_user&.preferred_language
+
       sudo!
 
       @current_user
@@ -23,6 +25,10 @@ module API
 
     def sudo?
       initial_current_user != current_user
+    end
+
+    def user_group
+      @group ||= find_group!(params[:id])
     end
 
     def user_project
@@ -91,8 +97,8 @@ module API
     end
 
     def find_project_snippet(id)
-      finder_params = { filter: :by_project, project: user_project }
-      SnippetsFinder.new.execute(current_user, finder_params).find(id)
+      finder_params = { project: user_project }
+      SnippetsFinder.new(current_user, finder_params).execute.find(id)
     end
 
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
@@ -158,7 +164,7 @@ module API
       params_hash = custom_params || params
       attrs = {}
       keys.each do |key|
-        if params_hash[key].present? || (params_hash.has_key?(key) && params_hash[key] == false)
+        if params_hash[key].present? || (params_hash.key?(key) && params_hash[key] == false)
           attrs[key] = params_hash[key]
         end
       end
@@ -251,41 +257,40 @@ module API
       message << "  " << trace.join("\n  ")
 
       API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+
+      response_message =
+        if Rails.env.test?
+          message
+        else
+          '500 Internal Server Error'
+        end
+
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers
 
-    def filter_projects(projects)
-      if params[:membership]
-        projects = projects.merge(current_user.authorized_projects)
-      end
-
-      if params[:owned]
-        projects = projects.merge(current_user.owned_projects)
-      end
-
-      if params[:starred]
-        projects = projects.merge(current_user.starred_projects)
-      end
-
-      if params[:search].present?
-        projects = projects.search(params[:search])
-      end
-
-      if params[:visibility].present?
-        projects = projects.search_by_visibility(params[:visibility])
-      end
-
-      projects = projects.where(archived: params[:archived])
+    def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
+    end
+
+    def project_finder_params
+      finder_params = {}
+      finder_params[:owned] = true if params[:owned].present?
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = params[:archived]
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params
     end
 
     # file helpers
 
     def uploaded_file(field, uploads_path)
       if params[field]
-        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        bad_request!("#{field} is not a file") unless params[field][:filename]
         return params[field]
       end
 
@@ -301,7 +306,7 @@ module API
       UploadedFile.new(
         file_path,
         params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream',
+        params["#{field}.type"] || 'application/octet-stream'
       )
     end
 
@@ -321,6 +326,16 @@ module API
       end
     end
 
+    def present_artifacts!(artifacts_file)
+      return not_found! unless artifacts_file.exists?
+
+      if artifacts_file.file_storage?
+        present_file!(artifacts_file.path, artifacts_file.filename)
+      else
+        redirect_to(artifacts_file.url)
+      end
+    end
+
     private
 
     def private_token
@@ -331,19 +346,21 @@ module API
       env['warden']
     end
 
+    # Check if the request is GET/HEAD, or if CSRF token is valid.
+    def verified_request?
+      Gitlab::RequestForgeryProtection.verified?(env)
+    end
+
     # Check the Rails session for valid authentication details
-    #
-    # Until CSRF protection is added to the API, disallow this method for
-    # state-changing endpoints
     def find_user_from_warden
-      warden.try(:authenticate) if %w[GET HEAD].include?(env['REQUEST_METHOD'])
+      warden.try(:authenticate) if verified_request?
     end
 
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
       Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: @scopes)
-        @initial_current_user ||= doorkeeper_guard(scopes: @scopes)
+        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
+        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
         @initial_current_user ||= find_user_from_warden
 
         unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
@@ -406,6 +423,23 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    # An array of scopes that were registered (using `allow_access_with_scope`)
+    # for the current endpoint class. It also returns scopes registered on
+    # `API::API`, since these are meant to apply to all API routes.
+    def scopes_registered_for_endpoint
+      @scopes_registered_for_endpoint ||=
+        begin
+          endpoint_classes = [options[:for].presence, ::API::API].compact
+          endpoint_classes.reduce([]) do |memo, endpoint|
+            if endpoint.respond_to?(:allowed_scopes)
+              memo.concat(endpoint.allowed_scopes)
+            else
+              memo
+            end
+          end
+        end
     end
   end
 end

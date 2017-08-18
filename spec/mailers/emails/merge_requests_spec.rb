@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'email_spec'
 
-describe Notify, "merge request notifications" do
+describe Emails::MergeRequests do
   include EmailSpec::Matchers
 
   describe "#resolved_all_discussions_email" do

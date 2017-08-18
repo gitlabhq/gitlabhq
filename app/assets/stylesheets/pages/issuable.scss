@@ -5,8 +5,39 @@
   margin-right: auto;
 }
 
+.is-confidential {
+  color: $orange-600;
+  background-color: $orange-50;
+  border-radius: $border-radius-default;
+  padding: 5px;
+  margin: 0 3px 0 -4px;
+}
+
+.is-not-confidential {
+  border-radius: $border-radius-default;
+  padding: 5px;
+  margin: 0 3px 0 -4px;
+}
+
+.confidentiality {
+  .is-not-confidential {
+    margin: auto;
+  }
+
+  .is-confidential {
+    margin: auto;
+  }
+}
+
 .limit-container-width {
-  .detail-page-header {
+  .detail-page-header,
+  .page-content-header,
+  .commit-box,
+  .info-well,
+  .commit-ci-menu,
+  .files-changed-inner,
+  .limited-header-width,
+  .limited-width-notes {
     @extend .fixed-width-container;
   }
 
@@ -17,16 +48,6 @@
     .merge-manually {
       @extend .fixed-width-container;
     }
-
-    .merge-request-tabs-holder {
-      &.affix {
-        border-bottom: 1px solid $border-color;
-
-        .nav-links {
-          border: 0;
-        }
-      }
-    }
   }
 
   .merge-request-details {
@@ -36,8 +57,7 @@
   }
 
   .diffs {
-    .mr-version-controls,
-    .files-changed {
+    .mr-version-controls {
       @extend .fixed-width-container;
     }
   }
@@ -61,6 +81,11 @@
     border: 1px solid $white-normal;
     padding: 5px;
     max-height: calc(100vh - 100px);
+    max-width: 100%;
+  }
+
+  .emoji-block {
+    padding: 10px 0;
   }
 }
 
@@ -90,8 +115,13 @@
 }
 
 .right-sidebar {
-  a {
+  a,
+  .btn-link {
     color: inherit;
+  }
+
+  .btn-link {
+    outline: none;
   }
 
   .issuable-header-text {
@@ -195,8 +225,20 @@
   right: 0;
   transition: width .3s;
   background: $gray-light;
-  padding: 10px 20px;
-  z-index: 2;
+  z-index: 200;
+  overflow: hidden;
+
+  .issuable-sidebar {
+    width: calc(100% + 100px);
+    height: calc(100% - #{$header-height});
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &.affix-top .issuable-sidebar {
+    height: 100%;
+  }
 
   &.right-sidebar-expanded {
     width: $gutter_width;
@@ -208,6 +250,24 @@
         margin-top: 10px;
         display: block;
       }
+    }
+
+    .issuable-sidebar {
+      padding: 0 20px;
+    }
+
+    .issuable-sidebar-header {
+      padding-top: 10px;
+    }
+
+    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
+      .issuable-sidebar-header {
+        display: none;
+      }
+    }
+
+    .assign-yourself .btn-link {
+      padding-left: 0;
     }
 
     .light {
@@ -227,11 +287,19 @@
       border-left: 1px solid $border-gray-normal;
     }
 
+    .title .gutter-toggle {
+      margin-top: 0;
+    }
+
     .assignee .avatar {
       float: left;
       margin-right: 10px;
       margin-bottom: 0;
       margin-left: 0;
+    }
+
+    .assignee .user-list .avatar {
+      margin: 0;
     }
 
     .username {
@@ -255,11 +323,10 @@
     }
 
     width: $gutter_collapsed_width;
-    padding-top: 0;
+    padding: 0;
 
     .block {
       width: $gutter_collapsed_width - 2px;
-      margin-left: -19px;
       padding: 15px 0 0;
       border-bottom: none;
       overflow: hidden;
@@ -286,14 +353,26 @@
       margin-bottom: 10px;
       color: $issuable-sidebar-color;
 
+      svg {
+        fill: $issuable-sidebar-color;
+      }
+
       &:hover,
       &:hover .todo-undone {
         color: $gl-text-color;
+
+        svg {
+          fill: $gl-text-color;
+        }
       }
 
       span {
         display: block;
         margin-top: 0;
+      }
+
+      .sidebar-avatar-counter {
+        padding-top: 2px;
       }
 
       .todo-undone {
@@ -304,7 +383,8 @@
         display: none;
       }
 
-      .avatar:hover {
+      .avatar-counter:hover {
+        color: $issuable-sidebar-color;
         border-color: $issuable-sidebar-color;
       }
 
@@ -317,6 +397,17 @@
           color: $gl-text-color;
         }
       }
+
+      &.multiple-users {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    .sidebar-avatar-counter {
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
     }
 
     .sidebar-collapsed-user {
@@ -326,6 +417,37 @@
 
     .issuable-header-btn {
       display: none;
+    }
+
+    .multiple-users {
+      height: 24px;
+      margin-bottom: 17px;
+      margin-top: 4px;
+      padding-bottom: 4px;
+
+      .btn-link {
+        padding: 0;
+        border: 0;
+
+        .avatar {
+          margin: 0;
+        }
+      }
+
+      .btn-link:first-child {
+        position: absolute;
+        left: 10px;
+        z-index: 1;
+      }
+
+      .btn-link:last-child {
+        position: absolute;
+        right: 10px;
+
+        &:hover {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -356,8 +478,16 @@
   }
 }
 
+.with-performance-bar .right-sidebar {
+  top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+  }
+}
+
 .detail-page-description {
-  padding: 16px 0 0;
+  padding: 16px 0;
 
   small {
     color: $gray-darkest;
@@ -367,7 +497,7 @@
 .edited-text {
   color: $gray-darkest;
   display: block;
-  margin: 0 0 16px;
+  margin: 16px 0 0;
 
   .author_link {
     color: $gray-darkest;
@@ -376,6 +506,12 @@
 
 .participants-list {
   margin: -5px;
+}
+
+
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .participants-author {
@@ -395,12 +531,38 @@
   }
 }
 
-.participants-more {
+.user-item {
+  display: inline-block;
+  padding: 5px;
+  flex-basis: 20%;
+
+  .user-link {
+    display: inline-block;
+  }
+}
+
+.participants-more,
+.user-list-more {
   margin-top: 5px;
   margin-left: 5px;
 
-  a {
+  a,
+  .btn-link {
     color: $gl-text-color-secondary;
+  }
+
+  .btn-link {
+    outline: none;
+    padding: 0;
+  }
+
+  .btn-link:hover {
+    @extend a:hover;
+    text-decoration: none;
+  }
+
+  .btn-link:focus {
+    text-decoration: none;
   }
 }
 
@@ -479,7 +641,38 @@
     .issue-info-container {
       -webkit-flex: 1;
       flex: 1;
+      display: flex;
       padding-right: $gl-padding;
+
+      .issue-main-info {
+        flex: 1 auto;
+        margin-right: 10px;
+      }
+
+      .issuable-meta {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 1 0 auto;
+
+        .controls {
+          margin-bottom: 2px;
+          line-height: 20px;
+          padding: 0;
+        }
+
+        .issue-updated-at {
+          line-height: 20px;
+        }
+      }
+
+      @media(max-width: $screen-xs-max) {
+        .issuable-meta {
+          .controls li {
+            margin-right: 0;
+          }
+        }
+      }
     }
 
     .issue-check {
@@ -491,6 +684,43 @@
         vertical-align: text-top;
       }
     }
+
+    .issuable-milestone,
+    .issuable-info,
+    .task-status,
+    .issuable-updated-at {
+      font-weight: normal;
+      color: $gl-text-color-secondary;
+
+      a {
+        color: $gl-text-color;
+
+        .fa {
+          color: $gl-text-color-secondary;
+        }
+      }
+    }
+
+    @media(max-width: $screen-md-max) {
+      .task-status,
+      .issuable-due-date,
+      .project-ref-path {
+        display: none;
+      }
+    }
+  }
+}
+
+.issuable-list li,
+.issue-info-container .controls {
+  .avatar-counter {
+    display: inline-block;
+    vertical-align: middle;
+    min-width: 16px;
+    line-height: 14px;
+    height: 16px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
 }
 
@@ -608,5 +838,28 @@
         display: none;
       }
     }
+  }
+}
+
+.issuable-close-button,
+.issuable-close-toggle {
+  @include transition(border-color, color);
+}
+
+.issuable-close-dropdown {
+  .dropdown-menu {
+    min-width: 270px;
+    left: auto;
+    right: 0;
+  }
+
+  .description {
+    .text {
+      margin: 0;
+    }
+  }
+
+  .dropdown-toggle > .icon {
+    margin: 0 3px;
   }
 }

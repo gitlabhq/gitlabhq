@@ -1,8 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-new, comma-dangle, quotes, prefer-arrow-callback, consistent-return, one-var, no-var, one-var-declaration-per-line, no-underscore-dangle, max-len */
-/* global UsersSelect */
-/* global bp */
-
 import Cookies from 'js-cookie';
+import bp from './breakpoints';
+import UsersSelect from './users_select';
+
+const PARTICIPANTS_ROW_COUNT = 7;
 
 (function() {
   this.IssuableContext = (function() {
@@ -47,15 +48,12 @@ import Cookies from 'js-cookie';
           Cookies.set('collapsed_gutter', true);
         }
       });
-      $(".right-sidebar").niceScroll();
     }
 
     IssuableContext.prototype.initParticipants = function() {
-      var _this;
-      _this = this;
       $(document).on("click", ".js-participants-more", this.toggleHiddenParticipants);
       return $(".js-participants-author").each(function(i) {
-        if (i >= _this.PARTICIPANTS_ROW_COUNT) {
+        if (i >= PARTICIPANTS_ROW_COUNT) {
           return $(this).addClass("js-participants-hidden").hide();
         }
       });

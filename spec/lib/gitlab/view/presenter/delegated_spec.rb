@@ -18,8 +18,8 @@ describe Gitlab::View::Presenter::Delegated do
     end
 
     it 'raise an error if the presentee already respond to method' do
-      expect { presenter_class.new(project, user: 'Jane Doe') }.
-        to raise_error Gitlab::View::Presenter::CannotOverrideMethodError
+      expect { presenter_class.new(project, user: 'Jane Doe') }
+        .to raise_error Gitlab::View::Presenter::CannotOverrideMethodError
     end
   end
 

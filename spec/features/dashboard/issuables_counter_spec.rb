@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe 'Navigation bar counter', feature: true, caching: true do
+describe 'Navigation bar counter', :use_clean_rails_memory_store_caching do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, namespace: user.namespace) }
+  let(:project) { create(:project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    issue.update(assignee: user)
+    issue.assignees = [user]
     merge_request.update(assignee: user)
-    login_as(user)
+    sign_in(user)
   end
 
   it 'reflects dashboard issues count' do
@@ -17,7 +17,9 @@ describe 'Navigation bar counter', feature: true, caching: true do
 
     expect_counters('issues', '1')
 
-    issue.update(assignee: nil)
+    issue.assignees = []
+
+    user.invalidate_cache_counts
 
     Timecop.travel(3.minutes.from_now) do
       visit issues_path
@@ -32,6 +34,8 @@ describe 'Navigation bar counter', feature: true, caching: true do
     expect_counters('merge_requests', '1')
 
     merge_request.update(assignee: nil)
+
+    user.invalidate_cache_counts
 
     Timecop.travel(3.minutes.from_now) do
       visit merge_requests_path

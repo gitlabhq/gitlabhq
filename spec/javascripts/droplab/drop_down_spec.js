@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import DropDown from '~/droplab/drop_down';
 import utils from '~/droplab/utils';
 import { SELECTED_CLASS, IGNORE_CLASS } from '~/droplab/constants';
@@ -17,7 +15,7 @@ describe('DropDown', function () {
 
     it('sets the .hidden property to true', function () {
       expect(this.dropdown.hidden).toBe(true);
-    })
+    });
 
     it('sets the .list property', function () {
       expect(this.dropdown.list).toBe(this.list);
@@ -152,7 +150,7 @@ describe('DropDown', function () {
 
     it('should call addSelectedClass', function () {
       expect(this.dropdown.addSelectedClass).toHaveBeenCalledWith(this.closestElement);
-    })
+    });
 
     it('should call .preventDefault', function () {
       expect(this.event.preventDefault).toHaveBeenCalled();
@@ -293,36 +291,6 @@ describe('DropDown', function () {
     });
   });
 
-  describe('toggle', function () {
-    beforeEach(function () {
-      this.dropdown = { hidden: true, show: () => {}, hide: () => {} };
-
-      spyOn(this.dropdown, 'show');
-      spyOn(this.dropdown, 'hide');
-
-      DropDown.prototype.toggle.call(this.dropdown);
-    });
-
-    it('should call .show if hidden is true', function () {
-      expect(this.dropdown.show).toHaveBeenCalled();
-    });
-
-    describe('if hidden is false', function () {
-      beforeEach(function () {
-        this.dropdown = { hidden: false, show: () => {}, hide: () => {} };
-
-        spyOn(this.dropdown, 'show');
-        spyOn(this.dropdown, 'hide');
-
-        DropDown.prototype.toggle.call(this.dropdown);
-      });
-
-      it('should call .show if hidden is true', function () {
-        expect(this.dropdown.hide).toHaveBeenCalled();
-      });
-    });
-  });
-
   describe('setData', function () {
     beforeEach(function () {
       this.dropdown = { render: () => {} };
@@ -399,7 +367,7 @@ describe('DropDown', function () {
       expect(this.data.map).toHaveBeenCalledWith(jasmine.any(Function));
     });
 
-    it('should call .renderChildren for each data item', function() {
+    it('should call .renderChildren for each data item', function () {
       expect(this.dropdown.renderChildren.calls.count()).toBe(this.data.length);
     });
 
@@ -407,7 +375,7 @@ describe('DropDown', function () {
       expect(this.renderableList.innerHTML).toBe('01');
     });
 
-    describe('if no data argument is passed' , function () {
+    describe('if no data argument is passed', function () {
       beforeEach(function () {
         this.data.map.calls.reset();
         this.dropdown.renderChildren.calls.reset();
@@ -446,20 +414,20 @@ describe('DropDown', function () {
   describe('renderChildren', function () {
     beforeEach(function () {
       this.templateString = 'templateString';
-      this.dropdown = { setImagesSrc: () => {}, templateString: this.templateString };
+      this.dropdown = { templateString: this.templateString };
       this.data = { droplab_hidden: true };
       this.html = 'html';
       this.template = { firstChild: { outerHTML: 'outerHTML', style: {} } };
 
-      spyOn(utils, 't').and.returnValue(this.html);
+      spyOn(utils, 'template').and.returnValue(this.html);
       spyOn(document, 'createElement').and.returnValue(this.template);
-      spyOn(this.dropdown, 'setImagesSrc');
+      spyOn(DropDown, 'setImagesSrc');
 
       this.renderChildren = DropDown.prototype.renderChildren.call(this.dropdown, this.data);
     });
 
     it('should call utils.t with .templateString and data', function () {
-      expect(utils.t).toHaveBeenCalledWith(this.templateString, this.data);
+      expect(utils.template).toHaveBeenCalledWith(this.templateString, this.data);
     });
 
     it('should call document.createElement', function () {
@@ -471,7 +439,7 @@ describe('DropDown', function () {
     });
 
     it('should call .setImagesSrc with the template', function () {
-      expect(this.dropdown.setImagesSrc).toHaveBeenCalledWith(this.template);
+      expect(DropDown.setImagesSrc).toHaveBeenCalledWith(this.template);
     });
 
     it('should set the template display to none', function () {
@@ -496,12 +464,11 @@ describe('DropDown', function () {
 
   describe('setImagesSrc', function () {
     beforeEach(function () {
-      this.dropdown = {};
       this.template = { querySelectorAll: () => {} };
 
       spyOn(this.template, 'querySelectorAll').and.returnValue([]);
 
-      DropDown.prototype.setImagesSrc.call(this.dropdown, this.template);
+      DropDown.setImagesSrc(this.template);
     });
 
     it('should call .querySelectorAll', function () {
@@ -562,7 +529,7 @@ describe('DropDown', function () {
 
   describe('toggle', function () {
     beforeEach(function () {
-      this.hidden = true
+      this.hidden = true;
       this.dropdown = { hidden: this.hidden, show: () => {}, hide: () => {} };
 
       spyOn(this.dropdown, 'show');
@@ -577,7 +544,7 @@ describe('DropDown', function () {
 
     describe('if .hidden is false', function () {
       beforeEach(function () {
-        this.hidden = false
+        this.hidden = false;
         this.dropdown = { hidden: this.hidden, show: () => {}, hide: () => {} };
 
         spyOn(this.dropdown, 'show');

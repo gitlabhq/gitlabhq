@@ -4,11 +4,9 @@ describe API::Keys do
   let(:user)  { create(:user) }
   let(:admin) { create(:admin) }
   let(:key)   { create(:key, user: user) }
-  let(:email)   { create(:email, user: user) }
+  let(:email) { create(:email, user: user) }
 
   describe 'GET /keys/:uid' do
-    before { admin }
-
     context 'when unauthenticated' do
       it 'returns authentication error' do
         get api("/keys/#{key.id}")

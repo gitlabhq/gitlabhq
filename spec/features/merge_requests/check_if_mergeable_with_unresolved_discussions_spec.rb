@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Check if mergeable with unresolved discussions', js: true, feature: true do
+feature 'Check if mergeable with unresolved discussions', js: true do
   let(:user)           { create(:user) }
-  let(:project)        { create(:project) }
+  let(:project)        { create(:project, :repository) }
   let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
   before do
-    login_as user
+    sign_in user
     project.team << [user, :master]
   end
 
@@ -19,8 +19,8 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'does not allow to merge' do
         visit_merge_request(merge_request)
 
-        expect(page).not_to have_button 'Accept merge request'
-        expect(page).to have_content('This merge request has unresolved discussions')
+        expect(page).not_to have_button 'Merge'
+        expect(page).to have_content('There are unresolved discussions.')
       end
     end
 
@@ -32,7 +32,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'allows MR to be merged' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
   end
@@ -46,7 +46,7 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'does not allow to merge' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
 
@@ -58,12 +58,12 @@ feature 'Check if mergeable with unresolved discussions', js: true, feature: tru
       it 'allows MR to be merged' do
         visit_merge_request(merge_request)
 
-        expect(page).to have_button 'Accept merge request'
+        expect(page).to have_button 'Merge'
       end
     end
   end
 
   def visit_merge_request(merge_request)
-    visit namespace_project_merge_request_path(merge_request.project.namespace, merge_request.project, merge_request)
+    visit project_merge_request_path(merge_request.project, merge_request)
   end
 end

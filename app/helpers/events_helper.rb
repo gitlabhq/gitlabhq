@@ -10,11 +10,12 @@ module EventsHelper
     'deleted' => 'icon_trash_o'
   }.freeze
 
-  def link_to_author(event)
+  def link_to_author(event, self_added: false)
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username), title: author.name
+      name = self_added ? 'You' : author.name
+      link_to name, user_path(author.username), title: name
     else
       event.author_name
     end
@@ -40,7 +41,7 @@ module EventsHelper
     link_opts = {
       class: "event-filter-link",
       id:    "#{key}_event_filter",
-      title: "Filter by #{tooltip.downcase}",
+      title: "Filter by #{tooltip.downcase}"
     }
 
     content_tag :li, class: active do
@@ -98,13 +99,12 @@ module EventsHelper
 
   def event_feed_url(event)
     if event.issue?
-      namespace_project_issue_url(event.project.namespace, event.project,
+      project_issue_url(event.project,
                                   event.issue)
     elsif event.merge_request?
-      namespace_project_merge_request_url(event.project.namespace,
-                                          event.project, event.merge_request)
+      project_merge_request_url(event.project, event.merge_request)
     elsif event.commit_note?
-      namespace_project_commit_url(event.project.namespace, event.project,
+      project_commit_url(event.project,
                                    event.note_target)
     elsif event.note?
       if event.note_target
@@ -118,15 +118,15 @@ module EventsHelper
   def push_event_feed_url(event)
     if event.push_with_commits? && event.md_ref?
       if event.commits_count > 1
-        namespace_project_compare_url(event.project.namespace, event.project,
+        project_compare_url(event.project,
                                       from: event.commit_from, to:
                                       event.commit_to)
       else
-        namespace_project_commit_url(event.project.namespace, event.project,
+        project_commit_url(event.project,
                                      id: event.commit_to)
       end
     else
-      namespace_project_commits_url(event.project.namespace, event.project,
+      project_commits_url(event.project,
                                     event.ref_name)
     end
   end
@@ -145,15 +145,9 @@ module EventsHelper
 
   def event_note_target_path(event)
     if event.commit_note?
-      namespace_project_commit_path(event.project.namespace,
-                                    event.project,
-                                    event.note_target,
-                                    anchor: dom_id(event.target))
+      project_commit_path(event.project, event.note_target, anchor: dom_id(event.target))
     elsif event.project_snippet_note?
-      namespace_project_snippet_path(event.project.namespace,
-                                     event.project,
-                                     event.note_target,
-                                     anchor: dom_id(event.target))
+      project_snippet_path(event.project, event.note_target, anchor: dom_id(event.target))
     else
       polymorphic_path([event.project.namespace.becomes(Namespace),
                         event.project, event.note_target],
@@ -163,9 +157,14 @@ module EventsHelper
 
   def event_note_title_html(event)
     if event.note_target
-      link_to(event_note_target_path(event), title: event.target_title, class: 'has-tooltip') do
-        "#{event.note_target_type} #{event.note_target_reference}"
-      end
+      text = raw("#{event.note_target_type} ") +
+        if event.commit_note?
+          content_tag(:span, event.note_target_reference, class: 'commit-sha')
+        else
+          event.note_target_reference
+        end
+
+      link_to(text, event_note_target_path(event), title: event.target_title, class: 'has-tooltip')
     else
       content_tag(:strong, '(deleted)')
     end

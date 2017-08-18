@@ -8,18 +8,9 @@ module Backup
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
 
-      # saving additional informations
-      s = {}
-      s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
-      s[:backup_created_at]  = Time.now
-      s[:gitlab_version]     = Gitlab::VERSION
-      s[:tar_version]        = tar_version
-      s[:skipped]            = ENV["SKIP"]
-      tar_file = "#{s[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{s[:gitlab_version]}#{FILE_NAME_SUFFIX}"
-
       Dir.chdir(backup_path) do
         File.open("#{backup_path}/backup_information.yml", "w+") do |file|
-          file << s.to_yaml.gsub(/^---\n/, '')
+          file << backup_information.to_yaml.gsub(/^---\n/, '')
         end
 
         # create archive
@@ -33,11 +24,11 @@ module Backup
           abort 'Backup failed'
         end
 
-        upload(tar_file)
+        upload
       end
     end
 
-    def upload(tar_file)
+    def upload
       $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
       connection_settings = Gitlab.config.backup.upload.connection
@@ -48,7 +39,7 @@ module Backup
 
       directory = connect_to_remote_directory(connection_settings)
 
-      if directory.files.create(key: tar_file, body: File.open(tar_file), public: false,
+      if directory.files.create(key: remote_target, body: File.open(tar_file), public: false,
                                 multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
                                 encryption: Gitlab.config.backup.upload.encryption,
                                 storage_class: Gitlab.config.backup.upload.storage_class)
@@ -84,7 +75,11 @@ module Backup
 
         Dir.chdir(backup_path) do
           backup_file_list.each do |file|
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2})?_gitlab_backup\.tar/
+            # For backward compatibility, there are 3 names the backups can have:
+            # - 1495527122_gitlab_backup.tar
+            # - 1495527068_2017_05_23_gitlab_backup.tar
+            # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
+            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
 
             timestamp = $1.to_i
 
@@ -173,7 +168,8 @@ module Backup
     end
 
     def connect_to_remote_directory(connection_settings)
-      connection = ::Fog::Storage.new(connection_settings)
+      # our settings use string keys, but Fog expects symbols
+      connection = ::Fog::Storage.new(connection_settings.symbolize_keys)
 
       # We only attempt to create the directory for local backups. For AWS
       # and other cloud providers, we cannot guarantee the user will have
@@ -189,16 +185,24 @@ module Backup
       Gitlab.config.backup.upload.remote_directory
     end
 
+    def remote_target
+      if ENV['DIRECTORY']
+        File.join(ENV['DIRECTORY'], tar_file)
+      else
+        tar_file
+      end
+    end
+
     def backup_contents
       folders_to_backup + archives_to_backup + ["backup_information.yml"]
     end
 
     def archives_to_backup
-      ARCHIVES_TO_BACKUP.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
+      ARCHIVES_TO_BACKUP.map { |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup
-      FOLDERS_TO_BACKUP.reject{ |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.reject { |name| skipped?(name) }
     end
 
     def disabled_features
@@ -209,6 +213,20 @@ module Backup
 
     def settings
       @settings ||= YAML.load_file("backup_information.yml")
+    end
+
+    def tar_file
+      @tar_file ||= "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
+    end
+
+    def backup_information
+      @backup_information ||= {
+        db_version: ActiveRecord::Migrator.current_version.to_s,
+        backup_created_at: Time.now,
+        gitlab_version: Gitlab::VERSION,
+        tar_version: tar_version,
+        skipped: ENV["SKIP"]
+      }
     end
   end
 end

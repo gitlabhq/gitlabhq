@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe API::V3::Issues do
-  include EmailHelpers
-
+describe API::V3::Issues, :mailer do
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
@@ -10,11 +8,11 @@ describe API::V3::Issues do
   let(:author)      { create(:author) }
   let(:assignee)    { create(:assignee) }
   let(:admin)       { create(:user, :admin) }
-  let!(:project)    { create(:empty_project, :public, creator_id: user.id, namespace: user.namespace ) }
+  let!(:project)    { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
   let!(:closed_issue) do
     create :closed_issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            state: :closed,
            milestone: milestone,
@@ -26,14 +24,14 @@ describe API::V3::Issues do
            :confidential,
            project: project,
            author: author,
-           assignee: assignee,
+           assignees: [assignee],
            created_at: generate(:past_time),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
-           assignee: user,
+           assignees: [user],
            project: project,
            milestone: milestone,
            created_at: generate(:past_time),
@@ -243,11 +241,11 @@ describe API::V3::Issues do
 
   describe "GET /groups/:id/issues" do
     let!(:group)            { create(:group) }
-    let!(:group_project)    { create(:empty_project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
     let!(:group_closed_issue) do
       create :closed_issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              state: :closed,
              milestone: group_milestone,
@@ -258,13 +256,13 @@ describe API::V3::Issues do
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee,
+             assignees: [assignee],
              updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
-             assignee: user,
+             assignees: [user],
              project: group_project,
              milestone: group_milestone,
              updated_at: 1.hour.ago
@@ -453,7 +451,7 @@ describe API::V3::Issues do
     end
 
     it "returns 404 on private projects for other users" do
-      private_project = create(:empty_project, :private)
+      private_project = create(:project, :private)
       create(:issue, project: private_project)
 
       get v3_api("/projects/#{private_project.id}/issues", non_member)
@@ -462,7 +460,7 @@ describe API::V3::Issues do
     end
 
     it 'returns no issues when user has access to project but not issues' do
-      restricted_project = create(:empty_project, :public, issues_access_level: ProjectFeature::PRIVATE)
+      restricted_project = create(:project, :public, issues_access_level: ProjectFeature::PRIVATE)
       create(:issue, project: restricted_project)
 
       get v3_api("/projects/#{restricted_project.id}/issues", non_member)
@@ -737,13 +735,14 @@ describe API::V3::Issues do
   describe "POST /projects/:id/issues" do
     it 'creates a new project issue' do
       post v3_api("/projects/#{project.id}/issues", user),
-        title: 'new issue', labels: 'label, label2'
+        title: 'new issue', labels: 'label, label2', assignee_id: assignee.id
 
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(%w(label label2))
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['assignee']['name']).to eq(assignee.name)
     end
 
     it 'creates a new confidential project issue' do
@@ -1113,7 +1112,7 @@ describe API::V3::Issues do
       put v3_api("/projects/#{project.id}/issues/#{closed_issue.id}", user), state_event: 'reopen'
 
       expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq 'reopened'
+      expect(json_response['state']).to eq 'opened'
     end
 
     context 'when an admin or owner makes the request' do
@@ -1140,6 +1139,22 @@ describe API::V3::Issues do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id to update assignee' do
+    it 'updates an issue with no assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: 0
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']).to eq(nil)
+    end
+
+    it 'updates an issue with assignee' do
+      put v3_api("/projects/#{project.id}/issues/#{issue.id}", user), assignee_id: user2.id
+
+      expect(response).to have_http_status(200)
+      expect(json_response['assignee']['name']).to eq(user2.name)
+    end
+  end
+
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete v3_api("/projects/#{project.id}/issues/#{issue.id}", non_member)
@@ -1155,7 +1170,7 @@ describe API::V3::Issues do
 
     context "when the user is project owner" do
       let(:owner)     { create(:user) }
-      let(:project)   { create(:empty_project, namespace: owner.namespace) }
+      let(:project)   { create(:project, namespace: owner.namespace) }
 
       it "deletes the issue if an admin requests it" do
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}", owner)
@@ -1175,8 +1190,8 @@ describe API::V3::Issues do
   end
 
   describe '/projects/:id/issues/:issue_id/move' do
-    let!(:target_project) { create(:empty_project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
-    let!(:target_project2) { create(:empty_project, creator_id: non_member.id, namespace: non_member.namespace ) }
+    let!(:target_project) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace ) }
+    let!(:target_project2) { create(:project, creator_id: non_member.id, namespace: non_member.namespace ) }
 
     it 'moves an issue' do
       post v3_api("/projects/#{project.id}/issues/#{issue.id}/move", user),

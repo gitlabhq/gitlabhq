@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Labels::PromoteService, services: true do
+describe Labels::PromoteService do
   describe '#execute' do
     let!(:user) { create(:user) }
 
     context 'project without group' do
-      let!(:project_1)  { create(:empty_project) }
+      let!(:project_1)  { create(:project) }
 
       let!(:project_label_1_1)  { create(:label, project: project_1) }
 
@@ -27,10 +27,10 @@ describe Labels::PromoteService, services: true do
       let!(:group_1)  { create(:group) }
       let!(:group_2)  { create(:group) }
 
-      let!(:project_1)  { create(:empty_project, namespace: group_1) }
-      let!(:project_2)  { create(:empty_project, namespace: group_1) }
-      let!(:project_3)  { create(:empty_project, namespace: group_1) }
-      let!(:project_4)  { create(:empty_project, namespace: group_2) }
+      let!(:project_1)  { create(:project, namespace: group_1) }
+      let!(:project_2)  { create(:project, namespace: group_1) }
+      let!(:project_3)  { create(:project, namespace: group_1) }
+      let!(:project_4)  { create(:project, namespace: group_2) }
 
       # Labels/issues can't be lazily created so we might as well eager initialize
       # all other objects too since we use them inside
@@ -66,9 +66,9 @@ describe Labels::PromoteService, services: true do
       end
 
       it 'recreates the label as a group label' do
-        expect { service.execute(project_label_1_1) }.
-          to change(project_1.labels, :count).by(-1).
-          and change(group_1.labels, :count).by(1)
+        expect { service.execute(project_label_1_1) }
+          .to change(project_1.labels, :count).by(-1)
+          .and change(group_1.labels, :count).by(1)
         expect(new_label).not_to be_nil
       end
 

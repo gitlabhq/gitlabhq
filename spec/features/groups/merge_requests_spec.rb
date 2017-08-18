@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Group merge requests page', feature: true do
+feature 'Group merge requests page' do
   let(:path) { merge_requests_group_path(group) }
   let(:issuable) { create(:merge_request, source_project: project, target_project: project, title: 'this is my created issuable') }
 
   include_examples 'project features apply to issuables', MergeRequest
 
   context 'archived issuable' do
-    let(:project_archived) { create(:project, :archived, :merge_requests_enabled, group: group) }
+    let(:project_archived) { create(:project, :archived, :merge_requests_enabled, :repository, group: group) }
     let(:issuable_archived) { create(:merge_request, source_project: project_archived, target_project: project_archived, title: 'issuable of an archived project') }
     let(:access_level) { ProjectFeature::ENABLED }
     let(:user) { user_in_group }

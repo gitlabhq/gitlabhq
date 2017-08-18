@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown milestone', :feature, :js do
+describe 'Dropdown milestone', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user) }
   let!(:milestone) { create(:milestone, title: 'v1.0', project: project) }
   let!(:uppercase_milestone) { create(:milestone, title: 'CAP_MILESTONE', project: project) }
@@ -30,10 +30,10 @@ describe 'Dropdown milestone', :feature, :js do
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -134,7 +134,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%#{milestone.title}" }])
+      expect_tokens([milestone_token(milestone.title)])
       expect_filtered_search_input_empty
     end
 
@@ -143,7 +143,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%#{milestone.title}" }])
+      expect_tokens([milestone_token(milestone.title)])
       expect_filtered_search_input_empty
     end
 
@@ -151,7 +151,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(two_words_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%\"#{two_words_milestone.title}\"" }])
+      expect_tokens([milestone_token("\"#{two_words_milestone.title}\"")])
       expect_filtered_search_input_empty
     end
 
@@ -159,7 +159,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(long_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%\"#{long_milestone.title}\"" }])
+      expect_tokens([milestone_token("\"#{long_milestone.title}\"")])
       expect_filtered_search_input_empty
     end
 
@@ -167,7 +167,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(wont_fix_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%'#{wont_fix_milestone.title}'" }])
+      expect_tokens([milestone_token("'#{wont_fix_milestone.title}'")])
       expect_filtered_search_input_empty
     end
 
@@ -175,7 +175,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(uppercase_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%#{uppercase_milestone.title}" }])
+      expect_tokens([milestone_token(uppercase_milestone.title)])
       expect_filtered_search_input_empty
     end
 
@@ -183,7 +183,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_milestone(special_milestone.title)
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: "%#{special_milestone.title}" }])
+      expect_tokens([milestone_token(special_milestone.title)])
       expect_filtered_search_input_empty
     end
 
@@ -191,7 +191,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_static_milestone('No Milestone')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: 'none' }])
+      expect_tokens([milestone_token('none', false)])
       expect_filtered_search_input_empty
     end
 
@@ -199,7 +199,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_static_milestone('Upcoming')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: 'upcoming' }])
+      expect_tokens([milestone_token('upcoming', false)])
       expect_filtered_search_input_empty
     end
 
@@ -207,7 +207,7 @@ describe 'Dropdown milestone', :feature, :js do
       click_static_milestone('Started')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([{ name: 'milestone', value: 'started' }])
+      expect_tokens([milestone_token('started', false)])
       expect_filtered_search_input_empty
     end
   end

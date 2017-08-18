@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-feature 'Project edit', feature: true, js: true do
+feature 'Project edit', js: true do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 
   before do
     project.team << [user, :master]
-    login_as(user)
+    sign_in(user)
 
-    visit edit_namespace_project_path(project.namespace, project)
+    visit edit_project_path(project)
   end
 
   context 'feature visibility' do

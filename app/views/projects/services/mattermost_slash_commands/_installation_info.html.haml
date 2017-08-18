@@ -2,6 +2,6 @@
   - unless @service.activated?
     .row
       .col-sm-9.col-sm-offset-3
-        = link_to new_namespace_project_mattermost_path(@project.namespace, @project), class: 'btn btn-lg' do
+        = link_to new_project_mattermost_path(@project), class: 'btn btn-lg' do
           = custom_icon('mattermost_logo', size: 15)
           Add to Mattermost

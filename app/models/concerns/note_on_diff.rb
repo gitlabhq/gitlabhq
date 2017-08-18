@@ -30,13 +30,7 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
-  private
-
-  def noteable_diff_refs
-    if noteable.respond_to?(:diff_sha_refs)
-      noteable.diff_sha_refs
-    else
-      noteable.diff_refs
-    end
+  def created_at_diff?(diff_refs)
+    false
   end
 end

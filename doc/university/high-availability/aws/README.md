@@ -159,19 +159,21 @@ subnet and security group and
 
 ***
 
-## Elastic File System
+## Network File System
 
-This new AWS offering allows us to create a file system accessible by 
-EC2 instances within a VPC. Choose our VPC and the subnets will be
- automatically configured assuming we don't need to set explicit IPs.
-The next section allows us to add tags and choose between General
-Purpose or Max I/O which is a good option when being accessed by a
-large number of EC2 instances.
+GitLab requires a shared filesystem such as NFS. The file share(s) will be
+mounted on all application servers. There are a variety of ways to build an
+NFS server on AWS.
 
-  ![Elastic File System](img/elastic-file-system.png)
+One option is to use a third-party AMI that offers NFS as a service. A [search
+for 'NFS' in the AWS Marketplace](https://aws.amazon.com/marketplace/search/results?x=0&y=0&searchTerms=NFS&page=1&ref_=nav_search_box)
+shows options such as NetApp, SoftNAS and others.
 
-To actually mount and install the NFS client we'll use the User Data
-section when adding our Launch Configuration.
+Another option is to build a simple NFS server using a vanilla Linux server backed
+by AWS Elastic Block Storage (EBS).
+
+> **Note:** GitLab does not recommend using AWS Elastic File System (EFS). See
+  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#aws-elastic-file-system)
 
 ***
 

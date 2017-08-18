@@ -38,6 +38,7 @@ module ServiceParams
     :new_issue_url,
     :notify,
     :notify_only_broken_pipelines,
+    :notify_only_default_branch,
     :password,
     :priority,
     :project_key,

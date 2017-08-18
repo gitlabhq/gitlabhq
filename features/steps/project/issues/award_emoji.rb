@@ -5,7 +5,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I visit "Bugfix" issue page' do
-    visit namespace_project_issue_path(@project.namespace, @project, @issue)
+    visit project_issue_path(@project, @issue)
   end
 
   step 'I click the thumbsup award Emoji' do
@@ -34,8 +34,8 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
     page.within '.awards' do
       expect do
         page.find('.js-emoji-btn.active').click
-        sleep 0.3
-      end.to change{ page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
+        wait_for_requests
+      end.to change { page.all(".award-control.js-emoji-btn").size }.from(3).to(2)
     end
   end
 

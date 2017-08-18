@@ -52,11 +52,13 @@ Every **Technical Article** contains, in the very beginning, a blockquote with t
 - A reference to the **type of article** (user guide, admin guide, tech overview, tutorial)
 - A reference to the **knowledge level** expected from the reader to be able to follow through (beginner, intermediate, advanced)
 - A reference to the **author's name** and **GitLab.com handle**
+- A reference of the **publication date**
 
 ```md
-> **Type:** tutorial ||
+> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
 > **Level:** intermediary ||
-> **Author:** [Name Surname](https://gitlab.com/username)
+> **Author:** [Name Surname](https://gitlab.com/username) ||
+> **Publication date:** AAAA/MM/DD
 ```
 
 #### Technical Articles - Writing Method
@@ -70,3 +72,34 @@ All the docs follow the same [styleguide](doc_styleguide.md).
 ### Markdown
 
 Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+
+## Testing
+
+We try to treat documentation as code, thus have implemented some testing.
+Currently, the following tests are in place:
+
+1. `docs lint`: Check that all internal (relative) links work correctly and
+   that all cURL examples in API docs use the full switches.
+
+If your contribution contains **only** documentation changes, you can speed up
+the CI process by following some branch naming conventions. You have three
+choices:
+
+| Branch name | Valid example |
+| ----------- | ------------- |
+| Starting with `docs/` | `docs/update-api-issues`     |
+| Starting with `docs-` | `docs-update-api-issues`     |
+| Ending in `-docs`     | `123-update-api-issues-docs` |
+
+If your branch name matches any of the above, it will run only the docs
+tests. If it doesn't, the whole test suite will run (including docs).
+
+---
+
+When you submit a merge request to GitLab Community Edition (CE), there is an
+additional job called `rake ee_compat_check` that runs against Enterprise
+Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
+If that job fails, read the instructions in the job log for what to do next.
+Contributors do not need to submit their changes to EE, GitLab Inc. employees
+on the other hand need to make sure that their changes apply cleanly to both
+CE and EE.

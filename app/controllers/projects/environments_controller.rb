@@ -15,9 +15,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 3_000)
+
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .within_folders
             .represent(@environments),
@@ -31,13 +33,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
+      .order(:name)
 
     respond_to do |format|
       format.html
       format.json do
         render json: {
           environments: EnvironmentSerializer
-            .new(project: @project, user: @current_user)
+            .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
             .represent(@environments),
           available_count: folder_environments.available.count,
@@ -62,7 +65,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environment = project.environments.create(environment_params)
 
     if @environment.persisted?
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :new
     end
@@ -70,7 +73,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def update
     if @environment.update(environment_params)
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+      redirect_to project_environment_path(project, @environment)
     else
       render :edit
     end
@@ -81,10 +84,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     stop_action = @environment.stop_with_action!(current_user)
 
-    if stop_action
-      redirect_to polymorphic_path([project.namespace.becomes(Namespace), project, stop_action])
-    else
-      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    action_or_env_url =
+      if stop_action
+        polymorphic_url([project.namespace.becomes(Namespace), project, stop_action])
+      else
+        project_environment_url(project, @environment)
+      end
+
+    respond_to do |format|
+      format.html { redirect_to action_or_env_url }
+      format.json { render json: { redirect_url: action_or_env_url } }
     end
   end
 
@@ -118,6 +127,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: @metrics, status: @metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def additional_metrics
+    respond_to do |format|
+      format.json do
+        additional_metrics = environment.additional_metrics || {}
+
+        render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
       end
     end
   end

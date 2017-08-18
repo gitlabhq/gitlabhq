@@ -66,7 +66,8 @@ module Projects
       end
 
       def filter_params
-        params.merge(board_id: params[:board_id], id: params[:list_id]).compact
+        params.merge(board_id: params[:board_id], id: params[:list_id])
+          .reject { |_, value| value.nil? }
       end
 
       def move_params
@@ -82,7 +83,7 @@ module Projects
           labels: true,
           only: [:id, :iid, :title, :confidential, :due_date, :relative_position],
           include: {
-            assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
+            assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
             milestone: { only: [:id, :title] }
           },
           user: current_user

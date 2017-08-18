@@ -44,12 +44,12 @@ class Projects::ForksController < Projects::ApplicationController
 
     if @forked_project.saved? && @forked_project.forked?
       if @forked_project.import_in_progress?
-        redirect_to namespace_project_import_path(@forked_project.namespace, @forked_project, continue: continue_params)
+        redirect_to project_import_path(@forked_project, continue: continue_params)
       else
         if continue_params
           redirect_to continue_params[:to], notice: continue_params[:notice]
         else
-          redirect_to namespace_project_path(@forked_project.namespace, @forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
+          redirect_to project_path(@forked_project), notice: "The project '#{@forked_project.name}' was successfully forked."
         end
       end
     else

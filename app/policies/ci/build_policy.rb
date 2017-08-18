@@ -1,13 +1,15 @@
 module Ci
   class BuildPolicy < CommitStatusPolicy
-    def rules
-      super
+    condition(:protected_ref) do
+      access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 
-      # If we can't read build we should also not have that
-      # ability when looking at this in context of commit_status
-      %w[read create update admin].each do |rule|
-        cannot! :"#{rule}_commit_status" unless can? :"#{rule}_build"
+      if @subject.tag?
+        !access.can_create_tag?(@subject.ref)
+      else
+        !access.can_update_branch?(@subject.ref)
       end
     end
+
+    rule { protected_ref }.prevent :update_build
   end
 end

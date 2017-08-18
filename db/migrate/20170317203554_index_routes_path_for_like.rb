@@ -21,9 +21,8 @@ class IndexRoutesPathForLike < ActiveRecord::Migration
 
   def down
     return unless Gitlab::Database.postgresql?
+    return unless index_exists?(:routes, :path, name: INDEX_NAME)
 
-    if index_exists?(:routes, :path, name: INDEX_NAME)
-      execute("DROP INDEX CONCURRENTLY #{INDEX_NAME};")
-    end
+    remove_concurrent_index_by_name(:routes, INDEX_NAME)
   end
 end

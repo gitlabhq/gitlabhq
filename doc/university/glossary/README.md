@@ -1,4 +1,3 @@
-
 ## What is the Glossary
 
 This contains a simplified list and definitions of some of the terms that you will encounter in your day to day activities when working with GitLab.
@@ -10,7 +9,7 @@ User authentication by combination of 2 different steps during login. This allow
 
 ### Access Levels
 
-Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](../../permissions/permissions.md
+Process of selective restriction to create, view, modify or delete a resource based on a set of assigned permissions. See [GitLab's Permission Guidelines](../../user/permissions.md)
 
 ### Active Directory (AD)
 

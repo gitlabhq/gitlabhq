@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DiffNote, models: true do
+describe DiffNote do
   include RepoHelpers
 
   let(:merge_request) { create(:merge_request) }
@@ -145,7 +145,7 @@ describe DiffNote, models: true do
 
       context "when the merge request's diff refs don't match that of the diff note" do
         before do
-          allow(subject.noteable).to receive(:diff_sha_refs).and_return(commit.diff_refs)
+          allow(subject.noteable).to receive(:diff_refs).and_return(commit.diff_refs)
         end
 
         it "returns false" do
@@ -155,33 +155,10 @@ describe DiffNote, models: true do
     end
   end
 
-  describe '#latest_merge_request_diff' do
-    context 'when active' do
-      it 'returns the current merge request diff' do
-        expect(subject.latest_merge_request_diff).to eq(merge_request.merge_request_diff)
-      end
-    end
-
-    context 'when outdated' do
-      let!(:old_merge_request_diff) { merge_request.merge_request_diff }
-      let!(:new_merge_request_diff) { merge_request.merge_request_diffs.create(diff_refs: commit.diff_refs) }
-
-      it 'returns the latest merge request diff that this diff note applied to' do
-        expect(subject.latest_merge_request_diff).to eq(old_merge_request_diff)
-      end
-    end
-  end
-
   describe "creation" do
     describe "updating of position" do
       context "when noteable is a commit" do
         let(:diff_note) { create(:diff_note_on_commit, project: project, position: position) }
-
-        it "doesn't use the DiffPositionUpdateService" do
-          expect(Notes::DiffPositionUpdateService).not_to receive(:new)
-
-          diff_note
-        end
 
         it "doesn't update the position" do
           diff_note
@@ -195,12 +172,6 @@ describe DiffNote, models: true do
         let(:diff_note) { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
 
         context "when the note is active" do
-          it "doesn't use the DiffPositionUpdateService" do
-            expect(Notes::DiffPositionUpdateService).not_to receive(:new)
-
-            diff_note
-          end
-
           it "doesn't update the position" do
             diff_note
 
@@ -211,21 +182,14 @@ describe DiffNote, models: true do
 
         context "when the note is outdated" do
           before do
-            allow(merge_request).to receive(:diff_sha_refs).and_return(commit.diff_refs)
+            allow(merge_request).to receive(:diff_refs).and_return(commit.diff_refs)
           end
 
-          it "uses the DiffPositionUpdateService" do
-            service = instance_double("Notes::DiffPositionUpdateService")
-            expect(Notes::DiffPositionUpdateService).to receive(:new).with(
-              project,
-              nil,
-              old_diff_refs: position.diff_refs,
-              new_diff_refs: commit.diff_refs,
-              paths: [path]
-            ).and_return(service)
-            expect(service).to receive(:execute)
-
+          it "updates the position" do
             diff_note
+
+            expect(diff_note.original_position).to eq(position)
+            expect(diff_note.position).not_to eq(position)
           end
         end
       end
@@ -253,6 +217,41 @@ describe DiffNote, models: true do
 
         expect(reloaded_note.discussion_id).not_to be_nil
         expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+  end
+
+  describe '#created_at_diff?' do
+    let(:diff_refs) { project.commit(sample_commit.id).diff_refs }
+    let(:position) do
+      Gitlab::Diff::Position.new(
+        old_path: "files/ruby/popen.rb",
+        new_path: "files/ruby/popen.rb",
+        old_line: nil,
+        new_line: 14,
+        diff_refs: diff_refs
+      )
+    end
+
+    context "when noteable is a commit" do
+      subject { build(:diff_note_on_commit, project: project, position: position) }
+
+      it "returns true" do
+        expect(subject.created_at_diff?(diff_refs)).to be true
+      end
+    end
+
+    context "when noteable is a merge request" do
+      context "when the diff refs match the original one of the diff note" do
+        it "returns true" do
+          expect(subject.created_at_diff?(diff_refs)).to be true
+        end
+      end
+
+      context "when the diff refs don't match the original one of the diff note" do
+        it "returns false" do
+          expect(subject.created_at_diff?(merge_request.diff_refs)).to be false
+        end
       end
     end
   end

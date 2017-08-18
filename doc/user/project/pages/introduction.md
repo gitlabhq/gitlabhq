@@ -398,6 +398,9 @@ don't redirect HTTP to HTTPS.
 
 [rfc]: https://tools.ietf.org/html/rfc2818#section-3.1 "HTTP Over TLS RFC"
 
+GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
+You can only create the highest level group website.
+
 ## Redirects in GitLab Pages
 
 Since you cannot use any custom server configuration files, like `.htaccess` or

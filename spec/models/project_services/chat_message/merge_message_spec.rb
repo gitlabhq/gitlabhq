@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::MergeMessage, models: true do
+describe ChatMessage::MergeMessage do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -22,7 +22,7 @@ describe ChatMessage::MergeMessage, models: true do
         state: 'opened',
         description: 'merge request description',
         source_branch: 'source_branch',
-        target_branch: 'target_branch',
+        target_branch: 'target_branch'
       }
     }
   end

@@ -44,10 +44,6 @@ FactoryGirl.define do
       state :opened
     end
 
-    trait :reopened do
-      state :reopened
-    end
-
     trait :locked do
       state :locked
     end
@@ -72,9 +68,20 @@ FactoryGirl.define do
       merge_user author
     end
 
+    after(:build) do |merge_request|
+      target_project = merge_request.target_project
+      source_project = merge_request.source_project
+
+      # Fake `write_ref` if we don't have repository
+      # We have too many existing tests replying on this behaviour
+      unless [target_project, source_project].all?(&:repository_exists?)
+        allow(merge_request).to receive(:write_ref)
+      end
+    end
+
     factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
-    factory :reopened_merge_request, traits: [:reopened]
+    factory :reopened_merge_request, traits: [:opened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
     factory :merge_request_with_diff_notes do
       after(:create) do |mr|

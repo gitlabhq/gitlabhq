@@ -1,21 +1,10 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_branches')
 
-.row.prepend-top-default.append-bottom-default
-  .col-lg-3
-    %h4.prepend-top-0
-      Protected Branches
-    %p Keep stable branches secure and force developers to use merge requests.
-    %p.prepend-top-20
-      By default, protected branches are designed to:
-      %ul
-        %li prevent their creation, if not already created, from everybody except Masters
-        %li prevent pushes from everybody except Masters
-        %li prevent <strong>anyone</strong> from force pushing to the branch
-        %li prevent <strong>anyone</strong> from deleting the branch
-      %p.append-bottom-0 Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
-  .col-lg-9
-    - if can? current_user, :admin_project, @project
-      = render 'projects/protected_branches/create_protected_branch'
+- content_for :create_protected_branch do
+  = render 'projects/protected_branches/create_protected_branch'
 
-    = render "projects/protected_branches/branches_list"
+- content_for :branches_list do
+  = render "projects/protected_branches/branches_list"
+
+= render 'projects/protected_branches/shared/index'

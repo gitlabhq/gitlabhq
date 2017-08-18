@@ -8,7 +8,7 @@ module Gitlab
         end
 
         def title
-          self.class.name.demodulize
+          raise NotImplementedError.new("Expected #{self.name} to implement title")
         end
 
         def value

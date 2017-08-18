@@ -1,34 +1,52 @@
-# GitLab Contributing Process
+## GitLab Core Team & GitLab Inc. Contribution Process
+
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Purpose of describing the contributing process](#purpose-of-describing-the-contributing-process)
+- [Common actions](#common-actions)
+  - [Merge request coaching](#merge-request-coaching)
+- [Assigning issues](#assigning-issues)
+- [Be kind](#be-kind)
+- [Feature freeze on the 7th for the release on the 22nd](#feature-freeze-on-the-7th-for-the-release-on-the-22nd)
+  - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
+  - [On the 7th](#on-the-7th)
+  - [After the 7th](#after-the-7th)
+- [Release retrospective and kickoff](#release-retrospective-and-kickoff)
+  - [Retrospective](#retrospective)
+  - [Kickoff](#kickoff)
+- [Copy & paste responses](#copy--paste-responses)
+  - [Improperly formatted issue](#improperly-formatted-issue)
+  - [Issue report for old version](#issue-report-for-old-version)
+  - [Support requests and configuration questions](#support-requests-and-configuration-questions)
+  - [Code format](#code-format)
+  - [Issue fixed in newer version](#issue-fixed-in-newer-version)
+  - [Improperly formatted merge request](#improperly-formatted-merge-request)
+  - [Inactivity close of an issue](#inactivity-close-of-an-issue)
+  - [Inactivity close of a merge request](#inactivity-close-of-a-merge-request)
+  - [Accepting merge requests](#accepting-merge-requests)
+  - [Only accepting merge requests with green tests](#only-accepting-merge-requests-with-green-tests)
+  - [Closing down the issue tracker on GitHub](#closing-down-the-issue-tracker-on-github)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+---
 
 ## Purpose of describing the contributing process
 
-Below we describe the contributing process to GitLab for two reasons. So that
-contributors know what to expect from maintainers (possible responses, friendly
-treatment, etc.). And so that maintainers know what to expect from contributors
-(use the latest version, ensure that the issue is addressed, friendly treatment,
-etc.).
+Below we describe the contributing process to GitLab for two reasons:
+
+1. Contributors know what to expect from maintainers (possible responses, friendly
+  treatment, etc.)
+1. Maintainers know what to expect from contributors (use the latest version,
+  ensure that the issue is addressed, friendly treatment, etc.).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Common actions
-
-### Issue triaging
-
-Our issue triage policies are [described in our handbook]. You are very welcome
-to help the GitLab team triage issues. We also organize [issue bash events] once
-every quarter.
-
-The most important thing is making sure valid issues receive feedback from the
-development team. Therefore the priority is mentioning developers that can help
-on those issues. Please select someone with relevant experience from
-[GitLab team][team]. If there is nobody mentioned with that expertise
-look in the commit history for the affected files to find someone. Avoid
-mentioning the lead developer, this is the person that is least likely to give a
-timely response. If the involvement of the lead developer is needed the other
-core team members will mention this person.
-
-[described in our handbook]: https://about.gitlab.com/handbook/engineering/issues/issue-triage-policies/
-[issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 
 ### Merge request coaching
 
@@ -36,12 +54,6 @@ Several people from the [GitLab team][team] are helping community members to get
 their contributions accepted by meeting our [Definition of done][done].
 
 What you can expect from them is described at https://about.gitlab.com/jobs/merge-request-coach/.
-
-## Workflow labels
-
-Labelling issues is described in the [GitLab Inc engineering workflow].
-
-[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 
 ## Assigning issues
 
@@ -107,6 +119,12 @@ only be left until after the freeze if:
   are aware of it.
 * It is in the correct milestone, with the ~Deliverable label.
 
+If a merge request is not ready, but the developers and Product Manager
+responsible for the feature think it is essential that it is in the release,
+they can [ask for an exception](#asking-for-an-exception) in advance. This is
+preferable to merging something that we are not confident in, but should still
+be a rare case: most features can be allowed to slip a release.
+
 All Community Edition merge requests from GitLab team members merged on the
 freeze date (the 7th) should have a corresponding Enterprise Edition merge
 request, even if there are no conflicts. This is to reduce the size of the
@@ -116,11 +134,30 @@ information, see
 
 ### After the 7th
 
-Once the stable branch is frozen, only fixes for regressions (bugs introduced in that same release)
-and security issues will be cherry-picked into the stable branch.
-Any merge requests cherry-picked into the stable branch for a previous release will also be picked into the latest stable branch.
-These fixes will be shipped in the next RC for that release if it is before the 22nd.
-If the fixes are are completed on or after the 22nd, they will be shipped in a patch for that release.
+Once the stable branch is frozen, the only MRs that can be cherry-picked into
+the stable branch are:
+
+* Fixes for [regressions](#regressions)
+* Fixes for security issues
+* New or updated translations (as long as they do not touch application code)
+
+During the feature freeze all merge requests that are meant to go into the upcoming
+release should have the correct milestone assigned _and_ have the label
+~"Pick into Stable" set, so that release managers can find and pick them.
+Merge requests without a milestone and this label will
+not be merged into any stable branches.
+
+Fixes marked like this will be shipped in the next RC for that release. Once
+the final RC has been prepared ready for release on the 22nd, further fixes
+marked ~"Pick into Stable" will go into a patch for that release.
+
+If a merge request is to be picked into more than one release it will also need
+the ~"Pick into Backports" label set to remind the release manager to change
+the milestone after cherry-picking. As before, it should still have the
+~"Pick into Stable" label and the milestone of the highest release it will be
+picked into.
+
+### Asking for an exception
 
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made. Exceptions require sign-off from 3 people besides the developer:
@@ -140,11 +177,48 @@ When in doubt, we err on the side of _not_ cherry-picking.
 For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
 (e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
 
-During the feature freeze all merge requests that are meant to go into the upcoming
-release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set, so that release managers can find and pick them.
-Merge requests without a milestone and this label will
-not be merged into any stable branches.
+All MRs which have had exceptions granted must be merged by the 15th.
+
+### Regressions
+
+A regression for a particular monthly release is a bug that exists in that
+release, but wasn't present in the release before. This includes bugs in
+features that were only added in that monthly release. Every regression **must**
+have the milestone of the release it was introduced in - if a regression doesn't
+have a milestone, it might be 'just' a bug!
+
+For instance, if 10.5.0 adds a feature, and that feature doesn't work correctly,
+then this is a regression in 10.5. If 10.5.1 then fixes that, but 10.5.3 somehow
+reintroduces the bug, then this bug is still a regression in 10.5.
+
+Because GitLab.com runs release candidates of new releases, a regression can be
+reported in a release before its 'official' release date on the 22nd of the
+month. When we say 'the most recent monthly release', this can refer to either
+the version currently running on GitLab.com, or the most recent version
+available in the package repositories.
+
+## Release retrospective and kickoff
+
+### Retrospective
+
+After each release, we have a retrospective call where we discuss what went well,
+what went wrong, and what we can improve for the next release. The
+[retrospective notes] are public and you are invited to comment on them.
+If you're interested, you can even join the
+[retrospective call][retro-kickoff-call], on the first working day after the
+22nd at 6pm CET / 9am PST.
+
+### Kickoff
+
+Before working on the next release, we have a
+kickoff call to explain what we expect to ship in the next release. The
+[kickoff notes] are public and you are invited to comment on them.
+If you're interested, you can even join the [kickoff call][retro-kickoff-call],
+on the first working day after the 7th at 6pm CET / 9am PST..
+
+[retrospective notes]: https://docs.google.com/document/d/1nEkM_7Dj4bT21GJy0Ut3By76FZqCfLBmFQNVThmW2TY/edit?usp=sharing
+[kickoff notes]: https://docs.google.com/document/d/1ElPkZ90A8ey_iOkTvUs_ByMlwKK6NAB2VOK5835wYK0/edit?usp=sharing
+[retro-kickoff-call]: https://gitlab.zoom.us/j/918821206
 
 ## Copy & paste responses
 

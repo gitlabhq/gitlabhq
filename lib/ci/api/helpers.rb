@@ -28,7 +28,8 @@ module Ci
 
         yield if block_given?
 
-        forbidden!('Project has been deleted!') unless build.project
+        project = build.project
+        forbidden!('Project has been deleted!') if project.nil? || project.pending_delete?
         forbidden!('Build has been erased!') if build.erased?
       end
 

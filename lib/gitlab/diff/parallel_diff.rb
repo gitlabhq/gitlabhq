@@ -14,16 +14,7 @@ module Gitlab
         lines = []
         highlighted_diff_lines = diff_file.highlighted_diff_lines
         highlighted_diff_lines.each do |line|
-          if line.meta? || line.unchanged?
-            # line in the right panel is the same as in the left one
-            lines << {
-              left: line,
-              right: line
-            }
-
-            free_right_index = nil
-            i += 1
-          elsif line.removed?
+          if line.removed?
             lines << {
               left: line,
               right: nil
@@ -51,6 +42,15 @@ module Gitlab
               free_right_index = nil
               i += 1
             end
+          elsif line.meta? || line.unchanged?
+            # line in the right panel is the same as in the left one
+            lines << {
+              left: line,
+              right: line
+            }
+
+            free_right_index = nil
+            i += 1
           end
         end
 

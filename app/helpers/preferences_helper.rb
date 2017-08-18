@@ -49,7 +49,7 @@ module PreferencesHelper
 
     user_view = current_user.project_view
 
-    if @project.feature_available?(:repository, current_user)
+    if can?(current_user, :download_code, @project)
       user_view
     elsif user_view == "activity"
       "activity"

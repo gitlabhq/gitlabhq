@@ -29,21 +29,21 @@ describe ImportHelper do
     context 'when provider is "github"' do
       context 'when provider does not specify a custom URL' do
         it 'uses default GitHub URL' do
-          allow(Gitlab.config.omniauth).to receive(:providers).
-          and_return([Settingslogic.new('name' => 'github')])
+          allow(Gitlab.config.omniauth).to receive(:providers)
+          .and_return([Settingslogic.new('name' => 'github')])
 
-          expect(helper.provider_project_link('github', 'octocat/Hello-World')).
-          to include('href="https://github.com/octocat/Hello-World"')
+          expect(helper.provider_project_link('github', 'octocat/Hello-World'))
+          .to include('href="https://github.com/octocat/Hello-World"')
         end
       end
 
       context 'when provider specify a custom URL' do
         it 'uses custom URL' do
-          allow(Gitlab.config.omniauth).to receive(:providers).
-          and_return([Settingslogic.new('name' => 'github', 'url' => 'https://github.company.com')])
+          allow(Gitlab.config.omniauth).to receive(:providers)
+          .and_return([Settingslogic.new('name' => 'github', 'url' => 'https://github.company.com')])
 
-          expect(helper.provider_project_link('github', 'octocat/Hello-World')).
-          to include('href="https://github.company.com/octocat/Hello-World"')
+          expect(helper.provider_project_link('github', 'octocat/Hello-World'))
+          .to include('href="https://github.company.com/octocat/Hello-World"')
         end
       end
     end
@@ -54,8 +54,8 @@ describe ImportHelper do
       end
 
       it 'uses given host' do
-        expect(helper.provider_project_link('gitea', 'octocat/Hello-World')).
-        to include('href="https://try.gitea.io/octocat/Hello-World"')
+        expect(helper.provider_project_link('gitea', 'octocat/Hello-World'))
+        .to include('href="https://try.gitea.io/octocat/Hello-World"')
       end
     end
   end

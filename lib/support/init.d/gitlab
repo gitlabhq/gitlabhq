@@ -48,7 +48,7 @@ gitlab_pages_pid_path="$pid_path/gitlab-pages.pid"
 gitlab_pages_options="-pages-domain example.com -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
 gitlab_pages_log="$app_root/log/gitlab-pages.log"
 shell_path="/bin/bash"
-gitaly_enabled=false
+gitaly_enabled=true
 gitaly_dir=$(cd $app_root/../gitaly 2> /dev/null && pwd)
 gitaly_pid_path="$pid_path/gitaly.pid"
 gitaly_log="$app_root/log/gitaly.log"
@@ -291,7 +291,7 @@ start_gitlab() {
   fi
 
   if [ "$gitlab_workhorse_status" = "0" ]; then
-    echo "The GitLab Workhorse is already running with pid $spid, not restarting"
+    echo "The GitLab Workhorse is already running with pid $hpid, not restarting"
   else
     # No need to remove a socket, gitlab-workhorse does this itself.
     # Because gitlab-workhorse has multiple executables we need to fix
@@ -313,7 +313,7 @@ start_gitlab() {
 
   if [ "$gitlab_pages_enabled" = true ]; then
     if [ "$gitlab_pages_status" = "0" ]; then
-      echo "The GitLab Pages is already running with pid $spid, not restarting"
+      echo "The GitLab Pages is already running with pid $gppid, not restarting"
     else
       $app_root/bin/daemon_with_pidfile $gitlab_pages_pid_path  \
           $gitlab_pages_dir/gitlab-pages $gitlab_pages_options \
@@ -421,7 +421,7 @@ print_status() {
   fi
   if [ "$gitlab_pages_enabled" = true ]; then
     if [ "$gitlab_pages_status" = "0" ]; then
-        echo "The GitLab Pages with pid $mpid is running."
+        echo "The GitLab Pages with pid $gppid is running."
     else
         printf "The GitLab Pages is \033[31mnot running\033[0m.\n"
     fi

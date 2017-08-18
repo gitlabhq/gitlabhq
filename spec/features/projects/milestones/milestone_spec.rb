@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Project milestone', :feature do
+feature 'Project milestone' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, name: 'test', namespace: user.namespace) }
+  let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }
 
   before do
-    login_as(user)
+    sign_in(user)
   end
 
   context 'when project has enabled issues' do
     before do
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     it 'shows issues tab' do
@@ -38,7 +38,7 @@ feature 'Project milestone', :feature do
   context 'when project has disabled issues' do
     before do
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     it 'hides issues tab' do
@@ -68,7 +68,7 @@ feature 'Project milestone', :feature do
     before do
       create(:issue, project: project, milestone: milestone)
 
-      visit namespace_project_milestone_path(project.namespace, project, milestone)
+      visit project_milestone_path(project, milestone)
     end
 
     describe 'the collapsed sidebar' do
@@ -78,11 +78,10 @@ feature 'Project milestone', :feature do
 
       it 'shows the total MR and issue counts' do
         find('.milestone-sidebar .block', match: :first)
-        blocks = all('.milestone-sidebar .block')
 
         aggregate_failures 'MR and issue blocks' do
-          expect(blocks[3]).to have_content 1
-          expect(blocks[4]).to have_content 0
+          expect(find('.milestone-sidebar .block.issues')).to have_content 1
+          expect(find('.milestone-sidebar .block.merge-requests')).to have_content 0
         end
       end
     end

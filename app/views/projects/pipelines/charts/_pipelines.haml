@@ -1,0 +1,36 @@
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('pipelines_charts')
+
+%h4= _("Pipelines charts")
+%p
+  &nbsp;
+  %span.cgreen
+    = icon("circle")
+    = s_("Pipeline|success")
+  &nbsp;
+  %span.cgray
+    = icon("circle")
+    = s_("Pipeline|all")
+
+.prepend-top-default
+  %p.light
+    = _("Jobs for last week")
+    (#{date_from_to(Date.today - 7.days, Date.today)})
+  %canvas#weekChart{ height: 200 }
+
+.prepend-top-default
+  %p.light
+    = _("Jobs for last month")
+    (#{date_from_to(Date.today - 30.days, Date.today)})
+  %canvas#monthChart{ height: 200 }
+
+.prepend-top-default
+  %p.light
+    = _("Jobs for last year")
+  %canvas#yearChart.padded{ height: 250 }
+
+%script#pipelinesChartsData{ type: "application/json" }
+  - chartData = []
+  - [:week, :month, :year].each do |scope|
+    - chartData.push({ 'scope' => scope, 'labels' => @charts[scope].labels, 'totalValues' => @charts[scope].total, 'successValues' => @charts[scope].success })
+  = chartData.to_json.html_safe

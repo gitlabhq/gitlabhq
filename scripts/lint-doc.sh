@@ -21,4 +21,3 @@ fi
 
 echo "✔ Linting passed"
 exit 0
-

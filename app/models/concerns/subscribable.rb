@@ -9,7 +9,7 @@ module Subscribable
   extend ActiveSupport::Concern
 
   included do
-    has_many :subscriptions, dependent: :destroy, as: :subscribable
+    has_many :subscriptions, dependent: :destroy, as: :subscribable # rubocop:disable Cop/ActiveRecordDependent
   end
 
   def subscribed?(user, project = nil)
@@ -27,16 +27,16 @@ module Subscribable
   end
 
   def subscribers(project)
-    subscriptions_available(project).
-      where(subscribed: true).
-      map(&:user)
+    subscriptions_available(project)
+      .where(subscribed: true)
+      .map(&:user)
   end
 
   def toggle_subscription(user, project = nil)
     unsubscribe_from_other_levels(user, project)
 
-    find_or_initialize_subscription(user, project).
-      update(subscribed: !subscribed?(user, project))
+    find_or_initialize_subscription(user, project)
+      .update(subscribed: !subscribed?(user, project))
   end
 
   def subscribe(user, project = nil)
@@ -69,14 +69,14 @@ module Subscribable
   end
 
   def find_or_initialize_subscription(user, project)
-    subscriptions.
-      find_or_initialize_by(user_id: user.id, project_id: project.try(:id))
+    subscriptions
+      .find_or_initialize_by(user_id: user.id, project_id: project.try(:id))
   end
 
   def subscriptions_available(project)
     t = Subscription.arel_table
 
-    subscriptions.
-      where(t[:project_id].eq(nil).or(t[:project_id].eq(project.try(:id))))
+    subscriptions
+      .where(t[:project_id].eq(nil).or(t[:project_id].eq(project.try(:id))))
   end
 end

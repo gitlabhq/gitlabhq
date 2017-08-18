@@ -11,6 +11,7 @@ module Gitlab
       #   ref: String,
       #   user_id: String,
       #   user_name: String,
+      #   user_username: String,
       #   user_email: String
       #   project_id: String,
       #   repository: {
@@ -23,11 +24,11 @@ module Gitlab
       #   total_commits_count: Fixnum
       # }
       #
-      def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
+      def build(project, user, oldrev, newrev, ref, commits = [], message = nil, commits_count: nil)
         commits = Array(commits)
 
         # Total commits count
-        commits_count = commits.size
+        commits_count ||= commits.size
 
         # Get latest 20 commits ASC
         commits_limited = commits.last(20)
@@ -51,6 +52,7 @@ module Gitlab
           message: message,
           user_id: user.id,
           user_name: user.name,
+          user_username: user.username,
           user_email: user.email,
           user_avatar: user.avatar_url,
           project_id: project.id,
@@ -71,6 +73,8 @@ module Gitlab
 
         build(project, user, commits.last&.id, commits.first&.id, ref, commits)
       end
+
+      private
 
       def checkout_sha(repository, newrev, ref)
         # Checkout sha is nil when we remove branch or tag

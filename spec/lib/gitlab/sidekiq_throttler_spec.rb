@@ -13,14 +13,14 @@ describe Gitlab::SidekiqThrottler do
 
   describe '#execute!' do
     it 'sets limits on the selected queues' do
-      Gitlab::SidekiqThrottler.execute!
+      described_class.execute!
 
       expect(Sidekiq::Queue['build'].limit).to eq 4
       expect(Sidekiq::Queue['project_cache'].limit).to eq 4
     end
 
     it 'does not set limits on other queues' do
-      Gitlab::SidekiqThrottler.execute!
+      described_class.execute!
 
       expect(Sidekiq::Queue['merge'].limit).to be_nil
     end

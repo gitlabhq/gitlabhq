@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::Middleware, lib: true do
+describe Gitlab::Sherlock::Middleware do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
 
@@ -72,8 +72,8 @@ describe Gitlab::Sherlock::Middleware, lib: true do
         'REQUEST_URI' => '/cats'
       }
 
-      expect(middleware.transaction_from_env(env)).
-        to be_an_instance_of(Gitlab::Sherlock::Transaction)
+      expect(middleware.transaction_from_env(env))
+        .to be_an_instance_of(Gitlab::Sherlock::Transaction)
     end
   end
 end

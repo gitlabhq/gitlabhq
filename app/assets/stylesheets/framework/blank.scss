@@ -1,9 +1,14 @@
-.blank-state-welcome {
-  text-align: center;
-  border-bottom: 1px solid $border-color;
+.blank-state-parent-container {
+  .section-container {
+    padding: 10px;
+  }
 
-  .blank-state-text {
-    margin-bottom: 0;
+  .section-body {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 25px;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
   }
 }
 
@@ -11,41 +16,35 @@
   padding-top: 20px;
   padding-bottom: 20px;
   text-align: center;
-}
 
-.blank-state-no-icon {
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
+  &.blank-state-welcome {
+    .blank-state-welcome-title {
+      font-size: 24px;
+    }
 
-.blank-state-icon {
-  padding-bottom: 20px;
-  color: $gray-darkest;
-  font-size: 56px;
-
-  path,
-  polygon {
-    fill: currentColor;
+    .blank-state-text {
+      margin-bottom: 0;
+    }
   }
-}
 
-.blank-state-title {
-  margin-top: 0;
-  margin-bottom: 5px;
-  font-size: 18px;
-  font-weight: normal;
-}
+  .blank-state-icon {
+    padding-bottom: 20px;
 
-.blank-state-text {
-  margin-top: 0;
-  margin-bottom: $gl-padding;
-  font-size: 14px;
-
-  > strong {
-    font-weight: 600;
+    svg {
+      display: block;
+      margin: auto;
+    }
   }
-}
 
-.blank-state-welcome-title {
-  font-size: 24px;
+  .blank-state-title {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .blank-state-text {
+    max-width: $container-text-max-width;
+    margin: 0 auto $gl-padding;
+    font-size: 14px;
+  }
 }

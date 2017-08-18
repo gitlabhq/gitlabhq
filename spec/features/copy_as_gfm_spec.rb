@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Copy as GFM', feature: true, js: true do
+describe 'Copy as GFM', js: true do
   include MarkupHelper
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
 
   before do
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   describe 'Copying rendered GFM' do
@@ -16,7 +16,7 @@ describe 'Copy as GFM', feature: true, js: true do
       # `markdown` helper expects a `@project` variable
       @project = @feat.project
 
-      visit namespace_project_issue_path(@project.namespace, @project, @feat.issue)
+      visit project_issue_path(@project, @feat.issue)
     end
 
     # The filters referenced in lib/banzai/pipeline/gfm_pipeline.rb convert GitLab Flavored Markdown (GFM) to HTML.
@@ -51,7 +51,6 @@ describe 'Copy as GFM', feature: true, js: true do
 
           To see how GitLab looks please see the [features page on our website](https://about.gitlab.com/features/).
 
-
           - Manage Git repositories with fine grained access controls that keep your code secure
 
           - Perform code reviews and enhance collaboration with merge requests
@@ -65,6 +64,38 @@ describe 'Copy as GFM', feature: true, js: true do
           - Completely free and open source (MIT Expat license)
         GFM
       )
+
+      aggregate_failures('an accidentally selected empty element') do
+        gfm = '# Heading1'
+
+        html = <<-HTML.strip_heredoc
+          <h1>Heading1</h1>
+
+          <h2></h2>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
+
+      aggregate_failures('an accidentally selected other element') do
+        gfm = 'Test comment with **Markdown!**'
+
+        html = <<-HTML.strip_heredoc
+          <li class="note">
+            <div class="md">
+              <p>
+                Test comment with <strong>Markdown!</strong>
+              </p>
+            </div>
+          </li>
+
+          <li class="note"></li>
+        HTML
+
+        output_gfm = html_to_gfm(html)
+        expect(output_gfm.strip).to eq(gfm.strip)
+      end
 
       verify(
         'InlineDiffFilter',
@@ -90,13 +121,13 @@ describe 'Copy as GFM', feature: true, js: true do
         # full issue reference
         @feat.issue.to_reference(full: true),
         # issue URL
-        namespace_project_issue_url(@project.namespace, @project, @feat.issue),
+        project_issue_url(@project, @feat.issue),
         # issue URL with note anchor
-        namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123'),
+        project_issue_url(@project, @feat.issue, anchor: 'note_123'),
         # issue link
-        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue)})",
+        "[Issue](#{project_issue_url(@project, @feat.issue)})",
         # issue link with note anchor
-        "[Issue](#{namespace_project_issue_url(@project.namespace, @project, @feat.issue, anchor: 'note_123')})",
+        "[Issue](#{project_issue_url(@project, @feat.issue, anchor: 'note_123')})"
       )
 
       verify(
@@ -352,7 +383,6 @@ describe 'Copy as GFM', feature: true, js: true do
         <<-GFM.strip_heredoc,
           - Nested
 
-
               - Lists
         GFM
 
@@ -374,7 +404,6 @@ describe 'Copy as GFM', feature: true, js: true do
         # nested numbered list
         <<-GFM.strip_heredoc,
           1. Nested
-
 
               1. Numbered lists
         GFM
@@ -437,7 +466,7 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a diff' do
       before do
-        visit namespace_project_commit_path(project.namespace, project, sample_commit.id)
+        visit project_commit_path(project, sample_commit.id)
       end
 
       context 'selecting one word of text' do
@@ -478,7 +507,8 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a blob' do
       before do
-        visit namespace_project_blob_path(project.namespace, project, File.join('master', 'files/ruby/popen.rb'))
+        visit project_blob_path(project, File.join('master', 'files/ruby/popen.rb'))
+        wait_for_requests
       end
 
       context 'selecting one word of text' do
@@ -519,7 +549,8 @@ describe 'Copy as GFM', feature: true, js: true do
 
     context 'from a GFM code block' do
       before do
-        visit namespace_project_blob_path(project.namespace, project, File.join('markdown', 'doc/api/users.md'))
+        visit project_blob_path(project, File.join('markdown', 'doc/api/users.md'))
+        wait_for_requests
       end
 
       context 'selecting one word of text' do

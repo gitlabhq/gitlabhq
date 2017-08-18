@@ -35,8 +35,8 @@
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
-    display: block;
     @include set-visible;
+    display: block;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -47,6 +47,10 @@
   .dropdown-menu-toggle {
     @include chevron-active;
     border-color: $gray-darkest;
+  }
+
+  [data-toggle="dropdown"] {
+    outline: 0;
   }
 }
 
@@ -97,7 +101,7 @@
   .fa-chevron-down {
     font-size: $dropdown-chevron-size;
     position: relative;
-    top: -3px;
+    top: -2px;
     margin-left: 5px;
   }
 
@@ -109,6 +113,7 @@
   &:focus:active {
     @include chevron-active;
     border-color: $dropdown-toggle-active-border-color;
+    outline: 0;
   }
 }
 
@@ -143,7 +148,6 @@
   padding: 5px 8px;
   color: $gl-text-color;
   line-height: initial;
-  text-overflow: ellipsis;
   border-radius: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -179,13 +183,15 @@
 
 .dropdown-menu,
 .dropdown-menu-nav {
+  @include set-invisible;
   display: block;
   position: absolute;
-  width: 100%;
+  width: auto;
   top: 100%;
   left: 0;
   z-index: 9;
   min-width: 240px;
+  max-width: 500px;
   margin-top: 2px;
   margin-bottom: 0;
   font-size: 14px;
@@ -195,10 +201,10 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
-  @include set-invisible;
 
-  @media (max-width: $screen-sm-min) {
-    width: 100%;
+  &.dropdown-open-left {
+    right: 0;
+    left: auto;
   }
 
   &.is-loading {
@@ -251,15 +257,24 @@
   }
 
   .dropdown-header {
-    color: $gl-text-color;
+    color: $gl-text-color-secondary;
     font-size: 13px;
-    font-weight: 600;
     line-height: 22px;
-    text-transform: capitalize;
     padding: 0 16px;
   }
 
-  .separator + .dropdown-header {
+  &.capitalize-header .dropdown-header {
+    text-transform: capitalize;
+  }
+
+  .dropdown-bold-header {
+    font-weight: 600;
+    line-height: 22px;
+    padding: 0 16px;
+  }
+
+  .separator + .dropdown-header,
+  .separator + .dropdown-bold-header {
     padding-top: 2px;
   }
 
@@ -269,16 +284,84 @@
     color: $gl-text-color-secondary;
   }
 
-  .badge {
-    position: absolute;
-    right: 8px;
-    top: 5px;
+  .badge + span:not(.badge) {
+    // Expects up to 3 digits on the badge
+    margin-right: 40px;
   }
 }
 
-.filtered-search-box-input-container .dropdown-menu,
-.filtered-search-box-input-container .dropdown-menu-nav,
-.comment-type-dropdown .dropdown-menu {
+.droplab-dropdown {
+  .dropdown-toggle > i {
+    pointer-events: none;
+  }
+
+  .dropdown-menu li {
+    padding: $gl-btn-padding;
+    cursor: pointer;
+
+    > a,
+    > button {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      text-overflow: inherit;
+      background-color: inherit;
+      color: inherit;
+      border: inherit;
+      text-align: left;
+
+      &:hover,
+      &:focus {
+        background-color: inherit;
+        color: inherit;
+      }
+
+      &.btn .fa:not(:last-child) {
+        margin-left: 5px;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: $dropdown-hover-color;
+      color: $white-light;
+    }
+
+    &.droplab-item-selected i {
+      visibility: visible;
+    }
+
+    &.divider {
+      margin: 0 8px;
+      padding: 0;
+      border-top: $gray-darkest;
+    }
+
+    .icon {
+      visibility: hidden;
+    }
+
+    .description {
+      display: inline-block;
+      white-space: normal;
+      margin-left: 5px;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .icon {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+}
+
+.droplab-dropdown .dropdown-menu,
+.droplab-dropdown .dropdown-menu-nav {
   display: none;
   opacity: 1;
   visibility: visible;
@@ -289,7 +372,6 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     max-width: 280px;
-    width: auto;
   }
 }
 
@@ -337,8 +419,8 @@
 .dropdown-menu-user {
   .avatar {
     float: left;
-    width: 30px;
-    height: 30px;
+    width: 2 * $gl-padding;
+    height: 2 * $gl-padding;
     margin: 0 10px 0 0;
   }
 }
@@ -376,11 +458,13 @@
 .dropdown-menu-align-right {
   left: auto;
   right: 0;
+  margin-top: -5px;
 }
 
 .dropdown-menu-selectable {
   a {
     padding-left: 26px;
+    position: relative;
 
     &.is-indeterminate,
     &.is-active {
@@ -390,7 +474,8 @@
       &::before {
         position: absolute;
         left: 6px;
-        top: 6px;
+        top: 50%;
+        transform: translateY(-50%);
         font: normal normal normal 14px/1 FontAwesome;
         font-size: inherit;
         text-rendering: auto;
@@ -405,6 +490,9 @@
 
     &.is-active::before {
       content: "\f00c";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
 }
@@ -486,6 +574,7 @@
 
 .dropdown-input-field,
 .default-dropdown-input {
+  display: block;
   width: 100%;
   min-height: 30px;
   padding: 0 7px;
@@ -581,8 +670,8 @@
   }
 
   .pika-single {
-    position: relative!important;
-    top: 0!important;
+    position: relative !important;
+    top: 0 !important;
     border: 0;
     box-shadow: none;
   }
@@ -633,4 +722,63 @@
 .pika-single.animate-picker.is-bound.is-hidden {
   @include set-invisible;
   overflow: hidden;
+}
+
+// TODO: change global style and remove mixin
+@mixin new-style-dropdown($selector: '') {
+  #{$selector}.dropdown-menu,
+  #{$selector}.dropdown-menu-nav {
+    .divider {
+      margin: 6px 0;
+    }
+
+    li {
+      padding: 0 1px;
+
+      &.dropdown-header {
+        padding: 8px 16px;
+      }
+
+      a {
+        border-radius: 0;
+        padding: 8px 16px;
+
+        // make sure the text color is not overriden
+        &.text-danger {
+          @extend .text-danger;
+        }
+
+        &.is-focused,
+        &:hover,
+        &:active,
+        &:focus {
+          background-color: $gray-darker;
+        }
+
+        &.is-active {
+          font-weight: inherit;
+
+          &::before {
+            top: 16px;
+          }
+        }
+      }
+    }
+
+    &.dropdown-menu-selectable {
+      li {
+        a {
+          padding: 8px 40px;
+
+          &.is-active::before {
+            left: 16px;
+          }
+        }
+      }
+    }
+  }
+
+  #{$selector}.dropdown-menu-align-right {
+    margin-top: 2px;
+  }
 }

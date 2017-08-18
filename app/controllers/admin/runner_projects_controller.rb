@@ -18,7 +18,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     runner = rp.runner
     rp.destroy
 
-    redirect_to admin_runner_path(runner)
+    redirect_to admin_runner_path(runner), status: 302
   end
 
   private

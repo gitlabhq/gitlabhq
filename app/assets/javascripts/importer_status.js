@@ -56,6 +56,8 @@
               if (job.import_status === 'finished') {
                 job_item.removeClass("active").addClass("success");
                 return status_field.html('<span><i class="fa fa-check"></i> done</span>');
+              } else if (job.import_status === 'scheduled') {
+                return status_field.html("<i class='fa fa-spinner fa-spin'></i> scheduled");
               } else if (job.import_status === 'started') {
                 return status_field.html("<i class='fa fa-spinner fa-spin'></i> started");
               } else {

@@ -5,10 +5,11 @@ module Ci
     def execute(branch_name)
       @ref = branch_name
 
-      return unless has_ref?
+      return unless @ref.present?
 
       environments.each do |environment|
-        next unless can?(current_user, :create_deployment, project)
+        next unless environment.stop_action?
+        next unless can?(current_user, :stop_environment, environment)
 
         environment.stop_with_action!(current_user)
       end
@@ -16,13 +17,10 @@ module Ci
 
     private
 
-    def has_ref?
-      @ref.present?
-    end
-
     def environments
-      @environments ||=
-        EnvironmentsFinder.new(project, current_user, ref: @ref, recently_updated: true).execute
+      @environments ||= EnvironmentsFinder
+        .new(project, current_user, ref: @ref, recently_updated: true)
+        .execute
     end
   end
 end

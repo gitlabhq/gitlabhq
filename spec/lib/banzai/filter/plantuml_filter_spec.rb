@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Banzai::Filter::PlantumlFilter, lib: true do
+describe Banzai::Filter::PlantumlFilter do
   include FilterSpecHelper
 
   it 'should replace plantuml pre tag with img tag' do

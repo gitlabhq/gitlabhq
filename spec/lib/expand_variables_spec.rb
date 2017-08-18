@@ -25,7 +25,7 @@ describe ExpandVariables do
         result: 'keyvalueresult',
         variables: [
           { key: 'variable', value: 'value' },
-          { key: 'variable2', value: 'result' },
+          { key: 'variable2', value: 'result' }
         ] },
       { value: 'key${variable}${variable2}',
         result: 'keyvalueresult',
@@ -37,7 +37,7 @@ describe ExpandVariables do
         result: 'keyresultvalue',
         variables: [
           { key: 'variable', value: 'value' },
-          { key: 'variable2', value: 'result' },
+          { key: 'variable2', value: 'result' }
         ] },
       { value: 'key${variable2}${variable}',
         result: 'keyresultvalue',
@@ -49,7 +49,7 @@ describe ExpandVariables do
         result: 'review/feature/add-review-apps',
         variables: [
           { key: 'CI_COMMIT_REF_NAME', value: 'feature/add-review-apps' }
-        ] },
+        ] }
     ]
 
     tests.each do |test|

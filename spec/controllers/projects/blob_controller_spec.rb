@@ -3,6 +3,77 @@ require 'rails_helper'
 describe Projects::BlobController do
   let(:project) { create(:project, :public, :repository) }
 
+  describe "GET show" do
+    render_views
+
+    context 'with file path' do
+      before do
+        get(:show,
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id)
+      end
+
+      context "valid branch, valid file" do
+        let(:id) { 'master/README.md' }
+        it { is_expected.to respond_with(:success) }
+      end
+
+      context "valid branch, invalid file" do
+        let(:id) { 'master/invalid-path.rb' }
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context "invalid branch, valid file" do
+        let(:id) { 'invalid-branch/README.md' }
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context "binary file" do
+        let(:id) { 'binary-encoding/encoding/binary-1.bin' }
+        it { is_expected.to respond_with(:success) }
+      end
+    end
+
+    context 'with file path and JSON format' do
+      context "valid branch, valid file" do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'raw_path'
+        end
+      end
+    end
+
+    context 'with tree path' do
+      before do
+        get(:show,
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id)
+        controller.instance_variable_set(:@blob, nil)
+      end
+
+      context 'redirect to tree' do
+        let(:id) { 'markdown/doc' }
+        it 'redirects' do
+          expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/markdown/doc")
+        end
+      end
+    end
+  end
+
   describe 'GET diff' do
     let(:user) { create(:user) }
 
@@ -66,7 +137,7 @@ describe Projects::BlobController do
       end
 
       it 'redirects to blob show' do
-        expect(response).to redirect_to(namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG'))
+        expect(response).to redirect_to(project_blob_path(project, 'master/CHANGELOG'))
       end
     end
 
@@ -113,7 +184,7 @@ describe Projects::BlobController do
     end
 
     def blob_after_edit_path
-      namespace_project_blob_path(project.namespace, project, 'master/CHANGELOG')
+      project_blob_path(project, 'master/CHANGELOG')
     end
 
     before do
@@ -135,14 +206,14 @@ describe Projects::BlobController do
       it 'redirects to MR diff' do
         put :update, mr_params
 
-        after_edit_path = diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        after_edit_path = diffs_project_merge_request_path(project, merge_request)
         file_anchor = "##{Digest::SHA1.hexdigest('CHANGELOG')}"
         expect(response).to redirect_to(after_edit_path + file_anchor)
       end
 
       context "when user doesn't have access" do
         before do
-          other_project = create(:empty_project)
+          other_project = create(:project, :repository)
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 
@@ -172,7 +243,7 @@ describe Projects::BlobController do
         it 'redirects to blob' do
           put :update, default_params
 
-          expect(response).to redirect_to(namespace_project_blob_path(forked_project.namespace, forked_project, 'master/CHANGELOG'))
+          expect(response).to redirect_to(project_blob_path(forked_project, 'master/CHANGELOG'))
         end
       end
 
@@ -184,8 +255,7 @@ describe Projects::BlobController do
           put :update, default_params
 
           expect(response).to redirect_to(
-            new_namespace_project_merge_request_path(
-              forked_project.namespace,
+            project_new_merge_request_path(
               forked_project,
               merge_request: {
                 source_project_id: forked_project.id,

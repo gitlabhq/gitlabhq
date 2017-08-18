@@ -1,4 +1,6 @@
 class WikiPage
+  PageChangedError = Class.new(StandardError)
+
   include ActiveModel::Validations
   include ActiveModel::Conversion
   include StaticModel
@@ -22,16 +24,16 @@ class WikiPage
   def self.group_by_directory(pages)
     return [] if pages.blank?
 
-    pages.sort_by { |page| [page.directory, page.slug] }.
-      group_by(&:directory).
-      map do |dir, pages|
+    pages.sort_by { |page| [page.directory, page.slug] }
+      .group_by(&:directory)
+      .map do |dir, pages|
         if dir.present?
           WikiDirectory.new(dir, pages)
         else
           pages
         end
-      end.
-      flatten
+      end
+      .flatten
   end
 
   def self.unhyphenize(name)
@@ -136,6 +138,10 @@ class WikiPage
     versions.first
   end
 
+  def last_commit_sha
+    commit&.sha
+  end
+
   # Returns the Date that this latest version was
   # created on.
   def created_at
@@ -174,26 +180,50 @@ class WikiPage
   #
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
-  def create(attr = {})
-    @attributes.merge!(attr)
+  def create(attrs = {})
+    @attributes.merge!(attrs)
 
-    save :create_page, title, content, format, message
+    save(page_details: title) do
+      wiki.create_page(title, content, format, message)
+    end
   end
 
   # Updates an existing Wiki Page, creating a new version.
   #
-  # new_content - The raw markup content to replace the existing.
-  # format      - Optional symbol representing the content format.
-  #               See ProjectWiki::MARKUPS Hash for available formats.
-  # message     - Optional commit message to set on the new version.
+  # attrs - Hash of attributes to be updated on the page.
+  #        :content         - The raw markup content to replace the existing.
+  #        :format          - Optional symbol representing the content format.
+  #                           See ProjectWiki::MARKUPS Hash for available formats.
+  #        :message         - Optional commit message to set on the new version.
+  #        :last_commit_sha - Optional last commit sha to validate the page unchanged.
+  #        :title           - The Title to replace existing title
   #
   # Returns the String SHA1 of the newly created page
   # or False if the save was unsuccessful.
-  def update(new_content = "", format = :markdown, message = nil)
-    @attributes[:content] = new_content
-    @attributes[:format] = format
+  def update(attrs = {})
+    last_commit_sha = attrs.delete(:last_commit_sha)
+    if last_commit_sha && last_commit_sha != self.last_commit_sha
+      raise PageChangedError.new("You are attempting to update a page that has changed since you started editing it.")
+    end
 
-    save :update_page, @page, content, format, message
+    attrs.slice!(:content, :format, :message, :title)
+    @attributes.merge!(attrs)
+    page_details =
+      if title.present? && @page.title != title
+        title
+      else
+        @page.url_path
+      end
+
+    save(page_details: page_details) do
+      wiki.update_page(
+        @page,
+        content: content,
+        format: format,
+        message: attrs[:message],
+        title: title
+      )
+    end
   end
 
   # Destroys the Wiki Page.
@@ -225,30 +255,19 @@ class WikiPage
     attributes[:format] = @page.format
   end
 
-  def save(method, *args)
-    saved = false
+  def save(page_details:)
+    return unless valid?
 
-    project_wiki = wiki
-    if valid? && project_wiki.send(method, *args)
-
-      page_details = if method == :update_page
-                       # Use url_path instead of path to omit format extension
-                       @page.url_path
-                     else
-                       title
-                     end
-
-      page_title, page_dir = project_wiki.page_title_and_dir(page_details)
-      gollum_wiki = project_wiki.wiki
-      @page = gollum_wiki.paged(page_title, page_dir)
-
-      set_attributes
-
-      @persisted = true
-      saved = true
-    else
-      errors.add(:base, project_wiki.error_message) if project_wiki.error_message
+    unless yield
+      errors.add(:base, wiki.error_message)
+      return false
     end
-    saved
+
+    page_title, page_dir = wiki.page_title_and_dir(page_details)
+    gollum_wiki = wiki.wiki
+    @page = gollum_wiki.paged(page_title, page_dir)
+
+    set_attributes
+    @persisted = errors.blank?
   end
 end

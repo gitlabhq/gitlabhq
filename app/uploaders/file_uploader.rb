@@ -13,6 +13,13 @@ class FileUploader < GitlabUploader
     )
   end
 
+  # Not using `GitlabUploader.base_dir` because all project namespaces are in
+  # the `public/uploads` dir.
+  #
+  def self.base_dir
+    root_dir
+  end
+
   # Returns the part of `store_dir` that can change based on the model's current
   # path
   #
@@ -23,23 +30,19 @@ class FileUploader < GitlabUploader
   #
   # Returns a String without a trailing slash
   def self.dynamic_path_segment(model)
-    File.join(CarrierWave.root, base_dir, model.path_with_namespace)
+    File.join(CarrierWave.root, base_dir, model.full_path)
   end
 
-  attr_accessor :project
+  attr_accessor :model
   attr_reader :secret
 
-  def initialize(project, secret = nil)
-    @project = project
+  def initialize(model, secret = nil)
+    @model = model
     @secret = secret || generate_secret
   end
 
   def store_dir
     File.join(dynamic_path_segment, @secret)
-  end
-
-  def model
-    project
   end
 
   def relative_path

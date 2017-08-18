@@ -5,25 +5,25 @@ development:
   sentinels:
     -
       host: localhost
-      port: 26380 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port
     -
       host: slave2
-      port: 26381 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port
 test:
   url: redis://:mynewpassword@localhost:6379/99
   sentinels:
     -
       host: localhost
-      port: 26380 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port
     -
       host: slave2
-      port: 26381 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port
 production:
   url: redis://:mynewpassword@localhost:6379/99
   sentinels:
     -
       host: slave1
-      port: 26380 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port
     -
       host: slave2
-      port: 26381 # point to sentinel, not to redis port
+      port: 26379 # point to sentinel, not to redis port

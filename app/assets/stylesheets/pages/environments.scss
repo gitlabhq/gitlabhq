@@ -5,45 +5,13 @@
   }
 }
 
-.environments-list-loading {
-  width: 100%;
-  font-size: 34px;
-}
-
 .environments-folder-name {
   font-weight: normal;
   padding-top: 20px;
 }
 
 .environments-container {
-  .table-holder {
-    width: 100%;
-
-    @media (max-width: $screen-sm-max) {
-      overflow: auto;
-    }
-  }
-
-  .table.ci-table {
-    .environments-actions {
-      min-width: 300px;
-    }
-
-    .environments-commit,
-    .environments-actions {
-      width: 20%;
-    }
-
-    .environments-date {
-      width: 10%;
-    }
-
-    .environments-name,
-    .environments-deploy,
-    .environments-build {
-      width: 15%;
-    }
-
+  .ci-table {
     .deployment-column {
       > span {
         word-break: break-all;
@@ -69,12 +37,12 @@
       }
     }
 
-    .commit-title {
-      margin: 0;
+    .btn .text-center {
+      display: inline;
     }
 
-    .avatar-image-container {
-      text-decoration: none;
+    .commit-title {
+      margin: 0;
     }
 
     .icon-play {
@@ -95,7 +63,7 @@
     }
 
     .build-link,
-    .branch-name {
+    .ref-name {
       color: $gl-text-color;
     }
 
@@ -115,6 +83,7 @@
 
       .avatar {
         float: none;
+        margin-right: 0;
       }
     }
 
@@ -140,7 +109,7 @@
     }
 
     .branch-commit {
-      .commit-id {
+      .commit-sha {
         margin-right: 0;
       }
     }
@@ -155,19 +124,19 @@
   }
 }
 
-.prometheus-graph {
-  text {
-    fill: $stat-graph-axis-fill;
+.gl-responsive-table-row {
+  .branch-commit {
+    max-width: 100%;
   }
+}
 
-  .label-axis-text,
-  .text-metric-usage {
-    fill: $black;
-    font-weight: 500;
-  }
+.folder-row {
+  padding: 15px 0;
+  border-bottom: 1px solid $white-normal;
 
-  .legend-axis-text {
-    fill: $black;
+  @media (max-width: $screen-sm-max) {
+    border-top: 1px solid $white-normal;
+    margin-top: 10px;
   }
 }
 
@@ -210,32 +179,33 @@
 .rect-text-metric {
   fill: $white-light;
   stroke-width: 1;
-  stroke: $black;
+  stroke: $gray-darkest;
 }
 
 .rect-axis-text {
   fill: $white-light;
 }
 
-.text-metric,
-.text-median-metric,
-.text-metric-usage,
-.text-metric-date {
-  fill: $black;
-}
-
-.text-metric-date {
-  font-weight: 200;
+.text-metric {
+  font-size: 12px;
 }
 
 .selected-metric-line {
+  stroke: $gl-gray-dark;
+  stroke-width: 1;
+}
+
+.deployment-line {
   stroke: $black;
   stroke-width: 1;
 }
 
+.deploy-info-text {
+  dominant-baseline: text-before-edge;
+}
+
 .prometheus-state {
   margin-top: 10px;
-  display: none;
 
   .state-button-section {
     margin-top: 10px;
@@ -248,5 +218,80 @@
   .terminal-button,
   .stop-env-link {
     width: 38px;
+  }
+}
+
+.prometheus-panel {
+  margin-top: 20px;
+}
+
+.prometheus-svg-container {
+  position: relative;
+  height: 0;
+  width: 100%;
+  padding: 0;
+  padding-bottom: 100%;
+}
+
+.prometheus-svg-container > svg {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+
+  text {
+    fill: $gl-text-color;
+    stroke-width: 0;
+  }
+
+  .text-metric-bold {
+    font-weight: 600;
+  }
+
+  .label-axis-text,
+  .text-metric-usage {
+    fill: $black;
+    font-weight: 500;
+    font-size: 12px;
+  }
+
+  .legend-axis-text {
+    fill: $black;
+  }
+
+  .tick > text {
+    font-size: 12px;
+  }
+
+  .text-metric-title {
+    font-size: 12px;
+  }
+
+  .y-label-text,
+  .x-label-text {
+    fill: $gray-darkest;
+  }
+
+  .axis-tick {
+    stroke: $gray-darker;
+  }
+
+  @media (max-width: $screen-sm-max) {
+    .label-axis-text,
+    .text-metric-usage,
+    .legend-axis-text {
+      font-size: 8px;
+    }
+
+    .tick > text {
+      font-size: 8px;
+    }
+  }
+}
+
+.prometheus-row {
+  h5 {
+    font-size: 16px;
   }
 }

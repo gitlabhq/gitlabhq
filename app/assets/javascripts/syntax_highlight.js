@@ -9,19 +9,18 @@
 //
 //   <div class="js-syntax-highlight"></div>
 //
-(function() {
-  $.fn.syntaxHighlight = function() {
-    var $children;
 
-    if ($(this).hasClass('js-syntax-highlight')) {
-      // Given the element itself, apply highlighting
-      return $(this).addClass(gon.user_color_scheme);
-    } else {
-      // Given a parent element, recurse to any of its applicable children
-      $children = $(this).find('.js-syntax-highlight');
-      if ($children.length) {
-        return $children.syntaxHighlight();
-      }
+$.fn.syntaxHighlight = function() {
+  var $children;
+
+  if ($(this).hasClass('js-syntax-highlight')) {
+    // Given the element itself, apply highlighting
+    return $(this).addClass(gon.user_color_scheme);
+  } else {
+    // Given a parent element, recurse to any of its applicable children
+    $children = $(this).find('.js-syntax-highlight');
+    if ($children.length) {
+      return $children.syntaxHighlight();
     }
-  };
-}).call(window);
+  }
+};

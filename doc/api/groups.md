@@ -1,4 +1,4 @@
-# Groups
+# Groups API
 
 ## List groups
 

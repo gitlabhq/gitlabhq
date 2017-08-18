@@ -1,28 +1,26 @@
 require 'rails_helper'
 
-describe 'Awards Emoji', feature: true do
-  include WaitForVueResource
-
+describe 'Awards Emoji' do
   let!(:project)   { create(:project, :public) }
   let!(:user)      { create(:user) }
   let(:issue) do
     create(:issue,
-           assignee: @user,
+           assignees: [user],
            project: project)
   end
 
   context 'authorized user' do
     before do
       project.team << [user, :master]
-      login_as(user)
+      sign_in(user)
     end
 
     describe 'visiting an issue with a legacy award emoji that is not valid anymore' do
       before do
         # The `heart_tip` emoji is not valid anymore so we need to skip validation
         issue.award_emoji.build(user: user, name: 'heart_tip').save!(validate: false)
-        visit namespace_project_issue_path(project.namespace, project, issue)
-        wait_for_vue_resource
+        visit project_issue_path(project, issue)
+        wait_for_requests
       end
 
       # Regression test: https://gitlab.com/gitlab-org/gitlab-ce/issues/29529
@@ -35,20 +33,20 @@ describe 'Awards Emoji', feature: true do
       let!(:note) { create(:note_on_issue, noteable: issue, project: issue.project, note: "Hello world") }
 
       before do
-        visit namespace_project_issue_path(project.namespace, project, issue)
-        wait_for_vue_resource
+        visit project_issue_path(project, issue)
+        wait_for_requests
       end
 
       it 'increments the thumbsdown emoji', js: true do
         find('[data-name="thumbsdown"]').click
-        wait_for_ajax
+        wait_for_requests
         expect(thumbsdown_emoji).to have_text("1")
       end
 
       context 'click the thumbsup emoji' do
         it 'increments the thumbsup emoji', js: true do
           find('[data-name="thumbsup"]').click
-          wait_for_ajax
+          wait_for_requests
           expect(thumbsup_emoji).to have_text("1")
         end
 
@@ -60,7 +58,7 @@ describe 'Awards Emoji', feature: true do
       context 'click the thumbsdown emoji' do
         it 'increments the thumbsdown emoji', js: true do
           find('[data-name="thumbsdown"]').click
-          wait_for_ajax
+          wait_for_requests
           expect(thumbsdown_emoji).to have_text("1")
         end
 
@@ -83,13 +81,13 @@ describe 'Awards Emoji', feature: true do
         end
       end
 
-      context 'execute /award slash command' do
+      context 'execute /award quick action' do
         it 'toggles the emoji award on noteable', js: true do
-          execute_slash_command('/award :100:')
+          execute_quick_action('/award :100:')
 
           expect(find(noteable_award_counter)).to have_text("1")
 
-          execute_slash_command('/award :100:')
+          execute_quick_action('/award :100:')
 
           expect(page).not_to have_selector(noteable_award_counter)
         end
@@ -99,7 +97,7 @@ describe 'Awards Emoji', feature: true do
 
   context 'unauthorized user', js: true do
     before do
-      visit namespace_project_issue_path(project.namespace, project, issue)
+      visit project_issue_path(project, issue)
     end
 
     it 'has disabled emoji button' do
@@ -107,13 +105,13 @@ describe 'Awards Emoji', feature: true do
     end
   end
 
-  def execute_slash_command(cmd)
+  def execute_quick_action(cmd)
     within('.js-main-target-form') do
       fill_in 'note[note]', with: cmd
       click_button 'Comment'
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 
   def thumbsup_emoji
@@ -143,6 +141,6 @@ describe 'Awards Emoji', feature: true do
       find('[data-name="smiley"]').click
     end
 
-    wait_for_ajax
+    wait_for_requests
   end
 end

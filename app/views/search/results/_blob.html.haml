@@ -3,7 +3,7 @@
   .file-holder
     .js-file-title.file-title
       - ref = @search_results.repository_ref
-      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(ref, file_name))
+      - blob_link = project_blob_path(@project, tree_join(ref, file_name))
       = link_to blob_link do
         %i.fa.fa-file
         %strong

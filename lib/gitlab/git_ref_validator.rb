@@ -1,3 +1,5 @@
+# Gitaly note: JV: does not need to be migrated, works without a repo.
+
 module Gitlab
   module GitRefValidator
     extend self

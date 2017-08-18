@@ -65,6 +65,7 @@ class GlFieldError {
     this.state = {
       valid: false,
       empty: true,
+      submitted: false,
     };
 
     this.initFieldValidation();
@@ -108,9 +109,10 @@ class GlFieldError {
     const currentValue = this.accessCurrentValue();
     this.state.valid = false;
     this.state.empty = currentValue === '';
-
+    this.state.submitted = true;
     this.renderValidity();
     this.form.focusOnFirstInvalid.apply(this.form);
+
     // For UX, wait til after first invalid submission to check each keyup
     this.inputElement.off('keyup.fieldValidator')
       .on('keyup.fieldValidator', this.updateValidity.bind(this));

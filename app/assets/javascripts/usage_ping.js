@@ -1,4 +1,4 @@
-function UsagePing() {
+export default function UsagePing() {
   const usageDataUrl = $('.usage-data').data('endpoint');
 
   $.ajax({
@@ -10,6 +10,3 @@ function UsagePing() {
     },
   });
 }
-
-window.gl = window.gl || {};
-window.gl.UsagePing = UsagePing;

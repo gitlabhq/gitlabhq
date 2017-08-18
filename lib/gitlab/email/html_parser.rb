@@ -17,6 +17,13 @@ module Gitlab
       def filter_replies!
         document.xpath('//blockquote').each(&:remove)
         document.xpath('//table').each(&:remove)
+
+        # bogus links with no href are sometimes added by outlook,
+        # and can result in Html2Text adding extra square brackets
+        # to the text, so we unwrap them here.
+        document.xpath('//a[not(@href)]').each do |link|
+          link.replace(link.children)
+        end
       end
 
       def filtered_html

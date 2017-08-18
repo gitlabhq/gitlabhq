@@ -3,25 +3,17 @@ class IssuePolicy < IssuablePolicy
   # Make sure to sync this class checks with issue.rb to avoid security problems.
   # Check commit 002ad215818450d2cbbc5fa065850a953dc7ada8 for more information.
 
-  def issue
-    @subject
+  desc "User can read confidential issues"
+  condition(:can_read_confidential) do
+    @user && IssueCollection.new([@subject]).visible_to(@user).any?
   end
 
-  def rules
-    super
+  desc "Issue is confidential"
+  condition(:confidential, scope: :subject) { @subject.confidential? }
 
-    if @subject.confidential? && !can_read_confidential?
-      cannot! :read_issue
-      cannot! :update_issue
-      cannot! :admin_issue
-    end
-  end
-
-  private
-
-  def can_read_confidential?
-    return false unless @user
-
-    IssueCollection.new([@subject]).visible_to(@user).any?
+  rule { confidential & ~can_read_confidential }.policy do
+    prevent :read_issue
+    prevent :update_issue
+    prevent :admin_issue
   end
 end

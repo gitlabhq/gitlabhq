@@ -92,7 +92,8 @@ hr {
 .item-title { font-weight: 600; }
 
 /** FLASH message **/
-.author_link {
+.author_link,
+.author-link {
   color: $gl-link-color;
 }
 
@@ -335,11 +336,6 @@ table {
   text-align: center;
 }
 
-#nprogress .spinner {
-  top: 15px !important;
-  right: 10px !important;
-}
-
 .header-with-avatar {
   h3 {
     margin: 0;
@@ -374,6 +370,10 @@ table {
 
 .dropzone .dz-preview .dz-progress .dz-upload {
   background: $gl-success !important;
+}
+
+.dz-message {
+  margin: 0;
 }
 
 .space-right {
@@ -424,6 +424,11 @@ table {
   }
 }
 
+.bordered-box {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+}
+
 .str-truncated {
   &-60 {
     @include str-truncated(60%);
@@ -438,4 +443,9 @@ table {
   .tooltip-inner {
     word-wrap: break-word;
   }
+}
+
+.disabled-content {
+  pointer-events: none;
+  opacity: .5;
 }

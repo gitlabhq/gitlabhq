@@ -1,5 +1,5 @@
-require('~/todos');
-require('~/lib/utils/common_utils');
+import Todos from '~/todos';
+import '~/lib/utils/common_utils';
 
 describe('Todos', () => {
   preloadFixtures('todos/todos.html.raw');
@@ -9,7 +9,7 @@ describe('Todos', () => {
     loadFixtures('todos/todos.html.raw');
     todoItem = document.querySelector('.todos-list .todo');
 
-    return new gl.Todos();
+    return new Todos();
   });
 
   describe('goToTodoUrl', () => {

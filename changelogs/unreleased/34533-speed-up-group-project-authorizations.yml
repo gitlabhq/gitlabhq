@@ -1,0 +1,5 @@
+---
+title: Fix timeouts when creating projects in groups with many members
+merge_request: 13508
+author:
+type: fixed

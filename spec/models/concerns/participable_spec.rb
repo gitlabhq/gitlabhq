@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Participable, models: true do
+describe Participable do
   let(:model) do
     Class.new do
       include Participable

@@ -30,7 +30,7 @@ class CycleAnalyticsService {
       startDate,
     } = options;
 
-    return $.get(`${this.requestPath}/events/${stage.title.toLowerCase()}.json`, {
+    return $.get(`${this.requestPath}/events/${stage.name}.json`, {
       cycle_analytics: {
         start_date: startDate,
       },

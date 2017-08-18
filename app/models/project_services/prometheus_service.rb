@@ -1,7 +1,6 @@
 class PrometheusService < MonitoringService
-  include ReactiveCaching
+  include ReactiveService
 
-  self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
   self.reactive_cache_lease_timeout = 30.seconds
   self.reactive_cache_refresh_interval = 30.seconds
   self.reactive_cache_lifetime = 1.minute
@@ -29,17 +28,6 @@ class PrometheusService < MonitoringService
     'Prometheus monitoring'
   end
 
-  def help
-    <<-MD.strip_heredoc
-      Retrieves the Kubernetes node metrics `container_cpu_usage_seconds_total`
-      and `container_memory_usage_bytes` from the configured Prometheus server.
-
-      If you are not using [Auto-Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html)
-      or have set up your own Prometheus server, an `environment` label is required on each metric to
-      [identify the Environment](https://docs.gitlab.com/ce/user/project/integrations/prometheus.html#metrics-and-labels).
-    MD
-  end
-
   def self.to_param
     'prometheus'
   end
@@ -50,7 +38,9 @@ class PrometheusService < MonitoringService
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/'
+        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
+        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.',
+        required: true
       }
     ]
   end
@@ -64,37 +54,49 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
-  def metrics(environment)
-    with_reactive_cache(environment.slug) do |data|
-      data
-    end
+  def environment_metrics(environment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
+  end
+
+  def deployment_metrics(deployment)
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
+    metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
+  end
+
+  def additional_environment_metrics(environment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery.name, environment.id, &:itself)
+  end
+
+  def additional_deployment_metrics(deployment)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.id, &:itself)
+  end
+
+  def matched_metrics
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
   end
 
   # Cache metrics for specific environment
-  def calculate_reactive_cache(environment_slug)
+  def calculate_reactive_cache(query_class_name, *args)
     return unless active? && project && !project.pending_delete?
 
-    memory_query = %{(sum(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"})) /1024/1024}
-    cpu_query = %{sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) / count(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}) * 100}
-
+    data = Kernel.const_get(query_class_name).new(client).query(*args)
     {
       success: true,
-      metrics: {
-        # Average Memory used in MB
-        memory_values: client.query_range(memory_query, start: 8.hours.ago),
-        memory_current: client.query(memory_query),
-        # Average CPU Utilization
-        cpu_values: client.query_range(cpu_query, start: 8.hours.ago),
-        cpu_current: client.query(cpu_query)
-      },
+      data: data,
       last_update: Time.now.utc
     }
-
   rescue Gitlab::PrometheusError => err
     { success: false, result: err.message }
   end
 
   def client
-    @prometheus ||= Gitlab::Prometheus.new(api_url: api_url)
+    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+  end
+
+  private
+
+  def rename_data_to_metrics(metrics)
+    metrics[:metrics] = metrics.delete :data
+    metrics
   end
 end

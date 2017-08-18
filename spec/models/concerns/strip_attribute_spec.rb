@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Milestone, "StripAttribute" do
+describe StripAttribute do
   let(:milestone) { create(:milestone) }
 
   describe ".strip_attributes" do

@@ -6,10 +6,10 @@
         = devise_error_messages!
       = f.hidden_field :reset_password_token
       .form-group
-        = f.label 'New password', for: :password
+        = f.label 'New password', for: "user_password"
         = f.password_field :password, class: "form-control top",  required: true, title: 'This field is required'
       .form-group
-        = f.label 'Confirm new password', for: :password_confirmation
+        = f.label 'Confirm new password', for: "user_password_confirmation"
         = f.password_field :password_confirmation, class: "form-control bottom", title: 'This field is required', required: true
       .clearfix
         = f.submit "Change your password", class: "btn btn-primary"

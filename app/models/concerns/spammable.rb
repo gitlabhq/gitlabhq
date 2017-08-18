@@ -8,7 +8,7 @@ module Spammable
   end
 
   included do
-    has_one :user_agent_detail, as: :subject, dependent: :destroy
+    has_one :user_agent_detail, as: :subject, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     attr_accessor :spam
     attr_accessor :spam_log
@@ -58,7 +58,7 @@ module Spammable
       options.fetch(:spam_title, false)
     end
 
-    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def spam_description
@@ -66,12 +66,12 @@ module Spammable
       options.fetch(:spam_description, false)
     end
 
-    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def spammable_text
     result = self.class.spammable_attrs.map do |attr|
-      public_send(attr.first)
+      public_send(attr.first) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     result.reject(&:blank?).join("\n")

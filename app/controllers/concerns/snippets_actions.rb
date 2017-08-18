@@ -5,10 +5,12 @@ module SnippetsActions
   end
 
   def raw
+    disposition = params[:inline] == 'false' ? 'attachment' : 'inline'
+
     send_data(
       convert_line_endings(@snippet.content),
       type: 'text/plain; charset=utf-8',
-      disposition: 'inline',
+      disposition: disposition,
       filename: @snippet.sanitized_file_name
     )
   end

@@ -1,13 +1,16 @@
 module Ci
   class RunnerPolicy < BasePolicy
-    def rules
-      return unless @user
+    with_options scope: :subject, score: 0
+    condition(:shared) { @subject.is_shared? }
 
-      can! :assign_runner if @user.admin?
+    with_options scope: :subject, score: 0
+    condition(:locked, scope: :subject) { @subject.locked? }
 
-      return if @subject.is_shared? || @subject.locked?
+    condition(:authorized_runner) { @user.ci_authorized_runners.include?(@subject) }
 
-      can! :assign_runner if @user.ci_authorized_runners.include?(@subject)
-    end
+    rule { anonymous }.prevent_all
+    rule { admin | authorized_runner }.enable :assign_runner
+    rule { ~admin & shared }.prevent :assign_runner
+    rule { ~admin & locked }.prevent :assign_runner
   end
 end

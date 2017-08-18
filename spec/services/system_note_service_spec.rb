@@ -1,11 +1,13 @@
 require 'spec_helper'
 
-describe SystemNoteService, services: true do
-  include Gitlab::Routing.url_helpers
+describe SystemNoteService do
+  include Gitlab::Routing
 
-  let(:project)  { create(:empty_project) }
+  let(:group)    { create(:group) }
+  let(:project)  { create(:project, group: group) }
   let(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
+  let(:issue)    { noteable }
 
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
@@ -33,7 +35,7 @@ describe SystemNoteService, services: true do
 
     context 'metadata' do
       it 'creates a new system note metadata record' do
-        expect { subject }.to change{ SystemNoteMetadata.count }.from(0).to(1)
+        expect { subject }.to change { SystemNoteMetadata.count }.from(0).to(1)
       end
 
       it 'creates a record correctly' do
@@ -155,6 +157,52 @@ describe SystemNoteService, services: true do
     end
   end
 
+  describe '.change_issue_assignees' do
+    subject { described_class.change_issue_assignees(noteable, project, author, [assignee]) }
+
+    let(:assignee) { create(:user) }
+    let(:assignee1) { create(:user) }
+    let(:assignee2) { create(:user) }
+    let(:assignee3) { create(:user) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'assignee' }
+    end
+
+    def build_note(old_assignees, new_assignees)
+      issue.assignees = new_assignees
+      described_class.change_issue_assignees(issue, project, author, old_assignees).note
+    end
+
+    it 'builds a correct phrase when an assignee is added to a non-assigned issue' do
+      expect(build_note([], [assignee1])).to eq "assigned to @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when assignee removed' do
+      expect(build_note([assignee1], [])).to eq 'removed assignee'
+    end
+
+    it 'builds a correct phrase when assignees changed' do
+      expect(build_note([assignee1], [assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when three assignees removed and one added' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee3])).to eq \
+        "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
+    end
+
+    it 'builds a correct phrase when one assignee changed from a set' do
+      expect(build_note([assignee, assignee1], [assignee, assignee2])).to eq \
+        "assigned to @#{assignee2.username} and unassigned @#{assignee1.username}"
+    end
+
+    it 'builds a correct phrase when one assignee removed from a set' do
+      expect(build_note([assignee, assignee1, assignee2], [assignee, assignee1])).to eq \
+        "unassigned @#{assignee2.username}"
+    end
+  end
+
   describe '.change_label' do
     subject { described_class.change_label(noteable, project, author, added, removed) }
 
@@ -195,25 +243,51 @@ describe SystemNoteService, services: true do
   end
 
   describe '.change_milestone' do
-    subject { described_class.change_milestone(noteable, project, author, milestone) }
+    context 'for a project milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-    let(:milestone) { create(:milestone, project: project) }
+      let(:milestone) { create(:milestone, project: project) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'milestone' }
-    end
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
 
-    context 'when milestone added' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+      context 'when milestone added' do
+        it 'sets the note text' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
 
-    context 'when milestone removed' do
-      let(:milestone) { nil }
+    context 'for a group milestone' do
+      subject { described_class.change_milestone(noteable, project, author, milestone) }
 
-      it 'sets the note text' do
-        expect(subject.note).to eq 'removed milestone'
+      let(:milestone) { create(:milestone, group: group) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'milestone' }
+      end
+
+      context 'when milestone added' do
+        it 'sets the note text to use the milestone name' do
+          expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
+        end
+      end
+
+      context 'when milestone removed' do
+        let(:milestone) { nil }
+
+        it 'sets the note text' do
+          expect(subject.note).to eq 'removed milestone'
+        end
       end
     end
   end
@@ -286,8 +360,22 @@ describe SystemNoteService, services: true do
       end
 
       it 'sets the note text' do
-        expect(subject.note).
-          to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+        expect(subject.note)
+          .to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
+      end
+    end
+  end
+
+  describe '.change_description' do
+    subject { described_class.change_description(noteable, project, author) }
+
+    context 'when noteable responds to `description`' do
+      it_behaves_like 'a system note' do
+        let(:action) { 'description' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq('changed the description')
       end
     end
   end
@@ -389,7 +477,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'does not create a system note metadata record' do
-        expect { subject }.not_to change{ SystemNoteMetadata.count }
+        expect { subject }.not_to change { SystemNoteMetadata.count }
       end
     end
 
@@ -460,8 +548,8 @@ describe SystemNoteService, services: true do
     context 'when mentioner is not a MergeRequest' do
       it 'is falsey' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -472,14 +560,14 @@ describe SystemNoteService, services: true do
 
       it 'is truthy when noteable is in commits' do
         expect(mentioner).to receive(:commits).and_return([noteable])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
 
       it 'is falsey when noteable is not in commits' do
         expect(mentioner).to receive(:commits).and_return([])
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_falsey
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_falsey
       end
     end
 
@@ -487,8 +575,8 @@ describe SystemNoteService, services: true do
       let(:noteable) { ExternalIssue.new('EXT-1234', project) }
       it 'is truthy' do
         mentioner = noteable.dup
-        expect(described_class.cross_reference_disallowed?(noteable, mentioner)).
-          to be_truthy
+        expect(described_class.cross_reference_disallowed?(noteable, mentioner))
+          .to be_truthy
       end
     end
   end
@@ -505,13 +593,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit0)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(noteable, commit0))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(noteable, commit1)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(noteable, commit1))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -522,8 +610,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(noteable, commit0)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(noteable, commit0))
+            .to be_truthy
         end
       end
     end
@@ -535,13 +623,13 @@ describe SystemNoteService, services: true do
       end
 
       it 'is truthy when already mentioned' do
-        expect(described_class.cross_reference_exists?(commit0, commit1)).
-          to be_truthy
+        expect(described_class.cross_reference_exists?(commit0, commit1))
+          .to be_truthy
       end
 
       it 'is falsey when not already mentioned' do
-        expect(described_class.cross_reference_exists?(commit1, commit0)).
-          to be_falsey
+        expect(described_class.cross_reference_exists?(commit1, commit0))
+          .to be_falsey
       end
 
       context 'legacy capitalized cross reference' do
@@ -552,8 +640,8 @@ describe SystemNoteService, services: true do
         end
 
         it 'is truthy when already mentioned' do
-          expect(described_class.cross_reference_exists?(commit0, commit1)).
-            to be_truthy
+          expect(described_class.cross_reference_exists?(commit0, commit1))
+            .to be_truthy
         end
       end
     end
@@ -568,8 +656,8 @@ describe SystemNoteService, services: true do
       end
 
       it 'is true when a fork mentions an external issue' do
-        expect(described_class.cross_reference_exists?(noteable, commit2)).
-            to be true
+        expect(described_class.cross_reference_exists?(noteable, commit2))
+            .to be true
       end
 
       context 'legacy capitalized cross reference' do
@@ -579,15 +667,15 @@ describe SystemNoteService, services: true do
         end
 
         it 'is true when a fork mentions an external issue' do
-          expect(described_class.cross_reference_exists?(noteable, commit2)).
-              to be true
+          expect(described_class.cross_reference_exists?(noteable, commit2))
+              .to be true
         end
       end
     end
   end
 
   describe '.noteable_moved' do
-    let(:new_project) { create(:empty_project) }
+    let(:new_project) { create(:project) }
     let(:new_noteable) { create(:issue, project: new_project) }
 
     subject do
@@ -606,7 +694,7 @@ describe SystemNoteService, services: true do
       end
 
       it 'mentions referenced project' do
-        expect(subject.note).to include new_project.path_with_namespace
+        expect(subject.note).to include new_project.full_path
       end
     end
 
@@ -657,7 +745,7 @@ describe SystemNoteService, services: true do
   describe 'JIRA integration' do
     include JiraServiceHelper
 
-    let(:project)         { create(:jira_project) }
+    let(:project)         { create(:jira_project, :repository) }
     let(:author)          { create(:user) }
     let(:issue)           { create(:issue, project: project) }
     let(:merge_request)   { create(:merge_request, :simple, target_project: project, source_project: project) }
@@ -672,6 +760,26 @@ describe SystemNoteService, services: true do
       jira_service_settings
     end
 
+    def cross_reference(type, link_exists = false)
+      noteable = type == 'commit' ? commit : merge_request
+
+      links = []
+      if link_exists
+        url = if type == 'commit'
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/commit/#{commit.id}"
+              else
+                "#{Settings.gitlab.base_url}/#{project.namespace.path}/#{project.path}/merge_requests/#{merge_request.iid}"
+              end
+        link = double(object: { 'url' => url })
+        links << link
+        expect(link).to receive(:save!)
+      end
+
+      allow(JIRA::Resource::Remotelink).to receive(:all).and_return(links)
+
+      described_class.cross_reference(jira_issue, noteable, author)
+    end
+
     noteable_types = %w(merge_requests commit)
 
     noteable_types.each do |type|
@@ -679,24 +787,39 @@ describe SystemNoteService, services: true do
         it "blocks cross reference when #{type.underscore}_events is false" do
           jira_tracker.update("#{type}_events" => false)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
-
-          expect(result).to eq("Events for #{noteable.class.to_s.underscore.humanize.pluralize.downcase} are disabled.")
+          expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
         it "blocks cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
-          noteable = type == "commit" ? commit : merge_request
-          result = described_class.cross_reference(jira_issue, noteable, author)
+          expect(cross_reference(type)).to eq(success_message)
+        end
+      end
 
-          expect(result).to eq(success_message)
+      context 'when a new cross reference is created' do
+        it 'creates a new comment and remote link' do
+          cross_reference(type)
+
+          expect(WebMock).to have_requested(:post, jira_api_comment_url(jira_issue))
+          expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue))
+        end
+      end
+
+      context 'when a link exists' do
+        it 'updates a link but does not create a new comment' do
+          expect(WebMock).not_to have_requested(:post, jira_api_comment_url(jira_issue))
+
+          cross_reference(type, true)
         end
       end
     end
 
     describe "new reference" do
+      before do
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+      end
+
       context 'for commits' do
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, commit, author)
@@ -711,7 +834,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_commit_url(project.namespace, project, commit),
+                url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -737,7 +860,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_issue_url(project.namespace, project, issue),
+                url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -763,7 +886,7 @@ describe SystemNoteService, services: true do
             body: hash_including(
               GlobalID: "GitLab",
               object: {
-                url: namespace_project_snippet_url(project.namespace, project, snippet),
+                url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
                 icon: { title: "GitLab", url16x16: "https://gitlab.com/favicon.ico" },
                 status: { resolved: false }
@@ -776,7 +899,8 @@ describe SystemNoteService, services: true do
 
     describe "existing reference" do
       before do
-        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.path_with_namespace}|http://localhost/#{project.path_with_namespace}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
+        message = "[#{author.name}|http://localhost/#{author.username}] mentioned this issue in [a commit of #{project.full_path}|http://localhost/#{project.full_path}/commit/#{commit.id}]:\n'#{commit.title.chomp}'"
         allow_any_instance_of(JIRA::Resource::Issue).to receive(:comments).and_return([OpenStruct.new(body: message)])
       end
 
@@ -955,7 +1079,7 @@ describe SystemNoteService, services: true do
       let(:action) { 'task' }
     end
 
-    it "posts the 'marked as a Work In Progress from commit' system note" do
+    it "posts the 'marked the task as complete' system note" do
       expect(subject.note).to eq("marked the task **task** as completed")
     end
   end
@@ -971,6 +1095,87 @@ describe SystemNoteService, services: true do
 
     it 'sets the note text' do
       expect(subject.note).to eq 'resolved all discussions'
+    end
+  end
+
+  describe '.diff_discussion_outdated' do
+    let(:discussion) { create(:diff_note_on_merge_request).to_discussion }
+    let(:merge_request) { discussion.noteable }
+    let(:project) { merge_request.source_project }
+    let(:change_position) { discussion.position }
+
+    def reloaded_merge_request
+      MergeRequest.find(merge_request.id)
+    end
+
+    subject { described_class.diff_discussion_outdated(discussion, project, author, change_position) }
+
+    it_behaves_like 'a system note' do
+      let(:expected_noteable) { discussion.first_note.noteable }
+      let(:action)            { 'outdated' }
+    end
+
+    it 'creates a new note in the discussion' do
+      # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+      expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+    end
+
+    it 'links to the diff in the system note' do
+      expect(subject.note).to include('version 1')
+
+      diff_id = merge_request.merge_request_diff.id
+      line_code = change_position.line_code(project.repository)
+      expect(subject.note).to include(diffs_project_merge_request_url(project, merge_request, diff_id: diff_id, anchor: line_code))
+    end
+  end
+
+  describe '.mark_duplicate_issue' do
+    subject { described_class.mark_duplicate_issue(noteable, project, author, canonical_issue) }
+
+    context 'within the same project' do
+      let(:canonical_issue) { create(:issue, project: project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{canonical_issue.to_reference}" }
+    end
+
+    context 'across different projects' do
+      let(:other_project)  { create(:project) }
+      let(:canonical_issue) { create(:issue, project: other_project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked this issue as a duplicate of #{canonical_issue.to_reference(project)}" }
+    end
+  end
+
+  describe '.mark_canonical_issue_of_duplicate' do
+    subject { described_class.mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue) }
+
+    context 'within the same project' do
+      let(:duplicate_issue) { create(:issue, project: project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference} as a duplicate of this issue" }
+    end
+
+    context 'across different projects' do
+      let(:other_project)  { create(:project) }
+      let(:duplicate_issue) { create(:issue, project: other_project) }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'duplicate' }
+      end
+
+      it { expect(subject.note).to eq "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue" }
     end
   end
 end

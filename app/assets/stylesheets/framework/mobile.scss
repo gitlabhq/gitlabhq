@@ -29,10 +29,6 @@
     display: none;
   }
 
-  .issues-holder .issue-check {
-    display: none;
-  }
-
   .rss-btn {
     display: none;
   }
@@ -110,11 +106,6 @@
     .new-issue-link {
       display: none;
     }
-  }
-
-  .issue_edited_ago,
-  .note_edited_ago {
-    display: none;
   }
 
   aside:not(.right-sidebar) {

@@ -4,7 +4,7 @@ describe ApplicationController do
   let(:user) { create(:user) }
 
   describe '#check_password_expiration' do
-    let(:controller) { ApplicationController.new }
+    let(:controller) { described_class.new }
 
     it 'redirects if the user is over their password expiry' do
       user.password_expires_at = Time.new(2002)
@@ -30,11 +30,20 @@ describe ApplicationController do
       expect(controller).not_to receive(:redirect_to)
       controller.send(:check_password_expiration)
     end
+
+    it 'does not redirect if the user is over their password expiry but sign-in is disabled' do
+      stub_application_setting(password_authentication_enabled: false)
+      user.password_expires_at = Time.new(2002)
+      allow(controller).to receive(:current_user).and_return(user)
+      expect(controller).not_to receive(:redirect_to)
+
+      controller.send(:check_password_expiration)
+    end
   end
 
   describe "#authenticate_user_from_token!" do
     describe "authenticating a user from a private token" do
-      controller(ApplicationController) do
+      controller(described_class) do
         def index
           render text: "authenticated"
         end
@@ -66,7 +75,7 @@ describe ApplicationController do
     end
 
     describe "authenticating a user from a personal access token" do
-      controller(ApplicationController) do
+      controller(described_class) do
         def index
           render text: 'authenticated'
         end
@@ -99,6 +108,96 @@ describe ApplicationController do
     end
   end
 
+  describe 'rescue from Gitlab::Git::Storage::Inaccessible' do
+    controller(described_class) do
+      def index
+        raise Gitlab::Git::Storage::Inaccessible.new('broken', 100)
+      end
+    end
+
+    it 'renders a 503 when storage is not available' do
+      sign_in(create(:user))
+
+      get :index
+
+      expect(response.status).to eq(503)
+    end
+
+    it 'renders includes a Retry-After header' do
+      sign_in(create(:user))
+
+      get :index
+
+      expect(response.headers['Retry-After']).to eq(100)
+    end
+  end
+
+  describe 'response format' do
+    controller(described_class) do
+      def index
+        respond_to do |format|
+          format.json do
+            head :ok
+          end
+        end
+      end
+    end
+
+    context 'when format is handled' do
+      let(:requested_format) { :json }
+
+      it 'returns 200 response' do
+        get :index, private_token: user.private_token, format: requested_format
+
+        expect(response).to have_http_status 200
+      end
+    end
+
+    context 'when format is not handled' do
+      it 'returns 404 response' do
+        get :index, private_token: user.private_token
+
+        expect(response).to have_http_status 404
+      end
+    end
+  end
+
+  describe '#authenticate_user_from_rss_token' do
+    describe "authenticating a user from an RSS token" do
+      controller(described_class) do
+        def index
+          render text: 'authenticated'
+        end
+      end
+
+      context "when the 'rss_token' param is populated with the RSS token" do
+        context 'when the request format is atom' do
+          it "logs the user in" do
+            get :index, rss_token: user.rss_token, format: :atom
+            expect(response).to have_http_status 200
+            expect(response.body).to eq 'authenticated'
+          end
+        end
+
+        context 'when the request format is not atom' do
+          it "doesn't log the user in" do
+            get :index, rss_token: user.rss_token
+            expect(response.status).not_to have_http_status 200
+            expect(response.body).not_to eq 'authenticated'
+          end
+        end
+      end
+
+      context "when the 'rss_token' param is populated with an invalid RSS token" do
+        it "doesn't log the user" do
+          get :index, rss_token: "token"
+          expect(response.status).not_to eq 200
+          expect(response.body).not_to eq 'authenticated'
+        end
+      end
+    end
+  end
+
   describe '#route_not_found' do
     it 'renders 404 if authenticated' do
       allow(controller).to receive(:current_user).and_return(user)
@@ -106,16 +205,15 @@ describe ApplicationController do
       controller.send(:route_not_found)
     end
 
-    it 'does redirect to login page if not authenticated' do
+    it 'does redirect to login page via authenticate_user! if not authenticated' do
       allow(controller).to receive(:current_user).and_return(nil)
-      expect(controller).to receive(:redirect_to)
-      expect(controller).to receive(:new_user_session_path)
+      expect(controller).to receive(:authenticate_user!)
       controller.send(:route_not_found)
     end
   end
 
   context 'two-factor authentication' do
-    let(:controller) { ApplicationController.new }
+    let(:controller) { described_class.new }
 
     describe '#check_two_factor_requirement' do
       subject { controller.send :check_two_factor_requirement }

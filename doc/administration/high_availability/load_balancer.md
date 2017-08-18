@@ -13,7 +13,7 @@ you need to use with GitLab.
 | LB Port | Backend Port | Protocol        |
 | ------- | ------------ | --------------- |
 | 80      | 80           | HTTP  [^1]      |
-| 443     | 443          | HTTPS [^1] [^2] |
+| 443     | 443          | TCP or HTTPS [^1] [^2] |
 | 22      | 22           | TCP             |
 
 ## GitLab Pages Ports

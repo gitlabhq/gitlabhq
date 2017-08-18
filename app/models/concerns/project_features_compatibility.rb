@@ -32,6 +32,6 @@ module ProjectFeaturesCompatibility
     build_project_feature unless project_feature
 
     access_level = Gitlab::Utils.to_boolean(value) ? ProjectFeature::ENABLED : ProjectFeature::DISABLED
-    project_feature.send(:write_attribute, field, access_level)
+    project_feature.__send__(:write_attribute, field, access_level) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

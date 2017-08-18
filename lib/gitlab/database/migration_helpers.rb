@@ -1,6 +1,39 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # Adds `created_at` and `updated_at` columns with timezone information.
+      #
+      # This method is an improved version of Rails' built-in method `add_timestamps`.
+      #
+      # Available options are:
+      # default - The default value for the column.
+      # null - When set to `true` the column will allow NULL values.
+      #        The default is to not allow NULL values.
+      def add_timestamps_with_timezone(table_name, options = {})
+        options[:null] = false if options[:null].nil?
+
+        [:created_at, :updated_at].each do |column_name|
+          if options[:default] && transaction_open?
+            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
+              'You can disable transactions by calling `disable_ddl_transaction!` ' \
+              'in the body of your migration class'
+          end
+
+          # If default value is presented, use `add_column_with_default` method instead.
+          if options[:default]
+            add_column_with_default(
+              table_name,
+              column_name,
+              :datetime_with_timezone,
+              default: options[:default],
+              allow_null: options[:null]
+            )
+          else
+            add_column(table_name, column_name, :datetime_with_timezone, options)
+          end
+        end
+      end
+
       # Creates a new index, concurrently when supported
       #
       # On PostgreSQL this method creates an index concurrently, on MySQL this
@@ -42,12 +75,45 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        if Database.postgresql?
+        if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
           disable_statement_timeout
         end
 
         remove_index(table_name, options.merge({ column: column_name }))
+      end
+
+      # Removes an existing index, concurrently when supported
+      #
+      # On PostgreSQL this method removes an index concurrently.
+      #
+      # Example:
+      #
+      #     remove_concurrent_index :users, "index_X_by_Y"
+      #
+      # See Rails' `remove_index` for more info on the available arguments.
+      def remove_concurrent_index_by_name(table_name, index_name, options = {})
+        if transaction_open?
+          raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
+        if supports_drop_index_concurrently?
+          options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
+        end
+
+        remove_index(table_name, options.merge({ name: index_name }))
+      end
+
+      # Only available on Postgresql >= 9.2
+      def supports_drop_index_concurrently?
+        return false unless Database.postgresql?
+
+        version = select_one("SELECT current_setting('server_version_num') AS v")['v'].to_i
+
+        version >= 90200
       end
 
       # Adds a foreign key with only minimal locking on the tables involved.
@@ -74,6 +140,8 @@ module Gitlab
           return add_foreign_key(source, target,
                                  column: column,
                                  on_delete: on_delete)
+        else
+          on_delete = 'SET NULL' if on_delete == :nullify
         end
 
         disable_statement_timeout
@@ -89,7 +157,7 @@ module Gitlab
         ADD CONSTRAINT #{key_name}
         FOREIGN KEY (#{column})
         REFERENCES #{target} (id)
-        #{on_delete ? "ON DELETE #{on_delete}" : ''}
+        #{on_delete ? "ON DELETE #{on_delete.upcase}" : ''}
         NOT VALID;
         EOF
 
@@ -156,6 +224,12 @@ module Gitlab
       #
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
+        if transaction_open?
+          raise 'update_column_in_batches can not be run inside a transaction, ' \
+            'you can disable transactions by calling disable_ddl_transaction! ' \
+            'in the body of your migration class'
+        end
+
         table = Arel::Table.new(table)
 
         count_arel = table.project(Arel.star.count.as('count'))
@@ -167,25 +241,31 @@ module Gitlab
 
         # Update in batches of 5% until we run out of any rows to update.
         batch_size = ((total / 100.0) * 5.0).ceil
+        max_size = 1000
+
+        # The upper limit is 1000 to ensure we don't lock too many rows. For
+        # example, for "merge_requests" even 1% of the table is around 35 000
+        # rows for GitLab.com.
+        batch_size = max_size if batch_size > max_size
 
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
         start_arel = yield table, start_arel if block_given?
         start_id = exec_query(start_arel.to_sql).to_hash.first['id'].to_i
 
         loop do
-          stop_arel = table.project(table[:id]).
-            where(table[:id].gteq(start_id)).
-            order(table[:id].asc).
-            take(1).
-            skip(batch_size)
+          stop_arel = table.project(table[:id])
+            .where(table[:id].gteq(start_id))
+            .order(table[:id].asc)
+            .take(1)
+            .skip(batch_size)
 
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = Arel::UpdateManager.new(ActiveRecord::Base).
-            table(table).
-            set([[table[column], value]]).
-            where(table[:id].gteq(start_id))
+          update_arel = Arel::UpdateManager.new(ActiveRecord::Base)
+            .table(table)
+            .set([[table[column], value]])
+            .where(table[:id].gteq(start_id))
 
           if stop_row
             stop_id = stop_row['id'].to_i
@@ -278,6 +358,19 @@ module Gitlab
           raise 'rename_column_concurrently can not be run inside a transaction'
         end
 
+        old_col = column_for(table, old)
+        new_type = type || old_col.type
+
+        add_column(table, new, new_type,
+                   limit: old_col.limit,
+                   precision: old_col.precision,
+                   scale: old_col.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, new, old_col.default) if old_col.default
+
         trigger_name = rename_trigger_name(table, old, new)
         quoted_table = quote_table_name(table)
         quoted_old = quote_column_name(old)
@@ -291,17 +384,9 @@ module Gitlab
                                             quoted_old, quoted_new)
         end
 
-        old_col = column_for(table, old)
-        new_type = type || old_col.type
-
-        add_column(table, new, new_type,
-                   limit: old_col.limit,
-                   default: old_col.default,
-                   null: old_col.null,
-                   precision: old_col.precision,
-                   scale: old_col.scale)
-
         update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)
@@ -497,6 +582,29 @@ module Gitlab
         name = name.to_s
 
         columns(table).find { |column| column.name == name }
+      end
+
+      # This will replace the first occurance of a string in a column with
+      # the replacement
+      # On postgresql we can use `regexp_replace` for that.
+      # On mysql we find the location of the pattern, and overwrite it
+      # with the replacement
+      def replace_sql(column, pattern, replacement)
+        quoted_pattern = Arel::Nodes::Quoted.new(pattern.to_s)
+        quoted_replacement = Arel::Nodes::Quoted.new(replacement.to_s)
+
+        if Database.mysql?
+          locate = Arel::Nodes::NamedFunction
+            .new('locate', [quoted_pattern, column])
+          insert_in_place = Arel::Nodes::NamedFunction
+            .new('insert', [column, locate, pattern.size, quoted_replacement])
+
+          Arel::Nodes::SqlLiteral.new(insert_in_place.to_sql)
+        else
+          replace = Arel::Nodes::NamedFunction
+            .new("regexp_replace", [column, quoted_pattern, quoted_replacement])
+          Arel::Nodes::SqlLiteral.new(replace.to_sql)
+        end
       end
     end
   end

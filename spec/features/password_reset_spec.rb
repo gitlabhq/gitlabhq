@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Password reset', feature: true do
+feature 'Password reset' do
   describe 'throttling' do
     it 'sends reset instructions when not previously sent' do
       user = create(:user)
@@ -16,7 +16,7 @@ feature 'Password reset', feature: true do
       user.send_reset_password_instructions
       user.update_attribute(:reset_password_sent_at, 5.minutes.ago)
 
-      expect{ forgot_password(user) }.to change{ user.reset_password_sent_at }
+      expect { forgot_password(user) }.to change { user.reset_password_sent_at }
       expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
       expect(current_path).to eq new_user_session_path
     end
@@ -27,7 +27,7 @@ feature 'Password reset', feature: true do
       # Reload because PG handles datetime less precisely than Ruby/Rails
       user.reload
 
-      expect{ forgot_password(user) }.not_to change{ user.reset_password_sent_at }
+      expect { forgot_password(user) }.not_to change { user.reset_password_sent_at }
       expect(page).to have_content(I18n.t('devise.passwords.send_paranoid_instructions'))
       expect(current_path).to eq new_user_session_path
     end

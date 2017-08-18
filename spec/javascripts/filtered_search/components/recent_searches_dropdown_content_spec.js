@@ -2,6 +2,8 @@ import Vue from 'vue';
 import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content';
 
+import '~/filtered_search/filtered_search_token_keys';
+
 const createComponent = (propsData) => {
   const Component = Vue.extend(RecentSearchesDropdownContent);
 
@@ -17,12 +19,14 @@ const trimMarkupWhitespace = text => text.replace(/(\n|\s)+/gm, ' ').trim();
 describe('RecentSearchesDropdownContent', () => {
   const propsDataWithoutItems = {
     items: [],
+    allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
   };
   const propsDataWithItems = {
     items: [
       'foo',
       'author:@root label:~foo bar',
     ],
+    allowedKeys: gl.FilteredSearchTokenKeys.getKeys(),
   };
 
   let vm;
@@ -73,6 +77,26 @@ describe('RecentSearchesDropdownContent', () => {
       expect(item1Tokens[1].querySelector('.name').textContent).toEqual('label:');
       expect(item1Tokens[1].querySelector('.value').textContent).toEqual('~foo');
       expect(trimMarkupWhitespace(items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('bar');
+    });
+  });
+
+  describe('if isLocalStorageAvailable is `false`', () => {
+    let el;
+
+    beforeEach(() => {
+      const props = Object.assign({ isLocalStorageAvailable: false }, propsDataWithItems);
+
+      vm = createComponent(props);
+      el = vm.$el;
+    });
+
+    it('should render an info note', () => {
+      const note = el.querySelector('.dropdown-info-note');
+      const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
+      expect(note).toBeDefined();
+      expect(note.innerText.trim()).toBe('This feature requires local storage to be enabled');
+      expect(items.length).toEqual(propsDataWithoutItems.items.length);
     });
   });
 

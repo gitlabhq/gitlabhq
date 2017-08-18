@@ -26,11 +26,23 @@ module Github
       end
 
       def exists?
-        branch_exists? && commit_exists?
+        @exists ||= branch_exists? && commit_exists?
       end
 
       def valid?
         sha.present? && ref.present?
+      end
+
+      def restore!(name)
+        repository.create_branch(name, sha)
+      rescue Gitlab::Git::Repository::InvalidRef => e
+        Rails.logger.error("#{self.class.name}: Could not restore branch #{name}: #{e}")
+      end
+
+      def remove!(name)
+        repository.delete_branch(name)
+      rescue Rugged::ReferenceError => e
+        Rails.logger.error("#{self.class.name}: Could not remove branch #{name}: #{e}")
       end
 
       private

@@ -4,7 +4,7 @@
 
 There are two editions of GitLab: [Enterprise Edition](https://about.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://about.gitlab.com/gitlab-ce/) (CE). GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master). New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
-EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/subscribers/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
+EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/gitlab-org/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
 
 Both EE and CE require some add-on components called gitlab-shell and Gitaly. These components are available from the [gitlab-shell](https://gitlab.com/gitlab-org/gitlab-shell/tree/master) and [gitaly](https://gitlab.com/gitlab-org/gitaly/tree/master) repositories respectively. New versions are usually tags but staying on the master branch will give you the latest stable version. New releases are generally around the same time as GitLab CE releases with exception for informal security updates deemed critical.
 
@@ -12,7 +12,7 @@ Both EE and CE require some add-on components called gitlab-shell and Gitaly. Th
 
 You can imagine GitLab as a physical office.
 
-**The repositories** are the goods GitLab handling.
+**The repositories** are the goods GitLab handles.
 They can be stored in a warehouse.
 This can be either a hard disk, or something more complex, such as a NFS filesystem;
 
@@ -54,7 +54,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ### Components
 
-![GitLab Diagram Overview](gitlab_architecture_diagram.png)
+<img src="https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/pub?w=987&amp;h=797">
 
 _[edit diagram (for GitLab team members only)](https://docs.google.com/drawings/d/1fBzAyklyveF-i-2q-OHUIqDkYfjjxC4mq5shwKSZHLs/edit)_
 
@@ -66,7 +66,9 @@ When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to reso
 
 The add-on component gitlab-shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. gitlab-shell accesses the bare repositories through Gitaly to serve git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. gitlab-shell queries the GitLab API to determine authorization and access.
 
-Gitaly executes git operations from gitlab-shell and Workhorse, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files)
+Gitaly executes git operations from gitlab-shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
+
+You may also be interested in the [production architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/).
 
 ### Installation Folder Summary
 
@@ -192,3 +194,7 @@ bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
 Note: It is recommended to log into the `git` user using `sudo -i -u git` or `sudo su - git`. While the sudo commands provided by gitlabhq work in Ubuntu they do not always work in RHEL.
+
+## GitLab.com
+
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

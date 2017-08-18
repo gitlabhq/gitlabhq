@@ -3,11 +3,11 @@ module Gitlab
     module Status
       class Skipped < Status::Core
         def text
-          'skipped'
+          s_('CiStatusText|skipped')
         end
 
         def label
-          'skipped'
+          s_('CiStatusLabel|skipped')
         end
 
         def icon

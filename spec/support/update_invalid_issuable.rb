@@ -21,8 +21,8 @@ shared_examples 'update invalid issuable' do |klass|
 
   context 'when updating causes conflicts' do
     before do
-      allow_any_instance_of(issuable.class).to receive(:save).
-        and_raise(ActiveRecord::StaleObjectError.new(issuable, :save))
+      allow_any_instance_of(issuable.class).to receive(:save)
+        .and_raise(ActiveRecord::StaleObjectError.new(issuable, :save))
     end
 
     it 'renders edit when format is html' do

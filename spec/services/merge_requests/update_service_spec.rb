@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequests::UpdateService, services: true do
-  include EmailHelpers
-
+describe MergeRequests::UpdateService, :mailer do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -30,6 +28,13 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    def find_notes(action)
+      @merge_request
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
+
     def update_merge_request(opts)
       @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
       @merge_request.reload
@@ -48,7 +53,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       before do
         allow(service).to receive(:execute_hooks)
@@ -59,18 +64,20 @@ describe MergeRequests::UpdateService, services: true do
         end
       end
 
-      it { expect(@merge_request).to be_valid }
-      it { expect(@merge_request.title).to eq('New title') }
-      it { expect(@merge_request.assignee).to eq(user2) }
-      it { expect(@merge_request).to be_closed }
-      it { expect(@merge_request.labels.count).to eq(1) }
-      it { expect(@merge_request.labels.first.title).to eq(label.name) }
-      it { expect(@merge_request.target_branch).to eq('target') }
-      it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
+      it 'mathces base expectations' do
+        expect(@merge_request).to be_valid
+        expect(@merge_request.title).to eq('New title')
+        expect(@merge_request.assignee).to eq(user2)
+        expect(@merge_request).to be_closed
+        expect(@merge_request.labels.count).to eq(1)
+        expect(@merge_request.labels.first.title).to eq(label.name)
+        expect(@merge_request.target_branch).to eq('target')
+        expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1')
+      end
 
       it 'executes hooks with update action' do
-        expect(service).to have_received(:execute_hooks).
-                               with(@merge_request, 'update')
+        expect(service).to have_received(:execute_hooks)
+                               .with(@merge_request, 'update')
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -102,6 +109,13 @@ describe MergeRequests::UpdateService, services: true do
         expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
       end
 
+      it 'creates system note about description change' do
+        note = find_note('changed the description')
+
+        expect(note).not_to be_nil
+        expect(note.note).to eq('changed the description')
+      end
+
       it 'creates system note about branch change' do
         note = find_note('changed target')
 
@@ -129,7 +143,7 @@ describe MergeRequests::UpdateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::UpdateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       context 'without pipeline' do
         before do
@@ -141,9 +155,11 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request).to be_valid }
-        it { expect(@merge_request.state).to eq('merged') }
-        it { expect(@merge_request.merge_error).to be_nil }
+        it 'merges the MR' do
+          expect(@merge_request).to be_valid
+          expect(@merge_request.state).to eq('merged')
+          expect(@merge_request.merge_error).to be_nil
+        end
       end
 
       context 'with finished pipeline' do
@@ -160,20 +176,25 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request).to be_valid }
-        it { expect(@merge_request.state).to eq('merged') }
+        it 'merges the MR' do
+          expect(@merge_request).to be_valid
+          expect(@merge_request.state).to eq('merged')
+        end
       end
 
       context 'with active pipeline' do
         before do
           service_mock = double
-          create(:ci_pipeline_with_one_job,
+          create(
+            :ci_pipeline_with_one_job,
             project: project,
-            ref:     merge_request.source_branch,
-            sha:     merge_request.diff_head_sha)
+            ref: merge_request.source_branch,
+            sha: merge_request.diff_head_sha,
+            head_pipeline_of: merge_request
+          )
 
-          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user).
-            and_return(service_mock)
+          expect(MergeRequests::MergeWhenPipelineSucceedsService).to receive(:new).with(project, user)
+            .and_return(service_mock)
           expect(service_mock).to receive(:execute).with(merge_request)
         end
 
@@ -182,7 +203,7 @@ describe MergeRequests::UpdateService, services: true do
 
       context 'with a non-authorised user' do
         let(:visitor) { create(:user) }
-        let(:service) { MergeRequests::UpdateService.new(project, visitor, opts) }
+        let(:service) { described_class.new(project, visitor, opts) }
 
         before do
           merge_request.update_attribute(:merge_error, 'Error')
@@ -193,8 +214,10 @@ describe MergeRequests::UpdateService, services: true do
           end
         end
 
-        it { expect(@merge_request.state).to eq('opened') }
-        it { expect(@merge_request.merge_error).not_to be_nil }
+        it 'does not merge the MR' do
+          expect(@merge_request.state).to eq('opened')
+          expect(@merge_request.merge_error).not_to be_nil
+        end
       end
 
       context 'MR can not be merged when note sha != MR sha' do
@@ -271,13 +294,13 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when the milestone change' do
-        before do
-          update_merge_request({ milestone: create(:milestone) })
-        end
-
         it 'marks pending todos as done' do
+          update_merge_request({ milestone: create(:milestone) })
+
           expect(pending_todo.reload).to be_done
         end
+
+        it_behaves_like 'system notes for milestones'
       end
 
       context 'when the labels change' do
@@ -287,6 +310,15 @@ describe MergeRequests::UpdateService, services: true do
 
         it 'marks pending todos as done' do
           expect(pending_todo.reload).to be_done
+        end
+      end
+
+      context 'when the assignee changes' do
+        it 'updates open merge request counter for assignees when merge request is reassigned' do
+          update_merge_request(assignee_id: user2.id)
+
+          expect(user3.assigned_open_merge_requests_count).to eq 0
+          expect(user2.assigned_open_merge_requests_count).to eq 1
         end
       end
 
@@ -314,7 +346,7 @@ describe MergeRequests::UpdateService, services: true do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+          @merge_request = described_class.new(project, user, opts).execute(merge_request)
         end
 
         should_email(subscriber)
@@ -322,13 +354,15 @@ describe MergeRequests::UpdateService, services: true do
       end
 
       context 'when issue has the `label` label' do
-        before { merge_request.labels << label }
+        before do
+          merge_request.labels << label
+        end
 
         it 'does not send notifications for existing labels' do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -339,7 +373,7 @@ describe MergeRequests::UpdateService, services: true do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @merge_request = MergeRequests::UpdateService.new(project, user, opts).execute(merge_request)
+            @merge_request = described_class.new(project, user, opts).execute(merge_request)
           end
 
           should_not_email(subscriber)
@@ -350,16 +384,20 @@ describe MergeRequests::UpdateService, services: true do
 
     context 'updating mentions' do
       let(:mentionable) { merge_request }
-      include_examples 'updating mentions', MergeRequests::UpdateService
+      include_examples 'updating mentions', described_class
     end
 
     context 'when MergeRequest has tasks' do
-      before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
+      before do
+        update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" })
+      end
 
       it { expect(@merge_request.tasks?).to eq(true) }
 
       context 'when tasks are marked as completed' do
-        before { update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" }) }
+        before do
+          update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })
+        end
 
         it 'creates system note about task status change' do
           note1 = find_note('marked the task **Task 1** as completed')
@@ -367,6 +405,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
 
@@ -382,6 +423,9 @@ describe MergeRequests::UpdateService, services: true do
 
           expect(note1).not_to be_nil
           expect(note2).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
         end
       end
     end
@@ -420,6 +464,54 @@ describe MergeRequests::UpdateService, services: true do
 
         issue_ids = MergeRequestsClosingIssues.where(merge_request: merge_request).pluck(:issue_id)
         expect(issue_ids).to be_empty
+      end
+    end
+
+    context 'updating asssignee_id' do
+      it 'does not update assignee when assignee_id is invalid' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: -1)
+
+        expect(merge_request.reload.assignee).to eq(user)
+      end
+
+      it 'unassigns assignee when user id is 0' do
+        merge_request.update(assignee_id: user.id)
+
+        update_merge_request(assignee_id: 0)
+
+        expect(merge_request.assignee_id).to be_nil
+      end
+
+      it 'saves assignee when user id is valid' do
+        update_merge_request(assignee_id: user.id)
+
+        expect(merge_request.assignee_id).to eq(user.id)
+      end
+
+      it 'does not update assignee_id when user cannot read issue' do
+        non_member        = create(:user)
+        original_assignee = merge_request.assignee
+
+        update_merge_request(assignee_id: non_member.id)
+
+        expect(merge_request.assignee_id).to eq(original_assignee.id)
+      end
+
+      context "when issuable feature is private" do
+        levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
+
+        levels.each do |level|
+          it "does not update with unauthorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
+            assignee = create(:user)
+            project.update(visibility_level: level)
+            feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
+            project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
+
+            expect { update_merge_request(assignee_id: assignee) }.not_to change { merge_request.assignee }
+          end
+        end
       end
     end
 

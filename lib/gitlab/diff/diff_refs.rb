@@ -37,6 +37,16 @@ module Gitlab
       def complete?
         start_sha && head_sha
       end
+
+      def compare_in(project)
+        # We're at the initial commit, so just get that as we can't compare to anything.
+        if Gitlab::Git.blank_ref?(start_sha)
+          project.commit(head_sha)
+        else
+          straight = start_sha == base_sha
+          CompareService.new(project, head_sha).execute(project, start_sha, straight: straight)
+        end
+      end
     end
   end
 end

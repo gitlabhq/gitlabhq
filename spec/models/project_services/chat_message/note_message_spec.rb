@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::NoteMessage, models: true do
+describe ChatMessage::NoteMessage do
   subject { described_class.new(args) }
 
   let(:color) { '#345' }
@@ -15,7 +15,7 @@ describe ChatMessage::NoteMessage, models: true do
       project_url: 'http://somewhere.com',
       repository: {
         name: 'project_name',
-        url: 'http://somewhere.com',
+        url: 'http://somewhere.com'
       },
       object_attributes: {
         id: 10,

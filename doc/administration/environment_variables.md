@@ -13,13 +13,13 @@ override certain values.
 
 Variable | Type | Description
 -------- | ---- | -----------
+`GITLAB_CDN_HOST`                          | string  | Sets the hostname for a CDN to serve static assets (e.g. `mycdnsubdomain.fictional-cdn.com`)
 `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation
 `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`)
 `RAILS_ENV`                                | string  | The Rails environment; can be one of `production`, `development`, `staging` or `test`
 `DATABASE_URL`                             | string  | The database URL; is of the form: `postgresql://localhost/blog_development`
 `GITLAB_EMAIL_FROM`                        | string  | The e-mail address used in the "From" field in e-mails sent by GitLab
 `GITLAB_EMAIL_DISPLAY_NAME`                | string  | The name used in the "From" field in e-mails sent by GitLab
-`GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
 `GITLAB_EMAIL_REPLY_TO`                    | string  | The e-mail address used in the "Reply-To" field in e-mails sent by GitLab
 `GITLAB_EMAIL_SUBJECT_SUFFIX`              | string  | The e-mail subject suffix used in e-mails sent by GitLab
 `GITLAB_UNICORN_MEMORY_MIN`                | integer | The minimum memory threshold (in bytes) for the Unicorn worker killer
@@ -58,6 +58,9 @@ Please make changes in the `config/initializers/1_settings.rb` file and stick
 to the naming scheme `GITLAB_#{name in 1_settings.rb in upper case}`.
 
 ## Omnibus configuration
+
+To set environment variables, follow [these
+instructions](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
 It's possible to preconfigure the GitLab docker image by adding the environment
 variable `GITLAB_OMNIBUS_CONFIG` to the `docker run` command.

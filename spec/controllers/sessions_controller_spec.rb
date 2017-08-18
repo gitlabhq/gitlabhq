@@ -1,9 +1,42 @@
 require 'spec_helper'
 
 describe SessionsController do
+  include DeviseHelpers
+
+  describe '#new' do
+    before do
+      set_devise_mapping(context: @request)
+    end
+
+    context 'when auto sign-in is enabled' do
+      before do
+        stub_omniauth_setting(auto_sign_in_with_provider: :saml)
+        allow(controller).to receive(:omniauth_authorize_path).with(:user, :saml)
+          .and_return('/saml')
+      end
+
+      context 'and no auto_sign_in param is passed' do
+        it 'redirects to :omniauth_authorize_path' do
+          get(:new)
+
+          expect(response).to have_http_status(302)
+          expect(response).to redirect_to('/saml')
+        end
+      end
+
+      context 'and auto_sign_in=false param is passed' do
+        it 'responds with 200' do
+          get(:new, auto_sign_in: 'false')
+
+          expect(response).to have_http_status(200)
+        end
+      end
+    end
+  end
+
   describe '#create' do
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     context 'when using standard authentications' do
@@ -16,7 +49,7 @@ describe SessionsController do
         end
       end
 
-      context 'when using valid password', :redis do
+      context 'when using valid password', :clean_gitlab_redis_shared_state do
         include UserActivitiesHelpers
 
         let(:user) { create(:user) }
@@ -58,8 +91,8 @@ describe SessionsController do
       context 'remember_me field' do
         it 'sets a remember_user_token cookie when enabled' do
           allow(controller).to receive(:find_user).and_return(user)
-          expect(controller).
-            to receive(:remember_me).with(user).and_call_original
+          expect(controller)
+            .to receive(:remember_me).with(user).and_call_original
 
           authenticate_2fa(remember_me: '1', otp_attempt: user.current_otp)
 
@@ -111,7 +144,9 @@ describe SessionsController do
             end
 
             context 'when OTP is invalid' do
-              before { authenticate_2fa(otp_attempt: 'invalid') }
+              before do
+                authenticate_2fa(otp_attempt: 'invalid')
+              end
 
               it 'does not authenticate' do
                 expect(subject.current_user).not_to eq user
@@ -138,7 +173,9 @@ describe SessionsController do
             end
 
             context 'when OTP is invalid' do
-              before { authenticate_2fa(otp_attempt: 'invalid') }
+              before do
+                authenticate_2fa(otp_attempt: 'invalid')
+              end
 
               it 'does not authenticate' do
                 expect(subject.current_user).not_to eq user
@@ -193,8 +230,8 @@ describe SessionsController do
         it 'sets a remember_user_token cookie when enabled' do
           allow(U2fRegistration).to receive(:authenticate).and_return(true)
           allow(controller).to receive(:find_user).and_return(user)
-          expect(controller).
-            to receive(:remember_me).with(user).and_call_original
+          expect(controller)
+            .to receive(:remember_me).with(user).and_call_original
 
           authenticate_2fa_u2f(remember_me: '1', login: user.username, device_response: "{}")
 
@@ -222,13 +259,13 @@ describe SessionsController do
 
   describe '#new' do
     before do
-      @request.env['devise.mapping'] = Devise.mappings[:user]
+      set_devise_mapping(context: @request)
     end
 
     it 'redirects correctly for referer on same host with params' do
       search_path = '/search?search=seed_project'
-      allow(controller.request).to receive(:referer).
-        and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
+      allow(controller.request).to receive(:referer)
+        .and_return('http://%{host}%{path}' % { host: Gitlab.config.gitlab.host, path: search_path })
 
       get(:new, redirect_to_referer: :yes)
 

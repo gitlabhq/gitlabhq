@@ -50,5 +50,16 @@ module ChatMessage
     def link(text, url)
       "[#{text}](#{url})"
     end
+
+    def pretty_duration(seconds)
+      parse_string =
+        if duration < 1.hour
+          '%M:%S'
+        else
+          '%H:%M:%S'
+        end
+
+      Time.at(seconds).utc.strftime(parse_string)
+    end
   end
 end

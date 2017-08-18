@@ -12,3 +12,8 @@
           = link_to projects_group_path(@group), title: 'Projects' do
             %span
               Projects
+
+        = nav_link(controller: :ci_cd) do
+          = link_to group_settings_ci_cd_path(@group), title: 'Pipelines' do
+            %span
+              Pipelines

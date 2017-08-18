@@ -1,6 +1,8 @@
 require 'spec_helper'
 
-feature 'Group issues page', feature: true do
+feature 'Group issues page' do
+  include FilteredSearchHelpers
+
   let(:path) { issues_group_path(group) }
   let(:issuable) { create(:issue, project: project, title: "this is my created issuable")}
 
@@ -12,15 +14,15 @@ feature 'Group issues page', feature: true do
     context 'when signed in' do
       let(:user) { user_in_group }
 
-      it_behaves_like "it has an RSS button with current_user's private token"
-      it_behaves_like "an autodiscoverable RSS feed with current_user's private token"
+      it_behaves_like "it has an RSS button with current_user's RSS token"
+      it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
     end
 
     context 'when signed out' do
       let(:user) { nil }
 
-      it_behaves_like "it has an RSS button without a private token"
-      it_behaves_like "an autodiscoverable RSS feed without a private token"
+      it_behaves_like "it has an RSS button without an RSS token"
+      it_behaves_like "an autodiscoverable RSS feed without an RSS token"
     end
   end
 
@@ -31,12 +33,10 @@ feature 'Group issues page', feature: true do
     let(:path) { issues_group_path(group) }
 
     it 'filters by only group users' do
-      click_button('Assignee')
+      filtered_search.set('assignee:')
 
-      wait_for_ajax
-
-      expect(find('.dropdown-menu-assignee')).to have_link(user.name)
-      expect(find('.dropdown-menu-assignee')).not_to have_link(user2.name)
+      expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
+      expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
     end
   end
 end

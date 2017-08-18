@@ -72,7 +72,7 @@ module API
           optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
           optional :format, type: String, desc: 'The archive format'
         end
-        get ':id/repository/archive', requirements: { format: Gitlab::Regex.archive_formats_regex } do
+        get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
           begin
             send_git_archive user_project.repository, ref: params[:sha], format: params[:format]
           rescue

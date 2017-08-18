@@ -25,13 +25,23 @@ module API
         expose(:downvote?)  { |note| false }
       end
 
+      class PushEventPayload < Grape::Entity
+        expose :commit_count, :action, :ref_type, :commit_from, :commit_to
+        expose :ref, :commit_title
+      end
+
       class Event < Grape::Entity
         expose :title, :project_id, :action_name
         expose :target_id, :target_type, :author_id
-        expose :data, :target_title
+        expose :target_title
         expose :created_at
         expose :note, using: Entities::Note, if: ->(event, options) { event.note? }
         expose :author, using: ::API::Entities::UserBasic, if: ->(event, options) { event.author }
+
+        expose :push_event_payload,
+          as: :push_data,
+          using: PushEventPayload,
+          if: -> (event, _) { event.push? }
 
         expose :author_username do |event, options|
           event.author&.username
@@ -68,8 +78,10 @@ module API
         expose :lfs_enabled?, as: :lfs_enabled
         expose :creator_id
         expose :namespace, using: 'API::Entities::Namespace'
-        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
-        expose :avatar_url
+        expose :forked_from_project, using: ::API::Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
+        expose :avatar_url do |user, options|
+          user.avatar_url(only_path: false)
+        end
         expose :star_count, :forks_count
         expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) && project.default_issues_tracker? }
         expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -129,11 +141,16 @@ module API
       class Group < Grape::Entity
         expose :id, :name, :path, :description, :visibility_level
         expose :lfs_enabled?, as: :lfs_enabled
-        expose :avatar_url
+        expose :avatar_url do |user, options|
+          user.avatar_url(only_path: false)
+        end
         expose :web_url
         expose :request_access_enabled
         expose :full_name, :full_path
-        expose :parent_id
+
+        if ::Group.supports_nested_groups?
+          expose :parent_id
+        end
 
         expose :statistics, if: :statistics do
           with_options format_with: -> (value) { value.to_i } do
@@ -154,7 +171,8 @@ module API
         expose :id
         expose :default_projects_limit
         expose :signup_enabled
-        expose :signin_enabled
+        expose :password_authentication_enabled
+        expose :password_authentication_enabled, as: :signin_enabled
         expose :gravatar_enabled
         expose :sign_in_text
         expose :after_sign_up_text
@@ -219,7 +237,7 @@ module API
 
       class MergeRequestChanges < MergeRequest
         expose :diffs, as: :changes, using: ::API::Entities::RepoDiff do |compare, _|
-          compare.raw_diffs(all_diffs: true).to_a
+          compare.raw_diffs(limits: false).to_a
         end
       end
 
@@ -234,19 +252,57 @@ module API
       class ProjectService < Grape::Entity
         expose :id, :title, :created_at, :updated_at, :active
         expose :push_events, :issues_events, :merge_requests_events
-        expose :tag_push_events, :note_events, :build_events, :pipeline_events
+        expose :tag_push_events, :note_events, :pipeline_events
+        expose :job_events, as: :build_events
         # Expose serialized properties
         expose :properties do |service, options|
-          field_names = service.fields.
-            select { |field| options[:include_passwords] || field[:type] != 'password' }.
-            map { |field| field[:name] }
+          field_names = service.fields
+            .select { |field| options[:include_passwords] || field[:type] != 'password' }
+            .map { |field| field[:name] }
           service.properties.slice(*field_names)
         end
       end
 
       class ProjectHook < ::API::Entities::Hook
         expose :project_id, :issues_events, :merge_requests_events
-        expose :note_events, :build_events, :pipeline_events, :wiki_page_events
+        expose :note_events, :pipeline_events, :wiki_page_events
+        expose :job_events, as: :build_events
+      end
+
+      class ProjectEntity < Grape::Entity
+        expose :id, :iid
+        expose(:project_id) { |entity| entity&.project.try(:id) }
+        expose :title, :description
+        expose :state, :created_at, :updated_at
+      end
+
+      class IssueBasic < ProjectEntity
+        expose :label_names, as: :labels
+        expose :milestone, using: ::API::Entities::Milestone
+        expose :assignees, :author, using: ::API::Entities::UserBasic
+
+        expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+          issue.assignees.first
+        end
+
+        expose :user_notes_count
+        expose :upvotes, :downvotes
+        expose :due_date
+        expose :confidential
+
+        expose :web_url do |issue, options|
+          Gitlab::UrlBuilder.build(issue)
+        end
+      end
+
+      class Issue < IssueBasic
+        unexpose :assignees
+        expose :assignee do |issue, options|
+          ::API::Entities::UserBasic.represent(issue.assignees.first, options)
+        end
+        expose :subscribed do |issue, options|
+          issue.subscribed?(options[:current_user], options[:project] || issue.project)
+        end
       end
     end
   end

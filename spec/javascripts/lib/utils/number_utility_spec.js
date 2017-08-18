@@ -1,4 +1,4 @@
-import { formatRelevantDigits, bytesToKiB } from '~/lib/utils/number_utils';
+import { formatRelevantDigits, bytesToKiB, bytesToMiB } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
   describe('formatRelevantDigits', () => {
@@ -43,6 +43,13 @@ describe('Number Utils', () => {
     it('calculates KiB for the given bytes', () => {
       expect(bytesToKiB(1024)).toEqual(1);
       expect(bytesToKiB(1000)).toEqual(0.9765625);
+    });
+  });
+
+  describe('bytesToMiB', () => {
+    it('calculates MiB for the given bytes', () => {
+      expect(bytesToMiB(1048576)).toEqual(1);
+      expect(bytesToMiB(1000000)).toEqual(0.95367431640625);
     });
   });
 });

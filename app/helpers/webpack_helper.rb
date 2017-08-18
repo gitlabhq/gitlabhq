@@ -11,20 +11,31 @@ module WebpackHelper
 
     paths = Webpack::Rails::Manifest.asset_paths(source)
     if extension
-      paths = paths.select { |p| p.ends_with? ".#{extension}" }
+      paths.select! { |p| p.ends_with? ".#{extension}" }
     end
 
-    # include full webpack-dev-server url for rspec tests running locally
+    force_host = webpack_public_host
+    if force_host
+      paths.map! { |p| "#{force_host}#{p}" }
+    end
+
+    paths
+  end
+
+  def webpack_public_host
     if Rails.env.test? && Rails.configuration.webpack.dev_server.enabled
       host = Rails.configuration.webpack.dev_server.host
       port = Rails.configuration.webpack.dev_server.port
       protocol = Rails.configuration.webpack.dev_server.https ? 'https' : 'http'
-
-      paths.map! do |p|
-        "#{protocol}://#{host}:#{port}#{p}"
-      end
+      "#{protocol}://#{host}:#{port}"
+    else
+      ActionController::Base.asset_host.try(:chomp, '/')
     end
+  end
 
-    paths
+  def webpack_public_path
+    relative_path = Rails.application.config.relative_url_root
+    webpack_path = Rails.application.config.webpack.public_path
+    File.join(webpack_public_host.to_s, relative_path.to_s, webpack_path.to_s, '')
   end
 end

@@ -1,14 +1,16 @@
 require 'spec_helper'
 
-describe Ci::ProcessPipelineService, '#execute', :services do
+describe Ci::ProcessPipelineService, '#execute' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   let(:pipeline) do
     create(:ci_empty_pipeline, ref: 'master', project: project)
   end
 
   before do
+    stub_not_protect_default_branch
+
     project.add_developer(user)
   end
 
@@ -62,6 +64,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
       fail_running_or_pending
 
       expect(builds_statuses).to eq %w(failed pending)
+
+      fail_running_or_pending
+
+      expect(pipeline.reload).to be_success
     end
   end
 
@@ -268,6 +274,24 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'when there are only manual actions in stages' do
+    before do
+      create_build('image', stage_idx: 0, when: 'manual', allow_failure: true)
+      create_build('build', stage_idx: 1, when: 'manual', allow_failure: true)
+      create_build('deploy', stage_idx: 2, when: 'manual')
+      create_build('check', stage_idx: 3)
+
+      process_pipeline
+    end
+
+    it 'processes all jobs until blocking actions encountered' do
+      expect(all_builds_statuses).to eq(%w[manual manual manual created])
+      expect(all_builds_names).to eq(%w[image build deploy check])
+
+      expect(pipeline.reload).to be_blocked
+    end
+  end
+
   context 'when blocking manual actions are defined' do
     before do
       create_build('code:test', stage_idx: 0)
@@ -314,6 +338,14 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
 
     context 'when pipeline is promoted sequentially up to the end' do
+      before do
+        # Users need ability to merge into a branch in order to trigger
+        # protected manual actions.
+        #
+        create(:protected_branch, :developers_can_merge,
+               name: 'master', project: project)
+      end
+
       it 'properly processes entire pipeline' do
         process_pipeline
 
@@ -418,6 +450,50 @@ describe Ci::ProcessPipelineService, '#execute', :services do
     end
   end
 
+  context 'updates a list of retried builds' do
+    subject { described_class.retried.order(:id) }
+
+    let!(:build_retried) { create_build('build') }
+    let!(:build) { create_build('build') }
+    let!(:test) { create_build('test') }
+
+    it 'returns unique statuses' do
+      process_pipeline
+
+      expect(all_builds.latest).to contain_exactly(build, test)
+      expect(all_builds.retried).to contain_exactly(build_retried)
+    end
+  end
+
+  context 'when builds with auto-retries are configured' do
+    before do
+      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
+      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
+    end
+
+    it 'automatically retries builds in a valid order' do
+      expect(process_pipeline).to be_truthy
+
+      fail_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1]
+      expect(builds_statuses).to eq %w[failed pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success pending]
+
+      succeed_running_or_pending
+
+      expect(builds_names).to eq %w[build:1 build:1 test:2]
+      expect(builds_statuses).to eq %w[failed success success]
+
+      expect(pipeline.reload).to be_success
+    end
+  end
+
   def process_pipeline
     described_class.new(pipeline.project, user).execute(pipeline)
   end
@@ -432,6 +508,10 @@ describe Ci::ProcessPipelineService, '#execute', :services do
 
   def builds_names
     builds.pluck(:name)
+  end
+
+  def all_builds_names
+    all_builds.pluck(:name)
   end
 
   def builds_statuses

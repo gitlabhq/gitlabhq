@@ -1,15 +1,15 @@
-require('~/lib/utils/text_utility');
-require('~/abuse_reports');
+import '~/lib/utils/text_utility';
+import '~/abuse_reports';
 
 ((global) => {
   describe('Abuse Reports', () => {
     const FIXTURE = 'abuse_reports/abuse_reports_list.html.raw';
     const MAX_MESSAGE_LENGTH = 500;
 
-    let messages;
+    let $messages;
 
     const assertMaxLength = $message => expect($message.text().length).toEqual(MAX_MESSAGE_LENGTH);
-    const findMessage = searchText => messages.filter(
+    const findMessage = searchText => $messages.filter(
       (index, element) => element.innerText.indexOf(searchText) > -1,
     ).first();
 
@@ -18,7 +18,7 @@ require('~/abuse_reports');
     beforeEach(function () {
       loadFixtures(FIXTURE);
       this.abuseReports = new global.AbuseReports();
-      messages = $('.abuse-reports .message');
+      $messages = $('.abuse-reports .message');
     });
 
     it('should truncate long messages', () => {

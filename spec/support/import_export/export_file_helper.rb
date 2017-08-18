@@ -6,11 +6,11 @@ module ExportFileHelper
   ObjectWithParent = Struct.new(:object, :parent, :key_found)
 
   def setup_project
-    project = create(:project, :public)
+    project = create(:project, :public, :repository)
 
     create(:release, project: project)
 
-    issue = create(:issue, assignee: user, project: project)
+    issue = create(:issue, assignees: [user], project: project)
     snippet = create(:project_snippet, project: project)
     label = create(:label, project: project)
     milestone = create(:milestone, project: project)

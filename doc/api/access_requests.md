@@ -1,4 +1,4 @@
-# Group and project access requests
+# Group and project access requests API
 
  >**Note:** This feature was introduced in GitLab 8.11
 

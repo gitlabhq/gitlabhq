@@ -1,15 +1,13 @@
 require 'rails_helper'
 
-describe 'New/edit merge request', feature: true, js: true do
-  include GitlabRoutingHelper
-
-  let!(:project)   { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-  let(:fork_project) { create(:project, forked_from_project: project) }
-  let!(:user)      { create(:user)}
-  let!(:user2)      { create(:user)}
-  let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
-  let!(:label2)    { create(:label, project: project) }
+describe 'New/edit merge request', :js do
+  let!(:project)     { create(:project, :public, :repository) }
+  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+  let!(:user)        { create(:user) }
+  let!(:user2)       { create(:user) }
+  let!(:milestone)   { create(:milestone, project: project) }
+  let!(:label)       { create(:label, project: project) }
+  let!(:label2)      { create(:label, project: project) }
 
   before do
     project.team << [user, :master]
@@ -18,13 +16,12 @@ describe 'New/edit merge request', feature: true, js: true do
 
   context 'owned projects' do
     before do
-      login_as(user)
+      sign_in(user)
     end
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
-          project.namespace,
+        visit project_new_merge_request_path(
           project,
           merge_request: {
             source_project_id: project.id,
@@ -44,7 +41,7 @@ describe 'New/edit merge request', feature: true, js: true do
           expect(page).to have_content user2.name
         end
 
-        click_link 'Assign to me'
+        find('a', text: 'Assign to me').trigger('click')
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name
@@ -90,11 +87,18 @@ describe 'New/edit merge request', feature: true, js: true do
         page.within '.issuable-meta' do
           merge_request = MergeRequest.find_by(source_branch: 'fix')
 
-          expect(page).to have_text("Merge Request #{merge_request.to_reference}")
+          expect(page).to have_text("Merge request #{merge_request.to_reference}")
           # compare paths because the host differ in test
           expect(find_link(merge_request.to_reference)[:href])
             .to end_with(merge_request_path(merge_request))
         end
+      end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
       end
     end
 
@@ -107,7 +111,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'updates merge request' do
@@ -157,19 +161,25 @@ describe 'New/edit merge request', feature: true, js: true do
           end
         end
       end
+
+      it 'description has autocomplete' do
+        find('#merge_request_description').native.send_keys('')
+        fill_in 'merge_request_description', with: '@'
+
+        expect(page).to have_selector('.atwho-view')
+      end
     end
   end
 
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-      login_as(user)
+      sign_in(user)
     end
 
     context 'new merge request' do
       before do
-        visit new_namespace_project_merge_request_path(
-          fork_project.namespace,
+        visit project_new_merge_request_path(
           fork_project,
           merge_request: {
             source_project_id: fork_project.id,
@@ -237,7 +247,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                  target_branch: 'master'
                               )
 
-        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        visit edit_project_merge_request_path(project, merge_request)
       end
 
       it 'should update merge request' do

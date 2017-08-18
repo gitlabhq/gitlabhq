@@ -1,9 +1,11 @@
+# Gitaly note: JV: no RPC's here.
+
 module Gitlab
   module Git
     class Compare
       attr_reader :head, :base, :straight
 
-      def initialize(repository, base, head, straight = false)
+      def initialize(repository, base, head, straight: false)
         @repository = repository
         @straight = straight
 

@@ -1,14 +1,30 @@
 class BuildArtifactEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :name do |build|
-    build.name
+  expose :name do |job|
+    job.name
   end
 
-  expose :path do |build|
-    download_namespace_project_build_artifacts_path(
-      build.project.namespace,
-      build.project,
-      build)
+  expose :artifacts_expired?, as: :expired
+  expose :artifacts_expire_at, as: :expire_at
+
+  expose :path do |job|
+    download_project_job_artifacts_path(project, job)
+  end
+
+  expose :keep_path, if: -> (*) { job.has_expiring_artifacts? } do |job|
+    keep_project_job_artifacts_path(project, job)
+  end
+
+  expose :browse_path do |job|
+    browse_project_job_artifacts_path(project, job)
+  end
+
+  private
+
+  alias_method :job, :object
+
+  def project
+    job.project
   end
 end

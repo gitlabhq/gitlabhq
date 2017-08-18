@@ -1,9 +1,53 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
+/* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
+import _ from 'underscore';
+import { isObject } from './lib/utils/type_utility';
 
-var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote,
-  bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; },
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i += 1) { if (i in this && this[i] === item) return i; } return -1; };
+var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
+
+GitLabDropdownInput = (function() {
+  function GitLabDropdownInput(input, options) {
+    var $inputContainer, $clearButton;
+    var _this = this;
+    this.input = input;
+    this.options = options;
+    this.fieldName = this.options.fieldName || 'field-name';
+    $inputContainer = this.input.parent();
+    $clearButton = $inputContainer.find('.js-dropdown-input-clear');
+    $clearButton.on('click', (function(_this) {
+      // Clear click
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.input.val('').trigger('input').focus();
+      };
+    })(this));
+
+    this.input
+    .on('keydown', function (e) {
+      var keyCode = e.which;
+      if (keyCode === 13 && !options.elIsInput) {
+        e.preventDefault();
+      }
+    })
+    .on('input', function(e) {
+      var val = e.currentTarget.value || _this.options.inputFieldName;
+      val = val.split(' ').join('-') // replaces space with dash
+        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
+        .replace(/(-)\1+/g, '-'); // replace repeated dashes
+      _this.cb(_this.options.fieldName, val, {}, true);
+      _this.input.closest('.dropdown')
+        .find('.dropdown-toggle-text')
+        .text(val);
+    });
+  }
+
+  GitLabDropdownInput.prototype.onInput = function(cb) {
+    this.cb = cb;
+  };
+
+  return GitLabDropdownInput;
+})();
 
 GitLabDropdownFilter = (function() {
   var ARROW_KEY_CODES, BLUR_KEYCODES, HAS_VALUE_CLASS;
@@ -95,7 +139,7 @@ GitLabDropdownFilter = (function() {
           //     { prop: 'def' }
           //   ]
           // }
-          if (gl.utils.isObject(data)) {
+          if (isObject(data)) {
             results = {};
             for (key in data) {
               group = data[key];
@@ -115,7 +159,7 @@ GitLabDropdownFilter = (function() {
     } else {
       elements = this.options.elements();
       if (search_text) {
-        return elements.each(function() {
+        elements.each(function() {
           var $el, matches;
           $el = $(this);
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
@@ -128,8 +172,10 @@ GitLabDropdownFilter = (function() {
           }
         });
       } else {
-        return elements.show().removeClass('option-hidden');
+        elements.show().removeClass('option-hidden');
       }
+
+      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -189,7 +235,7 @@ GitLabDropdownRemote = (function() {
 })();
 
 GitLabDropdown = (function() {
-  var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
+  var ACTIVE_CLASS, FILTER_INPUT, NO_FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, CURSOR_SELECT_SCROLL_PADDING, currentIndex;
 
   LOADING_CLASS = "is-loading";
 
@@ -207,21 +253,24 @@ GitLabDropdown = (function() {
 
   CURSOR_SELECT_SCROLL_PADDING = 5;
 
-  FILTER_INPUT = '.dropdown-input .dropdown-input-field';
+  FILTER_INPUT = '.dropdown-input .dropdown-input-field:not(.dropdown-no-filter)';
+
+  NO_FILTER_INPUT = '.dropdown-input .dropdown-input-field.dropdown-no-filter';
 
   function GitLabDropdown(el1, options) {
     var searchFields, selector, self;
     this.el = el1;
     this.options = options;
-    this.updateLabel = bind(this.updateLabel, this);
-    this.hidden = bind(this.hidden, this);
-    this.opened = bind(this.opened, this);
-    this.shouldPropagate = bind(this.shouldPropagate, this);
+    this.updateLabel = this.updateLabel.bind(this);
+    this.hidden = this.hidden.bind(this);
+    this.opened = this.opened.bind(this);
+    this.shouldPropagate = this.shouldPropagate.bind(this);
     self = this;
     selector = $(this.el).data("target");
     this.dropdown = selector != null ? $(selector) : $(this.el).parent();
     // Set Defaults
     this.filterInput = this.options.filterInput || this.getElement(FILTER_INPUT);
+    this.noFilterInput = this.options.noFilterInput || this.getElement(NO_FILTER_INPUT);
     this.highlight = !!this.options.highlight;
     this.filterInputBlur = this.options.filterInputBlur != null
       ? this.options.filterInputBlur
@@ -249,15 +298,20 @@ GitLabDropdown = (function() {
             return function(data) {
               _this.fullData = data;
               _this.parseData(_this.fullData);
-              _this.focusTextInput();
+              _this.focusTextInput(true);
               if (_this.options.filterable && _this.filter && _this.filter.input && _this.filter.input.val() && _this.filter.input.val().trim() !== '') {
                 return _this.filter.input.trigger('input');
               }
             };
           // Remote data
-          })(this)
+          })(this),
+          instance: this,
         });
       }
+    }
+    if (this.noFilterInput.length) {
+      this.plainInput = new GitLabDropdownInput(this.noFilterInput, this.options);
+      this.plainInput.onInput(this.addInput.bind(this));
     }
     // Init filterable
     if (this.options.filterable) {
@@ -269,6 +323,7 @@ GitLabDropdown = (function() {
         remote: this.options.filterRemote,
         query: this.options.data,
         keys: searchFields,
+        instance: this,
         elements: (function(_this) {
           return function() {
             selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
@@ -343,21 +398,26 @@ GitLabDropdown = (function() {
       }
       this.dropdown.on("click", selector, function(e) {
         var $el, selected, selectedObj, isMarking;
-        $el = $(this);
+        $el = $(e.currentTarget);
         selected = self.rowClicked($el);
         selectedObj = selected ? selected[0] : null;
         isMarking = selected ? selected[1] : null;
-        if (self.options.clicked) {
-          self.options.clicked(selectedObj, $el, e, isMarking);
+        if (this.options.clicked) {
+          this.options.clicked.call(this, {
+            selectedObj,
+            $el,
+            e,
+            isMarking,
+          });
         }
 
         // Update label right after all modifications in dropdown has been done
-        if (self.options.toggleLabel) {
-          self.updateLabel(selectedObj, $el, self);
+        if (this.options.toggleLabel) {
+          this.updateLabel(selectedObj, $el, this);
         }
 
         $el.trigger('blur');
-      });
+      }.bind(this));
     }
   }
 
@@ -391,7 +451,7 @@ GitLabDropdown = (function() {
       html = [this.noResults()];
     } else {
       // Handle array groups
-      if (gl.utils.isObject(data)) {
+      if (isObject(data)) {
         html = [];
         for (name in data) {
           groupData = data[name];
@@ -439,15 +499,34 @@ GitLabDropdown = (function() {
     }
   };
 
+  GitLabDropdown.prototype.filteredFullData = function() {
+    return this.fullData.filter(r => typeof r === 'object'
+      && !Object.prototype.hasOwnProperty.call(r, 'beforeDivider')
+      && !Object.prototype.hasOwnProperty.call(r, 'header')
+    );
+  };
+
   GitLabDropdown.prototype.opened = function(e) {
     var contentHtml;
     this.resetRows();
     this.addArrowKeyEvent();
 
+    const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
+    const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
+
     // Makes indeterminate items effective
-    if (this.fullData && this.dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')) {
+    if (this.fullData && hasFilterBulkUpdate) {
       this.parseData(this.fullData);
     }
+
+    // Process the data to make sure rendered data
+    // matches the correct layout
+    const inputValue = this.filterInput.val();
+    if (this.fullData && hasMultiSelect && this.options.processData && inputValue.length === 0) {
+      this.options.processData.call(this.options, inputValue, this.filteredFullData(), this.parseData.bind(this));
+    }
+
     contentHtml = $('.dropdown-content', this.dropdown).html();
     if (this.remote && contentHtml === "") {
       this.remote.execute();
@@ -584,7 +663,12 @@ GitLabDropdown = (function() {
       var link = document.createElement('a');
 
       link.href = url;
-      link.innerHTML = text;
+
+      if (this.highlight) {
+        link.innerHTML = text;
+      } else {
+        link.textContent = text;
+      }
 
       if (selected) {
         link.className = 'is-active';
@@ -601,8 +685,8 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.highlightTextMatches = function(text, term) {
-    var occurrences;
-    occurrences = fuzzaldrinPlus.match(text, term);
+    const occurrences = fuzzaldrinPlus.match(text, term);
+    const indexOf = [].indexOf;
     return text.split('').map(function(character, i) {
       if (indexOf.call(occurrences, i) !== -1) {
         return "<b>" + character + "</b>";
@@ -698,18 +782,51 @@ GitLabDropdown = (function() {
     return [selectedObject, isMarking];
   };
 
-  GitLabDropdown.prototype.focusTextInput = function() {
-    if (this.options.filterable) { this.filterInput.focus(); }
+  GitLabDropdown.prototype.focusTextInput = function(triggerFocus = false) {
+    if (this.options.filterable) {
+      this.dropdown.one('transitionend', () => {
+        const initialScrollTop = $(window).scrollTop();
+
+        if (this.dropdown.is('.open')) {
+          this.filterInput.focus();
+        }
+
+        if ($(window).scrollTop() < initialScrollTop) {
+          $(window).scrollTop(initialScrollTop);
+        }
+      });
+
+      if (triggerFocus) {
+        // This triggers after a ajax request
+        // in case of slow requests, the dropdown transition could already be finished
+        this.dropdown.trigger('transitionend');
+      }
+    }
   };
 
-  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
+  GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject, single) {
     var $input;
     // Create hidden input for form
+    if (single) {
+      $('input[name="' + fieldName + '"]').remove();
+    }
+
     $input = $('<input>').attr('type', 'hidden').attr('name', fieldName).val(value);
     if (this.options.inputId != null) {
       $input.attr('id', this.options.inputId);
     }
-    return this.dropdown.before($input);
+
+    if (this.options.multiSelect) {
+      Object.keys(selectedObject).forEach((attribute) => {
+        $input.attr(`data-${attribute}`, selectedObject[attribute]);
+      });
+    }
+
+    if (this.options.inputMeta) {
+      $input.attr('data-meta', selectedObject[this.options.inputMeta]);
+    }
+
+    this.dropdown.before($input).trigger('change');
   };
 
   GitLabDropdown.prototype.selectRowAtIndex = function(index) {
@@ -829,7 +946,14 @@ GitLabDropdown = (function() {
     if (instance == null) {
       instance = null;
     }
-    return $(this.el).find(".dropdown-toggle-text").text(this.options.toggleLabel(selected, el, instance));
+
+    let toggleText = this.options.toggleLabel(selected, el, instance);
+    if (this.options.updateLabel) {
+      // Option to override the dropdown label text
+      toggleText = this.options.updateLabel;
+    }
+
+    return $(this.el).find(".dropdown-toggle-text").text(toggleText);
   };
 
   GitLabDropdown.prototype.clearField = function(field, isInput) {

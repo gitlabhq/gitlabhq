@@ -25,6 +25,19 @@ module Referable
     to_reference(from_project)
   end
 
+  included do
+    alias_method :non_referable_inspect, :inspect
+    alias_method :inspect, :referable_inspect
+  end
+
+  def referable_inspect
+    if respond_to?(:id)
+      "#<#{self.class.name} id:#{id} #{to_reference(full: true)}>"
+    else
+      "#<#{self.class.name} #{to_reference(full: true)}>"
+    end
+  end
+
   module ClassMethods
     # The character that prefixes the actual reference identifier
     #

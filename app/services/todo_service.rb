@@ -170,20 +170,22 @@ class TodoService
 
   # When user marks some todos as done
   def mark_todos_as_done(todos, current_user)
-    update_todos_state_by_ids(todos.select(&:id), current_user, :done)
+    update_todos_state(todos, current_user, :done)
   end
 
   def mark_todos_as_done_by_ids(ids, current_user)
-    update_todos_state_by_ids(ids, current_user, :done)
+    todos = todos_by_ids(ids, current_user)
+    mark_todos_as_done(todos, current_user)
   end
 
   # When user marks some todos as pending
   def mark_todos_as_pending(todos, current_user)
-    update_todos_state_by_ids(todos.select(&:id), current_user, :pending)
+    update_todos_state(todos, current_user, :pending)
   end
 
   def mark_todos_as_pending_by_ids(ids, current_user)
-    update_todos_state_by_ids(ids, current_user, :pending)
+    todos = todos_by_ids(ids, current_user)
+    mark_todos_as_pending(todos, current_user)
   end
 
   # When user marks an issue as todo
@@ -198,9 +200,11 @@ class TodoService
 
   private
 
-  def update_todos_state_by_ids(ids, current_user, state)
-    todos = current_user.todos.where(id: ids)
+  def todos_by_ids(ids, current_user)
+    current_user.todos.where(id: Array(ids))
+  end
 
+  def update_todos_state(todos, current_user, state)
     # Only update those that are not really on that state
     todos = todos.where.not(state: state)
     todos_ids = todos.pluck(:id)
@@ -251,9 +255,9 @@ class TodoService
   end
 
   def create_assignment_todo(issuable, author)
-    if issuable.assignee
+    if issuable.assignees.any?
       attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
-      create_todos(issuable.assignee, attributes)
+      create_todos(issuable.assignees, attributes)
     end
   end
 
@@ -281,7 +285,7 @@ class TodoService
 
   def attributes_for_target(target)
     attributes = {
-      project_id: target.project.id,
+      project_id: target&.project&.id,
       target_id: target.id,
       target_type: target.class.name,
       commit_id: nil

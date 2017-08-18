@@ -1,6 +1,9 @@
 /* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
 /* global Issuable */
 /* global ListLabel */
+import _ from 'underscore';
+import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import DropdownUtils from './filtered_search/dropdown_utils';
 
 (function() {
   this.LabelsSelect = (function() {
@@ -216,18 +219,7 @@
               }
             }
             if (label.duplicate) {
-              spacing = 100 / label.color.length;
-              // Reduce the colors to 4
-              label.color = label.color.filter(function(color, i) {
-                return i < 4;
-              });
-              color = _.map(label.color, function(color, i) {
-                var percentFirst, percentSecond;
-                percentFirst = Math.floor(spacing * i);
-                percentSecond = Math.floor(spacing * (i + 1));
-                return color + " " + percentFirst + "%," + color + " " + percentSecond + "% ";
-              }).join(',');
-              color = "linear-gradient(" + color + ")";
+              color = gl.DropdownUtils.duplicateLabelColor(label.color);
             }
             else {
               if (label.color != null) {
@@ -330,7 +322,10 @@
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(label, $el, e, isMarking) {
+          clicked: function(options) {
+            const { $el, e, isMarking } = options;
+            const label = options.selectedObj;
+
             var isIssueIndex, isMRIndex, page, boardsModel;
             var fadeOutLoader = () => {
               $loading.fadeOut();
@@ -352,7 +347,7 @@
 
             if ($dropdown.hasClass('js-filter-bulk-update')) {
               _this.enableBulkLabelDropdown();
-              _this.setDropdownData($dropdown, isMarking, this.id(label));
+              _this.setDropdownData($dropdown, isMarking, label.id);
               return;
             }
 
@@ -427,20 +422,15 @@
       if ($('.selected_issue:checked').length) {
         return;
       }
-      return $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label');
+      return $('.issues-bulk-update .labels-filter .dropdown-toggle-text').text('Label');
     };
 
     LabelsSelect.prototype.enableBulkLabelDropdown = function() {
-      var issuableBulkActions;
-      if ($('.selected_issue:checked').length) {
-        issuableBulkActions = $('.bulk-update').data('bulkActions');
-        return issuableBulkActions.willUpdateLabels = true;
-      }
+      IssuableBulkUpdateActions.willUpdateLabels = true;
     };
 
     LabelsSelect.prototype.setDropdownData = function($dropdown, isMarking, value) {
       var i, markedIds, unmarkedIds, indeterminateIds;
-      var issuableBulkActions = $('.bulk-update').data('bulkActions');
 
       markedIds = $dropdown.data('marked') || [];
       unmarkedIds = $dropdown.data('unmarked') || [];
@@ -466,13 +456,13 @@
         }
 
         // If an indeterminate item is being unmarked
-        if (issuableBulkActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
+        if (IssuableBulkUpdateActions.getOriginalIndeterminateIds().indexOf(value) > -1) {
           unmarkedIds.push(value);
         }
 
         // If a marked item is being unmarked
         // (a marked item could also be a label that is present in all selection)
-        if (issuableBulkActions.getOriginalCommonIds().indexOf(value) > -1) {
+        if (IssuableBulkUpdateActions.getOriginalCommonIds().indexOf(value) > -1) {
           unmarkedIds.push(value);
         }
       }

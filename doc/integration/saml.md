@@ -201,6 +201,9 @@ Please keep in mind that every sign in attempt will be redirected to the SAML se
 so you will not be able to sign in using local credentials. Make sure that at least one
 of the SAML users has admin permissions.
 
+You may also bypass the auto signin feature by browsing to
+https://gitlab.example.com/users/sign_in?auto_sign_in=false.
+
 ### `attribute_statements`
 
 >**Note:**

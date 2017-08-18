@@ -20,7 +20,7 @@ describe 'Git LFS API and storage' do
   let(:sample_size) { lfs_object.size }
 
   describe 'when lfs is disabled' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:body) do
       {
         'objects' => [
@@ -46,7 +46,7 @@ describe 'Git LFS API and storage' do
   end
 
   context 'project specific LFS settings' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:body) do
       {
         'objects' => [
@@ -151,7 +151,7 @@ describe 'Git LFS API and storage' do
   end
 
   describe 'deprecated API' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
 
     before do
       enable_lfs
@@ -188,7 +188,7 @@ describe 'Git LFS API and storage' do
   end
 
   describe 'when fetching lfs object' do
-    let(:project) { create(:empty_project) }
+    let(:project) { create(:project) }
     let(:update_permissions) { }
 
     before do
@@ -281,7 +281,7 @@ describe 'Git LFS API and storage' do
 
           shared_examples 'can download LFS only from own projects' do
             context 'for owned project' do
-              let(:project) { create(:empty_project, namespace: user.namespace) }
+              let(:project) { create(:project, namespace: user.namespace) }
 
               let(:update_permissions) do
                 project.lfs_objects << lfs_object
@@ -302,7 +302,7 @@ describe 'Git LFS API and storage' do
             end
 
             context 'for other project' do
-              let(:other_project) { create(:empty_project) }
+              let(:other_project) { create(:project) }
               let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
               let(:update_permissions) do
@@ -368,7 +368,7 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'download' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:body) do
         {
           'operation' => 'download',
@@ -408,7 +408,7 @@ describe 'Git LFS API and storage' do
         end
 
         context 'when downloading an lfs object that is assigned to other project' do
-          let(:other_project) { create(:empty_project) }
+          let(:other_project) { create(:project) }
           let(:update_lfs_permissions) do
             other_project.lfs_objects << lfs_object
           end
@@ -425,7 +425,7 @@ describe 'Git LFS API and storage' do
                   'size' => sample_size,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 }
               ]
@@ -456,7 +456,7 @@ describe 'Git LFS API and storage' do
                   'size' => 1575078,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 }
               ]
@@ -493,7 +493,7 @@ describe 'Git LFS API and storage' do
                   'size' => 1575078,
                   'error' => {
                     'code' => 404,
-                    'message' => "Object does not exist on the server or you don't have permissions to access it",
+                    'message' => "Object does not exist on the server or you don't have permissions to access it"
                   }
                 },
                 {
@@ -559,7 +559,7 @@ describe 'Git LFS API and storage' do
           end
 
           context 'for other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
 
             it 'rejects downloading code' do
@@ -662,7 +662,7 @@ describe 'Git LFS API and storage' do
           end
 
           context 'when pushing an lfs object that already exists' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:update_lfs_permissions) do
               other_project.lfs_objects << lfs_object
             end
@@ -701,7 +701,7 @@ describe 'Git LFS API and storage' do
               expect(json_response['objects']).to be_kind_of(Array)
               expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
               expect(json_response['objects'].first['size']).to eq(1575078)
-              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
+              expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
               expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
             end
           end
@@ -759,18 +759,19 @@ describe 'Git LFS API and storage' do
             context 'tries to push to own project' do
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 401' do
-                expect(response).to have_http_status(401)
+              it 'responds with 403 (not 404 because project is public)' do
+                expect(response).to have_http_status(403)
               end
             end
 
             context 'tries to push to other project' do
-              let(:other_project) { create(:empty_project) }
+              let(:other_project) { create(:project) }
               let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
               let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-              it 'responds with 401' do
-                expect(response).to have_http_status(401)
+              # I'm not sure what this tests that is different from the previous test
+              it 'responds with 403 (not 404 because project is public)' do
+                expect(response).to have_http_status(403)
               end
             end
           end
@@ -778,8 +779,8 @@ describe 'Git LFS API and storage' do
           context 'does not have user' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_http_status(403)
             end
           end
         end
@@ -805,7 +806,7 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'unsupported' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:authorization) { authorize_user }
       let(:body) do
         {
@@ -893,7 +894,7 @@ describe 'Git LFS API and storage' do
     end
 
     describe 'to one project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
 
       describe 'when user is authenticated' do
         let(:authorization) { authorize_user }
@@ -979,13 +980,13 @@ describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because the build user can read the project)' do
+              expect(response).to have_http_status(403)
             end
           end
 
           context 'tries to push to other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
@@ -993,8 +994,8 @@ describe 'Git LFS API and storage' do
               put_authorize
             end
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 404 (do not leak non-public project existence)' do
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -1006,8 +1007,8 @@ describe 'Git LFS API and storage' do
             put_authorize
           end
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          it 'responds with 404 (do not leak non-public project existence)' do
+            expect(response).to have_http_status(404)
           end
         end
       end
@@ -1079,18 +1080,19 @@ describe 'Git LFS API and storage' do
           context 'tries to push to own project' do
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_http_status(403)
             end
           end
 
           context 'tries to push to other project' do
-            let(:other_project) { create(:empty_project) }
+            let(:other_project) { create(:project) }
             let(:pipeline) { create(:ci_empty_pipeline, project: other_project) }
             let(:build) { create(:ci_build, :running, pipeline: pipeline, user: user) }
 
-            it 'responds with 401' do
-              expect(response).to have_http_status(401)
+            # I'm not sure what this tests that is different from the previous test
+            it 'responds with 403 (not 404 because project is public)' do
+              expect(response).to have_http_status(403)
             end
           end
         end
@@ -1098,8 +1100,8 @@ describe 'Git LFS API and storage' do
         context 'does not have user' do
           let(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-          it 'responds with 401' do
-            expect(response).to have_http_status(401)
+          it 'responds with 403 (not 404 because project is public)' do
+            expect(response).to have_http_status(403)
           end
         end
       end
@@ -1109,7 +1111,7 @@ describe 'Git LFS API and storage' do
       end
 
       describe 'and second project not related to fork or a source project' do
-        let(:second_project) { create(:empty_project) }
+        let(:second_project) { create(:project) }
         let(:authorization) { authorize_user }
 
         before do

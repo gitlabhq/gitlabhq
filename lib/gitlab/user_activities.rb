@@ -6,13 +6,13 @@ module Gitlab
     BATCH_SIZE = 500
 
     def self.record(key, time = Time.now)
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.hset(KEY, key, time.to_i)
       end
     end
 
     def delete(*keys)
-      Gitlab::Redis.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         redis.hdel(KEY, keys)
       end
     end
@@ -21,7 +21,7 @@ module Gitlab
       cursor = 0
       loop do
         cursor, pairs =
-          Gitlab::Redis.with do |redis|
+          Gitlab::Redis::SharedState.with do |redis|
             redis.hscan(KEY, cursor, count: BATCH_SIZE)
           end
 

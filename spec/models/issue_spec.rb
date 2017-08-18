@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe Issue, models: true do
+describe Issue do
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to have_many(:assignees) }
   end
 
   describe 'modules' do
@@ -23,7 +24,7 @@ describe Issue, models: true do
   end
 
   describe '#order_by_position_and_priority' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
     let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
     let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
     let!(:issue1) { create(:labeled_issue, project: project, labels: [p1]) }
@@ -32,30 +33,44 @@ describe Issue, models: true do
     let!(:issue4) { create(:issue, project: project, relative_position: 200) }
 
     it 'returns ordered list' do
-      expect(project.issues.order_by_position_and_priority).
-        to match [issue3, issue4, issue1, issue2]
+      expect(project.issues.order_by_position_and_priority)
+        .to match [issue3, issue4, issue1, issue2]
+    end
+  end
+
+  describe '#card_attributes' do
+    it 'includes the author name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([])
+
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => '' })
+    end
+
+    it 'includes the assignee name' do
+      allow(subject).to receive(:author).and_return(double(name: 'Robert'))
+      allow(subject).to receive(:assignees).and_return([double(name: 'Douwe')])
+
+      expect(subject.card_attributes)
+        .to eq({ 'Author' => 'Robert', 'Assignee' => 'Douwe' })
     end
   end
 
   describe '#closed_at' do
-    after do
-      Timecop.return
-    end
-
-    let!(:now) { Timecop.freeze(Time.now) }
-
     it 'sets closed_at to Time.now when issue is closed' do
       issue = create(:issue, state: 'opened')
 
+      expect(issue.closed_at).to be_nil
+
       issue.close
 
-      expect(issue.closed_at).to eq(now)
+      expect(issue.closed_at).to be_present
     end
   end
 
   describe '#to_reference' do
     let(:namespace) { build(:namespace, path: 'sample-namespace') }
-    let(:project)   { build(:empty_project, name: 'sample-project', namespace: namespace) }
+    let(:project)   { build(:project, name: 'sample-project', namespace: namespace) }
     let(:issue)     { build(:issue, iid: 1, project: project) }
     let(:group)     { create(:group, name: 'Group', path: 'sample-group') }
 
@@ -80,7 +95,7 @@ describe Issue, models: true do
     end
 
     context 'when cross namespace project argument' do
-      let(:another_namespace_project) { create(:empty_project, name: 'another-project') }
+      let(:another_namespace_project) { create(:project, name: 'another-project') }
 
       it 'returns complete path to the issue' do
         expect(issue.to_reference(another_namespace_project)).to eq 'sample-namespace/sample-project#1'
@@ -88,12 +103,12 @@ describe Issue, models: true do
     end
 
     it 'supports a cross-project reference' do
-      another_project = build(:empty_project, name: 'another-project', namespace: project.namespace)
+      another_project = build(:project, name: 'another-project', namespace: project.namespace)
       expect(issue.to_reference(another_project)).to eq "sample-project#1"
     end
 
     context 'when same namespace / cross-project argument' do
-      let(:another_project) { create(:empty_project, namespace: namespace) }
+      let(:another_project) { create(:project, namespace: namespace) }
 
       it 'returns path to the issue with the project name' do
         expect(issue.to_reference(another_project)).to eq 'sample-project#1'
@@ -102,7 +117,7 @@ describe Issue, models: true do
 
     context 'when different namespace / cross-project argument' do
       let(:another_namespace) { create(:namespace, path: 'another-namespace') }
-      let(:another_project)   { create(:empty_project, path: 'another-project', namespace: another_namespace) }
+      let(:another_project)   { create(:project, path: 'another-project', namespace: another_namespace) }
 
       it 'returns full path to the issue' do
         expect(issue.to_reference(another_project)).to eq 'sample-namespace/sample-project#1'
@@ -124,13 +139,24 @@ describe Issue, models: true do
     end
   end
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the issue assignee has changed' do
-      subject.assignee = create(:user)
-      expect(subject.is_being_reassigned?).to be_truthy
+  describe '#assignee_or_author?' do
+    let(:user) { create(:user) }
+    let(:issue) { create(:issue) }
+
+    it 'returns true for a user that is assigned to an issue' do
+      issue.assignees << user
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
     end
-    it 'returns false if the issue assignee has not changed' do
-      expect(subject.is_being_reassigned?).to be_falsey
+
+    it 'returns true for a user that is the author of an issue' do
+      issue.update(author: user)
+
+      expect(issue.assignee_or_author?(user)).to be_truthy
+    end
+
+    it 'returns false for a user that is not the assignee or author' do
+      expect(issue.assignee_or_author?(user)).to be_falsey
     end
   end
 
@@ -161,14 +187,10 @@ describe Issue, models: true do
     end
 
     it 'returns the merge request to close this issue' do
-      mr
-
       expect(issue.closed_by_merge_requests(mr.author)).to eq([mr])
     end
 
     it "returns an empty array when the merge request is closed already" do
-      closed_mr
-
       expect(issue.closed_by_merge_requests(closed_mr.author)).to eq([])
     end
 
@@ -179,7 +201,7 @@ describe Issue, models: true do
 
   describe '#referenced_merge_requests' do
     it 'returns the referenced merge requests' do
-      project = create(:empty_project, :public)
+      project = create(:project, :public)
 
       mr1 = create(:merge_request,
                    source_project: project,
@@ -212,10 +234,12 @@ describe Issue, models: true do
     end
 
     context 'user is reporter in project issue belongs to' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:issue) { create(:issue, project: project) }
 
-      before { project.team << [user, :reporter] }
+      before do
+        project.team << [user, :reporter]
+      end
 
       it { is_expected.to eq true }
 
@@ -226,15 +250,21 @@ describe Issue, models: true do
 
       context 'checking destination project also' do
         subject { issue.can_move?(user, to_project) }
-        let(:to_project) { create(:empty_project) }
+        let(:to_project) { create(:project) }
 
         context 'destination project allowed' do
-          before { to_project.team << [user, :reporter] }
+          before do
+            to_project.team << [user, :reporter]
+          end
+
           it { is_expected.to eq true }
         end
 
         context 'destination project not allowed' do
-          before { to_project.team << [user, :guest] }
+          before do
+            to_project.team << [user, :guest]
+          end
+
           it { is_expected.to eq false }
         end
       end
@@ -261,8 +291,8 @@ describe Issue, models: true do
     let(:user) { build(:admin) }
 
     before do
-      allow(subject.project.repository).to receive(:branch_names).
-                                            and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
+      allow(subject.project.repository).to receive(:branch_names)
+                                            .and_return(["mpempe", "#{subject.iid}mepmep", subject.to_branch_name, "#{subject.iid}-branch"])
 
       # Without this stub, the `create(:merge_request)` above fails because it can't find
       # the source branch. This seems like a reasonable compromise, in comparison with
@@ -284,10 +314,31 @@ describe Issue, models: true do
     end
 
     it 'excludes stable branches from the related branches' do
-      allow(subject.project.repository).to receive(:branch_names).
-        and_return(["#{subject.iid}-0-stable"])
+      allow(subject.project.repository).to receive(:branch_names)
+        .and_return(["#{subject.iid}-0-stable"])
 
       expect(subject.related_branches(user)).to eq []
+    end
+  end
+
+  describe '#has_related_branch?' do
+    let(:issue) { create(:issue, title: "Blue Bell Knoll") }
+    subject { issue.has_related_branch? }
+
+    context 'branch found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["iceblink-luck", issue.to_branch_name])
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'branch not found' do
+      before do
+        allow(issue.project.repository).to receive(:branch_names).and_return(["lazy-calm"])
+      end
+
+      it { is_expected.to eq false }
     end
   end
 
@@ -295,7 +346,7 @@ describe Issue, models: true do
     subject { create(:issue, project: create(:project, :repository)) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do
@@ -321,7 +372,7 @@ describe Issue, models: true do
 
   describe '#participants' do
     context 'using a public project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
       let(:issue) { create(:issue, project: project) }
 
       let!(:note1) do
@@ -343,7 +394,7 @@ describe Issue, models: true do
 
     context 'using a private project' do
       it 'does not include mentioned users that do not have access to the project' do
-        project = create(:empty_project)
+        project = create(:project)
         user = create(:user)
         issue = create(:issue, project: project)
 
@@ -361,15 +412,15 @@ describe Issue, models: true do
     it 'updates when assignees change' do
       user1 = create(:user)
       user2 = create(:user)
-      project = create(:empty_project)
-      issue = create(:issue, assignee: user1, project: project)
+      project = create(:project)
+      issue = create(:issue, assignees: [user1], project: project)
       project.add_developer(user1)
       project.add_developer(user2)
 
       expect(user1.assigned_open_issues_count).to eq(1)
       expect(user2.assigned_open_issues_count).to eq(0)
 
-      issue.assignee = user2
+      issue.assignees = [user2]
       issue.save
 
       expect(user1.assigned_open_issues_count).to eq(0)
@@ -431,7 +482,7 @@ describe Issue, models: true do
       let(:user) { create(:user) }
 
       context 'using a public project' do
-        let(:project) { create(:empty_project, :public) }
+        let(:project) { create(:project, :public) }
 
         it 'returns true for a regular issue' do
           issue = build(:issue, project: project)
@@ -447,7 +498,7 @@ describe Issue, models: true do
       end
 
       context 'using an internal project' do
-        let(:project) { create(:empty_project, :internal) }
+        let(:project) { create(:project, :internal) }
 
         context 'using an internal user' do
           it 'returns true for a regular issue' do
@@ -483,7 +534,7 @@ describe Issue, models: true do
       end
 
       context 'using a private project' do
-        let(:project) { create(:empty_project, :private) }
+        let(:project) { create(:project, :private) }
 
         it 'returns false for a regular issue' do
           issue = build(:issue, project: project)
@@ -498,7 +549,9 @@ describe Issue, models: true do
         end
 
         context 'when the user is the project owner' do
-          before { project.team << [user, :master] }
+          before do
+            project.team << [user, :master]
+          end
 
           it 'returns true for a regular issue' do
             issue = build(:issue, project: project)
@@ -517,7 +570,7 @@ describe Issue, models: true do
 
     context 'with a regular user that is a team member' do
       let(:user) { create(:user) }
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       context 'using a public project' do
         before do
@@ -538,7 +591,7 @@ describe Issue, models: true do
       end
 
       context 'using an internal project' do
-        let(:project) { create(:empty_project, :internal) }
+        let(:project) { create(:project, :internal) }
 
         before do
           project.team << [user, Gitlab::Access::DEVELOPER]
@@ -558,7 +611,7 @@ describe Issue, models: true do
       end
 
       context 'using a private project' do
-        let(:project) { create(:empty_project, :private) }
+        let(:project) { create(:project, :private) }
 
         before do
           project.team << [user, Gitlab::Access::DEVELOPER]
@@ -579,7 +632,7 @@ describe Issue, models: true do
     end
 
     context 'with an admin user' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:project) }
       let(:user) { create(:admin) }
 
       it 'returns true for a regular issue' do
@@ -598,7 +651,7 @@ describe Issue, models: true do
 
   describe '#publicly_visible?' do
     context 'using a public project' do
-      let(:project) { create(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       it 'returns true for a regular issue' do
         issue = build(:issue, project: project)
@@ -614,7 +667,7 @@ describe Issue, models: true do
     end
 
     context 'using an internal project' do
-      let(:project) { create(:empty_project, :internal) }
+      let(:project) { create(:project, :internal) }
 
       it 'returns false for a regular issue' do
         issue = build(:issue, project: project)
@@ -630,7 +683,7 @@ describe Issue, models: true do
     end
 
     context 'using a private project' do
-      let(:project) { create(:empty_project, :private) }
+      let(:project) { create(:project, :private) }
 
       it 'returns false for a regular issue' do
         issue = build(:issue, project: project)
@@ -654,6 +707,11 @@ describe Issue, models: true do
       expect(attrs_hash).to include(:human_time_estimate)
       expect(attrs_hash).to include(:human_total_time_spent)
       expect(attrs_hash).to include('time_estimate')
+    end
+
+    it 'includes assignee_ids and deprecated assignee_id' do
+      expect(attrs_hash).to include(:assignee_id)
+      expect(attrs_hash).to include(:assignee_ids)
     end
   end
 

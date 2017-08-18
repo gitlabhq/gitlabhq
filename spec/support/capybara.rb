@@ -14,8 +14,10 @@ Capybara.register_driver :poltergeist do |app|
     js_errors: true,
     timeout: timeout,
     window_size: [1366, 768],
+    url_whitelist: %w[localhost 127.0.0.1],
+    url_blacklist: %w[.mp4 .png .gif .avi .bmp .jpg .jpeg],
     phantomjs_options: [
-      '--load-images=no'
+      '--load-images=yes'
     ]
   )
 end
@@ -32,5 +34,22 @@ RSpec.configure do |config|
 
     TestEnv.eager_load_driver_server
     $capybara_server_already_started = true
+  end
+
+  config.before(:example, :js) do
+    allow(Gitlab::Application.routes).to receive(:default_url_options).and_return(
+      host: Capybara.current_session.server.host,
+      port: Capybara.current_session.server.port,
+      protocol: 'http')
+  end
+
+  config.after(:example, :js) do |example|
+    # capybara/rspec already calls Capybara.reset_sessions! in an `after` hook,
+    # but `block_and_wait_for_requests_complete` is called before it so by
+    # calling it explicitely here, we prevent any new requests from being fired
+    # See https://github.com/teamcapybara/capybara/blob/ffb41cfad620de1961bb49b1562a9fa9b28c0903/lib/capybara/rspec.rb#L20-L25
+    # We don't reset the session when the example failed, because we need capybara-screenshot to have access to it.
+    Capybara.reset_sessions! unless example.exception
+    block_and_wait_for_requests_complete
   end
 end

@@ -2,12 +2,12 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
-  include Gitlab::VisibilityLevel
   include AccessRequestable
+  include Avatarable
   include Referable
   include SelectForProjectAuthorization
 
-  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
   has_many :users, through: :group_members
   has_many :owners,
@@ -15,12 +15,14 @@ class Group < Namespace
     through: :group_members,
     source: :user
 
-  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
 
-  has_many :project_group_links, dependent: :destroy
+  has_many :milestones
+  has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
-  has_many :notification_settings, dependent: :destroy, as: :source
+  has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   has_many :labels, class_name: 'GroupLabel'
+  has_many :variables, class_name: 'Ci::GroupVariable'
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
@@ -30,13 +32,17 @@ class Group < Namespace
   validates :two_factor_grace_period, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   mount_uploader :avatar, AvatarUploader
-  has_many :uploads, as: :model, dependent: :destroy
+  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
 
   class << self
+    def supports_nested_groups?
+      Gitlab::Database.postgresql?
+    end
+
     # Searches for groups matching the given query.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
@@ -77,7 +83,7 @@ class Group < Namespace
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
           .where('project_namespace.share_with_group_lock = ?',  false)
-          .select("members.user_id, projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
+          .select("projects.id AS project_id, LEAST(project_group_links.group_access, members.access_level) AS access_level")
       else
         super
       end
@@ -96,10 +102,6 @@ class Group < Namespace
     full_name
   end
 
-  def visibility_level_field
-    :visibility_level
-  end
-
   def visibility_level_allowed_by_projects
     allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
 
@@ -111,10 +113,10 @@ class Group < Namespace
     allowed_by_projects
   end
 
-  def avatar_url(size = nil)
-    if self[:avatar].present?
-      [gitlab_config.url, avatar.url].join
-    end
+  def avatar_url(**args)
+    # We use avatar_path instead of overriding avatar_url because of carrierwave.
+    # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+    avatar_path(args)
   end
 
   def lfs_enabled?
@@ -165,10 +167,14 @@ class Group < Namespace
   end
 
   def has_owner?(user)
+    return false unless user
+
     members_with_parents.owners.where(user_id: user).any?
   end
 
   def has_master?(user)
+    return false unless user
+
     members_with_parents.masters.where(user_id: user).any?
   end
 
@@ -201,20 +207,54 @@ class Group < Namespace
   end
 
   def refresh_members_authorized_projects
-    UserProjectAccessChangedService.new(user_ids_for_project_authorizations).
-      execute
+    UserProjectAccessChangedService.new(user_ids_for_project_authorizations)
+      .execute
   end
 
   def user_ids_for_project_authorizations
-    users_with_parents.pluck(:id)
+    members_with_parents.pluck(:user_id)
   end
 
   def members_with_parents
-    GroupMember.non_request.where(source_id: ancestors.pluck(:id).push(id))
+    # Avoids an unnecessary SELECT when the group has no parents
+    source_ids =
+      if parent_id
+        self_and_ancestors.reorder(nil).select(:id)
+      else
+        id
+      end
+
+    GroupMember
+      .active_without_invites
+      .where(source_id: source_ids)
+  end
+
+  def members_with_descendants
+    GroupMember
+      .active_without_invites
+      .where(source_id: self_and_descendants.reorder(nil).select(:id))
   end
 
   def users_with_parents
-    User.where(id: members_with_parents.select(:user_id))
+    User
+      .where(id: members_with_parents.select(:user_id))
+      .reorder(nil)
+  end
+
+  def users_with_descendants
+    User
+      .where(id: members_with_descendants.select(:user_id))
+      .reorder(nil)
+  end
+
+  def max_member_access_for_user(user)
+    return GroupMember::OWNER if user.admin?
+
+    members_with_parents
+      .where(user_id: user)
+      .reorder(access_level: :desc)
+      .first&.
+      access_level || GroupMember::NO_ACCESS
   end
 
   def mattermost_team_params
@@ -225,6 +265,14 @@ class Group < Namespace
       display_name: name[0..max_length],
       type: public? ? 'O' : 'I' # Open vs Invite-only
     }
+  end
+
+  def secret_variables_for(ref, project)
+    list_of_ids = [self] + ancestors
+    variables = Ci::GroupVariable.where(group: list_of_ids)
+    variables = variables.unprotected unless project.protected_for?(ref)
+    variables = variables.group_by(&:group_id)
+    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
   protected

@@ -1,3 +1,7 @@
+# Gitaly note: JV: When the time comes I think we will want to copy this
+# class into Gitaly. None of its methods look like they should be RPC's.
+# The RPC's will be at a higher level.
+
 module Gitlab
   module Git
     class Index
@@ -109,10 +113,6 @@ module Gitlab
         pathname.each_filename do |segment|
           if segment == '..'
             raise IndexError, 'Path cannot include directory traversal'
-          end
-
-          unless segment =~ Gitlab::Regex.file_name_regex
-            raise IndexError, "Path #{Gitlab::Regex.file_name_regex_message}"
           end
         end
 

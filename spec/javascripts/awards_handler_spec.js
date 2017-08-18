@@ -1,9 +1,9 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, comma-dangle, new-parens, no-unused-vars, quotes, jasmine/no-spec-dupes, prefer-template, max-len */
 
 import Cookies from 'js-cookie';
-import AwardsHandler from '~/awards_handler';
+import loadAwardsHandler from '~/awards_handler';
 
-require('~/lib/utils/common_utils');
+import '~/lib/utils/common_utils';
 
 (function() {
   var awardsHandler, lazyAssert, urlRoot, openAndWaitForEmojiMenu;
@@ -26,14 +26,13 @@ require('~/lib/utils/common_utils');
 
   describe('AwardsHandler', function() {
     preloadFixtures('issues/issue_with_comment.html.raw');
-    beforeEach(function() {
+    beforeEach(function(done) {
       loadFixtures('issues/issue_with_comment.html.raw');
-      awardsHandler = new AwardsHandler;
-      spyOn(awardsHandler, 'postEmoji').and.callFake((function(_this) {
-        return function(button, url, emoji, cb) {
-          return cb();
-        };
-      })(this));
+      loadAwardsHandler(true).then((obj) => {
+        awardsHandler = obj;
+        spyOn(awardsHandler, 'postEmoji').and.callFake((button, url, emoji, cb) => cb());
+        done();
+      }).catch(fail);
 
       let isEmojiMenuBuilt = false;
       openAndWaitForEmojiMenu = function() {

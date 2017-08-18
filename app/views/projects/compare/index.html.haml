@@ -1,15 +1,17 @@
 - @no_container = true
 - page_title "Compare"
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 = render "projects/commits/head"
 
 %div{ class: container_class }
   .sub-header-block
     Compare Git revisions.
     %br
-    Fill input field with commit id like
-    %code.label-branch 4eedf23
+    Fill input field with commit SHA like
+    %code.ref-name 4eedf23
     or branch/tag name like
-    %code.label-branch master
+    %code.ref-name master
     and press compare button for the commits list and a code diff.
     %br
     Changes are shown <b>from</b> the version in the first field <b>to</b> the version in the second field.

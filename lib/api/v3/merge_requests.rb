@@ -23,6 +23,8 @@ module API
               error!(errors[:validate_fork], 422)
             elsif errors[:validate_branches].any?
               conflict!(errors[:validate_branches])
+            elsif errors[:base].any?
+              error!(errors[:base], 422)
             end
 
             render_api_error!(errors, 400)
@@ -32,7 +34,7 @@ module API
             if project.has_external_issue_tracker?
               ::API::Entities::ExternalIssue
             else
-              ::API::Entities::Issue
+              ::API::V3::Entities::Issue
             end
           end
 

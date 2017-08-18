@@ -1,0 +1,6 @@
+.nothing-here-block
+  This #{viewer.switcher_title} could not be displayed because #{diff_render_error_reason(viewer)}.
+
+  You can
+  = diff_render_error_options(viewer).to_sentence(two_words_connector: ' or ', last_word_connector: ', or ').html_safe
+  instead.

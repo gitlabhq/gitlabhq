@@ -1,9 +1,24 @@
 /* eslint-disable func-names, object-shorthand, prefer-arrow-callback */
 /* global Dropzone */
 
+import '../lib/utils/url_utility';
+import { HIDDEN_CLASS } from '../lib/utils/constants';
+
+function toggleLoading($el, $icon, loading) {
+  if (loading) {
+    $el.disable();
+    $icon.removeClass(HIDDEN_CLASS);
+  } else {
+    $el.enable();
+    $icon.addClass(HIDDEN_CLASS);
+  }
+}
 export default class BlobFileDropzone {
   constructor(form, method) {
     const formDropzone = form.find('.dropzone');
+    const submitButton = form.find('#submit-all');
+    const submitButtonLoadingIcon = submitButton.find('.js-loading-icon');
+    const dropzoneMessage = form.find('.dz-message');
     Dropzone.autoDiscover = false;
 
     const dropzone = formDropzone.dropzone({
@@ -26,16 +41,24 @@ export default class BlobFileDropzone {
       },
       init: function () {
         this.on('addedfile', function () {
+          toggleLoading(submitButton, submitButtonLoadingIcon, false);
+          dropzoneMessage.addClass(HIDDEN_CLASS);
           $('.dropzone-alerts').html('').hide();
         });
+        this.on('removedfile', function () {
+          toggleLoading(submitButton, submitButtonLoadingIcon, false);
+          dropzoneMessage.removeClass(HIDDEN_CLASS);
+        });
         this.on('success', function (header, response) {
-          window.location.href = response.filePath;
+          $('#modal-upload-blob').modal('hide');
+          window.gl.utils.visitUrl(response.filePath);
         });
         this.on('maxfilesexceeded', function (file) {
+          dropzoneMessage.addClass(HIDDEN_CLASS);
           this.removeFile(file);
         });
         this.on('sending', function (file, xhr, formData) {
-          formData.append('branch_name', form.find('input[name="branch_name"]').val());
+          formData.append('branch_name', form.find('.js-branch-name').val());
           formData.append('create_merge_request', form.find('.js-create-merge-request').val());
           formData.append('commit_message', form.find('.js-commit-message').val());
         });
@@ -48,14 +71,15 @@ export default class BlobFileDropzone {
       },
     });
 
-    const submitButton = form.find('#submit-all')[0];
-    submitButton.addEventListener('click', function (e) {
+    submitButton.on('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       if (dropzone[0].dropzone.getQueuedFiles().length === 0) {
         // eslint-disable-next-line no-alert
         alert('Please select a file');
+        return false;
       }
+      toggleLoading(submitButton, submitButtonLoadingIcon, true);
       dropzone[0].dropzone.processQueue();
       return false;
     });

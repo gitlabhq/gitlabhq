@@ -1,6 +1,6 @@
 module ChatNames
   class AuthorizeUserService
-    include Gitlab::Routing.url_helpers
+    include Gitlab::Routing
 
     def initialize(service, params)
       @service = service

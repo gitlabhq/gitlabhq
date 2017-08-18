@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ContainerRepository do
   let(:group) { create(:group, name: 'group') }
-  let(:project) { create(:project, path: 'test', group: group) }
+  let(:project) { create(:project, :repository, path: 'test', group: group) }
 
   let(:repository) do
     create(:container_repository, name: 'my_image', project: project)
@@ -41,7 +41,7 @@ describe ContainerRepository do
     end
 
     context 'when path contains uppercase letters' do
-      let(:project) { create(:project, path: 'MY_PROJECT', group: group) }
+      let(:project) { create(:project, :repository, path: 'MY_PROJECT', group: group) }
 
       it 'returns a full path without capital letters' do
         expect(repository.path).to eq('group/my_project/my_image')

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe UserEntity do
+  include Gitlab::Routing
+
   let(:entity) { described_class.new(user) }
   let(:user) { create(:user) }
   subject { entity.as_json }
@@ -19,5 +21,9 @@ describe UserEntity do
 
   it 'does not expose 2FA OTPs' do
     expect(subject).not_to include(/otp/)
+  end
+
+  it 'exposes user path' do
+    expect(subject[:path]).to eq user_path(user)
   end
 end

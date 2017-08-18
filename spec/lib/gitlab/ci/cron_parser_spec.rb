@@ -60,14 +60,60 @@ describe Gitlab::Ci::CronParser do
         end
       end
 
-      context 'when cron_timezone is US/Pacific' do
-        let(:cron) { '0 0 * * *' }
-        let(:cron_timezone) { 'US/Pacific' }
+      context 'when cron_timezone is TZInfo format' do
+        before do
+          allow(Time).to receive(:zone)
+            .and_return(ActiveSupport::TimeZone['UTC'])
+        end
 
-        it_behaves_like "returns time in the future"
+        let(:hour_in_utc) do
+          ActiveSupport::TimeZone[cron_timezone]
+            .now.change(hour: 0).in_time_zone('UTC').hour
+        end
 
-        it 'converts time in server time zone' do
-          expect(subject.hour).to eq((Time.zone.now.in_time_zone(cron_timezone).utc_offset / 60 / 60).abs)
+        context 'when cron_timezone is US/Pacific' do
+          let(:cron) { '* 0 * * *' }
+          let(:cron_timezone) { 'US/Pacific' }
+
+          it_behaves_like "returns time in the future"
+
+          it 'converts time in server time zone' do
+            expect(subject.hour).to eq(hour_in_utc)
+          end
+        end
+      end
+
+      context 'when cron_timezone is ActiveSupport::TimeZone format' do
+        before do
+          allow(Time).to receive(:zone)
+            .and_return(ActiveSupport::TimeZone['UTC'])
+        end
+
+        let(:hour_in_utc) do
+          ActiveSupport::TimeZone[cron_timezone]
+            .now.change(hour: 0).in_time_zone('UTC').hour
+        end
+
+        context 'when cron_timezone is Berlin' do
+          let(:cron) { '* 0 * * *' }
+          let(:cron_timezone) { 'Berlin' }
+
+          it_behaves_like "returns time in the future"
+
+          it 'converts time in server time zone' do
+            expect(subject.hour).to eq(hour_in_utc)
+          end
+        end
+
+        context 'when cron_timezone is Eastern Time (US & Canada)' do
+          let(:cron) { '* 0 * * *' }
+          let(:cron_timezone) { 'Eastern Time (US & Canada)' }
+
+          it_behaves_like "returns time in the future"
+
+          it 'converts time in server time zone' do
+            expect(subject.hour).to eq(hour_in_utc)
+          end
         end
       end
     end
@@ -76,9 +122,21 @@ describe Gitlab::Ci::CronParser do
       let(:cron) { 'invalid_cron' }
       let(:cron_timezone) { 'invalid_cron_timezone' }
 
-      it 'returns nil' do
-        is_expected.to be_nil
-      end 
+      it { is_expected.to be_nil }
+    end
+
+    context 'when cron syntax is quoted' do
+      let(:cron) { "'0 * * * *'" }
+      let(:cron_timezone) { 'UTC' }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context 'when cron syntax is rufus-scheduler syntax' do
+      let(:cron) { 'every 3h' }
+      let(:cron_timezone) { 'UTC' }
+
+      it { expect(subject).to be_nil }
     end
   end
 
@@ -93,6 +151,12 @@ describe Gitlab::Ci::CronParser do
 
     context 'when cron is invalid' do
       let(:cron) { '*********' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when cron syntax is quoted' do
+      let(:cron) { "'0 * * * *'" }
 
       it { is_expected.to eq(false) }
     end
@@ -111,6 +175,12 @@ describe Gitlab::Ci::CronParser do
       let(:cron_timezone) { 'Invalid-zone' }
 
       it { is_expected.to eq(false) }
+    end
+
+    context 'when cron_timezone is ActiveSupport::TimeZone format' do
+      let(:cron_timezone) { 'Eastern Time (US & Canada)' }
+
+      it { is_expected.to eq(true) }
     end
   end
 end

@@ -1,19 +1,17 @@
 require 'spec_helper'
 
-feature 'Create New Merge Request', feature: true, js: true do
-  include WaitForVueResource
-
+feature 'Create New Merge Request', js: true do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public) }
+  let(:project) { create(:project, :public, :repository) }
 
   before do
     project.team << [user, :master]
 
-    login_as user
+    sign_in user
   end
 
   it 'selects the source branch sha when a tag with the same name exists' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
     click_link 'New merge request'
     expect(page).to have_content('Source branch')
@@ -26,7 +24,7 @@ feature 'Create New Merge Request', feature: true, js: true do
   end
 
   it 'selects the target branch sha when a tag with the same name exists' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
     click_link 'New merge request'
 
@@ -34,13 +32,13 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page).to have_content('Target branch')
 
     first('.js-target-branch').click
-    first('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0').click
+    find('.dropdown-target-branch .dropdown-content a', text: 'v1.1.0', match: :first).click
 
     expect(page).to have_content "b83d6e3"
   end
 
   it 'generates a diff for an orphaned branch' do
-    visit namespace_project_merge_requests_path(project.namespace, project)
+    visit project_merge_requests_path(project)
 
     page.has_link?('New Merge Request') ? click_link("New Merge Request") : click_link('New merge request')
     expect(page).to have_content('Source branch')
@@ -65,34 +63,34 @@ feature 'Create New Merge Request', feature: true, js: true do
 
   context 'when target project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
-      private_project = create(:project, :private)
+      private_project = create(:project, :private, :repository)
 
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_project_id: private_project.id })
+      visit project_new_merge_request_path(project, merge_request: { target_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.path_with_namespace
-      expect(page).to have_content project.path_with_namespace
+      expect(page).not_to have_content private_project.full_path
+      expect(page).to have_content project.full_path
     end
   end
 
   context 'when source project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
-      private_project = create(:project, :private)
+      private_project = create(:project, :private, :repository)
 
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { source_project_id: private_project.id })
+      visit project_new_merge_request_path(project, merge_request: { source_project_id: private_project.id })
 
-      expect(page).not_to have_content private_project.path_with_namespace
-      expect(page).to have_content project.path_with_namespace
+      expect(page).not_to have_content private_project.full_path
+      expect(page).to have_content project.full_path
     end
   end
 
   it 'populates source branch button' do
-    visit new_namespace_project_merge_request_path(project.namespace, project, change_branches: true, merge_request: { target_branch: 'master', source_branch: 'fix' })
+    visit project_new_merge_request_path(project, change_branches: true, merge_request: { target_branch: 'master', source_branch: 'fix' })
 
     expect(find('.js-source-branch')).to have_content('fix')
   end
 
   it 'allows to change the diff view' do
-    visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'fix' })
+    visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
 
     click_link 'Changes'
 
@@ -108,7 +106,7 @@ feature 'Create New Merge Request', feature: true, js: true do
   end
 
   it 'does not allow non-existing branches' do
-    visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'non-exist-target', source_branch: 'non-exist-source' })
+    visit project_new_merge_request_path(project, merge_request: { target_branch: 'non-exist-target', source_branch: 'non-exist-source' })
 
     expect(page).to have_content('The form contains the following errors')
     expect(page).to have_content('Source branch "non-exist-source" does not exist')
@@ -117,7 +115,7 @@ feature 'Create New Merge Request', feature: true, js: true do
 
   context 'when a branch contains commits that both delete and add the same image' do
     it 'renders the diff successfully' do
-      visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'deleted-image-test' })
+      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'deleted-image-test' })
 
       click_link "Changes"
 
@@ -127,7 +125,7 @@ feature 'Create New Merge Request', feature: true, js: true do
 
   # Isolates a regression (see #24627)
   it 'does not show error messages on initial form' do
-    visit new_namespace_project_merge_request_path(project.namespace, project)
+    visit project_new_merge_request_path(project)
     expect(page).not_to have_selector('#error_explanation')
     expect(page).not_to have_content('The form contains the following error')
   end
@@ -140,13 +138,13 @@ feature 'Create New Merge Request', feature: true, js: true do
     end
 
     it 'shows pipelines for a new merge request' do
-      visit new_namespace_project_merge_request_path(
-        project.namespace, project,
+      visit project_new_merge_request_path(
+        project,
         merge_request: { target_branch: 'master', source_branch: 'fix' })
 
       page.within('.merge-request') do
         click_link 'Pipelines'
-        wait_for_vue_resource
+        wait_for_requests
 
         expect(page).to have_content "##{pipeline.id}"
       end

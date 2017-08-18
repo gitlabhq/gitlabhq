@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe NotesFinder do
   let(:user) { create :user }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
 
   before do
     project.team << [user, :master]
@@ -43,7 +43,7 @@ describe NotesFinder do
 
     context 'on restricted projects' do
       let(:project) do
-        create(:empty_project,
+        create(:project,
                :public,
                :issues_private,
                :snippets_private,
@@ -110,6 +110,15 @@ describe NotesFinder do
         expect(notes.count).to eq(1)
       end
 
+      it 'finds notes on personal snippets' do
+        note = create(:note_on_personal_snippet)
+        params = { target_type: 'personal_snippet', target_id: note.noteable_id }
+
+        notes = described_class.new(project, user, params).execute
+
+        expect(notes.count).to eq(1)
+      end
+
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
         expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
@@ -147,7 +156,7 @@ describe NotesFinder do
   end
 
   describe '.search' do
-    let(:project) { create(:empty_project, :public) }
+    let(:project) { create(:project, :public) }
     let(:note) { create(:note_on_issue, note: 'WoW', project: project) }
 
     it 'returns notes with matching content' do

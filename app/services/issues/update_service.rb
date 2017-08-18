@@ -5,6 +5,7 @@ module Issues
     def execute(issue)
       handle_move_between_iids(issue)
       filter_spam_check_params
+      change_issue_duplicate(issue)
       update(issue)
     end
 
@@ -12,8 +13,12 @@ module Issues
       spam_check(issue, current_user)
     end
 
-    def handle_changes(issue, old_labels: [], old_mentioned_users: [])
-      if has_changes?(issue, old_labels: old_labels)
+    def handle_changes(issue, options)
+      old_labels = options[:old_labels] || []
+      old_mentioned_users = options[:old_mentioned_users] || []
+      old_assignees = options[:old_assignees] || []
+
+      if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
       end
 
@@ -26,9 +31,9 @@ module Issues
         create_milestone_note(issue)
       end
 
-      if issue.previous_changes.include?('assignee_id')
-        create_assignee_note(issue)
-        notification_service.reassigned_issue(issue, current_user)
+      if issue.assignees != old_assignees
+        create_assignee_note(issue, old_assignees)
+        notification_service.reassigned_issue(issue, current_user, old_assignees)
         todo_service.reassigned_issue(issue, current_user)
       end
 
@@ -49,14 +54,6 @@ module Issues
       end
     end
 
-    def reopen_service
-      Issues::ReopenService
-    end
-
-    def close_service
-      Issues::CloseService
-    end
-
     def handle_move_between_iids(issue)
       return unless params[:move_between_iids]
 
@@ -66,6 +63,15 @@ module Issues
       issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid
 
       issue.move_between(issue_before, issue_after)
+    end
+
+    def change_issue_duplicate(issue)
+      canonical_issue_id = params.delete(:canonical_issue_id)
+      canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
+
+      if canonical_issue
+        Issues::DuplicateService.new(project, current_user).execute(issue, canonical_issue)
+      end
     end
 
     private

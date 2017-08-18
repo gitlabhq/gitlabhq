@@ -1,0 +1,22 @@
+%tr.js-protected-tag-edit-form{ data: { url: project_protected_tag_path(@project, protected_tag) } }
+  %td
+    %span.ref-name= protected_tag.name
+
+    - if @project.root_ref?(protected_tag.name)
+      %span.label.label-info.prepend-left-5 default
+  %td
+    - if protected_tag.wildcard?
+      - matching_tags = protected_tag.matching(repository.tags)
+      = link_to pluralize(matching_tags.count, "matching tag"), project_protected_tag_path(@project, protected_tag)
+    - else
+      - if commit = protected_tag.commit
+        = link_to(commit.short_id, project_commit_path(@project, commit.id), class: 'commit-sha')
+        = time_ago_with_tooltip(commit.committed_date)
+      - else
+        (tag was removed from repository)
+
+  = yield
+
+  - if can? current_user, :admin_project, @project
+    %td
+      = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_tag], data: { confirm: 'Tag will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'

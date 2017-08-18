@@ -1,8 +1,10 @@
+# Gitaly note: JV: seems to be completely migrated (behind feature flags).
+
 module Gitlab
   module Git
     class Blob
       include Linguist::BlobHelper
-      include Gitlab::Git::EncodingHelper
+      include Gitlab::EncodingHelper
 
       # This number is the maximum amount of data that we want to display to
       # the user. We load as much as we can for encoding detection
@@ -14,43 +16,56 @@ module Gitlab
 
       class << self
         def find(repository, sha, path)
-          commit = repository.lookup(sha)
-          root_tree = commit.tree
+          Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
+            if is_enabled
+              find_by_gitaly(repository, sha, path)
+            else
+              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+            end
+          end
+        end
 
-          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
+        def raw(repository, sha)
+          Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+            else
+              blob = repository.lookup(sha)
 
-          return nil unless blob_entry
-
-          if blob_entry[:type] == :commit
-            submodule_blob(blob_entry, path, sha)
-          else
-            blob = repository.lookup(blob_entry[:oid])
-
-            if blob
               new(
                 id: blob.oid,
-                name: blob_entry[:name],
                 size: blob.size,
                 data: blob.content(MAX_DATA_DISPLAY_SIZE),
-                mode: blob_entry[:filemode].to_s(8),
-                path: path,
-                commit_id: sha,
                 binary: blob.binary?
               )
             end
           end
         end
 
-        def raw(repository, sha)
-          blob = repository.lookup(sha)
-
-          new(
-            id: blob.oid,
-            size: blob.size,
-            data: blob.content(MAX_DATA_DISPLAY_SIZE),
-            binary: blob.binary?
-          )
+        def binary?(data)
+          # EncodingDetector checks the first 1024 * 1024 bytes for NUL byte, libgit2 checks
+          # only the first 8000 (https://github.com/libgit2/libgit2/blob/2ed855a9e8f9af211e7274021c2264e600c0f86b/src/filter.h#L15),
+          # which is what we use below to keep a consistent behavior.
+          detect = CharlockHolmes::EncodingDetector.new(8000).detect(data)
+          detect && detect[:type] == :binary
         end
+
+        # Returns an array of Blob instances, specified in blob_references as
+        # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
+        # full blob contents are returned. If blob_size_limit >= 0 then each blob will
+        # contain no more than limit bytes in its data attribute.
+        #
+        # Keep in mind that this method may allocate a lot of memory. It is up
+        # to the caller to limit the number of blobs and blob_size_limit.
+        #
+        def batch(repository, blob_references, blob_size_limit: nil)
+          blob_size_limit ||= MAX_DATA_DISPLAY_SIZE
+          blob_references.map do |sha, path|
+            find_by_rugged(repository, sha, path, limit: blob_size_limit)
+          end
+        end
+
+        private
 
         # Recursive search of blob id by path
         #
@@ -88,16 +103,77 @@ module Gitlab
           new(
             id: blob_entry[:oid],
             name: blob_entry[:name],
+            size: 0,
             data: '',
             path: path,
-            commit_id: sha,
+            commit_id: sha
           )
+        end
+
+        def find_by_gitaly(repository, sha, path)
+          path = path.sub(/\A\/*/, '')
+          path = '/' if path.empty?
+          name = File.basename(path)
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, MAX_DATA_DISPLAY_SIZE)
+          return unless entry
+
+          case entry.type
+          when :COMMIT
+            new(
+              id: entry.oid,
+              name: name,
+              size: 0,
+              data: '',
+              path: path,
+              commit_id: sha
+            )
+          when :BLOB
+            new(
+              id: entry.oid,
+              name: name,
+              size: entry.size,
+              data: entry.data.dup,
+              mode: entry.mode.to_s(8),
+              path: path,
+              commit_id: sha,
+              binary: binary?(entry.data)
+            )
+          end
+        end
+
+        def find_by_rugged(repository, sha, path, limit:)
+          commit = repository.lookup(sha)
+          root_tree = commit.tree
+
+          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
+
+          return nil unless blob_entry
+
+          if blob_entry[:type] == :commit
+            submodule_blob(blob_entry, path, sha)
+          else
+            blob = repository.lookup(blob_entry[:oid])
+
+            if blob
+              new(
+                id: blob.oid,
+                name: blob_entry[:name],
+                size: blob.size,
+                # Rugged::Blob#content is expensive; don't call it if we don't have to.
+                data: limit.zero? ? '' : blob.content(limit),
+                mode: blob_entry[:filemode].to_s(8),
+                path: path,
+                commit_id: sha,
+                binary: blob.binary?
+              )
+            end
+          end
         end
       end
 
       def initialize(options)
         %w(id name path size data mode commit_id binary).each do |key|
-          self.send("#{key}=", options[key.to_sym])
+          self.__send__("#{key}=", options[key.to_sym]) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         @loaded_all_data = false
@@ -107,10 +183,6 @@ module Gitlab
 
       def binary?
         @binary.nil? ? super : @binary == true
-      end
-
-      def empty?
-        !data || data == ''
       end
 
       def data
@@ -123,13 +195,31 @@ module Gitlab
         return if @data == '' # don't mess with submodule blobs
         return @data if @loaded_all_data
 
+        Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
+          @data = begin
+            if is_enabled
+              Gitlab::GitalyClient::BlobService.new(repository).get_blob(oid: id, limit: -1).data
+            else
+              repository.lookup(id).content
+            end
+          end
+        end
+
         @loaded_all_data = true
-        @data = repository.lookup(id).content
         @loaded_size = @data.bytesize
+        @binary = nil
       end
 
       def name
         encode! @name
+      end
+
+      def path
+        encode! @path
+      end
+
+      def truncated?
+        size && (size > loaded_size)
       end
 
       # Valid LFS object pointer is a text file consisting of
@@ -159,9 +249,13 @@ module Gitlab
         nil
       end
 
-      def truncated?
-        size && (size > loaded_size)
+      def external_storage
+        return unless lfs_pointer?
+
+        :lfs
       end
+
+      alias_method :external_size, :lfs_size
 
       private
 

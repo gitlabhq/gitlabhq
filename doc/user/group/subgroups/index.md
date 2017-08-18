@@ -1,6 +1,9 @@
 # Subgroups
 
-> [Introduced][ce-2772] in GitLab 9.0.
+>**Notes:**
+- [Introduced][ce-2772] in GitLab 9.0.
+- Not available when using MySQL as external database (support removed in
+  GitLab 9.3 [due to performance reasons][issue]).
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
@@ -12,6 +15,15 @@ up to 20 levels of nested groups, which among other things can help you to:
   potentially easier to separate permissions on parts of the source code.
 - **Make it easier to manage people and control visibility.** Give people
   different [permissions][] depending on their group [membership](#membership).
+
+## Database Requirements
+
+Nested groups are only supported when you use PostgreSQL. Supporting nested
+groups on MySQL in an efficient way is not possible due to MySQL's limitations.
+See the following links for more information:
+
+* <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
+* <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
 
 ## Overview
 
@@ -71,8 +83,7 @@ structure.
 - You need to be an Owner of a group in order to be able to create
   a subgroup. For more information check the [permissions table][permissions].
 - For a list of words that are not allowed to be used as group names see the
-  [`namespace_validator.rb` file][reserved] under the `RESERVED` and
-  `WILDCARD_ROUTES` lists.
+  [reserved names][reserved].
 
 To create a subgroup:
 
@@ -161,4 +172,5 @@ Here's a list of what you can't do with subgroups:
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
 [permissions]: ../../permissions.md#group
-[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/validators/namespace_validator.rb
+[reserved]:  ../../reserved_names.md
+[issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600

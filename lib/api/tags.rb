@@ -2,19 +2,21 @@ module API
   class Tags < Grape::API
     include PaginationParams
 
+    TAG_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
+
     before { authorize! :download_code, user_project }
 
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: { id: %r{[^/]+} } do
+    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get a project repository tags' do
         success Entities::RepoTag
       end
       params do
         use :pagination
       end
-      get ":id/repository/tags" do
+      get ':id/repository/tags' do
         tags = ::Kaminari.paginate_array(user_project.repository.tags.sort_by(&:name).reverse)
         present paginate(tags), with: Entities::RepoTag, project: user_project
       end
@@ -25,7 +27,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      get ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
+      get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         tag = user_project.repository.find_tag(params[:tag_name])
         not_found!('Tag') unless tag
 
@@ -44,8 +46,8 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
 
-        result = ::Tags::CreateService.new(user_project, current_user).
-          execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+        result = ::Tags::CreateService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
 
         if result[:status] == :success
           present result[:tag],
@@ -60,11 +62,11 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
+      delete ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        result = ::Tags::DestroyService.new(user_project, current_user).
-          execute(params[:tag_name])
+        result = ::Tags::DestroyService.new(user_project, current_user)
+          .execute(params[:tag_name])
 
         if result[:status] != :success
           render_api_error!(result[:message], result[:return_code])
@@ -78,11 +80,11 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag'
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
-      post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
+      post ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        result = CreateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+        result = CreateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release
@@ -98,11 +100,11 @@ module API
         requires :tag_name,    type: String, desc: 'The name of the tag'
         requires :description, type: String, desc: 'Release notes with markdown support'
       end
-      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
+      put ':id/repository/tags/:tag_name/release', requirements: TAG_ENDPOINT_REQUIREMENTS do
         authorize_push_project
 
-        result = UpdateReleaseService.new(user_project, current_user).
-          execute(params[:tag_name], params[:description])
+        result = UpdateReleaseService.new(user_project, current_user)
+          .execute(params[:tag_name], params[:description])
 
         if result[:status] == :success
           present result[:release], with: Entities::Release

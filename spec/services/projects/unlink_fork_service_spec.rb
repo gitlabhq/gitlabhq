@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Projects::UnlinkForkService, services: true do
-  subject { Projects::UnlinkForkService.new(fork_project, user) }
+describe Projects::UnlinkForkService do
+  subject { described_class.new(fork_project, user) }
 
   let(:fork_link) { create(:forked_project_link) }
   let(:fork_project) { fork_link.forked_to_project }
@@ -12,9 +12,9 @@ describe Projects::UnlinkForkService, services: true do
     let(:mr_close_service) { MergeRequests::CloseService.new(fork_project, user) }
 
     before do
-      allow(MergeRequests::CloseService).to receive(:new).
-        with(fork_project, user).
-        and_return(mr_close_service)
+      allow(MergeRequests::CloseService).to receive(:new)
+        .with(fork_project, user)
+        .and_return(mr_close_service)
     end
 
     it 'close all pending merge requests' do
@@ -28,5 +28,15 @@ describe Projects::UnlinkForkService, services: true do
     expect(fork_project.forked_project_link).to receive(:destroy)
 
     subject.execute
+  end
+
+  it 'refreshes the forks count cache of the source project' do
+    source = fork_project.forked_from_project
+
+    expect(source.forks_count).to eq(1)
+
+    subject.execute
+
+    expect(source.forks_count).to be_zero
   end
 end

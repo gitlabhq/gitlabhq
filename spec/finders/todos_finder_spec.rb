@@ -3,10 +3,12 @@ require 'spec_helper'
 describe TodosFinder do
   describe '#execute' do
     let(:user)          { create(:user) }
-    let(:project)       { create(:empty_project) }
+    let(:project)       { create(:project) }
     let(:finder)        { described_class }
 
-    before { project.team << [user, :developer] }
+    before do
+      project.team << [user, :developer]
+    end
 
     describe '#sort' do
       context 'by date' do

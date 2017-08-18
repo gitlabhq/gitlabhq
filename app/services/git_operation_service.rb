@@ -60,7 +60,7 @@ class GitOperationService
     start_branch_name = nil if start_repository.empty_repo?
 
     if start_branch_name && !start_repository.branch_exists?(start_branch_name)
-      raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.path_with_namespace}"
+      raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.full_path}"
     end
 
     update_branch_with_hooks(branch_name) do
@@ -120,7 +120,7 @@ class GitOperationService
   def with_hooks(ref, newrev, oldrev)
     GitHooksService.new.execute(
       user,
-      repository.path_to_repo,
+      repository.project,
       oldrev,
       newrev,
       ref) do |service|
@@ -129,6 +129,7 @@ class GitOperationService
     end
   end
 
+  # Gitaly note: JV: wait with migrating #update_ref until we know how to migrate its call sites.
   def update_ref(ref, newrev, oldrev)
     # We use 'git update-ref' because libgit2/rugged currently does not
     # offer 'compare and swap' ref updates. Without compare-and-swap we can

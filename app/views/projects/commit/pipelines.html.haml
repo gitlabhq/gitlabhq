@@ -2,4 +2,4 @@
 
 = render 'commit_box'
 = render 'ci_menu'
-= render 'projects/commit/pipelines_list', endpoint: pipelines_namespace_project_commit_path(@project.namespace, @project, @commit.id)
+= render 'projects/commit/pipelines_list', endpoint: pipelines_project_commit_path(@project, @commit.id)

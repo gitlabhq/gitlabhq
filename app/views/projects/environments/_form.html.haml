@@ -19,4 +19,4 @@
 
     .form-actions
       = f.submit 'Save', class: 'btn btn-save'
-      = link_to 'Cancel', namespace_project_environments_path(@project.namespace, @project), class: 'btn btn-cancel'
+      = link_to 'Cancel', project_environments_path(@project), class: 'btn btn-cancel'

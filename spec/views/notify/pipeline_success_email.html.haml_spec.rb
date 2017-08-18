@@ -4,7 +4,7 @@ describe 'notify/pipeline_success_email.html.haml' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 
   let(:pipeline) do

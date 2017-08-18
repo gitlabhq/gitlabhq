@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../config/initializers/6_validations.rb'
 
-describe '6_validations', lib: true do
+describe '6_validations' do
   before :all do
     FileUtils.mkdir_p('tmp/tests/paths/a/b/c/d')
     FileUtils.mkdir_p('tmp/tests/paths/a/b/c2')
@@ -20,6 +20,16 @@ describe '6_validations', lib: true do
 
       it 'passes through' do
         expect { validate_storages_config }.not_to raise_error
+      end
+    end
+
+    context 'when one of the settings is incorrect' do
+      before do
+        mock_storages('foo' => { 'path' => 'tmp/tests/paths/a/b/c', 'failure_count_threshold' => 'not a number' })
+      end
+
+      it 'throws an error' do
+        expect { validate_storages_config }.to raise_error(/failure_count_threshold/)
       end
     end
 
@@ -81,6 +91,17 @@ describe '6_validations', lib: true do
       end
 
       it 'passes through' do
+        expect { validate_storages_paths }.not_to raise_error
+      end
+    end
+
+    describe 'inaccessible storage' do
+      before do
+        mock_storages('foo' => { 'path' => 'tmp/tests/a/path/that/does/not/exist' })
+      end
+
+      it 'passes through with a warning' do
+        expect(Rails.logger).to receive(:error)
         expect { validate_storages_paths }.not_to raise_error
       end
     end

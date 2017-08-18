@@ -4,8 +4,6 @@
 //
 // Handles single- and multi-line selection and highlight for blob views.
 //
-require('vendor/jquery.scrollTo');
-
 //
 // ### Example Markup
 //
@@ -31,8 +29,6 @@ require('vendor/jquery.scrollTo');
 //   </div>
 //
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.LineHighlighter = (function() {
     // CSS class applied to highlighted lines
     LineHighlighter.prototype.highlightClass = 'hll';
@@ -41,20 +37,31 @@ require('vendor/jquery.scrollTo');
     LineHighlighter.prototype._hash = '';
 
     function LineHighlighter(hash) {
-      var range;
       if (hash == null) {
         // Initialize a LineHighlighter object
         //
         // hash - String URL hash for dependency injection in tests
         hash = location.hash;
       }
-      this.setHash = bind(this.setHash, this);
-      this.highlightLine = bind(this.highlightLine, this);
-      this.clickHandler = bind(this.clickHandler, this);
+      this.setHash = this.setHash.bind(this);
+      this.highlightLine = this.highlightLine.bind(this);
+      this.clickHandler = this.clickHandler.bind(this);
+      this.highlightHash = this.highlightHash.bind(this);
       this._hash = hash;
       this.bindEvents();
-      if (hash !== '') {
-        range = this.hashToRange(hash);
+      this.highlightHash();
+    }
+
+    LineHighlighter.prototype.bindEvents = function() {
+      const $fileHolder = $('.file-holder');
+      $fileHolder.on('click', 'a[data-line-number]', this.clickHandler);
+      $fileHolder.on('highlight:line', this.highlightHash);
+    };
+
+    LineHighlighter.prototype.highlightHash = function() {
+      var range;
+      if (this._hash !== '') {
+        range = this.hashToRange(this._hash);
         if (range[0]) {
           this.highlightRange(range);
           $.scrollTo("#L" + range[0], {
@@ -64,10 +71,6 @@ require('vendor/jquery.scrollTo');
           });
         }
       }
-    }
-
-    LineHighlighter.prototype.bindEvents = function() {
-      $('#blob-content-holder').on('click', 'a[data-line-number]', this.clickHandler);
     };
 
     LineHighlighter.prototype.clickHandler = function(event) {

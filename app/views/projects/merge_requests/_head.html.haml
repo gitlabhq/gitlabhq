@@ -4,18 +4,18 @@
     .nav-links.sub-nav.scrolling-tabs
       %ul{ class: (container_class) }
         = nav_link(controller: :merge_requests) do
-          = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests' do
+          = link_to project_merge_requests_path(@project), title: 'Merge Requests' do
             %span
               List
 
         - if project_nav_tab? :labels
           = nav_link(controller: :labels) do
-            = link_to namespace_project_labels_path(@project.namespace, @project), title: 'Labels' do
+            = link_to project_labels_path(@project), title: 'Labels' do
               %span
                 Labels
 
         - if project_nav_tab? :milestones
           = nav_link(controller: :milestones) do
-            = link_to namespace_project_milestones_path(@project.namespace, @project), title: 'Milestones' do
+            = link_to project_milestones_path(@project), title: 'Milestones' do
               %span
                 Milestones

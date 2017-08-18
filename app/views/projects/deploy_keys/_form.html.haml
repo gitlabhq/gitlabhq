@@ -2,7 +2,7 @@
   = form_errors(@deploy_keys.new_key)
   .form-group
     = f.label :title, class: "label-light"
-    = f.text_field :title, class: 'form-control', autofocus: true, required: true
+    = f.text_field :title, class: 'form-control', required: true
   .form-group
     = f.label :key, class: "label-light"
     = f.text_area :key, class: "form-control", rows: 5, required: true

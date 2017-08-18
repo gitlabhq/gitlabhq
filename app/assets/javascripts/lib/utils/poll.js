@@ -81,6 +81,9 @@ export default class Poll {
       })
       .catch((error) => {
         notificationCallback(false);
+        if (error.status === httpStatusCodes.ABORTED) {
+          return;
+        }
         errorCallback(error);
       });
   }

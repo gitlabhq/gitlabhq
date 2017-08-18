@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe 'OAuth tokens' do
   context 'Resource Owner Password Credentials' do
     def request_oauth_token(user)
       post '/oauth/token', username: user.username, password: user.password, grant_type: 'password'

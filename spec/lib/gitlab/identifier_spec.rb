@@ -5,15 +5,15 @@ describe Gitlab::Identifier do
     Class.new { include Gitlab::Identifier }.new
   end
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
 
   describe '#identify' do
     context 'without an identifier' do
       it 'identifies the user using a commit' do
-        expect(identifier).to receive(:identify_using_commit).
-          with(project, '123')
+        expect(identifier).to receive(:identify_using_commit)
+          .with(project, '123')
 
         identifier.identify('', project, '123')
       end
@@ -21,8 +21,8 @@ describe Gitlab::Identifier do
 
     context 'with a user identifier' do
       it 'identifies the user using a user ID' do
-        expect(identifier).to receive(:identify_using_user).
-          with("user-#{user.id}")
+        expect(identifier).to receive(:identify_using_user)
+          .with("user-#{user.id}")
 
         identifier.identify("user-#{user.id}", project, '123')
       end
@@ -30,8 +30,8 @@ describe Gitlab::Identifier do
 
     context 'with an SSH key identifier' do
       it 'identifies the user using an SSH key ID' do
-        expect(identifier).to receive(:identify_using_ssh_key).
-          with("key-#{key.id}")
+        expect(identifier).to receive(:identify_using_ssh_key)
+          .with("key-#{key.id}")
 
         identifier.identify("key-#{key.id}", project, '123')
       end

@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-feature 'Diffs URL', js: true, feature: true do
-  let(:project) { create(:project, :public) }
+feature 'Diffs URL', js: true do
+  let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
-    before(:each) do
+    before do
       page.driver.add_header('Accept', '*/*')
     end
 
     it 'renders the notes' do
       create :note_on_merge_request, project: project, noteable: merge_request, note: 'Rebasing with master'
 
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit diffs_project_merge_request_path(project, merge_request)
 
       # Load notes and diff through AJAX
       expect(page).to have_css('.note-text', visible: false, text: 'Rebasing with master')
@@ -20,11 +20,39 @@ feature 'Diffs URL', js: true, feature: true do
     end
   end
 
+  context 'when linking to note' do
+    describe 'with unresolved note' do
+      let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
+      let(:fragment) { "#note_#{note.id}" }
+
+      before do
+        visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
+      end
+
+      it 'shows expanded note' do
+        expect(page).to have_selector(fragment, visible: true)
+      end
+    end
+
+    describe 'with resolved note' do
+      let(:note) { create :diff_note_on_merge_request, :resolved, project: project, noteable: merge_request }
+      let(:fragment) { "#note_#{note.id}" }
+
+      before do
+        visit "#{diffs_project_merge_request_path(project, merge_request)}#{fragment}"
+      end
+
+      it 'shows expanded note' do
+        expect(page).to have_selector(fragment, visible: true)
+      end
+    end
+  end
+
   context 'when merge request has overflow' do
     it 'displays warning' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
 
-      visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      visit diffs_project_merge_request_path(project, merge_request)
 
       page.within('.alert') do
         expect(page).to have_text("Too many changes to show. Plain diff Email patch To preserve
@@ -40,10 +68,14 @@ feature 'Diffs URL', js: true, feature: true do
     let(:merge_request) { create(:merge_request_with_diffs, source_project: forked_project, target_project: project, author: author_user) }
     let(:changelog_id) { Digest::SHA1.hexdigest("CHANGELOG") }
 
+    before do
+      forked_project.repository.after_import
+    end
+
     context 'as author' do
       it 'shows direct edit link' do
-        login_as(author_user)
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        sign_in(author_user)
+        visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
         expect(page).to have_selector("[id=\"#{changelog_id}\"] a.js-edit-blob")
@@ -52,8 +84,8 @@ feature 'Diffs URL', js: true, feature: true do
 
     context 'as user who needs to fork' do
       it 'shows fork/cancel confirmation' do
-        login_as(user)
-        visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+        sign_in(user)
+        visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
         find("[id=\"#{changelog_id}\"] .js-edit-blob").click

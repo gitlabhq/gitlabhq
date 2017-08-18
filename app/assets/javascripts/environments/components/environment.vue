@@ -1,20 +1,27 @@
 <script>
-
-/* eslint-disable no-new */
 /* global Flash */
+import Visibility from 'visibilityjs';
 import EnvironmentsService from '../services/environments_service';
-import EnvironmentTable from './environments_table.vue';
+import environmentTable from './environments_table.vue';
 import EnvironmentsStore from '../stores/environments_store';
-import TablePaginationComponent from '../../vue_shared/components/table_pagination';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import '../../lib/utils/common_utils';
 import eventHub from '../event_hub';
+import Poll from '../../lib/utils/poll';
+import environmentsMixin from '../mixins/environments_mixin';
 
 export default {
 
   components: {
-    'environment-table': EnvironmentTable,
-    'table-pagination': TablePaginationComponent,
+    environmentTable,
+    tablePagination,
+    loadingIcon,
   },
+
+  mixins: [
+    environmentsMixin,
+  ],
 
   data() {
     const environmentsData = document.querySelector('#environments-list-view').dataset;
@@ -25,7 +32,6 @@ export default {
       state: store.state,
       visibility: 'available',
       isLoading: false,
-      isLoadingFolderContent: false,
       cssContainerClass: environmentsData.cssClass,
       endpoint: environmentsData.environmentsDataEndpoint,
       canCreateDeployment: environmentsData.canCreateDeployment,
@@ -35,6 +41,7 @@ export default {
       projectStoppedEnvironmentsPath: environmentsData.projectStoppedEnvironmentsPath,
       newEnvironmentPath: environmentsData.newEnvironmentPath,
       helpPagePath: environmentsData.helpPagePath,
+      isMakingRequest: false,
 
       // Pagination Properties,
       paginationInformation: {},
@@ -65,17 +72,42 @@ export default {
    * Toggles loading property.
    */
   created() {
+    const scope = gl.utils.getParameterByName('scope') || this.visibility;
+    const page = gl.utils.getParameterByName('page') || this.pageNumber;
+
     this.service = new EnvironmentsService(this.endpoint);
 
-    this.fetchEnvironments();
+    const poll = new Poll({
+      resource: this.service,
+      method: 'get',
+      data: { scope, page },
+      successCallback: this.successCallback,
+      errorCallback: this.errorCallback,
+      notificationCallback: (isMakingRequest) => {
+        this.isMakingRequest = isMakingRequest;
+      },
+    });
 
-    eventHub.$on('refreshEnvironments', this.fetchEnvironments);
+    if (!Visibility.hidden()) {
+      this.isLoading = true;
+      poll.makeRequest();
+    }
+
+    Visibility.change(() => {
+      if (!Visibility.hidden()) {
+        poll.restart();
+      } else {
+        poll.stop();
+      }
+    });
+
     eventHub.$on('toggleFolder', this.toggleFolder);
+    eventHub.$on('postAction', this.postAction);
   },
 
-  beforeDestroyed() {
-    eventHub.$off('refreshEnvironments');
+  beforeDestroy() {
     eventHub.$off('toggleFolder');
+    eventHub.$off('postAction');
   },
 
   methods: {
@@ -83,7 +115,7 @@ export default {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
-        this.fetchChildEnvironments(folder, folderUrl);
+        this.fetchChildEnvironments(folder, folderUrl, true);
       }
     },
 
@@ -102,43 +134,58 @@ export default {
 
     fetchEnvironments() {
       const scope = gl.utils.getParameterByName('scope') || this.visibility;
-      const pageNumber = gl.utils.getParameterByName('page') || this.pageNumber;
+      const page = gl.utils.getParameterByName('page') || this.pageNumber;
 
       this.isLoading = true;
 
-      return this.service.get(scope, pageNumber)
-        .then(resp => ({
-          headers: resp.headers,
-          body: resp.json(),
-        }))
-        .then((response) => {
-          this.store.storeAvailableCount(response.body.available_count);
-          this.store.storeStoppedCount(response.body.stopped_count);
-          this.store.storeEnvironments(response.body.environments);
-          this.store.setPagination(response.headers);
-        })
-        .then(() => {
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.isLoading = false;
-          new Flash('An error occurred while fetching the environments.');
-        });
+      return this.service.get({ scope, page })
+        .then(this.successCallback)
+        .catch(this.errorCallback);
     },
 
-    fetchChildEnvironments(folder, folderUrl) {
-      this.isLoadingFolderContent = true;
+    fetchChildEnvironments(folder, folderUrl, showLoader = false) {
+      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
 
       this.service.getFolderContent(folderUrl)
         .then(resp => resp.json())
-        .then((response) => {
-          this.store.setfolderContent(folder, response.environments);
-          this.isLoadingFolderContent = false;
-        })
+        .then(response => this.store.setfolderContent(folder, response.environments))
+        .then(() => this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false))
         .catch(() => {
-          this.isLoadingFolderContent = false;
+          // eslint-disable-next-line no-new
           new Flash('An error occurred while fetching the environments.');
+          this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', false);
         });
+    },
+
+    postAction(endpoint) {
+      if (!this.isMakingRequest) {
+        this.isLoading = true;
+
+        this.service.postAction(endpoint)
+          .then(() => this.fetchEnvironments())
+          .catch(() => new Flash('An error occured while making the request.'));
+      }
+    },
+
+    successCallback(resp) {
+      this.saveData(resp);
+
+      // We need to verify if any folder is open to also update it
+      const openFolders = this.store.getOpenFolders();
+      if (openFolders.length) {
+        openFolders.forEach((folder) => {
+          // TODO - Move this to the backend
+          const folderUrl = `${window.location.pathname}/folders/${folder.folderName}`;
+
+          return this.fetchChildEnvironments(folder, folderUrl);
+        });
+      }
+    },
+
+    errorCallback() {
+      this.isLoading = false;
+      // eslint-disable-next-line no-new
+      new Flash('An error occurred while fetching the environments.');
     },
   },
 };
@@ -177,15 +224,12 @@ export default {
       </div>
     </div>
 
-    <div class="content-list environments-container">
-      <div
-          class="environments-list-loading text-center"
-          v-if="isLoading">
-
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true" />
-      </div>
+    <div class="environments-container">
+      <loading-icon
+        label="Loading environments"
+        size="3"
+        v-if="isLoading"
+        />
 
       <div
         class="blank-state blank-state-no-icon"
@@ -205,7 +249,7 @@ export default {
           v-if="canCreateEnvironmentParsed"
           :href="newEnvironmentPath"
           class="btn btn-create js-new-environment-button">
-          New Environment
+          New environment
         </a>
       </div>
 
@@ -217,8 +261,7 @@ export default {
           :environments="state.environments"
           :can-create-deployment="canCreateDeploymentParsed"
           :can-read-environment="canReadEnvironmentParsed"
-          :service="service"
-          :is-loading-folder-content="isLoadingFolderContent" />
+          />
       </div>
 
       <table-pagination

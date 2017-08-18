@@ -3,7 +3,7 @@
                   prefer-arrow-callback, comma-dangle, consistent-return, yoda,
                   prefer-rest-params, prefer-spread, no-unused-vars, prefer-template,
                   promise/catch-or-return */
-/* global Api */
+import Api from './api';
 
 var slice = [].slice;
 
@@ -111,8 +111,7 @@ window.GroupsSelect = (function() {
   };
 
   GroupsSelect.prototype.forceOverflow = function (e) {
-    const itemHeight = this.dropdown.querySelector('.select2-result:first-child').clientHeight;
-    this.dropdown.style.height = `${Math.floor(this.dropdown.scrollHeight - (itemHeight * 0.9))}px`;
+    this.dropdown.style.height = `${Math.floor(this.dropdown.scrollHeight)}px`;
   };
 
   GroupsSelect.PER_PAGE = 20;

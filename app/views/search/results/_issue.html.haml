@@ -8,7 +8,6 @@
     .pull-right ##{issue.iid}
   - if issue.description.present?
     .description.term
-      = preserve do
-        = search_md_sanitize(issue, :description)
+      = search_md_sanitize(issue, :description)
   %span.light
     #{issue.project.name_with_namespace}

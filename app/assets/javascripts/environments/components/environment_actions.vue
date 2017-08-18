@@ -1,9 +1,8 @@
 <script>
-/* global Flash */
-/* eslint-disable no-new */
-
 import playIconSvg from 'icons/_icon_play.svg';
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   props: {
@@ -12,11 +11,14 @@ export default {
       required: false,
       default: () => [],
     },
+  },
 
-    service: {
-      type: Object,
-      required: true,
-    },
+  directives: {
+    tooltip,
+  },
+
+  components: {
+    loadingIcon,
   },
 
   data() {
@@ -36,17 +38,7 @@ export default {
     onClickAction(endpoint) {
       this.isLoading = true;
 
-      $(this.$refs.tooltip).tooltip('destroy');
-
-      this.service.postAction(endpoint)
-      .then(() => {
-        this.isLoading = false;
-        eventHub.$emit('refreshEnvironments');
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occured while making the request.');
-      });
+      eventHub.$emit('postAction', endpoint);
     },
 
     isActionDisabled(action) {
@@ -64,11 +56,11 @@ export default {
     class="btn-group"
     role="group">
     <button
+      v-tooltip
       type="button"
-      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container has-tooltip"
+      class="dropdown btn btn-default dropdown-new js-dropdown-play-icon-container"
       data-container="body"
       data-toggle="dropdown"
-      ref="tooltip"
       :title="title"
       :aria-label="title"
       :disabled="isLoading">
@@ -77,10 +69,7 @@ export default {
         <i
           class="fa fa-caret-down"
           aria-hidden="true"/>
-        <i
-          v-if="isLoading"
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true"/>
+        <loading-icon v-if="isLoading" />
       </span>
     </button>
 

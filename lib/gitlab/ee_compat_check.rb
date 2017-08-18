@@ -76,7 +76,7 @@ module Gitlab
 
       step(
         "Generating the patch against origin/master in #{patch_path}",
-        %w[git format-patch origin/master --stdout]
+        %w[git diff --binary origin/master...HEAD]
       ) do |output, status|
         throw(:halt_check, :ko) unless status.zero?
 
@@ -98,9 +98,10 @@ module Gitlab
 
       if status.zero?
         @ee_branch_found = ee_branch_prefix
-      else
-        _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+        return
       end
+
+      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_suffix
@@ -131,10 +132,20 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
+      step("Fetching CE/#{ce_branch}", %W[git fetch #{CE_REPO} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
-        %W[git apply --check --3way #{patch_path}]
+        # Don't use --check here because it can result in a 0-exit status even
+        # though the patch doesn't apply cleanly, e.g.:
+        #   > git apply --check --3way foo.patch
+        #   error: patch failed: lib/gitlab/ee_compat_check.rb:74
+        #   Falling back to three-way merge...
+        #   Applied patch to 'lib/gitlab/ee_compat_check.rb' with conflicts.
+        #   > echo $?
+        #   0
+        %W[git apply --3way #{patch_path}]
       ) do |output, status|
+        puts output
         unless status.zero?
           @failed_files = output.lines.reduce([]) do |memo, line|
             if line.start_with?('error: patch failed:')
@@ -147,6 +158,7 @@ module Gitlab
           status = 0 if failed_files.empty?
         end
 
+        command(%w[git reset --hard])
         status
       end
     end
@@ -170,8 +182,6 @@ module Gitlab
     end
 
     def find_merge_base_with_master(branch:)
-      return if merge_base_found?
-
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20
@@ -224,6 +234,10 @@ module Gitlab
 
     def patch_name_from_branch(branch_name)
       branch_name.parameterize << '.patch'
+    end
+
+    def patch_url
+      "https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/#{ENV['CI_JOB_ID']}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
     end
 
     def step(desc, cmd = nil)
@@ -292,14 +306,11 @@ module Gitlab
 
         2. Apply your branch's patch to EE
 
-          # In the CE repo
-          $ git fetch origin master
-          $ git format-patch origin/master --stdout > #{ce_branch}.patch
-
           # In the EE repo
           $ git fetch origin master
           $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git apply --3way path/to/#{ce_branch}.patch
+          $ wget #{patch_url}
+          $ git apply --3way #{ce_patch_name}
 
           At this point you might have conflicts such as:
 
@@ -310,12 +321,23 @@ module Gitlab
 
           Resolve them, stage the changes and commit them.
 
+          If the patch couldn't be applied cleanly, use the following command:
+
+          # In the EE repo
+          $ git apply --reject #{ce_patch_name}
+
+          This option makes git apply the parts of the patch that are applicable,
+          and leave the rejected hunks in corresponding `.rej` files.
+          You can then resolve the conflicts highlighted in `.rej` by
+          manually applying the correct diff from the `.rej` file to the file with conflicts.
+          When finished, you can delete the `.rej` files and commit your changes.
+
         ⚠️ Don't forget to push your branch to gitlab-ee:
 
           # In the EE repo
           $ git push origin #{ee_branch_prefix}
 
-        ⚠️ Also, don't forget to create a new merge request on gitlab-ce and
+        ⚠️ Also, don't forget to create a new merge request on gitlab-ee and
         cross-link it with the CE merge request.
 
         Once this is done, you can retry this failed build, and it should pass.

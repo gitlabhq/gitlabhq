@@ -9,9 +9,9 @@ describe API::Groups do
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
   let!(:group2) { create(:group, :private) }
-  let!(:project1) { create(:empty_project, namespace: group1) }
-  let!(:project2) { create(:empty_project, namespace: group2) }
-  let!(:project3) { create(:empty_project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+  let!(:project1) { create(:project, namespace: group1) }
+  let!(:project2) { create(:project, namespace: group2) }
+  let!(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
   before do
     group1.add_owner(user1)
@@ -73,7 +73,7 @@ describe API::Groups do
           storage_size: 702,
           repository_size: 123,
           lfs_objects_size: 234,
-          build_artifacts_size: 345,
+          build_artifacts_size: 345
         }.stringify_keys
         exposed_attributes = attributes.dup
         exposed_attributes['job_artifacts_size'] = exposed_attributes.delete('build_artifacts_size')
@@ -167,7 +167,7 @@ describe API::Groups do
   describe "GET /groups/:id" do
     context "when authenticated as user" do
       it "returns one of user1's groups" do
-        project = create(:empty_project, namespace: group2, path: 'Foo')
+        project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
 
         get api("/groups/#{group1.id}", user1)
@@ -178,7 +178,7 @@ describe API::Groups do
         expect(json_response['path']).to eq(group1.path)
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
-        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
@@ -311,7 +311,7 @@ describe API::Groups do
       end
 
       it 'filters the groups projects' do
-        public_project = create(:empty_project, :public, path: 'test1', group: group1)
+        public_project = create(:project, :public, path: 'test1', group: group1)
 
         get api("/groups/#{group1.id}/projects", user1), visibility: 'public'
 
@@ -429,7 +429,7 @@ describe API::Groups do
         expect(json_response["request_access_enabled"]).to eq(group[:request_access_enabled])
       end
 
-      it "creates a nested group" do
+      it "creates a nested group", :nested_groups do
         parent = create(:group)
         parent.add_owner(user3)
         group = attributes_for(:group, { parent_id: parent.id })
@@ -509,12 +509,12 @@ describe API::Groups do
   end
 
   describe "POST /groups/:id/projects/:project_id" do
-    let(:project) { create(:empty_project) }
-    let(:project_path) { project.full_path.gsub('/', '%2F') }
+    let(:project) { create(:project) }
+    let(:project_path) { CGI.escape(project.full_path) }
 
-    before(:each) do
-      allow_any_instance_of(Projects::TransferService).
-        to receive(:execute).and_return(true)
+    before do
+      allow_any_instance_of(Projects::TransferService)
+        .to receive(:execute).and_return(true)
     end
 
     context "when authenticated as user" do

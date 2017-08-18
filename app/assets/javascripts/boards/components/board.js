@@ -1,11 +1,10 @@
 /* eslint-disable comma-dangle, space-before-function-paren, one-var */
 /* global Sortable */
 import Vue from 'vue';
+import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list';
 import boardBlankState from './board_blank_state';
-
-require('./board_delete');
-require('./board_list');
+import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -24,6 +23,10 @@ gl.issueBoards.Board = Vue.extend({
     disabled: Boolean,
     issueLinkBase: String,
     rootPath: String,
+    boardId: {
+      type: String,
+      required: true,
+    },
   },
   data () {
     return {
@@ -35,7 +38,10 @@ gl.issueBoards.Board = Vue.extend({
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true);
+        this.list.getIssues(true)
+          .catch(() => {
+            // TODO: handle request error
+          });
       },
       deep: true,
     },
@@ -77,7 +83,16 @@ gl.issueBoards.Board = Vue.extend({
   methods: {
     showNewIssueForm() {
       this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
-    }
+    },
+    toggleExpanded(e) {
+      if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
+        this.list.isExpanded = !this.list.isExpanded;
+
+        if (AccessorUtilities.isLocalStorageAccessSafe()) {
+          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+        }
+      }
+    },
   },
   mounted () {
     this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
@@ -100,5 +115,12 @@ gl.issueBoards.Board = Vue.extend({
     });
 
     this.sortable = Sortable.create(this.$el.parentNode, this.sortableOptions);
+  },
+  created() {
+    if (this.list.isExpandable && AccessorUtilities.isLocalStorageAccessSafe()) {
+      const isCollapsed = localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
+
+      this.list.isExpanded = !isCollapsed;
+    }
   },
 });

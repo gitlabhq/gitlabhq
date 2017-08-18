@@ -7,7 +7,8 @@
 }
 
 .new_project,
-.edit-project {
+.edit-project,
+.import-project {
 
   .sharing-and-permissions {
     .header {
@@ -26,8 +27,21 @@
       margin-bottom: 5px;
     }
 
-    & > .form-group {
+    > .form-group {
       padding-left: 0;
+    }
+
+    select option[disabled] {
+      display: none;
+    }
+  }
+
+  select {
+    transition: background 2s ease-out;
+
+    &.highlight-changes {
+      background: $highlight-changes-color;
+      transition: none;
     }
   }
 
@@ -69,7 +83,7 @@
       border: 1px solid $border-color;
     }
 
-    & + .select2 a {
+    + .select2 a {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -247,7 +261,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 13px;
-      padding: $gl-vert-padding $gl-padding;
       letter-spacing: .4px;
       padding: 6px 14px;
       text-align: center;
@@ -269,6 +282,8 @@
 }
 
 .project-repo-buttons {
+  @include new-style-dropdown;
+
   .project-action-button .dropdown-menu {
     max-height: 250px;
     overflow-y: auto;
@@ -364,10 +379,11 @@ a.deploy-project-label {
 }
 
 .breadcrumb.repo-breadcrumb {
+  flex: 1;
   padding: 0;
   background: transparent;
   border: none;
-  line-height: 36px;
+  line-height: 34px;
   margin: 0;
 
   > li + li::before {
@@ -382,10 +398,6 @@ a.deploy-project-label {
   .dropdown-menu {
     width: 240px;
   }
-}
-
-.last-push-widget {
-  margin-top: -1px;
 }
 
 .fork-namespaces {
@@ -446,6 +458,7 @@ a.deploy-project-label {
   }
 }
 
+.project-template,
 .project-import {
   .form-group {
     margin-bottom: 5px;
@@ -460,7 +473,44 @@ a.deploy-project-label {
 
     .btn {
       padding: 8px;
-      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    .blank-option {
+      min-width: 70px;
+    }
+
+    .btn-template-icon {
+      height: 24px;
+      width: inherit;
+      display: block;
+      margin: 0 auto 4px;
+      font-size: 24px;
+
+      @media (min-width: $screen-xs-max) {
+        top: 0;
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      .btn-template-icon {
+        display: inline-block;
+        height: 14px;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+
+    .icon-rails path {
+      fill: $rails;
+    }
+
+    .icon-node-express path {
+      fill: $node;
+    }
+
+    .icon-java-spring path {
+      fill: $java;
     }
 
     > div {
@@ -470,14 +520,106 @@ a.deploy-project-label {
   }
 }
 
+.project-templates-buttons .btn:last-child {
+  margin-right: 0;
+}
+
+.create-project-options {
+  display: flex;
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+  }
+
+  .first-column {
+    @media(min-width: $screen-xs-min) {
+      max-width: 50%;
+      padding-right: 30px;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+    }
+  }
+
+  .second-column {
+    @media(min-width: $screen-xs-min) {
+      width: 50%;
+      flex: 1;
+      padding-left: 30px;
+      position: relative;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      max-width: 100%;
+      width: 100%;
+      padding-left: 0;
+      position: relative;
+    }
+
+    // Mobile
+    @media (max-width: $screen-xs-max) {
+      padding-top: 30px;
+    }
+
+    &::before {
+      content: "OR";
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      z-index: 10;
+      padding: 8px 0;
+      text-align: center;
+      background-color: $white-light;
+      color: $gl-text-color-tertiary;
+      transform: translateY(-50%);
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 20px;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        padding: 0 8px;
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      background-color: $border-color;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      height: 100%;
+      width: 1px;
+      top: 0;
+
+      // Mobile
+      @media (max-width: $screen-xs-max) {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 1px;
+        width: auto;
+      }
+    }
+  }
+}
+
+
 .project-stats {
   font-size: 0;
   text-align: center;
+  max-width: 100%;
+  border-bottom: 1px solid $border-color;
 
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-    border-bottom: 1px solid $border-color;
   }
 
   .nav > li {
@@ -576,9 +718,9 @@ pre.light-well {
   }
 
   .project-row {
+    @include basic-list-stats;
     display: flex;
     align-items: center;
-    @include basic-list-stats;
   }
 
   h3 {
@@ -639,59 +781,6 @@ pre.light-well {
   }
 }
 
-.project-last-commit {
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  padding: 12px;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: $gl-padding;
-  }
-
-  .ci-status {
-    margin-right: $gl-padding;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
-  }
-
-  .commit_short_id {
-    margin-right: 5px;
-    color: $gl-link-color;
-    font-weight: 600;
-  }
-
-  .commit-author-link {
-    .commit-author-name {
-      font-weight: 600;
-    }
-  }
-}
-
-.project-show-readme {
-  .row-content-block {
-    background-color: inherit;
-    border: none;
-  }
-
-  .readme-holder {
-    padding: $gl-padding 0;
-    border-top: 0;
-
-    .edit-project-readme {
-      z-index: 2;
-      position: relative;
-    }
-
-    .wiki h1 {
-      border-bottom: none;
-      padding: 0;
-    }
-  }
-}
-
 .git-clone-holder {
   width: 380px;
 
@@ -733,20 +822,23 @@ pre.light-well {
   }
 }
 
-.new_protected_branch {
+.new_protected_branch,
+.new-protected-tag {
   label {
     margin-top: 6px;
     font-weight: normal;
   }
 }
 
-.create-new-protected-branch-button {
+.create-new-protected-branch-button,
+.create-new-protected-tag-button {
   @include dropdown-link;
 
   width: 100%;
   background-color: transparent;
   border: 0;
   text-align: left;
+  text-overflow: ellipsis;
 }
 
 .protected-branches-list,
@@ -782,7 +874,8 @@ pre.light-well {
   }
 }
 
-.protected-tags-list {
+.protected-tags-list,
+.protected-branches-list {
   .dropdown-menu-toggle {
     width: 100%;
     max-width: 300px;
@@ -811,8 +904,7 @@ pre.light-well {
 }
 
 .project-refs-form .dropdown-menu,
-.dropdown-menu-projects,
-.dropdown-menu-branches {
+.dropdown-menu-projects {
   width: 300px;
 
   @media (min-width: $screen-sm-min) {
@@ -825,7 +917,8 @@ pre.light-well {
 }
 
 .compare-form-group {
-  .dropdown-menu {
+  .dropdown-menu,
+  .inline-input-group {
     width: 100%;
 
     @media (min-width: $screen-sm-min) {
@@ -842,14 +935,6 @@ pre.light-well {
     @media (min-width: $screen-sm-min) {
       margin-top: 0;
       width: auto;
-    }
-  }
-
-  .inline-input-group {
-    width: 100%;
-
-    @media (min-width: $screen-sm-min) {
-      width: 250px;
     }
   }
 }

@@ -1,24 +1,16 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
+/* global Notes */
 
-require('~/merge_request_tabs');
-require('~/commit/pipelines/pipelines_bundle.js');
-require('~/breakpoints');
-require('~/lib/utils/common_utils');
-require('~/diff');
-require('~/single_file_diff');
-require('~/files_comment_button');
-require('vendor/jquery.scrollTo');
+import '~/merge_request_tabs';
+import '~/commit/pipelines/pipelines_bundle';
+import '~/breakpoints';
+import '~/lib/utils/common_utils';
+import '~/diff';
+import '~/files_comment_button';
+import '~/notes';
+import 'vendor/jquery.scrollTo';
 
 (function () {
-  // TODO: remove this hack!
-  // PhantomJS causes spyOn to panic because replaceState isn't "writable"
-  var phantomjs;
-  try {
-    phantomjs = !Object.getOwnPropertyDescriptor(window.history, 'replaceState').writable;
-  } catch (err) {
-    phantomjs = false;
-  }
-
   describe('MergeRequestTabs', function () {
     var stubLocation = {};
     var setLocation = function (stubs) {
@@ -29,17 +21,23 @@ require('vendor/jquery.scrollTo');
       };
       $.extend(stubLocation, defaults, stubs || {});
     };
-    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+
+    const inlineChangesTabJsonFixture = 'merge_request_diffs/inline_changes_tab_with_comments.json';
+    const parallelChangesTabJsonFixture = 'merge_request_diffs/parallel_changes_tab_with_comments.json';
+    preloadFixtures(
+      'merge_requests/merge_request_with_task_list.html.raw',
+      'merge_requests/diff_comment.html.raw',
+      inlineChangesTabJsonFixture,
+      parallelChangesTabJsonFixture
+    );
 
     beforeEach(function () {
       this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
-      if (!phantomjs) {
-        this.spies = {
-          history: spyOn(window.history, 'replaceState').and.callFake(function () {})
-        };
-      }
+      this.spies = {
+        history: spyOn(window.history, 'replaceState').and.callFake(function () {})
+      };
     });
 
     afterEach(function () {
@@ -47,18 +45,14 @@ require('vendor/jquery.scrollTo');
       this.class.destroyPipelinesView();
     });
 
-    describe('#activateTab', function () {
+    describe('activateTab', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
         this.subject = this.class.activateTab;
       });
-      it('shows the first tab when action is show', function () {
+      it('shows the notes tab when action is show', function () {
         this.subject('show');
-        expect($('#notes')).toHaveClass('active');
-      });
-      it('shows the notes tab when action is notes', function () {
-        this.subject('notes');
         expect($('#notes')).toHaveClass('active');
       });
       it('shows the commits tab when action is commits', function () {
@@ -71,7 +65,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#opensInNewTab', function () {
+    describe('opensInNewTab', function () {
       var tabUrl;
       var windowTarget = '_blank';
 
@@ -152,7 +146,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#setCurrentAction', function () {
+    describe('setCurrentAction', function () {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function () {});
         this.subject = this.class.setCurrentAction;
@@ -162,7 +156,7 @@ require('vendor/jquery.scrollTo');
         setLocation({
           pathname: '/foo/bar/merge_requests/1/commits'
         });
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('diffs')).toBe('/foo/bar/merge_requests/1/diffs');
       });
 
@@ -171,7 +165,7 @@ require('vendor/jquery.scrollTo');
           pathname: '/foo/bar/merge_requests/1/diffs'
         });
 
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
 
@@ -179,7 +173,7 @@ require('vendor/jquery.scrollTo');
         setLocation({
           pathname: '/foo/bar/merge_requests/1/diffs.html'
         });
-        expect(this.subject('notes')).toBe('/foo/bar/merge_requests/1');
+        expect(this.subject('show')).toBe('/foo/bar/merge_requests/1');
         expect(this.subject('commits')).toBe('/foo/bar/merge_requests/1/commits');
       });
 
@@ -206,11 +200,9 @@ require('vendor/jquery.scrollTo');
           pathname: '/foo/bar/merge_requests/1'
         });
         newState = this.subject('commits');
-        if (!phantomjs) {
-          expect(this.spies.history).toHaveBeenCalledWith({
-            url: newState
-          }, document.title, newState);
-        }
+        expect(this.spies.history).toHaveBeenCalledWith({
+          url: newState
+        }, document.title, newState);
       });
 
       it('treats "show" like "notes"', function () {
@@ -221,7 +213,7 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#tabShown', () => {
+    describe('tabShown', () => {
       beforeEach(function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           options.success({ html: '' });
@@ -281,12 +273,135 @@ require('vendor/jquery.scrollTo');
       });
     });
 
-    describe('#loadDiff', function () {
+    describe('loadDiff', function () {
+      beforeEach(() => {
+        loadFixtures('merge_requests/diff_comment.html.raw');
+        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        window.gl.ImageFile = () => {};
+        window.notes = new Notes('', []);
+        spyOn(window.notes, 'toggleDiffNote').and.callThrough();
+      });
+
+      afterEach(() => {
+        delete window.gl.ImageFile;
+        delete window.notes;
+      });
+
       it('requires an absolute pathname', function () {
         spyOn($, 'ajax').and.callFake(function (options) {
           expect(options.url).toEqual('/foo/bar/merge_requests/1/diffs.json');
         });
+
         this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+      });
+
+      describe('with inline diff', () => {
+        let noteId;
+        let noteLineNumId;
+
+        beforeEach(() => {
+          const diffsResponse = getJSONFixture(inlineChangesTabJsonFixture);
+
+          const $html = $(diffsResponse.html);
+          noteId = $html.find('.note').attr('id');
+          noteLineNumId = $html
+            .find('.note')
+            .closest('.notes_holder')
+            .prev('.line_holder')
+            .find('a[data-linenumber]')
+            .attr('href')
+            .replace('#', '');
+
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success(diffsResponse);
+          });
+        });
+
+        describe('with note fragment hash', () => {
+          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+              target: jasmine.any(Object),
+              lineType: 'old',
+              forceShow: true,
+            });
+          });
+
+          it('should gracefully ignore non-existant fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('with line number fragment hash', () => {
+          it('should gracefully ignore line number fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteLineNumId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('with parallel diff', () => {
+        let noteId;
+        let noteLineNumId;
+
+        beforeEach(() => {
+          const diffsResponse = getJSONFixture(parallelChangesTabJsonFixture);
+
+          const $html = $(diffsResponse.html);
+          noteId = $html.find('.note').attr('id');
+          noteLineNumId = $html
+            .find('.note')
+            .closest('.notes_holder')
+            .prev('.line_holder')
+            .find('a[data-linenumber]')
+            .attr('href')
+            .replace('#', '');
+
+          spyOn($, 'ajax').and.callFake(function (options) {
+            options.success(diffsResponse);
+          });
+        });
+
+        describe('with note fragment hash', () => {
+          it('should expand and scroll to linked fragment hash #note_xxx', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).toHaveBeenCalledWith({
+              target: jasmine.any(Object),
+              lineType: 'new',
+              forceShow: true,
+            });
+          });
+
+          it('should gracefully ignore non-existant fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
+
+        describe('with line number fragment hash', () => {
+          it('should gracefully ignore line number fragment hash', function () {
+            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
+
+            expect(noteLineNumId.length).toBeGreaterThan(0);
+            expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
+          });
+        });
       });
     });
   });

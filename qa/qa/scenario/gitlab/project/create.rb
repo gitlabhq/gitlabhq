@@ -13,9 +13,8 @@ module QA
 
           def perform
             Page::Main::Menu.act { go_to_groups }
-            Page::Main::Groups.act { prepare_test_namespace }
-            Page::Main::Menu.act { go_to_projects }
-            Page::Main::Projects.act { go_to_new_project }
+            Page::Dashboard::Groups.act { prepare_test_namespace }
+            Page::Group::Show.act { go_to_new_project }
 
             Page::Project::New.perform do |page|
               page.choose_test_namespace

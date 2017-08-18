@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :user, aliases: [:author, :assignee, :recipient, :owner, :creator, :resource_owner] do
+  factory :user, aliases: [:author, :assignee, :recipient, :owner, :resource_owner] do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
@@ -7,6 +7,14 @@ FactoryGirl.define do
     confirmed_at { Time.now }
     confirmation_token { nil }
     can_create_group true
+
+    after(:stub) do |user|
+      user.notification_email = user.email
+    end
+
+    before(:create) do |user|
+      user.ensure_rss_token
+    end
 
     trait :admin do
       admin true
@@ -27,6 +35,10 @@ FactoryGirl.define do
     trait :ghost do
       ghost true
       after(:build) { |user, _| user.block! }
+    end
+
+    trait :with_avatar do
+      avatar { File.open(Rails.root.join('spec/fixtures/dk.png')) }
     end
 
     trait :two_factor_via_otp do

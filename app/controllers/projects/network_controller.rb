@@ -8,8 +8,8 @@ class Projects::NetworkController < Projects::ApplicationController
   before_action :assign_commit
 
   def show
-    @url = namespace_project_network_path(@project.namespace, @project, @ref, @options.merge(format: :json))
-    @commit_url = namespace_project_commit_path(@project.namespace, @project, 'ae45ca32').gsub("ae45ca32", "%s")
+    @url = project_network_path(@project, @ref, @options.merge(format: :json))
+    @commit_url = project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")
 
     respond_to do |format|
       format.html do

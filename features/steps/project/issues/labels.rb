@@ -4,7 +4,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I visit \'bug\' label edit page' do
-    visit edit_namespace_project_label_path(project.namespace, project, bug_label)
+    visit edit_project_label_path(project, bug_label)
   end
 
   step 'I remove label \'bug\'' do

@@ -1,6 +1,6 @@
 # GitLab Continuous Integration (GitLab CI)
 
-![CI/CD pipeline graph](img/cicd_pipeline_infograph.png)
+![Pipeline graph](img/cicd_pipeline_infograph.png)
 
 The benefits of Continuous Integration are huge when automation plays an
 integral part of your workflow. GitLab comes with built-in Continuous
@@ -23,6 +23,7 @@ The first steps towards your GitLab CI journey.
   - [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
   - [GitLab CI: Deployment & environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 - **Videos:**
+  - [Demo (Streamed live on Jul 17, 2017): GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195)
   - [Demo (March, 2017): how to get started using CI/CD with GitLab](https://about.gitlab.com/2017/03/13/ci-cd-demo/)
   - [Webcast (April, 2016): getting started with CI in GitLab](https://about.gitlab.com/2016/04/20/webcast-recording-and-slides-introduction-to-ci-in-gitlab/)
 - **Third-party videos:**
@@ -66,7 +67,8 @@ learn how to leverage its potential even more.
   submodules are involved
 - [Auto deploy](autodeploy/index.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
-- [Trigger jobs through the GitLab API](triggers/README.md)
+- [Trigger pipelines through the GitLab API](triggers/README.md)
+- [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 
 ## Review Apps
 
@@ -85,7 +87,7 @@ You can change the default behavior of GitLab CI in your whole GitLab instance
 as well as in each project.
 
 - **Project specific**
-  - [CI/CD pipelines settings](../user/project/pipelines/settings.md)
+  - [Pipelines settings](../user/project/pipelines/settings.md)
   - [Learn how to enable or disable GitLab CI](enable_or_disable_ci.md)
 - **Affecting the whole GitLab instance**
   - [Continuous Integration admin settings](../user/admin_area/settings/continuous_integration.md)
@@ -108,7 +110,9 @@ Here is an collection of tutorials and guides on setting up your CI pipeline.
   - [Scala](examples/test-scala-application.md)
   - [Phoenix](examples/test-phoenix-application.md)
   - [Run PHP Composer & NPM scripts then deploy them to a staging server](examples/deployment/composer-npm-deploy.md)
-- **Blog posts**
+  - [Analyze code quality with the Code Climate CLI](examples/code_climate.md)
+- **Articles**
+  - [How to deploy Maven projects to Artifactory with GitLab CI/CD](../articles/artifactory_and_gitlab/index.md)
   - [Automated Debian packaging](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
   - [Spring boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
   - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)

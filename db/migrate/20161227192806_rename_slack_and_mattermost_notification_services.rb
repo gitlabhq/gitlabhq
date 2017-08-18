@@ -1,7 +1,10 @@
+# rubocop:disable Migration/UpdateColumnInBatches
 class RenameSlackAndMattermostNotificationServices < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
+
+  disable_ddl_transaction!
 
   def up
     update_column_in_batches(:services, :type, 'SlackService') do |table, query|

@@ -35,7 +35,7 @@ class MicrosoftTeamsService < ChatNotificationService
     [
       { type: 'text', name: 'webhook', placeholder: "e.g. #{webhook_placeholder}" },
       { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-      { type: 'checkbox', name: 'notify_only_default_branch' },
+      { type: 'checkbox', name: 'notify_only_default_branch' }
     ]
   end
 

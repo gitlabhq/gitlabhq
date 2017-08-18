@@ -1,4 +1,5 @@
 require_relative 'error'
+
 module Github
   class Import
     include Gitlab::ShellAdapter
@@ -6,6 +7,7 @@ module Github
     class MergeRequest < ::MergeRequest
       self.table_name = 'merge_requests'
 
+      self.reset_callbacks :create
       self.reset_callbacks :save
       self.reset_callbacks :commit
       self.reset_callbacks :update
@@ -16,6 +18,7 @@ module Github
       self.table_name = 'issues'
 
       self.reset_callbacks :save
+      self.reset_callbacks :create
       self.reset_callbacks :commit
       self.reset_callbacks :update
       self.reset_callbacks :validate
@@ -38,13 +41,16 @@ module Github
       self.reset_callbacks :validate
     end
 
-    attr_reader :project, :repository, :repo, :options, :errors, :cached, :verbose
+    attr_reader :project, :repository, :repo, :repo_url, :wiki_url,
+                :options, :errors, :cached, :verbose
 
-    def initialize(project, options)
+    def initialize(project, options = {})
       @project = project
       @repository = project.repository
       @repo = project.import_source
-      @options = options
+      @repo_url = project.import_url
+      @wiki_url = project.import_url.sub(/\.git\z/, '.wiki.git')
+      @options = options.reverse_merge(token: project.import_data&.credentials&.fetch(:user))
       @verbose = options.fetch(:verbose, false)
       @cached  = Hash.new { |hash, key| hash[key] = Hash.new }
       @errors  = []
@@ -62,6 +68,8 @@ module Github
       fetch_pull_requests
       puts 'Fetching issues...'.color(:aqua) if verbose
       fetch_issues
+      puts 'Fetching releases...'.color(:aqua) if verbose
+      fetch_releases
       puts 'Cloning wiki repository...'.color(:aqua) if verbose
       fetch_wiki_repository
       puts 'Expiring repository cache...'.color(:aqua) if verbose
@@ -69,6 +77,7 @@ module Github
 
       true
     rescue Github::RepositoryFetchError
+      expire_repository_cache
       false
     ensure
       keep_track_of_errors
@@ -78,23 +87,21 @@ module Github
 
     def fetch_repository
       begin
-        project.create_repository unless project.repository.exists?
-        project.repository.add_remote('github', "https://{options.fetch(:token)}@github.com/#{repo}.git")
+        project.ensure_repository
+        project.repository.add_remote('github', repo_url)
         project.repository.set_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
-      rescue Gitlab::Shell::Error => e
-        error(:project, "https://github.com/#{repo}.git", e.message)
+      rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
+        error(:project, repo_url, e.message)
         raise Github::RepositoryFetchError
       end
     end
 
     def fetch_wiki_repository
-      wiki_url  = "https://{options.fetch(:token)}@github.com/#{repo}.wiki.git"
-      wiki_path = "#{project.path_with_namespace}.wiki"
+      return if project.wiki.repository_exists?
 
-      unless project.wiki.repository_exists?
-        gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
-      end
+      wiki_path = "#{project.disk_path}.wiki"
+      gitlab_shell.import_repository(project.repository_storage_path, wiki_path, wiki_url)
     rescue Gitlab::Shell::Error => e
       # GitHub error message when the wiki repo has not been created,
       # this means that repo has wiki enabled, but have no pages. So,
@@ -169,7 +176,7 @@ module Github
           next unless merge_request.new_record? && pull_request.valid?
 
           begin
-            restore_branches(pull_request)
+            pull_request.restore_branches!
 
             author_id   = user_id(pull_request.author, project.creator_id)
             description = format_description(pull_request.description, pull_request.author)
@@ -205,7 +212,7 @@ module Github
           rescue => e
             error(:pull_request, pull_request.url, e.message)
           ensure
-            clean_up_restored_branches(pull_request)
+            pull_request.remove_restored_branches!
           end
         end
 
@@ -245,7 +252,7 @@ module Github
               issue.label_ids    = label_ids(representation.labels)
               issue.milestone_id = milestone_id(representation.milestone)
               issue.author_id    = author_id
-              issue.assignee_id  = user_id(representation.assignee)
+              issue.assignee_ids = [user_id(representation.assignee)]
               issue.created_at   = representation.created_at
               issue.updated_at   = representation.updated_at
               issue.save!(validate: false)
@@ -306,7 +313,7 @@ module Github
           next unless representation.valid?
 
           release = ::Release.find_or_initialize_by(project_id: project.id, tag: representation.tag)
-          next unless relese.new_record?
+          next unless release.new_record?
 
           begin
             release.description = representation.description
@@ -322,32 +329,6 @@ module Github
       end
     end
 
-    def restore_branches(pull_request)
-      restore_source_branch(pull_request) unless pull_request.source_branch_exists?
-      restore_target_branch(pull_request) unless pull_request.target_branch_exists?
-    end
-
-    def restore_source_branch(pull_request)
-      repository.create_branch(pull_request.source_branch_name, pull_request.source_branch_sha)
-    end
-
-    def restore_target_branch(pull_request)
-      repository.create_branch(pull_request.target_branch_name, pull_request.target_branch_sha)
-    end
-
-    def remove_branch(name)
-      repository.delete_branch(name)
-    rescue Rugged::ReferenceError
-      errors << { type: :branch, url: nil, error: "Could not clean up restored branch: #{name}" }
-    end
-
-    def clean_up_restored_branches(pull_request)
-      return if pull_request.opened?
-
-      remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
-      remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
-    end
-
     def label_ids(labels)
       labels.map { |attrs| cached[:label_ids][attrs.fetch('name')] }.compact
     end
@@ -360,7 +341,7 @@ module Github
 
     def user_id(user, fallback_id = nil)
       return unless user.present?
-      return cached[:user_ids][user.id] if cached[:user_ids].key?(user.id)
+      return cached[:user_ids][user.id] if cached[:user_ids][user.id].present?
 
       gitlab_user_id = user_id_by_external_uid(user.id) || user_id_by_email(user.email)
 
@@ -390,7 +371,7 @@ module Github
     end
 
     def expire_repository_cache
-      repository.expire_content_cache
+      repository.expire_content_cache if project.repository_exists?
     end
 
     def keep_track_of_errors

@@ -10,7 +10,7 @@ if Rails.env.test?
         # it reads + parses `db/migrate/*` each time. Memoizing it can save 0.5
         # seconds per spec.
         def migrations(paths)
-          @migrations ||= migrations_unmemoized(paths)
+          (@migrations ||= migrations_unmemoized(paths)).dup
         end
       end
     end

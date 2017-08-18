@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Projects::EnvironmentsController, :routing do
-  let(:project) { create(:empty_project) }
+describe 'environments routing' do
+  let(:project) { create(:project) }
 
   let(:environment) do
     create(:environment, project: project,

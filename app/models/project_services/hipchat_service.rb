@@ -33,7 +33,7 @@ class HipchatService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: 'Room token' },
+      { type: 'text', name: 'token',     placeholder: 'Room token', required: true },
       { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'checkbox', name: 'notify' },
       { type: 'select', name: 'color', choices: %w(yellow red green purple gray random) },
@@ -41,7 +41,7 @@ class HipchatService < Service
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' },
-      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' }
     ]
   end
 
@@ -53,7 +53,7 @@ class HipchatService < Service
     return unless supported_events.include?(data[:object_kind])
     message = create_message(data)
     return unless message.present?
-    gate[room].send('GitLab', message, message_options(data))
+    gate[room].send('GitLab', message, message_options(data)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def test(data)

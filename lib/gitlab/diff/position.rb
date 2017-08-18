@@ -12,20 +12,26 @@ module Gitlab
       attr_reader :head_sha
 
       def initialize(attrs = {})
+        if diff_file = attrs[:diff_file]
+          attrs[:diff_refs] = diff_file.diff_refs
+          attrs[:old_path] = diff_file.old_path
+          attrs[:new_path] = diff_file.new_path
+        end
+
+        if diff_refs = attrs[:diff_refs]
+          attrs[:base_sha]  = diff_refs.base_sha
+          attrs[:start_sha] = diff_refs.start_sha
+          attrs[:head_sha]  = diff_refs.head_sha
+        end
+
         @old_path = attrs[:old_path]
         @new_path = attrs[:new_path]
+        @base_sha  = attrs[:base_sha]
+        @start_sha = attrs[:start_sha]
+        @head_sha  = attrs[:head_sha]
+
         @old_line = attrs[:old_line]
         @new_line = attrs[:new_line]
-
-        if attrs[:diff_refs]
-          @base_sha  = attrs[:diff_refs].base_sha
-          @start_sha = attrs[:diff_refs].start_sha
-          @head_sha  = attrs[:diff_refs].head_sha
-        else
-          @base_sha  = attrs[:base_sha]
-          @start_sha = attrs[:start_sha]
-          @head_sha  = attrs[:head_sha]
-        end
       end
 
       # `Gitlab::Diff::Position` objects are stored as serialized attributes in
@@ -129,33 +135,19 @@ module Gitlab
       end
 
       def diff_line(repository)
-        @diff_line ||= diff_file(repository).line_for_position(self)
+        @diff_line ||= diff_file(repository)&.line_for_position(self)
       end
 
       def line_code(repository)
-        @line_code ||= diff_file(repository).line_code_for_position(self)
+        @line_code ||= diff_file(repository)&.line_code_for_position(self)
       end
 
       private
 
       def find_diff_file(repository)
-        # We're at the initial commit, so just get that as we can't compare to anything.
-        compare =
-          if Gitlab::Git.blank_ref?(start_sha)
-            Gitlab::Git::Commit.find(repository.raw_repository, head_sha)
-          else
-            Gitlab::Git::Compare.new(
-              repository.raw_repository,
-              start_sha,
-              head_sha
-            )
-          end
+        return unless diff_refs.complete?
 
-        diff = compare.diffs(paths: paths).first
-
-        return unless diff
-
-        Gitlab::Diff::File.new(diff, repository: repository, diff_refs: diff_refs)
+        diff_refs.compare_in(repository.project).diffs(paths: paths, expanded: true).diff_files.first
       end
     end
   end

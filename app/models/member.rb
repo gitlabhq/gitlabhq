@@ -8,7 +8,7 @@ class Member < ActiveRecord::Base
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
-  belongs_to :source, polymorphic: true
+  belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -41,9 +41,20 @@ class Member < ActiveRecord::Base
     is_external_invite = arel_table[:user_id].eq(nil).and(arel_table[:invite_token].not_eq(nil))
     user_is_active = User.arel_table[:state].eq(:active)
 
-    includes(:user).references(:users)
-      .where(is_external_invite.or(user_is_active))
+    user_ok = Arel::Nodes::Grouping.new(is_external_invite).or(user_is_active)
+
+    left_join_users
+      .where(user_ok)
       .where(requested_at: nil)
+      .reorder(nil)
+  end
+
+  # Like active, but without invites. For when a User is required.
+  scope :active_without_invites, -> do
+    left_join_users
+      .where(users: { state: 'active' })
+      .where(requested_at: nil)
+      .reorder(nil)
   end
 
   scope :invite, -> { where.not(invite_token: nil) }
@@ -99,9 +110,9 @@ class Member < ActiveRecord::Base
       users = User.arel_table
       members = Member.arel_table
 
-      member_users = members.join(users, Arel::Nodes::OuterJoin).
-                             on(members[:user_id].eq(users[:id])).
-                             join_sources
+      member_users = members.join(users, Arel::Nodes::OuterJoin)
+                             .on(members[:user_id].eq(users[:id]))
+                             .join_sources
 
       joins(member_users)
     end
@@ -154,6 +165,11 @@ class Member < ActiveRecord::Base
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
       return [] unless users.present?
 
+      # Collect all user ids into separate array
+      # so we can use single sql query to get user objects
+      user_ids = users.select { |user| user =~ /\A\d+\Z/ }
+      users = users - user_ids + User.where(id: user_ids)
+
       self.transaction do
         users.map do |user|
           add_user(
@@ -193,6 +209,10 @@ class Member < ActiveRecord::Base
 
   def real_source_type
     source_type
+  end
+
+  def access_field
+    access_level
   end
 
   def invite?
@@ -267,6 +287,13 @@ class Member < ActiveRecord::Base
     @notification_setting ||= user.notification_settings_for(source)
   end
 
+  def notifiable?(type, opts = {})
+    # always notify when there isn't a user yet
+    return true if user.blank?
+
+    NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
+  end
+
   private
 
   def send_invite
@@ -322,5 +349,9 @@ class Member < ActiveRecord::Base
 
   def notification_service
     NotificationService.new
+  end
+
+  def notifiable_options
+    {}
   end
 end

@@ -27,12 +27,19 @@ module API
         optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title or description'
+        optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
+        optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
+        optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
+                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
         use :pagination
       end
 
       params :issue_params_ce do
         optional :description, type: String, desc: 'The description of an issue'
-        optional :assignee_id, type: Integer, desc: 'The ID of a user to assign issue'
+        optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
+        optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
@@ -52,9 +59,11 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
+                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        issues = find_issues(scope: 'authored')
+        issues = find_issues
 
         present paginate(issues), with: Entities::IssueBasic, current_user: current_user
       end
@@ -109,7 +118,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
-      get ":id/issues/:issue_iid" do
+      get ":id/issues/:issue_iid", as: :api_v4_project_issue do
         issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
       end
@@ -135,6 +144,8 @@ module API
 
         issue_params = declared_params(include_missing: false)
 
+        issue_params = convert_parameters_from_legacy_format(issue_params)
+
         issue = ::Issues::CreateService.new(user_project,
                                             current_user,
                                             issue_params.merge(request: request, api: true)).execute
@@ -159,7 +170,7 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_id, :milestone_id,
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
       put ':id/issues/:issue_iid' do
@@ -172,6 +183,8 @@ module API
         end
 
         update_params = declared_params(include_missing: false).merge(request: request, api: true)
+
+        update_params = convert_parameters_from_legacy_format(update_params)
 
         issue = ::Issues::UpdateService.new(user_project,
                                             current_user,
@@ -217,6 +230,7 @@ module API
         not_found!('Issue') unless issue
 
         authorize!(:destroy_issue, issue)
+        status 204
         issue.destroy
       end
 
@@ -233,6 +247,22 @@ module API
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+      end
+
+      desc 'Get the user agent details for an issue' do
+        success Entities::UserAgentDetail
+      end
+      params do
+        requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
+      end
+      get ":id/issues/:issue_iid/user_agent_detail" do
+        authenticated_as_admin!
+
+        issue = find_project_issue(params[:issue_iid])
+
+        return not_found!('UserAgentDetail') unless issue.user_agent_detail
+
+        present issue.user_agent_detail, with: Entities::UserAgentDetail
       end
     end
   end

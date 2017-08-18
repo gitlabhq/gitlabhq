@@ -2,8 +2,7 @@
   %div{ class: container_class }
     .wiki-holder.prepend-top-default.append-bottom-default
       .wiki
-        = preserve do
-          = render_wiki_content(@wiki_home)
+        = render_wiki_content(@wiki_home)
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
   .project-home-empty{ class: [('row-content-block' if can_create_wiki), ('content-block' unless can_create_wiki)] }
@@ -15,5 +14,5 @@
           Add a homepage to your wiki that contains information about your project
         %p
           We recommend you
-          = link_to "add a homepage", namespace_project_wiki_path(@project.namespace, @project, :home)
+          = link_to "add a homepage", project_wiki_path(@project, :home)
           to your project's wiki and GitLab will show it here instead of this message.

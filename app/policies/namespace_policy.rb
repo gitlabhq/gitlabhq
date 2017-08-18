@@ -1,10 +1,10 @@
 class NamespacePolicy < BasePolicy
-  def rules
-    return unless @user
+  rule { anonymous }.prevent_all
 
-    if @subject.owner == @user || @user.admin?
-      can! :create_projects
-      can! :admin_namespace
-    end
+  condition(:owner) { @subject.owner == @user }
+
+  rule { owner | admin }.policy do
+    enable :create_projects
+    enable :admin_namespace
   end
 end

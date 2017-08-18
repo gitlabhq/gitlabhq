@@ -1,7 +1,7 @@
 const DATA_DROPDOWN_TRIGGER = 'data-dropdown-trigger';
 
 class FilteredSearchDropdown {
-  constructor(droplab, dropdown, input, filter) {
+  constructor({ droplab, dropdown, input, filter }) {
     this.droplab = droplab;
     this.hookId = input && input.id;
     this.input = input;

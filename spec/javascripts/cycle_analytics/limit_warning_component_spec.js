@@ -1,5 +1,8 @@
 import Vue from 'vue';
+import Translate from '~/vue_shared/translate';
 import limitWarningComp from '~/cycle_analytics/components/limit_warning_component';
+
+Vue.use(Translate);
 
 describe('Limit warning component', () => {
   let component;

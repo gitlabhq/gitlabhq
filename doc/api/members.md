@@ -1,4 +1,4 @@
-# Group and project members
+# Group and project members API
 
 **Valid access levels**
 

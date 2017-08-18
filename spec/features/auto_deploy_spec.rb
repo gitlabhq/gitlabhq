@@ -5,16 +5,9 @@ describe 'Auto deploy' do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.create_kubernetes_service(
-      active: true,
-      properties: {
-        namespace: project.path,
-        api_url: 'https://kubernetes.example.com',
-        token: 'a' * 40,
-      }
-    )
+    create :kubernetes_service, project: project
     project.team << [user, :master]
-    login_as user
+    sign_in user
   end
 
   context 'when no deployment service is active' do
@@ -23,7 +16,7 @@ describe 'Auto deploy' do
     end
 
     it 'does not show a button to set up auto deploy' do
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
       expect(page).to have_no_content('Set up auto deploy')
     end
   end
@@ -31,7 +24,7 @@ describe 'Auto deploy' do
   context 'when a deployment service is active' do
     before do
       project.kubernetes_service.update!(active: true)
-      visit namespace_project_path(project.namespace, project)
+      visit project_path(project)
     end
 
     it 'shows a button to set up auto deploy' do
@@ -53,7 +46,7 @@ describe 'Auto deploy' do
       within '.gitlab-ci-yml-selector' do
         click_on 'OpenShift'
       end
-      wait_for_ajax
+      wait_for_requests
       click_button 'Commit changes'
 
       expect(page).to have_content('New Merge Request From auto-deploy into master')

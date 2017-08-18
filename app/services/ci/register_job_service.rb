@@ -30,6 +30,7 @@ module Ci
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           build.runner_id = runner.id
           build.run!
+          register_success(build)
 
           return Result.new(build, true)
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
@@ -46,6 +47,7 @@ module Ci
         end
       end
 
+      register_failure
       Result.new(nil, valid)
     end
 
@@ -54,24 +56,24 @@ module Ci
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
-        joins(:project).where(projects: { shared_runners_enabled: true }).
-        joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id').
-        where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
+        joins(:project).where(projects: { shared_runners_enabled: true, pending_delete: false })
+        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
+        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0').
 
         # Implement fair scheduling
         # this returns builds that are ordered by number of running builds
         # we prefer projects that don't use shared runners at all
-        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id").
-        order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
+        joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
+        .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
     def builds_for_specific_runner
-      new_builds.where(project: runner.projects.with_builds_enabled).order('created_at ASC')
+      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
     end
 
     def running_builds_for_shared_runners
-      Ci::Build.running.where(runner: Ci::Runner.shared).
-        group(:project_id).select(:project_id, 'count(*) AS running_builds')
+      Ci::Build.running.where(runner: Ci::Runner.shared)
+        .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
     def new_builds
@@ -80,6 +82,28 @@ module Ci
 
     def shared_runner_build_limits_feature_enabled?
       ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
+    end
+
+    def register_failure
+      failed_attempt_counter.increment
+      attempt_counter.increment
+    end
+
+    def register_success(job)
+      job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
+      attempt_counter.increment
+    end
+
+    def failed_attempt_counter
+      @failed_attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_failed_total, "Counts the times a runner tries to register a job")
+    end
+
+    def attempt_counter
+      @attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_total, "Counts the times a runner tries to register a job")
+    end
+
+    def job_queue_duration_seconds
+      @job_queue_duration_seconds ||= Gitlab::Metrics.histogram(:job_queue_duration_seconds, 'Request handling execution time')
     end
   end
 end

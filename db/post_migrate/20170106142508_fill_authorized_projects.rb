@@ -15,8 +15,8 @@ class FillAuthorizedProjects < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    relation = User.select(:id).
-      where('authorized_projects_populated IS NOT TRUE')
+    relation = User.select(:id)
+      .where('authorized_projects_populated IS NOT TRUE')
 
     relation.find_in_batches(batch_size: 1_000) do |rows|
       args = rows.map { |row| [row.id] }

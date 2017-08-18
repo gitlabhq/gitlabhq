@@ -47,7 +47,7 @@ class EmailsOnPushService < Service
         help: "Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. #{domains})." },
       { type: 'checkbox', name: 'disable_diffs', title: "Disable code diffs",
         help: "Don't include possibly sensitive code diffs in notification body." },
-      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
+      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' }
     ]
   end
 end

@@ -98,7 +98,7 @@ class Gitlab::Seeder::Pipelines
 
 
   def create_pipeline!(project, ref, commit)
-    project.pipelines.create(sha: commit.id, ref: ref)
+    project.pipelines.create(sha: commit.id, ref: ref, source: :push)
   end
 
   def build_create!(pipeline, opts = {})
@@ -112,6 +112,10 @@ class Gitlab::Seeder::Pipelines
 
       setup_artifacts(build)
       setup_build_log(build)
+
+      build.project.environments.
+        find_or_create_by(name: build.expanded_environment_name)
+
       build.save
     end
   end

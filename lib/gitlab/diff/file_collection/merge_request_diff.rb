@@ -8,7 +8,8 @@ module Gitlab
           super(merge_request_diff,
             project: merge_request_diff.project,
             diff_options: diff_options,
-            diff_refs: merge_request_diff.diff_refs)
+            diff_refs: merge_request_diff.diff_refs,
+            fallback_diff_refs: merge_request_diff.fallback_diff_refs)
         end
 
         def diff_files
@@ -65,10 +66,7 @@ module Gitlab
         end
 
         def cacheable?(diff_file)
-          @merge_request_diff.present? &&
-            diff_file.blob &&
-            diff_file.blob.text? &&
-            @project.repository.diffable?(diff_file.blob)
+          @merge_request_diff.present? && diff_file.text? && diff_file.diffable?
         end
 
         def cache_key

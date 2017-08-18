@@ -3,10 +3,10 @@ require 'spec_helper'
 describe 'User Callouts', js: true do
   let(:user) { create(:user) }
   let(:another_user) { create(:user) }
-  let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
+  let(:project) { create(:project, path: 'gitlab', name: 'sample') }
 
   before do
-    login_as(user)
+    sign_in(user)
     project.team << [user, :master]
   end
 
@@ -20,7 +20,7 @@ describe 'User Callouts', js: true do
     visit dashboard_projects_path
 
     within('.user-callout') do
-      find('.close').click
+      find('.close').trigger('click')
     end
 
     visit dashboard_projects_path

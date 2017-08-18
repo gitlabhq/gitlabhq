@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe 'Dropdown assignee', :feature, :js do
+describe 'Dropdown assignee', :js do
   include FilteredSearchHelpers
 
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
   let!(:user_john) { create(:user, name: 'John', username: 'th0mas') }
   let!(:user_jacob) { create(:user, name: 'Jacob', username: 'otter32') }
@@ -23,10 +23,10 @@ describe 'Dropdown assignee', :feature, :js do
     project.team << [user, :master]
     project.team << [user_john, :master]
     project.team << [user_jacob, :master]
-    login_as(user)
+    sign_in(user)
     create(:issue, project: project)
 
-    visit namespace_project_issues_path(project.namespace, project)
+    visit project_issues_path(project)
   end
 
   describe 'behavior' do
@@ -58,7 +58,7 @@ describe 'Dropdown assignee', :feature, :js do
     it 'should load all the assignees when opened' do
       filtered_search.set('assignee:')
 
-      expect(dropdown_assignee_size).to eq(3)
+      expect(dropdown_assignee_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
@@ -134,8 +134,10 @@ describe 'Dropdown assignee', :feature, :js do
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_tokens([assignee_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
@@ -143,8 +145,10 @@ describe 'Dropdown assignee', :feature, :js do
       filtered_search.send_keys('roo')
       click_assignee(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_tokens([assignee_token(user.name)])
       expect_filtered_search_input_empty
     end
 
@@ -152,7 +156,26 @@ describe 'Dropdown assignee', :feature, :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_tokens([assignee_token('none')])
+      expect_filtered_search_input_empty
+    end
+  end
+
+  describe 'selecting from dropdown without Ajax call' do
+    before do
+      Gitlab::Testing::RequestBlockerMiddleware.block_requests!
+      filtered_search.set('assignee:')
+    end
+
+    after do
+      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
+    end
+
+    it 'selects current user' do
+      find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
+
+      expect(page).to have_css(js_dropdown_assignee, visible: false)
+      expect_tokens([assignee_token(user.username)])
       expect_filtered_search_input_empty
     end
   end

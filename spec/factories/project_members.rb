@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :project_member do
     user
-    project factory: :empty_project
+    project
     master
 
     trait(:guest)     { access_level ProjectMember::GUEST }
@@ -9,5 +9,11 @@ FactoryGirl.define do
     trait(:developer) { access_level ProjectMember::DEVELOPER }
     trait(:master)    { access_level ProjectMember::MASTER }
     trait(:access_request) { requested_at Time.now }
+
+    trait(:invited) do
+      user_id nil
+      invite_token 'xxx'
+      invite_email 'email@email.com'
+    end
   end
 end

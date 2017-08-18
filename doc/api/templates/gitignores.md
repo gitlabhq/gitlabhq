@@ -1,4 +1,4 @@
-# Gitignores
+# Gitignores API
 
 ## List gitignore templates
 

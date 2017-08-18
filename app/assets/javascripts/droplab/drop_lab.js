@@ -1,99 +1,99 @@
-/* eslint-disable */
-
 import HookButton from './hook_button';
 import HookInput from './hook_input';
 import utils from './utils';
 import Keyboard from './keyboard';
 import { DATA_TRIGGER } from './constants';
 
-var DropLab = function() {
-  this.ready = false;
-  this.hooks = [];
-  this.queuedData = [];
-  this.config = {};
+class DropLab {
+  constructor() {
+    this.ready = false;
+    this.hooks = [];
+    this.queuedData = [];
+    this.config = {};
 
-  this.eventWrapper = {};
-};
+    this.eventWrapper = {};
+  }
 
-Object.assign(DropLab.prototype, {
-  loadStatic: function(){
-    var dropdownTriggers = [].slice.apply(document.querySelectorAll(`[${DATA_TRIGGER}]`));
+  loadStatic() {
+    const dropdownTriggers = [].slice.apply(document.querySelectorAll(`[${DATA_TRIGGER}]`));
     this.addHooks(dropdownTriggers);
-  },
+  }
 
-  addData: function () {
-    var args = [].slice.apply(arguments);
-    this.applyArgs(args, '_addData');
-  },
+  addData(...args) {
+    this.applyArgs(args, 'processAddData');
+  }
 
-  setData: function() {
-    var args = [].slice.apply(arguments);
-    this.applyArgs(args, '_setData');
-  },
+  setData(...args) {
+    this.applyArgs(args, 'processSetData');
+  }
 
-  destroy: function() {
+  destroy() {
     this.hooks.forEach(hook => hook.destroy());
     this.hooks = [];
     this.removeEvents();
-  },
+  }
 
-  applyArgs: function(args, methodName) {
-    if (this.ready) return this[methodName].apply(this, args);
+  applyArgs(args, methodName) {
+    if (this.ready) return this[methodName](...args);
 
     this.queuedData = this.queuedData || [];
     this.queuedData.push(args);
-  },
 
-  _addData: function(trigger, data) {
-    this._processData(trigger, data, 'addData');
-  },
+    return this.ready;
+  }
 
-  _setData: function(trigger, data) {
-    this._processData(trigger, data, 'setData');
-  },
+  processAddData(trigger, data) {
+    this.processData(trigger, data, 'addData');
+  }
 
-  _processData: function(trigger, data, methodName) {
+  processSetData(trigger, data) {
+    this.processData(trigger, data, 'setData');
+  }
+
+  processData(trigger, data, methodName) {
     this.hooks.forEach((hook) => {
       if (Array.isArray(trigger)) hook.list[methodName](trigger);
 
       if (hook.trigger.id === trigger) hook.list[methodName](data);
     });
-  },
+  }
 
-  addEvents: function() {
-    this.eventWrapper.documentClicked = this.documentClicked.bind(this)
+  addEvents() {
+    this.eventWrapper.documentClicked = this.documentClicked.bind(this);
     document.addEventListener('click', this.eventWrapper.documentClicked);
-  },
+  }
 
-  documentClicked: function(e) {
+  documentClicked(e) {
     let thisTag = e.target;
 
     if (thisTag.tagName !== 'UL') thisTag = utils.closest(thisTag, 'UL');
-    if (utils.isDropDownParts(thisTag, this.hooks) || utils.isDropDownParts(e.target, this.hooks)) return;
+    if (utils.isDropDownParts(thisTag, this.hooks)) return;
+    if (utils.isDropDownParts(e.target, this.hooks)) return;
 
     this.hooks.forEach(hook => hook.list.hide());
-  },
+  }
 
-  removeEvents: function(){
+  removeEvents() {
     document.removeEventListener('click', this.eventWrapper.documentClicked);
-  },
+  }
 
-  changeHookList: function(trigger, list, plugins, config) {
-    const availableTrigger =  typeof trigger === 'string' ? document.getElementById(trigger) : trigger;
-
+  changeHookList(trigger, list, plugins, config) {
+    const availableTrigger = typeof trigger === 'string' ? document.getElementById(trigger) : trigger;
 
     this.hooks.forEach((hook, i) => {
-      hook.list.list.dataset.dropdownActive = false;
+      const aHook = hook;
 
-      if (hook.trigger !== availableTrigger) return;
+      aHook.list.list.dataset.dropdownActive = false;
 
-      hook.destroy();
+      if (aHook.trigger !== availableTrigger) return;
+
+      aHook.destroy();
       this.hooks.splice(i, 1);
       this.addHook(availableTrigger, list, plugins, config);
     });
-  },
+  }
 
-  addHook: function(hook, list, plugins, config) {
+  addHook(hook, list, plugins, config) {
     const availableHook = typeof hook === 'string' ? document.querySelector(hook) : hook;
     let availableList;
 
@@ -111,18 +111,18 @@ Object.assign(DropLab.prototype, {
     this.hooks.push(new HookObject(availableHook, availableList, plugins, config));
 
     return this;
-  },
+  }
 
-  addHooks: function(hooks, plugins, config) {
+  addHooks(hooks, plugins, config) {
     hooks.forEach(hook => this.addHook(hook, null, plugins, config));
     return this;
-  },
+  }
 
-  setConfig: function(obj){
+  setConfig(obj) {
     this.config = obj;
-  },
+  }
 
-  fireReady: function() {
+  fireReady() {
     const readyEvent = new CustomEvent('ready.dl', {
       detail: {
         dropdown: this,
@@ -131,10 +131,14 @@ Object.assign(DropLab.prototype, {
     document.dispatchEvent(readyEvent);
 
     this.ready = true;
-  },
+  }
 
-  init: function (hook, list, plugins, config) {
-    hook ? this.addHook(hook, list, plugins, config) : this.loadStatic();
+  init(hook, list, plugins, config) {
+    if (hook) {
+      this.addHook(hook, list, plugins, config);
+    } else {
+      this.loadStatic();
+    }
 
     this.addEvents();
 
@@ -146,7 +150,7 @@ Object.assign(DropLab.prototype, {
     this.queuedData = [];
 
     return this;
-  },
-});
+  }
+}
 
 export default DropLab;

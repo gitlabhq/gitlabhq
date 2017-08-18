@@ -1,24 +1,24 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Master manages access requests', feature: true do
+feature 'Projects > Members > Master manages access requests' do
   let(:user) { create(:user) }
   let(:master) { create(:user) }
-  let(:project) { create(:empty_project, :public, :access_requestable) }
+  let(:project) { create(:project, :public, :access_requestable) }
 
   background do
     project.request_access(user)
     project.team << [master, :master]
-    login_as(master)
+    sign_in(master)
   end
 
   scenario 'master can see access requests' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
   end
 
   scenario 'master can grant access' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
 
@@ -29,7 +29,7 @@ feature 'Projects > Members > Master manages access requests', feature: true do
   end
 
   scenario 'master can deny access' do
-    visit namespace_project_project_members_path(project.namespace, project)
+    visit project_project_members_path(project)
 
     expect_visible_access_request(project, user)
 

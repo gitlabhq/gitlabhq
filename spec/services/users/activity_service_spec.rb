@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Users::ActivityService, services: true do
+describe Users::ActivityService do
   include UserActivitiesHelpers
 
   let(:user) { create(:user) }
 
   subject(:service) { described_class.new(user, 'type') }
 
-  describe '#execute', :redis do
+  describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when last activity is nil' do
       before do
         service.execute
@@ -41,8 +41,8 @@ describe Users::ActivityService, services: true do
   end
 
   def last_hour_user_ids
-    Gitlab::UserActivities.new.
-      select { |k, v| v >= 1.hour.ago.to_i.to_s }.
-      map { |k, _| k.to_i }
+    Gitlab::UserActivities.new
+      .select { |k, v| v >= 1.hour.ago.to_i.to_s }
+      .map { |k, _| k.to_i }
   end
 end

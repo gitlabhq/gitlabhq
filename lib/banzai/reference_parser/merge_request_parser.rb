@@ -33,11 +33,16 @@ module Banzai
                 { namespace: :owner },
                 { group: [:owners, :group_members] },
                 :invited_groups,
-                :project_members
+                :project_members,
+                :project_feature
               ]
             }),
           self.class.data_attribute
         )
+      end
+
+      def can_read_reference?(user, ref_project, node)
+        can?(user, :read_merge_request, ref_project)
       end
     end
   end

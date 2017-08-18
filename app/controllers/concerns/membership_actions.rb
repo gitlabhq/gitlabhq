@@ -2,20 +2,21 @@ module MembershipActions
   extend ActiveSupport::Concern
 
   def create
-    status = Members::CreateService.new(membershipable, current_user, params).execute
+    create_params = params.permit(:user_ids, :access_level, :expires_at)
+    result = Members::CreateService.new(membershipable, current_user, create_params).execute
 
     redirect_url = members_page_url
 
-    if status
+    if result[:status] == :success
       redirect_to redirect_url, notice: 'Users were successfully added.'
     else
-      redirect_to redirect_url, alert: 'No users specified.'
+      redirect_to redirect_url, alert: result[:message]
     end
   end
 
   def destroy
-    Members::DestroyService.new(membershipable, current_user, params).
-      execute(:all)
+    Members::DestroyService.new(membershipable, current_user, params)
+      .execute(:all)
 
     respond_to do |format|
       format.html do
@@ -41,8 +42,8 @@ module MembershipActions
   end
 
   def leave
-    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
-      execute(:all)
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id)
+      .execute(:all)
 
     notice =
       if member.request?
@@ -51,9 +52,14 @@ module MembershipActions
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
 
-    redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+    respond_to do |format|
+      format.html do
+        redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
+        redirect_to redirect_path, notice: notice
+      end
 
-    redirect_to redirect_path, notice: notice
+      format.json { render json: { notice: notice } }
+    end
   end
 
   protected
@@ -64,7 +70,7 @@ module MembershipActions
 
   def members_page_url
     if membershipable.is_a?(Project)
-      project_settings_members_path(membershipable)
+      project_project_members_path(membershipable)
     else
       polymorphic_url([membershipable, :members])
     end

@@ -1,17 +1,22 @@
 require 'spec_helper'
 
-describe Ci::RetryPipelineService, '#execute', :services do
+describe Ci::RetryPipelineService, '#execute' do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:service) { described_class.new(project, user) }
 
-  context 'when user has ability to modify pipeline' do
-    let(:user) { create(:admin) }
+  context 'when user has full ability to modify pipeline' do
+    before do
+      project.add_developer(user)
+
+      create(:protected_branch, :developers_can_merge,
+             name: pipeline.ref, project: project)
+    end
 
     context 'when there are already retried jobs present' do
       before do
-        create_build('rspec', :canceled, 0)
+        create_build('rspec', :canceled, 0, retried: true)
         create_build('rspec', :failed, 0)
       end
 
@@ -224,6 +229,38 @@ describe Ci::RetryPipelineService, '#execute', :services do
     it 'raises an error' do
       expect { service.execute(pipeline) }
         .to raise_error Gitlab::Access::AccessDeniedError
+    end
+  end
+
+  context 'when user is not allowed to trigger manual action' do
+    before do
+      project.add_developer(user)
+    end
+
+    context 'when there is a failed manual action present' do
+      before do
+        create_build('test', :failed, 0)
+        create_build('deploy', :failed, 0, when: :manual)
+        create_build('verify', :canceled, 1)
+      end
+
+      it 'raises an error' do
+        expect { service.execute(pipeline) }
+          .to raise_error Gitlab::Access::AccessDeniedError
+      end
+    end
+
+    context 'when there is a failed manual action in later stage' do
+      before do
+        create_build('test', :failed, 0)
+        create_build('deploy', :failed, 1, when: :manual)
+        create_build('verify', :canceled, 2)
+      end
+
+      it 'raises an error' do
+        expect { service.execute(pipeline) }
+          .to raise_error Gitlab::Access::AccessDeniedError
+      end
     end
   end
 

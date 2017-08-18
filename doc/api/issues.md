@@ -1,4 +1,4 @@
-# Issues
+# Issues API
 
 Every API call to issues must be authenticated.
 
@@ -14,7 +14,9 @@ Read more on [pagination](README.md#pagination).
 
 ## List issues
 
-Get all issues created by the authenticated user.
+Get all issues the authenticated user has access to. By default it
+returns only issues created by the current user. To get all issues,
+use parameter `scope=all`.
 
 ```
 GET /issues
@@ -26,7 +28,8 @@ GET /issues?labels=foo,bar&state=opened
 GET /issues?milestone=1.0.0
 GET /issues?milestone=1.0.0&state=opened
 GET /issues?iids[]=42&iids[]=43
-GET /issues?search=issue+title+or+description
+GET /issues?author_id=5
+GET /issues?assignee_id=5
 ```
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
@@ -34,9 +37,12 @@ GET /issues?search=issue+title+or+description
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `author_id` | integer        | no       | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_ |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
+| `iids[]`    | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
 | `search`    | string         | no       | Search issues against their `title` and `description`                                                                       |
 
 ```bash
@@ -70,6 +76,14 @@ Example response:
          "updated_at" : "2016-01-04T15:31:39.996Z"
       },
       "project_id" : 1,
+      "assignees" : [{
+         "state" : "active",
+         "id" : 1,
+         "name" : "Administrator",
+         "web_url" : "https://gitlab.example.com/root",
+         "avatar_url" : null,
+         "username" : "root"
+      }],
       "assignee" : {
          "state" : "active",
          "id" : 1,
@@ -92,6 +106,8 @@ Example response:
 ]
 ```
 
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
 ## List group issues
 
 Get a list of a group's issues.
@@ -107,6 +123,8 @@ GET /groups/:id/issues?milestone=1.0.0
 GET /groups/:id/issues?milestone=1.0.0&state=opened
 GET /groups/:id/issues?iids[]=42&iids[]=43
 GET /groups/:id/issues?search=issue+title+or+description
+GET /groups/:id/issues?author_id=5
+GET /groups/:id/issues?assignee_id=5
 ```
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
@@ -114,11 +132,14 @@ GET /groups/:id/issues?search=issue+title+or+description
 | `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
-| `iids`      | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
+| `iids[]`    | Array[integer] | no       | Return only the issues having the given `iid`                                                                               |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                  |
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
+| `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
+| `search`    | string         | no       | Search group issues against their `title` and `description`                                                                 |
 
 
 ```bash
@@ -153,6 +174,14 @@ Example response:
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "state" : "closed",
       "iid" : 1,
+      "assignees" : [{
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      }],
       "assignee" : {
          "avatar_url" : null,
          "web_url" : "https://gitlab.example.com/lennie",
@@ -174,6 +203,8 @@ Example response:
 ]
 ```
 
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
 ## List project issues
 
 Get a list of a project's issues.
@@ -189,19 +220,25 @@ GET /projects/:id/issues?milestone=1.0.0
 GET /projects/:id/issues?milestone=1.0.0&state=opened
 GET /projects/:id/issues?iids[]=42&iids[]=43
 GET /projects/:id/issues?search=issue+title+or+description
+GET /projects/:id/issues?author_id=5
+GET /projects/:id/issues?assignee_id=5
 ```
 
 | Attribute   | Type           | Required | Description                                                                                                                 |
 |-------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------|
 | `id`        | integer/string        | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `iids`      | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
+| `iids[]`    | Array[integer] | no       | Return only the milestone having the given `iid`                                                                            |
 | `state`     | string         | no       | Return all issues or just those that are `opened` or `closed`                                                               |
 | `labels`    | string         | no       | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels |
 | `milestone` | string         | no       | The milestone title                                                                                                         |
-| `order_by`  | string         | no       | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`                                     |
-| `sort`      | string         | no       | Return requests sorted in `asc` or `desc` order. Default is `desc`                                                          |
-| `search`    | string         | no       | Search project issues against their `title` and `description`                                                                |
-
+| `scope`     | string         | no       | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_      |
+| `author_id` | integer        | no       | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                       |
+| `assignee_id` | integer      | no       | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                      |
+| `order_by`  | string         | no       | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                       |
+| `sort`      | string         | no       | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                            |
+| `search`    | string         | no       | Search project issues against their `title` and `description`                                                               |
+| `created_after` | datetime | no | Return issues created after the given time (inclusive) |
+| `created_before` | datetime | no | Return issues created before the given time (inclusive) |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues
@@ -235,6 +272,14 @@ Example response:
       "description" : "Omnis vero earum sunt corporis dolor et placeat.",
       "state" : "closed",
       "iid" : 1,
+      "assignees" : [{
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      }],
       "assignee" : {
          "avatar_url" : null,
          "web_url" : "https://gitlab.example.com/lennie",
@@ -255,6 +300,8 @@ Example response:
    }
 ]
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Single issue
 
@@ -300,6 +347,14 @@ Example response:
    "description" : "Omnis vero earum sunt corporis dolor et placeat.",
    "state" : "closed",
    "iid" : 1,
+   "assignees" : [{
+      "avatar_url" : null,
+      "web_url" : "https://gitlab.example.com/lennie",
+      "state" : "active",
+      "username" : "lennie",
+      "id" : 9,
+      "name" : "Dr. Luella Kovacek"
+   }],
    "assignee" : {
       "avatar_url" : null,
       "web_url" : "https://gitlab.example.com/lennie",
@@ -317,9 +372,17 @@ Example response:
    "user_notes_count": 1,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/1",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## New issue
 
@@ -329,13 +392,13 @@ Creates a new project issue.
 POST /projects/:id/issues
 ```
 
-| Attribute                                 | Type    | Required | Description  |
-|-------------------------------------------|---------|----------|--------------|
+| Attribute                                 | Type           | Required | Description  |
+|-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`                                   | string  | yes      | The title of an issue |
 | `description`                             | string  | no       | The description of an issue  |
 | `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_id`                             | integer | no       | The ID of a user to assign issue |
+| `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
 | `milestone_id`                            | integer | no       | The ID of a milestone to assign issue  |
 | `labels`                                  | string  | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
@@ -357,6 +420,7 @@ Example response:
    "iid" : 14,
    "title" : "Issues with auth",
    "state" : "opened",
+   "assignees" : [],
    "assignee" : null,
    "labels" : [
       "bug"
@@ -376,9 +440,17 @@ Example response:
    "user_notes_count": 0,
    "due_date": null,
    "web_url": "http://example.com/example/example/issues/14",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Edit issue
 
@@ -396,7 +468,7 @@ PUT /projects/:id/issues/:issue_iid
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
-| `assignee_id`  | integer | no       | The ID of a user to assign the issue to                                                                    |
+| `assignee_ids`  | Array[integer] | no       | The ID of the users to assign the issue to                                                                    |
 | `milestone_id` | integer | no       | The ID of a milestone to assign the issue to                                                               |
 | `labels`       | string  | no       | Comma-separated label names for an issue                                                                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
@@ -430,15 +502,24 @@ Example response:
       "bug"
    ],
    "id" : 85,
+   "assignees" : [],
    "assignee" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
    "due_date": "2016-07-22",
    "web_url": "http://example.com/example/example/issues/15",
-   "confidential": false
+   "confidential": false,
+   "_links": {
+      "self": "http://example.com/api/v4/projects/1/issues/2",
+      "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+      "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+      "project": "http://example.com/api/v4/projects/1"
+   }
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Delete an issue
 
@@ -494,6 +575,14 @@ Example response:
   "updated_at": "2016-04-07T12:20:17.596Z",
   "labels": [],
   "milestone": null,
+  "assignees": [{
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  }],
   "assignee": {
     "name": "Miss Monserrate Beier",
     "username": "axel.block",
@@ -512,9 +601,17 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Subscribe to an issue
 
@@ -549,6 +646,14 @@ Example response:
   "updated_at": "2016-04-07T12:20:17.596Z",
   "labels": [],
   "milestone": null,
+  "assignees": [{
+    "name": "Miss Monserrate Beier",
+    "username": "axel.block",
+    "id": 12,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/axel.block"
+  }],
   "assignee": {
     "name": "Miss Monserrate Beier",
     "username": "axel.block",
@@ -567,9 +672,17 @@ Example response:
   },
   "due_date": null,
   "web_url": "http://example.com/example/example/issues/11",
-  "confidential": false
+  "confidential": false,
+  "_links": {
+    "self": "http://example.com/api/v4/projects/1/issues/2",
+    "notes": "http://example.com/api/v4/projects/1/issues/2/notes",
+    "award_emoji": "http://example.com/api/v4/projects/1/issues/2/award_emoji",
+    "project": "http://example.com/api/v4/projects/1"
+  }
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Unsubscribe from an issue
 
@@ -652,6 +765,14 @@ Example response:
       "updated_at": "2016-06-17T07:47:33.832Z",
       "due_date": null
     },
+    "assignees": [{
+      "name": "Jarret O'Keefe",
+      "username": "francisca",
+      "id": 14,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/francisca"
+    }],
     "assignee": {
       "name": "Jarret O'Keefe",
       "username": "francisca",
@@ -682,6 +803,8 @@ Example response:
   "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
+
+**Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 ## Set a time estimate for an issue
 
@@ -887,3 +1010,32 @@ Example response:
 ## Comments on issues
 
 Comments are done via the [notes](notes.md) resource.
+
+## Get user agent details
+
+Available only for admins.
+
+```
+GET /projects/:id/issues/:issue_iid/user_agent_detail
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `issue_iid` | integer | yes      | The internal ID of a project's issue |
+
+```bash
+curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/issues/93/user_agent_detail
+```
+
+Example response:
+
+```json
+{
+  "user_agent": "AppleWebKit/537.36",
+  "ip_address": "127.0.0.1",
+  "akismet_submitted": false
+}
+```
+
+[ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004

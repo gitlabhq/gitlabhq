@@ -1,0 +1,354 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {},
+    "id": "http://example.com/example.json",
+    "properties": {
+        "commit": {
+            "id": "/properties/commit",
+            "properties": {
+                "author": {
+                    "id": "/properties/commit/properties/author",
+                    "type": "null"
+                },
+                "author_email": {
+                    "id": "/properties/commit/properties/author_email",
+                    "type": "string"
+                },
+                "author_gravatar_url": {
+                    "id": "/properties/commit/properties/author_gravatar_url",
+                    "type": "string"
+                },
+                "author_name": {
+                    "id": "/properties/commit/properties/author_name",
+                    "type": "string"
+                },
+                "authored_date": {
+                    "id": "/properties/commit/properties/authored_date",
+                    "type": "string"
+                },
+                "commit_path": {
+                    "id": "/properties/commit/properties/commit_path",
+                    "type": "string"
+                },
+                "commit_url": {
+                    "id": "/properties/commit/properties/commit_url",
+                    "type": "string"
+                },
+                "committed_date": {
+                    "id": "/properties/commit/properties/committed_date",
+                    "type": "string"
+                },
+                "committer_email": {
+                    "id": "/properties/commit/properties/committer_email",
+                    "type": "string"
+                },
+                "committer_name": {
+                    "id": "/properties/commit/properties/committer_name",
+                    "type": "string"
+                },
+                "created_at": {
+                    "id": "/properties/commit/properties/created_at",
+                    "type": "string"
+                },
+                "id": {
+                    "id": "/properties/commit/properties/id",
+                    "type": "string"
+                },
+                "message": {
+                    "id": "/properties/commit/properties/message",
+                    "type": "string"
+                },
+                "parent_ids": {
+                    "id": "/properties/commit/properties/parent_ids",
+                    "items": {
+                        "id": "/properties/commit/properties/parent_ids/items",
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "short_id": {
+                    "id": "/properties/commit/properties/short_id",
+                    "type": "string"
+                },
+                "title": {
+                    "id": "/properties/commit/properties/title",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "created_at": {
+            "id": "/properties/created_at",
+            "type": "string"
+        },
+        "details": {
+            "id": "/properties/details",
+            "properties": {
+                "artifacts": {
+                    "id": "/properties/details/properties/artifacts",
+                    "items": {},
+                    "type": "array"
+                },
+                "duration": {
+                    "id": "/properties/details/properties/duration",
+                    "type": "integer"
+                },
+                "finished_at": {
+                    "id": "/properties/details/properties/finished_at",
+                    "type": "string"
+                },
+                "manual_actions": {
+                    "id": "/properties/details/properties/manual_actions",
+                    "items": {},
+                    "type": "array"
+                },
+                "stages": {
+                    "id": "/properties/details/properties/stages",
+                    "items": {
+                        "id": "/properties/details/properties/stages/items",
+                        "properties": {
+                            "dropdown_path": {
+                                "id": "/properties/details/properties/stages/items/properties/dropdown_path",
+                                "type": "string"
+                            },
+                            "groups": {
+                                "id": "/properties/details/properties/stages/items/properties/groups",
+                                "items": {
+                                    "id": "/properties/details/properties/stages/items/properties/groups/items",
+                                    "properties": {
+                                        "name": {
+                                            "id": "/properties/details/properties/stages/items/properties/groups/items/properties/name",
+                                            "type": "string"
+                                        },
+                                        "size": {
+                                            "id": "/properties/details/properties/stages/items/properties/groups/items/properties/size",
+                                            "type": "integer"
+                                        },
+                                        "status": {
+                                            "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status",
+                                            "properties": {
+                                                "details_path": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/details_path",
+                                                    "type": "null"
+                                                },
+                                                "favicon": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/favicon",
+                                                    "type": "string"
+                                                },
+                                                "group": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/group",
+                                                    "type": "string"
+                                                },
+                                                "has_details": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/has_details",
+                                                    "type": "boolean"
+                                                },
+                                                "icon": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/icon",
+                                                    "type": "string"
+                                                },
+                                                "label": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/label",
+                                                    "type": "string"
+                                                },
+                                                "text": {
+                                                    "id": "/properties/details/properties/stages/items/properties/groups/items/properties/status/properties/text",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "type": "array"
+                            },
+                            "name": {
+                                "id": "/properties/details/properties/stages/items/properties/name",
+                                "type": "string"
+                            },
+                            "path": {
+                                "id": "/properties/details/properties/stages/items/properties/path",
+                                "type": "string"
+                            },
+                            "status": {
+                                "id": "/properties/details/properties/stages/items/properties/status",
+                                "properties": {
+                                    "details_path": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/details_path",
+                                        "type": "string"
+                                    },
+                                    "favicon": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/favicon",
+                                        "type": "string"
+                                    },
+                                    "group": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/group",
+                                        "type": "string"
+                                    },
+                                    "has_details": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/has_details",
+                                        "type": "boolean"
+                                    },
+                                    "icon": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/icon",
+                                        "type": "string"
+                                    },
+                                    "label": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/label",
+                                        "type": "string"
+                                    },
+                                    "text": {
+                                        "id": "/properties/details/properties/stages/items/properties/status/properties/text",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "title": {
+                                "id": "/properties/details/properties/stages/items/properties/title",
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                },
+                "status": {
+                    "id": "/properties/details/properties/status",
+                    "properties": {
+                        "details_path": {
+                            "id": "/properties/details/properties/status/properties/details_path",
+                            "type": "string"
+                        },
+                        "favicon": {
+                            "id": "/properties/details/properties/status/properties/favicon",
+                            "type": "string"
+                        },
+                        "group": {
+                            "id": "/properties/details/properties/status/properties/group",
+                            "type": "string"
+                        },
+                        "has_details": {
+                            "id": "/properties/details/properties/status/properties/has_details",
+                            "type": "boolean"
+                        },
+                        "icon": {
+                            "id": "/properties/details/properties/status/properties/icon",
+                            "type": "string"
+                        },
+                        "label": {
+                            "id": "/properties/details/properties/status/properties/label",
+                            "type": "string"
+                        },
+                        "text": {
+                            "id": "/properties/details/properties/status/properties/text",
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "flags": {
+            "id": "/properties/flags",
+            "properties": {
+                "cancelable": {
+                    "id": "/properties/flags/properties/cancelable",
+                    "type": "boolean"
+                },
+                "latest": {
+                    "id": "/properties/flags/properties/latest",
+                    "type": "boolean"
+                },
+                "retryable": {
+                    "id": "/properties/flags/properties/retryable",
+                    "type": "boolean"
+                },
+                "stuck": {
+                    "id": "/properties/flags/properties/stuck",
+                    "type": "boolean"
+                },
+                "triggered": {
+                    "id": "/properties/flags/properties/triggered",
+                    "type": "boolean"
+                },
+                "yaml_errors": {
+                    "id": "/properties/flags/properties/yaml_errors",
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "id": {
+            "id": "/properties/id",
+            "type": "integer"
+        },
+        "path": {
+            "id": "/properties/path",
+            "type": "string"
+        },
+        "ref": {
+            "id": "/properties/ref",
+            "properties": {
+                "branch": {
+                    "id": "/properties/ref/properties/branch",
+                    "type": "boolean"
+                },
+                "name": {
+                    "id": "/properties/ref/properties/name",
+                    "type": "string"
+                },
+                "path": {
+                    "id": "/properties/ref/properties/path",
+                    "type": "string"
+                },
+                "tag": {
+                    "id": "/properties/ref/properties/tag",
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "retry_path": {
+            "id": "/properties/retry_path",
+            "type": "string"
+        },
+        "updated_at": {
+            "id": "/properties/updated_at",
+            "type": "string"
+        },
+        "user": {
+            "id": "/properties/user",
+            "properties": {
+                "avatar_url": {
+                    "id": "/properties/user/properties/avatar_url",
+                    "type": "string"
+                },
+                "id": {
+                    "id": "/properties/user/properties/id",
+                    "type": "integer"
+                },
+                "name": {
+                    "id": "/properties/user/properties/name",
+                    "type": "string"
+                },
+                "state": {
+                    "id": "/properties/user/properties/state",
+                    "type": "string"
+                },
+                "username": {
+                    "id": "/properties/user/properties/username",
+                    "type": "string"
+                },
+                "web_url": {
+                    "id": "/properties/user/properties/web_url",
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

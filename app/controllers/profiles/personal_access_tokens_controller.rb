@@ -38,7 +38,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   end
 
   def set_index_vars
-    @scopes = Gitlab::Auth::API_SCOPES
+    @scopes = Gitlab::Auth::AVAILABLE_SCOPES
 
     @personal_access_token = finder.build
     @inactive_personal_access_tokens = finder(state: 'inactive').execute

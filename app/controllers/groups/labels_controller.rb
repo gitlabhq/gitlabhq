@@ -15,7 +15,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
       format.json do
         available_labels = LabelsFinder.new(current_user, group_id: @group.id).execute
-        render json: available_labels.as_json(only: [:id, :title, :color])
+        render json: LabelSerializer.new.represent_appearance(available_labels)
       end
     end
   end
@@ -54,7 +54,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to group_labels_path(@group), notice: 'Label was removed'
+        redirect_to group_labels_path(@group), status: 302, notice: 'Label was removed'
       end
       format.js
     end

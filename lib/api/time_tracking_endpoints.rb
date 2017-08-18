@@ -5,7 +5,7 @@ module API
     included do
       helpers do
         def issuable_name
-          declared_params.has_key?(:issue_iid) ? 'issue' : 'merge_request'
+          declared_params.key?(:issue_iid) ? 'issue' : 'merge_request'
         end
 
         def issuable_key

@@ -33,7 +33,7 @@ class Gitlab::Seeder::Environments
 
       create_deployment!(
         merge_request.source_project,
-        "review/#{merge_request.source_branch}",
+        "review/#{merge_request.source_branch.gsub(/[^a-zA-Z0-9]/, '')}",
         merge_request.source_branch,
         merge_request.diff_head_sha
       )

@@ -6,16 +6,16 @@ describe ContributedProjectsFinder do
 
   let(:finder) { described_class.new(source_user) }
 
-  let!(:public_project) { create(:empty_project, :public) }
-  let!(:private_project) { create(:empty_project, :private) }
+  let!(:public_project) { create(:project, :public) }
+  let!(:private_project) { create(:project, :private) }
 
   before do
     private_project.add_master(source_user)
     private_project.add_developer(current_user)
     public_project.add_master(source_user)
 
-    create(:event, :pushed, project: public_project, target: public_project, author: source_user)
-    create(:event, :pushed, project: private_project, target: private_project, author: source_user)
+    create(:push_event, project: public_project, author: source_user)
+    create(:push_event, project: private_project, author: source_user)
   end
 
   describe 'without a current user' do

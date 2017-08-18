@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::ClosingIssueExtractor, lib: true do
-  let(:project) { create(:empty_project) }
-  let(:project2) { create(:empty_project) }
+describe Gitlab::ClosingIssueExtractor do
+  let(:project) { create(:project) }
+  let(:project2) { create(:project) }
   let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
   let(:issue) { create(:issue, project: project) }
   let(:issue2) { create(:issue, project: project2) }
@@ -276,7 +276,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with a cross-project URL" do
       it do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
       end
     end
@@ -292,7 +292,7 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
 
     context "with an invalid URL" do
       it do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([])
       end
     end
@@ -306,58 +306,58 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
       it 'fetches issues in single line message' do
         message = "Closes #{reference} and fix #{reference2}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, other_issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue])
       end
 
       it 'fetches comma-separated issues references in single line message' do
         message = "Closes #{reference}, closes #{reference2}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, other_issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue])
       end
 
       it 'fetches comma-separated issues numbers in single line message' do
         message = "Closes #{reference}, #{reference2} and #{reference3}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, other_issue, third_issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
       end
 
       it 'fetches issues in multi-line message' do
         message = "Awesome commit (closes #{reference})\nAlso fixes #{reference2}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, other_issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue])
       end
 
       it 'fetches issues in hybrid message' do
         message = "Awesome commit (closes #{reference})\n"\
                   "Also fixing issues #{reference2}, #{reference3} and #4"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, other_issue, third_issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue, third_issue])
       end
 
       it "fetches cross-project references" do
         message = "Closes #{reference} and #{cross_reference}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, issue2])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, issue2])
       end
 
       it "fetches cross-project URL references" do
-        message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes #{urls.project_issue_url(issue2.project, issue2)} and #{reference}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue, issue2])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue, issue2])
       end
 
       it "ignores invalid cross-project URL references" do
-        message = "Closes https://google.com#{urls.namespace_project_issue_path(issue2.project.namespace, issue2.project, issue2)} and #{reference}"
+        message = "Closes https://google.com#{urls.project_issue_path(issue2.project, issue2)} and #{reference}"
 
-        expect(subject.closed_by_message(message)).
-            to match_array([issue])
+        expect(subject.closed_by_message(message))
+            .to match_array([issue])
       end
     end
   end

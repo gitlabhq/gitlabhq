@@ -1,4 +1,6 @@
 class BaseMailer < ActionMailer::Base
+  around_action :render_with_default_locale
+
   helper ApplicationHelper
   helper MarkupHelper
 
@@ -13,6 +15,10 @@ class BaseMailer < ActionMailer::Base
   end
 
   private
+
+  def render_with_default_locale(&block)
+    Gitlab::I18n.with_default_locale(&block)
+  end
 
   def default_sender_address
     address = Mail::Address.new(Gitlab.config.gitlab.email_from)

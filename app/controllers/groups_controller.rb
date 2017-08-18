@@ -12,8 +12,8 @@ class GroupsController < Groups::ApplicationController
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_action :authorize_create_group!, only: [:new, :create]
 
-  # Load group projects
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
+  before_action :group_merge_requests, only: [:merge_requests]
   before_action :event_filter, only: [:activity]
 
   before_action :user_actions, only: [:show, :subgroups]
@@ -58,13 +58,15 @@ class GroupsController < Groups::ApplicationController
 
       format.atom do
         load_events
-        render layout: false
+        render layout: 'xml.atom'
       end
     end
   end
 
   def subgroups
-    @nested_groups = group.children
+    return not_found unless Group.supports_nested_groups?
+
+    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
     @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
@@ -99,7 +101,7 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
+    redirect_to root_path, status: 302, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   protected
@@ -158,15 +160,22 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
-    @events = Event.in_projects(@projects)
-    @events = event_filter.apply_filter(@events).with_associations
-    @events = @events.limit(20).offset(params[:offset] || 0)
+    @events = EventCollection
+      .new(@projects, offset: params[:offset].to_i, filter: event_filter)
+      .to_a
   end
 
   def user_actions
     if current_user
-      @last_push = current_user.recent_push
       @notification_setting = current_user.notification_settings_for(group)
     end
+  end
+
+  def build_canonical_path(group)
+    return group_path(group) if action_name == 'show' # root group path
+
+    params[:id] = group.to_param
+
+    url_for(params)
   end
 end

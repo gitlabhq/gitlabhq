@@ -5,7 +5,7 @@ class Projects::RunnersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   def edit
@@ -24,7 +24,7 @@ class Projects::RunnersController < Projects::ApplicationController
       @runner.destroy
     end
 
-    redirect_to runners_path(@project)
+    redirect_to runners_path(@project), status: 302
   end
 
   def resume
@@ -49,7 +49,7 @@ class Projects::RunnersController < Projects::ApplicationController
   def toggle_shared_runners
     project.toggle!(:shared_runners_enabled)
 
-    redirect_to namespace_project_settings_ci_cd_path(@project.namespace, @project)
+    redirect_to project_settings_ci_cd_path(@project)
   end
 
   protected

@@ -40,10 +40,7 @@ class Tree
 
     readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
 
-    git_repo = repository.raw_repository
-    @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
-    @readme.load_all_data!(git_repo)
-    @readme
+    @readme = repository.blob_at(sha, readme_path)
   end
 
   def trees

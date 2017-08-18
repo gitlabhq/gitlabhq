@@ -1,5 +1,5 @@
 /* eslint-disable comma-dangle, max-len, no-useless-return, no-param-reassign, max-len */
-/* global Api */
+import Api from '../api';
 
 import TemplateSelector from '../blob/template_selector';
 

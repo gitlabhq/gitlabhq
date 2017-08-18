@@ -47,19 +47,6 @@ describe API::V3::Branches do
       delete v3_api("/projects/#{project.id}/repository/branches/foobar", user)
       expect(response).to have_http_status(404)
     end
-
-    it "removes protected branch" do
-      create(:protected_branch, project: project, name: branch_name)
-      delete v3_api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Protected branch cant be removed')
-    end
-
-    it "does not remove HEAD branch" do
-      delete v3_api("/projects/#{project.id}/repository/branches/master", user)
-      expect(response).to have_http_status(405)
-      expect(json_response['message']).to eq('Cannot remove HEAD branch')
-    end
   end
 
   describe "DELETE /projects/:id/repository/merged_branches" do

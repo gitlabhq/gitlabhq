@@ -41,8 +41,14 @@ namespace :gitlab do
         # Generate config.yml based on existing gitlab settings
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
-        # Launch installation process
-        system(*%w(bin/install) + repository_storage_paths_args)
+        [
+          %w(bin/install) + repository_storage_paths_args,
+          %w(bin/compile)
+        ].each do |cmd|
+          unless Kernel.system(*cmd)
+            raise "command failed: #{cmd.join(' ')}"
+          end
+        end
       end
 
       # (Re)create hooks
@@ -74,7 +80,7 @@ namespace :gitlab do
           print '-'
         else
           if Gitlab::Shell.new.add_repository(project.repository_storage_path,
-                                              project.path_with_namespace)
+                                              project.disk_path)
             print '.'
           else
             print 'F'

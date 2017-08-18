@@ -41,7 +41,7 @@ class Admin::LabelsController < Admin::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to(admin_labels_path, notice: 'Label was removed')
+        redirect_to admin_labels_path, status: 302, notice: 'Label was removed'
       end
       format.js
     end

@@ -2,6 +2,7 @@
 class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
   include CreatesCommit
+  include RendersBlob
   include ActionView::Helpers::SanitizeHelper
 
   # Raised when given an invalid file path
@@ -25,22 +26,29 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    set_start_branch_to_branch_name
-
     create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
-                                        success_path: -> { namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @file_path)) },
+                                        success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,
-                                        failure_path: namespace_project_new_blob_path(@project.namespace, @project, @ref))
+                                        failure_path: project_new_blob_path(@project, @ref))
   end
 
   def show
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+    conditionally_expand_blob(@blob)
+
+    respond_to do |format|
+      format.html do
+        show_html
+      end
+
+      format.json do
+        show_json
+      end
+    end
   end
 
   def edit
     if can_collaborate_with_project?
-      blob.load_all_data!(@repository)
+      blob.load_all_data!
     else
       redirect_to action: 'show'
     end
@@ -50,7 +58,7 @@ class Projects::BlobController < Projects::ApplicationController
     @path = params[:file_path] if params[:file_path].present?
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
-                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+                                        failure_path: project_blob_path(@project, @id))
 
   rescue Files::UpdateService::FileChangedError
     @conflict = true
@@ -59,7 +67,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def preview
     @content = params[:content]
-    @blob.load_all_data!(@repository)
+    @blob.load_all_data!
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
@@ -70,17 +78,19 @@ class Projects::BlobController < Projects::ApplicationController
 
   def destroy
     create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
-                                        success_path: -> { namespace_project_tree_path(@project.namespace, @project, @branch_name) },
+                                        success_path: -> { project_tree_path(@project, @branch_name) },
                                         failure_view: :show,
-                                        failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+                                        failure_path: project_blob_path(@project, @id))
   end
 
   def diff
     apply_diff_view_cookie!
 
-    @form  = UnfoldForm.new(params)
-    @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
-    @lines = @lines[@form.since - 1..@form.to - 1]
+    @blob.load_all_data!
+    @lines = Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: @repository).lines
+
+    @form = UnfoldForm.new(params)
+    @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 
     if @form.bottom?
       @match_line = ''
@@ -96,14 +106,14 @@ class Projects::BlobController < Projects::ApplicationController
   private
 
   def blob
-    @blob ||= Blob.decorate(@repository.blob_at(@commit.id, @path))
+    @blob ||= @repository.blob_at(@commit.id, @path)
 
     if @blob
       @blob
     else
       if tree = @repository.tree(@commit.id, @path)
         if tree.entries.any?
-          return redirect_to namespace_project_tree_path(@project.namespace, @project, File.join(@ref, @path))
+          return redirect_to project_tree_path(@project, File.join(@ref, @path))
         end
       end
 
@@ -128,10 +138,10 @@ class Projects::BlobController < Projects::ApplicationController
   def after_edit_path
     from_merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.find_by(iid: params[:from_merge_request_iid])
     if from_merge_request && @branch_name == @ref
-      diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
+      diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
         "##{hexdigest(@path)}"
     else
-      namespace_project_blob_path(@project.namespace, @project, File.join(@branch_name, @path))
+      project_blob_path(@project, File.join(@branch_name, @path))
     end
   end
 
@@ -172,7 +182,42 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def set_last_commit_sha
-    @last_commit_sha = Gitlab::Git::Commit.
-      last_for_path(@repository, @ref, @path).sha
+    @last_commit_sha = Gitlab::Git::Commit
+      .last_for_path(@repository, @ref, @path).sha
+  end
+
+  def show_html
+    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+    @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+
+    render 'show'
+  end
+
+  def show_json
+    json = blob_json(@blob)
+    return render_404 unless json
+
+    path_segments = @path.split('/')
+    path_segments.pop
+    tree_path = path_segments.join('/')
+
+    render json: json.merge(
+      path: blob.path,
+      name: blob.name,
+      extension: blob.extension,
+      size: blob.raw_size,
+      mime_type: blob.mime_type,
+      binary: blob.raw_binary?,
+      simple_viewer: blob.simple_viewer&.class&.partial_name,
+      rich_viewer: blob.rich_viewer&.class&.partial_name,
+      show_viewer_switcher: !!blob.show_viewer_switcher?,
+      render_error: blob.simple_viewer&.render_error || blob.rich_viewer&.render_error,
+      raw_path: project_raw_path(project, @id),
+      blame_path: project_blame_path(project, @id),
+      commits_path: project_commits_path(project, @id),
+      tree_path: project_tree_path(project, File.join(@ref, tree_path)),
+      permalink: project_blob_path(project, File.join(@commit.id, @path))
+    )
   end
 end

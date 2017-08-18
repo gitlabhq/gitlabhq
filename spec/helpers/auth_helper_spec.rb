@@ -70,7 +70,7 @@ describe AuthHelper do
       end
     end
 
-    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0].each do |provider|
+    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :authentiq].each do |provider|
       it "returns false if the provider is #{provider}" do
         expect(helper.unlink_allowed?(provider)).to be true
       end

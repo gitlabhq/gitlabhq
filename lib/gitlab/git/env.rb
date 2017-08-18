@@ -1,3 +1,5 @@
+# Gitaly note: JV: no RPC's here.
+
 module Gitlab
   module Git
     # Ephemeral (per request) storage for environment variables that some Git

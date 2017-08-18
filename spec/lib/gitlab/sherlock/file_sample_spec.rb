@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Sherlock::FileSample, lib: true do
+describe Gitlab::Sherlock::FileSample do
   let(:sample) { described_class.new(__FILE__, [], 150.4, 2) }
 
   describe '#id' do
@@ -35,8 +35,8 @@ describe Gitlab::Sherlock::FileSample, lib: true do
 
   describe '#relative_path' do
     it 'returns the relative path' do
-      expect(sample.relative_path).
-        to eq('spec/lib/gitlab/sherlock/file_sample_spec.rb')
+      expect(sample.relative_path)
+        .to eq('spec/lib/gitlab/sherlock/file_sample_spec.rb')
     end
   end
 

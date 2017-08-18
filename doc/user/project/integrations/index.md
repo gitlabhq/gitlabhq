@@ -1,10 +1,8 @@
 # Project integrations
 
-You can find the available integrations under the **Integrations** page by
-navigating to the cog icon in the upper right corner of your project. You need
-to have at least [master permission][permissions] on the project.
-
-![Accessing the integrations](img/accessing_integrations.png)
+You can find the available integrations under your project's
+**Settings ➔ Integrations** page. You need to have at least
+[master permission][permissions] on the project.
 
 ## Project services
 

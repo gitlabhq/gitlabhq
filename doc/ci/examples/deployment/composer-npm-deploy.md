@@ -20,12 +20,12 @@ before_script:
   - php -r "unlink('composer-setup.php');"
 ```
 
-This will make sure we have all requirements ready. Next, we want to run `composer update` to fetch all PHP dependencies  and `npm install` to load node packages, then run the `npm` script. We need to append them  into `before_script` section:
+This will make sure we have all requirements ready. Next, we want to run `composer install` to fetch all PHP dependencies  and `npm install` to load node packages, then run the `npm` script. We need to append them  into `before_script` section:
 
 ```yaml
 before_script:
   # ...
-  - php composer.phar update
+  - php composer.phar install
   - npm install
   - npm run deploy
 ```
@@ -133,7 +133,7 @@ before_script:
   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
   - php composer-setup.php
   - php -r "unlink('composer-setup.php');"
-  - php composer.phar update
+  - php composer.phar install
   - npm install
   - npm run deploy
   - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'

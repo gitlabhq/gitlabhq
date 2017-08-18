@@ -11,6 +11,7 @@ module DiscussionOnDiff
               :diff_line,
               :for_line?,
               :active?,
+              :created_at_diff?,
 
               to: :first_note
 
@@ -45,5 +46,13 @@ module DiscussionOnDiff
     end
 
     prev_lines
+  end
+
+  def line_code_in_diffs(diff_refs)
+    if active?(diff_refs)
+      line_code
+    elsif diff_refs && created_at_diff?(diff_refs)
+      original_line_code
+    end
   end
 end

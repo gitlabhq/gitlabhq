@@ -1,1 +1,10 @@
-= render 'reassigned_issuable_email', issuable: @merge_request
+%p
+  Assignee changed
+  - if @previous_assignee
+    from
+    %strong= @previous_assignee.name
+  to
+  - if @merge_request.assignee_id
+    %strong= @merge_request.assignee_name
+  - else
+    %strong Unassigned

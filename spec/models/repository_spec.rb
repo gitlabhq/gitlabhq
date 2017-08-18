@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Repository, models: true do
   include RepoHelpers
-  TestBlob = Struct.new(:name)
+  TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
+  let(:broken_repository) { create(:project, :broken_storage).repository }
   let(:user) { create(:user) }
 
   let(:commit_options) do
@@ -27,12 +28,27 @@ describe Repository, models: true do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  def expect_to_raise_storage_error
+    expect { yield }.to raise_error do |exception|
+      storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
+      expect(exception.class).to be_in(storage_exceptions)
+    end
+  end
+
   describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
 
     it { is_expected.to include('master') }
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.branch_names_contains(sample_commit.id)
+        end
+      end
+    end
   end
 
   describe '#tag_names_contains' do
@@ -110,22 +126,11 @@ describe Repository, models: true do
   end
 
   describe '#ref_name_for_sha' do
-    context 'ref found' do
-      it 'returns the ref' do
-        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
-          and_return(["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0])
+    it 'returns the ref' do
+      allow(repository.raw_repository).to receive(:ref_name_for_sha)
+        .and_return('refs/environments/production/77')
 
-        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
-      end
-    end
-
-    context 'ref not found' do
-      it 'returns nil' do
-        allow_any_instance_of(Gitlab::Popen).to receive(:popen).
-          and_return(["", 0])
-
-        expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq nil
-      end
+      expect(repository.ref_name_for_sha('bla', '0' * 40)).to eq 'refs/environments/production/77'
     end
   end
 
@@ -150,24 +155,60 @@ describe Repository, models: true do
   end
 
   describe '#last_commit_for_path' do
-    subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
+    shared_examples 'getting last commit for path' do
+      subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
-    it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+      it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
+          end
+        end
+      end
+    end
+
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit for path'
+    end
+
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit for path'
+    end
   end
 
   describe '#last_commit_id_for_path' do
-    subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
+    shared_examples 'getting last commit ID for path' do
+      subject { repository.last_commit_id_for_path(sample_commit.id, '.gitignore') }
 
-    it "returns last commit id for a given path" do
-      is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      it "returns last commit id for a given path" do
+        is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8')
+      end
+
+      it "caches last commit id for a given path" do
+        cache = repository.send(:cache)
+        key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+
+        expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
+        is_expected.to eq('c1acaa5')
+      end
+
+      describe 'when storage is broken', broken_storage: true  do
+        it 'should raise a storage error' do
+          expect_to_raise_storage_error do
+            broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
+          end
+        end
+      end
     end
 
-    it "caches last commit id for a given path" do
-      cache = repository.send(:cache)
-      key = "last_commit_id_for_path:#{sample_commit.id}:#{Digest::SHA1.hexdigest('.gitignore')}"
+    context 'when Gitaly feature last_commit_for_path is enabled' do
+      it_behaves_like 'getting last commit ID for path'
+    end
 
-      expect(cache).to receive(:fetch).with(key).and_return('c1acaa5')
-      is_expected.to eq('c1acaa5')
+    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'getting last commit ID for path'
     end
   end
 
@@ -193,19 +234,37 @@ describe Repository, models: true do
   end
 
   describe '#find_commits_by_message' do
-    it 'returns commits with messages containing a given string' do
-      commit_ids = repository.find_commits_by_message('submodule').map(&:id)
+    shared_examples 'finding commits by message' do
+      it 'returns commits with messages containing a given string' do
+        commit_ids = repository.find_commits_by_message('submodule').map(&:id)
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      expect(commit_ids).to include('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
-      expect(commit_ids).to include('cfe32cf61b73a0d5e9f13e774abde7ff789b1660')
-      expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+        expect(commit_ids).to include(
+          '5937ac0a7beb003549fc5fd26fc247adbce4a52e',
+          '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9',
+          'cfe32cf61b73a0d5e9f13e774abde7ff789b1660'
+        )
+        expect(commit_ids).not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e')
+      end
+
+      it 'is case insensitive' do
+        commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+
+        expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      end
     end
 
-    it 'is case insensitive' do
-      commit_ids = repository.find_commits_by_message('SUBMODULE').map(&:id)
+    context 'when Gitaly commits_by_message feature is enabled' do
+      it_behaves_like 'finding commits by message'
+    end
 
-      expect(commit_ids).to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'finding commits by message'
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
+      end
     end
   end
 
@@ -311,7 +370,7 @@ describe Repository, models: true do
     end
 
     context "when committing to another project" do
-      let(:forked_project) { create(:project) }
+      let(:forked_project) { create(:project, :repository) }
 
       it "creates a fork and commit to the forked project" do
         expect do
@@ -356,6 +415,17 @@ describe Repository, models: true do
       blob = repository.blob_at('master', 'NEWCHANGELOG')
 
       expect(blob.data).to eq('Changelog!')
+    end
+
+    it 'creates new file and dir when file_path has a forward slash' do
+      expect do
+        repository.create_file(user, 'new_dir/new_file.txt', 'File!',
+                               message: 'Create new_file with new_dir',
+                               branch_name: 'master')
+      end.to change { repository.commits('master').count }.by(1)
+
+      expect(repository.tree('master', 'new_dir').path).to eq('new_dir')
+      expect(repository.blob_at('master', 'new_dir/new_file.txt').data).to eq('File!')
     end
 
     it 'respects the autocrlf setting' do
@@ -515,10 +585,18 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error do
+          broken_repository.search_files_by_content('feature', 'master')
+        end
+      end
     end
 
     describe 'result' do
@@ -543,11 +621,27 @@ describe Repository, models: true do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:empty_project).repository
+      repository = create(:project).repository
 
       results = repository.search_files_by_name('test', 'master')
 
       expect(results).to match_array([])
+    end
+
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
+      end
+    end
+  end
+
+  describe '#fetch_ref' do
+    describe 'when storage is broken', broken_storage: true  do
+      it 'should raise a storage error' do
+        path = broken_repository.path_to_repo
+
+        expect_to_raise_storage_error { broken_repository.fetch_ref(path, '1', '2') }
+      end
     end
   end
 
@@ -561,39 +655,39 @@ describe Repository, models: true do
     end
   end
 
-  describe "#changelog", caching: true do
+  describe "#changelog", :use_clean_rails_memory_store_caching do
     it 'accepts changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changelog')])
 
-      expect(repository.changelog.name).to eq('changelog')
+      expect(repository.changelog.path).to eq('changelog')
     end
 
     it 'accepts news instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('news')])
 
-      expect(repository.changelog.name).to eq('news')
+      expect(repository.changelog.path).to eq('news')
     end
 
     it 'accepts history instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('history')])
 
-      expect(repository.changelog.name).to eq('history')
+      expect(repository.changelog.path).to eq('history')
     end
 
     it 'accepts changes instead of changelog' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('changes')])
 
-      expect(repository.changelog.name).to eq('changes')
+      expect(repository.changelog.path).to eq('changes')
     end
 
     it 'is case-insensitive' do
       expect(repository.tree).to receive(:blobs).and_return([TestBlob.new('CHANGELOG')])
 
-      expect(repository.changelog.name).to eq('CHANGELOG')
+      expect(repository.changelog.path).to eq('CHANGELOG')
     end
   end
 
-  describe "#license_blob", caching: true do
+  describe "#license_blob", :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(
         user, 'LICENSE', message: 'Remove LICENSE', branch_name: 'master')
@@ -604,8 +698,8 @@ describe Repository, models: true do
         user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      allow(repository).to receive(:file_on_head).
-        and_raise(Rugged::ReferenceError)
+      allow(repository).to receive(:file_on_head)
+        .and_raise(Rugged::ReferenceError)
 
       expect(repository.license_blob).to be_nil
     end
@@ -624,7 +718,7 @@ describe Repository, models: true do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
-      expect(repository.license_blob.name).to eq('LICENSE')
+      expect(repository.license_blob.path).to eq('LICENSE')
     end
 
     %w[LICENSE LICENCE LiCensE LICENSE.md LICENSE.foo COPYING COPYING.md].each do |filename|
@@ -638,7 +732,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#license_key', caching: true do
+  describe '#license_key', :use_clean_rails_memory_store_caching do
     before do
       repository.delete_file(user, 'LICENSE',
         message: 'Remove LICENSE', branch_name: 'master')
@@ -654,7 +748,7 @@ describe Repository, models: true do
       expect(repository.license_key).to be_nil
     end
 
-    it 'detects license file with no recognizable open-source license content' do
+    it 'returns nil when the content is not recognizable' do
       repository.create_file(user, 'LICENSE', 'Copyright!',
         message: 'Add LICENSE', branch_name: 'master')
 
@@ -670,12 +764,45 @@ describe Repository, models: true do
     end
   end
 
-  describe "#gitlab_ci_yml", caching: true do
+  describe '#license' do
+    before do
+      repository.delete_file(user, 'LICENSE',
+        message: 'Remove LICENSE', branch_name: 'master')
+    end
+
+    it 'returns nil when no license is detected' do
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns nil when the repository does not exist' do
+      expect(repository).to receive(:exists?).and_return(false)
+
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns nil when the content is not recognizable' do
+      repository.create_file(user, 'LICENSE', 'Copyright!',
+        message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license).to be_nil
+    end
+
+    it 'returns the license' do
+      license = Licensee::License.new('mit')
+      repository.create_file(user, 'LICENSE',
+        license.content,
+        message: 'Add LICENSE', branch_name: 'master')
+
+      expect(repository.license).to eq(license)
+    end
+  end
+
+  describe "#gitlab_ci_yml", :use_clean_rails_memory_store_caching do
     it 'returns valid file' do
       files = [TestBlob.new('file'), TestBlob.new('.gitlab-ci.yml'), TestBlob.new('copying')]
       expect(repository.tree).to receive(:blobs).and_return(files)
 
-      expect(repository.gitlab_ci_yml.name).to eq('.gitlab-ci.yml')
+      expect(repository.gitlab_ci_yml.path).to eq('.gitlab-ci.yml')
     end
 
     it 'returns nil if not exists' do
@@ -757,8 +884,8 @@ describe Repository, models: true do
 
     context 'when pre hooks were successful' do
       it 'runs without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute).
-          with(user, project.repository.path_to_repo, old_rev, blank_sha, 'refs/heads/feature')
+        expect_any_instance_of(GitHooksService).to receive(:execute)
+          .with(user, project, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -800,14 +927,9 @@ describe Repository, models: true do
       before do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
-        expect(service).to receive(:execute).
-          with(
-            user,
-            repository.path_to_repo,
-            old_rev,
-            new_rev,
-            'refs/heads/feature').
-          and_yield(service).and_return(true)
+        expect(service).to receive(:execute)
+          .with(user, project, old_rev, new_rev, 'refs/heads/feature')
+          .and_yield(service).and_return(true)
       end
 
       it 'runs without errors' do
@@ -836,6 +958,27 @@ describe Repository, models: true do
 
           expect(repository.find_branch('feature').dereferenced_target.id).to eq(new_rev)
         end
+      end
+    end
+
+    context 'when temporary ref failed to be created from other project' do
+      let(:target_project) { create(:project, :empty_repo) }
+
+      before do
+        expect(target_project.repository).to receive(:run_git)
+      end
+
+      it 'raises Rugged::ReferenceError' do
+        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
+          expect(err.cause).to be_nil
+        end
+
+        expect do
+          GitOperationService.new(user, target_project.repository)
+            .with_branch('feature',
+                         start_project: project,
+                         &:itself)
+        end.to raise_reference_error
       end
     end
 
@@ -901,8 +1044,8 @@ describe Repository, models: true do
         expect(repository).not_to receive(:expire_emptiness_caches)
         expect(repository).to     receive(:expire_branches_cache)
 
-        GitOperationService.new(user, repository).
-          with_branch('new-feature') do
+        GitOperationService.new(user, repository)
+          .with_branch('new-feature') do
             new_rev
           end
       end
@@ -914,7 +1057,7 @@ describe Repository, models: true do
       end
 
       it 'expires creation and branch cache' do
-        empty_repository = create(:empty_project, :empty_repo).repository
+        empty_repository = create(:project, :empty_repo).repository
 
         expect(empty_repository).to receive(:expire_exists_cache)
         expect(empty_repository).to receive(:expire_root_ref_cache)
@@ -928,21 +1071,31 @@ describe Repository, models: true do
     end
   end
 
-  describe '#exists?' do
+  shared_examples 'repo exists check' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to eq(true)
     end
 
-    it 'returns false when a repository does not exist' do
-      allow(repository).to receive(:refs_directory_exists?).and_return(false)
+    it 'returns false if no full path can be constructed' do
+      allow(repository).to receive(:full_path).and_return(nil)
 
       expect(repository.exists?).to eq(false)
     end
 
-    it 'returns false when there is no namespace' do
-      allow(repository).to receive(:path_with_namespace).and_return(nil)
+    context 'with broken storage', broken_storage: true do
+      it 'should raise a storage error' do
+        expect_to_raise_storage_error { broken_repository.exists? }
+      end
+    end
+  end
 
-      expect(repository.exists?).to eq(false)
+  describe '#exists?' do
+    context 'when repository_exists is disabled' do
+      it_behaves_like 'repo exists check'
+    end
+
+    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+      it_behaves_like 'repo exists check'
     end
   end
 
@@ -985,8 +1138,8 @@ describe Repository, models: true do
       end
 
       it 'does nothing' do
-        expect(repository.raw_repository).not_to receive(:autocrlf=).
-          with(:input)
+        expect(repository.raw_repository).not_to receive(:autocrlf=)
+          .with(:input)
 
         GitOperationService.new(nil, repository).send(:update_autocrlf_option)
       end
@@ -1005,9 +1158,9 @@ describe Repository, models: true do
     end
 
     it 'caches the output' do
-      expect(repository.raw_repository).to receive(:empty?).
-        once.
-        and_return(false)
+      expect(repository.raw_repository).to receive(:empty?)
+        .once
+        .and_return(false)
 
       repository.empty?
       repository.empty?
@@ -1020,9 +1173,9 @@ describe Repository, models: true do
     end
 
     it 'caches the output' do
-      expect(repository.raw_repository).to receive(:root_ref).
-        once.
-        and_return('master')
+      expect(repository.raw_repository).to receive(:root_ref)
+        .once
+        .and_return('master')
 
       repository.root_ref
       repository.root_ref
@@ -1033,9 +1186,9 @@ describe Repository, models: true do
     it 'expires the root reference cache' do
       repository.root_ref
 
-      expect(repository.raw_repository).to receive(:root_ref).
-        once.
-        and_return('foo')
+      expect(repository.raw_repository).to receive(:root_ref)
+        .once
+        .and_return('foo')
 
       repository.expire_root_ref_cache
 
@@ -1049,17 +1202,17 @@ describe Repository, models: true do
     let(:cache) { repository.send(:cache) }
 
     it 'expires the cache for all branches' do
-      expect(cache).to receive(:expire).
-        at_least(repository.branches.length * 2).
-        times
+      expect(cache).to receive(:expire)
+        .at_least(repository.branches.length * 2)
+        .times
 
       repository.expire_branch_cache
     end
 
     it 'expires the cache for all branches when the root branch is given' do
-      expect(cache).to receive(:expire).
-        at_least(repository.branches.length * 2).
-        times
+      expect(cache).to receive(:expire)
+        .at_least(repository.branches.length * 2)
+        .times
 
       repository.expire_branch_cache(repository.root_ref)
     end
@@ -1092,26 +1245,38 @@ describe Repository, models: true do
   end
 
   describe 'skip_merges option' do
-    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map{ |k| k.id } }
+    subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map { |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
   end
 
   describe '#merge' do
-    it 'merges the code and return the commit id' do
+    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project) }
+
+    let(:commit_options) do
+      author = repository.user_to_committer(user)
+      { message: 'Test \r\n\r\n message', committer: author, author: author }
+    end
+
+    it 'merges the code and returns the commit id' do
       expect(merge_commit).to be_present
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
 
     it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
-
-      merge_commit_id = repository.merge(user,
-                                         merge_request.diff_head_sha,
-                                         merge_request,
-                                         commit_options)
+      merge_commit_id = merge(repository, user, merge_request, commit_options)
 
       expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
+
+    it 'removes carriage returns from commit message' do
+      merge_commit_id = merge(repository, user, merge_request, commit_options)
+
+      expect(repository.commit(merge_commit_id).message).to eq(commit_options[:message].delete("\r"))
+    end
+
+    def merge(repository, user, merge_request, options = {})
+      repository.merge(user, merge_request.diff_head_sha, merge_request, options)
     end
   end
 
@@ -1310,12 +1475,12 @@ describe Repository, models: true do
 
   describe '#after_push_commit' do
     it 'expires statistics caches' do
-      expect(repository).to receive(:expire_statistics_caches).
-        and_call_original
+      expect(repository).to receive(:expire_statistics_caches)
+        .and_call_original
 
-      expect(repository).to receive(:expire_branch_cache).
-        with('master').
-        and_call_original
+      expect(repository).to receive(:expire_branch_cache)
+        .with('master')
+        .and_call_original
 
       repository.after_push_commit('master')
     end
@@ -1379,20 +1544,30 @@ describe Repository, models: true do
   describe '#branch_count' do
     it 'returns the number of branches' do
       expect(repository.branch_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.branches.count
+
+      expect(repository.branch_count).to eq(rugged_count)
     end
   end
 
   describe '#tag_count' do
     it 'returns the number of tags' do
       expect(repository.tag_count).to be_an(Integer)
+
+      # NOTE: Until rugged goes away, make sure rugged and gitaly are in sync
+      rugged_count = repository.raw_repository.rugged.tags.count
+
+      expect(repository.tag_count).to eq(rugged_count)
     end
   end
 
   describe '#expire_branches_cache' do
     it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches).
-        with(%i(branch_names branch_count)).
-        and_call_original
+      expect(repository).to receive(:expire_method_caches)
+        .with(%i(branch_names branch_count))
+        .and_call_original
 
       repository.expire_branches_cache
     end
@@ -1400,9 +1575,9 @@ describe Repository, models: true do
 
   describe '#expire_tags_cache' do
     it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches).
-        with(%i(tag_names tag_count)).
-        and_call_original
+      expect(repository).to receive(:expire_method_caches)
+        .with(%i(tag_names tag_count))
+        .and_call_original
 
       repository.expire_tags_cache
     end
@@ -1413,11 +1588,11 @@ describe Repository, models: true do
       let(:user) { build_stubbed(:user) }
 
       it 'creates the tag using rugged' do
-        expect(repository.rugged.tags).to receive(:create).
-          with('8.5', repository.commit('master').id,
+        expect(repository.rugged.tags).to receive(:create)
+          .with('8.5', repository.commit('master').id,
             hash_including(message: 'foo',
-                           tagger: hash_including(name: user.name, email: user.email))).
-          and_call_original
+                           tagger: hash_including(name: user.name, email: user.email)))
+          .and_call_original
 
         repository.add_tag(user, '8.5', 'master', 'foo')
       end
@@ -1430,12 +1605,12 @@ describe Repository, models: true do
 
       it 'passes commit SHA to pre-receive and update hooks,\
         and tag SHA to post-receive hook' do
-        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', repository.path_to_repo)
-        update_hook = Gitlab::Git::Hook.new('update', repository.path_to_repo)
-        post_receive_hook = Gitlab::Git::Hook.new('post-receive', repository.path_to_repo)
+        pre_receive_hook = Gitlab::Git::Hook.new('pre-receive', project)
+        update_hook = Gitlab::Git::Hook.new('update', project)
+        post_receive_hook = Gitlab::Git::Hook.new('post-receive', project)
 
-        allow(Gitlab::Git::Hook).to receive(:new).
-          and_return(pre_receive_hook, update_hook, post_receive_hook)
+        allow(Gitlab::Git::Hook).to receive(:new)
+          .and_return(pre_receive_hook, update_hook, post_receive_hook)
 
         allow(pre_receive_hook).to receive(:trigger).and_call_original
         allow(update_hook).to receive(:trigger).and_call_original
@@ -1446,12 +1621,12 @@ describe Repository, models: true do
         commit_sha = repository.commit('master').id
         tag_sha = tag.target
 
-        expect(pre_receive_hook).to have_received(:trigger).
-          with(anything, anything, commit_sha, anything)
-        expect(update_hook).to have_received(:trigger).
-          with(anything, anything, commit_sha, anything)
-        expect(post_receive_hook).to have_received(:trigger).
-          with(anything, anything, tag_sha, anything)
+        expect(pre_receive_hook).to have_received(:trigger)
+          .with(anything, anything, commit_sha, anything)
+        expect(update_hook).to have_received(:trigger)
+          .with(anything, anything, commit_sha, anything)
+        expect(post_receive_hook).to have_received(:trigger)
+          .with(anything, anything, tag_sha, anything)
       end
     end
 
@@ -1485,25 +1660,25 @@ describe Repository, models: true do
 
   describe '#avatar' do
     it 'returns nil if repo does not exist' do
-      expect(repository).to receive(:file_on_head).
-        and_raise(Rugged::ReferenceError)
+      expect(repository).to receive(:file_on_head)
+        .and_raise(Rugged::ReferenceError)
 
       expect(repository.avatar).to eq(nil)
     end
 
     it 'returns the first avatar file found in the repository' do
-      expect(repository).to receive(:file_on_head).
-        with(:avatar).
-        and_return(double(:tree, path: 'logo.png'))
+      expect(repository).to receive(:file_on_head)
+        .with(:avatar)
+        .and_return(double(:tree, path: 'logo.png'))
 
       expect(repository.avatar).to eq('logo.png')
     end
 
     it 'caches the output' do
-      expect(repository).to receive(:file_on_head).
-        with(:avatar).
-        once.
-        and_return(double(:tree, path: 'logo.png'))
+      expect(repository).to receive(:file_on_head)
+        .with(:avatar)
+        .once
+        .and_return(double(:tree, path: 'logo.png'))
 
       2.times { expect(repository.avatar).to eq('logo.png') }
     end
@@ -1561,26 +1736,26 @@ describe Repository, models: true do
     end
   end
 
-  describe '#contribution_guide', caching: true do
+  describe '#contribution_guide', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head).
-        with(:contributing).
-        and_return(Gitlab::Git::Tree.new(path: 'CONTRIBUTING.md')).
-        once
+      expect(repository).to receive(:file_on_head)
+        .with(:contributing)
+        .and_return(Gitlab::Git::Tree.new(path: 'CONTRIBUTING.md'))
+        .once
 
       2.times do
-        expect(repository.contribution_guide).
-          to be_an_instance_of(Gitlab::Git::Tree)
+        expect(repository.contribution_guide)
+          .to be_an_instance_of(Gitlab::Git::Tree)
       end
     end
   end
 
-  describe '#gitignore', caching: true do
+  describe '#gitignore', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head).
-        with(:gitignore).
-        and_return(Gitlab::Git::Tree.new(path: '.gitignore')).
-        once
+      expect(repository).to receive(:file_on_head)
+        .with(:gitignore)
+        .and_return(Gitlab::Git::Tree.new(path: '.gitignore'))
+        .once
 
       2.times do
         expect(repository.gitignore).to be_an_instance_of(Gitlab::Git::Tree)
@@ -1588,12 +1763,12 @@ describe Repository, models: true do
     end
   end
 
-  describe '#koding_yml', caching: true do
+  describe '#koding_yml', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
-      expect(repository).to receive(:file_on_head).
-        with(:koding).
-        and_return(Gitlab::Git::Tree.new(path: '.koding.yml')).
-        once
+      expect(repository).to receive(:file_on_head)
+        .with(:koding)
+        .and_return(Gitlab::Git::Tree.new(path: '.koding.yml'))
+        .once
 
       2.times do
         expect(repository.koding_yml).to be_an_instance_of(Gitlab::Git::Tree)
@@ -1601,26 +1776,36 @@ describe Repository, models: true do
     end
   end
 
-  describe '#readme', caching: true do
+  describe '#readme', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       it 'returns nil' do
-        expect(repository).to receive(:tree).with(:head).and_return(nil)
+        allow(repository).to receive(:tree).with(:head).and_return(nil)
 
         expect(repository.readme).to be_nil
       end
     end
 
     context 'with an existing repository' do
-      it 'returns the README' do
-        expect(repository.readme).to be_an_instance_of(Gitlab::Git::Blob)
+      context 'when no README exists' do
+        it 'returns nil' do
+          allow_any_instance_of(Tree).to receive(:readme).and_return(nil)
+
+          expect(repository.readme).to be_nil
+        end
+      end
+
+      context 'when a README exists' do
+        it 'returns the README' do
+          expect(repository.readme).to be_an_instance_of(ReadmeBlob)
+        end
       end
     end
   end
 
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
-      expect(repository).to receive(:expire_method_caches).
-        with(%i(size commit_count))
+      expect(repository).to receive(:expire_method_caches)
+        .with(%i(size commit_count))
 
       repository.expire_statistics_caches
     end
@@ -1637,8 +1822,8 @@ describe Repository, models: true do
 
   describe '#expire_all_method_caches' do
     it 'expires the caches of all methods' do
-      expect(repository).to receive(:expire_method_caches).
-        with(Repository::CACHED_METHODS)
+      expect(repository).to receive(:expire_method_caches)
+        .with(Repository::CACHED_METHODS)
 
       repository.expire_all_method_caches
     end
@@ -1663,8 +1848,8 @@ describe Repository, models: true do
 
     context 'with an existing repository' do
       it 'returns a Gitlab::Git::Tree' do
-        expect(repository.file_on_head(:readme)).
-          to be_an_instance_of(Gitlab::Git::Tree)
+        expect(repository.file_on_head(:readme))
+          .to be_an_instance_of(Gitlab::Git::Tree)
       end
     end
   end
@@ -1740,7 +1925,7 @@ describe Repository, models: true do
   end
 
   describe '#commit_count_for_ref' do
-    let(:project) { create :empty_project }
+    let(:project) { create :project }
 
     context 'with a non-existing repository' do
       it 'returns 0' do
@@ -1762,7 +1947,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#cache_method_output', caching: true do
+  describe '#cache_method_output', :use_clean_rails_memory_store_caching do
     context 'with a non-existing repository' do
       let(:value) do
         repository.cache_method_output(:cats, fallback: 10) do
@@ -1802,12 +1987,13 @@ describe Repository, models: true do
 
   describe '#refresh_method_caches' do
     it 'refreshes the caches of the given types' do
-      expect(repository).to receive(:expire_method_caches).
-        with(%i(rendered_readme license_blob license_key))
+      expect(repository).to receive(:expire_method_caches)
+        .with(%i(rendered_readme license_blob license_key license))
 
       expect(repository).to receive(:rendered_readme)
       expect(repository).to receive(:license_blob)
       expect(repository).to receive(:license_key)
+      expect(repository).to receive(:license)
 
       repository.refresh_method_caches(%i(readme license))
     end
@@ -1849,17 +2035,45 @@ describe Repository, models: true do
     end
   end
 
-  # TODO: Uncomment when feature is reenabled
-  # describe '#is_ancestor?' do
-  #   context 'Gitaly is_ancestor feature enabled' do
-  #     it 'asks Gitaly server if it\'s an ancestor' do
-  #       commit = repository.commit
-  #       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(true)
-  #       expect(Gitlab::GitalyClient::Commit).to receive(:is_ancestor).
-  #         with(repository.raw_repository, commit.id, commit.id).and_return(true)
-  #
-  #       expect(repository.is_ancestor?(commit.id, commit.id)).to be true
-  #     end
-  #   end
-  # end
+  describe '#is_ancestor?' do
+    let(:commit) { repository.commit }
+    let(:ancestor) { commit.parents.first }
+
+    context 'with Gitaly enabled' do
+      it 'it is an ancestor' do
+        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+      end
+
+      it 'it is not an ancestor' do
+        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+      end
+
+      it 'returns false on nil-values' do
+        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+      end
+    end
+
+    context 'with Gitaly disabled' do
+      before do
+        allow(Gitlab::GitalyClient).to receive(:enabled?).and_return(false)
+        allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:is_ancestor).and_return(false)
+      end
+
+      it 'it is an ancestor' do
+        expect(repository.is_ancestor?(ancestor.id, commit.id)).to eq(true)
+      end
+
+      it 'it is not an ancestor' do
+        expect(repository.is_ancestor?(commit.id, ancestor.id)).to eq(false)
+      end
+
+      it 'returns false on nil-values' do
+        expect(repository.is_ancestor?(nil, commit.id)).to eq(false)
+        expect(repository.is_ancestor?(ancestor.id, nil)).to eq(false)
+        expect(repository.is_ancestor?(nil, nil)).to eq(false)
+      end
+    end
+  end
 end

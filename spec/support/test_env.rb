@@ -5,6 +5,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
+    'signed-commits'                     => '5d4a1cb',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -27,6 +28,7 @@ module TestEnv
     'expand-collapse-files'              => '025db92',
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
+    'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',
     'conflict-start'                     => '824be60',
     'conflict-resolvable'                => '1450cd6',
@@ -39,7 +41,9 @@ module TestEnv
     'wip'                                => 'b9238ee',
     'csv'                                => '3dd0896',
     'v1.1.0'                             => 'b83d6e3',
-    'add-ipython-files'                  => '6d85bb69'
+    'add-ipython-files'                  => '93ee732',
+    'add-pdf-file'                       => 'e774ebd',
+    'add-pdf-text-binary'                => '79faa7b'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -51,6 +55,8 @@ module TestEnv
     'remove-submodule'           => '2a33e0c',
     'conflict-resolvable-fork'   => '404fa3f'
   }.freeze
+
+  TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
 
   # Test environment
   #
@@ -65,7 +71,7 @@ module TestEnv
     # Setup GitLab shell for test instance
     setup_gitlab_shell
 
-    setup_gitaly if Gitlab::GitalyClient.enabled?
+    setup_gitaly
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
@@ -79,13 +85,13 @@ module TestEnv
   end
 
   def disable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_return(double.as_null_object)
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_return(double.as_null_object)
   end
 
   def enable_mailer
-    allow_any_instance_of(NotificationService).to receive(:mailer).
-      and_call_original
+    allow_any_instance_of(NotificationService).to receive(:mailer)
+      .and_call_original
   end
 
   def disable_pre_receive
@@ -96,9 +102,7 @@ module TestEnv
   #
   # Keeps gitlab-shell and gitlab-test
   def clean_test_path
-    tmp_test_path = Rails.root.join('tmp', 'tests', '**')
-
-    Dir[tmp_test_path].each do |entry|
+    Dir[TMP_TEST_PATH].each do |entry|
       unless File.basename(entry) =~ /\A(gitaly|gitlab-(shell|test|test_bare|test-fork|test-fork_bare))\z/
         FileUtils.rm_rf(entry)
       end
@@ -109,29 +113,69 @@ module TestEnv
     FileUtils.mkdir_p(pages_path)
   end
 
-  def setup_gitlab_shell
-    unless File.directory?(Gitlab.config.gitlab_shell.path)
-      unless system('rake', 'gitlab:shell:install')
-        raise 'Can`t clone gitlab-shell'
+  def clean_gitlab_test_path
+    Dir[TMP_TEST_PATH].each do |entry|
+      if File.basename(entry) =~ /\A(gitlab-(test|test_bare|test-fork|test-fork_bare))\z/
+        FileUtils.rm_rf(entry)
       end
     end
   end
 
+  def setup_gitlab_shell
+    puts "\n==> Setting up Gitlab Shell..."
+    start = Time.now
+    gitlab_shell_dir = Gitlab.config.gitlab_shell.path
+    shell_needs_update = component_needs_update?(gitlab_shell_dir,
+      Gitlab::Shell.version_required)
+
+    unless !shell_needs_update || system('rake', 'gitlab:shell:install')
+      puts "\nGitLab Shell failed to install, cleaning up #{gitlab_shell_dir}!\n"
+      FileUtils.rm_rf(gitlab_shell_dir)
+      exit 1
+    end
+
+    puts "    GitLab Shell setup in #{Time.now - start} seconds...\n"
+  end
+
   def setup_gitaly
-    socket_path = Gitlab::GitalyClient.get_address('default').sub(/\Aunix:/, '')
+    puts "\n==> Setting up Gitaly..."
+    start = Time.now
+    socket_path = Gitlab::GitalyClient.address('default').sub(/\Aunix:/, '')
     gitaly_dir = File.dirname(socket_path)
 
-    unless File.directory?(gitaly_dir) || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
-      raise "Can't clone gitaly"
+    if gitaly_dir_stale?(gitaly_dir)
+      puts "    Gitaly is outdated, cleaning up #{gitaly_dir}!"
+      FileUtils.rm_rf(gitaly_dir)
+    end
+
+    gitaly_needs_update = component_needs_update?(gitaly_dir,
+      Gitlab::GitalyClient.expected_server_version)
+
+    unless !gitaly_needs_update || system('rake', "gitlab:gitaly:install[#{gitaly_dir}]")
+      puts "\nGitaly failed to install, cleaning up #{gitaly_dir}!\n"
+      FileUtils.rm_rf(gitaly_dir)
+      exit 1
     end
 
     start_gitaly(gitaly_dir)
+    puts "    Gitaly setup in #{Time.now - start} seconds...\n"
+  end
+
+  def gitaly_dir_stale?(dir)
+    gitaly_executable = File.join(dir, 'gitaly')
+    return false unless File.exist?(gitaly_executable)
+
+    File.mtime(gitaly_executable) < File.mtime(Rails.root.join('GITALY_SERVER_VERSION'))
   end
 
   def start_gitaly(gitaly_dir)
-    gitaly_exec = File.join(gitaly_dir, 'gitaly')
-    gitaly_config = File.join(gitaly_dir, 'config.toml')
-    @gitaly_pid = spawn(gitaly_exec, gitaly_config, [:out, :err] => '/dev/null')
+    if ENV['CI'].present?
+      # Gitaly has been spawned outside this process already
+      return
+    end
+
+    spawn_script = Rails.root.join('scripts/gitaly-test-spawn').to_s
+    @gitaly_pid = Bundler.with_original_env { IO.popen([spawn_script], &:read).to_i }
   end
 
   def stop_gitaly
@@ -152,14 +196,14 @@ module TestEnv
                FORKED_BRANCH_SHA)
   end
 
-  def setup_repo(repo_path, repo_path_bare, repo_name, branch_sha)
+  def setup_repo(repo_path, repo_path_bare, repo_name, refs)
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
       system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
     end
 
-    set_repo_refs(repo_path, branch_sha)
+    set_repo_refs(repo_path, refs)
 
     unless File.directory?(repo_path_bare)
       # We must copy bare repositories because we will push to them.
@@ -167,13 +211,12 @@ module TestEnv
     end
   end
 
-  def copy_repo(project)
-    base_repo_path = File.expand_path(factory_repo_path_bare)
+  def copy_repo(project, bare_repo:, refs:)
     target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
     FileUtils.mkdir_p(target_repo_path)
-    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
+    FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, BRANCH_SHA)
+    set_repo_refs(target_repo_path, refs)
   end
 
   def repos_path
@@ -188,15 +231,6 @@ module TestEnv
     Gitlab.config.pages.path
   end
 
-  def copy_forked_repo_with_submodules(project)
-    base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.full_path}.git")
-    FileUtils.mkdir_p(target_repo_path)
-    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
-    FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, FORKED_BRANCH_SHA)
-  end
-
   # When no cached assets exist, manually hit the root path to create them
   #
   # Otherwise they'd be created by the first test, often timing out and
@@ -208,14 +242,26 @@ module TestEnv
     Capybara.current_session.visit '/'
   end
 
+  def factory_repo_path_bare
+    "#{factory_repo_path}_bare"
+  end
+
+  def forked_repo_path_bare
+    "#{forked_repo_path}_bare"
+  end
+
+  def with_empty_bare_repository(name = nil)
+    path = Rails.root.join('tmp/tests', name || 'empty-bare-repository').to_s
+
+    yield(Rugged::Repository.init_at(path, :bare))
+  ensure
+    FileUtils.rm_rf(path)
+  end
+
   private
 
   def factory_repo_path
     @factory_repo_path ||= Rails.root.join('tmp', 'tests', factory_repo_name)
-  end
-
-  def factory_repo_path_bare
-    "#{factory_repo_path}_bare"
   end
 
   def factory_repo_name
@@ -224,10 +270,6 @@ module TestEnv
 
   def forked_repo_path
     @forked_repo_path ||= Rails.root.join('tmp', 'tests', forked_repo_name)
-  end
-
-  def forked_repo_path_bare
-    "#{forked_repo_path}_bare"
   end
 
   def forked_repo_name
@@ -241,19 +283,33 @@ module TestEnv
   end
 
   def set_repo_refs(repo_path, branch_sha)
-    instructions = branch_sha.map {|branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
+    instructions = branch_sha.map { |branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
     update_refs = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
     reset = proc do
-      IO.popen(update_refs, "w") {|io| io.write(instructions) }
-      $?.success?
-    end
-
-    Dir.chdir(repo_path) do
-      # Try to reset without fetching to avoid using the network.
-      unless reset.call
-        raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
-        raise 'The fetched test seed does not contain the required revision.' unless reset.call
+      Dir.chdir(repo_path) do
+        IO.popen(update_refs, "w") { |io| io.write(instructions) }
+        $?.success?
       end
     end
+
+    # Try to reset without fetching to avoid using the network.
+    unless reset.call
+      raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
+
+      # Before we used Git clone's --mirror option, bare repos could end up
+      # with missing refs, clearing them and retrying should fix the issue.
+      cleanup && clean_gitlab_test_path && init unless reset.call
+    end
+  end
+
+  def component_needs_update?(component_folder, expected_version)
+    version = File.read(File.join(component_folder, 'VERSION')).strip
+
+    # Notice that this will always yield true when using branch versions
+    # (`=branch_name`), but that actually makes sure the server is always based
+    # on the latest branch revision.
+    version != expected_version
+  rescue Errno::ENOENT
+    true
   end
 end

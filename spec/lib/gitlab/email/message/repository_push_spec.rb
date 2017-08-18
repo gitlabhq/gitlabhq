@@ -117,7 +117,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#subject' do
       subject { message.subject }
-      it { is_expected.to include "[Git][#{project.path_with_namespace}]" }
+      it { is_expected.to include "[Git][#{project.full_path}]" }
       it { is_expected.to include "#{compare.commits.length} commits" }
       it { is_expected.to include compare.commits.first.message.split("\n").first }
     end

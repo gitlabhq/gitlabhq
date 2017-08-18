@@ -50,8 +50,8 @@ module Gitlab
 
     # Returns the class for the given migration file path.
     def class_for_migration_file(path)
-      File.basename(path, File.extname(path)).split('_', 2).last.camelize.
-        constantize
+      File.basename(path, File.extname(path)).split('_', 2).last.camelize
+        .constantize
     end
 
     # Returns true if the given migration can be performed without downtime.

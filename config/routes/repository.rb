@@ -2,7 +2,10 @@
 
 resource :repository, only: [:create] do
   member do
-    get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
+    get ':ref/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, ref: /.+/ }, action: 'archive', as: 'archive'
+
+    # deprecated since GitLab 9.5
+    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative'
   end
 end
 
@@ -24,7 +27,7 @@ scope format: false do
 
     member do
       # tree viewer logs
-      get 'logs_tree', constraints: { id: Gitlab::Regex.git_reference_regex }
+      get 'logs_tree', constraints: { id: Gitlab::PathRegex.git_reference_regex }
       # Directories with leading dots erroneously get rejected if git
       # ref regex used in constraints. Regex verification now done in controller.
       get 'logs_tree/*path', action: :logs_tree, as: :logs_file, format: false, constraints: {
@@ -34,7 +37,7 @@ scope format: false do
     end
   end
 
-  scope constraints: { id: Gitlab::Regex.git_reference_regex } do
+  scope constraints: { id: Gitlab::PathRegex.git_reference_regex } do
     resources :network, only: [:show]
 
     resources :graphs, only: [:show] do
@@ -76,6 +79,8 @@ scope format: false do
     get '/tree/*id', to: 'tree#show', as: :tree
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
+
+    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 
     post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir

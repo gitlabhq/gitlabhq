@@ -8,7 +8,7 @@ require Rails.root.join('db', 'post_migrate', '20170313133418_rename_more_reserv
 # around this we use the TRUNCATE cleaning strategy.
 describe RenameMoreReservedProjectNames, truncate: true do
   let(:migration) { described_class.new }
-  let!(:project) { create(:empty_project) }
+  let!(:project) { create(:project) }
 
   before do
     project.path = 'artifacts'
@@ -17,7 +17,9 @@ describe RenameMoreReservedProjectNames, truncate: true do
 
   describe '#up' do
     context 'when project repository exists' do
-      before { project.create_repository }
+      before do
+        project.create_repository
+      end
 
       context 'when no exception is raised' do
         it 'renames project with reserved names' do

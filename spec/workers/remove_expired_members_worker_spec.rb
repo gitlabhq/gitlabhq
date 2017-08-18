@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe RemoveExpiredMembersWorker do
-  let(:worker) { RemoveExpiredMembersWorker.new }
+  let(:worker) { described_class.new }
 
   describe '#perform' do
     context 'project members' do

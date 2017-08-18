@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::ProjectHooks, 'ProjectHooks' do
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) do
     create(:project_hook,
            :all_events_enabled,
@@ -60,7 +60,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
         expect(json_response['note_events']).to eq(hook.note_events)
-        expect(json_response['job_events']).to eq(hook.build_events)
+        expect(json_response['job_events']).to eq(hook.job_events)
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
@@ -148,7 +148,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
       expect(json_response['note_events']).to eq(hook.note_events)
-      expect(json_response['job_events']).to eq(hook.build_events)
+      expect(json_response['job_events']).to eq(hook.job_events)
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
@@ -205,7 +205,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
 
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
       test_user = create(:user)
-      other_project = create(:empty_project)
+      other_project = create(:project)
       other_project.team << [test_user, :master]
 
       delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)

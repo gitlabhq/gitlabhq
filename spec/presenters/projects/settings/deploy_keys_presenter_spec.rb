@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::Settings::DeployKeysPresenter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 
@@ -49,10 +49,6 @@ describe Projects::Settings::DeployKeysPresenter do
 
     it 'returns the current available_project_keys' do
       expect(presenter.available_project_keys).not_to be_empty
-    end
-
-    it 'returns false if any available_project_keys are enabled' do
-      expect(presenter.any_available_project_keys_enabled?).to eq(true)
     end
 
     it 'returns the available_project_keys size' do

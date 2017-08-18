@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Users::DestroyService, services: true do
+describe Users::DestroyService do
   describe "Deletes a user and all their personal projects" do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
     let!(:namespace) { create(:namespace, owner: user) }
-    let!(:project)   { create(:empty_project, namespace: namespace) }
+    let!(:project)   { create(:project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
 
     context 'no options are given' do
@@ -47,7 +47,7 @@ describe Users::DestroyService, services: true do
       end
 
       context "for an issue the user was assigned to" do
-        let!(:issue) { create(:issue, project: project, assignee: user) }
+        let!(:issue) { create(:issue, project: project, assignees: [user]) }
 
         before do
           service.execute(user)
@@ -60,13 +60,13 @@ describe Users::DestroyService, services: true do
         it 'migrates the issue so that it is "Unassigned"' do
           migrated_issue = Issue.find_by_id(issue.id)
 
-          expect(migrated_issue.assignee).to be_nil
+          expect(migrated_issue.assignees).to be_empty
         end
       end
     end
 
     context "a deleted user's merge_requests" do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
 
       before do
         project.add_developer(user)
@@ -147,16 +147,22 @@ describe Users::DestroyService, services: true do
     end
 
     context "migrating associated records" do
+      let!(:issue)     { create(:issue, author: user) }
+
       it 'delegates to the `MigrateToGhostUser` service to move associated records to the ghost user' do
-        expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once
+        expect_any_instance_of(Users::MigrateToGhostUserService).to receive(:execute).once.and_call_original
 
         service.execute(user)
+
+        expect(issue.reload.author).to be_ghost
       end
 
       it 'does not run `MigrateToGhostUser` if hard_delete option is given' do
         expect_any_instance_of(Users::MigrateToGhostUserService).not_to receive(:execute)
 
         service.execute(user, hard_delete: true)
+
+        expect(Issue.exists?(issue.id)).to be_falsy
       end
     end
   end

@@ -29,10 +29,10 @@ module Gitlab
       end
 
       def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
-        query = arel_table.
-                from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name)).
-                project(average([arel_table[column_sym]], 'median')).
-                where(
+        query = arel_table
+                .from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name))
+                .project(average([arel_table[column_sym]], 'median'))
+                .where(
                   Arel::Nodes::Between.new(
                     Arel.sql("(select @row_id := @row_id + 1)"),
                     Arel::Nodes::And.new(
@@ -67,8 +67,8 @@ module Gitlab
         cte_table = Arel::Table.new("ordered_records")
         cte = Arel::Nodes::As.new(
           cte_table,
-          arel_table.
-            project(
+          arel_table
+            .project(
               arel_table[column_sym].as(column_sym.to_s),
               Arel::Nodes::Over.new(Arel::Nodes::NamedFunction.new("row_number", []),
                                     Arel::Nodes::Window.new.order(arel_table[column_sym])).as('row_id'),
@@ -79,8 +79,8 @@ module Gitlab
         # From the CTE, select either the middle row or the middle two rows (this is accomplished
         # by 'where cte.row_id between cte.ct / 2.0 AND cte.ct / 2.0 + 1'). Find the average of the
         # selected rows, and this is the median value.
-        cte_table.project(average([extract_epoch(cte_table[column_sym])], "median")).
-          where(
+        cte_table.project(average([extract_epoch(cte_table[column_sym])], "median"))
+          .where(
             Arel::Nodes::Between.new(
               cte_table[:row_id],
               Arel::Nodes::And.new(
@@ -88,9 +88,9 @@ module Gitlab
                  (cte_table[:ct] / Arel.sql('2.0') + 1)]
               )
             )
-          ).
-          with(query_so_far, cte).
-          to_sql
+          )
+          .with(query_so_far, cte)
+          .to_sql
       end
 
       private

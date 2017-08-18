@@ -14,6 +14,9 @@ module FilteredSearchHelpers
     filtered_search.set(search)
 
     if submit
+      # Wait for the lazy author/assignee tokens that
+      # swap out the username with an avatar and name
+      wait_for_requests
       filtered_search.send_keys(:enter)
     end
   end
@@ -51,8 +54,8 @@ module FilteredSearchHelpers
   # Iterates through each visual token inside
   # .tokens-container to make sure the correct names and values are rendered
   def expect_tokens(tokens)
-    page.find '.filtered-search-box .tokens-container' do
-      page.all(:css, '.tokens-container li').each_with_index do |el, index|
+    page.within '.filtered-search-box .tokens-container' do
+      page.all(:css, '.tokens-container li .selectable').each_with_index do |el, index|
         token_name = tokens[index][:name]
         token_value = tokens[index][:value]
 
@@ -64,6 +67,28 @@ module FilteredSearchHelpers
     end
   end
 
+  def create_token(token_name, token_value = nil, symbol = nil)
+    { name: token_name, value: "#{symbol}#{token_value}" }
+  end
+
+  def author_token(author_name = nil)
+    create_token('Author', author_name)
+  end
+
+  def assignee_token(assignee_name = nil)
+    create_token('Assignee', assignee_name)
+  end
+
+  def milestone_token(milestone_name = nil, has_symbol = true)
+    symbol = has_symbol ? '%' : nil
+    create_token('Milestone', milestone_name, symbol)
+  end
+
+  def label_token(label_name = nil, has_symbol = true)
+    symbol = has_symbol ? '~' : nil
+    create_token('Label', label_name, symbol)
+  end
+
   def default_placeholder
     'Search or filter results...'
   end
@@ -73,11 +98,11 @@ module FilteredSearchHelpers
   end
 
   def remove_recent_searches
-    execute_script('window.localStorage.removeItem(\'issue-recent-searches\');')
+    execute_script('window.localStorage.clear();')
   end
 
-  def set_recent_searches(input)
-    execute_script("window.localStorage.setItem('issue-recent-searches', '#{input}');")
+  def set_recent_searches(key, input)
+    execute_script("window.localStorage.setItem('#{key}', '#{input}');")
   end
 
   def wait_for_filtered_search(text)

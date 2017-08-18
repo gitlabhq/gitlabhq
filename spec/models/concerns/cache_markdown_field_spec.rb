@@ -170,6 +170,12 @@ describe CacheMarkdownField do
 
       is_expected.to be_truthy
     end
+
+    it 'returns false if the markdown field is set but the html is not' do
+      thing.foo_html = nil
+
+      is_expected.to be_falsy
+    end
   end
 
   describe '#refresh_markdown_cache!' do

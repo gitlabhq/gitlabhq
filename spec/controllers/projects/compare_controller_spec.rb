@@ -72,7 +72,7 @@ describe Projects::CompareController do
            from: '',
            to: 'master')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, to: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, to: 'master'))
     end
 
     it 'redirects back to index when params[:to] is empty and preserves params[:from]' do
@@ -82,7 +82,7 @@ describe Projects::CompareController do
            from: 'master',
            to: '')
 
-      expect(response).to redirect_to(namespace_project_compare_index_path(project.namespace, project, from: 'master'))
+      expect(response).to redirect_to(project_compare_index_path(project, from: 'master'))
     end
 
     it 'redirects back to index when params[:from] and params[:to] are empty' do
@@ -128,7 +128,9 @@ describe Projects::CompareController do
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(from: ref_from, to: ref_to, old_path: existing_path.succ, new_path: existing_path.succ) }
+          before do
+            diff_for_path(from: ref_from, to: ref_to, old_path: existing_path.succ, new_path: existing_path.succ)
+          end
 
           it 'returns a 404' do
             expect(response).to have_http_status(404)
@@ -149,7 +151,9 @@ describe Projects::CompareController do
     end
 
     context 'when the from ref does not exist' do
-      before { diff_for_path(from: ref_from.succ, to: ref_to, old_path: existing_path, new_path: existing_path) }
+      before do
+        diff_for_path(from: ref_from.succ, to: ref_to, old_path: existing_path, new_path: existing_path)
+      end
 
       it 'returns a 404' do
         expect(response).to have_http_status(404)
@@ -157,7 +161,9 @@ describe Projects::CompareController do
     end
 
     context 'when the to ref does not exist' do
-      before { diff_for_path(from: ref_from, to: ref_to.succ, old_path: existing_path, new_path: existing_path) }
+      before do
+        diff_for_path(from: ref_from, to: ref_to.succ, old_path: existing_path, new_path: existing_path)
+      end
 
       it 'returns a 404' do
         expect(response).to have_http_status(404)

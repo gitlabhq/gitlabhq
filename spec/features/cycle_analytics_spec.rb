@@ -1,25 +1,33 @@
 require 'spec_helper'
 
-feature 'Cycle Analytics', feature: true, js: true do
+feature 'Cycle Analytics', js: true do
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, created_at: 2.days.ago) }
   let(:milestone) { create(:milestone, project: project) }
-  let(:mr) { create_merge_request_closing_issue(issue) }
-  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha) }
+  let(:mr) { create_merge_request_closing_issue(issue, commit_message: "References #{issue.to_reference}") }
+  let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: mr.source_branch, sha: mr.source_branch_sha, head_pipeline_of: mr) }
 
   context 'as an allowed user' do
     context 'when project is new' do
       before  do
-        project.team << [user, :master]
-        login_as(user)
-        visit namespace_project_cycle_analytics_path(project.namespace, project)
-        wait_for_ajax
+        project.add_master(user)
+
+        sign_in(user)
+
+        visit project_cycle_analytics_path(project)
+        wait_for_requests
       end
 
       it 'shows introductory message' do
         expect(page).to have_content('Introducing Cycle Analytics')
+      end
+
+      it 'shows pipeline summary' do
+        expect(new_issues_counter).to have_content('-')
+        expect(commits_counter).to have_content('-')
+        expect(deploys_counter).to have_content('-')
       end
 
       it 'shows active stage with empty message' do
@@ -30,14 +38,20 @@ feature 'Cycle Analytics', feature: true, js: true do
 
     context "when there's cycle analytics data" do
       before do
-        project.team << [user, :master]
-
         allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
+        project.add_master(user)
+
         create_cycle
         deploy_master
 
-        login_as(user)
-        visit namespace_project_cycle_analytics_path(project.namespace, project)
+        sign_in(user)
+        visit project_cycle_analytics_path(project)
+      end
+
+      it 'shows pipeline summary' do
+        expect(new_issues_counter).to have_content('1')
+        expect(commits_counter).to have_content('2')
+        expect(deploys_counter).to have_content('1')
       end
 
       it 'shows data on each stage' do
@@ -61,20 +75,53 @@ feature 'Cycle Analytics', feature: true, js: true do
         click_stage('Production')
         expect_issue_to_be_present
       end
+
+      context "when I change the time period observed" do
+        before do
+          _two_weeks_old_issue = create(:issue, project: project, created_at: 2.weeks.ago)
+
+          click_button('Last 30 days')
+          click_link('Last 7 days')
+          wait_for_requests
+        end
+
+        it 'shows only relevant data' do
+          expect(new_issues_counter).to have_content('1')
+        end
+      end
+    end
+
+    context "when my preferred language is Spanish" do
+      before do
+        user.update_attribute(:preferred_language, 'es')
+
+        project.team << [user, :master]
+        sign_in(user)
+        visit project_cycle_analytics_path(project)
+        wait_for_requests
+      end
+
+      it 'shows the content in Spanish' do
+        expect(page).to have_content('Estado del Pipeline')
+      end
+
+      it 'resets the language to English' do
+        expect(I18n.locale).to eq(:en)
+      end
     end
   end
 
   context "as a guest" do
     before do
-      project.team << [guest, :guest]
+      project.add_guest(guest)
 
       allow_any_instance_of(Gitlab::ReferenceExtractor).to receive(:issues).and_return([issue])
       create_cycle
       deploy_master
 
-      login_as(guest)
-      visit namespace_project_cycle_analytics_path(project.namespace, project)
-      wait_for_ajax
+      sign_in(guest)
+      visit project_cycle_analytics_path(project)
+      wait_for_requests
     end
 
     it 'needs permissions to see restricted stages' do
@@ -86,6 +133,18 @@ feature 'Cycle Analytics', feature: true, js: true do
       click_stage('Review')
       expect(find('.stage-events')).to have_content('You need permission.')
     end
+  end
+
+  def new_issues_counter
+    find(:xpath, "//p[contains(text(),'New Issue')]/preceding-sibling::h3")
+  end
+
+  def commits_counter
+    find(:xpath, "//p[contains(text(),'Commits')]/preceding-sibling::h3")
+  end
+
+  def deploys_counter
+    find(:xpath, "//p[contains(text(),'Deploy')]/preceding-sibling::h3")
   end
 
   def expect_issue_to_be_present
@@ -118,6 +177,6 @@ feature 'Cycle Analytics', feature: true, js: true do
 
   def click_stage(stage_name)
     find('.stage-nav li', text: stage_name).click
-    wait_for_ajax
+    wait_for_requests
   end
 end

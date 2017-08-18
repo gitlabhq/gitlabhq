@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', feature: true, js: true do
+feature 'Import/Export - project import integration test', js: true do
   include Select2Helper
 
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
@@ -10,7 +10,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
   end
 
-  after(:each) do
+  after do
     FileUtils.rm_rf(export_path, secure: true)
   end
 
@@ -19,7 +19,7 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
     let!(:namespace) { create(:namespace, name: "asd", owner: user) }
 
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'user imports an exported project successfully' do
@@ -29,8 +29,9 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
       fill_in :project_path, with: 'test-project-path', visible: true
       click_link 'GitLab export'
 
-      expect(page).to have_content('GitLab project export')
+      expect(page).to have_content('Import an exported GitLab project')
       expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=test-project-path")
+      expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}_test-project-path\z/).and_call_original
 
       attach_file('file', file)
 
@@ -53,7 +54,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
       select2(namespace.id, from: '#project_namespace_id')
       fill_in :project_path, with: project.name, visible: true
       click_link 'GitLab export'
-
       attach_file('file', file)
       click_on 'Import project'
 
@@ -61,23 +61,12 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
         expect(page).to have_content('Project could not be imported')
       end
     end
-
-    scenario 'project with no name' do
-      create(:project, namespace: namespace)
-
-      visit new_project_path
-
-      select2(namespace.id, from: '#project_namespace_id')
-
-      # Check for tooltip disabled import button
-      expect(find('.import_gitlab_project')['title']).to eq('Please enter a valid project name.')
-    end
   end
 
   context 'when limited to the default user namespace' do
     let(:user) { create(:user) }
     before do
-      login_as(user)
+      gitlab_sign_in(user)
     end
 
     scenario 'passes correct namespace ID in the URL' do
@@ -98,6 +87,6 @@ feature 'Import/Export - project import integration test', feature: true, js: tr
   end
 
   def project_hook_exists?(project)
-    Gitlab::Git::Hook.new('post-receive', project.repository.path).exists?
+    Gitlab::Git::Hook.new('post-receive', project).exists?
   end
 end

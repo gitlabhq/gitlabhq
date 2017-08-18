@@ -2,13 +2,27 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
+  [dir="auto"] {
+    text-align: initial;
+  }
+
   a {
     color: $md-link-color;
   }
 
   img {
-    max-width: 100%;
+    /*max-width: 100%;*/
     margin: 0 0 8px;
+    min-width: 200px;
+    min-height: 100px;
+    background-color: $gray-lightest;
+  }
+
+  img.js-lazy-loaded,
+  img.emoji {
+    min-width: inherit;
+    min-height: inherit;
+    background-color: inherit;
   }
 
   p a:not(.no-attachment-icon) img {
@@ -19,6 +33,10 @@
 
   *:first-child:not(.katex-display) {
     margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
   }
 
   // Single code lines should wrap
@@ -108,9 +126,12 @@
 
   blockquote p {
     color: $gl-grayish-blue !important;
-    margin: 0;
     font-size: inherit;
     line-height: 1.5;
+
+    &:last-child {
+      margin: 0;
+    }
   }
 
   p {
@@ -139,6 +160,15 @@
     line-height: 1.6em;
     overflow-x: auto;
     border-radius: 2px;
+
+
+    &.plain-readme {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font-size: 14px;
+    }
   }
 
   p > code {
@@ -148,7 +178,7 @@
   ul,
   ol {
     padding: 0;
-    margin: 0 0 16px !important;
+    margin: 0 0 16px;
   }
 
   ul:dir(rtl),
@@ -169,14 +199,14 @@
   }
 
   ul.task-list {
-    li.task-list-item {
+    > li.task-list-item {
       list-style-type: none;
       position: relative;
       min-height: 22px;
       padding-left: 28px;
       margin-left: 0 !important;
 
-      input.task-list-item-checkbox {
+      > input.task-list-item-checkbox {
         position: absolute;
         left: 8px;
         top: 5px;
@@ -279,19 +309,6 @@ h6 {
 /** CODE **/
 pre {
   font-family: $monospace_font;
-
-  &.plain-readme {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-  }
-}
-
-.monospace {
-  font-family: $monospace_font;
-  font-size: 90%;
 }
 
 code {
@@ -304,6 +321,26 @@ code {
 a > code {
   color: $link-color;
 }
+
+.monospace {
+  font-family: $monospace_font;
+}
+
+.commit-sha,
+.ref-name {
+  @extend .monospace;
+  font-size: 95%;
+}
+
+.git-revision-dropdown-toggle {
+  @extend .monospace;
+}
+
+.git-revision-dropdown .dropdown-content ul li a {
+  @extend .ref-name;
+}
+
+@include new-style-dropdown('.git-revision-dropdown');
 
 /**
  * Apply Markdown typography

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Uniquify, models: true do
+describe Uniquify do
   let(:uniquify) { described_class.new }
 
   describe "#string" do

@@ -3,10 +3,15 @@ Feature: Project Pages
     Given I sign in as a user
     And I own a project
 
-  Scenario: Pages are disabled
+  Scenario: I cannot navigate to Pages settings if pages enabled
     Given pages are disabled
-    When I visit the Project Pages
-    Then I should see that GitLab Pages are disabled
+    And I visit my project's settings page
+    Then I should not see the "Pages" tab
+
+  Scenario: I can navigate to Pages settings if pages enabled
+    Given pages are enabled
+    And I visit my project's settings page
+    Then I should see the "Pages" tab
 
   Scenario: I can see the pages usage if not deployed
     Given pages are enabled

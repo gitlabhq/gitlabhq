@@ -46,7 +46,10 @@ To disable artifacts site-wide, follow the steps below.
 After a successful job, GitLab Runner uploads an archive containing the job
 artifacts to GitLab.
 
-To change the location where the artifacts are stored, follow the steps below.
+### Using local storage
+
+To change the location where the artifacts are stored locally, follow the steps
+below.
 
 ---
 
@@ -82,6 +85,49 @@ _The artifacts are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
+### Using object storage
+
+In [GitLab Enterprise Edition Premium][eep] you can use an object storage like
+AWS S3 to store the artifacts.
+
+[Learn how to use the object storage option.][ee-os]
+
+## Expiring artifacts
+
+If an expiry date is used for the artifacts, they are marked for deletion
+right after that date passes. Artifacts are cleaned up by the
+`expire_build_artifacts_worker` cron job which is run by Sidekiq every hour at
+50 minutes (`50 * * * *`).
+
+To change the default schedule on which the artifacts are expired, follow the
+steps below.
+
+---
+
+**In Omnibus installations:**
+
+1. Edit `/etc/gitlab/gitlab.rb` and comment out or add the following line
+
+    ```ruby
+    gitlab_rails['expire_build_artifacts_worker_cron'] = "50 * * * *"
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**In installations from source:**
+
+1. Edit `/home/git/gitlab/config/gitlab.yml` and add or amend the following
+   lines:
+
+    ```yaml
+    expire_build_artifacts_worker:
+      cron: "50 * * * *"
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
+
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the
@@ -112,3 +158,5 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md "How to restart GitLab"
 [restart gitlab]: restart_gitlab.md "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
+[ee-os]: https://docs.gitlab.com/ee/administration/job_artifacts.html#using-object-storage
+[eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"

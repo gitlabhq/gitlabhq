@@ -58,11 +58,11 @@ class BuildkiteService < CiService
     [
       { type: 'text',
         name: 'token',
-        placeholder: 'Buildkite project GitLab token' },
+        placeholder: 'Buildkite project GitLab token', required: true },
 
       { type: 'text',
         name: 'project_url',
-        placeholder: "#{ENDPOINT}/example/project" },
+        placeholder: "#{ENDPOINT}/example/project", required: true },
 
       { type: 'checkbox',
         name: 'enable_ssl_verification',

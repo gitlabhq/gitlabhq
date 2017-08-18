@@ -1,6 +1,4 @@
 <script>
-/* global Flash */
-/* eslint-disable no-new */
 /**
  * Renders Rollback or Re deploy button in environments table depending
  * of the provided property `isLastDeployment`.
@@ -8,6 +6,7 @@
  * Makes a post request when the button is clicked.
  */
 import eventHub from '../event_hub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   props: {
@@ -20,11 +19,10 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
 
-    service: {
-      type: Object,
-      required: true,
-    },
+  components: {
+    loadingIcon,
   },
 
   data() {
@@ -37,17 +35,7 @@ export default {
     onClick() {
       this.isLoading = true;
 
-      $(this.$el).tooltip('destroy');
-
-      this.service.postAction(this.retryUrl)
-      .then(() => {
-        this.isLoading = false;
-        eventHub.$emit('refreshEnvironments');
-      })
-      .catch(() => {
-        this.isLoading = false;
-        new Flash('An error occured while making the request.');
-      });
+      eventHub.$emit('postAction', this.retryUrl);
     },
   },
 };
@@ -55,7 +43,7 @@ export default {
 <template>
   <button
     type="button"
-    class="btn"
+    class="btn hidden-xs hidden-sm"
     @click="onClick"
     :disabled="isLoading">
 
@@ -66,9 +54,6 @@ export default {
       Rollback
     </span>
 
-    <i
-      v-if="isLoading"
-      class="fa fa-spinner fa-spin"
-      aria-hidden="true" />
+    <loading-icon v-if="isLoading" />
   </button>
 </template>

@@ -1,11 +1,6 @@
 module CreatesCommit
   extend ActiveSupport::Concern
 
-  def set_start_branch_to_branch_name
-    branch_exists = @repository.find_branch(@branch_name)
-    @start_branch = @branch_name if branch_exists
-  end
-
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     if can?(current_user, :push_code, @project)
       @project_to_commit_into = @project
@@ -83,8 +78,7 @@ module CreatesCommit
   end
 
   def new_merge_request_path
-    new_namespace_project_merge_request_path(
-      @project_to_commit_into.namespace,
+    project_new_merge_request_path(
       @project_to_commit_into,
       merge_request: {
         source_project_id: @project_to_commit_into.id,
@@ -96,14 +90,14 @@ module CreatesCommit
   end
 
   def existing_merge_request_path
-    namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    project_merge_request_path(@project, @merge_request)
   end
 
   def merge_request_exists?
     return @merge_request if defined?(@merge_request)
 
-    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened.
-      find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
+    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
+      .find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
   end
 
   def different_project?

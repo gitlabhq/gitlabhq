@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-describe Key, models: true do
-  include EmailHelpers
-
+describe Key, :mailer do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
   end
@@ -34,8 +32,8 @@ describe Key, models: true do
 
       context 'when key was not updated during the last day' do
         before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-            and_return('000000')
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+            .and_return('000000')
         end
 
         it 'enqueues a UseKeyWorker job' do
@@ -46,8 +44,8 @@ describe Key, models: true do
 
       context 'when key was updated during the last day' do
         before do
-          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).
-            and_return(false)
+          allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
+            .and_return(false)
         end
 
         it 'does not enqueue a UseKeyWorker job' do
@@ -66,14 +64,16 @@ describe Key, models: true do
     end
 
     it "does not accept the exact same key twice" do
-      create(:key, user: user)
-      expect(build(:key, user: user)).not_to be_valid
+      first_key = create(:key, user: user)
+
+      expect(build(:key, user: user, key: first_key.key)).not_to be_valid
     end
 
     it "does not accept a duplicate key with a different comment" do
-      create(:key, user: user)
-      duplicate = build(:key, user: user)
+      first_key = create(:key, user: user)
+      duplicate = build(:key, user: user, key: first_key.key)
       duplicate.key << ' extra comment'
+
       expect(duplicate).not_to be_valid
     end
   end
@@ -83,23 +83,15 @@ describe Key, models: true do
       expect(build(:key)).to be_valid
     end
 
-    it 'rejects an unfingerprintable key that contains a space' do
+    it 'accepts a key with newline charecters after stripping them' do
       key = build(:key)
-
-      # Not always the middle, but close enough
-      key.key = key.key[0..100] + ' ' + key.key[101..-1]
-
-      expect(key).not_to be_valid
+      key.key = key.key.insert(100, "\n")
+      key.key = key.key.insert(40, "\r\n")
+      expect(key).to be_valid
     end
 
     it 'rejects the unfingerprintable key (not a key)' do
       expect(build(:key, key: 'ssh-rsa an-invalid-key==')).not_to be_valid
-    end
-
-    it 'rejects the multiple line key' do
-      key = build(:key)
-      key.key.tr!(' ', "\n")
-      expect(key).not_to be_valid
     end
   end
 

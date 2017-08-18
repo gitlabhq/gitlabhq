@@ -18,7 +18,7 @@ describe GroupMembersFinder, '#execute' do
     expect(result.to_a).to eq([member3, member2, member1])
   end
 
-  it 'returns members for nested group' do
+  it 'returns members for nested group', :nested_groups do
     group.add_master(user2)
     nested_group.request_access(user4)
     member1 = group.add_master(user1)

@@ -5,7 +5,9 @@ module Projects
       before_action :authorize_read_list!, only: [:index]
 
       def index
-        render json: serialize_as_json(board.lists)
+        lists = ::Boards::Lists::ListService.new(project, current_user).execute(board)
+
+        render json: serialize_as_json(lists)
       end
 
       def create

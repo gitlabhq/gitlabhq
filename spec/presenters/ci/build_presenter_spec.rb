@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::BuildPresenter do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -47,8 +47,8 @@ describe Ci::BuildPresenter do
     context 'when build is erased' do
       before do
         expect(presenter).to receive(:erased_by_user?).and_return(true)
-        expect(build).to receive(:erased_by).
-          and_return(double(:user, name: 'John Doe'))
+        expect(build).to receive(:erased_by)
+          .and_return(double(:user, name: 'John Doe'))
       end
 
       it 'returns the name of the eraser' do
@@ -85,7 +85,7 @@ describe Ci::BuildPresenter do
 
   describe 'quack like a Ci::Build permission-wise' do
     context 'user is not allowed' do
-      let(:project) { build_stubbed(:empty_project, public_builds: false) }
+      let(:project) { create(:project, public_builds: false) }
 
       it 'returns false' do
         expect(presenter.can?(nil, :read_build)).to be_falsy
@@ -93,7 +93,7 @@ describe Ci::BuildPresenter do
     end
 
     context 'user is allowed' do
-      let(:project) { build_stubbed(:empty_project, :public) }
+      let(:project) { create(:project, :public) }
 
       it 'returns true' do
         expect(presenter.can?(nil, :read_build)).to be_truthy

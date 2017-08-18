@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe API::V3::Services do
   let(:user) { create(:user) }
-  let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
 
   available_services = Service.available_services_names
   available_services.delete('prometheus')

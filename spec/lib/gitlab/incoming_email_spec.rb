@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::IncomingEmail, lib: true do
+describe Gitlab::IncomingEmail do
   describe "self.enabled?" do
     context "when reply by email is enabled" do
       before do

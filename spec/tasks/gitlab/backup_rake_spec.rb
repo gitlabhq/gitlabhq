@@ -47,24 +47,24 @@ describe 'gitlab:app namespace rake task' do
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
-        allow(Rake::Task["gitlab:shell:setup"]).
-          to receive(:invoke).and_return(true)
+        allow(Rake::Task["gitlab:shell:setup"])
+          .to receive(:invoke).and_return(true)
         ENV['force'] = 'yes'
       end
 
       let(:gitlab_version) { Gitlab::VERSION }
 
       it 'fails on mismatch' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: "not #{gitlab_version}" })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: "not #{gitlab_version}" })
 
-        expect { run_rake_task('gitlab:backup:restore') }.
-          to raise_error(SystemExit)
+        expect { run_rake_task('gitlab:backup:restore') }
+          .to raise_error(SystemExit)
       end
 
       it 'invokes restoration on match' do
-        allow(YAML).to receive(:load_file).
-          and_return({ gitlab_version: gitlab_version })
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
@@ -117,9 +117,9 @@ describe 'gitlab:app namespace rake task' do
 
     describe 'backup creation and deletion using custom_hooks' do
       let(:project) { create(:project, :repository) }
-      let(:user_backup_path) { "repositories/#{project.path_with_namespace}" }
+      let(:user_backup_path) { "repositories/#{project.disk_path}" }
 
-      before(:each) do
+      before do
         @origin_cd = Dir.pwd
 
         path = File.join(project.repository.path_to_repo, filename)
@@ -130,7 +130,7 @@ describe 'gitlab:app namespace rake task' do
         create_backup
       end
 
-      after(:each) do
+      after do
         ENV["SKIP"] = ""
         FileUtils.rm(@backup_tar)
         Dir.chdir(@origin_cd)
@@ -230,15 +230,20 @@ describe 'gitlab:app namespace rake task' do
       before do
         FileUtils.mkdir('tmp/tests/default_storage')
         FileUtils.mkdir('tmp/tests/custom_storage')
+        gitaly_address = Gitlab.config.repositories.storages.default.gitaly_address
         storages = {
-          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') },
-          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage') }
+          'default' => { 'path' => Settings.absolute('tmp/tests/default_storage'), 'gitaly_address' => gitaly_address  },
+          'custom' => { 'path' => Settings.absolute('tmp/tests/custom_storage'), 'gitaly_address' => gitaly_address }
         }
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
         # Create the projects now, after mocking the settings but before doing the backup
         project_a
         project_b
+
+        # Avoid asking gitaly about the root ref (which will fail beacuse of the
+        # mocked storages)
+        allow_any_instance_of(Repository).to receive(:empty_repo?).and_return(false)
 
         # We only need a backup of the repositories for this test
         ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
@@ -256,8 +261,8 @@ describe 'gitlab:app namespace rake task' do
           %W{tar -tvf #{@backup_tar} repositories}
         )
         expect(exit_status).to eq(0)
-        expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
-        expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
+        expect(tar_contents).to match("repositories/#{project_a.disk_path}.bundle")
+        expect(tar_contents).to match("repositories/#{project_b.disk_path}.bundle")
       end
     end
   end # backup_create task
@@ -305,8 +310,8 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'does not invoke repositories restore' do
-      allow(Rake::Task['gitlab:shell:setup']).
-        to receive(:invoke).and_return(true)
+      allow(Rake::Task['gitlab:shell:setup'])
+        .to receive(:invoke).and_return(true)
       allow($stdout).to receive :write
 
       expect(Rake::Task['gitlab:db:drop_tables']).to receive :invoke
@@ -350,7 +355,7 @@ describe 'gitlab:app namespace rake task' do
     end
 
     it 'name has human readable time' do
-      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+(-pre)?_gitlab_backup.tar$/)
+      expect(@backup_tar).to match(/\d+_\d{4}_\d{2}_\d{2}_\d+\.\d+\.\d+.*_gitlab_backup.tar$/)
     end
   end
 end # gitlab:app namespace

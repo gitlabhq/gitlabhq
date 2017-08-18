@@ -1,4 +1,4 @@
-# Boards
+# Issue Boards API
 
 Every API call to boards must be authenticated.
 

@@ -25,6 +25,10 @@ module Gitlab
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
+    def self.join_lateral_supported?
+      postgresql? && version.to_f >= 9.3
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
@@ -81,6 +85,22 @@ module Gitlab
       ensure
         pool.disconnect!
       end
+    end
+
+    def self.bulk_insert(table, rows)
+      return if rows.empty?
+
+      keys = rows.first.keys
+      columns = keys.map { |key| connection.quote_column_name(key) }
+
+      tuples = rows.map do |row|
+        row.values_at(*keys).map { |value| connection.quote(value) }
+      end
+
+      connection.execute <<-EOF
+        INSERT INTO #{table} (#{columns.join(', ')})
+        VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
+      EOF
     end
 
     # pool_size - The size of the DB pool.

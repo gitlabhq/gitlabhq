@@ -1,4 +1,4 @@
-# Licenses
+# Licenses API
 
 ## List license templates
 

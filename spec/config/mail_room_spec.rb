@@ -5,12 +5,12 @@ describe 'mail_room.yml' do
 
   let(:mailroom_config_path) { 'config/mail_room.yml' }
   let(:gitlab_config_path) { 'config/mail_room.yml' }
-  let(:redis_config_path) { 'config/resque.yml' }
+  let(:queues_config_path) { 'config/redis.queues.yml' }
 
   let(:configuration) do
     vars = {
       'MAIL_ROOM_GITLAB_CONFIG_FILE' => absolute_path(gitlab_config_path),
-      'GITLAB_REDIS_CONFIG_FILE' => absolute_path(redis_config_path)
+      'GITLAB_REDIS_QUEUES_CONFIG_FILE' => absolute_path(queues_config_path)
     }
     cmd = "puts ERB.new(File.read(#{absolute_path(mailroom_config_path).inspect})).result"
 
@@ -20,13 +20,13 @@ describe 'mail_room.yml' do
     YAML.load(output)
   end
 
-  before(:each) do
-    stub_env('GITLAB_REDIS_CONFIG_FILE', absolute_path(redis_config_path))
-    clear_redis_raw_config
+  before do
+    stub_env('GITLAB_REDIS_QUEUES_CONFIG_FILE', absolute_path(queues_config_path))
+    clear_queues_raw_config
   end
 
-  after(:each) do
-    clear_redis_raw_config
+  after do
+    clear_queues_raw_config
   end
 
   context 'when incoming email is disabled' do
@@ -39,9 +39,9 @@ describe 'mail_room.yml' do
 
   context 'when incoming email is enabled' do
     let(:gitlab_config_path) { 'spec/fixtures/config/mail_room_enabled.yml' }
-    let(:redis_config_path) { 'spec/fixtures/config/redis_new_format_host.yml' }
+    let(:queues_config_path) { 'spec/fixtures/config/redis_queues_new_format_host.yml' }
 
-    let(:gitlab_redis) { Gitlab::Redis.new(Rails.env) }
+    let(:gitlab_redis_queues) { Gitlab::Redis::Queues.new(Rails.env) }
 
     it 'contains the intended configuration' do
       expect(configuration[:mailboxes].length).to eq(1)
@@ -56,8 +56,8 @@ describe 'mail_room.yml' do
       expect(mailbox[:name]).to eq('inbox')
       expect(mailbox[:idle_timeout]).to eq(60)
 
-      redis_url = gitlab_redis.url
-      sentinels = gitlab_redis.sentinels
+      redis_url = gitlab_redis_queues.url
+      sentinels = gitlab_redis_queues.sentinels
 
       expect(mailbox[:delivery_options][:redis_url]).to be_present
       expect(mailbox[:delivery_options][:redis_url]).to eq(redis_url)
@@ -73,8 +73,8 @@ describe 'mail_room.yml' do
     end
   end
 
-  def clear_redis_raw_config
-    Gitlab::Redis.remove_instance_variable(:@_raw_config)
+  def clear_queues_raw_config
+    Gitlab::Redis::Queues.remove_instance_variable(:@_raw_config)
   rescue NameError
     # raised if @_raw_config was not set; ignore
   end

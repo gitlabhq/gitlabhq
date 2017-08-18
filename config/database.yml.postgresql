@@ -46,3 +46,4 @@ test: &test
   username: postgres
   password:
   # host: localhost
+  prepared_statements: false

@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, func-names, no-new, space-before-function-paren, one-var,
    promise/catch-or-return */
+import _ from 'underscore';
 
 window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
@@ -52,7 +53,9 @@ gl.issueBoards.newListDropdownInit = () => {
       filterable: true,
       selectable: true,
       multiSelect: true,
-      clicked (label, $el, e) {
+      clicked (options) {
+        const { e } = options;
+        const label = options.selectedObj;
         e.preventDefault();
 
         if (!Store.findList('title', label.title)) {

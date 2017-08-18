@@ -2,7 +2,7 @@
 .blob-result
   .file-holder
     .js-file-title.file-title
-      = link_to namespace_project_wiki_path(@project.namespace, @project, wiki_blob.basename) do
+      = link_to project_wiki_path(@project, wiki_blob.basename) do
         %i.fa.fa-file
         %strong
           = wiki_blob.basename

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe IssueTrackerService, models: true do
+describe IssueTrackerService do
   describe 'Validations' do
     let(:project) { create :project }
 

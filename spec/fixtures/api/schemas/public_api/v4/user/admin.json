@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "username",
+    "email",
+    "name",
+    "state",
+    "avatar_url",
+    "web_url",
+    "created_at",
+    "is_admin",
+    "bio",
+    "location",
+    "skype",
+    "linkedin",
+    "twitter",
+    "website_url",
+    "organization",
+    "last_sign_in_at",
+    "confirmed_at",
+    "color_scheme_id",
+    "projects_limit",
+    "current_sign_in_at",
+    "identities",
+    "can_create_group",
+    "can_create_project",
+    "two_factor_enabled",
+    "external"
+  ],
+  "properties": {
+    "$ref": "full.json"
+  }
+}

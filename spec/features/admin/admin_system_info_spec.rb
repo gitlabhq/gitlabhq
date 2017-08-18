@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'Admin System Info' do
   before do
-    login_as :admin
+    sign_in(create(:admin))
   end
 
   describe 'GET /admin/system_info' do
@@ -20,6 +20,7 @@ describe 'Admin System Info' do
         expect(page).to have_content 'CPU 2 cores'
         expect(page).to have_content 'Memory 4 GB / 16 GB'
         expect(page).to have_content 'Disks'
+        expect(page).to have_content 'Uptime'
       end
     end
 
@@ -34,6 +35,7 @@ describe 'Admin System Info' do
         expect(page).to have_content 'CPU Unable to collect CPU info'
         expect(page).to have_content 'Memory 4 GB / 16 GB'
         expect(page).to have_content 'Disks'
+        expect(page).to have_content 'Uptime'
       end
     end
 
@@ -48,6 +50,7 @@ describe 'Admin System Info' do
         expect(page).to have_content 'CPU 2 cores'
         expect(page).to have_content 'Memory Unable to collect memory info'
         expect(page).to have_content 'Disks'
+        expect(page).to have_content 'Uptime'
       end
     end
   end

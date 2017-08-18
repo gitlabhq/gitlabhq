@@ -79,6 +79,7 @@ module API
         runner = get_runner(params[:id])
         authenticate_delete_runner!(runner)
 
+        status 204
         runner.destroy!
       end
     end
@@ -134,6 +135,7 @@ module API
         runner = runner_project.runner
         forbidden!("Only one project associated with the runner. Please remove the runner instead") if runner.projects.count == 1
 
+        status 204
         runner_project.destroy
       end
     end
@@ -151,7 +153,7 @@ module API
           render_api_error!('Scope contains invalid value', 400)
         end
 
-        runners.send(scope)
+        runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def get_runner(id)

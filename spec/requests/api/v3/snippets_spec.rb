@@ -45,10 +45,10 @@ describe API::V3::Snippets do
       expect(json_response.map { |snippet| snippet['id']} ).to contain_exactly(
         public_snippet.id,
         public_snippet_other.id)
-      expect(json_response.map{ |snippet| snippet['web_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['web_url']} ).to include(
         "http://localhost/snippets/#{public_snippet.id}",
         "http://localhost/snippets/#{public_snippet_other.id}")
-      expect(json_response.map{ |snippet| snippet['raw_url']} ).to include(
+      expect(json_response.map { |snippet| snippet['raw_url']} ).to include(
         "http://localhost/snippets/#{public_snippet.id}/raw",
         "http://localhost/snippets/#{public_snippet_other.id}/raw")
     end
@@ -112,21 +112,21 @@ describe API::V3::Snippets do
 
       context 'when the snippet is private' do
         it 'creates the snippet' do
-          expect { create_snippet(visibility_level: Snippet::PRIVATE) }.
-            to change { Snippet.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PRIVATE) }
+            .to change { Snippet.count }.by(1)
         end
       end
 
       context 'when the snippet is public' do
         it 'rejects the shippet' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            not_to change { Snippet.count }
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .not_to change { Snippet.count }
           expect(response).to have_http_status(400)
         end
 
         it 'creates a spam log' do
-          expect { create_snippet(visibility_level: Snippet::PUBLIC) }.
-            to change { SpamLog.count }.by(1)
+          expect { create_snippet(visibility_level: Snippet::PUBLIC) }
+            .to change { SpamLog.count }.by(1)
         end
       end
     end

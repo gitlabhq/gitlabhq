@@ -2,7 +2,7 @@
 
 .row.prepend-top-default.append-bottom-default
   .col-lg-3
-    %h4.prepend-top-0
+    %h4.prepend-top-0.ref-name
       = @protected_ref.name
 
   .col-lg-9
@@ -19,7 +19,7 @@
               %th Last commit
           %tbody
             - @matching_refs.each do |matching_branch|
-              = render partial: "matching_branch", object: matching_branch
+              = render partial: "projects/protected_branches/shared/matching_branch", object: matching_branch
     - else
       %p.settings-message.text-center
         Couldn't find any matching branches.

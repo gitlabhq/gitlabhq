@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "basic.json" },
+    {
+      "required" : [
+        "stats",
+        "status"
+      ],
+      "properties": {
+        "stats": { "$ref": "../commit_stats.json" },
+        "status": { "type": ["string", "null"] }
+      }
+    }
+  ]
+}

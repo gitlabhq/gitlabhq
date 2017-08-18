@@ -120,6 +120,10 @@
     // Ensure that image does not exceed viewport
     max-height: calc(100vh - 100px);
   }
+
+  table {
+    @include markdown-table;
+  }
 }
 
 .toolbar-group {
@@ -161,12 +165,58 @@
 
   .cur {
     .avatar {
-      border: 1px solid $white-light;
       @include disableAllAnimation;
+      border: 1px solid $white-light;
     }
   }
 
   ul > li {
     white-space: nowrap;
+  }
+}
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// TODO: fallback to global style
+.atwho-view {
+  .atwho-view-ul {
+    padding: 8px 1px;
+
+    li {
+      padding: 8px 16px;
+      border: 0;
+
+      &.cur {
+        background-color: $gray-darker;
+        color: $gl-text-color;
+
+        small {
+          color: inherit;
+        }
+      }
+
+      div.avatar {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        .center {
+          line-height: 14px;
+        }
+      }
+
+      strong {
+        color: $gl-text-color;
+      }
+    }
   }
 }

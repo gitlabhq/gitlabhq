@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::V3::DeployKeys do
   let(:user)        { create(:user) }
   let(:admin)       { create(:admin) }
-  let(:project)     { create(:empty_project, creator_id: user.id) }
-  let(:project2)    { create(:empty_project, creator_id: user.id) }
+  let(:project)     { create(:project, creator_id: user.id) }
+  let(:project2)    { create(:project, creator_id: user.id) }
   let(:deploy_key)  { create(:deploy_key, public: true) }
 
   let!(:deploy_keys_project) do
@@ -87,7 +87,7 @@ describe API::V3::DeployKeys do
 
         expect do
           post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
-        end.to change{ project.deploy_keys.count }.by(1)
+        end.to change { project.deploy_keys.count }.by(1)
       end
 
       it 'returns an existing ssh key when attempting to add a duplicate' do
@@ -105,6 +105,15 @@ describe API::V3::DeployKeys do
 
         expect(response).to have_http_status(201)
       end
+
+      it 'accepts can_push parameter' do
+        key_attrs = attributes_for :write_access_key
+
+        post v3_api("/projects/#{project.id}/#{path}", admin), key_attrs
+
+        expect(response).to have_http_status(201)
+        expect(json_response['can_push']).to eq(true)
+      end
     end
 
     describe "DELETE /projects/:id/#{path}/:key_id" do
@@ -113,7 +122,7 @@ describe API::V3::DeployKeys do
       it 'should delete existing key' do
         expect do
           delete v3_api("/projects/#{project.id}/#{path}/#{deploy_key.id}", admin)
-        end.to change{ project.deploy_keys.count }.by(-1)
+        end.to change { project.deploy_keys.count }.by(-1)
       end
 
       it 'should return 404 Not Found with invalid ID' do
@@ -124,7 +133,7 @@ describe API::V3::DeployKeys do
     end
 
     describe "POST /projects/:id/#{path}/:key_id/enable" do
-      let(:project2) { create(:empty_project) }
+      let(:project2) { create(:project) }
 
       context 'when the user can admin the project' do
         it 'enables the key' do

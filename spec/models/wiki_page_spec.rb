@@ -1,17 +1,17 @@
 require "spec_helper"
 
-describe WikiPage, models: true do
-  let(:project) { create(:empty_project) }
+describe WikiPage do
+  let(:project) { create(:project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
-  subject { WikiPage.new(wiki) }
+  subject { described_class.new(wiki) }
 
   describe '.group_by_directory' do
     context 'when there are no pages' do
       it 'returns an empty array' do
-        expect(WikiPage.group_by_directory(nil)).to eq([])
-        expect(WikiPage.group_by_directory([])).to eq([])
+        expect(described_class.group_by_directory(nil)).to eq([])
+        expect(described_class.group_by_directory([])).to eq([])
       end
     end
 
@@ -39,7 +39,7 @@ describe WikiPage, models: true do
       it 'returns an array with pages and directories' do
         expected_grouped_entries = [page_1, dir_1, dir_1_1, dir_2]
 
-        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = described_class.group_by_directory(wiki.pages)
 
         grouped_entries.each_with_index do |page_or_dir, i|
           expected_page_or_dir = expected_grouped_entries[i]
@@ -56,13 +56,13 @@ describe WikiPage, models: true do
         expected_order = ['page_1', 'dir_1/page_2', 'dir_1/dir_1_1/page_3',
                           'dir_2/page_4', 'dir_2/page_5']
 
-        grouped_entries = WikiPage.group_by_directory(wiki.pages)
+        grouped_entries = described_class.group_by_directory(wiki.pages)
 
         actual_order =
           grouped_entries.map do |page_or_dir|
             get_slugs(page_or_dir)
-          end.
-          flatten
+          end
+          .flatten
         expect(actual_order).to eq(expected_order)
       end
     end
@@ -72,7 +72,7 @@ describe WikiPage, models: true do
     it 'removes hyphens from a name' do
       name = 'a-name--with-hyphens'
 
-      expect(WikiPage.unhyphenize(name)).to eq('a name with hyphens')
+      expect(described_class.unhyphenize(name)).to eq('a name with hyphens')
     end
   end
 
@@ -81,7 +81,7 @@ describe WikiPage, models: true do
       before do
         create_page("test page", "test content")
         @page = wiki.wiki.paged("test page")
-        @wiki_page = WikiPage.new(wiki, @page, true)
+        @wiki_page = described_class.new(wiki, @page, true)
       end
 
       it "sets the slug attribute" do
@@ -178,12 +178,12 @@ describe WikiPage, models: true do
       end
 
       it "updates the content of the page" do
-        @page.update("new content")
+        @page.update(content: "new content")
         @page = wiki.find_page(title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
       end
     end
   end
@@ -195,17 +195,42 @@ describe WikiPage, models: true do
     end
 
     after do
-      destroy_page("Update")
+      destroy_page(@page.title)
     end
 
     context "with valid attributes" do
       it "updates the content of the page" do
-        @page.update("new content")
+        new_content = "new content"
+
+        @page.update(content: new_content)
         @page = wiki.find_page("Update")
+
+        expect(@page.content).to eq("new content")
+      end
+
+      it "updates the title of the page" do
+        new_title = "Index v.1.2.4"
+
+        @page.update(title: new_title)
+        @page = wiki.find_page(new_title)
+
+        expect(@page.title).to eq(new_title)
       end
 
       it "returns true" do
-        expect(@page.update("more content")).to be_truthy
+        expect(@page.update(content: "more content")).to be_truthy
+      end
+    end
+
+    context 'with same last commit sha' do
+      it 'returns true' do
+        expect(@page.update(content: 'more content', last_commit_sha: @page.last_commit_sha)).to be_truthy
+      end
+    end
+
+    context 'with different last commit sha' do
+      it 'raises exception' do
+        expect { @page.update(content: 'more content', last_commit_sha: 'xxx') }.to raise_error(WikiPage::PageChangedError)
       end
     end
   end
@@ -237,7 +262,7 @@ describe WikiPage, models: true do
     end
 
     it "returns an array of all commits for the page" do
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
       expect(@page.versions.count).to eq(4)
     end
   end
@@ -282,7 +307,7 @@ describe WikiPage, models: true do
     before do
       create_page('Update', 'content')
       @page = wiki.find_page('Update')
-      3.times { |i| @page.update("content #{i}") }
+      3.times { |i| @page.update(content: "content #{i}") }
     end
 
     after do
@@ -326,8 +351,32 @@ describe WikiPage, models: true do
     end
 
     it 'returns false for updated wiki page' do
-      updated_wiki_page = original_wiki_page.update("Updated content")
+      updated_wiki_page = original_wiki_page.update(content: "Updated content")
       expect(original_wiki_page).not_to eq(updated_wiki_page)
+    end
+  end
+
+  describe '#last_commit_sha' do
+    before do
+      create_page("Update", "content")
+      @page = wiki.find_page("Update")
+    end
+
+    after do
+      destroy_page("Update")
+    end
+
+    it 'returns commit sha' do
+      expect(@page.last_commit_sha).to eq @page.commit.sha
+    end
+
+    it 'is changed after page updated' do
+      last_commit_sha_before_update = @page.last_commit_sha
+
+      @page.update(content: "new content")
+      @page = wiki.find_page("Update")
+
+      expect(@page.last_commit_sha).not_to eq last_commit_sha_before_update
     end
   end
 

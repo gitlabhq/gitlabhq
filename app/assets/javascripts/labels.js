@@ -1,11 +1,9 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, vars-on-top, no-unused-vars, max-len */
 (function() {
-  var bind = function(fn, me) { return function() { return fn.apply(me, arguments); }; };
-
   this.Labels = (function() {
     function Labels() {
-      this.setSuggestedColor = bind(this.setSuggestedColor, this);
-      this.updateColorPreview = bind(this.updateColorPreview, this);
+      this.setSuggestedColor = this.setSuggestedColor.bind(this);
+      this.updateColorPreview = this.updateColorPreview.bind(this);
       var form;
       form = $('.label-form');
       this.cleanBinding();

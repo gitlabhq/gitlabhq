@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin::GroupsController do
   let(:group) { create(:group) }
-  let(:project) { create(:empty_project, namespace: group) }
+  let(:project) { create(:project, namespace: group) }
   let(:admin) { create(:admin) }
 
   before do
@@ -34,6 +34,15 @@ describe Admin::GroupsController do
       expect(response).to set_flash.to 'Users were successfully added.'
       expect(response).to redirect_to(admin_group_path(group))
       expect(group.users).to include group_user
+    end
+
+    it 'can add unlimited members' do
+      put :members_update, id: group,
+                           user_ids: 1.upto(1000).to_a.join(','),
+                           access_level: Gitlab::Access::GUEST
+
+      expect(response).to set_flash.to 'Users were successfully added.'
+      expect(response).to redirect_to(admin_group_path(group))
     end
 
     it 'adds no user to members' do

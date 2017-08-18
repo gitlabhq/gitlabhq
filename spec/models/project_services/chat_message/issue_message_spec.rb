@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ChatMessage::IssueMessage, models: true do
+describe ChatMessage::IssueMessage do
   subject { described_class.new(args) }
 
   let(:args) do
@@ -48,7 +48,7 @@ describe ChatMessage::IssueMessage, models: true do
             title: "#100 Issue title",
             title_link: "http://url.com",
             text: "issue description",
-            color: color,
+            color: color
           }
         ])
       end
