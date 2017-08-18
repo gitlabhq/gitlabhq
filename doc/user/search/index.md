@@ -48,6 +48,10 @@ the same way as you do for projects.
 
 ![filter issues in a group](img/group_issues_filter.png)
 
+The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab.
+The search and filter UI currently uses dropdowns. In a future release, the same
+dynamic UI as above will be carried over here.
+
 ## Search history
 
 You can view recent searches by clicking on the little arrow-clock icon, which is to the left of the search input. Click the search entry to run that search again. This feature is available for issues and merge requests. Searches are stored locally in your browser.
