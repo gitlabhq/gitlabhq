@@ -111,7 +111,7 @@ describe('RepoCommitSection', () => {
       expect(submitCommit.disabled).toBeFalsy();
 
       spyOn(vm, 'makeCommit').and.callThrough();
-      spyOn(Api, 'commitMultiple');
+      spyOn(Api, 'commitMultiple').and.callFake(() => Promise.resolve());
 
       submitCommit.click();
 
