@@ -53,13 +53,15 @@ There are tabs to quickly filter by open and closed issues.
 
 ![Project issues list view](img/project_issues_list_view.png)
 
+[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-project).
+
 View all the issues in a group (that is, all the issues across all projects in that
 group) by navigating to **Group > Issues**. This view also has the open and closed
 issue tabs.
 
 ![Group Issues list view](img/group_issues_list_view.png)
 
-In both these list views, [search and filter the results]().
+[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-group).
 
 ## GitLab Issues Functionalities
 
