@@ -86,5 +86,9 @@ module LicenseHelper
     end
   end
 
+  def show_project_feature_promotion?(project_feature, callout_id)
+    !@project.feature_available?(project_feature) && show_promotions? && show_callout?(callout_id)
+  end
+
   extend self
 end

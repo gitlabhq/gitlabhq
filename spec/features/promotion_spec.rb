@@ -105,7 +105,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in project edit page' do
       visit edit_project_path(project)
-      expect(find('#promote_mr_approval')).to have_content 'Improve Merge Request and customer support'
+      expect(find('#promote_mr_approval')).to have_content 'Improve Merge Requests and customer support'
       expect(find('#promote_mr_approval')).to have_content 'Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project.'
     end
 
@@ -231,7 +231,7 @@ describe 'Promotions', js: true do
     it 'should appear on the page' do
       visit project_audit_events_path(project)
       expect(find('.user-callout-copy')).to have_content 'Track your project with Audit Events'
-      expect(find('.user-callout-copy')).to have_content 'Audit Events is a tool for GitLab Enterprise Edition administrators to be able to track important events such as user access level, target user, and user addition or removal.'
+      expect(find('.user-callout-copy')).to have_content 'Audit Events is a way to keep track of important events that happened in GitLab.'
     end
   end
 
@@ -245,7 +245,7 @@ describe 'Promotions', js: true do
 
     it 'should appear on the page' do
       visit group_analytics_path(group)
-      expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution analytics and GitLab Enterprise Edition.'
+      expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution Analytics.'
       expect(find('.user-callout-copy')).to have_content 'With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members.'
     end
   end

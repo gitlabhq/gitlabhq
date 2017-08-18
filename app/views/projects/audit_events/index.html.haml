@@ -8,5 +8,5 @@
 %h3.page-title Project Audit Events
 %p.light Events in #{@project.full_path}
 
-- if @project.feature_available?(:audit_events) 
+- if @project.feature_available?(:audit_events)
   = render 'shared/audit_events/event_table', events: @events
