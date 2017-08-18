@@ -141,18 +141,6 @@ module IssuesHelper
     end.to_h
   end
 
-  def due_date_options
-    options = [
-      Issue::AnyDueDate,
-      Issue::NoDueDate,
-      Issue::DueThisWeek,
-      Issue::DueThisMonth,
-      Issue::Overdue
-    ]
-
-    options_from_collection_for_select(options, 'name', 'title', params[:due_date])
-  end
-
   def link_to_discussions_to_resolve(merge_request, single_discussion = nil)
     link_text = merge_request.to_reference
     link_text += " (discussion #{single_discussion.first_note.id})" if single_discussion
