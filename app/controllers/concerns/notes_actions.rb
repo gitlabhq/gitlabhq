@@ -13,15 +13,17 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    @notes = notes_finder.execute.inc_relations_for_view.to_a
-    @notes.reject! { |n| n.cross_reference_not_visible_for?(current_user) }
-    @notes = prepare_notes_for_rendering(@notes)
+    notes = notes_finder.execute
+      .inc_relations_for_view
+      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
+    notes = prepare_notes_for_rendering(notes)
 
     notes_json[:notes] =
       if noteable.discussions_rendered_on_frontend?
-        note_serializer.represent(@notes)
+        note_serializer.represent(notes)
       else
-        @notes.map { |note| note_json(note) }
+        notes.map { |note| note_json(note) }
       end
 
     render json: notes_json

@@ -97,13 +97,17 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def discussions
-    notes = @issue.notes.inc_relations_for_view.includes(:noteable).fresh.to_a
-    notes.reject! { |n| n.cross_reference_not_visible_for?(current_user) }
+    notes = @issue.notes
+      .inc_relations_for_view
+      .includes(:noteable)
+      .fresh
+      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+
     prepare_notes_for_rendering(notes)
 
-    @discussions = Discussion.build_collection(notes, @issue)
+    discussions = Discussion.build_collection(notes, @issue)
 
-    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(@discussions)
+    render json: DiscussionSerializer.new(project: @project, noteable: @issue, current_user: current_user).represent(discussions)
   end
 
   def create
