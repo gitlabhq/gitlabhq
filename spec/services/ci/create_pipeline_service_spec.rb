@@ -55,10 +55,15 @@ describe Ci::CreatePipelineService do
 
       context 'when merge requests already exist for this source branch' do
         it 'updates head pipeline of each merge request' do
-          merge_request_1 = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
-          merge_request_2 = create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+          merge_request_1 = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-          head_pipeline = pipeline
+          merge_request_2 = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_2",
+                                                   source_project: project)
+
+          head_pipeline = execute_service
 
           expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
           expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
@@ -66,9 +71,11 @@ describe Ci::CreatePipelineService do
 
         context 'when there is no pipeline for source branch' do
           it "does not update merge request head pipeline" do
-            merge_request = create(:merge_request, source_branch: 'feature', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'feature',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).not_to eq(head_pipeline)
           end
@@ -76,13 +83,19 @@ describe Ci::CreatePipelineService do
 
         context 'when merge request target project is different from source project' do
           let!(:target_project) { create(:project, :repository) }
-          let!(:forked_project_link) { create(:forked_project_link, forked_to_project: project, forked_from_project: target_project) }
+
+          let!(:forked_project_link) do
+            create(:forked_project_link, forked_to_project: project,
+                                         forked_from_project: target_project)
+          end
 
           it 'updates head pipeline for merge request' do
-            merge_request =
-              create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project, target_project: target_project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project,
+                                                   target_project: target_project)
 
-            head_pipeline = pipeline
+            head_pipeline = execute_service
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
           end
@@ -90,9 +103,12 @@ describe Ci::CreatePipelineService do
 
         context 'when the pipeline is not the latest for the branch' do
           it 'does not update merge request head pipeline' do
-            merge_request = create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+            merge_request = create(:merge_request, source_branch: 'master',
+                                                   target_branch: "branch_1",
+                                                   source_project: project)
 
-            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:latest?).and_return(false)
 
             pipeline
 
