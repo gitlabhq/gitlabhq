@@ -49,10 +49,14 @@ describe Gitlab::Shell do
   end
 
   describe 'projects commands' do
-    let(:projects_path) { 'tmp/tests/shell-projects-test/bin/gitlab-projects' }
+    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
+    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
+    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
 
     before do
-      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-projects-test')
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 
     describe '#mv_repository' do
