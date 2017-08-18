@@ -2053,11 +2053,7 @@ describe Project do
   end
 
   describe '#add_import_job' do
-<<<<<<< HEAD
-    let!(:import_jid) { '123' }
-=======
     let(:import_jid) { '123' }
->>>>>>> upstream/master
 
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
@@ -2070,7 +2066,6 @@ describe Project do
           forked_from_project.repository_storage_path,
           forked_from_project.disk_path,
           project.namespace.full_path).and_return(import_jid)
-<<<<<<< HEAD
 
         expect(project.add_import_job).to eq(import_jid)
       end
@@ -2099,10 +2094,6 @@ describe Project do
           expect(RepositoryUpdateMirrorWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
           expect(project.add_import_job).to eq(import_jid)
         end
-=======
-
-        expect(project.add_import_job).to eq(import_jid)
->>>>>>> upstream/master
       end
     end
 

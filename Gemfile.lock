@@ -1067,12 +1067,8 @@ DEPENDENCIES
   gpgme
   grape (~> 1.0)
   grape-entity (~> 0.6.0)
-<<<<<<< HEAD
-  grape-route-helpers (~> 2.0.0)
-  gssapi
-=======
   grape-route-helpers (~> 2.1.0)
->>>>>>> upstream/master
+  gssapi
   haml_lint (~> 0.26.0)
   hamlit (~> 2.6.1)
   hashie-forbidden_attributes

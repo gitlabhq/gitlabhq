@@ -13,44 +13,6 @@
           %span.nav-item-name
             Overview
 
-<<<<<<< HEAD
-    = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles audit_logs)) do
-      = link_to admin_conversational_development_index_path, title: 'Monitoring' do
-        .nav-icon-container
-          = custom_icon('monitoring')
-        %span.nav-item-name
-          Monitoring
-
-      %ul.sidebar-sub-level-items
-        = nav_link(controller: :conversational_development_index) do
-          = link_to admin_conversational_development_index_path, title: 'ConvDev Index' do
-            %span
-              ConvDev Index
-        = nav_link(controller: :system_info) do
-          = link_to admin_system_info_path, title: 'System Info' do
-            %span
-              System Info
-        = nav_link(controller: :background_jobs) do
-          = link_to admin_background_jobs_path, title: 'Background Jobs' do
-            %span
-              Background Jobs
-        = nav_link(controller: :logs) do
-          = link_to admin_logs_path, title: 'Logs' do
-            %span
-              Logs
-        = nav_link(controller: :health_check) do
-          = link_to admin_health_check_path, title: 'Health Check' do
-            %span
-              Health Check
-        = nav_link(controller: :requests_profiles) do
-          = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
-            %span
-              Requests Profiles
-        = nav_link path: 'audit_logs#index' do
-          = link_to admin_audit_logs_path, title: 'Audit Log' do
-            %span
-              Audit Log
-=======
         %ul.sidebar-sub-level-items
           = nav_link(controller: :dashboard, html_options: {class: 'home'}) do
             = link_to admin_root_path, title: 'Overview' do
@@ -81,13 +43,12 @@
               %span
                 Cohorts
 
-      = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles)) do
+      = nav_link(controller: %w(conversational_development_index system_info background_jobs logs health_check requests_profiles audit_logs)) do
         = link_to admin_conversational_development_index_path, title: 'Monitoring' do
           .nav-icon-container
             = custom_icon('monitoring')
           %span.nav-item-name
             Monitoring
->>>>>>> upstream/master
 
         %ul.sidebar-sub-level-items
           = nav_link(controller: :conversational_development_index) do
@@ -114,6 +75,10 @@
             = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
               %span
                 Requests Profiles
+          = nav_link(path: 'audit_logs#index') do
+            = link_to admin_audit_logs_path, title: 'Audit Log' do
+              %span
+                Audit Log
 
       = nav_link(controller: :broadcast_messages) do
         = link_to admin_broadcast_messages_path, title: 'Messages' do
@@ -135,49 +100,21 @@
           %span.nav-item-name
             Applications
 
-<<<<<<< HEAD
-    = nav_link(controller: :licenses) do
-      = link_to admin_license_path, title: 'License' do
-        .nav-icon-container
-          = custom_icon('license')
-        %span.nav-item-name
-          License
-
-    - if akismet_enabled?
-      = nav_link(controller: :spam_logs) do
-        = link_to admin_spam_logs_path, title: "Spam Logs" do
-=======
       = nav_link(controller: :abuse_reports) do
         = link_to admin_abuse_reports_path, title: "Abuse Reports" do
->>>>>>> upstream/master
           .nav-icon-container
             = custom_icon('abuse_reports')
           %span.nav-item-name
             Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
-<<<<<<< HEAD
-    = nav_link(controller: :push_rules) do
-      = link_to admin_push_rule_path, title: 'Push Rules' do
-        .nav-icon-container
-          = custom_icon('push_rules')
-        %span.nav-item-name
-          Push Rules
+      = nav_link(controller: :licenses) do
+        = link_to admin_license_path, title: 'License' do
+          .nav-icon-container
+            = custom_icon('license')
+          %span.nav-item-name
+            License
 
-    = nav_link(controller: :geo_nodes) do
-      = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
-        .nav-icon-container
-          = custom_icon('geo_nodes')
-        %span.nav-item-name
-          Geo Nodes
-
-    = nav_link(controller: :deploy_keys) do
-      = link_to admin_deploy_keys_path, title: 'Deploy Keys' do
-        .nav-icon-container
-          = custom_icon('key')
-        %span.nav-item-name
-          Deploy Keys
-=======
       - if akismet_enabled?
         = nav_link(controller: :spam_logs) do
           = link_to admin_spam_logs_path, title: "Spam Logs" do
@@ -185,7 +122,20 @@
               = custom_icon('spam_logs')
             %span.nav-item-name
               Spam Logs
->>>>>>> upstream/master
+
+      = nav_link(controller: :push_rules) do
+        = link_to admin_push_rule_path, title: 'Push Rules' do
+          .nav-icon-container
+            = custom_icon('push_rules')
+          %span.nav-item-name
+            Push Rules
+
+      = nav_link(controller: :geo_nodes) do
+        = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+          .nav-icon-container
+            = custom_icon('geo_nodes')
+          %span.nav-item-name
+            Geo Nodes
 
       = nav_link(controller: :deploy_keys) do
         = link_to admin_deploy_keys_path, title: 'Deploy Keys' do

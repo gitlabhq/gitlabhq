@@ -45,13 +45,8 @@ describe API::Settings, 'Settings' do
           default_artifacts_expire_in: '2 days',
           help_page_text: 'custom help text',
           help_page_hide_commercial_content: true,
-<<<<<<< HEAD
-          project_export_enabled: false,
-          help_page_support_url: 'http://example.com/help'
-=======
           help_page_support_url: 'http://example.com/help',
           project_export_enabled: false
->>>>>>> upstream/master
 
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)

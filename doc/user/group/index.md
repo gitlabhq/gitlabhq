@@ -243,8 +243,5 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
 
 [permissions]: ../permissions.md#permissions
-[ee]: https://about.gitlab.com/products/
-<<<<<<< HEAD
-=======
 [reserved]:  ../reserved_names.md
->>>>>>> upstream/master
+[ee]: https://about.gitlab.com/products/

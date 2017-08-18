@@ -142,7 +142,6 @@ import './smart_interval';
 import './star';
 import './subscription';
 import './subscription_select';
-<<<<<<< HEAD
 
 // EE-only scripts
 import './admin_email_select';
@@ -152,8 +151,6 @@ import './ee_trial_banner';
 import './ldap_groups_select';
 import './path_locks';
 import './weight_select';
-=======
->>>>>>> upstream/master
 
 import './dispatcher';
 

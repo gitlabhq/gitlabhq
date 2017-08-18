@@ -144,9 +144,6 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 
-<<<<<<< HEAD
-## External users
-=======
 ### Subgroup permissions
 
 When you add a member to a subgroup, they inherit the membership and
@@ -157,7 +154,6 @@ To learn more, read through the documentation on
 [subgroups memberships](group/subgroups/index.md#membership).
 
 ## External users permissions
->>>>>>> upstream/master
 
 In cases where it is desired that a user has access only to some internal or
 private projects, there is the option of creating **External Users**. This
@@ -181,7 +177,6 @@ will find the option to flag the user as external.
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
 
-<<<<<<< HEAD
 ## Auditor users
 
 >[Introduced][ee-998] in [GitLab Enterprise Edition Premium][eep] 8.17.
@@ -200,10 +195,7 @@ which visibility level you select on project settings.
 - Only team members: only team members will see even if your project is public or internal
 - Everyone with access: everyone can see depending on your project visibility level
 
-## GitLab CI
-=======
 ## GitLab CI/CD permissions
->>>>>>> upstream/master
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
