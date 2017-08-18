@@ -149,6 +149,7 @@
               :include-toggle="true"
               @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
+              class="discussion"
               />
             <issue-note-edited-text
               v-if="note.last_updated_by"

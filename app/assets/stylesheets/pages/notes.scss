@@ -402,6 +402,10 @@ ul.notes {
 .note-header-info {
   min-width: 0;
   padding-bottom: 8px;
+
+  &.discussion {
+    padding-bottom: 0;
+  }
 }
 
 .system-note .note-header-info {
