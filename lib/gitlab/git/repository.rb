@@ -607,9 +607,9 @@ module Gitlab
       #
       # Example
       # repo.update_remote("origin", url: "path/to/repo")
-      def remote_update(remote_name, options = {})
+      def remote_update(remote_name, url:)
         # TODO: Implement other remote options
-        rugged.remotes.set_url(remote_name, options[:url]) if options[:url]
+        rugged.remotes.set_url(remote_name, url)
       end
 
       AUTOCRLF_VALUES = {
