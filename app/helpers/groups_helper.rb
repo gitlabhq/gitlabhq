@@ -17,7 +17,7 @@ module GroupsHelper
 
     group.ancestors.reverse.each_with_index do |parent, index|
       if show_new_nav? && index > 0
-        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false), location: :before)
+        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true), location: :before)
       else
         full_title += if show_new_nav?
                         breadcrumb_list_item group_title_link(parent, hidable: false)
@@ -83,10 +83,10 @@ module GroupsHelper
 
   private
 
-  def group_title_link(group, hidable: false)
+  def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path #{'hidable' if hidable}") do
       output =
-        if show_new_nav? && group.try(:avatar_url)
+        if show_new_nav? && group.try(:avatar_url) || (show_new_nav? && show_avatar)
           image_tag(group_icon(group), class: "avatar-tile", width: 16, height: 16)
         else
           ""

@@ -52,7 +52,7 @@ module ProjectsHelper
   def project_title(project)
     namespace_link =
       if project.group
-        group_title(project.group)
+        group_title(project.group, nil, nil)
       else
         owner = project.namespace.owner
         link_to(simple_sanitize(owner.name), user_path(owner))
@@ -66,7 +66,7 @@ module ProjectsHelper
           ""
         end
 
-      output << simple_sanitize(project.name)
+      output << content_tag("span", simple_sanitize(project.name), class: "breadcrumb-item-project-name")
       output.html_safe
     end
 

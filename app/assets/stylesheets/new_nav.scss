@@ -292,7 +292,7 @@ header.navbar-gitlab-new {
 
 .breadcrumbs {
   display: flex;
-  min-height: 61px;
+  min-height: 48px;
   color: $gl-text-color;
 }
 
@@ -300,6 +300,8 @@ header.navbar-gitlab-new {
   display: flex;
   width: 100%;
   position: relative;
+  padding-top: $gl-padding;
+  padding-bottom: $gl-padding;
   align-items: center;
   border-bottom: 1px solid $border-color;
 }
@@ -311,7 +313,7 @@ header.navbar-gitlab-new {
   color: $gl-text-color-secondary;
 
   .avatar-tile {
-    margin-right: 5px;
+    margin-right: 4px;
     border: 1px solid $border-color;
     border-radius: 50%;
     vertical-align: sub;
@@ -332,6 +334,7 @@ header.navbar-gitlab-new {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 0;
+  line-height: 16px;
 
   > li {
     display: flex;
@@ -343,16 +346,21 @@ header.navbar-gitlab-new {
     }
 
     > a {
-      @include str-truncated(128px);
+      font-size: 12px;
       color: currentColor;
     }
   }
+}
+
+.breadcrumb-item-project-name {
+  @include str-truncated(128px);
 }
 
 .breadcrumbs-list-angle {
   position: absolute;
   right: -12px;
   top: 50%;
+  color: $gl-text-color-tertiary;
   transform: translateY(-50%);
 }
 
@@ -364,7 +372,7 @@ header.navbar-gitlab-new {
 
 .breadcrumbs-sub-title {
   margin: 0;
-  font-size: $gl-font-size;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1;
 
