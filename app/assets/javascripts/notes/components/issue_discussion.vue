@@ -170,7 +170,7 @@
               class="discussion"
               />
             <issue-note-edited-text
-              v-if="lastUpdatedBy"
+              v-if="lastUpdatedAt"
               :edited-at="lastUpdatedAt"
               :edited-by="lastUpdatedBy"
               action-text="Last updated"

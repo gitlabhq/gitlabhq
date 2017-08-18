@@ -99,7 +99,7 @@
       :data-update-url="note.path"
       class="hidden js-task-list-field"></textarea>
     <issue-note-edited-text
-      v-if="note.last_edited_by"
+      v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       action-text="Edited"

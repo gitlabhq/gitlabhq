@@ -14,7 +14,7 @@
       },
       editedBy: {
         type: Object,
-        required: true,
+        required: false,
       },
       className: {
         type: String,
@@ -35,11 +35,13 @@
       :time="editedAt"
       tooltip-placement="bottom"
       />
-    by
-    <a
-      :href="editedBy.path"
-      class="js-vue-author author_link">
-      {{editedBy.name}}
-    </a>
+    <template v-if="editedBy">
+      by
+      <a
+        :href="editedBy.path"
+        class="js-vue-author author_link">
+        {{editedBy.name}}
+      </a>
+    </template>
   </div>
 </template>
