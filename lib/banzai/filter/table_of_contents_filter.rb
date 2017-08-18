@@ -15,6 +15,7 @@ module Banzai
     #          `li` child elements.
     class TableOfContentsFilter < HTML::Pipeline::Filter
       PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u
+      HeaderNode = Struct.new(:level, :href, :text, :children, :parent)
 
       def call
         return doc if context[:no_header_anchors]
@@ -22,6 +23,10 @@ module Banzai
         result[:toc] = ""
 
         headers = Hash.new(0)
+
+        # root node of header-tree
+        header_root = HeaderNode.new(0, nil, nil, [], nil)
+        current_header = header_root
 
         doc.css('h1, h2, h3, h4, h5, h6').each do |node|
           text = node.text
@@ -38,12 +43,38 @@ module Banzai
             # namespace detection will be automatically handled via javascript (see issue #22781)
             namespace = "user-content-"
             href = "#{id}#{uniq}"
-            push_toc(href, text)
+
+            level = node.name[1].to_i # get this header level
+            if level == current_header.level
+              # same as previous
+              parent = current_header.parent
+            elsif level > current_header.level
+              # larger (weaker) than previous
+              parent = current_header
+            else
+              # smaller (stronger) than previous
+              # search parent
+              parent = current_header
+              parent = parent.parent while parent.level >= level
+            end
+
+            # create header-node and push as child
+            header_node = HeaderNode.new(level, href, text, [], parent)
+            parent.children.push(header_node)
+            current_header = header_node
+
             header_content.add_previous_sibling(anchor_tag("#{namespace}#{href}", href))
           end
         end
 
-        result[:toc] = %Q{<ul class="section-nav">\n#{result[:toc]}</ul>} unless result[:toc].empty?
+        # extract header-tree
+        if header_root.children.length > 0
+          result[:toc] = %Q{<ul class="section-nav">\n}
+          header_root.children.each do |child|
+            push_toc(child)
+          end
+          result[:toc] << '</ul>'
+        end
 
         doc
       end
@@ -54,8 +85,16 @@ module Banzai
         %Q{<a id="#{id}" class="anchor" href="##{href}" aria-hidden="true"></a>}
       end
 
-      def push_toc(href, text)
-        result[:toc] << %Q{<li><a href="##{href}">#{text}</a></li>\n}
+      def push_toc(header_node)
+        result[:toc] << %Q{<li><a href="##{header_node.href}">#{header_node.text}</a>}
+        if header_node.children.length > 0
+          result[:toc] << '<ul>'
+          header_node.children.each do |child|
+            push_toc(child)
+          end
+          result[:toc] << '</ul>'
+        end
+        result[:toc] << '</li>\n'
       end
     end
   end
