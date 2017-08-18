@@ -23,6 +23,14 @@ GitLabDropdownInput = (function() {
       };
     })(this));
 
+    this.bindEvents();
+  }
+
+  GitLabDropdownInput.prototype.setInputCallback = function(cb) {
+    this.cb = cb;
+  };
+
+  GitLabDropdownInput.prototype.bindEvents = function() {
     this.input
     .on('keydown', function (e) {
       var keyCode = e.which;
@@ -30,19 +38,17 @@ GitLabDropdownInput = (function() {
         e.preventDefault();
       }
     })
-    .on('input', function(e) {
-      var val = e.currentTarget.value || _this.options.inputFieldName;
-      val = val.split(' ').join('-') // replaces space with dash
-        .replace(/[^a-zA-Z0-9-/]/g, ''); // replace non alphanumeric
-      _this.cb(_this.options.fieldName, val, {}, true);
-      _this.input.closest('.dropdown')
-        .find('.dropdown-toggle-text')
-        .text(val);
-    });
-  }
+    .on('input', this.setToggleText.bind(this));
+  };
 
-  GitLabDropdownInput.prototype.onInput = function(cb) {
-    this.cb = cb;
+  GitLabDropdownInput.prototype.setToggleText = function(e) {
+    var val = e.currentTarget.value || this.options.inputFieldName;
+    val = val.split(' ').join('-') // replaces space with dash
+      .replace(/[^a-zA-Z0-9-/]/g, ''); // replace non alphanumeric
+    this.cb(this.options.fieldName, val, {}, true);
+    this.input.closest('.dropdown')
+      .find('.dropdown-toggle-text')
+      .text(val);
   };
 
   return GitLabDropdownInput;
@@ -310,7 +316,7 @@ GitLabDropdown = (function() {
     }
     if (this.noFilterInput.length) {
       this.plainInput = new GitLabDropdownInput(this.noFilterInput, this.options);
-      this.plainInput.onInput(this.addInput.bind(this));
+      this.plainInput.setInputCallback(this.addInput.bind(this));
     }
     // Init filterable
     if (this.options.filterable) {
@@ -962,10 +968,17 @@ GitLabDropdown = (function() {
   return GitLabDropdown;
 })();
 
-$.fn.glDropdown = function(opts) {
+function glDropdownPlugin(opts) {
   return this.each(function() {
     if (!$.data(this, 'glDropdown')) {
       return $.data(this, 'glDropdown', new GitLabDropdown(this, opts));
     }
   });
+}
+
+$.fn.glDropdown = glDropdownPlugin;
+
+export {
+  glDropdownPlugin as default,
+  GitLabDropdownInput,
 };

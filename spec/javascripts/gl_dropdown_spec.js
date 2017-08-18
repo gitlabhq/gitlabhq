@@ -1,6 +1,6 @@
 /* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
 
-import '~/gl_dropdown';
+import { GitLabDropdownInput } from '~/gl_dropdown';
 import '~/lib/utils/common_utils';
 import '~/lib/utils/url_utility';
 
@@ -220,6 +220,119 @@ import '~/lib/utils/url_utility';
         .trigger('blur')
         .trigger('focus');
       expect($searchInput.val()).toEqual('g');
+    });
+  });
+
+  fdescribe('GitLabDropdownInput', () => {
+    describe('class constructor', () => {
+      it('calls bindEvents', () => {
+        const options = {};
+        const input = jasmine.createSpyObj('input', ['parent']);
+        const inputContainer = jasmine.createSpyObj('inputContainer', ['find']);
+        const clearButton = jasmine.createSpyObj('clearButton', ['on']);
+
+        input.parent.and.returnValue(inputContainer);
+        inputContainer.find.and.returnValue(clearButton);
+        spyOn(GitLabDropdownInput.prototype, 'bindEvents');
+
+        new GitLabDropdownInput(input, options); // eslint-disable-line no-new
+
+        expect(GitLabDropdownInput.prototype.bindEvents).toHaveBeenCalled();
+      });
+    });
+
+    describe('bindEvents', () => {
+      it('binds input and keydown event handlers', () => {
+        const input = jasmine.createSpyObj('input', ['on']);
+        const gitLabDropdownInput = {
+          input,
+          setToggleText() {},
+        };
+
+        input.on.and.returnValue(input);
+
+        GitLabDropdownInput.prototype.bindEvents.call(gitLabDropdownInput);
+
+        expect(input.on).toHaveBeenCalledWith('keydown', jasmine.any(Function));
+        expect(input.on).toHaveBeenCalledWith('input', jasmine.any(Function));
+      });
+    });
+
+    describe('setToggleText', () => {
+      let options;
+      let event;
+      let gitLabDropdownInput;
+      let input;
+
+      beforeEach(() => {
+        options = {
+          inputFieldName: 'inputFieldName',
+          fieldName: 'fieldName',
+        };
+        event = { currentTarget: {} };
+
+        gitLabDropdownInput = jasmine.createSpyObj('gitlabDropdownInput', ['cb']);
+        input = jasmine.createSpyObj('input', ['closest', 'find', 'text']);
+
+        gitLabDropdownInput.input = input;
+        gitLabDropdownInput.options = options;
+
+        input.closest.and.returnValue(input);
+        input.find.and.returnValue(input);
+      });
+
+      it('sets the dropdown toggle text', () => {
+        const val = options.inputFieldName;
+
+        GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
+
+        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, val, {}, true);
+        expect(input.closest).toHaveBeenCalledWith('.dropdown');
+        expect(input.find).toHaveBeenCalledWith('.dropdown-toggle-text');
+        expect(input.text).toHaveBeenCalledWith(val);
+      });
+
+      it('uses the currentTarget value if its set', () => {
+        const branch = 'branch';
+        event.currentTarget.value = branch;
+
+        GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
+
+        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, branch, {}, true);
+        expect(input.text).toHaveBeenCalledWith(branch);
+      });
+
+      it('does not replace repeated dashes with single dashes', () => {
+        const branch = 'some--branch--name';
+        options.inputFieldName = branch;
+
+        GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
+
+        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, branch, {}, true);
+        expect(input.text).toHaveBeenCalledWith(branch);
+      });
+
+      it('removes non-alphanumeric characters', () => {
+        const branch = '$some#-branch!';
+        const val = 'some-branch';
+        options.inputFieldName = branch;
+
+        GitLabDropdownInput.prototype.setToggleText.call(gitLabDropdownInput, event);
+
+        expect(gitLabDropdownInput.cb).toHaveBeenCalledWith(options.fieldName, val, {}, true);
+        expect(input.text).toHaveBeenCalledWith(val);
+      });
+    });
+
+    describe('setInputCallback', () => {
+      it('sets the cb property', () => {
+        const gitLabDropdownInput = {};
+        const cb = () => {};
+
+        GitLabDropdownInput.prototype.setInputCallback.call(gitLabDropdownInput, cb);
+
+        expect(gitLabDropdownInput.cb).toBe(cb);
+      });
     });
   });
 })();
