@@ -1009,7 +1009,7 @@ class Project < ActiveRecord::Base
       name: name,
       description: description,
       web_url: web_url,
-      avatar_url: avatar_url,
+      avatar_url: avatar_url(only_path: false),
       git_ssh_url: ssh_url_to_repo,
       git_http_url: http_url_to_repo,
       namespace: namespace.name,
