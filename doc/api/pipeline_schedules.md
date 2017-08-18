@@ -84,7 +84,13 @@ curl --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/root"
-    }
+    },
+    "variables": [
+        {
+            "key": "TEST_VARIABLE_1",
+            "value": "TEST_1"
+        }
+    ]
 }
 ```
 
@@ -269,5 +275,158 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
         "avatar_url": "http://www.gravatar.com/avatar/8ca0a796a679c292e3a11da50f99e801?s=80&d=identicon",
         "web_url": "https://gitlab.example.com/maeda"
     }
+}
+```
+
+## Create a new pipeline schedule variable
+
+Create a new variable of a pipeline schedule.
+
+```
+POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
+```
+
+| Attribute     | Type    | required | Description              |
+|---------------|---------|----------|--------------------------|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
+| `key`       | string  | yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
+| `value`     | string  | yes      | The `value` of a variable |
+
+```sh
+curl --request POST --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "key=NEW_VARIABLE" --form "value=new value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables"
+```
+
+```json
+{
+    "id": 13,
+    "description": "Test schedule pipeline",
+    "ref": "master",
+    "cron": "* * * * *",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T13:41:00.000Z",
+    "active": true,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:40:17.727Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
+    "owner": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "https://gitlab.example.com/root"
+    },
+    "variables": [
+        {
+            "key": "NEW_VARIABLE",
+            "value": "new value"
+        }
+    ]
+}
+```
+
+## Edit a pipeline schedule variable
+
+Updates the variable of a pipeline schedule.
+
+```
+PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
+```
+
+| Attribute     | Type    | required | Description              |
+|---------------|---------|----------|--------------------------|
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
+| `key`       | string  | yes      | The `key` of a variable   |
+| `value`     | string  | yes      | The `value` of a variable |
+
+```sh
+curl --request PUT --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" --form "value=updated value" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+```
+
+```json
+{
+    "id": 13,
+    "description": "Test schedule pipeline",
+    "ref": "master",
+    "cron": "* * * * *",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T13:41:00.000Z",
+    "active": true,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:40:17.727Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
+    "owner": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "https://gitlab.example.com/root"
+    },
+    "variables": [
+        {
+            "key": "NEW_VARIABLE",
+            "value": "updated value"
+        }
+    ]
+}
+```
+
+## Delete a pipeline schedule variable
+
+Delete the variable of a pipeline schedule.
+
+```
+DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
+```
+
+| Attribute      | Type    | required | Description              |
+|----------------|---------|----------|--------------------------|
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
+| `pipeline_schedule_id`          | integer | yes      | The pipeline schedule id |
+| `key`     | string  | yes      | The `key` of a variable |
+
+```sh
+curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
+```
+
+```json
+{
+    "id": 13,
+    "description": "Test schedule pipeline",
+    "ref": "master",
+    "cron": "* * * * *",
+    "cron_timezone": "Asia/Tokyo",
+    "next_run_at": "2017-05-19T13:41:00.000Z",
+    "active": true,
+    "created_at": "2017-05-19T13:31:08.849Z",
+    "updated_at": "2017-05-19T13:40:17.727Z",
+    "last_pipeline": {
+        "id": 332,
+        "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
+        "ref": "master",
+        "status": "pending"
+    },
+    "owner": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "https://gitlab.example.com/root"
+    },
+    "variables": []
 }
 ```
