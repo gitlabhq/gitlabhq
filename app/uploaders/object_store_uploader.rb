@@ -20,6 +20,14 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     def object_store_enabled?
       object_store_options&.enabled
     end
+
+    def object_store_credentials
+      @object_store_credentials ||= object_store_options&.connection&.to_hash&.deep_symbolize_keys
+    end
+
+    def object_store_directory
+      object_store_options&.remote_directory
+    end
   end
 
   attr_reader :subject, :field
@@ -98,11 +106,11 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   end
 
   def fog_directory
-    self.class.object_store_options.remote_directory
+    self.class.object_store_directory
   end
 
   def fog_credentials
-    self.class.object_store_options.connection
+    self.class.object_store_credentials
   end
 
   def fog_public

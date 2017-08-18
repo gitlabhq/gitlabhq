@@ -7,7 +7,7 @@ module StubConfiguration
 
     return unless enabled
 
-    ::Fog::Storage.new(Gitlab.config.artifacts.object_store.connection).tap do |connection|
+    ::Fog::Storage.new(ArtifactUploader.object_store_credentials).tap do |connection|
       begin
         connection.directories.create(key: 'artifacts')
       rescue Excon::Error::Conflict
