@@ -215,6 +215,7 @@
       class="notes notes-form timeline">
       <li class="timeline-entry">
         <div class="timeline-entry-inner">
+          <div class="flash-container error-alert timeline-content"></div>
           <div class="timeline-icon hidden-xs hidden-sm">
             <user-avatar-link
               v-if="author"
@@ -228,7 +229,6 @@
             <form
               ref="commentForm"
               class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
-              <div class="flash-container error-alert timeline-content"></div>
               <confidentialIssue v-if="isConfidentialIssue" />
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
