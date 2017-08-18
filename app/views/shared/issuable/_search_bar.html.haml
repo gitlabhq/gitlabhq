@@ -61,7 +61,7 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Assignee
-                %li.divider
+                %li.divider.droplab-item-ignore
                 - if current_user
                   = render 'shared/issuable/user_dropdown_item',
                     user: current_user
@@ -80,7 +80,7 @@
                 %li.filter-dropdown-item{ 'data-value' => 'started' }
                   %button.btn.btn-link
                     Started
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value
@@ -90,7 +90,7 @@
                 %li.filter-dropdown-item{ data: { value: 'none' } }
                   %button.btn.btn-link
                     No Label
-                %li.divider
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link
@@ -107,7 +107,7 @@
                   %li.filter-dropdown-item{ 'data-value' => 'any' }
                     %button.btn.btn-link
                       Any Weight
-                  %li.divider
+                  %li.divider.droplab-item-ignore
                 %ul.filter-dropdown{ 'data-dropdown' => true }
                   - Issue.weight_filter_options.each do |weight|
                     %li.filter-dropdown-item{ 'data-value' => "#{weight}" }
