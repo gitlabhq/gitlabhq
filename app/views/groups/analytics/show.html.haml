@@ -130,5 +130,5 @@
       - data[scope] = {}
       - data[scope][:data] = @stats[scope]
     = data.to_json.html_safe
-- else
+- elsif show_promotions?
   = render 'shared/promotions/promote_contribution_analytics'

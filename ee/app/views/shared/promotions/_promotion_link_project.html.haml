@@ -1,5 +1,5 @@
 - if current_application_settings.should_check_namespace_plan?
-  - if (@project.owner.present? && @project.owner == @current_user) || @project.group&.has_owner?(@current_user)
+  - if @project.group ? can?(current_user, :admin_group, @project.group) : @project.owner == current_user
     = link_to 'Upgrade your plan', upgrade_plan_url, class: 'btn btn-primary'
   - elsif @project.group
     %p Contact an owner of group #{ @project.group.name } to upgrade the plan.
