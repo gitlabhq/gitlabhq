@@ -109,6 +109,7 @@ class AwardsHandler {
     }
 
     $thumbsBtn.toggleClass('disabled', $userAuthored);
+    $thumbsBtn.prop('disabled', $userAuthored);
   }
 
   // Create the emoji menu with the first category of emojis.
@@ -248,7 +249,7 @@ class AwardsHandler {
         },
       });
 
-      document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
+      return document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
     }
 
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
