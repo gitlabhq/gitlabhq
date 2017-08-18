@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def uid
-        entry.send(config.uid).first
+        entry.public_send(config.uid).first # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def username
@@ -65,7 +65,7 @@ module Gitlab
 
         return nil unless selected_attr
 
-        entry.public_send(selected_attr)
+        entry.public_send(selected_attr) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
   end

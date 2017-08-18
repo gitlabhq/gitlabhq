@@ -73,7 +73,7 @@ feature 'Users', js: true do
     let(:loading_icon) { '.fa.fa-spinner' }
     let(:username_input) { 'new_user_username' }
 
-    before(:each) do
+    before do
       visit new_user_session_path
       click_link 'Register'
     end

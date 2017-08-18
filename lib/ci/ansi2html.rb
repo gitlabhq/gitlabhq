@@ -208,7 +208,7 @@ module Ci
         return unless command = stack.shift()
 
         if self.respond_to?("on_#{command}", true)
-          self.send("on_#{command}", stack)
+          self.__send__("on_#{command}", stack) # rubocop:disable GitlabSecurity/PublicSend
         end
 
         evaluate_command_stack(stack)

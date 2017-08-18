@@ -13,7 +13,13 @@ module Projects
         ::MergeRequests::CloseService.new(@project, @current_user).execute(mr)
       end
 
+      refresh_forks_count(@project.forked_from_project)
+
       @project.forked_project_link.destroy
+    end
+
+    def refresh_forks_count(project)
+      Projects::ForksCountService.new(project).refresh_cache
     end
   end
 end

@@ -8,38 +8,39 @@ const RepoEditor = {
   data: () => Store,
 
   destroyed() {
-    // this.monacoInstance.getModels().forEach((m) => {
-    //   m.dispose();
-    // });
-    this.monacoInstance.destroy();
+    if (Helper.monacoInstance) {
+      Helper.monacoInstance.destroy();
+    }
   },
 
   mounted() {
     Service.getRaw(this.activeFile.raw_path)
-    .then((rawResponse) => {
-      Store.blobRaw = rawResponse.data;
-      Helper.findOpenedFileFromActive().plain = rawResponse.data;
+      .then((rawResponse) => {
+        Store.blobRaw = rawResponse.data;
+        Store.activeFile.plain = rawResponse.data;
 
-      const monacoInstance = this.monaco.editor.create(this.$el, {
-        model: null,
-        readOnly: false,
-        contextmenu: false,
-      });
+        const monacoInstance = Helper.monaco.editor.create(this.$el, {
+          model: null,
+          readOnly: false,
+          contextmenu: false,
+        });
 
-      Store.monacoInstance = monacoInstance;
+        Helper.monacoInstance = monacoInstance;
 
-      this.addMonacoEvents();
+        this.addMonacoEvents();
 
-      const languages = this.monaco.languages.getLanguages();
-      const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      this.showHide();
-      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
-
-      this.monacoInstance.setModel(newModel);
-    }).catch(Helper.loadingError);
+        this.setupEditor();
+      })
+      .catch(Helper.loadingError);
   },
 
   methods: {
+    setupEditor() {
+      this.showHide();
+
+      Helper.setMonacoModelFromLanguage();
+    },
+
     showHide() {
       if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
         this.$el.style.display = 'none';
@@ -49,41 +50,36 @@ const RepoEditor = {
     },
 
     addMonacoEvents() {
-      this.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
-      this.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
+      Helper.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
+      Helper.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
     },
 
     onMonacoEditorKeysPressed() {
-      Store.setActiveFileContents(this.monacoInstance.getValue());
+      Store.setActiveFileContents(Helper.monacoInstance.getValue());
     },
 
     onMonacoEditorMouseUp(e) {
+      if (!e.target.position) return;
       const lineNumber = e.target.position.lineNumber;
-      if (e.target.element.className === 'line-numbers') {
+      if (e.target.element.classList.contains('line-numbers')) {
         location.hash = `L${lineNumber}`;
         Store.activeLine = lineNumber;
+
+        Helper.monacoInstance.setPosition({
+          lineNumber: this.activeLine,
+          column: 1,
+        });
       }
     },
   },
 
   watch: {
-    activeLine() {
-      this.monacoInstance.setPosition({
-        lineNumber: this.activeLine,
-        column: 1,
-      });
-    },
-
-    activeFileLabel() {
-      this.showHide();
-    },
-
     dialog: {
       handler(obj) {
         const newObj = obj;
         if (newObj.status) {
           newObj.status = false;
-          this.openedFiles.map((file) => {
+          this.openedFiles = this.openedFiles.map((file) => {
             const f = file;
             if (f.active) {
               this.blobRaw = f.plain;
@@ -94,35 +90,21 @@ const RepoEditor = {
             return f;
           });
           this.editMode = false;
+          Store.toggleBlobView();
         }
       },
       deep: true,
     },
 
-    isTree() {
-      this.showHide();
-    },
-
-    openedFiles() {
-      this.showHide();
-    },
-
-    binary() {
-      this.showHide();
-    },
-
     blobRaw() {
-      this.showHide();
-
-      if (this.isTree) return;
-
-      this.monacoInstance.setModel(null);
-
-      const languages = this.monaco.languages.getLanguages();
-      const languageID = Helper.getLanguageIDForFile(this.activeFile, languages);
-      const newModel = this.monaco.editor.createModel(this.blobRaw, languageID);
-
-      this.monacoInstance.setModel(newModel);
+      if (Helper.monacoInstance && !this.isTree) {
+        this.setupEditor();
+      }
+    },
+  },
+  computed: {
+    shouldHideEditor() {
+      return !this.openedFiles.length || (this.binary && !this.activeFile.raw);
     },
   },
 };
@@ -131,5 +113,5 @@ export default RepoEditor;
 </script>
 
 <template>
-<div id="ide"></div>
+<div id="ide" v-if='!shouldHideEditor'></div>
 </template>

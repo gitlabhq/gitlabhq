@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
   end
 
   before_destroy :remove_private_deploy_keys
-  after_destroy :remove_pages
+  after_destroy -> { run_after_commit { remove_pages } }
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
@@ -196,7 +196,6 @@ class Project < ActiveRecord::Base
   accepts_nested_attributes_for :import_data
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
-  delegate :count, to: :forks, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
@@ -370,7 +369,10 @@ class Project < ActiveRecord::Base
     state :failed
 
     after_transition [:none, :finished, :failed] => :scheduled do |project, _|
-      project.run_after_commit { add_import_job }
+      project.run_after_commit do
+        job_id = add_import_job
+        update(import_jid: job_id) if job_id
+      end
     end
 
     after_transition started: :finished do |project, _|
@@ -525,17 +527,26 @@ class Project < ActiveRecord::Base
   def add_import_job
     job_id =
       if forked?
-        RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
-          forked_from_project.full_path,
-          self.namespace.full_path)
+        RepositoryForkWorker.perform_async(id,
+                                           forked_from_project.repository_storage_path,
+                                           forked_from_project.full_path,
+                                           self.namespace.full_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
 
+    log_import_activity(job_id)
+
+    job_id
+  end
+
+  def log_import_activity(job_id, type: :import)
+    job_type = type.to_s.capitalize
+
     if job_id
-      Rails.logger.info "Import job started for #{full_path} with job ID #{job_id}"
+      Rails.logger.info("#{job_type} job scheduled for #{full_path} with job ID #{job_id}.")
     else
-      Rails.logger.error "Import job failed to start for #{full_path}"
+      Rails.logger.error("#{job_type} job failed to create for #{full_path}.")
     end
   end
 
@@ -544,6 +555,7 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
+    update(import_error: nil)
     remove_import_data
   end
 
@@ -921,14 +933,14 @@ class Project < ActiveRecord::Base
   end
 
   def execute_hooks(data, hooks_scope = :push_hooks)
-    hooks.send(hooks_scope).each do |hook|
+    hooks.public_send(hooks_scope).each do |hook| # rubocop:disable GitlabSecurity/PublicSend
       hook.async_execute(data, hooks_scope.to_s)
     end
   end
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
-    services.send(hooks_scope).each do |service|
+    services.public_send(hooks_scope).each do |service| # rubocop:disable GitlabSecurity/PublicSend
       service.async_execute(data)
     end
   end
@@ -1048,9 +1060,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.rugged.references.create('HEAD',
-                                          "refs/heads/#{branch}",
-                                          force: true)
+      repository.write_ref('HEAD', "refs/heads/#{branch}")
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1227,6 +1237,9 @@ class Project < ActiveRecord::Base
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
+    # Projects with a missing namespace cannot have their pages removed
+    return unless namespace
+
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
@@ -1285,12 +1298,16 @@ class Project < ActiveRecord::Base
     status.zero?
   end
 
+  def full_path_slug
+    Gitlab::Utils.slugify(full_path.to_s)
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
@@ -1397,6 +1414,10 @@ class Project < ActiveRecord::Base
   alias_method :human_name, :full_name
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
+
+  def forks_count
+    Projects::ForksCountService.new(self).count
+  end
 
   private
 

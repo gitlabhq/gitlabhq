@@ -119,7 +119,7 @@ describe 'gitlab:app namespace rake task' do
       let(:project) { create(:project, :repository) }
       let(:user_backup_path) { "repositories/#{project.disk_path}" }
 
-      before(:each) do
+      before do
         @origin_cd = Dir.pwd
 
         path = File.join(project.repository.path_to_repo, filename)
@@ -130,7 +130,7 @@ describe 'gitlab:app namespace rake task' do
         create_backup
       end
 
-      after(:each) do
+      after do
         ENV["SKIP"] = ""
         FileUtils.rm(@backup_tar)
         Dir.chdir(@origin_cd)

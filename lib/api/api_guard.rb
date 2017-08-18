@@ -122,7 +122,7 @@ module API
         error_classes = [MissingTokenError, TokenNotFoundError,
                          ExpiredError, RevokedError, InsufficientScopeError]
 
-        base.send :rescue_from, *error_classes, oauth2_bearer_token_error_handler
+        base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def oauth2_bearer_token_error_handler

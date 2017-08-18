@@ -24,7 +24,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser do
                 queries: [{ query_range: 'query_range_empty' }]
           - group: group_b
             priority: 1
-            metrics: 
+            metrics:
               - title: title
                 required_metrics: ['metric_a']
                 weight: 1
@@ -148,7 +148,7 @@ describe Gitlab::Prometheus::AdditionalMetricsParser do
             - group: group_a
               priority: 1
               metrics:
-              - title: 
+              - title:
                 required_metrics: []
                 weight: 1
                 queries: []

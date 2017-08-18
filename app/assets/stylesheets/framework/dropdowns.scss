@@ -725,9 +725,9 @@
 }
 
 // TODO: change global style and remove mixin
-@mixin new-style-dropdown {
-  .dropdown-menu,
-  .dropdown-menu-nav {
+@mixin new-style-dropdown($selector: '') {
+  #{$selector}.dropdown-menu,
+  #{$selector}.dropdown-menu-nav {
     .divider {
       margin: 6px 0;
     }
@@ -742,6 +742,11 @@
       a {
         border-radius: 0;
         padding: 8px 16px;
+
+        // make sure the text color is not overriden
+        &.text-danger {
+          @extend .text-danger;
+        }
 
         &.is-focused,
         &:hover,
@@ -773,7 +778,7 @@
     }
   }
 
-  .dropdown-menu-align-right {
+  #{$selector}.dropdown-menu-align-right {
     margin-top: 2px;
   }
 }

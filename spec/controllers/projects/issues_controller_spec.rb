@@ -1,7 +1,7 @@
 require('spec_helper')
 
 describe Projects::IssuesController do
-  let(:project) { create(:project_empty_repo) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:issue)   { create(:issue, project: project) }
 
@@ -841,7 +841,7 @@ describe Projects::IssuesController do
   describe 'POST #toggle_award_emoji' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it "toggles the award emoji" do
@@ -855,6 +855,8 @@ describe Projects::IssuesController do
   end
 
   describe 'POST create_merge_request' do
+    let(:project) { create(:project, :repository) }
+
     before do
       project.add_developer(user)
       sign_in(user)

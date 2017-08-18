@@ -24,10 +24,6 @@ class NamespacelessProjectDestroyWorker
 
     unlink_fork(project) if project.forked?
 
-    # Override Project#remove_pages for this instance so it doesn't do anything
-    def project.remove_pages
-    end
-
     project.destroy!
   end
 

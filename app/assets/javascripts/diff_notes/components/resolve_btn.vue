@@ -122,22 +122,24 @@
 </script>
 
 <template>
-  <button v-tooltip
-    data-container="body"
-    class="note-action-button line-resolve-btn"
-    type="button"
-    :class="{ 'is-active': isResolved, 'is-disabled': !canResolve }"
-    :aria-label="buttonText"
-    :title="buttonText"
-    v-show="canResolve || resolved"
-    @click="resolve">
-    <i class="fa fa-spin fa-spinner loading"
-      v-if="loading"
-      aria-hidden="true"
-      aria-label="Loading">
-    </i>
-    <span v-html="statusSuccessSvg"
-      v-else>
-    </span>
-  </button>
+  <div class="note-actions-item">
+    <button v-tooltip
+      data-container="body"
+      class="note-action-button line-resolve-btn"
+      type="button"
+      :class="{ 'is-active': isResolved, 'is-disabled': !canResolve }"
+      :aria-label="buttonText"
+      :title="buttonText"
+      v-show="canResolve || resolved"
+      @click="resolve">
+      <i class="fa fa-spin fa-spinner loading"
+        v-if="loading"
+        aria-hidden="true"
+        aria-label="Loading">
+      </i>
+      <span v-html="statusSuccessSvg"
+        v-else>
+      </span>
+    </button>
+  </div>
 </template>

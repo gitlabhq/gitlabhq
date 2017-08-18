@@ -43,7 +43,7 @@ module Banzai
 
     # Same as +render_field+, but without consulting or updating the cache field
     def self.cacheless_render_field(object, field, options = {})
-      text = object.__send__(field)
+      text = object.__send__(field) # rubocop:disable GitlabSecurity/PublicSend
       context = object.banzai_render_context(field).merge(options)
 
       cacheless_render(text, context)
@@ -156,7 +156,7 @@ module Banzai
     # method.
     def self.full_cache_multi_key(cache_key, pipeline_name)
       return unless cache_key
-      Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
+      Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     # GitLab EE needs to disable updates on GET requests in Geo

@@ -25,6 +25,10 @@ module Gitlab
       database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
 
+    def self.join_lateral_supported?
+      postgresql? && version.to_f >= 9.3
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
