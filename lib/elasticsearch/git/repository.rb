@@ -527,26 +527,6 @@ module Elasticsearch
             total_count: res.size
           }
         end
-
-        def search_file_names(query, page: 1, per: 20, options: {})
-          query_hash = {
-            fields: ['blob.path'],
-            query: {
-                fuzzy: {
-                    'repository.blob.path' => { value: query }
-                }
-            },
-            filter: {
-                term: {
-                    'repository.blob.rid' => [options[:repository_id]].flatten
-                }
-            },
-            size: per,
-            from: per * (page - 1)
-          }
-
-          self.__elasticsearch__.search(query_hash)
-        end
       end
     end
   end
