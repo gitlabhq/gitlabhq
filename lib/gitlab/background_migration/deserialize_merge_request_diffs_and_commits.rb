@@ -8,6 +8,7 @@ module Gitlab
       end
 
       BUFFER_ROWS = 1000
+      DIFF_FILE_BUFFER_ROWS = 100
 
       def perform(start_id, stop_id)
         merge_request_diffs = MergeRequestDiff
@@ -26,7 +27,7 @@ module Gitlab
 
           if diff_ids.length > BUFFER_ROWS ||
               commit_rows.length > BUFFER_ROWS ||
-              file_rows.length > BUFFER_ROWS
+              file_rows.length > DIFF_FILE_BUFFER_ROWS
 
             flush_buffers!
           end
@@ -46,8 +47,13 @@ module Gitlab
       def flush_buffers!
         if diff_ids.any?
           MergeRequestDiff.transaction do
-            Gitlab::Database.bulk_insert('merge_request_diff_commits', commit_rows)
-            Gitlab::Database.bulk_insert('merge_request_diff_files', file_rows)
+            commit_rows.each_slice(BUFFER_ROWS).each do |commit_rows_slice|
+              Gitlab::Database.bulk_insert('merge_request_diff_commits', commit_rows_slice)
+            end
+
+            file_rows.each_slice(DIFF_FILE_BUFFER_ROWS).each do |file_rows_slice|
+              Gitlab::Database.bulk_insert('merge_request_diff_files', file_rows_slice)
+            end
 
             MergeRequestDiff.where(id: diff_ids).update_all(st_commits: nil, st_diffs: nil)
           end

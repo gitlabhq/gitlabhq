@@ -70,8 +70,8 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits do
       before do
         merge_request.reload_diff(true)
 
-        convert_to_yaml(start_id, merge_request_diff.commits, merge_request_diff.diffs)
-        convert_to_yaml(stop_id, updated_merge_request_diff.commits, updated_merge_request_diff.diffs)
+        convert_to_yaml(start_id, merge_request_diff.commits, diffs_to_hashes(merge_request_diff.merge_request_diff_files))
+        convert_to_yaml(stop_id, updated_merge_request_diff.commits, diffs_to_hashes(updated_merge_request_diff.merge_request_diff_files))
 
         MergeRequestDiffCommit.delete_all
         MergeRequestDiffFile.delete_all
@@ -80,10 +80,38 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits do
       context 'when BUFFER_ROWS is exceeded' do
         before do
           stub_const("#{described_class}::BUFFER_ROWS", 1)
+
+          allow(Gitlab::Database).to receive(:bulk_insert).and_call_original
         end
 
         it 'updates and continues' do
           expect(described_class::MergeRequestDiff).to receive(:transaction).twice
+
+          subject.perform(start_id, stop_id)
+        end
+
+        it 'inserts commit rows in chunks of BUFFER_ROWS' do
+          # There are 29 commits in each diff, so we should have slices of 20 + 9 + 20 + 9.
+          stub_const("#{described_class}::BUFFER_ROWS", 20)
+
+          expect(Gitlab::Database).to receive(:bulk_insert)
+                                        .with('merge_request_diff_commits', anything)
+                                        .exactly(4)
+                                        .times
+                                        .and_call_original
+
+          subject.perform(start_id, stop_id)
+        end
+
+        it 'inserts diff rows in chunks of DIFF_FILE_BUFFER_ROWS' do
+          # There are 20 files in each diff, so we should have slices of 20 + 20.
+          stub_const("#{described_class}::DIFF_FILE_BUFFER_ROWS", 20)
+
+          expect(Gitlab::Database).to receive(:bulk_insert)
+                                        .with('merge_request_diff_files', anything)
+                                        .exactly(2)
+                                        .times
+                                        .and_call_original
 
           subject.perform(start_id, stop_id)
         end
