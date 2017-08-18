@@ -249,7 +249,7 @@ class AwardsHandler {
         },
       });
 
-      return document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
+      document.querySelector('.js-vue-notes-event').dispatchEvent(toggleAwardEvent);
     }
 
     const normalizedEmoji = this.emoji.normalizeEmojiName(emoji);
