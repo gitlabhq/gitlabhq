@@ -1,15 +1,15 @@
-import Cookies from 'js-cookie';
 import bp from './breakpoints';
 
 let headerHeight = 50;
+let sidebar;
+
+export const setSidebar = (el) => { sidebar = el; };
 
 export const getHeaderHeight = () => headerHeight;
 
 export const canShowActiveSubItems = (el) => {
-  const isHiddenByMedia = bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md';
-
-  if (el.classList.contains('active') && !isHiddenByMedia) {
-    return Cookies.get('sidebar_collapsed') === 'true';
+  if (el.classList.contains('active') && (sidebar && !sidebar.classList.contains('sidebar-icons-only'))) {
+    return false;
   }
 
   return true;
@@ -61,10 +61,14 @@ export default () => {
   const items = [...document.querySelectorAll('.sidebar-top-level-items > li')]
     .filter(el => el.querySelector('.sidebar-sub-level-items'));
 
-  headerHeight = document.querySelector('.nav-sidebar').offsetTop;
+  sidebar = document.querySelector('.nav-sidebar');
 
-  items.forEach((el) => {
-    el.addEventListener('mouseenter', e => showSubLevelItems(e.currentTarget));
-    el.addEventListener('mouseleave', e => hideSubLevelItems(e.currentTarget));
-  });
+  if (sidebar) {
+    headerHeight = sidebar.offsetTop;
+
+    items.forEach((el) => {
+      el.addEventListener('mouseenter', e => showSubLevelItems(e.currentTarget));
+      el.addEventListener('mouseleave', e => hideSubLevelItems(e.currentTarget));
+    });
+  }
 };
