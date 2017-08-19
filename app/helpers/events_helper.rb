@@ -35,18 +35,18 @@ module EventsHelper
     [event.action_name, target].join(" ")
   end
 
-  def event_filter_link(key, tooltip)
+  def event_filter_link(key, text, tooltip)
     key = key.to_s
     active = 'active' if @event_filter.active?(key)
     link_opts = {
-      class: "event-filter-link",
+      class: "event-filter-link has-tooltip",
       id:    "#{key}_event_filter",
-      title: "Filter by #{tooltip.downcase}"
+      title: tooltip
     }
 
     content_tag :li, class: active do
       link_to request.path, link_opts do
-        content_tag(:span, ' ' + tooltip)
+        content_tag(:span, ' ' + text)
       end
     end
   end

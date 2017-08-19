@@ -1610,8 +1610,7 @@ describe Project do
     it 'imports a project' do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
-      project.import_schedule
-
+      expect { project.import_schedule }.to change { project.import_jid }
       expect(project.reload.import_status).to eq('finished')
     end
   end
@@ -1622,6 +1621,13 @@ describe Project do
 
       before do
         allow(Projects::HousekeepingService).to receive(:new) { housekeeping_service }
+      end
+
+      it 'resets project import_error' do
+        error_message = 'Some error'
+        mirror = create(:project_empty_repo, :import_started, import_error: error_message)
+
+        expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
 
       it 'performs housekeeping when an import of a fresh project is completed' do
@@ -1730,17 +1736,21 @@ describe Project do
   end
 
   describe '#add_import_job' do
+    let(:import_jid) { '123' }
+
     context 'forked' do
       let(:forked_project_link) { create(:forked_project_link, :forked_to_empty_project) }
       let(:forked_from_project) { forked_project_link.forked_from_project }
       let(:project) { forked_project_link.forked_to_project }
 
       it 'schedules a RepositoryForkWorker job' do
-        expect(RepositoryForkWorker).to receive(:perform_async)
-          .with(project.id, forked_from_project.repository_storage_path,
-              forked_from_project.disk_path, project.namespace.full_path)
+        expect(RepositoryForkWorker).to receive(:perform_async).with(
+          project.id,
+          forked_from_project.repository_storage_path,
+          forked_from_project.disk_path,
+          project.namespace.full_path).and_return(import_jid)
 
-        project.add_import_job
+        expect(project.add_import_job).to eq(import_jid)
       end
     end
 
@@ -1748,9 +1758,8 @@ describe Project do
       it 'schedules a RepositoryImportWorker job' do
         project = create(:project, import_url: generate(:url))
 
-        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
-
-        project.add_import_job
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return(import_jid)
+        expect(project.add_import_job).to eq(import_jid)
       end
     end
   end
@@ -2308,6 +2317,44 @@ describe Project do
 
         expect(project.deploy_keys).to include(key)
       end
+    end
+  end
+
+  describe '#remove_pages' do
+    let(:project) { create(:project) }
+    let(:namespace) { project.namespace }
+    let(:pages_path) { project.pages_path }
+
+    around do |example|
+      FileUtils.mkdir_p(pages_path)
+      begin
+        example.run
+      ensure
+        FileUtils.rm_rf(pages_path)
+      end
+    end
+
+    it 'removes the pages directory' do
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
+      expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
+
+      project.remove_pages
+    end
+
+    it 'is a no-op when there is no namespace' do
+      project.update_column(:namespace_id, nil)
+
+      expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
+      expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
+
+      project.remove_pages
+    end
+
+    it 'is run when the project is destroyed' do
+      expect(project).to receive(:remove_pages).and_call_original
+
+      project.destroy
     end
   end
 

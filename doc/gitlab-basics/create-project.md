@@ -29,5 +29,12 @@
 
 1. Click **Create project**.
 
+## From a template
+
+To kickstart your development GitLab projects can be started from a template.
+For example, one of the templates included is Ruby on Rails. When filling out the 
+form for new projects, click the 'Ruby on Rails' button. During project creation,
+this will import a Ruby on Rails template with GitLab CI preconfigured.
+
 [import it]: ../workflow/importing/README.md
 [reserved]:  ../user/reserved_names.md

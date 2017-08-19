@@ -210,7 +210,11 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event do
   end
 end
 
-describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads do
+##
+# The background migration relies on a temporary table, hence we're migrating
+# to a specific version of the database where said table is still present.
+#
+describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migration, schema: 20170608152748 do
   let(:migration) { described_class.new }
   let(:project) { create(:project_empty_repo) }
   let(:author) { create(:user) }
@@ -227,21 +231,6 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads do
       author_id: author.id,
       data: data
     )
-  end
-
-  # The background migration relies on a temporary table, hence we're migrating
-  # to a specific version of the database where said table is still present.
-  before :all do
-    ActiveRecord::Migration.verbose = false
-
-    ActiveRecord::Migrator
-      .migrate(ActiveRecord::Migrator.migrations_paths, 20170608152748)
-  end
-
-  after :all do
-    ActiveRecord::Migrator.migrate(ActiveRecord::Migrator.migrations_paths)
-
-    ActiveRecord::Migration.verbose = true
   end
 
   describe '#perform' do

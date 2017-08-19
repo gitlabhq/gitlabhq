@@ -74,7 +74,8 @@ export default {
     <tbody>
       <repo-file-options
         :is-mini="isMini"
-        :project-name="projectName"/>
+        :project-name="projectName"
+      />
       <repo-previous-directory
         v-if="isRoot"
         :prev-url="prevURL"
@@ -84,7 +85,8 @@ export default {
         :key="n"
         :loading="loading"
         :has-files="!!files.length"
-        :is-mini="isMini"/>
+        :is-mini="isMini"
+      />
       <repo-file
         v-for="file in files"
         :key="file.id"
@@ -93,7 +95,8 @@ export default {
         @linkclicked="fileClicked(file)"
         :is-tree="isTree"
         :has-files="!!files.length"
-        :active-file="activeFile"/>
+        :active-file="activeFile"
+      />
     </tbody>
   </table>
 </div>

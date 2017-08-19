@@ -204,21 +204,26 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        !!rugged.tags[name]
+        gitaly_migrate(:ref_exists_tags) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/tags/#{name}")
+          else
+            rugged_tag_exists?(name)
+          end
+        end
       end
 
       # Returns true if the given branch exists
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        rugged.branches.exists?(name)
-
-      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
-      # Whatever code calls this method shouldn't have to deal with that so
-      # instead we just return `false` (which is true since a branch doesn't
-      # exist when it has an invalid name).
-      rescue Rugged::ReferenceError
-        false
+        gitaly_migrate(:ref_exists_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/heads/#{name}")
+          else
+            rugged_branch_exists?(name)
+          end
+        end
       end
 
       # Returns an Array of branch and tag names
@@ -653,33 +658,15 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
-        begin
-          commit = lookup(ref)
-        rescue Rugged::ReferenceError
-          raise InvalidRef.new("Ref #{ref} is invalid")
+        Gitlab::GitalyClient.migrate(:apply_gitattributes) do |is_enabled|
+          if is_enabled
+            gitaly_copy_gitattributes(ref)
+          else
+            rugged_copy_gitattributes(ref)
+          end
         end
-
-        # Create the paths
-        info_dir_path = File.join(path, 'info')
-        info_attributes_path = File.join(info_dir_path, 'attributes')
-
-        begin
-          # Retrieve the contents of the blob
-          gitattributes_content = blob_content(commit, '.gitattributes')
-        rescue InvalidBlobName
-          # No .gitattributes found. Should now remove any info/attributes and return
-          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
-          return
-        end
-
-        # Create the info directory if needed
-        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
-
-        # Write the contents of the .gitattributes file to info/attributes
-        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
-        File.open(info_attributes_path, "wb") do |file|
-          file.write(gitattributes_content)
-        end
+      rescue GRPC::InvalidArgument
+        raise InvalidRef
       end
 
       # Returns the Git attributes for the given file path.
@@ -1011,6 +998,68 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def gitaly_ref_exists?(ref_name)
+        gitaly_ref_client.ref_exists?(ref_name)
+      end
+
+      # Returns true if the given tag exists
+      #
+      # name - The name of the tag as a String.
+      def rugged_tag_exists?(name)
+        !!rugged.tags[name]
+      end
+
+      # Returns true if the given branch exists
+      #
+      # name - The name of the branch as a String.
+      def rugged_branch_exists?(name)
+        rugged.branches.exists?(name)
+
+      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
+      # Whatever code calls this method shouldn't have to deal with that so
+      # instead we just return `false` (which is true since a branch doesn't
+      # exist when it has an invalid name).
+      rescue Rugged::ReferenceError
+        false
+      end
+
+      def gitaly_copy_gitattributes(revision)
+        gitaly_repository_client.apply_gitattributes(revision)
+      end
+
+      def rugged_copy_gitattributes(ref)
+        begin
+          commit = lookup(ref)
+        rescue Rugged::ReferenceError
+          raise InvalidRef.new("Ref #{ref} is invalid")
+        end
+
+        # Create the paths
+        info_dir_path = File.join(path, 'info')
+        info_attributes_path = File.join(info_dir_path, 'attributes')
+
+        begin
+          # Retrieve the contents of the blob
+          gitattributes_content = blob_content(commit, '.gitattributes')
+        rescue InvalidBlobName
+          # No .gitattributes found. Should now remove any info/attributes and return
+          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
+          return
+        end
+
+        # Create the info directory if needed
+        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
+
+        # Write the contents of the .gitattributes file to info/attributes
+        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
+        File.open(info_attributes_path, "wb") do |file|
+          file.write(gitattributes_content)
+        end
       end
     end
   end
