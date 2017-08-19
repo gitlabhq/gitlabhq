@@ -3,28 +3,44 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-05 08:50-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-07-12 06:32-0400\n"
 "Last-Translator: Huang Tao <htve@outlook.com>\n"
-"Language-Team: Chinese (Hong Kong SAR China) (https://translate.zanata.org/project/view/GitLab)\n"
+"Language-Team: Chinese (Hong Kong SAR China) (https://translate.zanata.org/pro"
+"ject/view/GitLab)\n"
 "Language: zh-HK\n"
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-
-msgid "%s additional commit has been omitted to prevent performance issues."
-msgid_plural ""
-"%s additional commits have been omitted to prevent performance issues."
-msgstr[0] "為提高頁面加載速度及性能，已省略了 %s 次提交。"
 
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] " %d 次提交"
 
+msgid "%s additional commit has been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "為提高頁面加載速度及性能，已省略了 %s 次提交。"
+
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交於 %{commit_timeago}"
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -36,6 +52,9 @@ msgstr "相關持續集成的圖像集合"
 
 msgid "About auto deploy"
 msgstr "關於自動部署"
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
 
 msgid "Active"
 msgstr "啟用"
@@ -58,11 +77,26 @@ msgstr "新增壹個用於推送或拉取的 SSH 秘鑰到賬號中。"
 msgid "Add new directory"
 msgstr "添加新目錄"
 
+msgid "All"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "歸檔項目！存儲庫為只讀"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "確定要刪除此流水線計劃嗎？"
+
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放文件到此處或者 %{upload_link}"
@@ -71,13 +105,8 @@ msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "分支"
 
-msgid ""
-"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
-"choose a GitLab CI Yaml template and commit your changes. "
-"%{link_to_autodeploy_doc}"
-msgstr ""
-"分支 <strong>%{branch_name}</strong> 已創建。如需設置自動部署， 請選擇合適的 GitLab CI Yaml "
-"模板併提交更改。%{link_to_autodeploy_doc}"
+msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr "分支 <strong>%{branch_name}</strong> 已創建。如需設置自動部署， 請選擇合適的 GitLab CI Yaml 模板併提交更改。%{link_to_autodeploy_doc}"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "搜索分支"
@@ -107,6 +136,10 @@ msgid "CI configuration"
 msgstr "CI 配置"
 
 msgid "Cancel"
+msgstr "取消"
+
+#, fuzzy
+msgid "Cancel edit"
 msgstr "取消"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -187,6 +220,10 @@ msgstr "已跳過"
 msgid "CiStatus|running"
 msgstr "運行中"
 
+#, fuzzy
+msgid "Comments"
+msgstr "提交"
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "提交"
@@ -233,9 +270,10 @@ msgstr "複製提交 SHA 到剪貼板"
 msgid "Create New Directory"
 msgstr "創建新目錄"
 
-msgid ""
-"Create a personal access token on your account to pull or push via "
-"%{protocol}."
+msgid "Create a new branch"
+msgstr ""
+
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "在帳戶上創建個人訪問令牌，以通過 %{protocol} 來拉取或推送。"
 
 msgid "Create directory"
@@ -268,19 +306,13 @@ msgstr "Cron 語法"
 msgid "Custom notification events"
 msgstr "自定義通知事件"
 
-msgid ""
-"Custom notification levels are the same as participating levels. With custom "
-"notification levels you will also receive notifications for select events. "
-"To find out more, check out %{notification_link}."
-msgstr ""
-"自定義通知級別繼承自參與級別。使用自定義通知級別，您會收到參與級別及選定事件的通知。想了解更多信息，請查看 %{notification_link}."
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr "自定義通知級別繼承自參與級別。使用自定義通知級別，您會收到參與級別及選定事件的通知。想了解更多信息，請查看 %{notification_link}."
 
 msgid "Cycle Analytics"
 msgstr "週期分析"
 
-msgid ""
-"Cycle Analytics gives an overview of how much time it takes to go from idea "
-"to production in your project."
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr "週期分析概述了項目從想法到產品實現的各階段所需的時間。"
 
 msgid "CycleAnalyticsStage|Code"
@@ -317,8 +349,14 @@ msgstr[0] "部署"
 msgid "Description"
 msgstr "描述"
 
+msgid "Details"
+msgstr ""
+
 msgid "Directory name"
 msgstr "目錄名稱"
+
+msgid "Discard changes"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "不再顯示"
@@ -355,6 +393,24 @@ msgstr "編輯"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線計劃"
+
+msgid "EventFilterBy|Filter by all"
+msgstr ""
+
+msgid "EventFilterBy|Filter by comments"
+msgstr ""
+
+msgid "EventFilterBy|Filter by issue events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by merge events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by push events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by team"
+msgstr ""
 
 msgid "Every day (at 4:00am)"
 msgstr "每日執行（淩晨 4 點）"
@@ -402,11 +458,35 @@ msgstr "從創建議題到部署到生產環境"
 msgid "From merge request merge until deploy to production"
 msgstr "從合併請求的合併到部署至生產環境"
 
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr "跳轉到派生項目"
 
 msgid "GoToYourFork|Fork"
 msgstr "跳轉到派生項目"
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
+msgstr ""
 
 msgid "Home"
 msgstr "首頁"
@@ -417,11 +497,17 @@ msgstr "已開始維護"
 msgid "Import repository"
 msgstr "導入存儲庫"
 
+msgid "Install a Runner compatible with GitLab CI"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr "循環週期"
 
 msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
+
+msgid "Issue events"
+msgstr ""
 
 msgid "Jobs for last month"
 msgstr "上個月的作業"
@@ -451,6 +537,12 @@ msgstr "最後更新"
 msgid "Last commit"
 msgstr "最後提交"
 
+msgid "LastPushEvent|You pushed to"
+msgstr ""
+
+msgid "LastPushEvent|at"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr "了解更多"
 
@@ -470,8 +562,14 @@ msgstr[0] "最多顯示 %d 個事件"
 msgid "Median"
 msgstr "中位數"
 
+msgid "Merge events"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "添加壹個 SSH 公鑰"
+
+msgid "More information is available|here"
+msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -669,6 +767,9 @@ msgstr "於階段"
 msgid "Pipeline|with stages"
 msgstr "於階段"
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "項目 '%{project_name}' 已進入刪除隊列。"
 
@@ -684,15 +785,16 @@ msgstr "項目 '%{project_name}' 將被刪除。"
 msgid "Project access must be granted explicitly to each user."
 msgstr "項目訪問權限必須明確授權給每個用戶。"
 
+msgid "Project details"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr "無法刪除項目導出。"
 
 msgid "Project export has been deleted."
 msgstr "項目導出已被刪除。"
 
-msgid ""
-"Project export link has expired. Please generate a new export from your "
-"project settings."
+msgid "Project export link has expired. Please generate a new export from your project settings."
 msgstr "項目導出鏈接已過期。請從項目設置中重新生成項目導出。"
 
 msgid "Project export started. A download link will be sent by email."
@@ -700,6 +802,10 @@ msgstr "項目導出已開始。下載鏈接將通過電子郵件發送。"
 
 msgid "Project home"
 msgstr "項目首頁"
+
+#, fuzzy
+msgid "ProjectActivityRSS|Subscribe"
+msgstr "活動"
 
 msgid "ProjectFeature|Disabled"
 msgstr "停用"
@@ -721,6 +827,9 @@ msgstr "階段"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "分支圖"
+
+msgid "Push events"
+msgstr ""
 
 msgid "Read more"
 msgstr "了解更多"
@@ -758,8 +867,21 @@ msgstr "稍後提醒"
 msgid "Remove project"
 msgstr "刪除項目"
 
+#, fuzzy
+msgid "Repository"
+msgstr "沒有存儲庫"
+
 msgid "Request Access"
 msgstr "申請權限"
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr "還原此提交"
@@ -784,6 +906,9 @@ msgstr "選擇下載格式"
 
 msgid "Select a timezone"
 msgstr "選擇時區"
+
+msgid "Select existing branch"
+msgstr ""
 
 msgid "Select target branch"
 msgstr "選擇目標分支"
@@ -810,11 +935,17 @@ msgstr[0] "顯示 %d 個事件"
 msgid "Source code"
 msgstr "源代碼"
 
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr "星標"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "由此更改 %{new_merge_request}"
+
+msgid "Start the Runner!"
+msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "切換分支/標籤"
@@ -829,10 +960,10 @@ msgstr "標籤"
 msgid "Target Branch"
 msgstr "目標分支"
 
-msgid ""
-"The coding stage shows the time from the first commit to creating the merge "
-"request. The data will automatically be added here once you create your "
-"first merge request."
+msgid "Team"
+msgstr ""
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "編碼階段概述了從第壹次提交到創建合併請求的時間。創建第壹個合併請求後，數據將自動添加到此處。"
 
 msgid "The collection of events added to the data gathered for that stage."
@@ -841,31 +972,19 @@ msgstr "與該階段相關的事件。"
 msgid "The fork relationship has been removed."
 msgstr "派生關係已被刪除。"
 
-msgid ""
-"The issue stage shows the time it takes from creating an issue to assigning "
-"the issue to a milestone, or add the issue to a list on your Issue Board. "
-"Begin creating issues to see data for this stage."
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr "議題階段概述了從創建議題到將議題添加到裏程碑或議題看板所花費的時間。創建第壹個議題後，數據將自動添加到此處.。"
 
 msgid "The phase of the development lifecycle."
 msgstr "項目生命週期中的各個階段。"
 
-msgid ""
-"The pipelines schedule runs pipelines in the future, repeatedly, for "
-"specific branches or tags. Those scheduled pipelines will inherit limited "
-"project access based on their associated user."
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
 msgstr "流水線計劃會週期性重複運行指定分支或標籤的流水線。這些流水線將根據其關聯用戶繼承有限的項目訪問權限。"
 
-msgid ""
-"The planning stage shows the time from the previous step to pushing your "
-"first commit. This time will be added automatically once you push your first "
-"commit."
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "計劃階段概述了從議題添加到日程到推送首次提交的時間。當首次推送提交後，數據將自動添加到此處。"
 
-msgid ""
-"The production stage shows the total time it takes between creating an issue "
-"and deploying the code to production. The data will be automatically added "
-"once you have completed the full idea to production cycle."
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr "生產階段概述了從創建議題到將代碼部署到生產環境的時間。當完成完整的想法到部署生產，數據將自動添加到此處。"
 
 msgid "The project can be accessed by any logged in user."
@@ -877,36 +996,25 @@ msgstr "該項目允許任何人訪問。"
 msgid "The repository for this project does not exist."
 msgstr "此項目的存儲庫不存在。"
 
-msgid ""
-"The review stage shows the time from creating the merge request to merging "
-"it. The data will automatically be added after you merge your first merge "
-"request."
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr "評審階段概述了從創建合併請求到合併的時間。當創建第壹個合併請求後，數據將自動添加到此處。"
 
-msgid ""
-"The staging stage shows the time between merging the MR and deploying code "
-"to the production environment. The data will be automatically added once you "
-"deploy to production for the first time."
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr "預發布階段概述了合併請求的合併到部署代碼到生產環境的總時間。當首次部署到生產環境後，數據將自動添加到此處。"
 
-msgid ""
-"The testing stage shows the time GitLab CI takes to run every pipeline for "
-"the related merge request. The data will automatically be added after your "
-"first pipeline finishes running."
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr "測試階段概述了 GitLab CI 為相關合併請求運行每個流水線所需的時間。當第壹個流水線運行完成後，數據將自動添加到此處。"
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "該階段每條數據所花的時間"
 
-msgid ""
-"The value lying at the midpoint of a series of observed values. E.g., "
-"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
-" 6."
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr "中位數是壹個數列中最中間的值。例如在 3、5、9 之間，中位數是 5。在 3、5、7、8 之間，中位數是 （5 + 7）/ 2 = 6。"
 
-msgid ""
-"This means you can not push code until you create an empty repository or "
-"import existing one."
+msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "在創建壹個空的存儲庫或導入現有存儲庫之前，您將無法推送代碼。"
 
 msgid "Time before an issue gets scheduled"
@@ -1073,6 +1181,9 @@ msgstr "上傳文件"
 msgid "UploadLink|click to upload"
 msgstr "點擊上傳"
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr "使用全局通知設置"
 
@@ -1106,14 +1217,10 @@ msgstr "即將刪除 %{group_name}。已刪除的群組無法恢復！確定繼�
 msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "即將要刪除 %{project_name_with_namespace}。已刪除的項目無法恢複！確定繼續嗎？"
 
-msgid ""
-"You are going to remove the fork relationship to source project "
-"%{forked_from_project}. Are you ABSOLUTELY sure?"
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr "即將刪除與源項目 %{forked_from_project} 的派生關系。確定繼續嗎？"
 
-msgid ""
-"You are going to transfer %{project_name_with_namespace} to another owner. "
-"Are you ABSOLUTELY sure?"
+msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr "即將 %{project_name_with_namespace} 轉義給另壹個所有者。確定繼續嗎？"
 
 msgid "You can only add files when you are on a branch"
@@ -1134,26 +1241,19 @@ msgstr "不會收到任何通知郵件"
 msgid "You will only receive notifications for the events you choose"
 msgstr "只接收您選擇的事件通知"
 
-msgid ""
-"You will only receive notifications for threads you have participated in"
+msgid "You will only receive notifications for threads you have participated in"
 msgstr "只接收您參與的主題的通知"
 
 msgid "You will receive notifications for any activity"
 msgstr "接收所有活動的通知"
 
-msgid ""
-"You will receive notifications only for comments in which you were "
-"@mentioned"
+msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr "只接收評論中提及(@)您的通知"
 
-msgid ""
-"You won't be able to pull or push project code via %{protocol} until you "
-"%{set_password_link} on your account"
+msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
 msgstr "在賬號上  %{set_password_link} 之前將無法通過 %{protocol} 拉取或推送代碼。"
 
-msgid ""
-"You won't be able to pull or push project code via SSH until you "
-"%{add_ssh_key_link} to your profile"
+msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
 msgstr "在賬號中 %{add_ssh_key_link} 之前將無法通過 SSH 拉取或推送代碼。"
 
 msgid "Your name"

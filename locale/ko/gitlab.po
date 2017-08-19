@@ -7,7 +7,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-13 12:07-0500\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,12 +22,28 @@ msgid_plural "%d commits"
 msgstr[0] "%d 커밋"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
-msgid_plural ""
-"%s additional commits have been omitted to prevent performance issues."
+msgid_plural "%s additional commits have been omitted to prevent performance issues."
 msgstr[0] "%s 추가 커밋은 성능 이슈를 방지하기 위해 생략되었습니다."
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_timeago} 에 %{commit_author_link} 님이 커밋하였습니다. "
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
+msgstr ""
+
+msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will not retry automatically. Reset storage information when the problem is resolved."
+msgstr ""
+
+msgid "%{storage_name}: failed storage access attempt on host:"
+msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -40,6 +55,9 @@ msgstr "지속적인 통합에 관한 그래프 모음"
 
 msgid "About auto deploy"
 msgstr "자동 배포 정보"
+
+msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
+msgstr ""
 
 msgid "Active"
 msgstr "활성"
@@ -62,11 +80,26 @@ msgstr "프로필에 SSH 키를 추가하여 SSH를 통해 Pull 하거나 Push�
 msgid "Add new directory"
 msgstr "새 디렉토리 추가"
 
+msgid "All"
+msgstr ""
+
 msgid "Archived project! Repository is read-only"
 msgstr "프로젝트가 보관되었습니다! 저장소는 읽기만 가능합니다."
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "이 파이프라인 스케쥴을 삭제 하시겠습니까?"
+
+msgid "Are you sure you want to discard your changes?"
+msgstr ""
+
+msgid "Are you sure you want to reset registration token?"
+msgstr ""
+
+msgid "Are you sure you want to reset the health check token?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "드래그 &amp; 드롭 또는 %{upload_link}"
@@ -75,13 +108,8 @@ msgid "Branch"
 msgid_plural "Branches"
 msgstr[0] "브랜치"
 
-msgid ""
-"Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, "
-"choose a GitLab CI Yaml template and commit your changes. "
-"%{link_to_autodeploy_doc}"
-msgstr ""
-"<strong>%{branch_name}</strong> 브랜치가 생성되었습니다. 자동 배포를 설정하려면 GitLab CI Yaml "
-"템플릿을 선택하고 변경 사항을 적용하십시오. %{link_to_autodeploy_doc}"
+msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
+msgstr "<strong>%{branch_name}</strong> 브랜치가 생성되었습니다. 자동 배포를 설정하려면 GitLab CI Yaml 템플릿을 선택하고 변경 사항을 적용하십시오. %{link_to_autodeploy_doc}"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr "브랜치 검색"
@@ -111,6 +139,10 @@ msgid "CI configuration"
 msgstr "CI 설정"
 
 msgid "Cancel"
+msgstr "취소"
+
+#, fuzzy
+msgid "Cancel edit"
 msgstr "취소"
 
 msgid "ChangeTypeActionLabel|Pick into branch"
@@ -191,6 +223,10 @@ msgstr "건너 뜀"
 msgid "CiStatus|running"
 msgstr "실행 중"
 
+#, fuzzy
+msgid "Comments"
+msgstr "커밋"
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] "커밋"
@@ -237,9 +273,10 @@ msgstr "커밋의 SHA를 클립보드로 복사합니다"
 msgid "Create New Directory"
 msgstr "새 디렉토리 만들기"
 
-msgid ""
-"Create a personal access token on your account to pull or push via "
-"%{protocol}."
+msgid "Create a new branch"
+msgstr ""
+
+msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "%{protocol}을 (를) 통해 Pull 하거나 Push 할 개인 액세스 토큰을 만드십시오."
 
 msgid "Create directory"
@@ -272,20 +309,13 @@ msgstr "크론 구문"
 msgid "Custom notification events"
 msgstr "사용자 정의 알림 이벤트"
 
-msgid ""
-"Custom notification levels are the same as participating levels. With custom "
-"notification levels you will also receive notifications for select events. "
-"To find out more, check out %{notification_link}."
-msgstr ""
-"사용자 정의 알림 수준은 참여 수준과 동일합니다. 맞춤 알림 수준을 사용하면 일부 이벤트에 대한 알림도 받게됩니다. 자세한 내용은 "
-"%{notification_link}을 확인하십시오."
+msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr "사용자 정의 알림 수준은 참여 수준과 동일합니다. 맞춤 알림 수준을 사용하면 일부 이벤트에 대한 알림도 받게됩니다. 자세한 내용은 %{notification_link}을 확인하십시오."
 
 msgid "Cycle Analytics"
 msgstr "Cycle Analytics"
 
-msgid ""
-"Cycle Analytics gives an overview of how much time it takes to go from idea "
-"to production in your project."
+msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr "Cycle Analytics는 프로젝트에서 아이디어를 프로덕션으로 옮기는 데 걸리는 시간을 대략적으로 보여줍니다."
 
 msgid "CycleAnalyticsStage|Code"
@@ -322,8 +352,14 @@ msgstr[0] "배포"
 msgid "Description"
 msgstr "설명"
 
+msgid "Details"
+msgstr ""
+
 msgid "Directory name"
 msgstr "디렉토리 이름"
+
+msgid "Discard changes"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "다시 표시하지 않음"
@@ -360,6 +396,24 @@ msgstr "편집"
 
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "파이프라인 스케줄 편집 %{id}"
+
+msgid "EventFilterBy|Filter by all"
+msgstr ""
+
+msgid "EventFilterBy|Filter by comments"
+msgstr ""
+
+msgid "EventFilterBy|Filter by issue events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by merge events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by push events"
+msgstr ""
+
+msgid "EventFilterBy|Filter by team"
+msgstr ""
 
 msgid "Every day (at 4:00am)"
 msgstr "매일 (오전 4시에)"
@@ -407,11 +461,35 @@ msgstr "이슈 생성에서 프로덕션 배포까지"
 msgid "From merge request merge until deploy to production"
 msgstr "머지 리퀘스트 머지에서 프로덕션 환경에 배포까지"
 
+msgid "Git storage health information has been reset"
+msgstr ""
+
+msgid "GitLab Runner section"
+msgstr ""
+
 msgid "Go to your fork"
 msgstr "당신의 포크로 이동하세요"
 
 msgid "GoToYourFork|Fork"
 msgstr "포크"
+
+msgid "Health Check"
+msgstr ""
+
+msgid "Health information can be retrieved from the following endpoints. More information is available"
+msgstr ""
+
+msgid "HealthCheck|Access token is"
+msgstr ""
+
+msgid "HealthCheck|Healthy"
+msgstr ""
+
+msgid "HealthCheck|No Health Problems Detected"
+msgstr ""
+
+msgid "HealthCheck|Unhealthy"
+msgstr ""
 
 msgid "Home"
 msgstr "홈"
@@ -422,11 +500,17 @@ msgstr "Housekeeping이 성공적으로 시작되었습니다"
 msgid "Import repository"
 msgstr "저장소 가져 오기"
 
+msgid "Install a Runner compatible with GitLab CI"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr "주기 패턴"
 
 msgid "Introducing Cycle Analytics"
 msgstr "Cycle Analytics 소개"
+
+msgid "Issue events"
+msgstr ""
 
 msgid "Jobs for last month"
 msgstr "지난달 Jobs"
@@ -456,6 +540,12 @@ msgstr "최근 업데이트:"
 msgid "Last commit"
 msgstr "최근 커밋"
 
+msgid "LastPushEvent|You pushed to"
+msgstr ""
+
+msgid "LastPushEvent|at"
+msgstr ""
+
 msgid "Learn more in the"
 msgstr "더 자세히 알아보기"
 
@@ -475,8 +565,14 @@ msgstr[0] "최대 %d 이벤트 만 표시하는 것으로 제한됩니다."
 msgid "Median"
 msgstr "중앙값"
 
+msgid "Merge events"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "SSH 키 추가"
+
+msgid "More information is available|here"
+msgstr ""
 
 msgid "New Issue"
 msgid_plural "New Issues"
@@ -674,6 +770,9 @@ msgstr "스테이징"
 msgid "Pipeline|with stages"
 msgstr "스테이징"
 
+msgid "Project"
+msgstr ""
+
 msgid "Project '%{project_name}' queued for deletion."
 msgstr "'%{project_name}'프로젝트가 삭제 처리 중입니다."
 
@@ -689,15 +788,16 @@ msgstr "'%{project_name}'프로젝트가 삭제됩니다."
 msgid "Project access must be granted explicitly to each user."
 msgstr "프로젝트 액세스는 각 사용자에게 명시적으로 부여되어야합니다."
 
+msgid "Project details"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr "프로젝트 내보내기를 삭제할 수 없습니다."
 
 msgid "Project export has been deleted."
 msgstr "프로젝트 내보내기가 삭제되었습니다."
 
-msgid ""
-"Project export link has expired. Please generate a new export from your "
-"project settings."
+msgid "Project export link has expired. Please generate a new export from your project settings."
 msgstr "프로젝트 내보내기 링크가 만료되었습니다. 프로젝트 설정에서 새 내보내기를 생성하십시오."
 
 msgid "Project export started. A download link will be sent by email."
@@ -705,6 +805,10 @@ msgstr "프로젝트 내보내기가 시작되었습니다. 다운로드 링크�
 
 msgid "Project home"
 msgstr "프로젝트 홈"
+
+#, fuzzy
+msgid "ProjectActivityRSS|Subscribe"
+msgstr "활동"
 
 msgid "ProjectFeature|Disabled"
 msgstr "사용 안 함"
@@ -726,6 +830,9 @@ msgstr "스테이징"
 
 msgid "ProjectNetworkGraph|Graph"
 msgstr "그래프"
+
+msgid "Push events"
+msgstr ""
 
 msgid "Read more"
 msgstr "더 읽기"
@@ -763,8 +870,21 @@ msgstr "나중에 다시 알림"
 msgid "Remove project"
 msgstr "프로젝트 삭제"
 
+#, fuzzy
+msgid "Repository"
+msgstr "저장소 없음"
+
 msgid "Request Access"
 msgstr "액세스 요청"
+
+msgid "Reset git storage health information"
+msgstr ""
+
+msgid "Reset health check access token"
+msgstr ""
+
+msgid "Reset runners registration token"
+msgstr ""
 
 msgid "Revert this commit"
 msgstr "이 커밋 되돌리기"
@@ -789,6 +909,9 @@ msgstr "아카이브 포맷 선택"
 
 msgid "Select a timezone"
 msgstr "시간대 선택"
+
+msgid "Select existing branch"
+msgstr ""
 
 msgid "Select target branch"
 msgstr "대상 브랜치 선택"
@@ -815,11 +938,17 @@ msgstr[0] "%d 개의 이벤트 표시 중"
 msgid "Source code"
 msgstr "소스 코드"
 
+msgid "Specify the following URL during the Runner setup:"
+msgstr ""
+
 msgid "StarProject|Star"
 msgstr "별표"
 
 msgid "Start a %{new_merge_request} with these changes"
 msgstr "이 변경 사항으로 %{new_merge_request} 을 시작하십시오."
+
+msgid "Start the Runner!"
+msgstr ""
 
 msgid "Switch branch/tag"
 msgstr "스위치 브랜치/태그"
@@ -834,13 +963,11 @@ msgstr "태그 "
 msgid "Target Branch"
 msgstr "대상 브랜치"
 
-msgid ""
-"The coding stage shows the time from the first commit to creating the merge "
-"request. The data will automatically be added here once you create your "
-"first merge request."
+msgid "Team"
 msgstr ""
-"Coding Stage는 첫 번째 커밋에서부터 머지 리퀘스트 생성까지의 시간을 보여줍니다. 첫 번째 머지 리퀘스트을 생성하면 데이터가 "
-"자동으로 여기에 추가됩니다."
+
+msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
+msgstr "Coding Stage는 첫 번째 커밋에서부터 머지 리퀘스트 생성까지의 시간을 보여줍니다. 첫 번째 머지 리퀘스트을 생성하면 데이터가 자동으로 여기에 추가됩니다."
 
 msgid "The collection of events added to the data gathered for that stage."
 msgstr "해당 단계에서 수집 된 데이터가 이벤트 모음에 추가되었습니다."
@@ -848,38 +975,20 @@ msgstr "해당 단계에서 수집 된 데이터가 이벤트 모음에 추가�
 msgid "The fork relationship has been removed."
 msgstr "포크 관계가 제거되었습니다."
 
-msgid ""
-"The issue stage shows the time it takes from creating an issue to assigning "
-"the issue to a milestone, or add the issue to a list on your Issue Board. "
-"Begin creating issues to see data for this stage."
-msgstr ""
-"이슈 단계에는 이슈를 작성하여 마일스톤으로 지정하는 데 걸리는 시간 또는 이슈 보드의 목록에 이슈를 추가하는 시간이 표시됩니다. 이 "
-"단계의 데이터를 보기 위해서는 이슈를 먼저 작성해야 합니다."
+msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr "이슈 단계에는 이슈를 작성하여 마일스톤으로 지정하는 데 걸리는 시간 또는 이슈 보드의 목록에 이슈를 추가하는 시간이 표시됩니다. 이 단계의 데이터를 보기 위해서는 이슈를 먼저 작성해야 합니다."
 
 msgid "The phase of the development lifecycle."
 msgstr "개발 수명주기의 단계."
 
-msgid ""
-"The pipelines schedule runs pipelines in the future, repeatedly, for "
-"specific branches or tags. Those scheduled pipelines will inherit limited "
-"project access based on their associated user."
-msgstr ""
-"파이프라인 일정은 미래에 특정 브랜치 또는 태그에 대해 반복적으로 파이프라인을 실행합니다. 예정된 파이프라인은 관련 사용자를 기반으로 "
-"제한된 프로젝트 액세스 권한을 상속받습니다."
+msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
+msgstr "파이프라인 일정은 미래에 특정 브랜치 또는 태그에 대해 반복적으로 파이프라인을 실행합니다. 예정된 파이프라인은 관련 사용자를 기반으로 제한된 프로젝트 액세스 권한을 상속받습니다."
 
-msgid ""
-"The planning stage shows the time from the previous step to pushing your "
-"first commit. This time will be added automatically once you push your first "
-"commit."
+msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "계획 단계에서는 이전 단계에서 첫 번째 커밋 시간이 표시됩니다. 이 시간은 첫 번째 커밋을 누르면 자동으로 추가됩니다."
 
-msgid ""
-"The production stage shows the total time it takes between creating an issue "
-"and deploying the code to production. The data will be automatically added "
-"once you have completed the full idea to production cycle."
-msgstr ""
-"프로덕션 단계에서는 문제를 만들고 코드를 프로덕션 환경으로 배포하는 데 걸리는 총 시간을 보여줍니다. 생산주기에 대한 완전한 아이디어를 "
-"얻은 후에는 데이터가 자동으로 추가됩니다."
+msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
+msgstr "프로덕션 단계에서는 문제를 만들고 코드를 프로덕션 환경으로 배포하는 데 걸리는 총 시간을 보여줍니다. 생산주기에 대한 완전한 아이디어를 얻은 후에는 데이터가 자동으로 추가됩니다."
 
 msgid "The project can be accessed by any logged in user."
 msgstr "이 프로젝트는 로그인 한 사용자가만 액세스 할 수 있습니다."
@@ -890,44 +999,25 @@ msgstr "이 프로젝트는 인증없이 액세스 할 수 있습니다."
 msgid "The repository for this project does not exist."
 msgstr "이 프로젝트의 저장소가 존재하지 않습니다."
 
-msgid ""
-"The review stage shows the time from creating the merge request to merging "
-"it. The data will automatically be added after you merge your first merge "
-"request."
-msgstr ""
-"Review 단계에서는 머지 리퀘스트를 작성한 후 머지하기까지의 시간을 보여줍니다. 데이터는 첫 번째 머지 리퀘스트을 머지 한 후에 "
-"자동으로 추가됩니다."
+msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr "Review 단계에서는 머지 리퀘스트를 작성한 후 머지하기까지의 시간을 보여줍니다. 데이터는 첫 번째 머지 리퀘스트을 머지 한 후에 자동으로 추가됩니다."
 
-msgid ""
-"The staging stage shows the time between merging the MR and deploying code "
-"to the production environment. The data will be automatically added once you "
-"deploy to production for the first time."
-msgstr ""
-"Staging 단계에서는 MR 머지과 프로덕션 환경에 코드 배포 사이의 시간을 보여줍니다. 데이터를 Production 환경에 처음 "
-"배포하면 데이터가 자동으로 추가됩니다."
+msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr "Staging 단계에서는 MR 머지과 프로덕션 환경에 코드 배포 사이의 시간을 보여줍니다. 데이터를 Production 환경에 처음 배포하면 데이터가 자동으로 추가됩니다."
 
-msgid ""
-"The testing stage shows the time GitLab CI takes to run every pipeline for "
-"the related merge request. The data will automatically be added after your "
-"first pipeline finishes running."
-msgstr ""
-"테스트 단계에서는 GitLab CI가 관련 머지 리퀘스트을 위해 모든 파이프라인을 실행하는 데 걸리는 시간을 보여줍니다. 첫 번째 "
-"파이프라인 실행이 완료되면 데이터가 자동으로 추가됩니다."
+msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
+msgstr "테스트 단계에서는 GitLab CI가 관련 머지 리퀘스트을 위해 모든 파이프라인을 실행하는 데 걸리는 시간을 보여줍니다. 첫 번째 파이프라인 실행이 완료되면 데이터가 자동으로 추가됩니다."
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "해당 단계에서 수집 한 각 데이터 입력에 소요 된 시간"
 
-msgid ""
-"The value lying at the midpoint of a series of observed values. E.g., "
-"between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 ="
-" 6."
-msgstr ""
-"값은 일련의 관측 값 중점에 있습니다. 예를 들어, 3, 5, 9 사이의 중간 값은 5입니다. 3, 5, 7, 8 사이의 중간 값은 (5 "
-"+ 7) / 2 = 6입니다."
+msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
+msgstr "값은 일련의 관측 값 중점에 있습니다. 예를 들어, 3, 5, 9 사이의 중간 값은 5입니다. 3, 5, 7, 8 사이의 중간 값은 (5 + 7) / 2 = 6입니다."
 
-msgid ""
-"This means you can not push code until you create an empty repository or "
-"import existing one."
+msgid "There are problems accessing Git storage: "
+msgstr ""
+
+msgid "This means you can not push code until you create an empty repository or import existing one."
 msgstr "즉, 빈 저장소를 만들거나 기존 저장소를 가져올 때까지 코드를 Push 할 수 없습니다."
 
 msgid "Time before an issue gets scheduled"
@@ -1094,6 +1184,9 @@ msgstr "파일 업로드"
 msgid "UploadLink|click to upload"
 msgstr "업로드하려면 클릭하십시오."
 
+msgid "Use the following registration token during setup:"
+msgstr ""
+
 msgid "Use your global notification setting"
 msgstr "전체 알림 설정 사용"
 
@@ -1125,16 +1218,12 @@ msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored!
 msgstr "%{group_name} 그룹을 제거하려고합니다. \"정말로\" 확실합니까?"
 
 msgid "You are going to remove %{project_name_with_namespace}. Removed project CANNOT be restored! Are you ABSOLUTELY sure?"
-msgstr "%{project_name_with_namespace} 프로젝트를 삭제하려고합니다. "삭제된 프로젝트를 복원 할 수 없습니다! \"정말로\" 확실합니까?"
+msgstr "%{project_name_with_namespace} 프로젝트를 삭제하려고합니다. \"삭제된 프로젝트를 복원 할 수 없습니다! \"정말로\" 확실합니까?"
 
-msgid ""
-"You are going to remove the fork relationship to source project "
-"%{forked_from_project}. Are you ABSOLUTELY sure?"
+msgid "You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?"
 msgstr "포크 관계를 소스 프로젝트 %{forked_from_project}에 대해 제거하려고합니다. \"정말로\" 확실합니까?"
 
-msgid ""
-"You are going to transfer %{project_name_with_namespace} to another owner. "
-"Are you ABSOLUTELY sure?"
+msgid "You are going to transfer %{project_name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
 msgstr "%{project_name_with_namespace}을 다른 소유자에게 이전하려고합니다. \"정말로\" 확실합니까?"
 
 msgid "You can only add files when you are on a branch"
@@ -1155,31 +1244,20 @@ msgstr "이메일로 알림을 받지 않습니다."
 msgid "You will only receive notifications for the events you choose"
 msgstr "선택한 이벤트에 대한 알림만 받습니다."
 
-msgid ""
-"You will only receive notifications for threads you have participated in"
+msgid "You will only receive notifications for threads you have participated in"
 msgstr "참여한 스레드에 대한 알림만 받습니다."
 
 msgid "You will receive notifications for any activity"
 msgstr "모든 활동에 대한 알림을 받게됩니다."
 
-msgid ""
-"You will receive notifications only for comments in which you were "
-"@mentioned"
+msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr "당신은 당신이 @mentioned 한 코멘트에 대해서만 통지를 받게됩니다."
 
-msgid ""
-"You won't be able to pull or push project code via %{protocol} until you "
-"%{set_password_link} on your account"
-msgstr ""
-"당신의 계정에 %{set_password_link} 을 하기 전에는 %{protocol} 프로토콜을 통해 프로젝트 코드를 Pull 하거나 "
-"Push 할 수 없습니다"
+msgid "You won't be able to pull or push project code via %{protocol} until you %{set_password_link} on your account"
+msgstr "당신의 계정에 %{set_password_link} 을 하기 전에는 %{protocol} 프로토콜을 통해 프로젝트 코드를 Pull 하거나 Push 할 수 없습니다"
 
-msgid ""
-"You won't be able to pull or push project code via SSH until you "
-"%{add_ssh_key_link} to your profile"
-msgstr ""
-"당신의 프로필에 %{add_ssh_key_link} 를 하기 전에는 SSH를 통해 프로젝트 코드를 Pull 하거나 Push 할 수 "
-"없습니다"
+msgid "You won't be able to pull or push project code via SSH until you %{add_ssh_key_link} to your profile"
+msgstr "당신의 프로필에 %{add_ssh_key_link} 를 하기 전에는 SSH를 통해 프로젝트 코드를 Pull 하거나 Push 할 수 없습니다"
 
 msgid "Your name"
 msgstr "귀하의 이름"
@@ -1197,4 +1275,3 @@ msgstr "알림 이메일"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "부모"
-
