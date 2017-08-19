@@ -36,6 +36,8 @@ The recommended configuration for a PostgreSQL HA setup requires:
   * IP address -- PostgreSQL does not listen on any network interface by default. It needs to know which IP address to listen on in order to use the network interface. It can be set to `0.0.0.0` to listen on all interfaces. It cannot be set to the loopack address 127.0.0.1
   * Network Address -- PostgreSQL access is controlled based on the network source. This can be in subnet (i.e. 192.168.0.0/255.255.255.0) or CIDR (i.e. 192.168.0.0/24) form.
 * User information for `pgbouncer` service
+  * The service runs as the same user as the database, default of `gitlab-psql`
+  * The service will have a regular database user account generated for it
   * Default username is `pgbouncer`. In the rest of the documentation we will refer to this username as `PGBOUNCER_USERNAME`
   * Password for `pgbouncer` service. In the rest of the documentation we will refer to this password as `PGBOUNCER_PASSWORD`
   * Password hash for `pgbouncer` service
@@ -45,6 +47,27 @@ The recommended configuration for a PostgreSQL HA setup requires:
       $ echo -n 'PASSWORD+USERNAME' | md5sum
       ``
     * In the rest of the documentation we will refer to this hash as `PGBOUNCER_PASSWORD_HASH`
+  * This password will be stored in the following locations
+    * `/etc/gitlab/gitlab.rb`: hashed, and in plain text
+    * `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
+* User information for the Repmgr service
+  * The service runs under the same system account as the database by default.
+  * The service requires a superuser database account be generated for it. This defaults to `gitlab_repmgr`
+* User information for the Consul service
+  * The consul service runs under a dedicated system account by default, `gitlab-consul`. In the rest of the documentation we will refer to this username as `CONSUL_USERNAME`
+  * There will be a database user created with read only access to the repmgr database
+  * Password for the database user. In the rest of the documentation we will refer to this password as `CONSUL_DATABASE_PASSWORD`
+  * Password hash for `gitlab-consul` service
+    * This should be generated from `gitlab-consul` username and password pair
+    * Generate the hash with:
+      ``
+      $ echo -n 'PASSWORD+USERNAME' | md5sum
+      ``
+    * In the rest of the documentation we will refer to this hash as `CONSUL_PASSWORD_HASH`
+  * This password will be stored in the following locations
+    * '/etc/gitlab/gitlab.rb`: hashed
+    * '/var/opt/gitlab/pgbouncer/pg_auth': hashed
+    * '/var/opt/gitlab/gitlab-consul/.pgpass': plaintext
 * The number of nodes in the database cluster.
   * When configuring PostgreSQL, we will set `max_wal_senders` to one more than this number. This is used to prevent replication from using up all of the available database connections.
 
