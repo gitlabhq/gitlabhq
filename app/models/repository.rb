@@ -60,6 +60,12 @@ class Repository
     @project = project
   end
 
+  def equals(other)
+    @disk_path == other.disk_path
+  end
+
+  alias_method :==, :equals
+
   def raw_repository
     return nil unless full_path
 
