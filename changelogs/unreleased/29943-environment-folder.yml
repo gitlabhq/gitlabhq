@@ -1,4 +1,4 @@
 ---
-title: Adds folder_path in API response
+title: Resolve CSRF token leakage via pathname manipulation on environments page
 merge_request:
 author:
