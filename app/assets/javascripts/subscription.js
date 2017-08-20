@@ -19,7 +19,7 @@ class Subscription {
     button.classList.add('disabled');
 
     const isSubscribed = buttonSpan.innerHTML.trim().toLowerCase() !== 'subscribe';
-    const toggleActionUrl = this.containerElm.dataset.url;
+    const toggleActionUrl = this.containerElm.dataset.url.replace(':project_path', gl.issueBoards.BoardsStore.detail.issue.project.path);
 
     $.post(toggleActionUrl, () => {
       button.classList.remove('disabled');
