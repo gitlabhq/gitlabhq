@@ -16,6 +16,14 @@ body.modal-open {
   overflow: hidden;
 }
 
+.modal-no-backdrop {
+  @extend .modal-dialog;
+
+  .modal-content {
+    box-shadow: none;
+  }
+}
+
 @media (min-width: $screen-md-min) {
   .modal-dialog {
     width: 860px;
