@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815060945) do
+ActiveRecord::Schema.define(version: 20170820100558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1726,7 +1726,7 @@ ActiveRecord::Schema.define(version: 20170815060945) do
   add_foreign_key "protected_branch_push_access_levels", "protected_branches", name: "fk_9ffc86a3d9", on_delete: :cascade
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
-  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags", name: "fk_f7dfda8c51", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_event_payloads", "events_for_migration", column: "event_id", name: "fk_36c74129da", on_delete: :cascade
