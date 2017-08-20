@@ -173,7 +173,7 @@ export default {
       // We need to verify if any folder is open to also update it
       const openFolders = this.store.getOpenFolders();
       if (openFolders.length) {
-        openFolders.forEach((folder) => this.fetchChildEnvironments(folder));
+        openFolders.forEach(folder => this.fetchChildEnvironments(folder));
       }
     },
 
