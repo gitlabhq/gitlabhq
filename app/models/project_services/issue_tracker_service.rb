@@ -25,7 +25,7 @@ class IssueTrackerService < Service
   end
 
   def issue_tracker_path
-    project_url
+    issues_url
   end
 
   def new_issue_path

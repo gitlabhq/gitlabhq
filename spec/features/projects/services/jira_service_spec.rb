@@ -38,6 +38,23 @@ feature 'Setup Jira service', :js do
         expect(page).to have_content('JIRA activated.')
         expect(current_path).to eq(project_settings_integrations_path(project))
       end
+
+      it 'updates project sidebar with Jira issues link' do
+        click_link('JIRA')
+        fill_form
+        click_button('Test settings and save changes')
+        wait_for_requests
+
+        allow_any_instance_of(ApplicationHelper).to receive(:show_new_nav?).and_return(true)
+
+        visit project_path(project)
+
+        within '.nav-sidebar' do
+          expect(find('a', text: 'Issues')[:href]).to include(url)
+          expect(page).not_to have_link 'Labels'
+          expect(page).not_to have_link 'Milestones'
+        end
+      end
     end
 
     context 'when Jira connection test fails' do

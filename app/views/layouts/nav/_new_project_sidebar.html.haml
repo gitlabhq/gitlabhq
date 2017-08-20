@@ -80,7 +80,7 @@
 
       - if project_nav_tab? :issues
         = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-          = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
+          = link_to @project.issues_tracker.issue_tracker_path, title: 'Issues', class: 'shortcuts-issues' do
             .nav-icon-container
               = custom_icon('issues')
             %span.nav-item-name
@@ -88,26 +88,27 @@
             - if @project.issues_enabled?
               %span.badge.count.issue_counter= number_with_delimiter(IssuesFinder.new(current_user, project_id: @project.id).execute.opened.count)
 
-          %ul.sidebar-sub-level-items
-            = nav_link(controller: :issues) do
-              = link_to project_issues_path(@project), title: 'Issues' do
-                %span
-                  List
+          - if @project.default_issues_tracker?
+            %ul.sidebar-sub-level-items
+              = nav_link(controller: :issues) do
+                = link_to project_issues_path(@project), title: 'Issues' do
+                  %span
+                    List
 
-            = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: 'Board' do
-                %span
-                  Board
+              = nav_link(controller: :boards) do
+                = link_to project_boards_path(@project), title: 'Board' do
+                  %span
+                    Board
 
-            = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: 'Labels' do
-                %span
-                  Labels
+              = nav_link(controller: :labels) do
+                = link_to project_labels_path(@project), title: 'Labels' do
+                  %span
+                    Labels
 
-            = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones' do
-                %span
-                  Milestones
+              = nav_link(controller: :milestones) do
+                = link_to project_milestones_path(@project), title: 'Milestones' do
+                  %span
+                    Milestones
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do

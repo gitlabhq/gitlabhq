@@ -24,7 +24,7 @@
 
     - if project_nav_tab? :issues
       = nav_link(controller: @project.issues_enabled? ? [:issues, :labels, :milestones, :boards] : :issues) do
-        = link_to project_issues_path(@project), title: 'Issues', class: 'shortcuts-issues' do
+        = link_to @project.issues_tracker.issue_tracker_path, title: 'Issues', class: 'shortcuts-issues' do
           %span
             Issues
             - if @project.issues_enabled?
