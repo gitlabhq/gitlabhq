@@ -5,7 +5,7 @@
 Checks if your .gitlab-ci.yml file is valid.
 
 ```
-POST ci/lint
+POST /lint
 ```
 
 | Attribute  | Type    | Required | Description |
@@ -49,3 +49,4 @@ Example responses:
     ```
 
 [ce-5953]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5953
+
