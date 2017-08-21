@@ -10,6 +10,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+
+        allow(@project.repository).to receive(:fetch_ref).and_return(true)
+        expect(@project.repository).to receive(:create_branch).with('feature', 'DCBA')
+
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end

@@ -133,5 +133,7 @@ methods:
     - :utf8_diff
   merge_requests:
     - :diff_head_sha
+    - :source_branch_sha
+    - :target_branch_sha
   project:
     - :description_html
