@@ -260,7 +260,7 @@ class Commit
       if commits_in_merge_request.present?
         message_buffer << "\n"
 
-        commits_in_merge_request.each do |commit_in_merge|
+        commits_in_merge_request.reverse.each do |commit_in_merge|
           message_buffer << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end

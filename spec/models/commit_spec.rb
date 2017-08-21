@@ -214,7 +214,7 @@ eos
 
       let(:merge_commit) do
         merge_request = create(:merge_request,
-                               source_branch: 'feature',
+                               source_branch: 'video',
                                target_branch: 'master',
                                source_project: project,
                                author: user)
@@ -238,7 +238,8 @@ eos
 
           (cherry picked from commit #{merge_commit.sha})
 
-          0b4bc9a4 Feature added
+          467dc98f Add new 'videos' directory
+          88790590 Upload new video file
         STR
 
         expect(merge_commit.cherry_pick_message(user)).to include(expected_appended_text)
