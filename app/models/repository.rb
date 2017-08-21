@@ -991,23 +991,27 @@ class Repository
   end
 
   def with_repo_branch_commit(start_repository, start_branch_name)
-    return yield(nil) if start_repository.empty_repo?
+    tmp_ref = nil
+    return yield nil if start_repository.empty_repo?
 
-    branch_name_or_sha =
+    branch_commit =
       if start_repository == self
-        start_branch_name
+        commit(start_branch_name)
       else
-        tmp_ref = fetch_ref(
-          start_repository.path_to_repo,
-          "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
-          "refs/tmp/#{SecureRandom.hex}/head"
-        )
+        sha = start_repository.find_branch(start_branch_name).target
+        commit(sha) ||
+          begin
+            tmp_ref = fetch_ref(
+              start_repository.path_to_repo,
+              "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+              "refs/tmp/#{SecureRandom.hex}/head"
+            )
 
-        start_repository.commit(start_branch_name).sha
+            commit(start_repository.commit(start_branch_name).sha)
+          end
       end
 
-    yield(commit(branch_name_or_sha))
-
+    yield branch_commit
   ensure
     rugged.references.delete(tmp_ref) if tmp_ref
   end
