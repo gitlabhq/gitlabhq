@@ -34,14 +34,7 @@
     },
     "variables": {
       "type": ["array", "null"],
-      "items": {
-        "type": ["object", "null"],
-        "properties": {
-          "key": { "type": "string" },
-          "value": { "type": "string" }
-        },
-        "additionalProperties": false
-      }
+      "items": { "$ref": "pipeline_schedule_variable.json" }
     }
   },
   "required": [

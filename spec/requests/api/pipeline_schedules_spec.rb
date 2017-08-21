@@ -299,4 +299,160 @@ describe API::PipelineSchedules do
       end
     end
   end
+
+  describe 'POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables' do
+    let(:params) { attributes_for(:ci_pipeline_schedule_variable) }
+
+    let(:pipeline_schedule) do
+      create(:ci_pipeline_schedule, project: project, owner: developer)
+    end
+
+    context 'authenticated user with valid permissions' do
+      context 'with required parameters' do
+        it 'creates pipeline_schedule_variable' do
+          expect do
+            post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
+              params
+          end.to change { pipeline_schedule.variables.count }.by(1)
+
+          expect(response).to have_http_status(:created)
+          expect(response).to match_response_schema('pipeline_schedule_variable')
+          expect(json_response['key']).to eq(params[:key])
+          expect(json_response['value']).to eq(params[:value])
+        end
+      end
+
+      context 'without required parameters' do
+        it 'does not create pipeline_schedule_variable' do
+          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer)
+
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
+
+      context 'when cron has validation error' do
+        it 'does not create pipeline_schedule_variable' do
+          post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
+            params.merge('key' => '!?!?')
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json_response['message']).to have_key('key')
+        end
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'does not create pipeline_schedule_variable' do
+        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", user), params
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'does not create pipeline_schedule_variable' do
+        post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables"), params
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+    let(:pipeline_schedule) do
+      create(:ci_pipeline_schedule, project: project, owner: developer)
+    end
+
+    let(:pipeline_schedule_variable) do
+      create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
+    end
+
+    context 'authenticated user with valid permissions' do
+      it 'updates cron' do
+        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
+          key: pipeline_schedule_variable.key, value: 'updated_value'
+
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema('pipeline_schedule_variable')
+        expect(json_response['key']).to eq('updated_value')
+      end
+
+      context 'when cron has validation error' do
+        it 'does not update pipeline_schedule_variable' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
+            key: '!?!?'
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json_response['message']).to have_key('key')
+        end
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do
+      it 'does not update pipeline_schedule_variable' do
+        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", user)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'does not update pipeline_schedule_variable' do
+        put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
+    let(:master) { create(:user) }
+
+    let!(:pipeline_schedule) do
+      create(:ci_pipeline_schedule, project: project, owner: developer)
+    end
+
+    let(:pipeline_schedule_variable) do
+      create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
+    end
+
+    before do
+      project.add_master(master)
+    end
+
+    context 'authenticated user with valid permissions' do
+      it 'deletes pipeline_schedule_variable' do
+        expect do
+          delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", master)
+        end.to change { project.pipeline_schedules.count }.by(-1)
+
+        expect(response).to have_http_status(:accepted)
+        expect(response).to match_response_schema('pipeline_schedule_variable')
+      end
+
+      it 'responds with 404 Not Found if requesting non-existing pipeline_schedule_variable' do
+        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/____", master)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'authenticated user with invalid permissions' do # TODO:
+      let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: master) }
+
+      it 'does not delete pipeline_schedule_variable' do
+        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer)
+
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'does not delete pipeline_schedule_variable' do
+        delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}")
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+  end
 end
