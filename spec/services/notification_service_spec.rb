@@ -151,7 +151,6 @@ describe NotificationService, :mailer do
           add_users_with_subscription(note.project, issue)
           reset_delivered_emails!
 
-          # Ensure create SentNotification by noteable = issue 6 times, not noteable = note
           expect(SentNotification).to receive(:record).with(issue, any_args).exactly(9).times
 
           notification.new_note(note)
