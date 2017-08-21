@@ -252,6 +252,13 @@ After reconfigure successfully runs, the following steps must be completed to ge
    ```
 
 ##### On the pgbouncer node
+1. Create a `.pgpass` file user for the `CONSUL_USER` account to be able to reload pgbouncer
+   ```
+   # gitlab-ctl write-pgpass --host PGBOUNCER_HOSE --database pgbouncer --user gitlab-consul
+   Please enter password: ****
+   Confirm password: ****
+   ```
+
 1. Ensure the node is talking to the current master
    ```
    # /opt/gitlab/embedded/bin/psql -h 127.0.0.1 -p 6432 -d pgbouncer pgbouncer # You will be prompted for PGBOUNCER_PASSWORD
