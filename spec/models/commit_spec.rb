@@ -212,39 +212,50 @@ eos
         { message: 'Test message', committer: author, author: author }
       end
 
-      let(:merge_commit) do
-        merge_request = create(:merge_request,
-                               source_branch: 'video',
-                               target_branch: 'master',
-                               source_project: project,
-                               author: user)
+      let(:merge_request) do
+        create(:merge_request,
+               source_branch: 'video',
+               target_branch: 'master',
+               source_project: project,
+               author: user)
+      end
 
+      let(:merge_commit) do
         merge_commit_id = repository.merge(user,
                                            merge_request.diff_head_sha,
                                            merge_request,
                                            commit_options)
 
-        merge_commit = repository.commit(merge_commit_id)
-
-        # Manually mark as completed.
-        #
-        merge_request.update(merge_commit_sha: merge_commit_id)
-
-        merge_commit
+        repository.commit(merge_commit_id)
       end
 
-      it do
-        expected_appended_text = <<~STR.rstrip
+      context 'that is found' do
+        before do
+          # Artificially mark as completed.
+          merge_request.update(merge_commit_sha: merge_commit.id)
+        end
 
-          (cherry picked from commit #{merge_commit.sha})
+        it do
+          expected_appended_text = <<~STR.rstrip
 
-          467dc98f Add new 'videos' directory
-          88790590 Upload new video file
-        STR
+            (cherry picked from commit #{merge_commit.sha})
 
-        expect(merge_commit.cherry_pick_message(user)).to include(expected_appended_text)
+            467dc98f Add new 'videos' directory
+            88790590 Upload new video file
+          STR
+
+          expect(merge_commit.cherry_pick_message(user)).to include(expected_appended_text)
+        end
       end
+
+      context "that is existing but not found (eg. it's in progress)" do
+        it do
+          expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
+        end
+      end
+
     end
+
   end
 
   describe '#reverts_commit?' do
