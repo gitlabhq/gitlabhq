@@ -139,21 +139,26 @@
               } else {
                 this.discard();
               }
+
+              if (withIssueAction) {
+                this.toggleIssueState();
+              }
             })
             .catch(() => {
               this.isSubmitting = false;
               this.discard(false);
             });
+        } else {
+          this.toggleIssueState();
         }
+      },
+      toggleIssueState() {
+        this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
 
-        if (withIssueAction) {
-          this.issueState = this.isIssueOpen ? constants.CLOSED : constants.REOPENED;
-
-          // This is out of scope for the Notes Vue component.
-          // It was the shortest path to update the issue state and relevant places.
-          const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
-          $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
-        }
+        // This is out of scope for the Notes Vue component.
+        // It was the shortest path to update the issue state and relevant places.
+        const btnClass = this.isIssueOpen ? 'btn-reopen' : 'btn-close';
+        $(`.js-btn-issue-action.${btnClass}:visible`).trigger('click');
       },
       discard(shouldClear = true) {
         // `blur` is needed to clear slash commands autocomplete cache if event fired.
