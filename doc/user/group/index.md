@@ -55,12 +55,12 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
-## Group-level views of issues and merge requests 
+## Group-level list views of issues and merge requests 
 
-Issues and merge requests are part of projects. GitLab allows you to view
-all issues and merge requests together, within all the projects in particular group,
-in dedicated group-level views. These are the [group-level issue list view](../project/issues/index.md#issue-list-views-searching-and-filtering)
-and the [group-level merge request list view](../project/merge_requests/index.md#merge-request-list-views-searching-and-filtering).
+Issues and merge requests are part of projects. For a given group, view all the
+issues across all the projects in that group, together in a single list view. This
+is the [group-level issue list view](../project/issues/index.md#issue-list-views-searching-and-filtering).
+Similarly, there is a [group-level merge request list view](../project/merge_requests/index.md#merge-request-list-views-searching-and-filtering).
 
 ## Create a new group
 
