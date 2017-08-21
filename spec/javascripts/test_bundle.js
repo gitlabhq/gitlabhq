@@ -1,7 +1,7 @@
 /* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
 import _ from 'underscore';
-import 'jasmine-jquery';
+import './lib/utils/jasmine_jquery_patched_3';
 import '~/commons';
 
 import Vue from 'vue';
@@ -37,6 +37,7 @@ window.addEventListener('unhandledrejection', (event) => {
 const checkUnhandledPromiseRejections = (done) => {
   expect(hasUnhandledPromiseRejections).toBe(false);
   done();
+  
 };
 
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
