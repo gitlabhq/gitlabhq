@@ -6,6 +6,7 @@
 1. [From FogBugz](fogbugz.md)
 1. [From Gitea](gitea.md)
 1. [From SVN](svn.md)
+1. [From ClearCase](clearcase.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the

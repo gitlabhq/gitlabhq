@@ -728,18 +728,27 @@
 @mixin new-style-dropdown($selector: '') {
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
-    .divider {
-      margin: 6px 0;
-    }
-
     li {
       padding: 0 1px;
+
+      &:hover {
+        background-color: transparent;
+      }
+
+      &.divider {
+        margin: 6px 0;
+
+        &:hover {
+          background-color: $dropdown-divider-color;
+        }
+      }
 
       &.dropdown-header {
         padding: 8px 16px;
       }
 
-      a {
+      a,
+      button {
         border-radius: 0;
         padding: 8px 16px;
 
@@ -752,7 +761,8 @@
         &:hover,
         &:active,
         &:focus {
-          background-color: $gray-darker;
+          background-color: $dropdown-item-hover-bg;
+          color: $gl-text-color;
         }
 
         &.is-active {

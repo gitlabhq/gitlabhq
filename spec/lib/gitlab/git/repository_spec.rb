@@ -235,16 +235,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to be < 2 }
   end
 
-  describe '#has_commits?' do
-    it { expect(repository.has_commits?).to be_truthy }
-  end
-
   describe '#empty?' do
     it { expect(repository.empty?).to be_falsey }
-  end
-
-  describe '#bare?' do
-    it { expect(repository.bare?).to be_truthy }
   end
 
   describe '#ref_names' do
@@ -438,15 +430,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     after(:all) do
       FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
-    end
-  end
-
-  describe "#remote_names" do
-    let(:remotes) { repository.remote_names }
-
-    it "should have one entry: 'origin'" do
-      expect(remotes.size).to eq(1)
-      expect(remotes.first).to eq("origin")
     end
   end
 
@@ -1098,28 +1081,48 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#tag_exists?' do
-    it 'returns true for an existing tag' do
-      tag = repository.tag_names.first
+    shared_examples 'checks the existence of tags' do
+      it 'returns true for an existing tag' do
+        tag = repository.tag_names.first
 
-      expect(repository.tag_exists?(tag)).to eq(true)
+        expect(repository.tag_exists?(tag)).to eq(true)
+      end
+
+      it 'returns false for a non-existing tag' do
+        expect(repository.tag_exists?('v9000')).to eq(false)
+      end
     end
 
-    it 'returns false for a non-existing tag' do
-      expect(repository.tag_exists?('v9000')).to eq(false)
+    context 'when Gitaly ref_exists_tags feature is enabled' do
+      it_behaves_like 'checks the existence of tags'
+    end
+
+    context 'when Gitaly ref_exists_tags feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'checks the existence of tags'
     end
   end
 
   describe '#branch_exists?' do
-    it 'returns true for an existing branch' do
-      expect(repository.branch_exists?('master')).to eq(true)
+    shared_examples 'checks the existence of branches' do
+      it 'returns true for an existing branch' do
+        expect(repository.branch_exists?('master')).to eq(true)
+      end
+
+      it 'returns false for a non-existing branch' do
+        expect(repository.branch_exists?('kittens')).to eq(false)
+      end
+
+      it 'returns false when using an invalid branch name' do
+        expect(repository.branch_exists?('.bla')).to eq(false)
+      end
     end
 
-    it 'returns false for a non-existing branch' do
-      expect(repository.branch_exists?('kittens')).to eq(false)
+    context 'when Gitaly ref_exists_branches feature is enabled' do
+      it_behaves_like 'checks the existence of branches'
     end
 
-    it 'returns false when using an invalid branch name' do
-      expect(repository.branch_exists?('.bla')).to eq(false)
+    context 'when Gitaly ref_exists_branches feature is disabled', skip_gitaly_mock: true do
+      it_behaves_like 'checks the existence of branches'
     end
   end
 
