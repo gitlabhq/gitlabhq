@@ -5,14 +5,14 @@ module PipelineQueue
   extend ActiveSupport::Concern
 
   included do
-    sidekiq_options queue: 'pipelines-default'
+    sidekiq_options queue: 'pipeline_default'
   end
 
   class_methods do
-    def enqueue_in(queue:, group:)
-      raise ArgumentError if queue.empty? || group.empty?
+    def enqueue_in(group:)
+      raise ArgumentError, 'Unspecified queue group!' if group.empty?
 
-      sidekiq_options queue: "pipelines-#{queue}-#{group}"
+      sidekiq_options queue: "pipeline_#{group}"
     end
   end
 end
