@@ -2,8 +2,6 @@ class PipelineMetricsWorker
   include Sidekiq::Worker
   include PipelineQueue
 
-  enqueue_in group: :metrics
-
   def perform(pipeline_id)
     Ci::Pipeline.find_by(id: pipeline_id).try do |pipeline|
       update_metrics_for_active_pipeline(pipeline) if pipeline.active?
