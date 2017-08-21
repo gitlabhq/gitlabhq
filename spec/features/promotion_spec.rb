@@ -160,7 +160,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in new MR page' do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
-      expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with squash commit'
+      expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with Squash Commit and GitLab Enterprise Edition.'
       expect(find('#promote_squash_commits')).to have_content 'Squashing lets you tidy up the commit history of a branch when accepting a merge request.'
     end
 
@@ -187,7 +187,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
-      expect(find('#promote_burndown_charts')).to have_content 'Improve milestone with Burndown Charts.'
+      expect(find('#promote_burndown_charts')).to have_content 's plan to improve milestone with Burndown Charts.'
       expect(find('#promote_burndown_charts')).to have_content 'Burndown Charts are visual representations of the progress of completing a milestone.'
     end
 
@@ -215,7 +215,7 @@ describe 'Promotions', js: true do
     it 'should appear on export modal' do
       visit project_issues_path(project)
       click_on 'Export as CSV'
-      expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition'
+      expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition.'
       expect(find('.issues-export-modal')).to have_content 'Export Issues to CSV enables you and your team to export all the data collected from issues into a comma-separated values (CSV) file'
     end
   end
