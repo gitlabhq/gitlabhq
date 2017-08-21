@@ -55,12 +55,11 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
-## Group-level list views of issues and merge requests 
+## Issues and merge requests within a group
 
 Issues and merge requests are part of projects. For a given group, view all the
-issues across all the projects in that group, together in a single list view. This
-is the [group-level issue list view](../project/issues/index.md#issue-list-views-searching-and-filtering).
-Similarly, there is a [group-level merge request list view](../project/merge_requests/index.md#merge-request-list-views-searching-and-filtering).
+[issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+together in a single list view.
 
 ## Create a new group
 

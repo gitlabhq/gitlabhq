@@ -7,7 +7,7 @@ of solving a problem.
 It allows you, your team, and your collaborators to share
 and discuss proposals before and while implementing them.
 
-GitLab issues is available in all
+GitLab Issues and the GitLab Issue Tracker are available in all
 [GitLab Products](https://about.gitlab.com/products/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
@@ -46,22 +46,29 @@ Create [issue templates](#issue-templates) to make collaboration consistent and
 containing all information you need. For example, you can create a template
 for feature proposals and another one for bug reports.
 
-## Issue list views, searching, and filtering
+## Issue Tracker
 
-View all the issues within a project by navigating to **Project > Issues**. 
-There are tabs to quickly filter by open and closed issues.
+The Issue Tracker is the collection of opened and closed issues created in a project.
+It is available for all projects, from the moment the project is created.
+
+Find the issue tracker by navigating to your **Project's homepage** > **Issues**.
+
+### Issues per project
+
+When you access your project's issues, GitLab will present them in a list,
+and you can use the tabs available to quickly filter by open and closed issues.
 
 ![Project issues list view](img/project_issues_list_view.png)
 
-[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-project).
+You can also [search and filter](../../search/index.md#issues-and-merge-requests-per-project) the results more deeply with GitLab's search capacities.
+
+### Issues per group
 
 View all the issues in a group (that is, all the issues across all projects in that
 group) by navigating to **Group > Issues**. This view also has the open and closed
 issue tabs.
 
 ![Group Issues list view](img/group_issues_list_view.png)
-
-[Search and filter the results](../../search/index.md#issues-and-merge-requests-per-group).
 
 ## GitLab Issues Functionalities
 
