@@ -28,6 +28,16 @@ Merging changes from GitLab CE to EE can result in numerous conflicts.
 To reduce conflicts, EE code should be separated in to the `EE` module
 as much as possible.
 
+### Classes vs. Module Mixins
+
+If the feature being developed is not present in any form in CE,
+separation is easy - build the class entirely in the `EE` namespace.
+
+For features that build on existing CE features, write a module in the
+`EE` namespace and `prepend` it in the CE class. This makes conflicts
+less likely to happen during CE to EE merges because only one line is
+added to the CE class - the `prepend` line.
+
 ### Adding EE-only files
 
 Place EE-only controllers, finders, helpers, mailers, models, policies,
@@ -46,13 +56,7 @@ serializers/entities, services, validators and workers in the top-level
 - `ee/app/validators/ee/foo_attr_validator.rb`
 - `ee/app/workers/ee/foo_worker.rb`
 
-### Classes vs. Module Mixins
-
-If the feature being developed is not present in any form in CE, separation is
-easier - build the class entirely in the `EE` namespace. For features that build
-on existing CE features, write a module in the `EE` namespace and include it
-in the CE class. This makes conflicts less likely during CE to EE merges
-because only one line is added to the CE class - the `include` statement.
+This applies to both EE-only classes and EE module mixins.
 
 #### Overriding CE methods
 
@@ -67,12 +71,8 @@ There are a few gotchas with it:
   renamed in CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
-  smaller methods.
-- when the original implementation contains a guard clause (e.g.
-  `return unless condition`), it doesn't return from the overriden method (it's
-  actually the same behavior as with method overridding via inheritance). In
-  this case, it's usually better to create a "hook" method that is empty in CE,
-  and with the EE-specific implementation in EE
+  smaller methods. Or create a "hook" method that is empty in CE,
+  and with the EE-specific implementation in EE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -224,9 +224,12 @@ view. For instance the approval code in the project's settings page.
 
 **Mitigations**
 
-Blocks of code that are EE-specific should be moved to partials as much as
-possible to avoid conflicts with big chunks of HAML code that that are not
-fun to resolve when you add the indentation to the equation.
+Blocks of code that are EE-specific should be moved to partials. This
+avoids conflicts with big chunks of HAML code that that are not fun to
+resolve when you add the indentation to the equation.
+
+EE-specific views should be placed in `ee/app/views/ee/`, using extra
+sub-directories if appropriate.
 
 ### Code in `lib/`
 
@@ -242,7 +245,7 @@ When you're testing EE-only features, avoid adding examples to the
 existing CE specs. Also do no change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
-Instead place EE specs in the `/spec/ee/spec` folder.
+Instead place EE specs in the `spec/ee/spec` folder.
 
 ## JavaScript code in `assets/javascripts/`
 
