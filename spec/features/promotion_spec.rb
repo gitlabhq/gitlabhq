@@ -187,7 +187,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
-      expect(find('#promote_burndown_charts')).to have_content 's plan to improve milestone with Burndown Charts.'
+      expect(find('#promote_burndown_charts')).to have_content 'Improve milestone with Burndown Charts.'
       expect(find('#promote_burndown_charts')).to have_content 'Burndown Charts are visual representations of the progress of completing a milestone.'
     end
 
