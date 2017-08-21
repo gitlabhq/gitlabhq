@@ -37,7 +37,6 @@ This page gathers all the resources for the topic **Authentication** within GitL
 - [Private Tokens](../../api/README.md#private-tokens)
 - [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
-- [GitLab Runner API - Authentication](../../api/ci/runners.md#authentication)
 
 ## Third-party resources
 

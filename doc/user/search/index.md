@@ -27,7 +27,7 @@ on the search field on the top-right of your screen:
 
 ![shortcut to your issues and mrs](img/issues_mrs_shortcut.png)
 
-## Issues and merge requests per project
+### Issues and merge requests per project
 
 If you want to search for issues present in a specific project, navigate to
 a project's **Issues** tab, and click on the field **Search or filter results...**. It will
@@ -40,13 +40,17 @@ The same process is valid for merge requests. Navigate to your project's **Merge
 and click **Search or filter results...**. Merge requests can be filtered by author, assignee,
 milestone, and label.
 
-## Issues and merge requests per group
+### Issues and merge requests per group
 
 Similar to **Issues and merge requests per project**, you can also search for issues
 within a group. Navigate to a group's **Issues** tab and query search results in
 the same way as you do for projects.
 
 ![filter issues in a group](img/group_issues_filter.png)
+
+The same process is valid for merge requests. Navigate to your project's **Merge Requests** tab.
+The search and filter UI currently uses dropdowns. In a future release, the same
+dynamic UI as above will be carried over here.
 
 ## Search history
 

@@ -259,7 +259,7 @@ setup-test-env:
     <<: *default-cache
   script:
     - node --version
-    - yarn install --pure-lockfile --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
     - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
@@ -508,7 +508,7 @@ gitlab:assets:compile:
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
   script:
-    - yarn install --pure-lockfile --production --cache-folder .yarn-cache
+    - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
     - bundle exec rake gettext:po_to_json
     - bundle exec rake gitlab:assets:compile
   artifacts:
