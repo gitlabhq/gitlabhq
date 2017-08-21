@@ -8,7 +8,7 @@ describe 'Promotions', js: true do
   let(:project) { create(:project, :repository) }
   let(:milestone) { create(:milestone, project: project, start_date: Date.today, due_date: 7.days.from_now) }
   let!(:issue)  { create(:issue, project: project, author: user) }
-  let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }  
+  let(:otherproject) { create(:project, :repository, namespace: otherdeveloper.namespace) }
 
   describe 'if you have a license' do
     before do
@@ -35,7 +35,7 @@ describe 'Promotions', js: true do
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Contact your Administrator to upgrade your license.'
       end
-      
+
       it 'should have the start trial button' do
         sign_in(admin)
         visit edit_project_path(project)
@@ -49,14 +49,14 @@ describe 'Promotions', js: true do
       before do
         project.team << [user, :master]
         otherproject.team << [user, :master]
-        
+
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
 
         sign_in(user)
       end
 
-      it 'should have the Upgrade your plan button' do        
+      it 'should have the Upgrade your plan button' do
         visit edit_project_path(project)
         expect(find('#promote_service_desk')).to have_content 'Upgrade your plan'
       end
@@ -70,7 +70,7 @@ describe 'Promotions', js: true do
 
   describe 'for service desk', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -97,7 +97,7 @@ describe 'Promotions', js: true do
 
   describe 'for merge request improve', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -124,7 +124,7 @@ describe 'Promotions', js: true do
 
   describe 'for repository features', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -132,7 +132,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in repository settings page' do
       visit project_settings_repository_path(project)
-      
+
       expect(find('#promote_repository_features')).to have_content 'Improve repositories with GitLab Enterprise Edition'
       expect(find('#promote_repository_features')).to have_content 'Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.'
     end
@@ -152,7 +152,7 @@ describe 'Promotions', js: true do
 
   describe 'for squash commits', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -179,7 +179,7 @@ describe 'Promotions', js: true do
 
   describe 'for burndown charts', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -206,7 +206,7 @@ describe 'Promotions', js: true do
 
   describe 'for issue export', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -222,7 +222,7 @@ describe 'Promotions', js: true do
 
   describe 'for project audit events', js: true do
     let!(:license) { nil }
-    
+
     before do
       project.team << [user, :master]
       sign_in(user)
@@ -237,7 +237,7 @@ describe 'Promotions', js: true do
 
   describe 'for group contribution analytics', js: true do
     let!(:license) { nil }
-    
+
     before do
       group.add_owner(user)
       sign_in(user)
