@@ -667,71 +667,71 @@ describe API::Internal do
   end
 
   def pull(key, project, protocol = 'ssh')
-    post(
-      api("/internal/allowed"),
-      key_id: key.id,
-      project: project.repository.path_to_repo,
-      action: 'git-upload-pack',
-      secret_token: secret_token,
-      protocol: protocol
+    post(api("/internal/allowed"), params: {
+        key_id: key.id,
+        project: project.repository.path_to_repo,
+        action: 'git-upload-pack',
+        secret_token: secret_token,
+        protocol: protocol
+      }
     )
   end
 
   def pull_with_path(key, path_to_repo, protocol = 'ssh')
-    post(
-      api("/internal/allowed"),
-      key_id: key.id,
-      project: path_to_repo,
-      action: 'git-upload-pack',
-      secret_token: secret_token,
-      protocol: protocol
+    post(api("/internal/allowed"), params: {
+        key_id: key.id,
+        project: path_to_repo,
+        action: 'git-upload-pack',
+        secret_token: secret_token,
+        protocol: protocol
+      }
     )
   end
 
   def push(key, project, protocol = 'ssh', env: nil)
-    post(
-      api("/internal/allowed"),
-      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
-      key_id: key.id,
-      project: project.repository.path_to_repo,
-      action: 'git-receive-pack',
-      secret_token: secret_token,
-      protocol: protocol,
-      env: env
+    post(api("/internal/allowed"), params: {
+        changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+        key_id: key.id,
+        project: project.repository.path_to_repo,
+        action: 'git-receive-pack',
+        secret_token: secret_token,
+        protocol: protocol,
+        env: env
+      }
     )
   end
 
   def push_with_path(key, path_to_repo, protocol = 'ssh', env: nil)
-    post(
-      api("/internal/allowed"),
-      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
-      key_id: key.id,
-      project: path_to_repo,
-      action: 'git-receive-pack',
-      secret_token: secret_token,
-      protocol: protocol,
-      env: env
+    post(api("/internal/allowed"), params: {
+        changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
+        key_id: key.id,
+        project: path_to_repo,
+        action: 'git-receive-pack',
+        secret_token: secret_token,
+        protocol: protocol,
+        env: env
+      }
     )
   end
 
   def archive(key, project)
-    post(
-      api("/internal/allowed"),
-      ref: 'master',
-      key_id: key.id,
-      project: project.repository.path_to_repo,
-      action: 'git-upload-archive',
-      secret_token: secret_token,
-      protocol: 'ssh'
+    post(api("/internal/allowed"), params: {
+        ref: 'master',
+        key_id: key.id,
+        project: project.repository.path_to_repo,
+        action: 'git-upload-archive',
+        secret_token: secret_token,
+        protocol: 'ssh'
+      }
     )
   end
 
   def lfs_auth(key_id, project)
-    post(
-      api("/internal/lfs_authenticate"),
-      key_id: key_id,
-      secret_token: secret_token,
-      project: project.repository.path_to_repo
+    post(api("/internal/lfs_authenticate"), params: {
+        key_id: key_id,
+        secret_token: secret_token,
+        project: project.repository.path_to_repo
+      }
     )
   end
 end
