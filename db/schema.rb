@@ -379,6 +379,8 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "name"
+    t.integer "status"
+    t.integer "lock_version"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
