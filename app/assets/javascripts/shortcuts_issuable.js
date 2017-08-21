@@ -71,7 +71,7 @@ import './shortcuts_navigation';
       });
 
       // Trigger autosave
-      replyField.trigger('input');
+      replyField.trigger('input').trigger('change');
 
       // Trigger autosize
       var event = document.createEvent('Event');
