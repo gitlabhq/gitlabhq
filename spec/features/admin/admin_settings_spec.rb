@@ -102,6 +102,22 @@ feature 'Admin updates settings' do
     end
   end
 
+  scenario 'Change Keys settings' do
+    select 'Are forbidden', from: 'RSA SSH keys'
+    select 'Are allowed', from: 'DSA SSH keys'
+    select 'Must be at least 384 bits', from: 'ECDSA SSH keys'
+    select 'Are forbidden', from: 'ED25519 SSH keys'
+    click_on 'Save'
+
+    forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE.to_s
+
+    expect(page).to have_content 'Application settings saved successfully'
+    expect(find_field('RSA SSH keys').value).to eq(forbidden)
+    expect(find_field('DSA SSH keys').value).to eq('0')
+    expect(find_field('ECDSA SSH keys').value).to eq('384')
+    expect(find_field('ED25519 SSH keys').value).to eq(forbidden)
+  end
+
   def check_all_events
     page.check('Active')
     page.check('Push')
