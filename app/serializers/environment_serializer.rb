@@ -36,9 +36,9 @@ class EnvironmentSerializer < BaseSerializer
   private
 
   def itemize(resource)
-    items = resource.order('folder_name ASC')
+    items = resource.order('folder ASC')
       .group('COALESCE(environment_type, name)')
-      .select('COALESCE(environment_type, name) AS folder_name',
+      .select('COALESCE(environment_type, name) AS folder',
               'COUNT(*) AS size', 'MAX(id) AS last_id')
 
     # It makes a difference when you call `paginate` method, because
@@ -49,7 +49,7 @@ class EnvironmentSerializer < BaseSerializer
     environments = resource.where(id: items.map(&:last_id)).index_by(&:id)
 
     items.map do |item|
-      Item.new(item.folder_name, item.size, environments[item.last_id])
+      Item.new(item.folder, item.size, environments[item.last_id])
     end
   end
 end
