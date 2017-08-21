@@ -8,6 +8,8 @@ import service from '../services/issue_notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
 
+let eTagPoll;
+
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
 export const setIssueData = ({ commit }, data) => commit(types.SET_ISSUE_DATA, data);
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
@@ -87,7 +89,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       const commandsChanges = res.commands_changes;
 
       if (hasQuickActions && errors && Object.keys(errors).length) {
-        dispatch('fetchData');
+        eTagPoll.makeRequest();
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
         Flash('Commands applied', 'notice', $(noteData.flashContainer));
@@ -162,7 +164,7 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
 export const poll = ({ commit, state, getters }) => {
   const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
 
-  const eTagPoll = new Poll({
+  eTagPoll = new Poll({
     resource: service,
     method: 'poll',
     data: requestData,
