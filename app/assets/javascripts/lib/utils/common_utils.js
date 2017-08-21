@@ -27,6 +27,13 @@
       }
     };
 
+    w.gl.utils.isInIssuePage = () => {
+      const page = gl.utils.getPagePath(1);
+      const action = gl.utils.getPagePath(2);
+
+      return page === 'issues' && action === 'show';
+    }
+
     w.gl.utils.ajaxGet = function(url) {
       return $.ajax({
         type: "GET",

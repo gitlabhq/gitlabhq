@@ -237,7 +237,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
 
-    if (this.isInIssuePage() && !isMainAwardsBlock) {
+    if (gl.utils.isInIssuePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       $('.emoji-menu').removeClass('is-visible');
@@ -287,15 +287,8 @@ class AwardsHandler {
     }
   }
 
-  isInIssuePage() {
-    const page = gl.utils.getPagePath(1);
-    const action = gl.utils.getPagePath(2);
-
-    return page === 'issues' && action === 'show';
-  }
-
   getVotesBlock() {
-    if (this.isInIssuePage()) {
+    if (gl.utils.isInIssuePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {

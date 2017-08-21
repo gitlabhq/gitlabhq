@@ -44,7 +44,10 @@ $(document).on('keydown.quick_submit', '.js-quick-submit', (e) => {
 
   if (!$submitButton.attr('disabled')) {
     $submitButton.trigger('click', [e]);
-    $submitButton.disable();
+
+    if (!gl.utils.isInIssuePage) {
+      $submitButton.disable();
+    }
   }
 });
 

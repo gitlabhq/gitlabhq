@@ -258,10 +258,10 @@
               <div class="note-form-actions">
                 <div class="pull-left btn-group append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown">
                   <button
-                    @click="handleSave()"
+                    @click.prevent="handleSave()"
                     :disabled="isSubmitButtonDisabled"
                     class="btn btn-create comment-btn js-comment-button js-comment-submit-button"
-                    type="button">
+                    type="submit">
                     {{commentButtonTitle}}
                   </button>
                   <button
