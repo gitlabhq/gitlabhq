@@ -234,7 +234,7 @@ var config = {
     }),
 
     // enable scope hoisting
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new webpack.optimize.ModuleConcatenationPlugin(),
 
     // copy pre-compiled vendor libraries verbatim
     new CopyWebpackPlugin([
