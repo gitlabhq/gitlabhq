@@ -253,9 +253,7 @@ eos
           expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
         end
       end
-
     end
-
   end
 
   describe '#reverts_commit?' do
