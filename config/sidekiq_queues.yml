@@ -27,6 +27,7 @@
   - [new_merge_request, 2]
   - [build, 2]
   - [pipeline, 2]
+  - [pipelines-pipeline-processing, 2]
   - [gitlab_shell, 2]
   - [email_receiver, 2]
   - [emails_on_push, 2]
