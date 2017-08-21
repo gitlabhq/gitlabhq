@@ -1,6 +1,6 @@
 # Issues
 
-GitLab issues is an advanced and complete tool
+The GitLab Issue Tracker is an advanced and complete tool
 for tracking the evolution of a new idea or the process
 of solving a problem.
 
