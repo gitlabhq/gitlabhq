@@ -78,36 +78,122 @@ The recommended configuration for a PostgreSQL HA setup requires:
    [GitLab downloads](https://about.gitlab.com/downloads). Do not complete other
    steps on the download page.
 
-#### On each consul server node
-1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration
-    ```ruby
-    # Disable all components except Consul
-    bootstrap['enable'] = false
-    gitaly['enable'] = false
-    gitlab_workhorse['enable'] = false
-    mailroom['enable'] = false
-    nginx['enable'] = false
-    postgresql['enable'] = false
-    redis['enable'] = false
-    sidekiq['enable'] = false
-    unicorn['enable'] = false
+#### Configuration
+Each node needs to be configured to run only the services it needs. Create an `/etc/gitlab/gitlab.rb` on each node which looks like the following, then run `gitlab-ctl reconfigure`
 
-    consul['enable'] = true
-    consul['configuration'] = {
-      server: true
-    }
-    ```
+##### On each consul server node
+```ruby
+# Disable all components except Consul
+bootstrap['enable'] = false
+gitaly['enable'] = false
+gitlab_workhorse['enable'] = false
+mailroom['enable'] = false
+nginx['enable'] = false
+postgresql['enable'] = false
+redis['enable'] = false
+sidekiq['enable'] = false
+unicorn['enable'] = false
 
-1. Reconfigure GitLab for the new settings to take effect
-    ```
-    # gitlab-ctl reconfigure
-    ```
+consul['enable'] = true
+# START user configuration
+# Please set the real values as explained in Required Information section
+#
+consul['configuration'] = {
+  server: true,
+  retry_join: %w(NAMES OR IPS OF ALL CONSUL NODES)
+}
+#
+# END user configuration
+```
 
-1. Pick one node, and tell the remaining nodes to join that node
-    ```
-    # /opt/gitlab/embedded/bin/consul join FIRST_NODE
-    ```
+##### On each database node
+```ruby
+# Disable all components except PostgreSQL
+postgresql['enable'] = true
+bootstrap['enable'] = false
+nginx['enable'] = false
+unicorn['enable'] = false
+sidekiq['enable'] = false
+redis['enable'] = false
+gitaly['enable'] = false
+gitlab_workhorse['enable'] = false
+mailroom['enable'] = false
 
+# PostgreSQL configuration
+postgresql['listen_address'] = '0.0.0.0'
+postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.0/24)
+postgresql['md5_auth_cidr_addresses'] = %w(0.0.0.0/0)
+postgresql['hot_standby'] = 'on'
+postgresql['wal_level'] = 'replica'
+postgresql['shared_preload_libraries'] = 'repmgr_funcs'
+
+# repmgr configuration
+repmgr['enable'] = true
+
+# Disable automatic database migrations
+gitlab_rails['auto_migrate'] = false
+
+# Enable the consul agent
+consul['enable'] = true
+consul['services'] = %w(postgresql)
+
+# START user configuration
+# Please set the real values as explained in Required Information section
+#
+postgresql['pgbouncer_user'] = 'PGBOUNCER_USER'
+postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH' # This is the hash generated in the preparation section
+postgresql['max_wal_senders'] = X
+repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network(s) your database nodes are on
+consul['configuration'] = {
+  retry_join: %w(NAMES OR IPS OF ALL CONSUL NODES)
+}
+#
+# END user configuration
+```
+
+##### On the pgbouncer node
+Ensure the following attributes are set
+```ruby
+# Disable all components except Pgbouncer
+postgresql['enable'] = false
+bootstrap['enable'] = false
+nginx['enable'] = false
+unicorn['enable'] = false
+sidekiq['enable'] = false
+redis['enable'] = false
+gitaly['enable'] = false
+gitlab_workhorse['enable'] = false
+mailroom['enable'] = false
+pgbouncer['enable'] = true
+
+# Configure pgbouncer
+pgbouncer['listen_address'] = '0.0.0.0'
+
+# Enable the consul agent
+consul['enable'] = true
+consul['watchers'] = %w(postgresql)
+
+# START user configuration
+# Please set the real values as explained in Required Information section
+#
+consul['configuration'] = {
+  retry_join: %w(NAMES OR IPS OF ALL CONSUL NODES)
+}
+#
+# END user configuration
+```
+
+##### Application node(s)
+These will be the nodes running the gitlab-rails service. You may have other attributes set, but the following need to be set
+```ruby
+gitlab_rails['db_host'] = 'PGBOUNCER_NODE'
+gitlab_rails['db_port'] = 6432
+```
+
+#### Post-configuration
+After reconfigure successfully runs, the following steps must be completed to get the cluster up and running
+
+#### Consul server nodes
 1. Verify the nodes are all communicating
     ```
     # consul members
@@ -117,61 +203,7 @@ The recommended configuration for a PostgreSQL HA setup requires:
     NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
     ```
 
-#### On each database node
-1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
-   If there is a directive listed below that you do not see in the configuration, be sure to add it.
-    ```ruby
-    # Disable all components except PostgreSQL
-    postgresql['enable'] = true
-    bootstrap['enable'] = false
-    nginx['enable'] = false
-    unicorn['enable'] = false
-    sidekiq['enable'] = false
-    redis['enable'] = false
-    gitaly['enable'] = false
-    gitlab_workhorse['enable'] = false
-    mailroom['enable'] = false
-
-    # PostgreSQL configuration
-    postgresql['listen_address'] = '0.0.0.0'
-    postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.0/24)
-    postgresql['hot_standby'] = 'on'
-    postgresql['wal_level'] = 'replica'
-    postgresql['max_wal_senders'] = X
-    postgresql['shared_preload_libraries'] = 'repmgr_funcs'
-
-    # repmgr configuration
-    repmgr['enable'] = true
-
-    # Disable automatic database migrations
-    gitlab_rails['auto_migrate'] = false
-
-    # Enable the consul agent
-    consul['enable'] = true
-    consul['services'] = %w(postgresql)
-
-    # START user configuration
-    # Please set the real values as explained in Required Information section
-    #
-    postgresql['pgbouncer_user'] = 'PGBOUNCER_USER'
-    postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH' # This is the hash generated in the preparation section
-    repmgr['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY) # This should be the CIDR of the network(s) your database nodes are on
-    #
-    # END user configuration
-    ```
-
-1. Reconfigure GitLab for the new settings to take effect
-    ```
-    # gitlab-ctl reconfigure
-    ```
-
-1. Join the node to the consul cluster. SERVER_NODE can be any of the consul server nodes
-    ```
-    # /opt/gitlab/embedded/bin/consul join SERVER_NODE
-    Successfully joined cluster by contacting 1 nodes.
-    ```
-
-#### On the primary database node
+##### On the primary database node
 
 1. Open a database prompt:
 
@@ -204,7 +236,7 @@ The recommended configuration for a PostgreSQL HA setup requires:
    * master  | HOSTNAME    |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
-#### On each standby node
+##### On each standby node
 1. Setup the repmgr standby
     ```
     # gitlab-ctl repmgr standby setup MASTER_NODE
@@ -219,28 +251,34 @@ The recommended configuration for a PostgreSQL HA setup requires:
      standby | STANDBY    | MASTER     | host=STANDBY_HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
    ```
 
-#### On the pgbouncer node
-Ensure the following attributes are set
-```ruby
-pgbouncer['enable'] = true
-pgbouncer['databases'] = {
-  gitlabhq_production: {
-    host: 'CURRENT_MASTER',
-    user: 'PGBOUNCER_USER',
-    password: 'PGBOUNCER_PASSWORD_HASH' # This should be the hash from the preparation section
-  }
-}
-consul['enable'] = true
-consul['watchers'] = %w(postgresql)
-```
+##### On the pgbouncer node
+1. Ensure the node is talking to the current master
+   ```
+   # /opt/gitlab/embedded/bin/psql -h 127.0.0.1 -p 6432 -d pgbouncer pgbouncer # You will be prompted for PGBOUNCER_PASSWORD
+   pgbouncer=# show databases ; show clients ;
+           name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
+   ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
+    gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
+    pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
+   (2 rows)
 
-#### Configuring the Application
-After database setup is complete, the next step is to Configure the GitLab application servers with the appropriate details.
-Add the following to `/etc/gitlab/gitlab.rb` on the application nodes
-```ruby
-gitlab_rails['db_host'] = 'PGBOUNCER_NODE'
-gitlab_rails['db_port'] = 6432
-```
+    type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link
+    | remote_pid | tls
+   ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+-----
+   -+------------+-----
+    C    | (nouser)  | gitlabhq_production | waiting | IP_OF_APP_NODE | 56512 | 127.0.0.1  |       6432 | 2017-08-21 18:08:51 | 2017-08-21 18:08:51 | 0x22b3700 |
+    |          0 |
+    C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |
+    |          0 |
+   (2 rows)
+
+1. It may be necessary to manually run migrations.
+   ```
+   # gitlab-rake db:migrate
+   ```
+
+#### Server running
+At this point, your GitLab instance should be up and running, verify you are able to login, and create issues and merge requests.
 
 ### Failover procedure
 By default, if the master database fails, repmgrd should promote one of the standby nodes to master automatically, and consul will update pgbouncer with the new master.
@@ -263,11 +301,6 @@ If you need to failover manually, you have two options:
   1. If there are any other standby servers in the cluster, have them follow the new master server
       ```
       # gitlab-ctl repmgr standby follow NEW_MASTER
-      ```
-
-  1. On the pgbouncer nodes run the following
-      ```
-      # gitlab-ctl pgb-notify --host NEW_MASTER
       ```
 
 ### Restore procedure
