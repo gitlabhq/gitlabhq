@@ -43,9 +43,9 @@ Depends on the situation, the illustration size can be the 3 types below:
 **Large**
 * Use case: Empty states, error pages(e.g. 404, 403)
 * For vertical layout, the illustration should not larger than **430*300 px**.
-* For horizontal layout, the illustration should not larger than **430*380 px**
+* For horizontal layout, the illustration should not larger than **430*380 px**.
 
-| Vertocal layout | Horizontal layout |
+| Vertical layout | Horizontal layout |
 | --------------- | ----------------- |
 | <img src="img/illustration-size-large-vertical.png" />  | <img src="img/illustration-size-large-horizontal.png" />
 
@@ -57,8 +57,8 @@ Depends on the situation, the illustration size can be the 3 types below:
 <img src="img/illustration-size-medium.png" width=983px />
 
 **Small**
-* Use case: Graphics for explanatory text, graphics for status
-* The illustration should not larger than **160*90 px**
+* Use case: Graphics for explanatory text, graphics for status.
+* The illustration should not larger than **160*90 px**.
 * The illustration should keep simple and clear. We recommend not including too many elements in the small size illustration.
 
 <img src="img/illustration-size-small.png" width=983px />
