@@ -91,16 +91,6 @@ class Event < ApplicationRecord
       end
     end
 
-    def subclass_from_attributes(attrs)
-      # Without this Rails will keep calling this method on the returned class,
-      # resulting in an infinite loop.
-      return unless self == Event
-
-      action = attrs.with_indifferent_access[inheritance_column].to_i
-
-      PushEvent if action == PUSHED
-    end
-
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes
     def contributions
       where("action = ? OR (target_type IN (?) AND action IN (?)) OR (target_type = ? AND action = ?)",
