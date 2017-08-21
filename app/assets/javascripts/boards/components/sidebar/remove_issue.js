@@ -32,10 +32,11 @@ gl.issueBoards.RemoveIssueBtn = Vue.extend({
     removeIssue() {
       const issue = this.issue;
       const lists = issue.getLists();
-      const labelIds = lists.map(list => list.label.id);
+      const listLabelIds = lists.map(list => list.label.id);
+      const labelIds = this.issue.labels.map(label => label.id).filter(id => !listLabelIds.includes(id));
       const data = {
         issue: {
-          remove_label_ids: labelIds,
+          label_ids: labelIds,
         },
       };
       if (Store.state.currentBoard.milestone_id) {
