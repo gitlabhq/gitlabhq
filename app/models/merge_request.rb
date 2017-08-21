@@ -7,7 +7,6 @@ class MergeRequest < ActiveRecord::Base
   include IgnorableColumn
   include CreatedAtFilterable
 
-  ignore_column :position
   ignore_column :locked_at
 
   belongs_to :target_project, class_name: "Project"
