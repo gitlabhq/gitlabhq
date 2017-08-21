@@ -20,6 +20,7 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :domain_blacklist, Array # rubocop:disable Cop/ActiveRecordSerialize
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :sidekiq_throttling_queues, Array # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :allowed_key_types, Array # rubocop:disable Cop/ActiveRecordSerialize
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -146,6 +147,24 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
+  validates :allowed_key_types, presence: true
+
+  validates :minimum_rsa_bits,
+            presence: true,
+            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('rsa') }
+
+  validates :minimum_dsa_bits,
+            presence: true,
+            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('dsa') }
+
+  validates :minimum_ecdsa_bits,
+            presence: true,
+            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('ecdsa') }
+
+  validates :minimum_ed25519_bits,
+            presence: true,
+            inclusion: { in: Gitlab::SSHPublicKey.allowed_sizes('ed25519') }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)
@@ -170,7 +189,16 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validates_each :allowed_key_types do |record, attr, value|
+    value&.each do |type|
+      unless Gitlab::SSHPublicKey.allowed_type?(type)
+        record.errors.add(attr, "'#{type}' is not a valid SSH key type")
+      end
+    end
+  end
+
   before_validation :ensure_uuid!
+
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token
 
@@ -212,6 +240,7 @@ class ApplicationSetting < ActiveRecord::Base
     {
       after_sign_up_text: nil,
       akismet_enabled: false,
+      allowed_key_types: Gitlab::SSHPublicKey.technology_names,
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
       default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -239,6 +268,10 @@ class ApplicationSetting < ActiveRecord::Base
       max_attachment_size: Settings.gitlab['max_attachment_size'],
       password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
       performance_bar_allowed_group_id: nil,
+      minimum_rsa_bits: 1024,
+      minimum_dsa_bits: 1024,
+      minimum_ecdsa_bits: 256,
+      minimum_ed25519_bits: 256,
       plantuml_enabled: false,
       plantuml_url: nil,
       project_export_enabled: true,

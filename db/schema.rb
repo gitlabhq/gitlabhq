@@ -129,6 +129,11 @@ ActiveRecord::Schema.define(version: 20170824162758) do
     t.boolean "password_authentication_enabled"
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
+    t.integer "minimum_rsa_bits", default: 1024, null: false
+    t.integer "minimum_dsa_bits", default: 1024, null: false
+    t.integer "minimum_ecdsa_bits", default: 256, null: false
+    t.integer "minimum_ed25519_bits", default: 256, null: false
+    t.string "allowed_key_types", default: "---\n- rsa\n- dsa\n- ecdsa\n- ed25519\n", null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

@@ -79,6 +79,26 @@ feature 'Admin updates settings' do
     end
   end
 
+  scenario 'Change Keys settings' do
+    uncheck 'RSA'
+    uncheck 'DSA'
+    uncheck 'ED25519'
+    select '384', from: 'Minimum ECDSA key length'
+    click_on 'Save'
+
+    expect(page).to have_content 'Application settings saved successfully'
+
+    expect(find_field('RSA', checked: false)).not_to be_checked
+    expect(find_field('DSA', checked: false)).not_to be_checked
+    expect(find_field('ED25519', checked: false)).not_to be_checked
+    expect(find_field('Minimum ECDSA key length').value).to eq '384'
+
+    uncheck 'ECDSA'
+    click_on 'Save'
+
+    expect(page).to have_content "Allowed key types can't be blank"
+  end
+
   def check_all_events
     page.check('Active')
     page.check('Push')

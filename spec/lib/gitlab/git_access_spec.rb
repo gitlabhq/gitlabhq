@@ -155,6 +155,48 @@ describe Gitlab::GitAccess do
     end
   end
 
+  shared_examples '#check with a key that is not valid' do
+    before do
+      project.add_master(user)
+    end
+
+    context 'key is too small' do
+      before do
+        stub_application_setting(minimum_rsa_bits: 4096)
+      end
+
+      it 'does not allow keys which are too small' do
+        aggregate_failures do
+          expect(actor).not_to be_valid
+          expect { pull_access_check }.to raise_unauthorized('Your SSH key length must be at least 4096 bits.')
+          expect { push_access_check }.to raise_unauthorized('Your SSH key length must be at least 4096 bits.')
+        end
+      end
+    end
+
+    context 'key type is not allowed' do
+      before do
+        stub_application_setting(allowed_key_types: ['ecdsa'])
+      end
+
+      it 'does not allow keys which are too small' do
+        aggregate_failures do
+          expect(actor).not_to be_valid
+          expect { pull_access_check }.to raise_unauthorized('Your SSH key type is not allowed. Must be ECDSA.')
+          expect { push_access_check }.to raise_unauthorized('Your SSH key type is not allowed. Must be ECDSA.')
+        end
+      end
+    end
+  end
+
+  it_behaves_like '#check with a key that is not valid' do
+    let(:actor) { build(:rsa_key_2048, user: user) }
+  end
+
+  it_behaves_like '#check with a key that is not valid' do
+    let(:actor) { build(:rsa_deploy_key_2048, user: user) }
+  end
+
   describe '#check_project_moved!' do
     before do
       project.add_master(user)

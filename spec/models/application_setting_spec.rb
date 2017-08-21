@@ -72,6 +72,27 @@ describe ApplicationSetting do
         .is_greater_than(0)
     end
 
+    it { is_expected.to validate_presence_of(:minimum_rsa_bits) }
+    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('rsa')).for(:minimum_rsa_bits) }
+    it { is_expected.not_to allow_value(128).for(:minimum_rsa_bits) }
+
+    it { is_expected.to validate_presence_of(:minimum_dsa_bits) }
+    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('dsa')).for(:minimum_dsa_bits) }
+    it { is_expected.not_to allow_value(128).for(:minimum_dsa_bits) }
+
+    it { is_expected.to validate_presence_of(:minimum_ecdsa_bits) }
+    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('ecdsa')).for(:minimum_ecdsa_bits) }
+    it { is_expected.not_to allow_value(128).for(:minimum_ecdsa_bits) }
+
+    it { is_expected.to validate_presence_of(:minimum_ed25519_bits) }
+    it { is_expected.to allow_value(*Gitlab::SSHPublicKey.allowed_sizes('ed25519')).for(:minimum_ed25519_bits) }
+    it { is_expected.not_to allow_value(128).for(:minimum_ed25519_bits) }
+
+    describe 'allowed_key_types validations' do
+      it { is_expected.to allow_value(Gitlab::SSHPublicKey.technology_names).for(:allowed_key_types) }
+      it { is_expected.not_to allow_value(['foo']).for(:allowed_key_types) }
+    end
+
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
     end
@@ -439,6 +460,18 @@ describe ApplicationSetting do
           expect(setting.usage_ping_enabled).to be_truthy
         end
       end
+    end
+  end
+
+  context 'allowed key types attribute' do
+    it 'set value with array of symbols' do
+      setting.allowed_key_types = [:rsa]
+      expect(setting.allowed_key_types).to contain_exactly(:rsa)
+    end
+
+    it 'get value as array of symbols' do
+      setting.allowed_key_types = ['rsa']
+      expect(setting.allowed_key_types).to eq(['rsa'])
     end
   end
 end

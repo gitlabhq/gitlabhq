@@ -19,6 +19,11 @@ describe API::Settings, 'Settings' do
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
       expect(json_response['default_group_visibility']).to be_a String
+      expect(json_response['minimum_rsa_bits']).to eq(1024)
+      expect(json_response['minimum_dsa_bits']).to eq(1024)
+      expect(json_response['minimum_ecdsa_bits']).to eq(256)
+      expect(json_response['minimum_ed25519_bits']).to eq(256)
+      expect(json_response['allowed_key_types']).to contain_exactly('rsa', 'dsa', 'ecdsa', 'ed25519')
     end
   end
 
@@ -44,7 +49,12 @@ describe API::Settings, 'Settings' do
           help_page_text: 'custom help text',
           help_page_hide_commercial_content: true,
           help_page_support_url: 'http://example.com/help',
-          project_export_enabled: false
+          project_export_enabled: false,
+          minimum_rsa_bits: 2048,
+          minimum_dsa_bits: 2048,
+          minimum_ecdsa_bits: 384,
+          minimum_ed25519_bits: 256,
+          allowed_key_types: ['rsa']
 
         expect(response).to have_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -61,6 +71,11 @@ describe API::Settings, 'Settings' do
         expect(json_response['help_page_hide_commercial_content']).to be_truthy
         expect(json_response['help_page_support_url']).to eq('http://example.com/help')
         expect(json_response['project_export_enabled']).to be_falsey
+        expect(json_response['minimum_rsa_bits']).to eq(2048)
+        expect(json_response['minimum_dsa_bits']).to eq(2048)
+        expect(json_response['minimum_ecdsa_bits']).to eq(384)
+        expect(json_response['minimum_ed25519_bits']).to eq(256)
+        expect(json_response['allowed_key_types']).to eq(['rsa'])
       end
     end
 

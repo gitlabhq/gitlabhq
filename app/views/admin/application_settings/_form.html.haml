@@ -42,18 +42,57 @@
           = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
           = link_to "(?)", help_page_path("integration/gitlab")
-    .form-group
-      %label.control-label.col-sm-2 Enabled Git access protocols
-      .col-sm-10
-        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
-        %span.help-block#clone-protocol-help
-          Allow only the selected protocols to be used for Git access.
+
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
           = f.label :project_export_enabled do
             = f.check_box :project_export_enabled
             Project export enabled
+
+    .form-group
+      %label.control-label.col-sm-2 Enabled Git access protocols
+      .col-sm-10
+        = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
+        %span.help-block#clone-protocol-help
+          Allow only the selected protocols to be used for Git access.
+
+    .form-group
+      = f.label :allowed_key_types, 'Allowed SSH keys', class: 'control-label col-sm-2'
+      .col-sm-10
+        = hidden_field_tag 'application_setting[allowed_key_types][]', nil, id: 'allowed_key_types-none'
+        - allowed_key_types_checkboxes('allowed-key-types-help').each do |key_type_checkbox|
+          .checkbox= key_type_checkbox
+        %span.help-block#allowed-key-types-help
+          Only SSH keys with allowed algorithms can be uploaded.
+
+    .form-group
+      = f.label :minimum_rsa_bits, 'Minimum RSA key length', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_rsa_bits, Gitlab::SSHPublicKey.allowed_sizes('rsa'), {}, class: 'form-control'
+        .help-block
+          The minimum length for user RSA SSH keys (in bits)
+
+    .form-group
+      = f.label :minimum_dsa_bits, 'Minimum DSA key length', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_dsa_bits, Gitlab::SSHPublicKey.allowed_sizes('dsa'), {}, class: 'form-control'
+        .help-block
+          The minimum length for user DSA SSH keys (in bits)
+
+    .form-group
+      = f.label :minimum_ecdsa_bits, 'Minimum ECDSA key length', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_ecdsa_bits, Gitlab::SSHPublicKey.allowed_sizes('ecdsa'), {}, class: 'form-control'
+        .help-block
+          The minimum elliptic curve size for user ECDSA SSH keys (in bits)
+
+    .form-group
+      = f.label :minimum_ed25519_bits, 'Minimum ED25519 key length', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :minimum_ed25519_bits, Gitlab::SSHPublicKey.allowed_sizes('ed25519'), {}, class: 'form-control'
+        .help-block
+          The minimum length for user ED25519 SSH keys (in bits)
 
   %fieldset
     %legend Account and Limit Settings
