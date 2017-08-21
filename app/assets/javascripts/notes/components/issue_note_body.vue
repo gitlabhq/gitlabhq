@@ -59,12 +59,15 @@
     mounted() {
       this.renderGFM();
       this.initTaskList();
+
       if (this.isEditing) {
         this.initAutoSave();
       }
     },
     updated() {
       this.initTaskList();
+      this.renderGFM();
+
       if (this.isEditing) {
         if (!this.autosave) {
           this.initAutoSave();
