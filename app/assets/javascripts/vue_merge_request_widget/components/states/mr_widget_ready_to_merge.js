@@ -283,15 +283,14 @@ export default {
               <span v-if="mr.ffOnlyEnabled">
                 Fast-forward merge without a merge commit
               </span>
-              <span v-else>
-                <button
-                  @click="toggleCommitMessageEditor"
-                  :disabled="isMergeButtonDisabled"
-                  class="btn btn-default btn-xs"
-                  type="button">
-                  Modify commit message
-                </button>
-              </span>
+              <button
+                v-else
+                @click="toggleCommitMessageEditor"
+                :disabled="isMergeButtonDisabled"
+                class="btn btn-default btn-xs"
+                type="button">
+                Modify commit message
+              </button>
             </template>
             <template v-else>
               <span class="bold">

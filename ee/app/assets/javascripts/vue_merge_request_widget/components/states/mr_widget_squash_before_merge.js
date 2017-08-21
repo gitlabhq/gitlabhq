@@ -24,7 +24,7 @@ export default {
     },
   },
   template: `
-    <div class="accept-control spacing inline">
+    <div class="accept-control inline">
       <label class="merge-param-checkbox">
         <input
           type="checkbox"
