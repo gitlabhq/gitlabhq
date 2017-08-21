@@ -21,5 +21,13 @@ FactoryGirl.define do
     trait :inactive do
       active false
     end
+
+    trait :protected do
+      access_level Ci::Runner.access_levels['protected_']
+    end
+
+    trait :unprotected do
+      access_level Ci::Runner.access_levels['unprotected']
+    end
   end
 end

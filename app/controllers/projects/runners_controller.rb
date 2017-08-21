@@ -59,6 +59,8 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def runner_params
-    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
+    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE).tap do |params|
+      params['access_level'] = params['access_level']&.to_i
+    end
   end
 end

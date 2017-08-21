@@ -456,4 +456,28 @@ describe Ci::Runner do
       expect(described_class.search(runner.description.upcase)).to eq([runner])
     end
   end
+
+  describe '.access_level' do
+    context 'when access_level of a runner is protected' do
+      before do
+        create(:ci_runner, :protected)
+      end
+
+      it 'a protected runner exists' do
+        expect(Ci::Runner.count).to eq(1)
+        expect(Ci::Runner.last.protected_?).to eq(true)
+      end
+    end
+
+    context 'when access_level of a runner is unprotected' do
+      before do
+        create(:ci_runner, :unprotected)
+      end
+
+      it 'an unprotected runner exists' do
+        expect(Ci::Runner.count).to eq(1)
+        expect(Ci::Runner.last.unprotected?).to eq(true)
+      end
+    end
+  end
 end

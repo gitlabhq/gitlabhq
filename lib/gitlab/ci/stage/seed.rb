@@ -28,7 +28,7 @@ module Gitlab
             attributes.merge(project: project,
                              ref: pipeline.ref,
                              tag: pipeline.tag,
-                             trigger_request: trigger
+                             trigger_request: trigger,
                              protected: protected?)
           end
         end

@@ -6,8 +6,8 @@ class AddAccessLevelToCiRunners < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    # Ci::Runner.unprotected: 0
-    add_column_with_default(:ci_runners, :access_level, :integer, default: 0)
+    add_column_with_default(:ci_runners, :access_level, :integer,
+                            default: Ci::Runner.access_levels['unprotected'])
   end
 
   def down
