@@ -320,7 +320,10 @@ module API
     end
 
     class IssueBasic < ProjectEntity
-      expose :label_names, as: :labels
+      expose :labels do |issue, options|
+        # Avoids an N+1 query since labels are preloaded
+        issue.labels.map(&:title).sort
+      end
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
 
@@ -329,7 +332,22 @@ module API
       end
 
       expose :user_notes_count
-      expose :upvotes, :downvotes
+      expose :upvotes do |issue, options|
+        if options[:issuable_metadata]
+          # Avoids an N+1 query when metadata is included
+          options[:issuable_metadata][issue.id].upvotes
+        else
+          issue.upvotes
+        end
+      end
+      expose :downvotes do |issue, options|
+        if options[:issuable_metadata]
+          # Avoids an N+1 query when metadata is included
+          options[:issuable_metadata][issue.id].downvotes
+        else
+          issue.downvotes
+        end
+      end
       expose :due_date
       expose :confidential
 
