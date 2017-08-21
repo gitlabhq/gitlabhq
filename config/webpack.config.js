@@ -76,7 +76,6 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
