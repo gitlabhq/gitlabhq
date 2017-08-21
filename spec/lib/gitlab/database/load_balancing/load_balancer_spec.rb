@@ -86,14 +86,14 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
       expect(lb).to receive(:read_write).and_call_original
 
       expect { |b| lb.read(&b) }
-        .to yield_with_args(ActiveRecord::Base.connection)
+        .to yield_with_args(ActiveRecord::Base.retrieve_connection)
     end
   end
 
   describe '#read_write' do
     it 'yields a connection for a write' do
       expect { |b| lb.read_write(&b) }
-        .to yield_with_args(ActiveRecord::Base.connection)
+        .to yield_with_args(ActiveRecord::Base.retrieve_connection)
     end
 
     it 'uses a retry with exponential backoffs' do

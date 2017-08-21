@@ -50,6 +50,8 @@
 }
 
 .filtered-search-wrapper {
+  @include new-style-dropdown;
+
   display: -webkit-flex;
   display: flex;
 
@@ -411,8 +413,6 @@
 }
 
 %filter-dropdown-item-btn-hover {
-  background-color: $dropdown-hover-color;
-  color: $white-light;
   text-decoration: none;
   outline: 0;
 
@@ -422,8 +422,6 @@
 }
 
 .droplab-dropdown .dropdown-menu .filter-dropdown-item {
-  padding: 0;
-
   .btn {
     border: none;
     width: 100%;
