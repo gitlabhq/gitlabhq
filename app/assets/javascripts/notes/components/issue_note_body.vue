@@ -49,8 +49,8 @@
           });
         }
       },
-      handleFormUpdate(note, parentElement) {
-        this.$emit('handleFormUpdate', note, parentElement);
+      handleFormUpdate(note, parentElement, callback) {
+        this.$emit('handleFormUpdate', note, parentElement, callback);
       },
       formCancelHandler(shouldConfirm, isDirty) {
         this.$emit('cancelFormEdition', shouldConfirm, isDirty);

@@ -74,7 +74,10 @@
     methods: {
       handleUpdate() {
         this.isSubmitting = true;
-        this.$emit('handleFormUpdate', this.note, this.$refs.editNoteForm);
+
+        this.$emit('handleFormUpdate', this.note, this.$refs.editNoteForm, () => {
+          this.isSubmitting = false;
+        });
       },
       editMyLastNote() {
         if (this.note === '') {

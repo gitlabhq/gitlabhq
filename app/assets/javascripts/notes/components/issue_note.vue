@@ -73,7 +73,7 @@
             });
         }
       },
-      formUpdateHandler(noteText, parentElement) {
+      formUpdateHandler(noteText, parentElement, callback) {
         const data = {
           endpoint: this.note.path,
           note: {
@@ -94,7 +94,8 @@
             'Something went wrong while editing your comment. Please try again.',
             'alert',
             $(parentElement),
-          ));
+          ))
+          .then(callback);
       },
       formCancelHandler(shouldConfirm, isDirty) {
         if (shouldConfirm && isDirty) {
