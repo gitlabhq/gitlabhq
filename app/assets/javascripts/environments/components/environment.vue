@@ -115,11 +115,15 @@ export default {
   },
 
   methods: {
-    toggleFolder(folder, folderUrl) {
+    toggleFolder(folder) {
       this.store.toggleFolder(folder);
 
       if (!folder.isOpen) {
+<<<<<<< HEAD
         this.fetchChildEnvironments(folder, folderUrl);
+=======
+        this.fetchChildEnvironments(folder, true);
+>>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
       }
     },
 
@@ -147,10 +151,15 @@ export default {
         .catch(this.errorCallback);
     },
 
+<<<<<<< HEAD
     fetchChildEnvironments(folder, folderUrl) {
       this.isLoadingFolderContent = true;
+=======
+    fetchChildEnvironments(folder, showLoader = false) {
+      this.store.updateEnvironmentProp(folder, 'isLoadingFolderContent', showLoader);
+>>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
 
-      this.service.getFolderContent(folderUrl)
+      this.service.getFolderContent(folder.folder_path)
         .then(resp => resp.json())
         .then((response) => {
           this.store.setfolderContent(folder, response.environments);
@@ -176,6 +185,7 @@ export default {
     successCallback(resp) {
       this.saveData(resp);
 
+<<<<<<< HEAD
       // If folders are open while polling we need to open them again
       if (this.openFolders.length) {
         this.openFolders.map((folder) => {
@@ -185,6 +195,12 @@ export default {
           this.store.updateFolder(folder, 'isOpen', true);
           return this.fetchChildEnvironments(folder, folderUrl);
         });
+=======
+      // We need to verify if any folder is open to also update it
+      const openFolders = this.store.getOpenFolders();
+      if (openFolders.length) {
+        openFolders.forEach(folder => this.fetchChildEnvironments(folder));
+>>>>>>> 7014a737eb... Merge branch '29943-environment-folder' into 'security-9-5'
       }
     },
 
