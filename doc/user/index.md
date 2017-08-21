@@ -162,6 +162,10 @@ are a tool for working faster and more effectively with your team,
 by listing all user or group mentions, as well as issues and merge
 requests you're assigned to.
 
+## Search
+
+[Search and filter](search/index.md) through groups, projects, issues, merge requests, files, code, and more.
+
 ## Snippets
 
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
