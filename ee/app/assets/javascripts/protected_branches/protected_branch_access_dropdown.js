@@ -30,7 +30,6 @@ export default class ProtectedBranchAccessDropdown {
   }
 
   initDropdown() {
-    const self = this;
     const { onSelect, onHide } = this.options;
     this.$dropdown.glDropdown({
       data: this.getData.bind(this),
@@ -52,21 +51,21 @@ export default class ProtectedBranchAccessDropdown {
         e.preventDefault();
 
         if ($el.is('.is-active')) {
-          if (item.id === self.noOneObj.id) {
+          if (item.id === this.noOneObj.id) {
             // remove all others selected items
-            self.accessLevelsData.forEach((level) => {
+            this.accessLevelsData.forEach((level) => {
               if (level.id !== item.id) {
-                self.removeSelectedItem(level);
+                this.removeSelectedItem(level);
               }
             });
 
             // remove selected item visually
-            self.$wrap.find(`.item-${item.type}`).removeClass('is-active');
+            this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
           } else {
-            const $noOne = self.$wrap.find(`.is-active.item-${item.type}[data-role-id="${self.noOneObj.id}"]`);
+            const $noOne = this.$wrap.find(`.is-active.item-${item.type}[data-role-id="${this.noOneObj.id}"]`);
             if ($noOne.length) {
               $noOne.removeClass('is-active');
-              self.removeSelectedItem(self.noOneObj);
+              this.removeSelectedItem(this.noOneObj);
             }
           }
 
@@ -74,13 +73,13 @@ export default class ProtectedBranchAccessDropdown {
           $el.addClass(`is-active item-${item.type}`);
 
           // Add "No one"
-          self.addSelectedItem(item);
+          this.addSelectedItem(item);
         } else {
-          self.removeSelectedItem(item);
+          this.removeSelectedItem(item);
         }
 
         if (onSelect) {
-          onSelect(item, $el, self);
+          onSelect(item, $el, this);
         }
       },
     });
