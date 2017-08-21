@@ -61,15 +61,10 @@ module Gitlab
       def self.configure_proxy
         self.proxy = ConnectionProxy.new(hosts)
 
-        # ActiveRecordProxy's methods are made available as class methods in
-        # ActiveRecord::Base, while still allowing the use of `super`.
+        # This hijacks the "connection" method to ensure both
+        # `ActiveRecord::Base.connection` and all models use the same load
+        # balancing proxy.
         ActiveRecord::Base.singleton_class.prepend(ActiveRecordProxy)
-
-        # The above will only patch newly defined models, so we also need to
-        # patch existing ones.
-        active_record_models.each do |model|
-          model.singleton_class.prepend(ModelProxy)
-        end
       end
 
       def self.active_record_models
