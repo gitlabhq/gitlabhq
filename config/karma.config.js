@@ -8,6 +8,7 @@ if (webpackConfig.plugins) {
   webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {
     return !(
       plugin instanceof webpack.optimize.CommonsChunkPlugin ||
+      plugin instanceof webpack.optimize.ModuleConcatenationPlugin ||
       plugin instanceof webpack.DefinePlugin
     );
   });
