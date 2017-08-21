@@ -131,6 +131,7 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
+    mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
