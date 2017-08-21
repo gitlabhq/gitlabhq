@@ -9,7 +9,8 @@ module Projects
   class HousekeepingService < BaseService
     include Gitlab::CurrentSettings
 
-    LEASE_TIMEOUT = 3600
+    # Timeout set to 24h
+    LEASE_TIMEOUT = 86400
 
     class LeaseTaken < StandardError
       def to_s
