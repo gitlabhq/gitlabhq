@@ -314,6 +314,7 @@ If a node fails, it can be removed from the cluster, or added back as a standby 
 * To add the node as a standby server[^1]
     ```
     # gitlab-ctl repmgr standby follow NEW_MASTER
+    # gitlab-ctl restart repmgrd
     ```
 
 [^1]: **Warning**: When the server is brought back online, and before you switch it to a standby node, repmgr will report that there are two masters.
