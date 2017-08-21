@@ -24,4 +24,6 @@ describe UpdateMergeRequestsWorker do
       perform
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

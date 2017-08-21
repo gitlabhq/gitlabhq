@@ -60,4 +60,6 @@ describe EmailReceiverWorker, :mailer do
       described_class.new.perform(raw_message)
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

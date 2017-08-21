@@ -69,4 +69,6 @@ describe RepositoryForkWorker do
       expect(project.reload.import_status).to eq('failed')
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

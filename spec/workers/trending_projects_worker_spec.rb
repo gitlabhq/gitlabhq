@@ -8,4 +8,6 @@ describe TrendingProjectsWorker do
       described_class.new.perform
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

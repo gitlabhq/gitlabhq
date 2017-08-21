@@ -16,4 +16,6 @@ describe DeleteMergedBranchesWorker do
       expect(worker.perform('unknown', project.owner.id)).to be_falsy
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

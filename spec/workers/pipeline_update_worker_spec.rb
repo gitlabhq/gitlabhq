@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe PipelineUpdateWorker do
-  it_behaves_like 'sidekiq worker'
-
   describe '#perform' do
     context 'when pipeline exists' do
       let(:pipeline) { create(:ci_pipeline) }
@@ -21,4 +19,6 @@ describe PipelineUpdateWorker do
       end
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

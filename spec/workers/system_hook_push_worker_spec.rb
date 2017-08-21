@@ -16,4 +16,6 @@ describe SystemHookPushWorker do
       subject.perform(push_data, :push_hooks)
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

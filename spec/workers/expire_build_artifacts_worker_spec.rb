@@ -47,4 +47,6 @@ describe ExpireBuildArtifactsWorker do
       Sidekiq::Queues.jobs_by_worker['ExpireBuildInstanceArtifactsWorker']
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

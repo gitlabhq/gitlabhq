@@ -20,4 +20,6 @@ describe UseKeyWorker do
       expect(worker.perform(key.id + 1)).to eq false
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

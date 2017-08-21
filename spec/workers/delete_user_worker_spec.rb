@@ -17,4 +17,6 @@ describe DeleteUserWorker do
 
     described_class.new.perform(current_user.id, user.id, "test" => "test")
   end
+
+  it_behaves_like 'sidekiq worker'
 end

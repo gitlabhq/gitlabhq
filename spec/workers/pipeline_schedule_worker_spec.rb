@@ -62,4 +62,6 @@ describe PipelineScheduleWorker do
       expect { subject }.not_to change { project.pipelines.count }
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

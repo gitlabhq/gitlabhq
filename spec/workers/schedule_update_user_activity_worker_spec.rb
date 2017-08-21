@@ -22,4 +22,6 @@ describe ScheduleUpdateUserActivityWorker, :clean_gitlab_redis_shared_state do
       subject.perform(1)
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

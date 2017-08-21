@@ -41,4 +41,6 @@ describe 'Every Sidekiq worker' do
       expect(queue_names).to include(worker.sidekiq_options['queue'].to_s)
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end

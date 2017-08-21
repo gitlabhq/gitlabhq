@@ -23,4 +23,6 @@ describe PruneOldEventsWorker do
       expect(exactly_12_months_event).to be_present
     end
   end
+
+  it_behaves_like 'sidekiq worker'
 end
