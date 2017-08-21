@@ -2342,6 +2342,14 @@ describe Project do
       end
     end
 
+    describe '#legacy_storage?' do
+      it 'returns true when storage_version is nil' do
+        project = build(:project)
+
+        expect(project.legacy_storage?).to be_truthy
+      end
+    end
+
     describe '#rename_repo' do
       before do
         # Project#gitlab_shell returns a new instance of Gitlab::Shell on every

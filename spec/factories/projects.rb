@@ -82,7 +82,7 @@ FactoryGirl.define do
     end
 
     trait :hashed do
-      storage_version 1
+      storage_version Project::LATEST_STORAGE_VERSION
     end
 
     trait :access_requestable do
