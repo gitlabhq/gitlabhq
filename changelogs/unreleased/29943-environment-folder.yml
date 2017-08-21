@@ -1,0 +1,4 @@
+---
+title: Resolve CSRF token leakage via pathname manipulation on environments page
+merge_request:
+author:
