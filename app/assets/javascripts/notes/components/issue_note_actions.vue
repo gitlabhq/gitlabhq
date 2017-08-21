@@ -66,10 +66,10 @@
     },
     methods: {
       onEdit() {
-        this.$emit('editHandler');
+        this.$emit('handleEdit');
       },
       onDelete() {
-        this.$emit('deleteHandler');
+        this.$emit('handleDelete');
       },
     },
     created() {

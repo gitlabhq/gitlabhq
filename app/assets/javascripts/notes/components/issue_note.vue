@@ -148,8 +148,8 @@
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"
-            @editHandler="editHandler"
-            @deleteHandler="deleteHandler"
+            @handleEdit="editHandler"
+            @handleDelete="deleteHandler"
             />
         </div>
         <issue-note-body
