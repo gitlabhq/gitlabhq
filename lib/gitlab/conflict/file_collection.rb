@@ -77,8 +77,8 @@ EOM
 
       def initialize(merge_request, project)
         @merge_request = merge_request
-        @our_commit = merge_request.source_branch_head.raw.raw_commit
-        @their_commit = merge_request.target_branch_head.raw.raw_commit
+        @our_commit = merge_request.source_branch_head.raw.rugged_commit
+        @their_commit = merge_request.target_branch_head.raw.rugged_commit
         @project = project
       end
     end

@@ -14,7 +14,7 @@ module Gitlab
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
 
-      delegate :tree, to: :raw_commit
+      delegate :tree, to: :rugged_commit
 
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
@@ -287,7 +287,7 @@ module Gitlab
       # empty repo.  See Repository#diff for keys allowed in the +options+
       # hash.
       def diff_from_parent(options = {})
-        Commit.diff_from_parent(raw_commit, options)
+        Commit.diff_from_parent(rugged_commit, options)
       end
 
       def deltas
@@ -335,7 +335,7 @@ module Gitlab
 
       def to_patch(options = {})
         begin
-          raw_commit.to_mbox(options)
+          rugged_commit.to_mbox(options)
         rescue Rugged::InvalidError => ex
           if ex.message =~ /commit \w+ is a merge commit/i
             'Patch format is not currently supported for merge commits.'
@@ -381,6 +381,14 @@ module Gitlab
 
       def committer_email
         encode! @committer_email
+      end
+
+      def rugged_commit
+        @rugged_commit ||= if raw_commit.is_a?(Rugged::Commit)
+                             raw_commit
+                           else
+                             @repository.rev_parse_target(id)
+                           end
       end
 
       private
