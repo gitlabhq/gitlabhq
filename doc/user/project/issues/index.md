@@ -136,6 +136,12 @@ to find out more about this feature.
 With [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/), you can also
 create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
 
+### External Issue Tracker
+
+Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
+tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
+or Bugzilla.
+
 ### Issue's API
 
 Read through the [API documentation](../../../api/issues.md).
