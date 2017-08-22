@@ -7,6 +7,8 @@
 module Gitlab
   module LDAP
     class User < Gitlab::OAuth::User
+      prepend ::EE::Gitlab::LDAP::User
+
       class << self
         def find_by_uid_and_provider(uid, provider)
           # LDAP distinguished name is case-insensitive
@@ -20,7 +22,6 @@ module Gitlab
       def initialize(auth_hash)
         super
         update_user_attributes
-        set_external_with_external_groups
       end
 
       def save
@@ -75,24 +76,6 @@ module Gitlab
 
       def auth_hash=(auth_hash)
         @auth_hash = Gitlab::LDAP::AuthHash.new(auth_hash)
-      end
-
-      def set_external_with_external_groups
-        gl_user.external = in_any_external_group?
-      end
-
-      def in_any_external_group?
-        ::EE::Gitlab::LDAP::Sync::Proxy.open(auth_hash.provider) do |proxy|
-          external_groups = proxy.adapter.config.external_groups
-          external_groups.any? do |group_cn|
-            in_group?(proxy, group_cn)
-          end
-        end
-      end
-
-      def in_group?(proxy, group_cn)
-        member_dns = proxy.dns_for_group_cn(group_cn)
-        member_dns.include?(auth_hash.uid)
       end
     end
   end

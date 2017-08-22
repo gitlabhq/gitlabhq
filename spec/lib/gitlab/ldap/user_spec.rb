@@ -27,13 +27,6 @@ describe Gitlab::LDAP::User do
     OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info_upper_case)
   end
 
-  describe '#initialize' do
-    it 'calls #set_external_with_external_groups' do
-      expect_any_instance_of(described_class).to receive(:set_external_with_external_groups)
-      ldap_user
-    end
-  end
-
   describe '#changed?' do
     it "marks existing ldap user as changed" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
@@ -233,100 +226,6 @@ describe Gitlab::LDAP::User do
           expect(gl_user).to be_valid
           expect(gl_user).not_to be_blocked
         end
-      end
-    end
-  end
-
-  describe '#set_external_with_external_groups' do
-    context 'when the LDAP user is in an external group' do
-      before do
-        expect(ldap_user).to receive(:in_any_external_group?).and_return(true)
-      end
-
-      it 'sets the GitLab user external flag to true' do
-        expect do
-          ldap_user.set_external_with_external_groups
-        end.to change { gl_user.external }.from(false).to(true)
-      end
-    end
-
-    context 'when the LDAP user is not in an external group' do
-      before do
-        expect(ldap_user).to receive(:in_any_external_group?).and_return(false)
-      end
-
-      it 'sets the GitLab user external flag to true' do
-        gl_user.external = true
-        gl_user.save
-
-        expect do
-          ldap_user.set_external_with_external_groups
-        end.to change { gl_user.external }.from(true).to(false)
-      end
-    end
-  end
-
-  describe '#in_any_external_group?' do
-    context 'when there is an external group' do
-      before do
-        stub_ldap_config(external_groups: ['foo'])
-      end
-
-      context 'when the user is in an external group' do
-        before do
-          expect(ldap_user).to receive(:in_group?).and_return(true)
-        end
-
-        it 'returns true' do
-          expect(ldap_user.in_any_external_group?).to be_truthy
-        end
-      end
-
-      context 'when the user is not in an external group' do
-        before do
-          expect(ldap_user).to receive(:in_group?).and_return(false)
-        end
-
-        it 'returns false' do
-          expect(ldap_user.in_any_external_group?).to be_falsey
-        end
-      end
-    end
-
-    context 'when are no external groups' do
-      before do
-        stub_ldap_config(external_groups: [])
-      end
-
-      it 'returns false' do
-        expect(ldap_user.in_any_external_group?).to be_falsey
-      end
-    end
-  end
-
-  describe '#in_group?' do
-    let(:proxy) { double(:proxy) }
-    let(:group) { 'foo' }
-    let(:member_dns_in_group) { ['uid=alice,ou=people,dc=example,dc=com'] }
-    subject { ldap_user.in_group?(proxy, group) }
-
-    before do
-      expect(proxy).to receive(:dns_for_group_cn).with(group).and_return(member_dns_in_group)
-    end
-
-    context 'when the LDAP user is in the group' do
-      before do
-        member_dns_in_group << ldap_user.auth_hash.uid
-      end
-
-      it 'returns true' do
-        expect(subject).to be_truthy
-      end
-    end
-
-    context 'when the LDAP user is not in the group' do
-      it 'returns false' do
-        expect(subject).to be_falsey
       end
     end
   end
