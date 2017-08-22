@@ -4,8 +4,13 @@ module Geo
 
     def execute
       try_obtain_lease do |lease|
+        start_time = Time.now
         bytes_downloaded = downloader.execute
         success = bytes_downloaded && bytes_downloaded >= 0
+        log_info("File download",
+                 success: success,
+                 bytes_downloaded: bytes_downloaded,
+                 download_time_s: (Time.now - start_time).to_f.round(3))
         update_registry(bytes_downloaded) if success
       end
     end
