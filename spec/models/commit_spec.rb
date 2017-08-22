@@ -248,8 +248,8 @@ eos
         end
       end
 
-      context "that is existing but not found (eg. it's in progress)" do
-        it do
+      context "that is existing but not found" do
+        it 'does not include details of the merged commits' do
           expect(merge_commit.cherry_pick_message(user)).to end_with("(cherry picked from commit #{merge_commit.sha})")
         end
       end
