@@ -429,6 +429,7 @@ ingress:
 > You may see a temporary error message `SchedulerPredicates failed due to PersistentVolumeClaim is not bound` while storage provisions. Once the storage provisions, the pods will automatically restart. This may take a couple minutes depending on your cloud provider. If the error persists, please review the [prerequisites](#prerequisites) to ensure you have enough RAM, CPU, and storage.
 
 Ensure the GitLab repo has been added and re-initialize Helm:
+
 ```bash
 helm repo add gitlab https://charts.gitlab.io
 helm init
