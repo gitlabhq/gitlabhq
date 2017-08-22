@@ -56,14 +56,9 @@ following locations:
 - [Tags](tags.md)
 - [Todos](todos.md)
 - [Users](users.md)
-- [Validate CI configuration](ci/lint.md)
+- [Validate CI configuration](lint.md)
 - [V3 to V4](v3_to_v4.md)
 - [Version](version.md)
-
-The following documentation is for the [internal CI API](ci/README.md):
-
-- [Builds](ci/builds.md)
-- [Runners](ci/runners.md)
 
 ## Road to GraphQL
 

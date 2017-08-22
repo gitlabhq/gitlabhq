@@ -2,19 +2,6 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170628080858_migrate_stage_id_reference_in_background')
 
 describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
-  matcher :be_scheduled_migration do |delay, *expected|
-    match do |migration|
-      BackgroundMigrationWorker.jobs.any? do |job|
-        job['args'] == [migration, expected] &&
-          job['at'].to_i == (delay.to_i + Time.now.to_i)
-      end
-    end
-
-    failure_message do |migration|
-      "Migration `#{migration}` with args `#{expected.inspect}` not scheduled!"
-    end
-  end
-
   let(:jobs) { table(:ci_builds) }
   let(:stages) { table(:ci_stages) }
   let(:pipelines) { table(:ci_pipelines) }

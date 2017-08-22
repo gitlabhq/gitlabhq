@@ -444,6 +444,7 @@ describe Gitlab::GitAccess do
               else
                 expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
                   -> { "expected #{action} to be disallowed" }
+<<<<<<< HEAD
               end
             end
           end
@@ -469,6 +470,8 @@ describe Gitlab::GitAccess do
               else
                 expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
                   -> { "expected #{action} to be disallowed" }
+=======
+>>>>>>> 539ed0a6375d5bb6d734e688b801373e4b8006f9
               end
             end
           end

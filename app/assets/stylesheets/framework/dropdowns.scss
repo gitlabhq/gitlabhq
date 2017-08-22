@@ -761,7 +761,11 @@
         &:hover,
         &:active,
         &:focus {
+<<<<<<< HEAD
           background-color: $gray-darker;
+=======
+          background-color: $dropdown-item-hover-bg;
+>>>>>>> 539ed0a6375d5bb6d734e688b801373e4b8006f9
           color: $gl-text-color;
         }
 

@@ -7,7 +7,7 @@ of solving a problem.
 It allows you, your team, and your collaborators to share
 and discuss proposals before and while implementing them.
 
-Issues and the GitLab Issue Tracker are available in all
+GitLab Issues and the GitLab Issue Tracker are available in all
 [GitLab Products](https://about.gitlab.com/products/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
@@ -48,11 +48,27 @@ for feature proposals and another one for bug reports.
 
 ## Issue Tracker
 
-The issue tracker is the collection of opened and closed issues created in a project.
+The Issue Tracker is the collection of opened and closed issues created in a project.
+It is available for all projects, from the moment the project is created.
 
-![Issue tracker](img/issue_tracker.png)
+Find the issue tracker by navigating to your **Project's homepage** > **Issues**.
 
-Find the issue tracker by navigating to your **Project's Dashboard** > **Issues**.
+### Issues per project
+
+When you access your project's issues, GitLab will present them in a list,
+and you can use the tabs available to quickly filter by open and closed issues.
+
+![Project issues list view](img/project_issues_list_view.png)
+
+You can also [search and filter](../../search/index.md#issues-and-merge-requests-per-project) the results more deeply with GitLab's search capacities.
+
+### Issues per group
+
+View all the issues in a group (that is, all the issues across all projects in that
+group) by navigating to **Group > Issues**. This view also has the open and closed
+issue tabs.
+
+![Group Issues list view](img/group_issues_list_view.png)
 
 ## GitLab Issues Functionalities
 
@@ -139,6 +155,12 @@ and appear in a block below the issue description. Issues can be across groups
 and projects.
 
 Read more about [Related Issues](related_issues.md).
+
+### External Issue Tracker
+
+Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
+tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
+or Bugzilla.
 
 ### Issue's API
 

@@ -1,5 +1,7 @@
 # Group-level Variables  API
 
+> [Introduced][ce-34519] in GitLab 9.5
+
 ## List group variables
 
 Get list of a group's variables.
@@ -123,3 +125,5 @@ DELETE /groups/:id/variables/:key
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
 ```
+
+[ce-34519]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34519

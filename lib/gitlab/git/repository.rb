@@ -64,7 +64,6 @@ module Gitlab
       end
 
       delegate  :empty?,
-                :bare?,
                 to: :rugged
 
       delegate :exists?, to: :gitaly_repository_client
@@ -126,6 +125,8 @@ module Gitlab
       # This is to work around a bug in libgit2 that causes in-memory refs to
       # be stale/invalid when packed-refs is changed.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/474
       def find_branch(name, force_reload = false)
         reload_rugged if force_reload
 
@@ -204,30 +205,31 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        !!rugged.tags[name]
+        gitaly_migrate(:ref_exists_tags) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/tags/#{name}")
+          else
+            rugged_tag_exists?(name)
+          end
+        end
       end
 
       # Returns true if the given branch exists
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        rugged.branches.exists?(name)
-
-      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
-      # Whatever code calls this method shouldn't have to deal with that so
-      # instead we just return `false` (which is true since a branch doesn't
-      # exist when it has an invalid name).
-      rescue Rugged::ReferenceError
-        false
+        gitaly_migrate(:ref_exists_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?("refs/heads/#{name}")
+          else
+            rugged_branch_exists?(name)
+          end
+        end
       end
 
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
-      end
-
-      def has_commits?
-        !empty?
       end
 
       # Discovers the default branch based on the repository's available branches
@@ -569,6 +571,8 @@ module Gitlab
       end
 
       # Delete the specified branch from the repository
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def delete_branch(branch_name)
         rugged.branches.delete(branch_name)
       end
@@ -578,6 +582,8 @@ module Gitlab
       # Examples:
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
+      #
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/476
       def create_branch(ref, start_point = "HEAD")
         rugged_ref = rugged.branches.create(ref, start_point)
         target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
@@ -587,38 +593,26 @@ module Gitlab
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
-      # Return an array of this repository's remote names
-      def remote_names
-        rugged.remotes.each_name.to_a
-      end
-
       # Delete the specified remote from this repository.
       def remote_delete(remote_name)
         rugged.remotes.delete(remote_name)
+        nil
       end
 
-      # Add a new remote to this repository.  Returns a Rugged::Remote object
+      # Add a new remote to this repository.
       def remote_add(remote_name, url)
         rugged.remotes.create(remote_name, url)
+        nil
       end
 
       # Update the specified remote using the values in the +options+ hash
       #
       # Example
       # repo.update_remote("origin", url: "path/to/repo")
-      def remote_update(remote_name, options = {})
+      def remote_update(remote_name, url:)
         # TODO: Implement other remote options
-        rugged.remotes.set_url(remote_name, options[:url]) if options[:url]
-      end
-
-      # Fetch the specified remote
-      def fetch(remote_name)
-        rugged.remotes[remote_name].fetch
-      end
-
-      # Push +*refspecs+ to the remote identified by +remote_name+.
-      def push(remote_name, *refspecs)
-        rugged.remotes[remote_name].push(refspecs)
+        rugged.remotes.set_url(remote_name, url)
+        nil
       end
 
       AUTOCRLF_VALUES = {
@@ -993,6 +987,34 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def gitaly_ref_exists?(ref_name)
+        gitaly_ref_client.ref_exists?(ref_name)
+      end
+
+      # Returns true if the given tag exists
+      #
+      # name - The name of the tag as a String.
+      def rugged_tag_exists?(name)
+        !!rugged.tags[name]
+      end
+
+      # Returns true if the given branch exists
+      #
+      # name - The name of the branch as a String.
+      def rugged_branch_exists?(name)
+        rugged.branches.exists?(name)
+
+      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
+      # Whatever code calls this method shouldn't have to deal with that so
+      # instead we just return `false` (which is true since a branch doesn't
+      # exist when it has an invalid name).
+      rescue Rugged::ReferenceError
+        false
       end
 
       def gitaly_copy_gitattributes(revision)

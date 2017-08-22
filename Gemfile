@@ -162,7 +162,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
-gem 'sidekiq-limit_fetch', '~> 3.4'
+gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -299,7 +299,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta12'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -417,7 +417,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.27.0'
+gem 'gitaly', '~> 0.29.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
