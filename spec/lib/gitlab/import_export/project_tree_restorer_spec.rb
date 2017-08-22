@@ -19,8 +19,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
-
-
       end
     end
 
