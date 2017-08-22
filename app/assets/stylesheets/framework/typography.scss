@@ -13,6 +13,9 @@
   img {
     /*max-width: 100%;*/
     margin: 0 0 8px;
+  }
+
+  img.lazy {
     min-width: 200px;
     min-height: 100px;
     background-color: $gray-lightest;
