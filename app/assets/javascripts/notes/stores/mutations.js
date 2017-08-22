@@ -70,7 +70,22 @@ export default {
     Object.assign(state, { userData: data });
   },
   [types.SET_INITIAL_NOTES](state, notesData) {
-    Object.assign(state, { notes: notesData });
+    const notes = [];
+
+    notesData.forEach((note) => {
+      // To support legacy notes, should be very rare case.
+      if (note.individual_note && note.notes.length > 1) {
+        note.notes.forEach((n) => {
+          const nn = Object.assign({}, note);
+          nn.notes = [n]; // override notes array to only have one item to mimick individual_note
+          notes.push(nn);
+        });
+      } else {
+        notes.push(note);
+      }
+    });
+
+    Object.assign(state, { notes });
   },
 
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
