@@ -78,6 +78,7 @@
       ...mapActions([
         'saveNote',
         'toggleDiscussion',
+        'removePlaceholderNotes',
       ]),
       componentName(note) {
         if (note.isPlaceholderNote) {
@@ -126,7 +127,15 @@
             this.isReplying = false;
             this.resetAutoSave();
           })
-          .catch(() => Flash('Something went wrong while adding your reply. Please try again.'));
+          .catch(() => {
+            Flash(
+              'Your comment could not be submitted! Please check your network connection and try again.',
+              'alert',
+              $(this.$el),
+            );
+            this.removePlaceholderNotes();
+            this.$refs.noteForm.isSubmitting = false;
+          });
       },
     },
     mounted() {
@@ -191,7 +200,6 @@
                     :key="note.id"
                     />
                 </ul>
-                <div class="flash-container"></div>
                 <div
                   :class="{ 'is-replying': isReplying }"
                   class="discussion-reply-holder">

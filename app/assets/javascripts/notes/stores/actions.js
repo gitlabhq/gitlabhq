@@ -57,6 +57,9 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
     return res;
   });
 
+export const removePlaceholderNotes = ({ commit }) =>
+  commit(types.REMOVE_PLACEHOLDER_NOTES);
+
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
   let placeholderText = note;
@@ -127,14 +130,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 
       return res;
-    })
-    .catch(() => {
-      Flash(
-        'Your comment could not be submitted! Please check your network connection and try again.',
-        'alert',
-        $(noteData.flashContainer),
-      );
-      commit(types.REMOVE_PLACEHOLDER_NOTES);
     });
 };
 

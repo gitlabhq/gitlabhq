@@ -96,6 +96,7 @@
     methods: {
       ...mapActions([
         'saveNote',
+        'removePlaceholderNotes',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
         if (!_.isEmpty(note) && !isSubmitting) {
@@ -147,6 +148,12 @@
             .catch(() => {
               this.isSubmitting = false;
               this.discard(false);
+              Flash(
+                'Your comment could not be submitted! Please check your network connection and try again.',
+                'alert',
+                $(this.$el),
+              );
+              this.removePlaceholderNotes();
             });
         } else {
           this.toggleIssueState();
