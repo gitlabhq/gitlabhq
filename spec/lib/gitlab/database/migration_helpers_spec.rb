@@ -875,18 +875,18 @@ describe Gitlab::Database::MigrationHelpers do
 
     describe '#migrate_sidekiq_queue' do
       it 'migrates jobs from one sidekiq queue to another' do
-          Sidekiq::Testing.disable! do
-            worker.perform_async('Something', [1])
-            worker.perform_async('Something', [2])
+        Sidekiq::Testing.disable! do
+          worker.perform_async('Something', [1])
+          worker.perform_async('Something', [2])
 
-            expect(model.sidekiq_queue_length('test')).to eq 2
-            expect(model.sidekiq_queue_length('new_test')).to eq 0
+          expect(model.sidekiq_queue_length('test')).to eq 2
+          expect(model.sidekiq_queue_length('new_test')).to eq 0
 
-            model.sidekiq_queue_migrate('test', to: 'new_test')
+          model.sidekiq_queue_migrate('test', to: 'new_test')
 
-            expect(model.sidekiq_queue_length('test')).to eq 0
-            expect(model.sidekiq_queue_length('new_test')).to eq 2
-          end
+          expect(model.sidekiq_queue_length('test')).to eq 0
+          expect(model.sidekiq_queue_length('new_test')).to eq 2
+        end
       end
     end
   end
