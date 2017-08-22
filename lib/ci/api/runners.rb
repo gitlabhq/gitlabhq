@@ -27,11 +27,9 @@ module Ci
           runner_params = declared(params, include_missing: false).except(:token)
 
           runner =
-            if runner_registration_token_valid?
-              # Create shared runner. Requires admin access
+            if shared_runner_registration_token_valid?
               Ci::Runner.create(runner_params.merge(is_shared: true))
             elsif project = Project.find_by(runners_token: params[:token])
-              # Create a specific runner for project.
               project.runners.create(runner_params)
             end
 

@@ -5,7 +5,7 @@ module API
       JOB_TOKEN_PARAM = :token
       UPDATE_RUNNER_EVERY = 10 * 60
 
-      def runner_registration_token_valid?
+      def shared_runner_registration_token_valid?
         ActiveSupport::SecurityUtils.variable_size_secure_compare(params[:token],
                                                                   current_application_settings.runners_registration_token)
       end

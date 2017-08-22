@@ -20,11 +20,9 @@ module API
         attributes = attributes_for_keys [:description, :locked, :run_untagged, :tag_list]
         attributes = attributes.merge(version_attributes) if version_attributes
 
-        if runner_registration_token_valid?
-          # Create shared runner. Requires admin access
+        if shared_runner_registration_token_valid?
           runner = Ci::Runner.create(attributes.merge(is_shared: true))
         elsif project = Project.find_by(runners_token: params[:token])
-          # Create a specific runner for project.
           runner = project.runners.create(attributes)
         else
           return forbidden!

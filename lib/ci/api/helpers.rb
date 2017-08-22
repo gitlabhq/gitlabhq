@@ -6,7 +6,7 @@ module Ci
       UPDATE_RUNNER_EVERY = 10 * 60
 
       def authenticate_runners!
-        forbidden! unless runner_registration_token_valid?
+        forbidden! unless shared_runner_registration_token_valid?
       end
 
       def authenticate_runner!
@@ -33,7 +33,7 @@ module Ci
         forbidden!('Build has been erased!') if build.erased?
       end
 
-      def runner_registration_token_valid?
+      def shared_runner_registration_token_valid?
         ActiveSupport::SecurityUtils.variable_size_secure_compare(
           params[:token],
           current_application_settings.runners_registration_token)
