@@ -7,6 +7,7 @@ import '~/project_select';
 import '~/project';
 
 describe('Project Title', () => {
+  const dummyApiVersion = 'v3000';
   preloadFixtures('issues/open-issue.html.raw');
   loadJSONFixtures('projects.json');
 
@@ -14,7 +15,7 @@ describe('Project Title', () => {
     loadFixtures('issues/open-issue.html.raw');
 
     window.gon = {};
-    window.gon.api_version = 'v3';
+    window.gon.api_version = dummyApiVersion;
 
     // eslint-disable-next-line no-new
     new Project();
@@ -37,9 +38,10 @@ describe('Project Title', () => {
 
     it('toggles dropdown', () => {
       const $menu = $('.js-dropdown-menu-projects');
+      window.gon.current_user_id = 1;
       $('.js-projects-dropdown-toggle').click();
       expect($menu).toHaveClass('open');
-      expect(reqUrl).toBe('/api/v3/projects.json?simple=true');
+      expect(reqUrl).toBe(`/api/${dummyApiVersion}/projects.json?simple=true`);
       expect(reqData).toEqual({
         search: '',
         order_by: 'last_activity_at',
