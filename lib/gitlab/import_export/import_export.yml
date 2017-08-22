@@ -98,6 +98,7 @@ excluded_attributes:
     - :last_activity_at
     - :last_repository_updated_at
     - :last_repository_check_at
+    - :storage_version
   snippets:
     - :expired_at
   merge_request_diff:

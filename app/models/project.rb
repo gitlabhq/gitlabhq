@@ -17,7 +17,6 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
-  include Storage::LegacyProject
 
   extend Gitlab::ConfigHelper
 
@@ -25,12 +24,15 @@ class Project < ActiveRecord::Base
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
+  LATEST_STORAGE_VERSION = 1
 
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
            :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
                                                        allow_nil: true
+
+  delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
@@ -44,32 +46,24 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  after_create :ensure_storage_path_exist
-  after_create :create_project_feature, unless: :project_feature
+  add_authentication_token_field :runners_token
+  before_save :ensure_runners_token
+
   after_save :update_project_statistics, if: :namespace_id_changed?
-
-  # set last_activity_at to the same as created_at
+  after_create :create_project_feature, unless: :project_feature
   after_create :set_last_activity_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
   after_create :set_last_repository_updated_at
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
-  end
+  after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
   after_destroy -> { run_after_commit { remove_pages } }
 
-  # update visibility_level of forks
-  after_update :update_forks_visibility_level
-
   after_validation :check_pending_delete
 
-  # Legacy Storage specific hooks
-
-  after_save :ensure_storage_path_exist, if: :namespace_id_changed?
+  # Storage specific hooks
+  after_initialize :use_hashed_storage
+  after_create :ensure_storage_path_exists
+  after_save :ensure_storage_path_exists, if: :namespace_id_changed?
 
   acts_as_taggable
 
@@ -237,9 +231,6 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
-
-  add_authentication_token_field :runners_token
-  before_save :ensure_runners_token
 
   mount_uploader :avatar, AvatarUploader
   has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -485,6 +476,10 @@ class Project < ActiveRecord::Base
 
   def repository
     @repository ||= Repository.new(full_path, self, disk_path: disk_path)
+  end
+
+  def reload_repository!
+    @repository = nil
   end
 
   def container_registry_url
@@ -1004,6 +999,19 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_repository(force: false)
+    # Forked import is handled asynchronously
+    return if forked? && !force
+
+    if gitlab_shell.add_repository(repository_storage_path, disk_path)
+      repository.after_create
+      true
+    else
+      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      false
+    end
+  end
+
   def hook_attrs(backward: true)
     attrs = {
       name: name,
@@ -1086,6 +1094,7 @@ class Project < ActiveRecord::Base
     !!repository.exists?
   end
 
+  # update visibility_level of forks
   def update_forks_visibility_level
     return unless visibility_level < visibility_level_was
 
@@ -1213,7 +1222,8 @@ class Project < ActiveRecord::Base
   end
 
   def pages_path
-    File.join(Settings.pages.path, disk_path)
+    # TODO: when we migrate Pages to work with new storage types, change here to use disk_path
+    File.join(Settings.pages.path, full_path)
   end
 
   def public_pages_path
@@ -1250,6 +1260,50 @@ class Project < ActiveRecord::Base
     if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
+  end
+
+  def rename_repo
+    new_full_path = build_full_path
+
+    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+
+    if has_container_registry_tags?
+      Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
+
+      # we currently doesn't support renaming repository if it contains images in container registry
+      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
+    end
+
+    expire_caches_before_rename(full_path_was)
+
+    if storage.rename_repo
+      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
+      rename_repo_notify!
+      after_rename_repo
+    else
+      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+
+      # if we cannot move namespace directory we should rollback
+      # db changes in order to prevent out of sync between db and fs
+      raise StandardError.new('repository cannot be renamed')
+    end
+  end
+
+  def rename_repo_notify!
+    send_move_instructions(full_path_was)
+    expires_full_path_cache
+
+    self.old_path_with_namespace = full_path_was
+    SystemHooksService.new.execute_hooks_for(self, :rename)
+
+    reload_repository!
+  end
+
+  def after_rename_repo
+    path_before_change = previous_changes['path'].first
+
+    Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1410,6 +1464,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def full_path_was
+    File.join(namespace.full_path, previous_changes['path'].first)
+  end
+
   alias_method :name_with_namespace, :full_name
   alias_method :human_name, :full_name
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
@@ -1419,7 +1477,35 @@ class Project < ActiveRecord::Base
     Projects::ForksCountService.new(self).count
   end
 
+  def legacy_storage?
+    self.storage_version.nil?
+  end
+
   private
+
+  def storage
+    @storage ||=
+      if self.storage_version && self.storage_version >= 1
+        Storage::HashedProject.new(self)
+      else
+        Storage::LegacyProject.new(self)
+      end
+  end
+
+  def use_hashed_storage
+    if self.new_record? && current_application_settings.hashed_storage_enabled
+      self.storage_version = LATEST_STORAGE_VERSION
+    end
+  end
+
+  # set last_activity_at to the same as created_at
+  def set_last_activity_at
+    update_column(:last_activity_at, self.created_at)
+  end
+
+  def set_last_repository_updated_at
+    update_column(:last_repository_updated_at, self.created_at)
+  end
 
   def cross_namespace_reference?(from)
     case from

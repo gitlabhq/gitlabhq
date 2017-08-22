@@ -11,6 +11,12 @@ namespace :gitlab do
     #
     desc "GitLab | Import bare repositories from repositories -> storages into GitLab project instance"
     task repos: :environment do
+      if Project.current_application_settings.hashed_storage_enabled
+        puts 'Cannot import repositories when Hashed Storage is enabled'.color(:red)
+
+        exit 1
+      end
+
       Gitlab.config.repositories.storages.each_value do |repository_storage|
         git_base_path = repository_storage['path']
         repos_to_import = Dir.glob(git_base_path + '/**/*.git')
