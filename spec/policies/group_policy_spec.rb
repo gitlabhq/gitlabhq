@@ -105,6 +105,8 @@ describe GroupPolicy do
     let(:current_user) { owner }
 
     it do
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
       expect_allowed(*master_permissions)
@@ -116,6 +118,8 @@ describe GroupPolicy do
     let(:current_user) { admin }
 
     it do
+      allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
       expect_allowed(*master_permissions)
@@ -229,6 +233,8 @@ describe GroupPolicy do
       let(:current_user) { owner }
 
       it do
+        allow(Group).to receive(:supports_nested_groups?).and_return(true)
+
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
         expect_allowed(*master_permissions)
