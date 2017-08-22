@@ -1,5 +1,0 @@
----
-title: Fix Copy to Clipboard for SSH Public Key on Pull Repository settings
-merge_request: 2692
-author:
-type: fixed

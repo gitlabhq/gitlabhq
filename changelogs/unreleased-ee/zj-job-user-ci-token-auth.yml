@@ -1,4 +1,0 @@
----
-title: Allow artifacts access with job_token parameter or CI_JOB_TOKEN header
-merge_request:
-author:
