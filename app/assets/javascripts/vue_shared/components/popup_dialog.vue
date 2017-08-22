@@ -51,9 +51,7 @@ export default {
   class="modal popup-dialog"
   role="dialog"
   tabindex="-1">
-  <div
-    class="modal-dialog"
-    role="document">
+  <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button"
@@ -74,8 +72,7 @@ export default {
           @click="emitSubmit(false)">
             {{closeButtonLabel}}
         </button>
-        <button
-          type="button"
+        <button type="button"
           class="btn"
           :class="btnKindClass"
           @click="emitSubmit(true)">

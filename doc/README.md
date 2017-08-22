@@ -32,6 +32,7 @@ Shortcuts to GitLab's most visited docs:
 
 - [User documentation](user/index.md)
 - [Administrator documentation](#administrator-documentation)
+- [Technical Articles](articles/index.md)
 
 ## Getting started with GitLab
 

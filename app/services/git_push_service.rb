@@ -95,8 +95,19 @@ class GitPushService < BaseService
   end
 
   def update_signatures
-    @push_commits.each do |commit|
-      CreateGpgSignatureWorker.perform_async(commit.sha, @project.id)
+    commit_shas = @push_commits.last(PROCESS_COMMIT_LIMIT).map(&:sha)
+
+    return if commit_shas.empty?
+
+    shas_with_cached_signatures = GpgSignature.where(commit_sha: commit_shas).pluck(:commit_sha)
+    commit_shas -= shas_with_cached_signatures
+
+    return if commit_shas.empty?
+
+    commit_shas = Gitlab::Git::Commit.shas_with_signatures(project.repository, commit_shas)
+
+    commit_shas.each do |sha|
+      CreateGpgSignatureWorker.perform_async(sha, project.id)
     end
   end
 

@@ -752,6 +752,11 @@
         border-radius: 0;
         padding: 8px 16px;
 
+        // make sure the text color is not overriden
+        &.text-danger {
+          @extend .text-danger;
+        }
+
         &.is-focused,
         &:hover,
         &:active,

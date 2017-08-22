@@ -756,6 +756,9 @@ test:
       default:
         path: tmp/tests/repositories/
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket
+        failure_count_threshold: 999999
+        failure_wait_time: 0
+        storage_timeout: 30
       broken:
         path: tmp/tests/non-existent-repositories
         gitaly_address: unix:tmp/tests/gitaly/gitaly.socket

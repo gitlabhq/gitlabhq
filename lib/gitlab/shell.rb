@@ -73,8 +73,10 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def add_repository(storage, name)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path,
-                                 'add-project', storage, "#{name}.git"])
+      Gitlab::Git::Repository.create(storage, name, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
+    rescue => err
+      Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
+      false
     end
 
     # Import repository
@@ -421,7 +423,11 @@ module Gitlab
     protected
 
     def gitlab_shell_path
-      Gitlab.config.gitlab_shell.path
+      File.expand_path(Gitlab.config.gitlab_shell.path)
+    end
+
+    def gitlab_shell_hooks_path
+      File.expand_path(Gitlab.config.gitlab_shell.hooks_path)
     end
 
     def gitlab_shell_user_home

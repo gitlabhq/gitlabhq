@@ -441,9 +441,7 @@ describe ProjectsHelper do
   end
 
   describe '#any_projects?' do
-    before do
-      create(:project)
-    end
+    let!(:project) { create(:project) }
 
     it 'returns true when projects will be returned' do
       expect(helper.any_projects?(Project.all)).to eq(true)
@@ -451,6 +449,14 @@ describe ProjectsHelper do
 
     it 'returns false when no projects will be returned' do
       expect(helper.any_projects?(Project.none)).to eq(false)
+    end
+
+    it 'returns true when using a non-empty Array' do
+      expect(helper.any_projects?([project])).to eq(true)
+    end
+
+    it 'returns false when using an empty Array' do
+      expect(helper.any_projects?([])).to eq(false)
     end
 
     it 'only executes a single query when a LIMIT is applied' do

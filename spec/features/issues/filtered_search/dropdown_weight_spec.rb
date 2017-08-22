@@ -62,7 +62,7 @@ describe 'Dropdown weight', :js do
       click_weight(1)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect_tokens([{ name: 'weight', value: '1' }])
+      expect_tokens([{ name: 'Weight', value: '1' }])
       expect_filtered_search_input_empty
     end
 
@@ -70,7 +70,7 @@ describe 'Dropdown weight', :js do
       click_weight(2)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect_tokens([{ name: 'weight', value: '2' }])
+      expect_tokens([{ name: 'Weight', value: '2' }])
       expect_filtered_search_input_empty
     end
 
@@ -78,7 +78,7 @@ describe 'Dropdown weight', :js do
       click_weight(3)
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect_tokens([{ name: 'weight', value: '3' }])
+      expect_tokens([{ name: 'Weight', value: '3' }])
       expect_filtered_search_input_empty
     end
 
@@ -86,7 +86,7 @@ describe 'Dropdown weight', :js do
       click_static_weight('No Weight')
 
       expect(page).to have_css(js_dropdown_weight, visible: false)
-      expect_tokens([{ name: 'weight', value: 'none' }])
+      expect_tokens([{ name: 'Weight', value: 'none' }])
       expect_filtered_search_input_empty
     end
   end

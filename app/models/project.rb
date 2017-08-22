@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
   end
 
   before_destroy :remove_private_deploy_keys
-  after_destroy :remove_pages
+  after_destroy -> { run_after_commit { remove_pages } }
 
   # update visibility_level of forks
   after_update :update_forks_visibility_level
@@ -1237,6 +1237,9 @@ class Project < ActiveRecord::Base
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
+    # Projects with a missing namespace cannot have their pages removed
+    return unless namespace
+
     ::Projects::UpdatePagesConfigurationService.new(self).execute
 
     # 1. We rename pages to temporary directory
@@ -1295,12 +1298,16 @@ class Project < ActiveRecord::Base
     status.zero?
   end
 
+  def full_path_slug
+    Gitlab::Utils.slugify(full_path.to_s)
+  end
+
   def predefined_variables
     [
       { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
       { key: 'CI_PROJECT_NAME', value: path, public: true },
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
-      { key: 'CI_PROJECT_PATH_SLUG', value: full_path.parameterize, public: true },
+      { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
       { key: 'CI_PROJECT_URL', value: web_url, public: true }
     ]
