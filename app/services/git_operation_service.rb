@@ -1,8 +1,11 @@
 class GitOperationService
-  attr_reader :user, :repository
+  attr_reader :committer, :repository
 
-  def initialize(new_user, new_repository)
-    @user = new_user
+  def initialize(committer, new_repository)
+    if committer && !committer.is_a?(Gitlab::Git::Committer)
+      raise "expected Gitlab::Git::Committer, got #{committer.inspect}"
+    end
+    @committer = committer
     @repository = new_repository
   end
 
@@ -119,7 +122,7 @@ class GitOperationService
 
   def with_hooks(ref, newrev, oldrev)
     GitHooksService.new.execute(
-      user,
+      committer,
       repository.project,
       oldrev,
       newrev,

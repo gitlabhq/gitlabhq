@@ -3,9 +3,9 @@ class GitHooksService
 
   attr_accessor :oldrev, :newrev, :ref
 
-  def execute(user, project, oldrev, newrev, ref)
+  def execute(committer, project, oldrev, newrev, ref)
     @project    = project
-    @user       = Gitlab::GlId.gl_id(user)
+    @gl_id       = committer.gl_id
     @oldrev     = oldrev
     @newrev     = newrev
     @ref        = ref
@@ -27,6 +27,6 @@ class GitHooksService
 
   def run_hook(name)
     hook = Gitlab::Git::Hook.new(name, @project)
-    hook.trigger(@user, oldrev, newrev, ref)
+    hook.trigger(@gl_id, oldrev, newrev, ref)
   end
 end
