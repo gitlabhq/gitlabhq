@@ -1,0 +1,5 @@
+---
+title: Fix caching of future broadcast messages
+merge_request:
+author:
+type: fixed
