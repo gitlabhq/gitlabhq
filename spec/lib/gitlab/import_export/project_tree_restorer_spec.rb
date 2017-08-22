@@ -12,10 +12,15 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
 
         allow(@project.repository).to receive(:fetch_ref).and_return(true)
-        expect(@project.repository).to receive(:create_branch).with('feature', 'DCBA')
+        allow(@project.repository.raw).to receive(:rugged_branch_exists?).and_return(false)
+
+        expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
+
+
       end
     end
 
