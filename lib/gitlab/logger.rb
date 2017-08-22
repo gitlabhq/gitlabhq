@@ -14,13 +14,9 @@ module Gitlab
 
     def self.read_latest
       path = Rails.root.join("log", file_name)
-      self.build unless File.exist?(path)
-      tail_output, _ = Gitlab::Popen.popen(%W(tail -n 2000 #{path}))
-      tail_output.split("\n")
-    end
 
-    def self.read_latest_for(filename)
-      path = Rails.root.join("log", filename)
+      return [] unless File.readable?(path)
+
       tail_output, _ = Gitlab::Popen.popen(%W(tail -n 2000 #{path}))
       tail_output.split("\n")
     end
