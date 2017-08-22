@@ -4,7 +4,13 @@
   .user-callout-copy
     %h4
       - if current_application_settings.should_check_namespace_plan?
-        Upgrade your plan to activate Contribution Analytics.
+        - if @project.group ? can?(current_user, :admin_group, @project.group) : @project.owner == current_user
+          Upgrade your plan to activate Contribution Analytics.
+        - elsif @project.group
+          Upgrade the plan for #{ @project.group.name } to activate Contribution Analytics.
+        - else
+          - owner = @project.namespace.owner
+          Upgrade #{ owner.name }'s plan to activate Contribution Analytics.
       - else
         Track activity with Contribution Analytics.
     %p

@@ -8,14 +8,14 @@
       %h4
         - if current_application_settings.should_check_namespace_plan?
           - if @project.group ? can?(current_user, :admin_group, @project.group) : @project.owner == current_user
-            Upgrade your plan to improve milestone with Burndown Charts.
+            Upgrade your plan to improve milestones with Burndown Charts.
           - elsif @project.group
-            Upgrade { @project.group.name }'s plan to improve milestone with Burndown Charts.
+            Upgrade the plan for #{ @project.group.name } to improve milestones with Burndown Charts.
           - else
             - owner = @project.namespace.owner
-            Upgrade { @project.group.name }'s plan to improve milestone with Burndown Charts.
+            Upgrade #{ owner.name }'s plan to improve milestones with Burndown Charts.
         - else
-          Improve milestone with Burndown Charts.
+          Improve milestones with Burndown Charts.
       %p
         Burndown Charts are visual representations of the progress of completing a milestone. At a glance, you see the current state for the completion a given milestone. Without them, you would have to organize the data from the milestone and plot it yourself to have the same sense of progress.
         = link_to 'Read more', help_page_path('user/project/milestones/burndown_charts.html'), target: '_blank'

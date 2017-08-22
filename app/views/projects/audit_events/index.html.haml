@@ -2,7 +2,7 @@
 
 = render "projects/settings/head"
 
-- unless @project.feature_available?(:audit_events) && show_promotions?
+- if show_project_feature_promotion?(:audit_events)
   = render 'shared/promotions/promote_audit_events'
 
 %h3.page-title Project Audit Events

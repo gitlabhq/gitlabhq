@@ -1,4 +1,5 @@
-= nav_link(controller: :audit_events) do
-  = link_to project_audit_events_path(@project), title: "Audit Events" do
-    %span
-      Audit Events
+- if @project.feature_available?(:audit_events) || show_promotions?
+  = nav_link(controller: :audit_events) do
+    = link_to project_audit_events_path(@project), title: "Audit Events" do
+      %span
+        Audit Events

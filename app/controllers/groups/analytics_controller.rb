@@ -1,5 +1,8 @@
 class Groups::AnalyticsController < Groups::ApplicationController
+  include LicenseHelper
+
   before_action :group
+  before_action :check_contribution_analytics_available! && !LicenseHelper.show_promotions?
 
   layout 'group'
 

@@ -79,7 +79,6 @@ describe 'Promotions', js: true do
     it 'should appear in project edit page' do
       visit edit_project_path(project)
       expect(find('#promote_service_desk')).to have_content 'Improve customer support with GitLab Service Desk.'
-      expect(find('#promote_service_desk')).to have_content 'GitLab Service Desk is a simple way to allow people to create issues in your GitLab instance without needing their own user account.'
     end
 
     it 'does not show when cookie is set' do
@@ -106,7 +105,6 @@ describe 'Promotions', js: true do
     it 'should appear in project edit page' do
       visit edit_project_path(project)
       expect(find('#promote_mr_approval')).to have_content 'Improve Merge Requests and customer support'
-      expect(find('#promote_mr_approval')).to have_content 'Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project.'
     end
 
     it 'does not show when cookie is set' do
@@ -134,7 +132,6 @@ describe 'Promotions', js: true do
       visit project_settings_repository_path(project)
 
       expect(find('#promote_repository_features')).to have_content 'Improve repositories with GitLab Enterprise Edition'
-      expect(find('#promote_repository_features')).to have_content 'Push Rules are defined per project so you can have different rules applied to different projects depends on your needs.'
     end
 
     it 'does not show when cookie is set' do
@@ -161,7 +158,6 @@ describe 'Promotions', js: true do
     it 'should appear in new MR page' do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
       expect(find('#promote_squash_commits')).to have_content 'Improve Merge Requests with Squash Commit and GitLab Enterprise Edition.'
-      expect(find('#promote_squash_commits')).to have_content 'Squashing lets you tidy up the commit history of a branch when accepting a merge request.'
     end
 
     it 'does not show when cookie is set' do
@@ -188,7 +184,6 @@ describe 'Promotions', js: true do
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
       expect(find('#promote_burndown_charts')).to have_content 'Improve milestone with Burndown Charts.'
-      expect(find('#promote_burndown_charts')).to have_content 'Burndown Charts are visual representations of the progress of completing a milestone.'
     end
 
     it 'does not show when cookie is set' do
@@ -216,7 +211,6 @@ describe 'Promotions', js: true do
       visit project_issues_path(project)
       click_on 'Export as CSV'
       expect(find('.issues-export-modal')).to have_content 'Export issues with GitLab Enterprise Edition.'
-      expect(find('.issues-export-modal')).to have_content 'Export Issues to CSV enables you and your team to export all the data collected from issues into a comma-separated values (CSV) file'
     end
   end
 
@@ -231,7 +225,6 @@ describe 'Promotions', js: true do
     it 'should appear on the page' do
       visit project_audit_events_path(project)
       expect(find('.user-callout-copy')).to have_content 'Track your project with Audit Events'
-      expect(find('.user-callout-copy')).to have_content 'Audit Events is a way to keep track of important events that happened in GitLab.'
     end
   end
 
@@ -246,7 +239,6 @@ describe 'Promotions', js: true do
     it 'should appear on the page' do
       visit group_analytics_path(group)
       expect(find('.user-callout-copy')).to have_content 'Track activity with Contribution Analytics.'
-      expect(find('.user-callout-copy')).to have_content 'With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members.'
     end
   end
 end

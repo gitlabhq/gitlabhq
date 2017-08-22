@@ -163,7 +163,7 @@
       %p
         Customize your merge request restrictions.
     .settings-content.no-animate{ class: ('expanded' if expanded) }
-      - if show_project_feature_promotion?(:fast_forward_merge, 'promote_mr_approval_dismissed')
+      - if show_project_feature_promotion?(:merge_request_approvers, 'promote_mr_approval_dismissed')
         = render 'shared/promotions/promote_mr_approval'
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
