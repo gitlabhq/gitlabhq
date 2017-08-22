@@ -1,5 +1,5 @@
 ---
-title: 13680-notify-custom-participants
+title: Fixed: Notifications weren't sending to participating users with a `Custom` notification setting.
 merge_request: 13680
 author: jneen
 type: fixed
