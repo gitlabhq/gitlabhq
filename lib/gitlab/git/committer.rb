@@ -2,7 +2,7 @@ module Gitlab
   module Git
     class Committer
       attr_reader :name, :email, :gl_id
-      
+
       def self.from_user(user)
         new(user.name, user.email, Gitlab::GlId.gl_id(user))
       end
