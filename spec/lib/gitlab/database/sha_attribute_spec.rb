@@ -21,13 +21,13 @@ describe Gitlab::Database::ShaAttribute do
 
   describe '#type_cast_from_database' do
     it 'converts the binary SHA to a String' do
-      expect(attribute.type_cast_from_database(binary_from_db)).to eq(sha)
+      expect(attribute.deserialize(binary_from_db)).to eq(sha)
     end
   end
 
   describe '#type_cast_for_database' do
     it 'converts a SHA String to binary data' do
-      expect(attribute.type_cast_for_database(sha).to_s).to eq(binary_sha)
+      expect(attribute.serialize(sha).to_s).to eq(binary_sha)
     end
   end
 end
