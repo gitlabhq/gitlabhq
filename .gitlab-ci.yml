@@ -527,7 +527,7 @@ karma:
     - chrome_debug.log
     - coverage-javascript/
 
-codequality:
+codeclimate:
   <<: *except-docs
   <<: *pull-cache
   before_script: []
