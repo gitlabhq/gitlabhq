@@ -5,8 +5,12 @@ class StuckImportJobsWorker
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i
 
   def perform
-    mark_projects_without_jid_as_failed!
-    mark_projects_with_jid_as_failed!
+    values = {
+      projects_without_jid_count: mark_projects_without_jid_as_failed!,
+      projects_with_jid_count: mark_projects_with_jid_as_failed!
+    }
+
+    Gitlab::Metrics.add_event_with_values(:stuck_import_jobs, values)
   end
 
   private

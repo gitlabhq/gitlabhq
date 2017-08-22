@@ -161,6 +161,30 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#add_event_with_values' do
+    it 'adds a metric' do
+      transaction.add_event_with_values(:meow, {})
+
+      expect(transaction.metrics[0]).to be_an_instance_of(Gitlab::Metrics::Metric)
+    end
+
+    it 'tracks values for every event' do
+      transaction.add_event_with_values(:meow, { number: 10 })
+
+      metric = transaction.metrics[0]
+
+      expect(metric.values).to eq(count: 1, number: 10)
+    end
+
+    it 'allows tracking of custom tags' do
+      transaction.add_event_with_values(:meow, {}, animal: 'cat')
+
+      metric = transaction.metrics[0]
+
+      expect(metric.tags).to eq(event: :meow, animal: 'cat')
+    end
+  end
+
   describe '#add_event' do
     it 'adds a metric' do
       transaction.add_event(:meow)
