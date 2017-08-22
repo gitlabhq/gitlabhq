@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create :user }
   let(:opts) do
     {
-      name: "GitLab",
-      namespace: user.namespace
+      name: 'GitLab',
+      namespace_id: user.namespace.id
     }
   end
 
@@ -145,6 +146,41 @@ describe Projects::CreateService, '#execute' do
       expect(project).to be_valid
       expect(project.owner).to eq(user)
       expect(project.namespace).to eq(user.namespace)
+    end
+
+    context 'when another repository already exists on disk' do
+      let(:opts) do
+        {
+          name: 'Existing',
+          namespace_id: user.namespace.id
+        }
+      end
+
+      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+      before do
+        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+      end
+
+      after do
+        gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+      end
+
+      it 'does not allow to create project with same path' do
+        project = create_project(user, opts)
+
+        expect(project).to respond_to(:errors)
+        expect(project.errors.messages).to have_key(:base)
+        expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+      end
+
+      it 'does not allow to import a project with the same path' do
+        project = create_project(user, opts.merge({ import_url: 'https://gitlab.com/gitlab-org/gitlab-test.git' }))
+
+        expect(project).to respond_to(:errors)
+        expect(project.errors.messages).to have_key(:base)
+        expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+      end
     end
   end
 

@@ -3,6 +3,8 @@ require 'spec_helper'
 feature 'Import/Export - project import integration test', js: true do
   include Select2Helper
 
+  let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
   let(:user) { create(:user) }
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
@@ -14,6 +16,7 @@ feature 'Import/Export - project import integration test', js: true do
 
   after(:each) do
     FileUtils.rm_rf(export_path, secure: true)
+    gitlab_shell.remove_repository(repository_storage_path, 'asd/test-project-path')
   end
 
   context 'when selecting the namespace' do

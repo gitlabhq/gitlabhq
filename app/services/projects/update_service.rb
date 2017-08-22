@@ -13,7 +13,13 @@ module Projects
         project.change_head(params[:default_branch])
       end
 
-      if project.update_attributes(params.except(:default_branch))
+      project.assign_attributes(params.except(:default_branch))
+
+      if project.renamed? && !project.can_create_repository?
+        return error('Cannot rename project because there is already a repository with that new name on disk')
+      end
+
+      if project.save
         if project.previous_changes.include?('path')
           project.rename_repo
         else
