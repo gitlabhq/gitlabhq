@@ -17,6 +17,10 @@ describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'blob/show.html.raw' do |example|
     get(:show,
         namespace_id: project.namespace,

@@ -37,6 +37,10 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     sign_in(admin)
   end
 
+  after do
+    remove_repository(project)
+  end
+
   it 'merge_requests/merge_request_with_task_list.html.raw' do |example|
     create(:ci_build, :pending, pipeline: pipeline)
 
