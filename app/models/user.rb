@@ -303,7 +303,7 @@ class User < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search(query)
       table   = arel_table
-      pattern = "%#{query}%"
+      pattern = Gitlab::SQL::Pattern.new(query).to_sql
 
       order = <<~SQL
         CASE
