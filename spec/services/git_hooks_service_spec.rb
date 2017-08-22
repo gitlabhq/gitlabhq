@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitHooksService do
+describe Gitlab::Git::HooksService do
   include RepoHelpers
 
   let(:user)    { create(:user) }
@@ -31,7 +31,7 @@ describe GitHooksService do
 
         expect do
           service.execute(user, project, @blankrev, @newrev, @ref)
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
 
@@ -43,7 +43,7 @@ describe GitHooksService do
 
         expect do
           service.execute(user, project, @blankrev, @newrev, @ref)
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
   end

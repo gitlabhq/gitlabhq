@@ -121,7 +121,7 @@ class GitOperationService
   end
 
   def with_hooks(ref, newrev, oldrev)
-    GitHooksService.new.execute(
+    Gitlab::Git::HooksService.new.execute(
       committer,
       repository,
       oldrev,

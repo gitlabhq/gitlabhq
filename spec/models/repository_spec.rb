@@ -847,7 +847,7 @@ describe Repository, models: true do
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
 
       it 'does not create the branch' do
@@ -855,7 +855,7 @@ describe Repository, models: true do
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
         expect(repository.find_branch('new_feature')).to be_nil
       end
     end
@@ -885,7 +885,7 @@ describe Repository, models: true do
 
     context 'when pre hooks were successful' do
       it 'runs without errors' do
-        expect_any_instance_of(GitHooksService).to receive(:execute)
+        expect_any_instance_of(Gitlab::Git::HooksService).to receive(:execute)
           .with(committer, repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
@@ -906,7 +906,7 @@ describe Repository, models: true do
 
         expect do
           repository.rm_branch(user, 'feature')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
 
       it 'does not delete the branch' do
@@ -914,7 +914,7 @@ describe Repository, models: true do
 
         expect do
           repository.rm_branch(user, 'feature')
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
         expect(repository.find_branch('feature')).not_to be_nil
       end
     end
@@ -926,8 +926,8 @@ describe Repository, models: true do
 
     context 'when pre hooks were successful' do
       before do
-        service = GitHooksService.new
-        expect(GitHooksService).to receive(:new).and_return(service)
+        service = Gitlab::Git::HooksService.new
+        expect(Gitlab::Git::HooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
           .with(committer, repository, old_rev, new_rev, 'refs/heads/feature')
           .and_yield(service).and_return(true)
@@ -1030,7 +1030,7 @@ describe Repository, models: true do
           GitOperationService.new(committer, repository).with_branch('feature') do
             new_rev
           end
-        end.to raise_error(GitHooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
       end
     end
 

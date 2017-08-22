@@ -1,6 +1,6 @@
-# Gitaly note: JV: looks like this is only used by GitHooksService in
+# Gitaly note: JV: looks like this is only used by Gitlab::Git::HooksService in
 # app/services. We shouldn't bother migrating this until we know how
-# GitHooksService will be migrated.
+# Gitlab::Git::HooksService will be migrated.
 
 module Gitlab
   module Git
