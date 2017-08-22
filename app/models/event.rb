@@ -89,6 +89,10 @@ class Event < ActiveRecord::Base
   self.inheritance_column = 'action'
 
   class << self
+    def model_name
+      ActiveModel::Name.new(self, nil, 'event')
+    end
+
     def find_sti_class(action)
       if action.to_i == PUSHED
         PushEvent
@@ -442,6 +446,12 @@ class Event < ActiveRecord::Base
     new_attributes = attributes.with_indifferent_access.except(:title, :data)
 
     EventForMigration.create!(new_attributes)
+  end
+
+  def to_partial_path
+    # We are intentionally using `Event` rather than `self.class` so that
+    # subclasses also use the `Event` implementation.
+    Event._to_partial_path
   end
 
   private

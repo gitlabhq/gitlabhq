@@ -1,0 +1,5 @@
+---
+title: Only require Sidekiq throttling library when enabled, to reduce cache misses
+merge_request:
+author:
+type: fixed
