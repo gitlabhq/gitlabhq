@@ -64,25 +64,5 @@ describe Gitlab::BareRepositoryImporter, repository: true do
 
       expect(Project.find_by_full_path(project_path)).not_to be_nil
     end
-
-    it 'creates group and subgroup in the database' do
-      importer.create_project_if_needed
-
-      parent = Group.find_by_full_path('a-group')
-      child = parent.children.find_by(path: 'a-sub-group')
-
-      expect(parent).not_to be_nil
-      expect(child).not_to be_nil
-    end
-
-    it 'creates the group with correct visibility level' do
-      allow(Gitlab::CurrentSettings.current_application_settings)
-        .to receive(:default_group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
-      project = importer.create_project_if_needed
-
-      group = project.namespace
-
-      expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
-    end
   end
 end

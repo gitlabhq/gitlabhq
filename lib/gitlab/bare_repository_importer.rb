@@ -80,39 +80,8 @@ module Gitlab
         return namespace
       end
 
-      create_group_path
-    end
-
-    def create_group_path
-      group_path_segments = group_path.split('/')
-
-      new_group, parent_group = nil
-      partial_path_segments = []
-      while subgroup_name = group_path_segments.shift
-        partial_path_segments << subgroup_name
-        partial_path = partial_path_segments.join('/')
-
-        unless new_group = Group.find_by_full_path(partial_path)
-          log " * Creating group #{partial_path}.".color(:green)
-          params = {
-            path: subgroup_name,
-            name: subgroup_name,
-            parent: parent_group,
-            visibility_level: Gitlab::CurrentSettings.current_application_settings.default_group_visibility
-          }
-          new_group = Groups::CreateService.new(user, params).execute
-        end
-
-        if new_group.persisted?
-          log " * Group #{partial_path} (#{new_group.id}) available".color(:green)
-        else
-          log " * Failed trying to create group #{partial_path}.".color(:red)
-          log " * Errors:  #{new_group.errors.messages}".color(:red)
-        end
-        parent_group = new_group
-      end
-
-      new_group
+      log " * Creating Group: #{group_path}"
+      Groups::NestedCreateService.new(user, group_path: group_path).execute
     end
 
     # This is called from within a rake task only used by Admins, so allow writing
