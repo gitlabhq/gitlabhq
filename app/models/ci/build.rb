@@ -46,7 +46,10 @@ module Ci
     before_save :ensure_token
     before_destroy { unscoped_project }
 
-    after_create :execute_hooks
+    after_create do |build|
+      BuildHooksWorker.perform_async(build.id)
+    end
+
     after_commit :update_project_statistics_after_save, on: [:create, :update]
     after_commit :update_project_statistics, on: :destroy
 

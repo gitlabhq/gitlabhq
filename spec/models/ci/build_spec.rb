@@ -21,6 +21,16 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
+  describe 'callbacks' do
+    context 'when running after_create callback' do
+      it 'triggers asynchronous build hooks worker' do
+        expect(BuildHooksWorker).to receive(:perform_async)
+
+        create(:ci_build)
+      end
+    end
+  end
+
   describe '.manual_actions' do
     let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
     let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
