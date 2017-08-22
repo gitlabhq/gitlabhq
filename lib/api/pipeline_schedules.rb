@@ -184,7 +184,7 @@ module API
         not_found!('Variable') unless variable
 
         status :accepted
-        present variable, with: Entities::Variable
+        present variable.destroy, with: Entities::Variable
       end
     end
 

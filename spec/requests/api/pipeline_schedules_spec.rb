@@ -330,7 +330,7 @@ describe API::PipelineSchedules do
         end
       end
 
-      context 'when cron has validation error' do
+      context 'when key has validation error' do
         it 'does not create pipeline_schedule_variable' do
           post api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables", developer),
             params.merge('key' => '!?!?')
@@ -368,23 +368,13 @@ describe API::PipelineSchedules do
     end
 
     context 'authenticated user with valid permissions' do
-      it 'updates cron' do
+      it 'updates pipeline_schedule_variable' do
         put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
-          key: pipeline_schedule_variable.key, value: 'updated_value'
+          value: 'updated_value'
 
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule_variable')
-        expect(json_response['key']).to eq('updated_value')
-      end
-
-      context 'when cron has validation error' do
-        it 'does not update pipeline_schedule_variable' do
-          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", developer),
-            key: '!?!?'
-
-          expect(response).to have_http_status(:bad_request)
-          expect(json_response['message']).to have_key('key')
-        end
+        expect(json_response['value']).to eq('updated_value')
       end
     end
 
@@ -412,7 +402,7 @@ describe API::PipelineSchedules do
       create(:ci_pipeline_schedule, project: project, owner: developer)
     end
 
-    let(:pipeline_schedule_variable) do
+    let!(:pipeline_schedule_variable) do
       create(:ci_pipeline_schedule_variable, pipeline_schedule: pipeline_schedule)
     end
 
@@ -424,7 +414,7 @@ describe API::PipelineSchedules do
       it 'deletes pipeline_schedule_variable' do
         expect do
           delete api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}/variables/#{pipeline_schedule_variable.key}", master)
-        end.to change { project.pipeline_schedules.count }.by(-1)
+        end.to change { Ci::PipelineScheduleVariable.count }.by(-1)
 
         expect(response).to have_http_status(:accepted)
         expect(response).to match_response_schema('pipeline_schedule_variable')
