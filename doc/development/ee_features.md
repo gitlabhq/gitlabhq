@@ -11,16 +11,15 @@
 
 Since the implementation of [GitLab CE features to work with unlicensed EE instance][ee-as-ce]
 GitLab Enterprise Edition should work like GitLab Community Edition
-when no license is active. This means the code should work like it
-does in CE when `License.feature_available?(:some_feature)` returns
-false.
+when no license is active. So EE features always should be guarded by
+`project.feature_available?` or `group.feature_available?` (or
+`License.feature_available?` if it is a system-wide feature).
 
-This means, if possible, CE specs should remain untouched and extra
-specs should be added for EE, stubbing the licensed feature using the
+CE specs should remain untouched as much as possible and extra specs
+should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
 [ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
-
 
 ## Separation of EE code
 
@@ -266,7 +265,7 @@ That way we can create a separate webpack bundle in `webpack.config.js`:
 With the separate bundle in place, we can decide which bundle to load inside the
 view, using the `page_specific_javascript_bundle_tag` helper.
 
-```
+```haml
 - content_for :page_specific_javascripts do
   = page_specific_javascript_bundle_tag('protected_branches')
 ```
