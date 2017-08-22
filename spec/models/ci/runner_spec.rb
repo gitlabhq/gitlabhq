@@ -464,8 +464,8 @@ describe Ci::Runner do
       end
 
       it 'a protected runner exists' do
-        expect(Ci::Runner.count).to eq(1)
-        expect(Ci::Runner.last.protected_?).to eq(true)
+        expect(described_class.count).to eq(1)
+        expect(described_class.last.protected_?).to eq(true)
       end
     end
 
@@ -475,8 +475,8 @@ describe Ci::Runner do
       end
 
       it 'an unprotected runner exists' do
-        expect(Ci::Runner.count).to eq(1)
-        expect(Ci::Runner.last.unprotected?).to eq(true)
+        expect(described_class.count).to eq(1)
+        expect(described_class.last.unprotected?).to eq(true)
       end
     end
   end
