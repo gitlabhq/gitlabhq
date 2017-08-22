@@ -69,7 +69,7 @@ export default {
   [types.SET_USER_DATA](state, data) {
     Object.assign(state, { userData: data });
   },
-  [types.SET_INITAL_NOTES](state, notesData) {
+  [types.SET_INITIAL_NOTES](state, notesData) {
     Object.assign(state, { notes: notesData });
   },
 

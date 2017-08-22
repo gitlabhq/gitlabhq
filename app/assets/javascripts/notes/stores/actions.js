@@ -14,7 +14,7 @@ export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, d
 export const setIssueData = ({ commit }, data) => commit(types.SET_ISSUE_DATA, data);
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
-export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITAL_NOTES, data);
+export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
@@ -22,7 +22,7 @@ export const fetchNotes = ({ commit }, path) => service
   .fetchNotes(path)
   .then(res => res.json())
   .then((res) => {
-    commit(types.SET_INITAL_NOTES, res);
+    commit(types.SET_INITIAL_NOTES, res);
   });
 
 export const deleteNote = ({ commit }, note) => service

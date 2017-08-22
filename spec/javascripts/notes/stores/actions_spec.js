@@ -39,7 +39,7 @@ describe('Actions Notes Store', () => {
   describe('setInitialNotes', () => {
     it('should set initial notes', (done) => {
       testAction(actions.setInitialNotes, null, { notes: [] }, [
-        { type: 'SET_INITAL_NOTES', payload: [individualNote] },
+        { type: 'SET_INITIAL_NOTES', payload: [individualNote] },
       ], done);
     });
   });
