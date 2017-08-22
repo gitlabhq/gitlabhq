@@ -5,6 +5,6 @@ shared_examples 'sidekiq worker' do
   end
 
   it 'is going to be processed inside a known sidekiq queue' do
-    expect(described_class.sidekiq_options['queue']).to be_in queues
+    expect(described_class.sidekiq_options['queue'].to_s).to be_in queues
   end
 end
