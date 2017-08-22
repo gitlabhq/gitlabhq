@@ -7,13 +7,28 @@ module Gitlab
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.
       #
-      # series - The series to use for storing the data.
-      def initialize(name, series)
+      def self.call_real_duration_histogram
+        @call_real_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_real_duration_milliseconds,
+                                                                    'Method calls real duration',
+                                                                    {},
+                                                                    [1, 2, 5, 10, 20, 50, 100, 1000])
+
+      end
+
+      def self.call_cpu_duration_histogram
+        @call_duration_histogram ||= Gitlab::Metrics.histogram(:gitlab_method_call_cpu_duration_milliseconds,
+                                                               'Method calls cpu duration',
+                                                               {},
+                                                               [1, 2, 5, 10, 20, 50, 100, 1000])
+      end
+
+
+      def initialize(name, tags = {})
         @name = name
-        @series = series
         @real_time = 0
         @cpu_time = 0
         @call_count = 0
+        @tags = tags
       end
 
       # Measures the real and CPU execution time of the supplied block.
@@ -26,17 +41,34 @@ module Gitlab
         @cpu_time += System.cpu_time - start_cpu
         @call_count += 1
 
+        if above_threshold?
+          self.class.call_real_duration_histogram.observe(labels, @real_time)
+          self.class.call_cpu_duration_histogram.observe(labels, @cpu_time)
+        end
+
         retval
+      end
+
+      def labels
+        @labels ||= @tags.merge(source_label).merge({ call_name: @name })
+      end
+
+      def source_label
+        if Sidekiq.server?
+          { source: 'sidekiq' }
+        else
+          { source: 'rails' }
+        end
       end
 
       # Returns a Metric instance of the current method call.
       def to_metric
         Metric.new(
-          @series,
+          Instrumentation.series,
           {
-            duration:     real_time,
+            duration: real_time,
             cpu_duration: cpu_time,
-            call_count:   call_count
+            call_count: call_count
           },
           method: @name
         )

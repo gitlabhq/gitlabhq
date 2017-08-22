@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def labels
-          worker_label.merge(source_label)
+          {}
         end
 
         def initialize(interval)
@@ -53,7 +53,7 @@ module Gitlab
           metrics[:memory_usage].set(labels, System.memory_usage)
           metrics[:file_descriptors].set(labels, System.file_descriptor_count)
 
-          metrics[:sampler_duration].observe(source_label, (System.monotonic_time - start_time) / 1000.0)
+          metrics[:sampler_duration].observe(labels.merge(worker_label), (System.monotonic_time - start_time) / 1000.0)
         ensure
           GC::Profiler.clear
         end
@@ -91,14 +91,6 @@ module Gitlab
           end
         else
           def list_objects
-          end
-        end
-
-        def source_label
-          if Sidekiq.server?
-            { source: 'sidekiq' }
-          else
-            { source: 'rails' }
           end
         end
 

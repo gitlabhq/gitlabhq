@@ -21,15 +21,15 @@ module Gitlab
         @metrics = []
         @methods = {}
 
-        @started_at  = nil
+        @started_at = nil
         @finished_at = nil
 
         @values = Hash.new(0)
-        @tags   = {}
+        @tags = {}
         @action = action
 
         @memory_before = 0
-        @memory_after  = 0
+        @memory_after = 0
       end
 
       def duration
@@ -44,12 +44,17 @@ module Gitlab
         Thread.current[THREAD_KEY] = self
 
         @memory_before = System.memory_usage
-        @started_at    = System.monotonic_time
+        @started_at = System.monotonic_time
 
         yield
       ensure
         @memory_after = System.memory_usage
-        @finished_at  = System.monotonic_time
+        @finished_at = System.monotonic_time
+
+        Gitlab::Metrics.histogram("gitlab_method_duration_seconds".to_sym, "Method duration seconds", @tags).observe({}, )
+
+        self.class.prometheus_gauge(:duration).set(@tags, duration)
+        self.class.prometheus_gauge(:allocated_memory).set(@tags, allocated_memory)
 
         Thread.current[THREAD_KEY] = nil
       end
@@ -66,16 +71,14 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
-        @metrics << Metric.new(EVENT_SERIES,
-                               { count: 1 },
-                               { event: event_name }.merge(tags),
-                               :event)
+        Gitlab::Metrics.counter("gitlab_event_#{event_name}".to_sym, "Event #{event_name}", tags).increment({})
+        @metrics << Metric.new(EVENT_SERIES, { count: 1 }, labels, :event)
       end
 
       # Returns a MethodCall object for the given name.
       def method_call_for(name)
         unless method = @methods[name]
-          @methods[name] = method = MethodCall.new(name, Instrumentation.series)
+          @methods[name] = method = MethodCall.new(name)
         end
 
         method
@@ -103,9 +106,14 @@ module Gitlab
 
         @values.each do |name, value|
           values[name] = value
+          self.class.prometheus_gauge(name).set(@tags, value)
         end
 
         add_metric('transactions', values, @tags)
+      end
+
+      def self.prometheus_gauge(name)
+        Gitlab::Metrics.gauge("gitlab_transaction_#{name}".to_sym, "Gitlab Transaction #{name}")
       end
 
       def submit
