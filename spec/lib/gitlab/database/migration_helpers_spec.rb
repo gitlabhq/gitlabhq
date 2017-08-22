@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Database::MigrationHelpers do
   let(:model) do
-    ActiveRecord::Migration.new.extend(
-      described_class
-    )
+    ActiveRecord::Migration.new.extend(described_class)
   end
 
   before do
@@ -842,6 +840,53 @@ describe Gitlab::Database::MigrationHelpers do
         model.update_column_in_batches(:users, :name, query)
 
         expect(user.reload.name).to eq('Kathy Eve Aliceson')
+      end
+    end
+  end
+
+  describe 'sidekiq migration helpers', :sidekiq, :redis do
+    let(:worker) do
+      Class.new do
+        include Sidekiq::Worker
+        sidekiq_options queue: 'test'
+      end
+    end
+
+    describe '#sidekiq_queue_length' do
+      context 'when queue is empty' do
+        it 'returns zero' do
+          Sidekiq::Testing.disable! do
+            expect(model.sidekiq_queue_length('test')).to eq 0
+          end
+        end
+      end
+
+      context 'when queue contains jobs' do
+        it 'returns correct size of the queue' do
+          Sidekiq::Testing.disable! do
+            worker.perform_async('Something', [1])
+            worker.perform_async('Something', [2])
+
+            expect(model.sidekiq_queue_length('test')).to eq 2
+          end
+        end
+      end
+    end
+
+    describe '#migrate_sidekiq_queue' do
+      it 'migrates jobs from one sidekiq queue to another' do
+          Sidekiq::Testing.disable! do
+            worker.perform_async('Something', [1])
+            worker.perform_async('Something', [2])
+
+            expect(model.sidekiq_queue_length('test')).to eq 2
+            expect(model.sidekiq_queue_length('new_test')).to eq 0
+
+            model.sidekiq_queue_migrate('test', to: 'new_test')
+
+            expect(model.sidekiq_queue_length('test')).to eq 0
+            expect(model.sidekiq_queue_length('new_test')).to eq 2
+          end
       end
     end
   end
