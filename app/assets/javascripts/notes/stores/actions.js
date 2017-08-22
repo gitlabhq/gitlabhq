@@ -64,6 +64,9 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   const replyId = noteData.data.in_reply_to_discussion_id;
   const methodToDispatch = replyId ? 'replyToDiscussion' : 'createNewNote';
 
+  commit(types.REMOVE_PLACEHOLDER_NOTES); // remove previous placeholders
+  $('.notes-form .flash-container').hide(); // hide previous flash notification
+
   if (hasQuickActions) {
     placeholderText = utils.stripQuickActions(placeholderText);
   }
