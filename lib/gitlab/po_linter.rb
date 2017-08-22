@@ -66,7 +66,11 @@ module Gitlab
     def validate_variables(errors, entry)
       if entry[:msgid_plural].present?
         validate_variables_in_message(errors, entry[:msgid], entry['msgstr[0]'])
-        validate_variables_in_message(errors, entry[:msgid_plural], entry['msgstr[1]'])
+
+        # Validate all plurals
+        entry.keys.select { |key_name| key_name =~ /msgstr\[[1-9]\]/ }.each do |plural_key|
+          validate_variables_in_message(errors, entry[:msgid_plural], entry[plural_key])
+        end
       else
         validate_variables_in_message(errors, entry[:msgid], entry[:msgstr])
       end
@@ -80,6 +84,10 @@ module Gitlab
       validate_translation(errors, message_id, required_variables)
 
       message_translation = join_message(message_translation)
+
+      # We don't need to validate when the message is empty.
+      # Translations could fallback to the default, or we could be validating a
+      # language that does not have plurals.
       unless message_translation.empty?
         validate_variable_usage(errors, message_translation, required_variables)
       end

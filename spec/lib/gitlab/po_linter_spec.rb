@@ -65,6 +65,22 @@ describe Gitlab::PoLinter do
         is_expected.to be_empty
       end
     end
+
+    context 'with missing plurals' do
+      let(:po_path) { 'spec/fixtures/no_plurals.po' }
+
+      it 'has no errors' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'with multiple plurals' do
+      let(:po_path) { 'spec/fixtures/multiple_plurals.po' }
+
+      it 'has no errors' do
+        is_expected.not_to be_empty
+      end
+    end
   end
 
   describe '#parse_po' do
