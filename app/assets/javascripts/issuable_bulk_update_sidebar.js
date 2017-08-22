@@ -5,7 +5,6 @@
 /* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
-import SidebarHeightManager from './sidebar_height_manager';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
@@ -87,7 +86,6 @@ export default class IssuableBulkUpdateSidebar {
 
     if (enable) {
       this.initAffix();
-      SidebarHeightManager.init();
     }
   }
 

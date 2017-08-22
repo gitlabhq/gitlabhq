@@ -219,10 +219,6 @@
 }
 
 .right-sidebar {
-  position: absolute;
-  top: $header-height;
-  bottom: 0;
-  right: 0;
   transition: width .3s;
   background: $gray-light;
   z-index: 200;
@@ -230,14 +226,10 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
-    height: calc(100% - #{$header-height});
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-  }
-
-  &.affix-top .issuable-sidebar {
-    height: 100%;
   }
 
   &.right-sidebar-expanded {
@@ -475,14 +467,6 @@
 
   .open .dropdown-menu {
     width: 100%;
-  }
-}
-
-.with-performance-bar .right-sidebar {
-  top: $header-height + $performance-bar-height;
-
-  .issuable-sidebar {
-    height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
 }
 

@@ -78,16 +78,31 @@
 
 .right-sidebar {
   border-left: 1px solid $border-color;
-  height: calc(100% - #{$header-height});
+  bottom: 0;
+  height: auto;
+  right: 0;
+}
 
-  &.affix {
-    position: fixed;
-    top: $header-height;
+.page-with-new-nav .right-sidebar,
+.page-with-layout-nav .right-sidebar.affix {
+  position: fixed;
+  top: $header-height;
+}
+
+.with-performance-bar {
+  .page-with-new-nav .right-sidebar,
+  .page-with-layout-nav .right-sidebar.affix {
+    top: #{$performance-bar-height + $header-height};
   }
 }
 
-.with-performance-bar .right-sidebar.affix {
-  top: $header-height + $performance-bar-height;
+.page-with-layout-nav .right-sidebar.affix {
+  margin-top: 1px; // header bottom border
+}
+
+.page-with-layout-nav .right-sidebar:not(.affix) {
+  position: absolute;
+  top: 0;
 }
 
 @mixin maintain-sidebar-dimensions {
@@ -130,5 +145,11 @@
   .issuable-sidebar {
     padding: 0 3px;
     width: calc(100% + 35px);
+  }
+}
+
+.page-with-new-nav {
+  .right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+    padding: 10px 0 15px;
   }
 }

@@ -433,45 +433,40 @@
   margin: 5px;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
-.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
-  position: absolute;
-
-  &.right-sidebar {
-    top: 0;
-    bottom: 0;
-  }
-
-  .issuable-sidebar-header {
-    position: relative;
-  }
-
-  .gutter-toggle {
-    position: absolute;
-    top: 0;
-    bottom: 15px;
-    right: 0;
-    width: 22px;
-    color: $gray-darkest;
-
-    svg {
-      position: absolute;
-      top: 50%;
-      margin-top: (-11px / 2);
+.page-with-layout-nav.page-with-sub-nav,
+.page-with-new-nav {
+  .issue-boards-sidebar {
+    .issuable-sidebar-header {
+      position: relative;
     }
 
-    &:hover {
-      path {
-        fill: $gray-darkest;
+    .gutter-toggle {
+      position: absolute;
+      top: 0;
+      bottom: 15px;
+      right: 0;
+      width: 22px;
+      color: $gray-darkest;
+
+      svg {
+        position: absolute;
+        top: 50%;
+        margin-top: (-11px / 2);
+      }
+
+      &:hover {
+        path {
+          fill: $gray-darkest;
+        }
       }
     }
-  }
 
-  .issuable-header-text {
-    padding-right: 35px;
+    .issuable-header-text {
+      padding-right: 35px;
 
-    > strong {
-      font-weight: $gl-font-weight-bold;
+      > strong {
+        font-weight: $gl-font-weight-bold;
+      }
     }
   }
 }

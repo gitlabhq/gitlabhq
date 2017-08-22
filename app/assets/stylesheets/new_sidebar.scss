@@ -22,16 +22,6 @@ $new-sidebar-collapsed-width: 50px;
   @media (min-width: $screen-lg-min) {
     padding-left: $new-sidebar-width;
   }
-
-  // Override position: absolute
-  .right-sidebar {
-    position: fixed;
-    height: calc(100% - #{$header-height});
-  }
-
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
-    padding: 10px 0 15px;
-  }
 }
 
 .page-with-icon-sidebar {
