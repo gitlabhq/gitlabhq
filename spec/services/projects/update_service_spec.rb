@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, services: true do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:empty_project, creator_id: user.id, namespace: user.namespace) }
@@ -89,10 +90,64 @@ describe Projects::UpdateService, services: true do
     end
   end
 
-  it 'returns an error result when record cannot be updated' do
-    result = update_project(project, admin, { name: 'foo&bar' })
+  context 'when updating a default branch' do
+    let(:project) { create(:project, :repository) }
 
-    expect(result).to eq({ status: :error, message: 'Project could not be updated' })
+    it 'changes a default branch' do
+      update_project(project, admin, default_branch: 'feature')
+
+      expect(Project.find(project.id).default_branch).to eq 'feature'
+    end
+  end
+
+  context 'when updating a project that contains container images' do
+    before do
+      stub_container_registry_config(enabled: true)
+      stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+      create(:container_repository, project: project, name: :image)
+    end
+
+    it 'does not allow to rename the project' do
+      result = update_project(project, admin, path: 'renamed')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to match(/contains container registry tags/)
+    end
+
+    it 'allows to update other settings' do
+      result = update_project(project, admin, public_builds: true)
+
+      expect(result[:status]).to eq :success
+      expect(project.reload.public_builds).to be true
+    end
+  end
+
+  context 'when renaming a project' do
+    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+    before do
+      gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    after do
+      gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    end
+
+    it 'does not allow renaming when new path matches existing repository on disk' do
+      result = update_project(project, admin, path: 'existing')
+
+      expect(result).to include(status: :error)
+      expect(result[:message]).to include('Cannot rename project')
+      expect(project.errors.messages).to have_key(:base)
+      expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+    end
+  end
+
+  context 'when passing invalid parameters' do
+    it 'returns an error result when record cannot be updated' do
+      result = update_project(project, admin, { name: 'foo&bar' })
+
+      expect(result).to eq({ status: :error, message: 'Project could not be updated' })
   end
 
   def update_project(project, user, opts)
