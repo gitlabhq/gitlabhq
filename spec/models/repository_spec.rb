@@ -886,7 +886,7 @@ describe Repository, models: true do
     context 'when pre hooks were successful' do
       it 'runs without errors' do
         expect_any_instance_of(GitHooksService).to receive(:execute)
-          .with(committer, project, old_rev, blank_sha, 'refs/heads/feature')
+          .with(committer, repository, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -929,7 +929,7 @@ describe Repository, models: true do
         service = GitHooksService.new
         expect(GitHooksService).to receive(:new).and_return(service)
         expect(service).to receive(:execute)
-          .with(committer, project, old_rev, new_rev, 'refs/heads/feature')
+          .with(committer, repository, old_rev, new_rev, 'refs/heads/feature')
           .and_yield(service).and_return(true)
       end
 

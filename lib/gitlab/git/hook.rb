@@ -6,13 +6,16 @@ module Gitlab
   module Git
     class Hook
       GL_PROTOCOL = 'web'.freeze
-      attr_reader :name, :repo_path, :path
+      attr_reader :name, :path, :repository
 
-      def initialize(name, project)
+      def initialize(name, repository)
         @name = name
-        @project = project
-        @repo_path = project.repository.path
+        @repository = repository
         @path = File.join(repo_path.strip, 'hooks', name)
+      end
+
+      def repo_path
+        repository.path
       end
 
       def exists?
@@ -44,7 +47,7 @@ module Gitlab
           'GL_ID' => gl_id,
           'PWD' => repo_path,
           'GL_PROTOCOL' => GL_PROTOCOL,
-          'GL_REPOSITORY' => Gitlab::GlRepository.gl_repository(@project, false)
+          'GL_REPOSITORY' => repository.gl_repository
         }
 
         options = {

@@ -49,13 +49,14 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage
+      attr_reader :storage, :gl_repository, :relative_path
 
       # 'path' must be the path to a _bare_ git repository, e.g.
       # /path/to/my-repo.git
-      def initialize(storage, relative_path)
+      def initialize(storage, relative_path, gl_repository)
         @storage = storage
         @relative_path = relative_path
+        @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)

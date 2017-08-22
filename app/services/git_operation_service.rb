@@ -123,7 +123,7 @@ class GitOperationService
   def with_hooks(ref, newrev, oldrev)
     GitHooksService.new.execute(
       committer,
-      repository.project,
+      repository,
       oldrev,
       newrev,
       ref) do |service|
