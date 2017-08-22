@@ -16,6 +16,49 @@ describe Gitlab::Elastic::SearchResults do
   let(:project_2) { create(:project, :repository) }
   let(:limit_project_ids) { [project_1.id] }
 
+  describe 'parse_search_result' do
+    let(:blob) do
+      {
+        'blob' => {
+          'commit_sha' => 'sha',
+          'content' => "foo\nbar\nbaz\n",
+          'path' => 'path/file.ext'
+        }
+      }
+    end
+
+    it 'returns an unhighlighted blob when no highlight data is present' do
+      parsed = described_class.parse_search_result('_source' => blob)
+
+      expect(parsed).to be_kind_of(::Gitlab::SearchResults::FoundBlob)
+      expect(parsed).to have_attributes(
+        startline: 1,
+        data: "foo\n"
+      )
+    end
+
+    it 'parses the blob with highlighting' do
+      result = {
+        '_source' => blob,
+        'highlight' => {
+          'blob.content' => ["foo\ngitlabelasticsearch→bar←gitlabelasticsearch\nbaz\n"]
+        }
+      }
+
+      parsed = described_class.parse_search_result(result)
+
+      expect(parsed).to be_kind_of(::Gitlab::SearchResults::FoundBlob)
+      expect(parsed).to have_attributes(
+        id: nil,
+        filename: 'path/file.ext',
+        basename: 'path/file',
+        ref: 'sha',
+        startline: 2,
+        data: "bar\n"
+      )
+    end
+  end
+
   describe 'issues' do
     before do
       @issue_1 = create(
