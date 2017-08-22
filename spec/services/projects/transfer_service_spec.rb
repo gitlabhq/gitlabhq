@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::TransferService, services: true do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
@@ -117,6 +118,25 @@ describe Projects::TransferService, services: true do
 
     it { expect(@result).to eq false }
     it { expect(project.namespace).to eq(user.namespace) }
+  end
+
+  context 'namespace which contains orphan repository with same projects path name' do
+    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+    before do
+      group.add_owner(user)
+      gitlab_shell.add_repository(repository_storage_path, "#{group.full_path}/#{project.path}")
+
+      @result = transfer_project(project, user, group)
+    end
+
+    after do
+      gitlab_shell.remove_repository(repository_storage_path, "#{group.full_path}/#{project.path}")
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Cannot move project') }
   end
 
   def transfer_project(project, user, new_namespace)

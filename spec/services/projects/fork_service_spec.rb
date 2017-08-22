@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ForkService, services: true do
+  let(:gitlab_shell) { Gitlab::Shell.new }
   describe 'fork by user' do
     before do
       @from_user = create(:user)
@@ -62,6 +63,26 @@ describe Projects::ForkService, services: true do
         expect(@to_project).not_to be_persisted
         expect(@to_project.errors[:name]).to eq(['has already been taken'])
         expect(@to_project.errors[:path]).to eq(['has already been taken'])
+      end
+    end
+
+    context 'repository already exists' do
+      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+
+      before do
+        gitlab_shell.add_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+      end
+
+      after do
+        gitlab_shell.remove_repository(repository_storage_path, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+      end
+
+      it 'does not allow creation' do
+        to_project = fork_project(@from_project, @to_user)
+
+        expect(to_project).not_to be_persisted
+        expect(to_project.errors.messages).to have_key(:base)
+        expect(to_project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
       end
     end
 

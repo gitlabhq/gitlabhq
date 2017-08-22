@@ -181,7 +181,7 @@ describe Project, models: true do
       end
     end
 
-    context 'repository storages inclussion' do
+    context 'repository storages inclusion' do
       let(:project2) { build(:empty_project, repository_storage: 'missing') }
 
       before do
