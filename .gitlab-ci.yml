@@ -48,6 +48,10 @@ stages:
   tags:
     - gitlab-org
 
+.dedicated-runner-high-cpu: &dedicated-runner-high-cpu
+  tags:
+    - gitlab-org-high-cpu
+
 .tests-metadata-state: &tests-metadata-state
   services: []
   variables:
@@ -78,7 +82,7 @@ stages:
     - /(^docs[\/-].*|.*-docs$)/
 
 .rspec-metadata: &rspec-metadata
-  <<: *dedicated-runner
+  <<: *dedicated-runner-high-cpu
   <<: *pull-cache
   stage: test
   script:
@@ -116,7 +120,7 @@ stages:
   <<: *except-docs
 
 .spinach-metadata: &spinach-metadata
-  <<: *dedicated-runner
+  <<: *dedicated-runner-high-cpu
   <<: *pull-cache
   stage: test
   script:
