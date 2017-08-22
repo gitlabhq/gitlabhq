@@ -123,6 +123,36 @@ describe GroupPolicy do
     end
   end
 
+  describe 'when nested group support feature is disabled' do
+    before do
+      allow(Group).to receive(:supports_nested_groups?).and_return(false)
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
+    end
+
+    context 'owner' do
+      let(:current_user) { owner }
+
+      it 'allows every owner permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_owner_permissions = owner_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_owner_permissions)
+      end
+    end
+  end
+
   describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
     let(:nested_group) { create(:group, :private, parent: group) }
 

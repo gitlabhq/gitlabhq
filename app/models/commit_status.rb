@@ -39,12 +39,12 @@ class CommitStatus < ActiveRecord::Base
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
   state_machine :status do
-    event :enqueue do
-      transition [:created, :skipped, :manual] => :pending
-    end
-
     event :process do
       transition [:skipped, :manual] => :created
+    end
+
+    event :enqueue do
+      transition [:created, :skipped, :manual] => :pending
     end
 
     event :run do
@@ -91,6 +91,7 @@ class CommitStatus < ActiveRecord::Base
           end
         end
 
+        StageUpdateWorker.perform_async(commit_status.stage_id)
         ExpireJobCacheWorker.perform_async(commit_status.id)
       end
     end

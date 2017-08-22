@@ -75,7 +75,7 @@ module Backup
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
-        project.ensure_storage_path_exist
+        project.ensure_storage_path_exists
 
         cmd = if File.exist?(path_to_project_bundle)
                 %W(#{Gitlab.config.git.bin_path} clone --bare #{path_to_project_bundle} #{path_to_project_repo})

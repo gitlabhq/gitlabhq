@@ -235,16 +235,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it { is_expected.to be < 2 }
   end
 
-  describe '#has_commits?' do
-    it { expect(repository.has_commits?).to be_truthy }
-  end
-
   describe '#empty?' do
     it { expect(repository.empty?).to be_falsey }
-  end
-
-  describe '#bare?' do
-    it { expect(repository.bare?).to be_truthy }
   end
 
   describe '#ref_names' do
@@ -438,15 +430,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     after(:all) do
       FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
-    end
-  end
-
-  describe "#remote_names" do
-    let(:remotes) { repository.remote_names }
-
-    it "should have one entry: 'origin'" do
-      expect(remotes.size).to eq(1)
-      expect(remotes.first).to eq("origin")
     end
   end
 
