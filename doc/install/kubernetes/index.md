@@ -35,11 +35,13 @@ helm init
 
 ## Using the GitLab Helm Charts
 
-GitLab makes available three Helm Charts: an easy to use bundled chart, and a specific chart for GitLab itself and the Runner.
+GitLab makes available three Helm Charts.
 
-- [gitlab-omnibus](gitlab_omnibus.md): The easiest way to get started. Includes everything needed to run GitLab, including: a Runner, Container Registry, automatic SSL, and an Ingress.
+- [gitlab-omnibus](gitlab_omnibus.md): **Recommended** and the easiest way to get started. Includes everything needed to run GitLab, including: a Runner, Container Registry, automatic SSL, and an Ingress.
 - [gitlab](gitlab_chart.md): Just the GitLab service, with optional Postgres and Redis.
 - [gitlab-runner](gitlab_runner_chart.md): GitLab Runner, to process CI jobs.
+
+We are also working on a new set of [cloud native Charts](https://gitlab.com/charts/helm.gitlab.io) which will eventually replace these.
 
 [chart]: https://github.com/kubernetes/charts
 [helm-quick]: https://github.com/kubernetes/helm/blob/master/docs/quickstart.md

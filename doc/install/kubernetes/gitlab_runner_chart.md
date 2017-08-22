@@ -190,6 +190,12 @@ certsSecretName: <SECRET NAME>
 
 ## Installing GitLab Runner using the Helm Chart
 
+Ensure the GitLab repo has been added and re-initialize Helm:
+```bash
+helm repo add gitlab https://charts.gitlab.io
+helm init
+```
+
 Once you [have configured](#configuration) GitLab Runner in your `values.yml` file,
 run the following:
 
