@@ -86,10 +86,12 @@ module Geo
       self.class.type
     end
 
-    def update_delay(finish_time)
-      return unless project.last_repository_updated_at
+    def update_delay_in_seconds
+      raise NotImplementedError, 'This class should implement update_delay_in_seconds method'
+    end
 
-      (finish_time.to_f - project.last_repository_updated_at.to_f).round(3)
+    def download_time_in_seconds
+      raise NotImplementedError, 'This class should implement download_time_in_seconds method'
     end
   end
 end
