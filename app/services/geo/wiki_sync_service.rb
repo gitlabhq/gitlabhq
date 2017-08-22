@@ -10,12 +10,17 @@ module Geo
 
     def fetch_wiki_repository
       log_info('Fetching wiki repository')
-      update_registry(started_at: DateTime.now)
+      start_time = DateTime.now
+      update_registry(started_at: start_time)
 
       begin
         project.wiki.ensure_repository
         project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
 
+        finish_time = DateTime.now
+        log_info("Finished wiki sync",
+                 update_delay_s: update_delay(finish_time),
+                 download_time_s: (finish_time - start_time).to_f.round(3))
         update_registry(finished_at: DateTime.now)
       rescue Gitlab::Git::Repository::NoRepository,
              Gitlab::Shell::Error,

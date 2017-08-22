@@ -85,5 +85,11 @@ module Geo
     def type
       self.class.type
     end
+
+    def update_delay(finish_time)
+      return unless project.last_repository_updated_at
+
+      (finish_time.to_f - project.last_repository_updated_at.to_f).round(3)
+    end
   end
 end
