@@ -26,6 +26,17 @@ describe Gitlab::Ci::Stage::Seed do
       expect(subject.builds).to all(include(project: pipeline.project))
       expect(subject.builds)
         .to all(include(trigger_request: pipeline.trigger_requests.first))
+      expect(subject.builds).to all(include(protected: true))
+    end
+
+    context 'when a ref is unprotected' do
+      before do
+        allow_any_instance_of(Project).to receive(:protected_for?).and_return(false)
+      end
+
+      it 'returns unprotected builds' do
+        expect(subject.builds).to all(include(protected: false))
+      end
     end
   end
 

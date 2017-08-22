@@ -215,6 +215,44 @@ module Ci
         end
       end
 
+      context 'when a runner is unprotected' do
+        context 'when a job is protected' do
+          let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
+
+          it 'picks the protected job' do
+            expect(execute(specific_runner)).to eq(pending_build)
+          end
+        end
+
+        context 'when a job is unprotected' do
+          let!(:pending_build) { create(:ci_build, :unprotected, pipeline: pipeline) }
+
+          it 'picks the unprotected job' do
+            expect(execute(specific_runner)).to eq(pending_build)
+          end
+        end
+      end
+
+      context 'when a runner is protected' do
+        let!(:specific_runner) { create(:ci_runner, :protected, :specific) }
+
+        context 'when a job is protected' do
+          let!(:pending_build) { create(:ci_build, :protected, pipeline: pipeline) }
+
+          it 'picks the protected job' do
+            expect(execute(specific_runner)).to eq(pending_build)
+          end
+        end
+
+        context 'when a job is unprotected' do
+          let!(:unprotected_job) { create(:ci_build, :unprotected, pipeline: pipeline) }
+
+          it 'does not pick the unprotected job' do
+            expect(execute(specific_runner)).to be_nil
+          end
+        end
+      end
+
       def execute(runner)
         described_class.new(runner).execute.build
       end

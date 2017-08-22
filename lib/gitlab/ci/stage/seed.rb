@@ -29,12 +29,8 @@ module Gitlab
                              ref: pipeline.ref,
                              tag: pipeline.tag,
                              trigger_request: trigger,
-                             protected: protected?)
+                             protected: protected_ref?)
           end
-        end
-
-        def protected?
-          @protected ||= project.protected_for?(pipeline.ref)
         end
 
         def create!
@@ -47,6 +43,12 @@ module Gitlab
               yield build if block_given?
             end
           end
+        end
+
+        private
+
+        def protected_ref?
+          @protected_ref ||= project.protected_for?(pipeline.ref)
         end
       end
     end

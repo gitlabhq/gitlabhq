@@ -226,5 +226,13 @@ FactoryGirl.define do
       status 'created'
       self.when 'manual'
     end
+
+    trait(:protected) do
+      protected true
+    end
+
+    trait(:unprotected) do
+      protected false
+    end
   end
 end
