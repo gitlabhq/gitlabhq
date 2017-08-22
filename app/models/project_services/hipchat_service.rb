@@ -53,7 +53,7 @@ class HipchatService < Service
     return unless supported_events.include?(data[:object_kind])
     message = create_message(data)
     return unless message.present?
-    gate[room].send('GitLab', message, message_options(data))
+    gate[room].send('GitLab', message, message_options(data)) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def test(data)

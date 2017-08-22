@@ -4,7 +4,7 @@ class PersonalFileUploader < FileUploader
   end
 
   def self.base_dir
-    File.join(root_dir, 'system')
+    File.join(root_dir, '-', 'system')
   end
 
   private

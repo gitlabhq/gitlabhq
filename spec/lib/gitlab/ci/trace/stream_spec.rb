@@ -295,7 +295,7 @@ describe Gitlab::Ci::Trace::Stream do
     end
 
     context 'malicious regexp' do
-      let(:data) { malicious_text }  
+      let(:data) { malicious_text }
       let(:regex) { malicious_regexp }
 
       include_examples 'malicious regexp'

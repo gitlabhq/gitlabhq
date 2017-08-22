@@ -1,2 +1,7 @@
-#repo{ data: { url: content_url, project_name: project.name, refs_url: refs_project_path(project, format: :json), project_url: project_path(project), project_id: project.id, can_commit: (!!can_push_branch?(project, @ref)).to_s } }
-  %repo
+#repo{ data: { url: content_url,
+               project_name: project.name,
+               refs_url: refs_project_path(project, format: :json),
+               project_url: project_path(project),
+               project_id: project.id,
+               can_commit: (!!can_push_branch?(project, @ref)).to_s,
+               on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s } }

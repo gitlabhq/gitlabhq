@@ -257,7 +257,15 @@ module API
       message << "  " << trace.join("\n  ")
 
       API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+
+      response_message =
+        if Rails.env.test?
+          message
+        else
+          '500 Internal Server Error'
+        end
+
+      rack_response({ 'message' => response_message }.to_json, 500)
     end
 
     # project helpers
@@ -282,7 +290,7 @@ module API
 
     def uploaded_file(field, uploads_path)
       if params[field]
-        bad_request!("#{field} is not a file") unless params[field].respond_to?(:filename)
+        bad_request!("#{field} is not a file") unless params[field][:filename]
         return params[field]
       end
 

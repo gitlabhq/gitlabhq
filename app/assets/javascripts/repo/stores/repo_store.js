@@ -3,13 +3,11 @@ import Helper from '../helpers/repo_helper';
 import Service from '../services/repo_service';
 
 const RepoStore = {
-  ideEl: {},
   monaco: {},
   monacoLoading: false,
-  monacoInstance: {},
   service: '',
-  editor: '',
-  sidebar: '',
+  canCommit: false,
+  onTopOfBranch: false,
   editMode: false,
   isTree: false,
   isRoot: false,
@@ -17,19 +15,10 @@ const RepoStore = {
   projectId: '',
   projectName: '',
   projectUrl: '',
-  trees: [],
-  blobs: [],
-  submodules: [],
   blobRaw: '',
-  blobRendered: '',
   currentBlobView: 'repo-preview',
   openedFiles: [],
-  tabSize: 100,
-  defaultTabSize: 100,
-  minTabSize: 30,
-  tabsOverflow: 41,
   submitCommitsLoading: false,
-  binaryLoaded: false,
   dialog: {
     open: false,
     title: '',
@@ -46,9 +35,6 @@ const RepoStore = {
   targetBranch: 'new-branch',
   isTargetBranchNew: true,
   commitMessage: '',
-  binaryMimeType: '',
-  // scroll bar space for windows
-  scrollWidth: 0,
   binaryTypes: {
     png: false,
     md: false,
@@ -59,7 +45,6 @@ const RepoStore = {
     tree: false,
     blob: false,
   },
-  readOnly: true,
 
   resetBinaryTypes() {
     Object.keys(RepoStore.binaryTypes).forEach((key) => {
@@ -69,14 +54,7 @@ const RepoStore = {
 
   // mutations
   checkIsCommitable() {
-    RepoStore.service.checkCurrentBranchIsCommitable()
-      .then((data) => {
-        // you shouldn't be able to make commits on commits or tags.
-        const { Branches, Commits, Tags } = data.data;
-        if (Branches && Branches.length) RepoStore.isCommitable = true;
-        if (Commits && Commits.length) RepoStore.isCommitable = false;
-        if (Tags && Tags.length) RepoStore.isCommitable = false;
-      }).catch(() => Flash('Failed to check if branch can be committed to.'));
+    RepoStore.isCommitable = RepoStore.onTopOfBranch && RepoStore.canCommit;
   },
 
   addFilesToDirectory(inDirectory, currentList, newList) {
@@ -97,7 +75,6 @@ const RepoStore = {
 
     if (file.binary) {
       RepoStore.blobRaw = file.base64;
-      RepoStore.binaryMimeType = file.mime_type;
     } else if (file.newContent || file.plain) {
       RepoStore.blobRaw = file.newContent || file.plain;
     } else {
@@ -108,7 +85,7 @@ const RepoStore = {
         }).catch(Helper.loadingError);
     }
 
-    if (!file.loading) Helper.toURL(file.url, file.name);
+    if (!file.loading) Helper.updateHistoryEntry(file.url, file.name);
     RepoStore.binary = file.binary;
   },
 
@@ -135,15 +112,15 @@ const RepoStore = {
   removeChildFilesOfTree(tree) {
     let foundTree = false;
     const treeToClose = tree;
-    let wereDone = false;
+    let canStopSearching = false;
     RepoStore.files = RepoStore.files.filter((file) => {
       const isItTheTreeWeWant = file.url === treeToClose.url;
       // if it's the next tree
       if (foundTree && file.type === 'tree' && !isItTheTreeWeWant && file.level === treeToClose.level) {
-        wereDone = true;
+        canStopSearching = true;
         return true;
       }
-      if (wereDone) return true;
+      if (canStopSearching) return true;
 
       if (isItTheTreeWeWant) foundTree = true;
 
@@ -160,8 +137,8 @@ const RepoStore = {
     if (file.type === 'tree') return;
     let foundIndex;
     RepoStore.openedFiles = RepoStore.openedFiles.filter((openedFile, i) => {
-      if (openedFile.url === file.url) foundIndex = i;
-      return openedFile.url !== file.url;
+      if (openedFile.path === file.path) foundIndex = i;
+      return openedFile.path !== file.path;
     });
 
     // now activate the right tab based on what you closed.
@@ -175,36 +152,16 @@ const RepoStore = {
       return;
     }
 
-    if (foundIndex) {
-      if (foundIndex > 0) {
-        RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
-      }
+    if (foundIndex && foundIndex > 0) {
+      RepoStore.setActiveFiles(RepoStore.openedFiles[foundIndex - 1]);
     }
-  },
-
-  addPlaceholderFile() {
-    const randomURL = Helper.Time.now();
-    const newFakeFile = {
-      active: false,
-      binary: true,
-      type: 'blob',
-      loading: true,
-      mime_type: 'loading',
-      name: 'loading',
-      url: randomURL,
-      fake: true,
-    };
-
-    RepoStore.openedFiles.push(newFakeFile);
-
-    return newFakeFile;
   },
 
   addToOpenedFiles(file) {
     const openFile = file;
 
     const openedFilesAlreadyExists = RepoStore.openedFiles
-      .some(openedFile => openedFile.url === openFile.url);
+      .some(openedFile => openedFile.path === openFile.path);
 
     if (openedFilesAlreadyExists) return;
 
@@ -239,4 +196,5 @@ const RepoStore = {
     return RepoStore.currentBlobView === 'repo-preview';
   },
 };
+
 export default RepoStore;

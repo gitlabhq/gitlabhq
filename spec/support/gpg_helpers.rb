@@ -1,4 +1,6 @@
 module GpgHelpers
+  SIGNED_COMMIT_SHA = '8a852d50dda17cc8fd1408d2fd0c5b0f24c76ca4'.freeze
+
   module User1
     extend self
 

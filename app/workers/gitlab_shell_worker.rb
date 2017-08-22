@@ -4,6 +4,6 @@ class GitlabShellWorker
   include DedicatedSidekiqQueue
 
   def perform(action, *arg)
-    gitlab_shell.send(action, *arg)
+    gitlab_shell.__send__(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
   end
 end

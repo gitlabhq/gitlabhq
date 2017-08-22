@@ -57,18 +57,14 @@ describe Issue do
   end
 
   describe '#closed_at' do
-    after do
-      Timecop.return
-    end
-
-    let!(:now) { Timecop.freeze(Time.now) }
-
     it 'sets closed_at to Time.now when issue is closed' do
       issue = create(:issue, state: 'opened')
 
+      expect(issue.closed_at).to be_nil
+
       issue.close
 
-      expect(issue.closed_at).to eq(now)
+      expect(issue.closed_at).to be_present
     end
   end
 
@@ -350,7 +346,7 @@ describe Issue do
     subject { create(:issue, project: create(:project, :repository)) }
 
     let(:backref_text) { "issue #{subject.to_reference}" }
-    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+    let(:set_mentionable_text) { ->(txt) { subject.description = txt } }
   end
 
   it_behaves_like 'a Taskable' do

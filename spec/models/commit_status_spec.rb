@@ -7,10 +7,10 @@ describe CommitStatus do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create_status }
+  let(:commit_status) { create_status(stage: 'test') }
 
-  def create_status(args = {})
-    create(:commit_status, args.merge(pipeline: pipeline))
+  def create_status(**opts)
+    create(:commit_status, pipeline: pipeline, **opts)
   end
 
   it { is_expected.to belong_to(:pipeline) }
@@ -425,7 +425,7 @@ describe CommitStatus do
       end
 
       it "raise exception when trying to update" do
-        expect{ commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+        expect { commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
       end
     end
 

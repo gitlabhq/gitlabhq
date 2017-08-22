@@ -1,7 +1,7 @@
 /* eslint-disable wrap-iife, func-names, space-before-function-paren, comma-dangle, prefer-template, consistent-return, class-methods-use-this, arrow-body-style, no-unused-vars, no-underscore-dangle, no-new, max-len, no-sequences, no-unused-expressions, no-param-reassign */
 /* global dateFormat */
-/* global Pikaday */
 
+import Pikaday from 'pikaday';
 import DateFix from './lib/utils/datefix';
 
 class DueDateSelect {

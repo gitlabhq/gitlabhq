@@ -8,7 +8,7 @@ import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
 import RepoMixin from '../mixins/repo_mixin';
 
-const RepoSidebar = {
+export default {
   mixins: [RepoMixin],
   components: {
     'repo-file-options': RepoFileOptions,
@@ -33,40 +33,36 @@ const RepoSidebar = {
       });
     },
 
-    linkClicked(clickedFile) {
-      let url = '';
+    fileClicked(clickedFile) {
       let file = clickedFile;
-      if (typeof file === 'object') {
-        file.loading = true;
-        if (file.type === 'tree' && file.opened) {
-          file = Store.removeChildFilesOfTree(file);
-          file.loading = false;
-        } else {
-          url = file.url;
-          Service.url = url;
-          // I need to refactor this to do the `then` here.
-          // Not a callback. For now this is good enough.
-          // it works.
-          Helper.getContent(file, () => {
+      if (file.loading) return;
+      file.loading = true;
+      if (file.type === 'tree' && file.opened) {
+        file = Store.removeChildFilesOfTree(file);
+        file.loading = false;
+      } else {
+        Service.url = file.url;
+        Helper.getContent(file)
+          .then(() => {
             file.loading = false;
             Helper.scrollTabsRight();
-          });
-        }
-      } else if (typeof file === 'string') {
-        // go back
-        url = file;
-        Service.url = url;
-        Helper.getContent(null, () => Helper.scrollTabsRight());
+          })
+          .catch(Helper.loadingError);
       }
+    },
+
+    goToPreviousDirectoryClicked(prevURL) {
+      Service.url = prevURL;
+      Helper.getContent(null)
+        .then(() => Helper.scrollTabsRight())
+        .catch(Helper.loadingError);
     },
   },
 };
-
-export default RepoSidebar;
 </script>
 
 <template>
-<div id="sidebar" :class="{'sidebar-mini' : isMini}" v-cloak>
+<div id="sidebar" :class="{'sidebar-mini' : isMini}">
   <table class="table">
     <thead v-if="!isMini">
       <tr>
@@ -78,26 +74,29 @@ export default RepoSidebar;
     <tbody>
       <repo-file-options
         :is-mini="isMini"
-        :project-name="projectName"/>
+        :project-name="projectName"
+      />
       <repo-previous-directory
         v-if="isRoot"
         :prev-url="prevURL"
-        @linkclicked="linkClicked(prevURL)"/>
+        @linkclicked="goToPreviousDirectoryClicked(prevURL)"/>
       <repo-loading-file
         v-for="n in 5"
         :key="n"
         :loading="loading"
         :has-files="!!files.length"
-        :is-mini="isMini"/>
+        :is-mini="isMini"
+      />
       <repo-file
         v-for="file in files"
         :key="file.id"
         :file="file"
         :is-mini="isMini"
-        @linkclicked="linkClicked(file)"
+        @linkclicked="fileClicked(file)"
         :is-tree="isTree"
         :has-files="!!files.length"
-        :active-file="activeFile"/>
+        :active-file="activeFile"
+      />
     </tbody>
   </table>
 </div>

@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Gitlab::Gpg::Commit do
+describe Gitlab::Gpg::Commit do
   describe '#signature' do
     let!(:project) { create :project, :repository, path: 'sample-project' }
     let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33'  }
 
-    context 'unisgned commit' do
+    context 'unsigned commit' do
       it 'returns nil' do
-        expect(described_class.new(project.commit).signature).to be_nil
+        expect(described_class.new(project, commit_sha).signature).to be_nil
       end
     end
 
@@ -16,18 +16,19 @@ RSpec.describe Gitlab::Gpg::Commit do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: create(:user, email: GpgHelpers::User1.emails.first)
       end
 
-      let!(:commit) do
-        raw_commit = double(:raw_commit, signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ], sha: commit_sha)
-        allow(raw_commit).to receive :save!
-
-        create :commit, git_commit: raw_commit, project: project
+      before do
+        allow(Rugged::Commit).to receive(:extract_signature)
+          .with(Rugged::Repository, commit_sha)
+          .and_return(
+            [
+              GpgHelpers::User1.signed_commit_signature,
+              GpgHelpers::User1.signed_commit_base_data
+            ]
+          )
       end
 
       it 'returns a valid signature' do
-        expect(described_class.new(commit).signature).to have_attributes(
+        expect(described_class.new(project, commit_sha).signature).to have_attributes(
           commit_sha: commit_sha,
           project: project,
           gpg_key: gpg_key,
@@ -39,7 +40,7 @@ RSpec.describe Gitlab::Gpg::Commit do
       end
 
       it 'returns the cached signature on second call' do
-        gpg_commit = described_class.new(commit)
+        gpg_commit = described_class.new(project, commit_sha)
 
         expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature
@@ -53,18 +54,19 @@ RSpec.describe Gitlab::Gpg::Commit do
     context 'known but unverified public key' do
       let!(:gpg_key) { create :gpg_key, key: GpgHelpers::User1.public_key }
 
-      let!(:commit) do
-        raw_commit = double(:raw_commit, signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ], sha: commit_sha)
-        allow(raw_commit).to receive :save!
-
-        create :commit, git_commit: raw_commit, project: project
+      before do
+        allow(Rugged::Commit).to receive(:extract_signature)
+          .with(Rugged::Repository, commit_sha)
+          .and_return(
+            [
+              GpgHelpers::User1.signed_commit_signature,
+              GpgHelpers::User1.signed_commit_base_data
+            ]
+          )
       end
 
       it 'returns an invalid signature' do
-        expect(described_class.new(commit).signature).to have_attributes(
+        expect(described_class.new(project, commit_sha).signature).to have_attributes(
           commit_sha: commit_sha,
           project: project,
           gpg_key: gpg_key,
@@ -76,7 +78,7 @@ RSpec.describe Gitlab::Gpg::Commit do
       end
 
       it 'returns the cached signature on second call' do
-        gpg_commit = described_class.new(commit)
+        gpg_commit = described_class.new(project, commit_sha)
 
         expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature
@@ -88,20 +90,19 @@ RSpec.describe Gitlab::Gpg::Commit do
     end
 
     context 'unknown public key' do
-      let!(:commit) do
-        raw_commit = double(:raw_commit, signature: [
-          GpgHelpers::User1.signed_commit_signature,
-          GpgHelpers::User1.signed_commit_base_data
-        ], sha: commit_sha)
-        allow(raw_commit).to receive :save!
-
-        create :commit,
-          git_commit: raw_commit,
-          project: project
+      before do
+        allow(Rugged::Commit).to receive(:extract_signature)
+          .with(Rugged::Repository, commit_sha)
+          .and_return(
+            [
+              GpgHelpers::User1.signed_commit_signature,
+              GpgHelpers::User1.signed_commit_base_data
+            ]
+          )
       end
 
       it 'returns an invalid signature' do
-        expect(described_class.new(commit).signature).to have_attributes(
+        expect(described_class.new(project, commit_sha).signature).to have_attributes(
           commit_sha: commit_sha,
           project: project,
           gpg_key: nil,
@@ -113,7 +114,7 @@ RSpec.describe Gitlab::Gpg::Commit do
       end
 
       it 'returns the cached signature on second call' do
-        gpg_commit = described_class.new(commit)
+        gpg_commit = described_class.new(project, commit_sha)
 
         expect(gpg_commit).to receive(:using_keychain).and_call_original
         gpg_commit.signature

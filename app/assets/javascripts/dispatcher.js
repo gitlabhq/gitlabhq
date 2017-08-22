@@ -76,6 +76,7 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
+import initChangesDropdown from './init_changes_dropdown';
 
 (function() {
   var Dispatcher;
@@ -228,6 +229,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           break;
         case 'projects:compare:show':
           new gl.Diff();
+          initChangesDropdown();
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -320,6 +322,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
+          initChangesDropdown();
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
@@ -344,6 +347,9 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new gl.Activities();
+          $('#tree-slider').waitForImages(function() {
+            gl.utils.ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
+          });
           break;
         case 'projects:edit':
           setupProjectEdit();
@@ -408,7 +414,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
 
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
 
           new TreeView();
           new BlobViewer();
@@ -428,7 +434,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -638,7 +644,7 @@ import UserFeatureHelper from './helpers/user_feature_helper';
     return Dispatcher;
   })();
 
-  $(function() {
+  $(window).on('load', function() {
     new Dispatcher();
   });
 }).call(window);

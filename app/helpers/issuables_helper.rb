@@ -151,7 +151,7 @@ module IssuablesHelper
   end
 
   def issuable_labels_tooltip(labels, limit: 5)
-    first, last = labels.partition.with_index{ |_, i| i < limit  }
+    first, last = labels.partition.with_index { |_, i| i < limit  }
 
     label_names = first.collect(&:name)
     label_names << "and #{last.size} more" unless last.empty?
@@ -174,7 +174,14 @@ module IssuablesHelper
   end
 
   def assigned_issuables_count(issuable_type)
-    current_user.public_send("assigned_open_#{issuable_type}_count")
+    case issuable_type
+    when :issues
+      current_user.assigned_open_issues_count
+    when :merge_requests
+      current_user.assigned_open_merge_requests_count
+    else
+      raise ArgumentError, "invalid issuable `#{issuable_type}`"
+    end
   end
 
   def issuable_filter_params
@@ -234,7 +241,7 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state, finder: nil)
-    finder ||= public_send("#{issuable_type}_finder")
+    finder ||= public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
     cache_key = finder.state_counter_cache_key
 
     @counts ||= {}
@@ -298,10 +305,6 @@ module IssuablesHelper
     cookies[:collapsed_gutter] == 'true'
   end
 
-  def base_issuable_scope(issuable)
-    issuable.project.send(issuable.class.table_name).send(issuable_state_scope(issuable))
-  end
-
   def issuable_state_scope(issuable)
     if issuable.respond_to?(:merged?) && issuable.merged?
       :merged
@@ -329,7 +332,7 @@ module IssuablesHelper
   end
 
   def selected_template(issuable)
-    params[:issuable_template] if issuable_templates(issuable).any?{ |template| template[:name] == params[:issuable_template] }
+    params[:issuable_template] if issuable_templates(issuable).any? { |template| template[:name] == params[:issuable_template] }
   end
 
   def issuable_todo_button_data(issuable, todo, is_collapsed)

@@ -10,7 +10,7 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :exists, request).exists
+        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
       end
 
       def garbage_collect(create_bitmap)
@@ -31,6 +31,11 @@ module Gitlab
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
         GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+      end
+
+      def apply_gitattributes(revision)
+        request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: revision)
+        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
       end
     end
   end

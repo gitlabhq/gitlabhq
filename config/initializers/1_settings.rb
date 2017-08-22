@@ -1,3 +1,5 @@
+# rubocop:disable GitlabSecurity/PublicSend
+
 require_dependency Rails.root.join('lib/gitlab') # Load Gitlab as soon as possible
 
 class Settings < Settingslogic
@@ -71,7 +73,7 @@ class Settings < Settingslogic
 
     # check that `current` (string or integer) is a contant in `modul`.
     def verify_constant(modul, current, default)
-      constant = modul.constants.find{ |name| modul.const_get(name) == current }
+      constant = modul.constants.find { |name| modul.const_get(name) == current }
       value = constant.nil? ? default : modul.const_get(constant)
       if current.is_a? String
         value = modul.const_get(current.upcase) rescue default
@@ -137,6 +139,8 @@ if Settings.ldap['enabled'] || Rails.env.test?
   end
 
   Settings.ldap['servers'].each do |key, server|
+    server = Settingslogic.new(server)
+
     server['label'] ||= 'LDAP'
     server['timeout'] ||= 10.seconds
     server['block_auto_created_users'] = false if server['block_auto_created_users'].nil?
@@ -163,6 +167,8 @@ if Settings.ldap['enabled'] || Rails.env.test?
       MSG
       Rails.logger.warn(message)
     end
+
+    Settings.ldap['servers'][key] = server
   end
 end
 
@@ -434,7 +440,9 @@ unless Settings.repositories.storages['default']
   Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
 end
 
-Settings.repositories.storages.values.each do |storage|
+Settings.repositories.storages.each do |key, storage|
+  storage = Settingslogic.new(storage)
+
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
   # Set failure defaults
@@ -448,6 +456,8 @@ Settings.repositories.storages.values.each do |storage|
   storage['failure_reset_time'] = storage['failure_reset_time'].to_i
   # We might want to have a timeout shorter than 1 second.
   storage['storage_timeout'] = storage['storage_timeout'].to_f
+
+  Settings.repositories.storages[key] = storage
 end
 
 #

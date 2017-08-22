@@ -12,7 +12,7 @@ module Network
     end
 
     def method_missing(m, *args, &block)
-      @commit.send(m, *args, &block)
+      @commit.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def space

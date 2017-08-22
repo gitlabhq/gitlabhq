@@ -1,9 +1,13 @@
+---
+toc: false
+---
+
 # GitLab Documentation
 
 Welcome to [GitLab](https://about.gitlab.com/), a Git-based fully featured
 platform for software development!
 
-We offer four different products for you and your company:
+GitLab offers the most scalable Git-based fully integrated platform for software development, with flexible products and subscription plans:
 
 - **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
@@ -26,6 +30,10 @@ Shortcuts to GitLab's most visited docs:
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md) | [SSH authentication](ssh/README.md) |
 | [Using Docker images](ci/docker/using_docker_images.md) | [GitLab Pages](user/project/pages/index.md) |
 
+- [User documentation](user/index.md)
+- [Administrator documentation](#administrator-documentation)
+- [Technical Articles](articles/index.md)
+
 ## Getting started with GitLab
 
 - [GitLab Basics](gitlab-basics/README.md): Start working on your command line and on GitLab.
@@ -36,7 +44,6 @@ Shortcuts to GitLab's most visited docs:
 
 ### User account
 
-- [User documentation](user/index.md): Learn how to use GitLab and explore its features
 - [User account](user/profile/index.md): Manage your account
   - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
@@ -91,11 +98,11 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
-- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
+- [Signing commits](user/project/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 
-- [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Importing to GitLab](user/project/import/index.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
 ### Continuous Integration, Delivery, and Deployment

@@ -198,11 +198,11 @@ module Backup
     end
 
     def archives_to_backup
-      ARCHIVES_TO_BACKUP.map{ |name| (name + ".tar.gz") unless skipped?(name) }.compact
+      ARCHIVES_TO_BACKUP.map { |name| (name + ".tar.gz") unless skipped?(name) }.compact
     end
 
     def folders_to_backup
-      FOLDERS_TO_BACKUP.reject{ |name| skipped?(name) }
+      FOLDERS_TO_BACKUP.reject { |name| skipped?(name) }
     end
 
     def disabled_features

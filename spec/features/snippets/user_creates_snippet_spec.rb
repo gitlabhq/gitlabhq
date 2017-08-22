@@ -41,7 +41,7 @@ feature 'User creates snippet', :js do
       expect(page).to have_content('My Snippet')
 
       link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-      expect(link).to match(%r{/uploads/system/temp/\h{32}/banana_sample\.gif\z})
+      expect(link).to match(%r{/uploads/-/system/temp/\h{32}/banana_sample\.gif\z})
 
       visit(link)
       expect(page.status_code).to eq(200)
@@ -59,7 +59,7 @@ feature 'User creates snippet', :js do
     wait_for_requests
 
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/uploads/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
     visit(link)
     expect(page.status_code).to eq(200)
@@ -84,7 +84,7 @@ feature 'User creates snippet', :js do
     end
     expect(page).to have_content('Hello World!')
     link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/uploads/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/uploads/-/system/personal_snippet/#{Snippet.last.id}/\h{32}/banana_sample\.gif\z})
 
     visit(link)
     expect(page.status_code).to eq(200)

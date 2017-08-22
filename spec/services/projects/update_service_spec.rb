@@ -101,6 +101,13 @@ describe Projects::UpdateService, '#execute' do
 
       expect(Project.find(project.id).default_branch).to eq 'feature'
     end
+
+    it 'does not change a default branch' do
+      # The branch 'unexisted-branch' does not exist.
+      update_project(project, admin, default_branch: 'unexisted-branch')
+
+      expect(Project.find(project.id).default_branch).to eq 'master'
+    end
   end
 
   context 'when updating a project that contains container images' do

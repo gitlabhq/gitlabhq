@@ -1,20 +1,23 @@
 module NewIssuable
   attr_reader :issuable, :user
 
-  def ensure_objects_found(issuable_id, user_id)
-    @issuable = issuable_class.find_by(id: issuable_id)
-    unless @issuable
-      log_error(issuable_class, issuable_id)
-      return false
-    end
+  def objects_found?(issuable_id, user_id)
+    set_user(user_id)
+    set_issuable(issuable_id)
 
+    user && issuable
+  end
+
+  def set_user(user_id)
     @user = User.find_by(id: user_id)
-    unless @user
-      log_error(User, user_id)
-      return false
-    end
 
-    true
+    log_error(User, user_id) unless @user
+  end
+
+  def set_issuable(issuable_id)
+    @issuable = issuable_class.find_by(id: issuable_id)
+
+    log_error(issuable_class, issuable_id) unless @issuable
   end
 
   def log_error(record_class, record_id)

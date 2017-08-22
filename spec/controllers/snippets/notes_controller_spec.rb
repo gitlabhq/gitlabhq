@@ -138,7 +138,7 @@ describe Snippets::NotesController do
       end
 
       it "deletes the note" do
-        expect{ delete :destroy, request_params }.to change{ Note.count }.from(1).to(0)
+        expect { delete :destroy, request_params }.to change { Note.count }.from(1).to(0)
       end
 
       context 'system note' do
@@ -147,7 +147,7 @@ describe Snippets::NotesController do
         end
 
         it "does not delete the note" do
-          expect{ delete :destroy, request_params }.not_to change{ Note.count }
+          expect { delete :destroy, request_params }.not_to change { Note.count }
         end
       end
     end
@@ -166,7 +166,7 @@ describe Snippets::NotesController do
       end
 
       it "does not update the note" do
-        expect{ delete :destroy, request_params }.not_to change{ Note.count }
+        expect { delete :destroy, request_params }.not_to change { Note.count }
       end
     end
   end
