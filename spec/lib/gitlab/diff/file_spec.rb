@@ -270,6 +270,20 @@ describe Gitlab::Diff::File do
         expect(diff_file.simple_viewer).to be_a(DiffViewer::ModeChanged)
       end
     end
+
+    context 'when no other conditions apply' do
+      before do
+        allow(diff_file).to receive(:content_changed?).and_return(false)
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(false)
+        allow(diff_file).to receive(:renamed_file?).and_return(false)
+        allow(diff_file).to receive(:mode_changed?).and_return(false)
+      end
+
+      it 'returns a No Preview viewer' do
+        expect(diff_file.simple_viewer).to be_a(DiffViewer::NoPreview)
+      end
+    end
   end
 
   describe '#rich_viewer' do

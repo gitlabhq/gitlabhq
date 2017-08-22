@@ -250,6 +250,8 @@ module Gitlab
           DiffViewer::Renamed
         elsif mode_changed?
           DiffViewer::ModeChanged
+        else
+          DiffViewer::NoPreview
         end
       end
 
