@@ -86,16 +86,17 @@
         this.updateNote(data)
           .then(() => {
             this.isEditing = false;
-            // TODO: this could be moved down, by setting a prop
             $(this.$refs.noteBody.$el).renderGFM();
             this.$refs.noteBody.resetAutoSave();
+            callback();
           })
-          .catch(() => Flash(
+          .catch(() => {
+            Flash(
             'Something went wrong while editing your comment. Please try again.',
             'alert',
-            $(parentElement),
-          ))
-          .then(callback);
+            $(parentElement));
+            callback();
+          });
       },
       formCancelHandler(shouldConfirm, isDirty) {
         if (shouldConfirm && isDirty) {

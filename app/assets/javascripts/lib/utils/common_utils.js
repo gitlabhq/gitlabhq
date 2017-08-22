@@ -32,7 +32,7 @@
       const action = gl.utils.getPagePath(2);
 
       return page === 'issues' && action === 'show';
-    }
+    };
 
     w.gl.utils.ajaxGet = function(url) {
       return $.ajax({

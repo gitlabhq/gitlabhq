@@ -55,18 +55,16 @@
 
         if (!this.previewMarkdown) {
           this.markdownPreview = '';
+        } else if (text) {
+          this.markdownPreviewLoading = true;
+          this.$http.post(this.markdownPreviewPath, { text })
+            .then(resp => resp.json())
+            .then((data) => {
+              this.renderMarkdown(data);
+            })
+            .catch(() => new Flash('Error loading markdown preview'));
         } else {
-          if (text) {
-            this.markdownPreviewLoading = true;
-            this.$http.post(this.markdownPreviewPath, { text })
-              .then(resp => resp.json())
-              .then((data) => {
-                this.renderMarkdown(data);
-              })
-              .catch(() => new Flash('Error loading markdown preview'));
-          } else {
-            this.renderMarkdown();
-          }
+          this.renderMarkdown();
         }
       },
       renderMarkdown(data = {}) {
