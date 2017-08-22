@@ -131,8 +131,6 @@ describe GitGarbageCollectWorker do
     end
   end
 
-  it_behaves_like 'sidekiq worker'
-
   # Create a new commit on a random new branch
   def create_objects(project)
     rugged = project.repository.rugged

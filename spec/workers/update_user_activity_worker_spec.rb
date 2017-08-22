@@ -32,6 +32,4 @@ describe UpdateUserActivityWorker, :clean_gitlab_redis_shared_state do
 
     expect(Gitlab::UserActivities.new.to_a).to be_empty
   end
-
-  it_behaves_like 'sidekiq worker'
 end

@@ -36,6 +36,4 @@ describe CreateGpgSignatureWorker do
       described_class.new.perform(anything, nonexisting_project_id)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

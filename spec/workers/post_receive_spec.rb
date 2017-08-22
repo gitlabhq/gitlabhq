@@ -140,6 +140,4 @@ describe PostReceive do
       described_class.new.perform(gl_repository, key_id, base64_changes)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

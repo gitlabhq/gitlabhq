@@ -38,6 +38,4 @@ describe MergeWorker do
     expect { worker.perform(merge_request.id, user.id, {}) }
       .to change { merge_request.reload.merge_jid }.from(nil).to('999')
   end
-
-  it_behaves_like 'sidekiq worker'
 end

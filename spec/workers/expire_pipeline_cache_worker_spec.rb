@@ -43,6 +43,4 @@ describe ExpirePipelineCacheWorker do
       subject.perform(pipeline.id)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

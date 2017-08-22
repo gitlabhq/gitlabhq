@@ -16,6 +16,4 @@ describe UploadChecksumWorker do
       expect(upload).to have_received(:save!)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

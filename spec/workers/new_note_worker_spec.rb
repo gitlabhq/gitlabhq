@@ -46,6 +46,4 @@ describe NewNoteWorker do
       described_class.new.perform(unexistent_note_id)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

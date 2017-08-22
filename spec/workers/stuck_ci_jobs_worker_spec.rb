@@ -132,6 +132,4 @@ describe StuckCiJobsWorker do
       worker.perform
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

@@ -20,6 +20,4 @@ describe BuildCoverageWorker do
       end
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

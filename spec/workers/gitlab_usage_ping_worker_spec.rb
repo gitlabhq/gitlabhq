@@ -10,6 +10,4 @@ describe GitlabUsagePingWorker do
 
     subject.perform
   end
-
-  it_behaves_like 'sidekiq worker'
 end

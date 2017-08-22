@@ -52,6 +52,4 @@ describe RemoveUnreferencedLfsObjectsWorker do
       expect(LfsObject.where(id: referenced_lfs_object2.id)).to be_empty
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

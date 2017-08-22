@@ -16,6 +16,4 @@ describe GroupDestroyWorker do
       expect(Dir.exist?(project.path)).to be_falsey
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

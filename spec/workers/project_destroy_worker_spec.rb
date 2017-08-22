@@ -33,6 +33,4 @@ describe ProjectDestroyWorker do
       end.not_to raise_error
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

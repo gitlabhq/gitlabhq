@@ -134,6 +134,4 @@ describe ProcessCommitWorker do
       expect(commit.authored_date).to be_an_instance_of(Time)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

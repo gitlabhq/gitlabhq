@@ -26,6 +26,4 @@ describe PropagateServiceTemplateWorker do
       subject.perform(service_template.id)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

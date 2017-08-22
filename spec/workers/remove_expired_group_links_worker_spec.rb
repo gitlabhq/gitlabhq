@@ -21,6 +21,4 @@ describe RemoveExpiredGroupLinksWorker do
       expect(non_expiring_project_group_link.reload).to be_present
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

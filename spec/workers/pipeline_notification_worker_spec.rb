@@ -16,6 +16,4 @@ describe PipelineNotificationWorker, :mailer do
       subject.perform(Ci::Pipeline.maximum(:id).to_i.succ)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

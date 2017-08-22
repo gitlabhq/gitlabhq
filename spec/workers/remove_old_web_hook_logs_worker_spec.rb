@@ -15,6 +15,4 @@ describe RemoveOldWebHookLogsWorker do
       expect(WebHookLog.all).not_to include(week_old_record, three_days_old_record)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end

@@ -26,6 +26,4 @@ describe InvalidGpgSignatureUpdateWorker do
       described_class.new.perform(nonexisting_gpg_key_id)
     end
   end
-
-  it_behaves_like 'sidekiq worker'
 end
