@@ -13,6 +13,8 @@ class GroupPolicy < BasePolicy
   condition(:master) { access_level >= GroupMember::MASTER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
+  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
+
   condition(:has_projects) do
     GroupProjectsFinder.new(group: @subject, current_user: @user).execute.any?
   end
@@ -42,7 +44,7 @@ class GroupPolicy < BasePolicy
     enable :change_visibility_level
   end
 
-  rule { owner & can_create_group }.enable :create_subgroup
+  rule { owner & can_create_group & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 
