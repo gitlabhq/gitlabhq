@@ -5,7 +5,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   before_action :default_sorting
 
   def index
-    @projects = load_projects(params.merge(non_public: true)).page(params[:page])
+    @projects = load_projects(params.merge(non_public: true))
+      .page(params[:page])
+      .without_count
 
     respond_to do |format|
       format.html
@@ -23,7 +25,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   def starred
     @projects = load_projects(params.merge(starred: true))
-      .includes(:forked_from_project, :tags).page(params[:page])
+      .includes(:forked_from_project, :tags)
+      .page(params[:page])
+      .without_count
 
     @groups = []
 
