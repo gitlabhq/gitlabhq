@@ -1325,7 +1325,7 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#codeclimate_artifact' do
-    context 'has codeclimate build' do
+    context 'has codequality job' do
       let!(:build) do
         create(
           :ci_build,
@@ -1343,7 +1343,7 @@ describe Ci::Pipeline, :mailer do
       it { expect(pipeline.codeclimate_artifact).to eq(build) }
     end
 
-    context 'no codeclimate build' do
+    context 'no codequality job' do
       before do
         create(:ci_build, pipeline: pipeline)
       end
