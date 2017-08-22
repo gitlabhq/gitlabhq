@@ -186,7 +186,10 @@ module Gitlab
       end
 
       def content_changed?
-        old_blob && new_blob && old_blob.id != new_blob.id
+        return blobs_changed? if diff_refs
+        return false if new_file? || deleted_file? || renamed_file?
+
+        text? && diff_lines.any?
       end
 
       def different_type?
@@ -224,6 +227,10 @@ module Gitlab
       end
 
       private
+
+      def blobs_changed?
+        old_blob && new_blob && old_blob.id != new_blob.id
+      end
 
       def simple_viewer_class
         return DiffViewer::NotDiffable unless diffable?
