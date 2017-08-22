@@ -15,13 +15,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def index
     @collection_type    = "MergeRequest"
     @merge_requests     = merge_requests_collection
-    @merge_requests     = @merge_requests.page(params[:page])
+    @merge_requests     = @merge_requests.page(params[:page]).without_count
     @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
-
-    if @merge_requests.out_of_range? && @merge_requests.total_pages != 0
-      return redirect_to url_for(params.merge(page: @merge_requests.total_pages, only_path: true))
-    end
 
     if params[:label_name].present?
       labels_params = { project_id: @project.id, title: params[:label_name] }

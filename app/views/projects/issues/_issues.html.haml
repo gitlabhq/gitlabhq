@@ -4,4 +4,4 @@
     = render 'shared/empty_states/issues'
 
 - if @issues.present?
-  = paginate @issues, theme: "gitlab"
+  = paginate_collection(@issues)
