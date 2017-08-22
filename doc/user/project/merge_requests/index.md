@@ -304,12 +304,8 @@ git checkout origin/merge-requests/1
 ```
 
 [protected branches]: ../protected_branches.md
-<<<<<<< HEAD
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
-=======
-[ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
->>>>>>> 539ed0a6375d5bb6d734e688b801373e4b8006f9

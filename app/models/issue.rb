@@ -14,16 +14,11 @@ class Issue < ActiveRecord::Base
   include RelativePositioning
   include CreatedAtFilterable
 
-<<<<<<< HEAD
-  ignore_column :position
-
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
   WEIGHT_ANY = 'Any Weight'.freeze
   WEIGHT_NONE = 'No Weight'.freeze
 
-=======
->>>>>>> 539ed0a6375d5bb6d734e688b801373e4b8006f9
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
   AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
