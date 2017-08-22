@@ -237,8 +237,6 @@
       .sub-section.rename-respository
         %h4.warning-title
           Rename repository
-        %p
-          Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.
         = render 'projects/errors'
         = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
           .form-group.project_name_holder
