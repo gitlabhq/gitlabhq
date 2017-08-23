@@ -612,7 +612,7 @@ module Gitlab
       rescue ArgumentError
       end
 
-      def sidekiq_queue_migrate(queue_from, to: queue_to)
+      def sidekiq_queue_migrate(queue_from, to:)
         while sidekiq_queue_length(queue_from) > 0
           Sidekiq.redis do |conn|
             conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
