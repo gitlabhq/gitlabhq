@@ -19,6 +19,7 @@
       return {
         isEditing: false,
         isDeleting: false,
+        isRequesting: false,
       };
     },
     components: {
@@ -37,7 +38,8 @@
       },
       classNameBindings() {
         return {
-          'is-editing': this.isEditing,
+          'is-editing': this.isEditing && !this.isRequesting,
+          'is-requesting being-posted': this.isRequesting,
           'disabled-content': this.isDeleting,
           target: this.targetNoteHash === this.noteAnchorId,
         };
@@ -82,20 +84,27 @@
             note: { note: noteText },
           },
         };
+        this.isRequesting = true;
+        this.oldContent = this.note.note_html;
+        this.note.note_html = noteText;
 
         this.updateNote(data)
           .then(() => {
             this.isEditing = false;
+            this.isRequesting = false;
             $(this.$refs.noteBody.$el).renderGFM();
             this.$refs.noteBody.resetAutoSave();
             callback();
           })
           .catch(() => {
-            Flash(
-            'Something went wrong while editing your comment. Please try again.',
-            'alert',
-            $(parentElement));
-            callback();
+            this.isRequesting = false;
+            this.isEditing = true;
+            this.$nextTick(() => {
+              const msg = 'Something went wrong while editing your comment. Please try again.';
+              Flash(msg, 'alert', $(this.$el));
+              this.recoverNoteContent(noteText);
+              callback();
+            });
           });
       },
       formCancelHandler(shouldConfirm, isDirty) {
@@ -104,7 +113,17 @@
           if (!confirm('Are you sure you want to cancel editing this comment?')) return;
         }
         this.$refs.noteBody.resetAutoSave();
+        if (this.oldContent) {
+          this.note.note_html = this.oldContent;
+          this.oldContent = null;
+        }
         this.isEditing = false;
+      },
+      recoverNoteContent(noteText) {
+        // we need to do this to prevent noteForm inconsistent content warning
+        // this is something we intentionally do so we need to recover the content
+        this.note.note = noteText;
+        this.$refs.noteBody.$refs.noteForm.note = noteText; // TODO: This could be better
       },
     },
     created() {

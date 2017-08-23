@@ -85,12 +85,18 @@
         </span>
         <a
           :href="noteTimestampLink"
-          @click="updateTargetNoteHash">
+          @click="updateTargetNoteHash"
+          class="note-timestamp">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"
             />
         </a>
+        <i
+          class="fa fa-spinner fa-spin editing-spinner"
+          aria-label="Comment is being updated"
+          aria-hidden="true">
+        </i>
       </span>
     </span>
     <div
