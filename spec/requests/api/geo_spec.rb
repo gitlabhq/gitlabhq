@@ -15,16 +15,6 @@ describe API::Geo do
     allow(Gitlab::Geo).to receive(:current_node) { secondary_node }
   end
 
-  describe 'POST /geo/refresh_wikis disabled node' do
-    it 'responds with forbidden' do
-      secondary_node.enabled = false
-
-      post api('/geo/refresh_wikis', admin), nil
-
-      expect(response).to have_http_status(403)
-    end
-  end
-
   describe 'GET /geo/transfers/attachment/1' do
     let!(:secondary_node) { create(:geo_node) }
     let(:note) { create(:note, :with_attachment) }

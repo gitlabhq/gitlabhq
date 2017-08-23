@@ -63,14 +63,6 @@ class GeoNode < ActiveRecord::Base
     self.relative_url_root = new_uri.path != '/' ? new_uri.path : ''
   end
 
-  def notify_projects_url
-    geo_api_url('refresh_projects')
-  end
-
-  def notify_wikis_url
-    geo_api_url('refresh_wikis')
-  end
-
   def geo_transfers_url(file_type, file_id)
     geo_api_url("transfers/#{file_type}/#{file_id}")
   end

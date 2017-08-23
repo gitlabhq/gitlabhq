@@ -206,22 +206,6 @@ describe GeoNode, type: :model do
     end
   end
 
-  describe '#notify_projects_url' do
-    let(:refresh_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/refresh_projects" }
-
-    it 'returns api url based on node uri' do
-      expect(new_node.notify_projects_url).to eq(refresh_url)
-    end
-  end
-
-  describe '#notify_wikis_url' do
-    let(:refresh_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/refresh_wikis" }
-
-    it 'returns api url based on node uri' do
-      expect(new_node.notify_wikis_url).to eq(refresh_url)
-    end
-  end
-
   describe '#geo_transfers_url' do
     let(:transfers_url) { "https://localhost:3000/gitlab/api/#{api_version}/geo/transfers/lfs/1" }
 

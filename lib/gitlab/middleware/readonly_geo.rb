@@ -7,7 +7,7 @@ module Gitlab
 
       def initialize(app)
         @app = app
-        @whitelisted = internal_routes + geo_routes
+        @whitelisted = internal_routes
       end
 
       def call(env)
@@ -34,11 +34,6 @@ module Gitlab
 
       def internal_routes
         API_VERSIONS.flat_map { |version| "api/v#{version}/internal" }
-      end
-
-      def geo_routes
-        geo_routes = %w(refresh_wikis)
-        API_VERSIONS.flat_map { |version| geo_routes.map { |route| "api/v#{version}/geo/#{route}" } }
       end
 
       def disallowed_request?

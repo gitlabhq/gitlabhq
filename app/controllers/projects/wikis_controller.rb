@@ -48,9 +48,6 @@ class Projects::WikisController < Projects::ApplicationController
     @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
 
     if @page.valid?
-      # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
-
       redirect_to(
         project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'
@@ -67,8 +64,6 @@ class Projects::WikisController < Projects::ApplicationController
     @page = WikiPages::CreateService.new(@project, current_user, wiki_params).execute
 
     if @page.persisted?
-      # Triggers repository update on secondary nodes when Geo is enabled
-      Gitlab::Geo.notify_wiki_update(@project) if Gitlab::Geo.primary?
       redirect_to(
         project_wiki_path(@project, @page),
         notice: 'Wiki was successfully updated.'

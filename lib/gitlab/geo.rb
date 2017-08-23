@@ -11,7 +11,6 @@ module Gitlab
       geo_oauth_application
     ).freeze
 
-    PRIMARY_JOBS = %i(bulk_notify_job).freeze
     SECONDARY_JOBS = %i(repository_sync_job file_download_job).freeze
 
     def self.current_node
@@ -66,14 +65,6 @@ module Gitlab
       GeoNode.where(host: host, port: port).exists?
     end
 
-    def self.notify_wiki_update(project)
-      ::Geo::EnqueueWikiUpdateService.new(project).execute
-    end
-
-    def self.bulk_notify_job
-      Sidekiq::Cron::Job.find('geo_bulk_notify_worker')
-    end
-
     def self.repository_sync_job
       Sidekiq::Cron::Job.find('geo_repository_sync_worker')
     end
@@ -93,7 +84,6 @@ module Gitlab
     end
 
     def self.disable_all_geo_jobs!
-      PRIMARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
       SECONDARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
     end
 

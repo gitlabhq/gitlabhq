@@ -30,12 +30,6 @@ describe WikiPages::CreateService do
 
         service.execute
       end
-
-      it 'triggers wiki update on secondary nodes' do
-        expect(Gitlab::Geo).to receive(:notify_wiki_update).with(instance_of(Project))
-
-        service.execute
-      end
     end
   end
 end

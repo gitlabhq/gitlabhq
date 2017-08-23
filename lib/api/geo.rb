@@ -38,18 +38,6 @@ module API
 
         present GeoNodeStatus.new(id: Gitlab::Geo.current_node.id), with: Entities::GeoNodeStatus
       end
-
-      # Enqueue a batch of IDs of wiki's projects to have their
-      # wiki repositories updated
-      #
-      # Example request:
-      #   POST /geo/refresh_wikis
-      post 'refresh_wikis' do
-        authenticated_as_admin!
-        require_node_to_be_enabled!
-        required_attributes! [:projects]
-        ::Geo::ScheduleWikiRepoUpdateService.new(params[:projects]).execute
-      end
     end
 
     helpers do
