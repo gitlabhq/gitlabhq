@@ -110,7 +110,7 @@
         this.resetAutoSave();
         this.isReplying = false;
       },
-      saveReply(noteText) {
+      saveReply(noteText, form, callback) {
         const replyData = {
           endpoint: this.newNotePath,
           flashContainer: this.$el,
@@ -121,20 +121,22 @@
             note: { note: noteText },
           },
         };
+        this.isReplying = false;
 
         this.saveNote(replyData)
           .then(() => {
-            this.isReplying = false;
             this.resetAutoSave();
+            callback();
           })
-          .catch(() => {
-            Flash(
-              'Your comment could not be submitted! Please check your network connection and try again.',
-              'alert',
-              $(this.$el),
-            );
+          .catch((err) => {
             this.removePlaceholderNotes();
-            this.$refs.noteForm.isSubmitting = false;
+            this.isReplying = true;
+            this.$nextTick(() => {
+              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              Flash(msg, 'alert', $(this.$el));
+              this.$refs.noteForm.note = noteText;
+              callback(err);
+            });
           });
       },
     },
