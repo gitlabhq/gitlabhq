@@ -1,0 +1,5 @@
+---
+title: Return clearer API errors during Runner registration
+merge_request: 11690
+author:
+type: changed
