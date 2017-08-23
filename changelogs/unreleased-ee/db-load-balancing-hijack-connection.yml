@@ -1,7 +1,0 @@
----
-title: >
-  Ensure all database queries are routed through the database load balancer when
-  load balancing is enabled
-merge_request: 2707
-author:
-type: changed

@@ -1,5 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.1 (2017-08-23)
+
+- [FIXED] Fix url for object store artifacts.
+- [CHANGED] Ensure all database queries are routed through the database load balancer when load balancing is enabled
+. !2707
+
 ## 9.5.0 (2017-08-22)
 
 - [FIXED] Fix Copy to Clipboard for SSH Public Key on Pull Repository settings. !2692
