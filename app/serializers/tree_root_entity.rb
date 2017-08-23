@@ -5,7 +5,7 @@ class TreeRootEntity < Grape::Entity
   expose :path
 
   expose :trees, using: TreeEntity
-  expose :blobs, using: BlobEntity
+  expose :blobs, using: BlobBasicEntity
   expose :submodules, using: SubmoduleEntity
 
   expose :parent_tree_url do |tree|

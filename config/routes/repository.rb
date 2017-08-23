@@ -69,6 +69,9 @@ scope format: false do
 
       scope path: '/blob/*id', as: :blob do
         get :diff
+
+        get '/', action: :viewer, as: :viewer, constraints: -> (request) { request.format == :json && request.params[:viewer].present? }
+
         get '/', action: :show
         delete '/', action: :destroy
         post '/', action: :create

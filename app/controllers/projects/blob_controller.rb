@@ -37,11 +37,23 @@ class Projects::BlobController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        show_html
+        environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+        @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+
+        render 'show'
       end
 
       format.json do
-        show_json
+        render json: BlobSerializer.new(project: @project, repository: @repository, ref: @ref, commit: @commit, params: params).represent(@blob)
+      end
+    end
+  end
+
+  def viewer
+    respond_to do |format|
+      format.json do
+        render_blob_json(@blob)
       end
     end
   end
@@ -184,40 +196,5 @@ class Projects::BlobController < Projects::ApplicationController
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
       .last_for_path(@repository, @ref, @path).sha
-  end
-
-  def show_html
-    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
-    @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
-
-    render 'show'
-  end
-
-  def show_json
-    json = blob_json(@blob)
-    return render_404 unless json
-
-    path_segments = @path.split('/')
-    path_segments.pop
-    tree_path = path_segments.join('/')
-
-    render json: json.merge(
-      path: blob.path,
-      name: blob.name,
-      extension: blob.extension,
-      size: blob.raw_size,
-      mime_type: blob.mime_type,
-      binary: blob.raw_binary?,
-      simple_viewer: blob.simple_viewer&.class&.partial_name,
-      rich_viewer: blob.rich_viewer&.class&.partial_name,
-      show_viewer_switcher: !!blob.show_viewer_switcher?,
-      render_error: blob.simple_viewer&.render_error || blob.rich_viewer&.render_error,
-      raw_path: project_raw_path(project, @id),
-      blame_path: project_blame_path(project, @id),
-      commits_path: project_commits_path(project, @id),
-      tree_path: project_tree_path(project, File.join(@ref, tree_path)),
-      permalink: project_blob_path(project, File.join(@commit.id, @path))
-    )
   end
 end
