@@ -181,6 +181,7 @@ module EventsHelper
   end
 
   def event_commit_title(message)
+    message ||= ''
     (message.split("\n").first || "").truncate(70)
   rescue
     "--broken encoding"
