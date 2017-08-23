@@ -1,8 +1,11 @@
 module Projects
   module ImportExport
     class CleanupService
+      RESERVED_REFS_NAMES =
+        %w[heads tags merge-requests keep-around environments]
       RESERVED_REFS_REGEXP =
-        %r{\Arefs/(?:heads|tags|merge\-requests|keep\-around|environments)/}
+        %r{\Arefs/(?:#{
+          RESERVED_REFS_NAMES.map(&Regexp.method(:escape)).join('|')})/}x
 
       attr_reader :project
 
