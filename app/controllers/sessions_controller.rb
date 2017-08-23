@@ -13,6 +13,8 @@ class SessionsController < Devise::SessionsController
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
+  after_action :log_failed_login, only: [:new]
+
   def new
     set_minimum_password_length
     @ldap_servers = Gitlab::LDAP::Config.available_servers
@@ -29,18 +31,27 @@ class SessionsController < Devise::SessionsController
       end
       # hide the signed-in notification
       flash[:notice] = nil
-      log_audit_event(current_user, with: authentication_method)
+      log_audit_event(current_user, resource, with: authentication_method)
       log_user_activity(current_user)
     end
   end
 
   def destroy
+    Gitlab::AppLogger.info("User Logout: username=#{current_user.username} ip=#{request.remote_ip}")
     super
     # hide the signed_out notice
     flash[:notice] = nil
   end
 
   private
+
+  def log_failed_login
+    Gitlab::AppLogger.info("Failed login: username=#{user_params[:login]} ip=#{request.remote_ip}") if failed_login?
+  end
+
+  def failed_login?
+    (options = env["warden.options"]) && options[:action] == "unauthenticated"
+  end
 
   def login_counter
     @login_counter ||= Gitlab::Metrics.counter(:user_session_logins_total, 'User sign in count')
@@ -123,7 +134,8 @@ class SessionsController < Devise::SessionsController
       user.invalidate_otp_backup_code!(user_params[:otp_attempt])
   end
 
-  def log_audit_event(user, options = {})
+  def log_audit_event(user, resource, options = {})
+    Gitlab::AppLogger.info("User login: username=#{resource.username} ip=#{request.remote_ip} method=#{options[:with]} admin=#{resource.admin?}")
     AuditEventService.new(user, user, options)
       .for_authentication.security_event
   end

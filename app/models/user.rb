@@ -1069,6 +1069,12 @@ class User < ActiveRecord::Base
     super
   end
 
+  # override, from Devise
+  def lock_access!
+    Gitlab::AppLogger.info("Account Locked: username=#{username} reason=invalid_login_attempts")
+    super
+  end
+
   private
 
   def ci_projects_union
