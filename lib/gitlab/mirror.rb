@@ -77,10 +77,6 @@ module Gitlab
         current_application_settings.mirror_capacity_threshold
       end
 
-      def increment_metric(name, docstring)
-        Gitlab::Metrics.counter(name, docstring).increment
-      end
-
       private
 
       def update_all_mirrors_cron_job
