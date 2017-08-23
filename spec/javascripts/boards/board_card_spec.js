@@ -14,7 +14,7 @@ import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card';
 import { mockBoardService } from './mock_data';
 
-fdescribe('Board card', () => {
+describe('Board card', () => {
   let vm;
 
   beforeEach((done) => {

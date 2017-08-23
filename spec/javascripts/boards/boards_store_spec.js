@@ -17,7 +17,7 @@ import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import { mockBoardService } from './mock_data';
 
-describe('Store', () => {
+fdescribe('Store', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = mockBoardService();
@@ -78,7 +78,7 @@ describe('Store', () => {
     it('persists new list', (done) => {
       gl.issueBoards.BoardsStore.new({
         title: 'Test',
-        type: 'label',
+        list_type: 'label',
         label: {
           id: 1,
           title: 'Testing',
