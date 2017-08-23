@@ -5,7 +5,7 @@ module Gitlab
         ##
         # Entry that represents a trigger policy for the job.
         #
-        class Trigger < Node
+        class Policy < Node
           include Validatable
 
           validations do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Entry::Trigger do
+describe Gitlab::Ci::Config::Entry::Policy do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -48,7 +48,7 @@ describe Gitlab::Ci::Config::Entry::Trigger do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'trigger config should be an array of strings or regexps'
+            .to include 'policy config should be an array of strings or regexps'
         end
       end
     end
