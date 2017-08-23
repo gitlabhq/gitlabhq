@@ -1,17 +1,30 @@
-class BlobEntity < Grape::Entity
-  include RequestAwareEntity
+class BlobEntity < BlobBasicEntity
+  expose :simple_viewer, :rich_viewer, :auxiliary_viewer, using: BlobViewerEntity
 
-  expose :id, :path, :name, :mode
+  expose :stored_externally?, as: :stored_externally
+  expose :expanded?, as: :expanded
 
-  expose :last_commit do |blob|
-    request.project.repository.last_commit_for_path(blob.commit_id, blob.path)
+  expose :raw_path do |blob|
+    project_raw_path(request.project, File.join(request.ref, blob.path))
   end
 
-  expose :icon do |blob|
-    IconsHelper.file_type_icon_class('file', blob.mode, blob.name)
+  expose :blame_path do |blob|
+    project_blame_path(request.project, File.join(request.ref, blob.path))
   end
 
-  expose :url do |blob|
-    project_blob_path(request.project, File.join(request.ref, blob.path))
+  expose :commits_path do |blob|
+    project_commits_path(request.project, File.join(request.ref, blob.path))
+  end
+
+  expose :tree_path do |blob|
+    path_segments = blob.path.split('/')
+    path_segments.pop
+    tree_path = path_segments.join('/')
+
+    project_tree_path(request.project, File.join(request.ref, tree_path))
+  end
+
+  expose :permalink do |blob|
+    project_blob_path(request.project, File.join(request.commit.id, blob.path))
   end
 end
