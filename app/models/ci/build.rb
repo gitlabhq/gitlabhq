@@ -47,7 +47,7 @@ module Ci
     before_destroy { unscoped_project }
 
     after_create do |build|
-      BuildHooksWorker.perform_async(build.id)
+      run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
     after_commit :update_project_statistics_after_save, on: [:create, :update]
