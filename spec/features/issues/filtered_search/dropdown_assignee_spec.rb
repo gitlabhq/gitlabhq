@@ -134,8 +134,10 @@ describe 'Dropdown assignee', :js do
     it 'fills in the assignee username when the assignee has not been filtered' do
       click_assignee(user_jacob.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user_jacob.username}" }])
+      expect_tokens([assignee_token(user_jacob.name)])
       expect_filtered_search_input_empty
     end
 
@@ -143,8 +145,10 @@ describe 'Dropdown assignee', :js do
       filtered_search.send_keys('roo')
       click_assignee(user.name)
 
+      wait_for_requests
+
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: "@#{user.username}" }])
+      expect_tokens([assignee_token(user.name)])
       expect_filtered_search_input_empty
     end
 
@@ -152,7 +156,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: 'No Assignee').click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: 'none' }])
+      expect_tokens([assignee_token('none')])
       expect_filtered_search_input_empty
     end
   end
@@ -171,7 +175,7 @@ describe 'Dropdown assignee', :js do
       find('#js-dropdown-assignee .filter-dropdown-item', text: user.username).click
 
       expect(page).to have_css(js_dropdown_assignee, visible: false)
-      expect_tokens([{ name: 'assignee', value: user.username }])
+      expect_tokens([assignee_token(user.username)])
       expect_filtered_search_input_empty
     end
   end

@@ -181,9 +181,14 @@ module Ci
     end
 
     def error(message, save: false)
-      pipeline.errors.add(:base, message)
-      pipeline.drop if save
-      pipeline
+      pipeline.tap do
+        pipeline.errors.add(:base, message)
+
+        if save
+          pipeline.drop
+          update_merge_requests_head_pipeline
+        end
+      end
     end
 
     def pipeline_created_counter

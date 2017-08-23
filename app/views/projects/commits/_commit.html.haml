@@ -6,7 +6,7 @@
   - notes = commit.notes
   - note_count = notes.user.count
 
-- cache_key = [project.full_path, commit.id, current_application_settings, note_count, @path.presence, current_controller?(:commits)]
+- cache_key = [project.full_path, commit.id, current_application_settings, note_count, @path.presence, current_controller?(:commits), I18n.locale]
 - cache_key.push(commit.status(ref)) if commit.status(ref)
 
 = cache(cache_key, expires_in: 1.day) do

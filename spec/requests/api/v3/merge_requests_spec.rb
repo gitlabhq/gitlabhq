@@ -318,15 +318,17 @@ describe API::MergeRequests do
       let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
-      before :each do |each|
-        fork_project.team << [user2, :reporter]
+      before do
+        fork_project.add_reporter(user2)
+
+        allow_any_instance_of(MergeRequest).to receive(:write_ref)
       end
 
       it "returns merge_request" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
           title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
           author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['description']).to eq('Test description for Test merge_request')
       end
@@ -337,7 +339,7 @@ describe API::MergeRequests do
         expect(fork_project.forked_from_project).to eq(project)
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
       end
 
@@ -351,25 +353,25 @@ describe API::MergeRequests do
              author: user2,
              target_project_id: project.id
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
       end
 
       it "returns 400 when source_branch is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when target_branch is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns 400 when title is missing" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       context 'when target_branch is specified' do
@@ -380,7 +382,7 @@ describe API::MergeRequests do
                source_branch: 'markdown',
                author: user,
                target_project_id: fork_project.id
-          expect(response).to have_http_status(422)
+          expect(response).to have_gitlab_http_status(422)
         end
 
         it 'returns 422 if targeting a different fork' do
@@ -390,14 +392,14 @@ describe API::MergeRequests do
                source_branch: 'markdown',
                author: user2,
                target_project_id: unrelated_project.id
-          expect(response).to have_http_status(422)
+          expect(response).to have_gitlab_http_status(422)
         end
       end
 
       it "returns 201 when target_branch is specified and for the same project" do
         post v3_api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
       end
     end
 

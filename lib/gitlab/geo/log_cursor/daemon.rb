@@ -65,11 +65,13 @@ module Gitlab
             next unless can_replay?(event_log)
 
             if event_log.repository_updated_event
-              handle_repository_update(event_log.repository_updated_event)
+              handle_repository_update(event_log)
             elsif event_log.repository_deleted_event
-              handle_repository_delete(event_log.repository_deleted_event)
+              handle_repository_delete(event_log)
             elsif event_log.repositories_changed_event
               handle_repositories_changed(event_log.repositories_changed_event)
+            elsif event_log.repository_renamed_event
+              handle_repository_rename(event_log)
             end
           end
         end
@@ -102,7 +104,8 @@ module Gitlab
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
 
-        def handle_repository_update(updated_event)
+        def handle_repository_update(event)
+          updated_event = event.repository_updated_event
           registry = ::Geo::ProjectRegistry.find_or_initialize_by(project_id: updated_event.project_id)
 
           case updated_event.source
@@ -112,10 +115,9 @@ module Gitlab
             registry.resync_wiki = true
           end
 
-          Gitlab::Geo::Logger.info(
-            class: self.class.name,
+          log_event_info(
+            event.created_at,
             message: "Repository update",
-            cursor_delay_s: (Time.now - updated_event.created_at).to_f.round(3),
             project_id: updated_event.project_id,
             source: updated_event.source,
             resync_repository: registry.resync_repository,
@@ -124,7 +126,8 @@ module Gitlab
           registry.save!
         end
 
-        def handle_repository_delete(deleted_event)
+        def handle_repository_delete(event)
+          deleted_event = event.repository_deleted_event
           # Once we remove system hooks we can refactor
           # GeoRepositoryDestroyWorker to avoid doing this
           full_path = File.join(deleted_event.repository_storage_path,
@@ -133,12 +136,11 @@ module Gitlab
             deleted_event.project_id,
             deleted_event.deleted_project_name,
             full_path)
-          Gitlab::Geo::Logger.info(
-            class: self.class.name,
-            message: "Deleted project",
-            project_id: deleted_event.project_id,
-            full_path: full_path,
-            job_id: job_id)
+          log_event_info(event.created_at,
+                         message: "Deleted project",
+                         project_id: deleted_event.project_id,
+                         full_path: full_path,
+                         job_id: job_id)
           # No need to create a project entry if it doesn't exist
           ::Geo::ProjectRegistry.where(project_id: deleted_event.project_id).delete_all
         end
@@ -153,6 +155,33 @@ module Gitlab
           else
             log_error('Could not schedule repositories clean up for Geo node', geo_node_id: changed_event.geo_node_id)
           end
+        end
+
+        def handle_repository_rename(event)
+          renamed_event = event.repository_renamed_event
+          return unless renamed_event.project_id
+
+          old_path = renamed_event.old_path_with_namespace
+          new_path = renamed_event.new_path_with_namespace
+
+          job_id = ::GeoRepositoryMoveWorker.perform_async(
+            renamed_event.project_id, "", old_path, new_path)
+
+          log_event_info(event.created_at,
+                         message: "Renaming project",
+                         project_id: renamed_event.project_id,
+                         old_path: old_path,
+                         new_path: new_path,
+                         job_id: job_id)
+        end
+
+        def cursor_delay(created_at)
+          (Time.now - created_at).to_f.round(3)
+        end
+
+        def log_event_info(created_at, message, params = {})
+          params[:cursor_delay_s] = cursor_delay(created_at)
+          log_info(message, params)
         end
 
         def log_info(message, params = {})

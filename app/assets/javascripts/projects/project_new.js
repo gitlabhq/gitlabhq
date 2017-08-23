@@ -36,7 +36,7 @@ const bindEvents = () => {
 
   $('.how_to_import_link').on('click', (e) => {
     e.preventDefault();
-    $('.how_to_import_link').next('.modal').show();
+    $(e.currentTarget).next('.modal').show();
   });
 
   $('.modal-header .close').on('click', () => {
@@ -57,6 +57,12 @@ const bindEvents = () => {
   });
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
+
+  $('.import_git').on('click', () => {
+    const $projectMirror = $('#project_mirror');
+
+    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
+  });
 };
 
 document.addEventListener('DOMContentLoaded', bindEvents);

@@ -1,0 +1,5 @@
+---
+title: Fix merge request pipeline status when pipeline has errors
+merge_request: 13664
+author:
+type: fixed

@@ -5,7 +5,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
 
   describe '#select' do
     it 'performs a read' do
-      expect(proxy).to receive(:read_using_load_balancer).with(:select, 'foo')
+      expect(proxy).to receive(:read_using_load_balancer).with(:select, ['foo'])
 
       proxy.select('foo')
     end
@@ -17,7 +17,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         arel = double(:arel)
 
         expect(proxy).to receive(:read_using_load_balancer)
-          .with(:select_all, arel, 'foo', [])
+          .with(:select_all, [arel, 'foo', []])
 
         proxy.select_all(arel, 'foo')
       end
@@ -28,7 +28,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         arel = double(:arel, locked: true)
 
         expect(proxy).to receive(:write_using_load_balancer)
-          .with(:select_all, arel, 'foo', [], sticky: true)
+          .with(:select_all, [arel, 'foo', []], sticky: true)
 
         proxy.select_all(arel, 'foo')
       end
@@ -39,7 +39,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
     describe "#{name}" do
       it 'runs the query on the primary and sticks to it' do
         expect(proxy).to receive(:write_using_load_balancer)
-          .with(name, 'foo', sticky: true)
+          .with(name, ['foo'], sticky: true)
 
         proxy.send(name, 'foo')
       end
@@ -75,9 +75,18 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
   describe '#method_missing' do
     it 'runs the query on the primary without sticking to it' do
       expect(proxy).to receive(:write_using_load_balancer)
-        .with(:foo, 'foo')
+        .with(:foo, ['foo'])
 
       proxy.foo('foo')
+    end
+
+    it 'properly forwards trailing hash arguments' do
+      allow(proxy.load_balancer).to receive(:read_write)
+
+      expect(proxy).to receive(:write_using_load_balancer).and_call_original
+
+      expect { proxy.case_sensitive_comparison(:table, :attribute, :column, { value: :value, format: :format }) }
+        .not_to raise_error
     end
   end
 
@@ -97,7 +106,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         expect(connection).to receive(:foo).with('foo')
         expect(proxy.load_balancer).to receive(:read).and_yield(connection)
 
-        proxy.read_using_load_balancer(:foo, 'foo')
+        proxy.read_using_load_balancer(:foo, ['foo'])
       end
     end
 
@@ -110,7 +119,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         expect(proxy.load_balancer).to receive(:read_write)
           .and_yield(connection)
 
-        proxy.read_using_load_balancer(:foo, 'foo')
+        proxy.read_using_load_balancer(:foo, ['foo'])
       end
     end
   end
@@ -129,7 +138,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       expect(connection).to receive(:foo).with('foo')
       expect(session).not_to receive(:write!)
 
-      proxy.write_using_load_balancer(:foo, 'foo')
+      proxy.write_using_load_balancer(:foo, ['foo'])
     end
 
     it 'sticks to the primary when sticking is enabled' do
@@ -137,7 +146,7 @@ describe Gitlab::Database::LoadBalancing::ConnectionProxy do
       expect(connection).to receive(:foo).with('foo')
       expect(session).to receive(:write!)
 
-      proxy.write_using_load_balancer(:foo, 'foo', sticky: true)
+      proxy.write_using_load_balancer(:foo, ['foo'], sticky: true)
     end
   end
 end

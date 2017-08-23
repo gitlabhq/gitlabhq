@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequest do
+  using RSpec::Parameterized::TableSyntax
+
   let(:project) { create(:project, :repository) }
 
   subject(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
@@ -135,24 +137,23 @@ describe MergeRequest do
   end
 
   describe '#approvals_before_merge' do
-    [
-      { license: true,  database: 5,   expected: 5 },
-      { license: true,  database: nil, expected: nil },
-      { license: false, database: 5,   expected: nil },
-      { license: false, database: nil, expected: nil }
-    ].each do |spec|
-      context spec.inspect do
-        let(:spec) { spec }
-        let(:merge_request) { build(:merge_request, approvals_before_merge: spec[:database]) }
+    where(:license_value, :db_value, :expected) do
+      true  | 5   | 5
+      true  | nil | nil
+      false | 5   | nil
+      false | nil | nil
+    end
 
-        subject { merge_request.approvals_before_merge }
+    with_them do
+      let(:merge_request) { build(:merge_request, approvals_before_merge: db_value) }
 
-        before do
-          stub_licensed_features(merge_request_approvers: spec[:license])
-        end
+      subject { merge_request.approvals_before_merge }
 
-        it { is_expected.to eq(spec[:expected]) }
+      before do
+        stub_licensed_features(merge_request_approvers: license_value)
       end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

@@ -39,7 +39,7 @@ describe Gitlab::OAuth::User do
         { provider: 'ldapmain', extern_uid: "uid=#{uid},#{base_dn}" },
         { provider: 'kerberos', extern_uid: uid + '@' + realm }
       )
- 
+
       expect(gl_user.email).to eq(real_email)
     end
   end

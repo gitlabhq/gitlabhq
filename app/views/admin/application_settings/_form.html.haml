@@ -48,6 +48,13 @@
         = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
         %span.help-block#clone-protocol-help
           Allow only the selected protocols to be used for Git access.
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :project_export_enabled do
+            = f.check_box :project_export_enabled
+            Project export enabled
+
     - if ldap_enabled?
       .form-group
         = f.label :allow_group_owners_to_manage_ldap, 'LDAP settings', class: 'control-label col-sm-2'
@@ -390,7 +397,9 @@
   %fieldset
     %legend Background Jobs
     %p
-      These settings require a restart to take effect.
+      These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

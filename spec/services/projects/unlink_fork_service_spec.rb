@@ -29,4 +29,14 @@ describe Projects::UnlinkForkService do
 
     subject.execute
   end
+
+  it 'refreshes the forks count cache of the source project' do
+    source = fork_project.forked_from_project
+
+    expect(source.forks_count).to eq(1)
+
+    subject.execute
+
+    expect(source.forks_count).to be_zero
+  end
 end

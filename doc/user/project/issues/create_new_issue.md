@@ -45,3 +45,20 @@ the appropriate project and followed up from there.
 
 _Service Desk is available only for [GitLab Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/)
 and [GitLab.com Silver](https://about.gitlab.com/gitlab-com/) subscribers._
+
+## New issue from the group-level Issue Tracker
+
+Head to the Group dashboard and click "Issues" in the sidebar to visit the Issue Tracker
+for all projects in your Group. Select the project you'd like to add an issue for
+using the dropdown button at the top-right of the page.
+
+![Select project to create issue](img/select_project_from_group_level_issue_tracker.png)
+
+We'll keep track of the project you selected most recently, and use it as the default
+for your next visit. This should save you a lot of time and clicks, if you mostly
+create issues for the same project.
+
+![Create issue from group-level issue tracker](img/create_issue_from_group_level_issue_tracker.png)
+
+
+

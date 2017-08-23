@@ -30,25 +30,31 @@ This example workflow prevents your implementations from being merged before get
 
 ## Configuring Approvals
 
-You can configure the approvals in the project settings, under merge requests.
-To enable it, turn on **Activate merge request approvals** and search for the
-users you want to be approvers.
-
 ![Merge Request Approvals in Project Settings](img/approvals_settings.png)
 
-### Approvals Required
+### Activate merge request approvals
 
-This sets the amount of approvals required before being able to merge a merge request.
+In the project settings, check this checkbox to turn on the feature.
 
-The number of approvers can be higher than the required approvals.
+### Approvers
+
+Select the individual users or groups that are eligible approvers for merge requests
+in this project.
+
+### Approvals required
+
+Enter the minimum number of approvals required. If the number of approvals received 
+on a merge request so far is smaller than this number, the merge request cannot
+be merged. (The merge button is disabled.)
 
 ### Can override approvers and approvals required per merge request
 
 > Introduced in GitLab Enterprise Edition 9.4.
 
-When this setting is enabled, the approvers for a project can be overridden for
-a merge request. When editing a merge request you can add or remove approvers,
-and increase the number of required approvers.
+Check this checkbox to increase the minimum number of approvals required, per merge
+request, over the project settings number above. (You cannot set a minimum below
+the project settings number.) You can also add or remove eligible approvers, per
+merge request.
 
 ### Reset approvals on push
 
@@ -65,7 +71,7 @@ merge request, they automatically get excluded from the approvers list.
 
 ### Approvers
 
-At the approvers area you can select the default set of users that need to
+In the Approvers section you can select the eligible users that can
 approve a merge request.
 
 Depending on the number of required approvals and the number of approvers set,
@@ -81,15 +87,15 @@ there are different cases:
 Note that approvers and the number of required approvals can be changed while
 creating or editing a merge request.
 
-When someone is marked as a required approver for a merge request, an email is
+When someone is marked as an eligible approver for a merge request, an email is
 sent to them and a todo is added to their list of todos.
 
 ### Selecting individual approvers
 
 GitLab restricts the users that can be selected to be individual approvers. Only these can be selected and appear in the search box:
-- Members of the current project
-- Members of the parent group of the current project
-- Members of a group that have access to the current project [via a share](../../../workflow/share_projects_with_other_groups.md)
+- Members of the project
+- Members of the parent group of the project
+- Members of a group that have access to the project [via a share](../../../workflow/share_projects_with_other_groups.md)
 
 ### Selecting group approvers
 
@@ -105,11 +111,22 @@ or editing the merge request.
 
 A designated approver can remove their approval at any time. If, when an approver
 removes their approval, the number of approvals given falls below the number of
-required approvals, the merge request cannot be accepted.
+required approvals, the merge request cannot be merged.
 
 If, on the other hand, an approver removes their approval but the number of approvals
 given stays at or above the number of required approvals, the merge request can still be
-accepted.
+merged.
+
+## Merge request with different source branch and target branch projects
+
+If the merge request source branch and target branch belong to different projects (which
+happens in merge requests in forked projects), everything is with respect to the 
+target branch's project (typically the original project). In particular, since the
+merge request in this case is part of the target branch's project, the relevant
+settings are the target project's. The source branch's project settings are not 
+applicable. Even if you start the merge request from the source branch's project
+UI, pay attention to the created merge request itself. It belongs to the target
+branch's project.
 
 ## Using approvals
 

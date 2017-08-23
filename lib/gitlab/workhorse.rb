@@ -45,7 +45,6 @@ module Gitlab
                             raise "Unsupported action: #{action}"
                           end
         if feature_enabled
-          params[:GitalyAddress] = server[:address] # This field will be deprecated
           params[:GitalyServer] = server
         end
 
@@ -127,7 +126,7 @@ module Gitlab
 
       def send_artifacts_entry(build, entry)
         file = build.artifacts_file
-        archive = 
+        archive =
           if file.file_storage?
             file.path
           else

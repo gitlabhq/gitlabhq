@@ -7,7 +7,7 @@ describe Geo::EnqueueWikiUpdateService do
   let(:fake_id) { 999 }
   let(:queue) { subject.instance_variable_get(:@queue) }
 
-  before(:each) do
+  before do
     queue.empty!
     expect(project).to receive_message_chain(:wiki, :url_to_repo) { fake_url }
     expect(project).to receive(:id) { fake_id }

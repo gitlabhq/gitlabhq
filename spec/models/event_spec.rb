@@ -304,27 +304,15 @@ describe Event do
     end
   end
 
-  def create_push_event(project, user, attrs = {})
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/master",
-      user_id: user.id,
-      user_name: user.name,
-      repository: {
-        name: project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
+  def create_push_event(project, user)
+    event = create(:push_event, project: project, author: user)
 
-    described_class.create({
-      project: project,
-      action: described_class::PUSHED,
-      data: data,
-      author_id: user.id
-    }.merge!(attrs))
+    create(:push_event_payload,
+           event: event,
+           commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+           commit_count: 0,
+           ref: 'master')
+
+    event
   end
 end

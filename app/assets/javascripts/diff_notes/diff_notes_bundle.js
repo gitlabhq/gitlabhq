@@ -43,6 +43,10 @@ $(() => {
       $components.each(function () {
         const $this = $(this);
         const noteId = $this.attr(':note-id');
+        const discussionId = $this.attr(':discussion-id');
+
+        if ($this.is('comment-and-resolve-btn') && !discussionId) return;
+
         const tmp = Vue.extend({
           template: $this.get(0).outerHTML
         });

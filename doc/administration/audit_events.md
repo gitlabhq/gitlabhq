@@ -59,4 +59,4 @@ You can further filter by specific group, project or user (for authentication ev
 
 ![audit log](audit_log.png)
 
-[ce-23361]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336
+[ee-2336]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336

@@ -1,15 +1,18 @@
 require 'spec_helper'
 
 describe Gitlab::Database::LoadBalancing::ActiveRecordProxy do
-  describe '#inherited' do
-    it 'adds the ModelProxy module to the singleton class' do
-      base = Class.new do
+  describe '#connection' do
+    it 'returns a connection proxy' do
+      dummy = Class.new do
         include Gitlab::Database::LoadBalancing::ActiveRecordProxy
       end
 
-      model = Class.new(base)
+      proxy = double(:proxy)
 
-      expect(model.included_modules).to include(described_class)
+      expect(Gitlab::Database::LoadBalancing).to receive(:proxy)
+        .and_return(proxy)
+
+      expect(dummy.new.connection).to eq(proxy)
     end
   end
 end

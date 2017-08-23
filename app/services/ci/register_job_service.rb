@@ -86,13 +86,13 @@ module Ci
     end
 
     def register_failure
-      failed_attempt_counter.increase
-      attempt_counter.increase
+      failed_attempt_counter.increment
+      attempt_counter.increment
     end
 
     def register_success(job)
       job_queue_duration_seconds.observe({ shared_runner: @runner.shared? }, Time.now - job.created_at)
-      attempt_counter.increase
+      attempt_counter.increment
     end
 
     def failed_attempt_counter

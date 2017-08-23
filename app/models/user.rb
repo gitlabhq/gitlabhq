@@ -50,11 +50,6 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
-  # devise overrides #inspect, so we manually use the Referable one
-  def inspect
-    referable_inspect
-  end
-
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
@@ -745,9 +740,9 @@ class User < ActiveRecord::Base
   end
 
   def sanitize_attrs
-    %w[username skype linkedin twitter].each do |attr|
-      value = public_send(attr) # rubocop:disable GitlabSecurity/PublicSend
-      public_send("#{attr}=", Sanitize.clean(value)) if value.present? # rubocop:disable GitlabSecurity/PublicSend
+    %i[skype linkedin twitter].each do |attr|
+      value = self[attr]
+      self[attr] = Sanitize.clean(value) if value.present?
     end
   end
 
@@ -861,7 +856,12 @@ class User < ActiveRecord::Base
     create_namespace!(path: username, name: username) unless namespace
 
     if username_changed?
-      namespace.update_attributes(path: username, name: username)
+      unless namespace.update_attributes(path: username, name: username)
+        namespace.errors.each do |attribute, message|
+          self.errors.add(:"namespace_#{attribute}", message)
+        end
+        raise ActiveRecord::RecordInvalid.new(namespace)
+      end
     end
   end
 
@@ -1092,7 +1092,8 @@ class User < ActiveRecord::Base
 
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
-    devise_mailer.send(notification, self, *args).deliver_later
+    return true unless can?(:receive_notifications)
+    devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 
   # This works around a bug in Devise 4.2.0 that erroneously causes a user to

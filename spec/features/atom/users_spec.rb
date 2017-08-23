@@ -41,6 +41,8 @@ describe "User Feed"  do
                target_project: project,
                description: "Here is the fix: ![an image](image.png)")
       end
+      let(:push_event) { create(:push_event, project: project, author: user) }
+      let!(:push_event_payload) { create(:push_event_payload, event: push_event) }
 
       before do
         project.team << [user, :master]
@@ -69,6 +71,10 @@ describe "User Feed"  do
 
       it 'has XHTML summaries in merge request descriptions' do
         expect(body).to match /Here is the fix: <a[^>]*><img[^>]*\/><\/a>/
+      end
+
+      it 'has push event commit ID' do
+        expect(body).to have_content(Commit.truncate_sha(push_event.commit_id))
       end
     end
   end

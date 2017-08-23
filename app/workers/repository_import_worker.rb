@@ -4,23 +4,18 @@ class RepositoryImportWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
-  sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_EXPIRATION
-
-  attr_accessor :project, :current_user
+  sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
   def perform(project_id)
-    @project = Project.find(project_id)
-    @current_user = @project.creator
+    project = Project.find(project_id)
 
-    project.import_start
+    return unless start_import(project)
 
     Gitlab::Metrics.add_event(:import_repository,
-                              import_url: @project.import_url,
-                              path: @project.full_path)
+                              import_url: project.import_url,
+                              path: project.full_path)
 
-    project.update_columns(import_jid: self.jid, import_error: nil)
-
-    result = Projects::ImportService.new(project, current_user).execute
+    result = Projects::ImportService.new(project, project.creator).execute
     raise ImportError, result[:message] if result[:status] == :error
 
     project.repository.after_import
@@ -40,6 +35,13 @@ class RepositoryImportWorker
   end
 
   private
+
+  def start_import(project)
+    return true if project.import_start
+
+    Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while importing.")
+    false
+  end
 
   def fail_import(project, message)
     project.mark_import_as_failed(message)

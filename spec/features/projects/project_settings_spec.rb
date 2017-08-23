@@ -65,7 +65,7 @@ describe 'Edit Project Settings' do
         TestEnv.clean_test_path
       end
 
-      after(:example) do
+      after do
         TestEnv.clean_test_path
       end
 
@@ -107,11 +107,11 @@ describe 'Edit Project Settings' do
       TestEnv.clean_test_path
     end
 
-    before(:example) do
+    before do
       group.add_owner(user)
     end
 
-    after(:example) do
+    after do
       TestEnv.clean_test_path
     end
 

@@ -1,4 +1,0 @@
----
-title: Allow excluding sidekiq queues from execution in sidekiq-cluster
-merge_request: 2571
-author:

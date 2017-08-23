@@ -29,6 +29,7 @@ module API
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :disabled_oauth_sign_in_sources, type: Array[String], desc: 'Disable certain OAuth sign-in sources'
       optional :enabled_git_access_protocol, type: String, values: %w[ssh http nil], desc: 'Allow only the selected protocols to be used for Git access.'
+      optional :project_export_enabled, type: Boolean, desc: 'Enable project export'
       optional :gravatar_enabled, type: Boolean, desc: 'Flag indicating if the Gravatar service is enabled'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'

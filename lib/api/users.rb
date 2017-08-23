@@ -85,22 +85,17 @@ module API
       end
 
       desc 'Get a single user' do
-        success Entities::UserBasic
+        success Entities::User
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
       end
       get ":id" do
         user = User.find_by(id: params[:id])
-        not_found!('User') unless user
+        not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        if current_user && current_user.admin?
-          present user, with: Entities::UserPublic
-        elsif can?(current_user, :read_user, user)
-          present user, with: Entities::User
-        else
-          render_api_error!("User not found.", 404)
-        end
+        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : {}
+        present user, opts
       end
 
       desc 'Create a user. Available only for admins.' do

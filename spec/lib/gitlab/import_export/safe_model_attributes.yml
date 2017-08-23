@@ -37,6 +37,14 @@ Event:
 - updated_at
 - action
 - author_id
+PushEventPayload:
+- commit_count
+- action
+- ref_type
+- commit_from
+- commit_to
+- ref
+- commit_title
 Note:
 - id
 - note
@@ -223,6 +231,8 @@ Ci::Pipeline:
 Ci::Stage:
 - id
 - name
+- status
+- lock_version
 - project_id
 - pipeline_id
 - created_at

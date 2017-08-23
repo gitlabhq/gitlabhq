@@ -106,16 +106,8 @@ describe Gitlab::Database::LoadBalancing do
     end
 
     it 'configures the connection proxy' do
-      model = double(:model)
-
       expect(ActiveRecord::Base.singleton_class).to receive(:prepend)
         .with(Gitlab::Database::LoadBalancing::ActiveRecordProxy)
-
-      expect(described_class).to receive(:active_record_models)
-        .and_return([model])
-
-      expect(model.singleton_class).to receive(:prepend)
-        .with(Gitlab::Database::LoadBalancing::ModelProxy)
 
       described_class.configure_proxy
     end

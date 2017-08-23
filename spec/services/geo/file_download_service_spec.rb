@@ -98,13 +98,21 @@ describe Geo::FileDownloadService do
 
       subject { described_class.new(:lfs, lfs_object.id) }
 
-      it 'downloads an LFS object' do
+      before do
         allow_any_instance_of(Gitlab::ExclusiveLease)
           .to receive(:try_obtain).and_return(true)
         allow_any_instance_of(Gitlab::Geo::LfsTransfer)
           .to receive(:download_from_primary).and_return(100)
+      end
 
+      it 'downloads an LFS object' do
         expect { subject.execute }.to change { Geo::FileRegistry.count }.by(1)
+      end
+
+      it 'logs a message' do
+        expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(:message, :download_time_s, success: true, bytes_downloaded: 100)).and_call_original
+
+        subject.execute
       end
     end
 

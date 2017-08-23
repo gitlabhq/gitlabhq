@@ -150,4 +150,4 @@ Example response:
 }
 ```
 
-[ce-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508
+[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508

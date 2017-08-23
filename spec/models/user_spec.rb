@@ -1359,7 +1359,7 @@ describe User do
     let!(:project2) { create(:project, forked_from_project: project3) }
     let!(:project3) { create(:project) }
     let!(:merge_request) { create(:merge_request, source_project: project2, target_project: project3, author: subject) }
-    let!(:push_event) { create(:event, :pushed, project: project1, target: project1, author: subject) }
+    let!(:push_event) { create(:push_event, project: project1, author: subject) }
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
@@ -1401,10 +1401,18 @@ describe User do
     subject { create(:user) }
     let!(:project1) { create(:project, :repository) }
     let!(:project2) { create(:project, :repository, forked_from_project: project1) }
-    let!(:push_data) do
-      Gitlab::DataBuilder::Push.build_sample(project2, subject)
+
+    let!(:push_event) do
+      event = create(:push_event, project: project2, author: subject)
+
+      create(:push_event_payload,
+             event: event,
+             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+             commit_count: 0,
+             ref: 'master')
+
+      event
     end
-    let!(:push_event) { create(:event, :pushed, project: project2, target: project1, author: subject, data: push_data) }
 
     before do
       project1.team << [subject, :master]
@@ -1431,8 +1439,13 @@ describe User do
       expect(subject.recent_push(project1)).to eq(nil)
       expect(subject.recent_push(project2)).to eq(push_event)
 
-      push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
-      push_event1 = create(:event, :pushed, project: project1, target: project1, author: subject, data: push_data1)
+      push_event1 = create(:push_event, project: project1, author: subject)
+
+      create(:push_event_payload,
+             event: push_event1,
+             commit_to: '1cf19a015df3523caf0a1f9d40c98a267d6a2fc2',
+             commit_count: 0,
+             ref: 'master')
 
       expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
     end
@@ -2131,6 +2144,67 @@ describe User do
       allow(user).to receive(:personal_projects_count).and_return(5)
 
       expect(user.projects_limit_left).to eq(5)
+    end
+  end
+
+  describe '#ensure_namespace_correct' do
+    context 'for a new user' do
+      let(:user) { build(:user) }
+
+      it 'creates the namespace' do
+        expect(user.namespace).to be_nil
+        user.save!
+        expect(user.namespace).not_to be_nil
+      end
+    end
+
+    context 'for an existing user' do
+      let(:username) { 'foo' }
+      let(:user) { create(:user, username: username) }
+
+      context 'when the user is updated' do
+        context 'when the username is changed' do
+          let(:new_username) { 'bar' }
+
+          it 'changes the namespace (just to compare to when username is not changed)' do
+            expect do
+              user.update_attributes!(username: new_username)
+            end.to change { user.namespace.updated_at }
+          end
+
+          it 'updates the namespace name' do
+            user.update_attributes!(username: new_username)
+            expect(user.namespace.name).to eq(new_username)
+          end
+
+          it 'updates the namespace path' do
+            user.update_attributes!(username: new_username)
+            expect(user.namespace.path).to eq(new_username)
+          end
+
+          context 'when there is a validation error (namespace name taken) while updating namespace' do
+            let!(:conflicting_namespace) { create(:group, name: new_username, path: 'quz') }
+
+            it 'causes the user save to fail' do
+              expect(user.update_attributes(username: new_username)).to be_falsey
+              expect(user.namespace.errors.messages[:name].first).to eq('has already been taken')
+            end
+
+            it 'adds the namespace errors to the user' do
+              user.update_attributes(username: new_username)
+              expect(user.errors.full_messages.first).to eq('Namespace name has already been taken')
+            end
+          end
+        end
+
+        context 'when the username is not changed' do
+          it 'does not change the namespace' do
+            expect do
+              user.update_attributes!(email: 'asdf@asdf.com')
+            end.not_to change { user.namespace.updated_at }
+          end
+        end
+      end
     end
   end
 end

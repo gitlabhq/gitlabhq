@@ -4,7 +4,7 @@ describe NotificationService, :mailer do
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
 
-  around(:each) do |example|
+  around do |example|
     perform_enqueued_jobs do
       example.run
     end
@@ -80,12 +80,16 @@ describe NotificationService, :mailer do
 
   describe 'Keys' do
     describe '#new_key' do
-      let!(:key) { create(:personal_key) }
+      let(:key_options) { {} }
+      let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
+      it { should_email(key.user) }
 
-      it 'sends email to key owner' do
-        expect { notification.new_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
+      describe 'never emails the ghost user' do
+        let(:key_options) { { user: User.ghost } }
+
+        it { should_not_email_anyone }
       end
     end
   end
@@ -932,6 +936,13 @@ describe NotificationService, :mailer do
           project_approvers.each { |approver| should_email(approver) }
         end
 
+        it 'does not email the approvers when approving is disabled' do
+          merge_request.target_project.update_attributes(approvals_before_merge: 0)
+          notification.new_merge_request(merge_request, @u_disabled)
+
+          project_approvers.each { |approver| should_not_email(approver) }
+        end
+
         context 'when the merge request has approvers set' do
           let(:mr_approvers) { create_list(:user, 3) }
 
@@ -1208,19 +1219,39 @@ describe NotificationService, :mailer do
       end
     end
 
-    describe '#project_exported' do
-      it do
-        notification.project_exported(project, @u_disabled)
+    context 'user with notifications disabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_disabled)
 
-        should_only_email(@u_disabled)
+          should_not_email_anyone
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_disabled, ['error'])
+
+          should_not_email_anyone
+        end
       end
     end
 
-    describe '#project_not_exported' do
-      it do
-        notification.project_not_exported(project, @u_disabled, ['error'])
+    context 'user with notifications enabled' do
+      describe '#project_exported' do
+        it do
+          notification.project_exported(project, @u_participating)
 
-        should_only_email(@u_disabled)
+          should_only_email(@u_participating)
+        end
+      end
+
+      describe '#project_not_exported' do
+        it do
+          notification.project_not_exported(project, @u_participating, ['error'])
+
+          should_only_email(@u_participating)
+        end
       end
     end
   end
@@ -1231,7 +1262,7 @@ describe NotificationService, :mailer do
       let(:group) { create(:group) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         group.add_owner(creator)
         group.add_developer(member, creator)
       end
@@ -1244,6 +1275,35 @@ describe NotificationService, :mailer do
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
+
+    describe '#new_group_member' do
+      let(:group) { create(:group) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        GroupMember.create(
+          group: group,
+          user: added_user,
+          access_level: Gitlab::Access::GUEST
+        )
+      end
+
+      it 'sends a notification' do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
+
+        it 'does not send a notification' do
+          create_member!
+          should_not_email_anyone
+        end
+      end
+    end
   end
 
   describe 'ProjectMember' do
@@ -1251,7 +1311,7 @@ describe NotificationService, :mailer do
       let(:project) { create(:project) }
       let(:member) { create(:user) }
 
-      before(:each) do
+      before do
         project.add_developer(member, current_user: project.owner)
       end
 
@@ -1261,6 +1321,31 @@ describe NotificationService, :mailer do
         expect do
           notification.decline_project_invite(project_member)
         end.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+
+    describe '#new_project_member' do
+      let(:project) { create(:project) }
+      let(:added_user) { create(:user) }
+
+      def create_member!
+        create(:project_member, user: added_user, project: project)
+      end
+
+      it do
+        create_member!
+        should_only_email(added_user)
+      end
+
+      describe 'when notifications are disabled' do
+        before do
+          create_global_setting_for(added_user, :disabled)
+        end
+
+        it do
+          create_member!
+          should_not_email_anyone
+        end
       end
     end
   end

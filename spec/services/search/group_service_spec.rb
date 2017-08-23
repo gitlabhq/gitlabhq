@@ -39,7 +39,7 @@ describe Search::GroupService do
   end
 
   describe 'elasticsearch' do
-    before(:each) do
+    before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
       Gitlab::Elastic::Helper.create_empty_index
 
@@ -52,7 +52,7 @@ describe Search::GroupService do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    after(:each) do
+    after do
       Gitlab::Elastic::Helper.delete_index
     end
 

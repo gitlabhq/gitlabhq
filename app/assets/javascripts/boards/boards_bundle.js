@@ -147,9 +147,18 @@ $(() => {
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
-    data: {
-      modal: ModalStore.store,
-      store: Store.state,
+    data() {
+      return {
+        modal: ModalStore.store,
+        store: Store.state,
+        isFullscreen: false,
+        focusModeAvailable: gl.utils.convertPermissionToBoolean(
+          $boardApp.dataset.focusModeAvailable,
+        ),
+        canAdminList: gl.utils.convertPermissionToBoolean(
+          this.$options.el.dataset.canAdminList,
+        ),
+      };
     },
     watch: {
       disabled() {
@@ -199,6 +208,7 @@ $(() => {
           :class="{ 'disabled': disabled }"
           :title="tooltipTitle"
           :aria-disabled="disabled"
+          v-if="canAdminList"
           @click="openModal">
           Add issues
         </button>
@@ -228,7 +238,7 @@ $(() => {
       <div class="board-extra-actions">
         <a
           href="#"
-          class="btn btn-default has-tooltip prepend-left-10"
+          class="btn btn-default has-tooltip prepend-left-10 js-focus-mode-btn"
           role="button"
           aria-label="Toggle focus mode"
           title="Toggle focus mode"

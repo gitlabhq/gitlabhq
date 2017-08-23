@@ -21,8 +21,7 @@ describe Groups::AnalyticsController do
 
   def create_push_event(author, project)
     event = create_event(author, project, nil, Event::PUSHED)
-    event.data = push_data
-    event.save
+    PushEventPayloadService.new(event, push_data).execute
   end
 
   before do

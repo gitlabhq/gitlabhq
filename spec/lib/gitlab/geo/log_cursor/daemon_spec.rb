@@ -150,5 +150,31 @@ describe Gitlab::Geo::LogCursor::Daemon do
         end
       end
     end
+
+    context 'when processing a repository renamed event' do
+      let(:event_log) { create(:geo_event_log, :renamed_event) }
+      let(:project) { event_log.repository_rename_event.project }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:repository_rename_event) { event_log.repository_renamed_event }
+
+      before do
+        allow(subject).to receive(:exit?).and_return(false, true)
+      end
+
+      it 'does not create a new project registry' do
+        expect { subject.run! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      it 'schedules a GeoRepositoryDestroyWorker' do
+        project_id = repository_rename_event.project_id
+        old_path_with_namespace = repository_rename_event.old_path_with_namespace
+        new_path_with_namespace = repository_rename_event.new_path_with_namespace
+
+        expect(::GeoRepositoryMoveWorker).to receive(:perform_async)
+          .with(project_id, '', old_path_with_namespace, new_path_with_namespace)
+
+        subject.run!
+      end
+    end
   end
 end

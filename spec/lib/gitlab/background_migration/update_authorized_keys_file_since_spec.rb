@@ -8,16 +8,12 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
 
     subject { background_migration.perform(cutoff_datetime) }
 
+    around do |example|
+      Timecop.travel(cutoff_datetime + 1.day) { example.run }
+    end
+
     context 'when an SSH key was created after the cutoff datetime' do
       before do
-        Timecop.freeze
-      end
-      after do
-        Timecop.return
-      end
-
-      before do
-        Timecop.travel 1.day.from_now
         @key = create(:key)
       end
 
@@ -38,16 +34,12 @@ describe Gitlab::BackgroundMigration::UpdateAuthorizedKeysFileSince do
 
     subject { background_migration.add_keys_since(cutoff_datetime) }
 
-    before do
-      Timecop.freeze
-    end
-    after do
-      Timecop.return
+    around do |example|
+      Timecop.travel(cutoff_datetime + 1.day) { example.run }
     end
 
     context 'when an SSH key was created after the cutoff datetime' do
       before do
-        Timecop.travel 1.day.from_now
         @key = create(:key)
         create(:key) # other key
       end

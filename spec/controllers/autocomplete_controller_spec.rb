@@ -320,7 +320,7 @@ describe AutocompleteController do
     end
 
     context 'authorized projects without admin_issue ability' do
-      before(:each) do
+      before do
         authorized_project.add_guest(user)
 
         expect(user.can?(:admin_issue, authorized_project)).to eq(false)

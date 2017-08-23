@@ -30,6 +30,8 @@ describe('Issue boards new issue form', () => {
   };
 
   beforeEach((done) => {
+    setFixtures('<div class="test-container"></div>');
+
     const BoardNewIssueComp = Vue.extend(boardNewIssue);
 
     Vue.http.interceptors.push(boardsMockInterceptor);
@@ -46,15 +48,17 @@ describe('Issue boards new issue form', () => {
       propsData: {
         list,
       },
-    }).$mount();
+    }).$mount(document.querySelector('.test-container'));
 
     Vue.nextTick()
       .then(done)
       .catch(done.fail);
   });
 
+  afterEach(() => vm.$destroy());
+
   it('calls submit if submit button is clicked', (done) => {
-    spyOn(vm, 'submit');
+    spyOn(vm, 'submit').and.callFake(e => e.preventDefault());
     vm.title = 'Testing Title';
 
     Vue.nextTick()

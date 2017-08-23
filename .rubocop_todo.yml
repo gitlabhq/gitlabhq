@@ -57,23 +57,12 @@ Layout/SpaceInsideParens:
 Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 89
-# Cop supports --auto-correct.
-Layout/TrailingWhitespace:
-  Enabled: false
-
 # Offense count: 272
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
 # Offense count: 181
 RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
-# Offense count: 78
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
   Enabled: false
 
 # Offense count: 9

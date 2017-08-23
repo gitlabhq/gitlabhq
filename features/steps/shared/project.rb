@@ -71,28 +71,14 @@ module SharedProject
 
   step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
+    @event = create(:push_event, project: @project, author: @user)
 
-    data = {
-      before: Gitlab::Git::BLANK_SHA,
-      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
-      ref: "refs/heads/fix",
-      user_id: @user.id,
-      user_name: @user.name,
-      repository: {
-        name: @project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
-
-    @event = Event.create(
-      project: @project,
-      action: Event::PUSHED,
-      data: data,
-      author_id: @user.id
-    )
+    create(:push_event_payload,
+           event: @event,
+           action: :created,
+           commit_to: '6d394385cf567f80a8fd85055db1ab4c5295806f',
+           ref: 'fix',
+           commit_count: 1)
   end
 
   step 'I should see project "Shop" activity feed' do

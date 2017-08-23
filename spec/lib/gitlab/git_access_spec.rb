@@ -1,21 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::GitAccess do
-  let(:pull_access_check) { access.check('git-upload-pack', '_any') }
-  let(:push_access_check) { access.check('git-receive-pack', '_any') }
-  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
-  let(:project) { create(:project, :repository) }
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
+
   let(:actor) { user }
+  let(:project) { create(:project, :repository) }
   let(:protocol) { 'ssh' }
+  let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
-  let(:authentication_abilities) do
-    [
-      :read_project,
-      :download_code,
-      :push_code
-    ]
-  end
+
+  let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
+  let(:push_access_check) { access.check('git-receive-pack', '_any') }
+  let(:pull_access_check) { access.check('git-upload-pack', '_any') }
 
   describe '#check with single protocols allowed' do
     def disable_protocol(protocol)
@@ -27,12 +23,11 @@ describe Gitlab::GitAccess do
         disable_protocol('ssh')
       end
 
-      it 'blocks ssh git push' do
-        expect { push_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
-      end
-
-      it 'blocks ssh git pull' do
-        expect { pull_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
+      it 'blocks ssh git push and pull' do
+        aggregate_failures do
+          expect { push_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
+          expect { pull_access_check }.to raise_unauthorized('Git access over SSH is not allowed')
+        end
       end
     end
 
@@ -43,12 +38,11 @@ describe Gitlab::GitAccess do
         disable_protocol('http')
       end
 
-      it 'blocks http push' do
-        expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
-      end
-
-      it 'blocks http git pull' do
-        expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+      it 'blocks http push and pull' do
+        aggregate_failures do
+          expect { push_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+          expect { pull_access_check }.to raise_unauthorized('Git access over HTTP is not allowed')
+        end
       end
     end
   end
@@ -65,22 +59,20 @@ describe Gitlab::GitAccess do
               deploy_key.projects << project
             end
 
-            it 'allows pull access' do
-              expect { pull_access_check }.not_to raise_error
-            end
-
-            it 'allows push access' do
-              expect { push_access_check }.not_to raise_error
+            it 'allows push and pull access' do
+              aggregate_failures do
+                expect { push_access_check }.not_to raise_error
+                expect { pull_access_check }.not_to raise_error
+              end
             end
           end
 
           context 'when the Deploykey does not have access to the project' do
-            it 'blocks pulls with "not found"' do
-              expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.')
-            end
-
-            it 'blocks pushes with "not found"' do
-              expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.')
+            it 'blocks push and pull with "not found"' do
+              aggregate_failures do
+                expect { push_access_check }.to raise_not_found
+                expect { pull_access_check }.to raise_not_found
+              end
             end
           end
         end
@@ -88,25 +80,23 @@ describe Gitlab::GitAccess do
         context 'when actor is a User' do
           context 'when the User can read the project' do
             before do
-              project.team << [user, :master]
+              project.add_master(user)
             end
 
-            it 'allows pull access' do
-              expect { pull_access_check }.not_to raise_error
-            end
-
-            it 'allows push access' do
-              expect { push_access_check }.not_to raise_error
+            it 'allows push and pull access' do
+              aggregate_failures do
+                expect { pull_access_check }.not_to raise_error
+                expect { push_access_check }.not_to raise_error
+              end
             end
           end
 
           context 'when the User cannot read the project' do
-            it 'blocks pulls with "not found"' do
-              expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.')
-            end
-
-            it 'blocks pushes with "not found"' do
-              expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.')
+            it 'blocks push and pull with "not found"' do
+              aggregate_failures do
+                expect { push_access_check }.to raise_not_found
+                expect { pull_access_check }.to raise_not_found
+              end
             end
           end
         end
@@ -121,7 +111,7 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.')
+            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
           end
         end
       end
@@ -137,17 +127,17 @@ describe Gitlab::GitAccess do
           end
 
           it 'does not block pushes with "not found"' do
-            expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.')
+            expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload])
           end
         end
 
         context 'when guests cannot read the project' do
           it 'blocks pulls with "not found"' do
-            expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.')
+            expect { pull_access_check }.to raise_not_found
           end
 
           it 'blocks pushes with "not found"' do
-            expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.')
+            expect { push_access_check }.to raise_not_found
           end
         end
       end
@@ -156,48 +146,50 @@ describe Gitlab::GitAccess do
     context 'when the project is nil' do
       let(:project) { nil }
 
-      it 'blocks any command with "not found"' do
-        expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.')
-        expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.')
+      it 'blocks push and pull with "not found"' do
+        aggregate_failures do
+          expect { pull_access_check }.to raise_not_found
+          expect { push_access_check }.to raise_not_found
+        end
       end
     end
   end
 
   describe '#check_project_moved!' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     context 'when a redirect was not followed to find the project' do
-      context 'pull code' do
-        it { expect { pull_access_check }.not_to raise_error }
-      end
-
-      context 'push code' do
-        it { expect { push_access_check }.not_to raise_error }
+      it 'allows push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.not_to raise_error
+          expect { pull_access_check }.not_to raise_error
+        end
       end
     end
 
     context 'when a redirect was followed to find the project' do
       let(:redirected_path) { 'some/other-path' }
 
-      context 'pull code' do
-        it { expect { pull_access_check }.to raise_not_found(/Project '#{redirected_path}' was moved to '#{project.full_path}'/) }
-        it { expect { pull_access_check }.to raise_not_found(/git remote set-url origin #{project.ssh_url_to_repo}/) }
+      it 'blocks push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /Project '#{redirected_path}' was moved to '#{project.full_path}'/)
+          expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.ssh_url_to_repo}/)
 
-        context 'http protocol' do
-          let(:protocol) { 'http' }
-          it { expect { pull_access_check }.to raise_not_found(/git remote set-url origin #{project.http_url_to_repo}/) }
+          expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /Project '#{redirected_path}' was moved to '#{project.full_path}'/)
+          expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.ssh_url_to_repo}/)
         end
       end
 
-      context 'push code' do
-        it { expect { push_access_check }.to raise_not_found(/Project '#{redirected_path}' was moved to '#{project.full_path}'/) }
-        it { expect { push_access_check }.to raise_not_found(/git remote set-url origin #{project.ssh_url_to_repo}/) }
+      context 'http protocol' do
+        let(:protocol) { 'http' }
 
-        context 'http protocol' do
-          let(:protocol) { 'http' }
-          it { expect { push_access_check }.to raise_not_found(/git remote set-url origin #{project.http_url_to_repo}/) }
+        it 'includes the path to the project using HTTP' do
+          aggregate_failures do
+            expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
+            expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
+          end
         end
       end
     end
@@ -242,40 +234,28 @@ describe Gitlab::GitAccess do
   end
 
   describe '#check_download_access!' do
-    describe 'master permissions' do
-      before do
-        project.team << [user, :master]
-      end
+    it 'allows masters to pull' do
+      project.add_master(user)
 
-      context 'pull code' do
-        it { expect { pull_access_check }.not_to raise_error }
-      end
+      expect { pull_access_check }.not_to raise_error
     end
 
-    describe 'guest permissions' do
-      before do
-        project.team << [user, :guest]
-      end
+    it 'disallows guests to pull' do
+      project.add_guest(user)
 
-      context 'pull code' do
-        it { expect { pull_access_check }.to raise_unauthorized('You are not allowed to download code from this project.') }
-      end
+      expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
     end
 
-    describe 'blocked user' do
-      before do
-        project.team << [user, :master]
-        user.block
-      end
+    it 'disallows blocked users to pull' do
+      project.add_master(user)
+      user.block
 
-      context 'pull code' do
-        it { expect { pull_access_check }.to raise_unauthorized('Your account has been blocked.') }
-      end
+      expect { pull_access_check }.to raise_unauthorized('Your account has been blocked.')
     end
 
     describe 'without access to project' do
       context 'pull code' do
-        it { expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+        it { expect { pull_access_check }.to raise_not_found }
       end
 
       context 'when project is public' do
@@ -292,7 +272,7 @@ describe Gitlab::GitAccess do
           it 'does not give access to download code' do
             public_project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
 
-            expect { pull_access_check }.to raise_unauthorized('You are not allowed to download code from this project.')
+            expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download])
           end
         end
       end
@@ -321,13 +301,13 @@ describe Gitlab::GitAccess do
           context 'from internal project' do
             let(:project) { create(:project, :internal, :repository) }
 
-            it { expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+            it { expect { pull_access_check }.to raise_not_found }
           end
 
           context 'from private project' do
             let(:project) { create(:project, :private, :repository) }
 
-            it { expect { pull_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+            it { expect { pull_access_check }.to raise_not_found }
           end
         end
       end
@@ -380,7 +360,7 @@ describe Gitlab::GitAccess do
 
         context 'when is not member of the project' do
           context 'pull code' do
-            it { expect { pull_access_check }.to raise_unauthorized('You are not allowed to download code from this project.') }
+            it { expect { pull_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:download]) }
           end
         end
       end
@@ -440,28 +420,30 @@ describe Gitlab::GitAccess do
       end
     end
 
-    # Run permission checks for a user
     def self.run_permission_checks(permissions_matrix)
-      permissions_matrix.keys.each do |role|
-        describe "#{role} access" do
-          before do
-            if role == :admin
-              user.update_attribute(:admin, true)
-            else
-              project.team << [user, role]
-            end
+      permissions_matrix.each_pair do |role, matrix|
+        # Run through the entire matrix for this role in one test to avoid
+        # repeated setup.
+        #
+        # Expectations are given a custom failure message proc so that it's
+        # easier to identify which check(s) failed.
+        it "has the correct permissions for #{role}s" do
+          if role == :admin
+            user.update_attribute(:admin, true)
+          else
+            project.team << [user, role]
           end
 
-          permissions_matrix[role].each do |action, allowed|
-            context action.to_s do
-              subject { access.send(:check_push_access!, changes[action]) }
+          aggregate_failures do
+            matrix.each do |action, allowed|
+              check = -> { access.send(:check_push_access!, changes[action]) }
 
-              it do
-                if allowed
-                  expect { subject }.not_to raise_error
-                else
-                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
-                end
+              if allowed
+                expect(&check).not_to raise_error,
+                  -> { "expected #{action} to be allowed" }
+              else
+                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                  -> { "expected #{action} to be disallowed" }
               end
             end
           end
@@ -471,24 +453,22 @@ describe Gitlab::GitAccess do
 
     # Run permission checks for a group
     def self.run_group_permission_checks(permissions_matrix)
-      permissions_matrix.keys.each do |role|
-        describe "#{role} access" do
-          before do
-            project.project_group_links.create(
-              group: group, group_access: Gitlab::Access.sym_options[role]
-            )
-          end
+      permissions_matrix.each_pair do |role, matrix|
+        it "has the correct permissions for group #{role}s" do
+          project
+            .project_group_links
+            .create(group: group, group_access: Gitlab::Access.sym_options[role])
 
-          permissions_matrix[role].each do |action, allowed|
-            context action.to_s do
-              subject { access.send(:check_push_access!, changes[action]) }
+          aggregate_failures do
+            matrix.each do |action, allowed|
+              check = -> { access.send(:check_push_access!, changes[action]) }
 
-              it do
-                if allowed
-                  expect { subject }.not_to raise_error
-                else
-                  expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError)
-                end
+              if allowed
+                expect(&check).not_to raise_error,
+                  -> { "expected #{action} to be allowed" }
+              else
+                expect(&check).to raise_error(Gitlab::GitAccess::UnauthorizedError),
+                  -> { "expected #{action} to be disallowed" }
               end
             end
           end
@@ -719,10 +699,11 @@ describe Gitlab::GitAccess do
         allow(License).to receive(:block_changes?).and_return(true)
       end
 
-      # All permissions are `false`
-      permissions_matrix = Hash.new(Hash.new(false))
+      # Only check admin; if an admin can't do it, other roles can't either
+      matrix = permissions_matrix[:admin].dup
+      matrix.each { |key, _| matrix[key] = false }
 
-      run_permission_checks(permissions_matrix)
+      run_permission_checks(admin: matrix)
     end
 
     context "when in a secondary gitlab geo node" do
@@ -732,38 +713,39 @@ describe Gitlab::GitAccess do
         allow(Gitlab::Geo).to receive(:secondary?) { true }
       end
 
-      # All permissions are `false`
-      permissions_matrix = Hash.new(Hash.new(false))
+      # Only check admin; if an admin can't do it, other roles can't either
+      matrix = permissions_matrix[:admin].dup
+      matrix.each { |key, _| matrix[key] = false }
 
-      run_permission_checks(permissions_matrix)
+      run_permission_checks(admin: matrix)
     end
 
     describe "push_rule_check" do
-      before do
-        project.team << [user, :developer]
+      let(:start_sha) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:end_sha)   { '570e7b2abdd848b95f2f578043fc23bd6f6fd24d' }
 
-        allow(project.repository).to receive(:new_commits).and_return(
-          project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
-        )
+      before do
+        project.add_developer(user)
+
+        allow(project.repository).to receive(:new_commits)
+          .and_return(project.repository.commits_between(start_sha, end_sha))
       end
 
       describe "author email check" do
         it 'returns true' do
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
 
         it 'returns false' do
-          project.create_push_rule
-          project.push_rule.update(commit_message_regex: "@only.com")
+          project.create_push_rule(commit_message_regex: "@only.com")
 
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
 
         it 'returns true for tags' do
-          project.create_push_rule
-          project.push_rule.update(commit_message_regex: "@only.com")
+          project.create_push_rule(commit_message_regex: "@only.com")
 
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/tags/v1') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/tags/v1") }.not_to raise_error
         end
 
         it 'allows githook for new branch with an old bad commit' do
@@ -772,11 +754,10 @@ describe Gitlab::GitAccess do
           allow(bad_commit).to receive(:refs).and_return([ref_object])
           allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
-          project.create_push_rule
-          project.push_rule.update(commit_message_regex: "Change some files")
+          project.create_push_rule(commit_message_regex: "Change some files")
 
           # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new-branch") }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{Gitlab::Git::BLANK_SHA} #{end_sha} refs/heads/new-branch") }.not_to raise_error
         end
 
         it 'allows githook for any change with an old bad commit' do
@@ -785,11 +766,10 @@ describe Gitlab::GitAccess do
           allow(bad_commit).to receive(:refs).and_return([ref_object])
           allow(project.repository).to receive(:commits_between).and_return([bad_commit])
 
-          project.create_push_rule
-          project.push_rule.update(commit_message_regex: "Change some files")
+          project.create_push_rule(commit_message_regex: "Change some files")
 
           # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
 
         it 'does not allow any change from Web UI with bad commit' do
@@ -800,78 +780,76 @@ describe Gitlab::GitAccess do
           allow(project.repository).to receive(:commits_between).and_return([bad_commit])
           allow(project.repository).to receive(:new_commits).and_return([bad_commit])
 
-          project.create_push_rule
-          project.push_rule.update(commit_message_regex: "Change some files")
+          project.create_push_rule(commit_message_regex: "Change some files")
 
           # push to new branch, so use a blank old rev and new ref
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
       end
 
       describe "member_check" do
         before do
-          project.create_push_rule
-          project.push_rule.update(member_check: true)
+          project.create_push_rule(member_check: true)
         end
 
         it 'returns false for non-member user' do
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
 
         it 'returns true if committer is a gitlab member' do
           create(:user, email: 'dmitriy.zaporozhets@gmail.com')
 
-          expect { access.send(:check_push_access!, '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
       end
 
       describe "file names check" do
+        let(:start_sha) { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
+        let(:end_sha)   { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
+
         before do
-          allow(project.repository).to receive(:new_commits).and_return(
-            project.repository.commits_between('913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
-          )
+          allow(project.repository).to receive(:new_commits)
+            .and_return(project.repository.commits_between(start_sha, end_sha))
         end
 
         it 'returns false when filename is prohibited' do
-          project.create_push_rule
-          project.push_rule.update(file_name_regex: "jpg$")
+          project.create_push_rule(file_name_regex: "jpg$")
 
-          expect { access.send(:check_push_access!, '913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
 
         it 'returns true if file name is allowed' do
-          project.create_push_rule
-          project.push_rule.update(file_name_regex: "exe$")
+          project.create_push_rule(file_name_regex: "exe$")
 
-          expect { access.send(:check_push_access!, '913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
       end
 
       describe "max file size check" do
+        let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+        let(:end_sha)   { '913c66a37b4a45b9769037c55c2d238bd0942d2e' }
+
         before do
           allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
         end
 
         it "returns false when size is too large" do
-          project.create_push_rule
-          project.push_rule.update(max_file_size: 1)
+          project.create_push_rule(max_file_size: 1)
 
-          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
 
         it "returns true when size is allowed" do
-          project.create_push_rule
-          project.push_rule.update(max_file_size: 2)
+          project.create_push_rule(max_file_size: 2)
 
-          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
 
         it "returns true when size is nil" do
           allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
-          project.create_push_rule
-          project.push_rule.update(max_file_size: 2)
+          project.create_push_rule(max_file_size: 2)
 
-          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
       end
 
@@ -883,13 +861,13 @@ describe Gitlab::GitAccess do
         it 'returns false when blob is too big' do
           allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(100.megabytes.to_i)
 
-          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.to raise_error(described_class::UnauthorizedError)
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.to raise_error(described_class::UnauthorizedError)
         end
 
         it 'returns true when blob is just right' do
           allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(2.megabytes.to_i)
 
-          expect { access.send(:check_push_access!, 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master') }.not_to raise_error
+          expect { access.send(:check_push_access!, "#{start_sha} #{end_sha} refs/heads/master") }.not_to raise_error
         end
       end
     end
@@ -903,26 +881,26 @@ describe Gitlab::GitAccess do
         project.team << [user, :reporter]
       end
 
-      it { expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.') }
+      it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
     end
 
     context 'when unauthorized' do
       context 'to public project' do
         let(:project) { create(:project, :public, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.') }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
       end
 
       context 'to internal project' do
         let(:project) { create(:project, :internal, :repository) }
 
-        it { expect { push_access_check }.to raise_unauthorized('You are not allowed to upload code for this project.') }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
       end
 
       context 'to private project' do
         let(:project) { create(:project, :private, :repository) }
 
-        it { expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+        it { expect { push_access_check }.to raise_not_found }
       end
     end
   end
@@ -931,7 +909,7 @@ describe Gitlab::GitAccess do
     let(:project) { create(:project, :repository, :read_only_repository) }
 
     it 'denies push access' do
-      project.team << [user, :master]
+      project.add_master(user)
 
       expect { push_access_check }.to raise_unauthorized('The repository is temporarily read-only. Please try again later.')
     end
@@ -956,19 +934,19 @@ describe Gitlab::GitAccess do
         context 'to public project' do
           let(:project) { create(:project, :public, :repository) }
 
-          it { expect { push_access_check }.to raise_unauthorized('This deploy key does not have write access to this project.') }
+          it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
         end
 
         context 'to internal project' do
           let(:project) { create(:project, :internal, :repository) }
 
-          it { expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+          it { expect { push_access_check }.to raise_not_found }
         end
 
         context 'to private project' do
           let(:project) { create(:project, :private, :repository) }
 
-          it { expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+          it { expect { push_access_check }.to raise_not_found }
         end
       end
     end
@@ -981,26 +959,26 @@ describe Gitlab::GitAccess do
           key.projects << project
         end
 
-        it { expect { push_access_check }.to raise_unauthorized('This deploy key does not have write access to this project.') }
+        it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
       end
 
       context 'when unauthorized' do
         context 'to public project' do
           let(:project) { create(:project, :public, :repository) }
 
-          it { expect { push_access_check }.to raise_unauthorized('This deploy key does not have write access to this project.') }
+          it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:deploy_key_upload]) }
         end
 
         context 'to internal project' do
           let(:project) { create(:project, :internal, :repository) }
 
-          it { expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+          it { expect { push_access_check }.to raise_not_found }
         end
 
         context 'to private project' do
           let(:project) { create(:project, :private, :repository) }
 
-          it { expect { push_access_check }.to raise_not_found('The project you were looking for could not be found.') }
+          it { expect { push_access_check }.to raise_not_found }
         end
       end
     end
@@ -1012,8 +990,9 @@ describe Gitlab::GitAccess do
     raise_error(Gitlab::GitAccess::UnauthorizedError, message)
   end
 
-  def raise_not_found(message)
-    raise_error(Gitlab::GitAccess::NotFoundError, message)
+  def raise_not_found
+    raise_error(Gitlab::GitAccess::NotFoundError,
+                Gitlab::GitAccess::ERROR_MESSAGES[:project_not_found])
   end
 
   def build_authentication_abilities

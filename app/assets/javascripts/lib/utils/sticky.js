@@ -1,7 +1,7 @@
 export const isSticky = (el, scrollY, stickyTop) => {
   const top = el.offsetTop - scrollY;
 
-  if (top === stickyTop) {
+  if (top <= stickyTop) {
     el.classList.add('is-stuck');
   } else {
     el.classList.remove('is-stuck');

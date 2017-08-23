@@ -125,6 +125,10 @@ feature 'New project' do
         expect(git_import_instructions).to be_visible
         expect(git_import_instructions).to have_content 'Git repository URL'
       end
+
+      it 'shows mirror repository checkbox enabled', :js do
+        expect(page).to have_unchecked_field('Mirror repository', disabled: false)
+      end
     end
 
     context 'from GitHub' do

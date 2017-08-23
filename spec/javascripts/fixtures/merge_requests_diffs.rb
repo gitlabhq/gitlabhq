@@ -25,7 +25,7 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     clean_frontend_fixtures('merge_request_diffs/')
   end
 
-  before(:each) do
+  before do
     sign_in(admin)
   end
 

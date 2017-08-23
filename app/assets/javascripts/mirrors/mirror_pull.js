@@ -154,7 +154,7 @@ export default class MirrorPull {
         // Show SSH public key container and fill in public key
         this.toggleAuthWell(selectedAuthType);
         this.toggleSSHAuthWellMessage(true);
-        $sshPublicKey.text(res.import_data_attributes.ssh_public_key);
+        this.setSSHPublicKey(res.import_data_attributes.ssh_public_key);
       })
       .fail(() => {
         Flash('Something went wrong on our end.');
@@ -204,5 +204,13 @@ export default class MirrorPull {
     this.$wellSSHAuth.find('.js-ssh-public-key-present').toggleClass('hidden', !sshKeyPresent);
     this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key').toggleClass('hidden', !sshKeyPresent);
     this.$wellSSHAuth.find('.js-ssh-public-key-pending').toggleClass('hidden', sshKeyPresent);
+  }
+
+  /**
+   * Sets SSH Public key to Clipboard button and shows it on UI.
+   */
+  setSSHPublicKey(sshPublicKey) {
+    this.$sshPublicKeyWrap.find('.ssh-public-key').text(sshPublicKey);
+    this.$sshPublicKeyWrap.find('.btn-copy-ssh-public-key').attr('data-clipboard-text', sshPublicKey);
   }
 }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge Request filtering by Labels', js: true do
+feature 'Merge Request filtering by Labels', :js do
   include FilteredSearchHelpers
   include MergeRequestHelpers
 
@@ -12,9 +12,9 @@ feature 'Merge Request filtering by Labels', js: true do
   let!(:feature) { create(:label, project: project, title: 'feature') }
   let!(:enhancement) { create(:label, project: project, title: 'enhancement') }
 
-  let!(:mr1) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "bugfix1") }
-  let!(:mr2) { create(:merge_request, title: "Bugfix2", source_project: project, target_project: project, source_branch: "bugfix2") }
-  let!(:mr3) { create(:merge_request, title: "Feature1", source_project: project, target_project: project, source_branch: "feature1") }
+  let!(:mr1) { create(:merge_request, title: "Bugfix1", source_project: project, target_project: project, source_branch: "fix") }
+  let!(:mr2) { create(:merge_request, title: "Bugfix2", source_project: project, target_project: project, source_branch: "wip") }
+  let!(:mr3) { create(:merge_request, title: "Feature1", source_project: project, target_project: project, source_branch: "improve/awesome") }
 
   before do
     mr1.labels << bug
@@ -25,7 +25,7 @@ feature 'Merge Request filtering by Labels', js: true do
     mr3.title = "Feature1"
     mr3.labels << feature
 
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
 
     visit project_merge_requests_path(project)
