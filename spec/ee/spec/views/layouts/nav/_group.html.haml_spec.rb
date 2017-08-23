@@ -14,13 +14,19 @@ describe 'layouts/nav/_group' do
       expect(rendered).not_to have_text 'Contribution Analytics'
     end
 
-    it 'is visible when there is no valid license but we show promotions' do
-      stub_licensed_features(contribution_analytics: false)
-      let!(:license) { nil }
+    context 'no license installed' do
+      before do
+        allow(License).to receive(:current).and_return(nil)
+        stub_application_setting(check_namespace_plan: false)
+      end
 
-      render
+      it 'is visible when there is no valid license but we show promotions' do
+        stub_licensed_features(contribution_analytics: false)
 
-      expect(rendered).to have_text 'Contribution Analytics'
+        render
+
+        expect(rendered).to have_text 'Contribution Analytics'
+      end
     end
 
     it 'is visible' do

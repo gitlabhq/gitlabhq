@@ -31,7 +31,8 @@ feature 'Projects > Audit Events', :js do
   context 'unlicensed but we show promotions' do
     before do
       stub_licensed_features(audit_events: false)
-      let!(:license) { nil }
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
     end
 
     it 'returns 404' do

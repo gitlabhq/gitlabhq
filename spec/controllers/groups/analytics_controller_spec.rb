@@ -46,13 +46,20 @@ describe Groups::AnalyticsController do
     expect(response).to have_http_status(404)
   end
 
-  it 'returns page when feature is not available and we show promotions' do
-    stub_licensed_features(contribution_analytics: false)
-    let!(:license) { nil }
+  context 'unlicensed but we show promotions' do
+    before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+    end
 
-    get :show, group_id: group.path
+    it 'returns page when feature is not available and we show promotions' do
+      stub_licensed_features(contribution_analytics: false)
+      let!(:license) { nil }
 
-    expect(response).to have_http_status(200)
+      get :show, group_id: group.path
+
+      expect(response).to have_http_status(200)
+    end
   end
 
   it 'sets instance variables properly' do
