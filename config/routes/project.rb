@@ -272,7 +272,7 @@ constraints(ProjectUrlConstrainer.new) do
       namespace :registry do
         resources :repository, only: [] do
           resources :tags, only: [:destroy],
-                           constraints: { id: Gitlab::Regex.container_registry_reference_regex }
+                           constraints: { id: Gitlab::Regex.container_registry_tag_regex }
         end
       end
 

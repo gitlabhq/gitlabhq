@@ -120,7 +120,8 @@ gitlab_rails['ldap_servers'] = {
   'host' =>  'ad.example.org',
   'port' => 636,
   'uid' => 'sAMAccountName',
-  'method' => 'ssl',
+  'encryption' => 'simple_tls',
+  'verify_certificates' => true,
   'bind_dn' => 'CN=GitLabSRV,CN=Users,DC=GitLab,DC=org',
   'password' => 'Password1',
   'active_directory' => true,
@@ -255,7 +256,7 @@ If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab 
 
 ## LDAP extended features on GitLab EE
 
-With [GitLab Enterprise Edition (EE)](https://about.gitlab.com/giltab-ee/), besides everything we just described, you'll
+With [GitLab Enterprise Edition (EE)](https://about.gitlab.com/gitlab-ee/), besides everything we just described, you'll
 have extended functionalities with LDAP, such as:
 
 - Group sync

@@ -1,5 +1,8 @@
 - page_title "Members"
 
+- if show_new_nav?
+  - add_to_breadcrumbs("Settings", edit_project_path(@project))
+
 .row.prepend-top-default
   .col-lg-12
     %h4

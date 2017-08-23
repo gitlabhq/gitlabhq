@@ -15,10 +15,10 @@ msgstr ""
 "X-Generator: Zanata 3.9.6\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-msgid "%d additional commit has been omitted to prevent performance issues."
+msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural ""
-"%d additional commits have been omitted to prevent performance issues."
-msgstr[0] "为提高页面加载速度及性能，已省略了 %d 次提交。"
+"%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "为提高页面加载速度及性能，已省略了 %s 次提交。"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -26,6 +26,14 @@ msgstr[0] "%d 次提交"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交于 %{commit_timeago}"
+
+msgid "1 pipeline"
+msgid_plural "%d pipelines"
+msgstr[0] "1 条流水线"
+msgstr[1] "%d 条流水线"
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "持续集成数据图"
 
 msgid "About auto deploy"
 msgstr "关于自动部署"
@@ -223,6 +231,14 @@ msgstr "复制提交 SHA 的值到剪贴板"
 msgid "Create New Directory"
 msgstr "创建新目录"
 
+<<<<<<< HEAD
+=======
+msgid ""
+"Create a personal access token on your account to pull or push via "
+"%{protocol}."
+msgstr "在帐户上创建个人访问令牌，以通过 %{protocol} 来拉取或推送。"
+
+>>>>>>> 5a9554bb33... Merge branch 'bvl-fix-invalid-po-files' into 'master'
 msgid "Create directory"
 msgstr "创建目录"
 
@@ -579,6 +595,12 @@ msgstr "所有"
 msgid "PipelineSchedules|Inactive"
 msgstr "未启用"
 
+msgid "PipelineSchedules|Input variable key"
+msgstr "输入变量名"
+
+msgid "PipelineSchedules|Input variable value"
+msgstr "输入变量值"
+
 msgid "PipelineSchedules|Next Run"
 msgstr "下次运行时间"
 
@@ -588,11 +610,17 @@ msgstr "无"
 msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr "为此流水线提供简短描述"
 
+msgid "PipelineSchedules|Remove variable row"
+msgstr "删除变量"
+
 msgid "PipelineSchedules|Take ownership"
-msgstr "取得所有者"
+msgstr "取得所有权"
 
 msgid "PipelineSchedules|Target"
 msgstr "目标"
+
+msgid "PipelineSchedules|Variables"
+msgstr "变量"
 
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr "自定义"
@@ -1032,12 +1060,18 @@ msgid "Withdraw Access Request"
 msgstr "取消权限申请"
 
 msgid ""
+"You are going to remove %{group_name}.\n"
+"Removed groups CANNOT be restored!\n"
+"Are you ABSOLUTELY sure?"
+msgstr "即将删除 %{group_name}。\n"
+"已删除的群组无法恢复！\n"
+"确定继续吗？"
+
+msgid ""
 "You are going to remove %{project_name_with_namespace}.\n"
 "Removed project CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
-msgstr "即将要删除 %{project_name_with_namespace}。\n"
-"已删除的项目无法恢复！\n"
-"确定继续吗？"
+msgstr "即将要删除 %{project_name_with_namespace}。已删除的项目无法恢复！确定继续吗？"
 
 msgid ""
 "You are going to remove the fork relationship to source project "
@@ -1105,4 +1139,3 @@ msgstr "通知邮件"
 msgid "parent"
 msgid_plural "parents"
 msgstr[0] "父级"
-

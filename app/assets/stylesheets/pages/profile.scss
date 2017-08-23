@@ -376,3 +376,18 @@ table.u2f-registrations {
     }
   }
 }
+
+.nav-wip {
+  border: 1px solid $blue-500;
+  background: $blue-25;
+  padding: $gl-padding;
+  margin-bottom: $gl-padding;
+
+  a {
+    color: $blue-500;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

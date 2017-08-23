@@ -13,7 +13,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq("/uploads/system/group/avatar/#{group.id}/dk.png")
+        expect(groups.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
       end
 
       it 'should return an url for the avatar with relative url' do
@@ -24,7 +24,7 @@ describe Projects::ParticipantsService, services: true do
         groups = participants.groups
 
         expect(groups.size).to eq 1
-        expect(groups.first[:avatar_url]).to eq("/gitlab/uploads/system/group/avatar/#{group.id}/dk.png")
+        expect(groups.first[:avatar_url]).to eq("/gitlab/uploads/-/system/group/avatar/#{group.id}/dk.png")
       end
     end
   end

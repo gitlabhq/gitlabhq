@@ -22,13 +22,33 @@ module Gitlab
     end
 
     def scan(text)
-      scan_regexp.scan(text).map do |match|
-        if regexp.number_of_capturing_groups == 0
-          match.first
-        else
-          match
-        end
+      text = text.dup # modified in-place
+      results = []
+
+      loop do
+        match = scan_regexp.match(text)
+        break unless match
+
+        # Ruby scan returns empty strings, not nil
+        groups = match.to_a.map(&:to_s)
+
+        results << 
+          if regexp.number_of_capturing_groups.zero?
+            groups[0]
+          else
+            groups[1..-1]
+          end
+
+        matchsize = match.end(0)
+
+        # No further matches
+        break unless matchsize.present?
+
+        text.slice!(0, matchsize)
+        break unless text.present?
       end
+
+      results
     end
 
     def replace(text, rewrite)
@@ -43,7 +63,7 @@ module Gitlab
     # groups, so work around it
     def scan_regexp
       @scan_regexp ||=
-        if regexp.number_of_capturing_groups == 0
+        if regexp.number_of_capturing_groups.zero?
           RE2::Regexp.new('(' + regexp.source + ')')
         else
           regexp

@@ -32,10 +32,10 @@ module IssuableCollections
 
   def filter_params
     set_sort_order_from_cookie
-    set_default_scope
     set_default_state
 
-    @filter_params = params.dup
+    # Skip irrelevant Rails routing params
+    @filter_params = params.dup.except(:controller, :action, :namespace_id)
     @filter_params[:sort] ||= default_sort_order
 
     @sort = @filter_params[:sort]
@@ -53,10 +53,6 @@ module IssuableCollections
     end
 
     @filter_params
-  end
-
-  def set_default_scope
-    params[:scope] = 'all' if params[:scope].blank?
   end
 
   def set_default_state

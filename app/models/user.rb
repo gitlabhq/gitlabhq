@@ -142,6 +142,8 @@ class User < ActiveRecord::Base
     uniqueness: { case_sensitive: false }
 
   validate :namespace_uniq, if: :username_changed?
+  validate :namespace_move_dir_allowed, if: :username_changed?
+
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :unique_email, if: :email_changed?
   validate :owns_notification_email, if: :notification_email_changed?
@@ -314,7 +316,7 @@ class User < ActiveRecord::Base
         table[:name].matches(pattern)
           .or(table[:email].matches(pattern))
           .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, id: :desc)
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -385,9 +387,11 @@ class User < ActiveRecord::Base
     # Return (create if necessary) the ghost user. The ghost user
     # owns records previously belonging to deleted users.
     def ghost
-      unique_internal(where(ghost: true), 'ghost', 'ghost%s@example.com') do |u|
+      email = 'ghost%s@example.com'
+      unique_internal(where(ghost: true), 'ghost', email) do |u|
         u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
         u.name = 'Ghost User'
+        u.notification_email = email
       end
     end
   end
@@ -475,6 +479,12 @@ class User < ActiveRecord::Base
     existing_namespace = Namespace.by_path(username)
     if existing_namespace && existing_namespace != namespace
       errors.add(:username, 'has already been taken')
+    end
+  end
+
+  def namespace_move_dir_allowed
+    if namespace&.any_project_has_container_registry_tags?
+      errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
     end
   end
 

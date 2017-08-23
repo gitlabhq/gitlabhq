@@ -1,4 +1,0 @@
----
-title: Don't mark empty MRs as merged on push to the target branch
-merge_request:
-author:

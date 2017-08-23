@@ -44,7 +44,7 @@ class GlobalPolicy < BasePolicy
     prevent :log_in
   end
 
-  rule { ~restricted_public_level }.policy do
+  rule { ~(anonymous & restricted_public_level) }.policy do
     enable :read_users_list
   end
 end

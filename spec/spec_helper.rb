@@ -3,7 +3,6 @@ SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
-# ENV['prometheus_multiproc_dir'] = 'tmp/prometheus_multiproc_dir_test'
 
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'

@@ -67,13 +67,14 @@ module Gitlab
 
         def extract_coverage(regex)
           return unless valid?
-          return unless regex
+          return unless regex.present?
 
           regex = Gitlab::UntrustedRegexp.new(regex)
 
           match = ""
 
           reverse_line do |line|
+            line.chomp!
             matches = regex.scan(line)
             next unless matches.is_a?(Array)
             next if matches.empty?

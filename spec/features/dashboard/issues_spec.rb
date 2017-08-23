@@ -62,7 +62,7 @@ RSpec.describe 'Dashboard Issues', feature: true do
 
     it 'state filter tabs work' do
       find('#state-closed').click
-      expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, scope: 'all', state: 'closed'), url: true)
+      expect(page).to have_current_path(issues_dashboard_url(assignee_id: current_user.id, state: 'closed'), url: true)
     end
 
     it_behaves_like "it has an RSS button with current_user's RSS token"
@@ -77,6 +77,28 @@ RSpec.describe 'Dashboard Issues', feature: true do
         expect(page).to have_content(project.name_with_namespace)
         expect(page).not_to have_content(project_with_issues_disabled.name_with_namespace)
       end
+    end
+
+    it 'shows the new issue page', js: true do
+      original_defaults = Gitlab::Application.routes.default_url_options
+
+      Gitlab::Application.routes.default_url_options = {
+        host: Capybara.current_session.server.host,
+        port: Capybara.current_session.server.port,
+        protocol: 'http'
+      }
+
+      find('.new-project-item-select-button').trigger('click')
+      wait_for_requests
+      find('.select2-results li').click
+
+      expect(page).to have_current_path("/#{project.path_with_namespace}/issues/new")
+
+      page.within('#content-body') do
+        expect(page).to have_selector('.issue-form')
+      end
+
+      Gitlab::Application.routes.default_url_options = original_defaults
     end
   end
 end

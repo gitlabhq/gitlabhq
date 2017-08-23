@@ -1,9 +1,14 @@
+- @hide_top_links = true
 - page_title "Merge Requests"
 - header_title  "Merge Requests", merge_requests_dashboard_path(assignee_id: current_user.id)
 
+- if show_new_nav?
+  - content_for :breadcrumbs_extra do
+    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request", with_feature_enabled: 'merge_requests'
+
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests
-  .nav-controls
+  .nav-controls{ class: ("visible-xs" if show_new_nav?) }
     = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request", with_feature_enabled: 'merge_requests'
 
 = render 'shared/issuable/filter', type: :merge_requests

@@ -236,6 +236,8 @@ ul.content-list {
 ul.controls {
   float: right;
   list-style: none;
+  display: flex;
+  align-items: center;
 
   .btn {
     padding: 10px 14px;
@@ -258,6 +260,12 @@ ul.controls {
         margin-bottom: 0;
       }
     }
+  }
+
+  .issuable-pipeline-broken a,
+  .issuable-pipeline-status a,
+  .author_link {
+    display: flex;
   }
 }
 

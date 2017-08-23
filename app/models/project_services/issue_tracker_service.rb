@@ -20,8 +20,8 @@ class IssueTrackerService < Service
     self.issues_url.gsub(':id', iid.to_s)
   end
 
-  def project_path
-    read_attribute(:project_url)
+  def issue_tracker_path
+    project_url
   end
 
   def new_issue_path

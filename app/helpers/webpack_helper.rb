@@ -34,6 +34,8 @@ module WebpackHelper
   end
 
   def webpack_public_path
-    "#{webpack_public_host}/#{Rails.application.config.webpack.public_path}/"
+    relative_path = Rails.application.config.relative_url_root
+    webpack_path = Rails.application.config.webpack.public_path
+    File.join(webpack_public_host.to_s, relative_path.to_s, webpack_path.to_s, '')
   end
 end

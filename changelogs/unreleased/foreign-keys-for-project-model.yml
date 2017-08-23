@@ -1,4 +1,0 @@
----
-title: Speed up project removals by adding foreign keys with cascading deletes to various tables
-merge_request:
-author:

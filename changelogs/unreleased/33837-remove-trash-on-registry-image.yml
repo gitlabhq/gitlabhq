@@ -1,4 +1,0 @@
----
-title: Remove registry image delete button if user cant delete it
-merge_request: 12317
-author: Ivan Chernov

@@ -70,6 +70,17 @@ feature 'Pipeline Schedules', :feature, js: true do
           expect(first('.branch-name-cell').text).to eq('')
         end
       end
+
+      context 'when ref is empty' do
+        before do
+          pipeline_schedule.update_attribute(:ref, '')
+          visit_pipelines_schedules
+        end
+
+        it 'shows a list of the pipeline schedules with empty ref column' do
+          expect(first('.branch-name-cell').text).to eq('')
+        end
+      end
     end
 
     describe 'POST /projects/pipeline_schedules/new' do
@@ -119,6 +130,19 @@ feature 'Pipeline Schedules', :feature, js: true do
       context 'when ref is nil' do
         before do
           pipeline_schedule.update_attribute(:ref, nil)
+          edit_pipeline_schedule
+        end
+
+        it 'shows the pipeline schedule with default ref' do
+          page.within('.js-target-branch-dropdown') do
+            expect(first('.dropdown-toggle-text').text).to eq('master')
+          end
+        end
+      end
+
+      context 'when ref is empty' do
+        before do
+          pipeline_schedule.update_attribute(:ref, '')
           edit_pipeline_schedule
         end
 
@@ -192,6 +216,25 @@ feature 'Pipeline Schedules', :feature, js: true do
         page.within('.pipeline-variable-list') do
           expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-key-input").value).to eq('')
           expect(find(".pipeline-variable-row:nth-child(1) .pipeline-variable-value-input").value).to eq('')
+        end
+      end
+    end
+
+    context 'when active is true and next_run_at is NULL' do
+      background do
+        create(:ci_pipeline_schedule, project: project, owner: user).tap do |pipeline_schedule|
+          pipeline_schedule.update_attribute(:cron, nil) # Consequently next_run_at will be nil
+        end
+      end
+
+      scenario 'user edit and recover the problematic pipeline schedule' do
+        visit_pipelines_schedules
+        find(".content-list .pipeline-schedule-table-row:nth-child(1) .btn-group a[title='Edit']").click
+        fill_in 'schedule_cron', with: '* 1 2 3 4'
+        click_button 'Save pipeline schedule'
+
+        page.within('.pipeline-schedule-table-row:nth-child(1)') do
+          expect(page).to have_css(".next-run-cell time")
         end
       end
     end

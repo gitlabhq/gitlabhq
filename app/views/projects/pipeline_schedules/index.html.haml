@@ -1,9 +1,18 @@
+- breadcrumb_title "Schedules"
+
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'schedules_index'
 
 - @no_container = true
 - page_title _("Pipeline Schedules")
+
+- if show_new_nav? && can?(current_user, :create_pipeline_schedule, @project)
+  - content_for :breadcrumbs_extra do
+    = link_to _('New schedule'), new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create'
+
+  - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
+
 = render "projects/pipelines/head"
 
 %div{ class: container_class }
@@ -13,7 +22,7 @@
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
     - if can?(current_user, :create_pipeline_schedule, @project)
-      .nav-controls
+      .nav-controls{ class: ("visible-xs" if show_new_nav?) }
         = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
           %span= _('New schedule')
 

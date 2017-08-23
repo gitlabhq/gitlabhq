@@ -597,7 +597,7 @@
 }
 
 // Dropdown button in mini pipeline graph
-.mini-pipeline-graph-dropdown-toggle {
+button.mini-pipeline-graph-dropdown-toggle {
   border-radius: 100px;
   background-color: $white-light;
   border-width: 1px;
@@ -608,6 +608,7 @@
   padding: 0;
   transition: all 0.2s linear;
   position: relative;
+  vertical-align: middle;
 
   > .fa.fa-caret-down {
     position: absolute;

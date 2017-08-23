@@ -19,15 +19,21 @@ module Gitlab
       "It must start with letter, digit, emoji or '_'."
     end
 
-    def container_registry_reference_regex
-      Gitlab::PathRegex.git_reference_regex
-    end
-
     ##
-    # Docker Distribution Registry 2.4.1 repository name rules
+    # Docker Distribution Registry repository / tag name rules
+    #
+    # See https://github.com/docker/distribution/blob/master/reference/regexp.go.
     #
     def container_repository_name_regex
       @container_repository_regex ||= %r{\A[a-z0-9]+(?:[-._/][a-z0-9]+)*\Z}
+    end
+
+    ##
+    # We do not use regexp anchors here because these are not allowed when
+    # used as a routing constraint.
+    #
+    def container_registry_tag_regex
+      @container_registry_tag_regex ||= /[\w][\w.-]{0,127}/
     end
 
     def environment_name_regex_chars

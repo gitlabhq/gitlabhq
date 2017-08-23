@@ -1,4 +1,0 @@
----
-title: Prevent bad data being added to application settings when Redis is unavailable
-merge_request: 12750
-author:

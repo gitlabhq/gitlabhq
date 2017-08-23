@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::HealthChecks::FsShardsCheck do
   def command_exists?(command)
     _, status = Gitlab::Popen.popen(%W{ #{command} 1 echo })
-    status == 0
+    status.zero?
   rescue Errno::ENOENT
     false
   end
@@ -64,9 +64,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it 'cleans up files used for testing' do
           expect(described_class).to receive(:storage_write_test).with(any_args).and_call_original
 
-          subject
-
-          expect(Dir.entries(tmp_dir).count).to eq(2)
+          expect { subject }.not_to change(Dir.entries(tmp_dir), :count)
         end
 
         context 'read test fails' do
@@ -88,8 +86,6 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     end
 
     describe '#metrics' do
-      subject { described_class.metrics }
-
       context 'storage points to not existing folder' do
         let(:storages_paths) do
           {
@@ -104,14 +100,15 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         end
 
         it 'provides metrics' do
-          expect(subject).to all(have_attributes(labels: { shard: :default }))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+          metrics = described_class.metrics
 
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
         end
       end
 
@@ -121,15 +118,19 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         end
 
         it 'provides metrics' do
-          expect(subject).to all(have_attributes(labels: { shard: :default }))
+          metrics = described_class.metrics
 
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 1))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
+          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+          expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
+        end
 
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-          expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        it 'cleans up files used for metrics' do
+          expect { described_class.metrics }.not_to change(Dir.entries(tmp_dir), :count)
         end
       end
     end
@@ -150,18 +151,16 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     end
 
     describe '#metrics' do
-      subject { described_class.metrics }
-
       it 'provides metrics' do
-        expect(subject).to all(have_attributes(labels: { shard: :default }))
+        metrics = described_class.metrics
 
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
-
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_access_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_read_latency, value: be >= 0))
-        expect(subject).to include(an_object_having_attributes(name: :filesystem_write_latency, value: be >= 0))
+        expect(metrics).to all(have_attributes(labels: { shard: :default }))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_access_latency_seconds, value: be >= 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_read_latency_seconds, value: be >= 0))
+        expect(metrics).to include(an_object_having_attributes(name: :filesystem_write_latency_seconds, value: be >= 0))
       end
     end
   end

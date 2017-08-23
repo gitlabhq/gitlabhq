@@ -1,5 +1,0 @@
----
-title: Enable support for webpack code-splitting by dynamically setting publicPath
-  at runtime
-merge_request: 12032
-author:

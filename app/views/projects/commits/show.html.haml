@@ -1,8 +1,12 @@
 - @no_container = true
+- breadcrumb_title _("Commits")
 
 - page_title _("Commits"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
+
+- if show_new_nav?
+  - add_to_breadcrumbs("Repository", project_tree_path(@project))
 
 = content_for :sub_nav do
   = render "head"

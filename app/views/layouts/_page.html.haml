@@ -15,7 +15,8 @@
       - if show_new_nav?
         - if content_for?(:new_global_flash)
           = yield :new_global_flash
-        = render "layouts/nav/breadcrumbs"
+        - unless @hide_breadcrumbs
+          = render "layouts/nav/breadcrumbs"
       = render "layouts/flash"
       = yield :flash_message
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }

@@ -48,7 +48,11 @@ module GitlabRoutingHelper
   end
 
   def milestone_path(entity, *args)
-    project_milestone_path(entity.project, entity, *args)
+    if entity.is_group_milestone?
+      group_milestone_path(entity.group, entity, *args)
+    elsif entity.is_project_milestone?
+      project_milestone_path(entity.project, entity, *args)
+    end
   end
 
   def issue_url(entity, *args)
@@ -61,6 +65,14 @@ module GitlabRoutingHelper
 
   def pipeline_url(pipeline, *args)
     project_pipeline_url(pipeline.project, pipeline.id, *args)
+  end
+
+  def milestone_url(entity, *args)
+    if entity.is_group_milestone?
+      group_milestone_url(entity.group, entity, *args)
+    elsif entity.is_project_milestone?
+      project_milestone_url(entity.project, entity, *args)
+    end
   end
 
   def pipeline_job_url(pipeline, build, *args)

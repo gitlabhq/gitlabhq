@@ -98,7 +98,7 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(project).to receive(:owner).twice.and_return(user1)
+        expect(project).to receive(:owner).at_least(:once).and_return(user1)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])
@@ -109,7 +109,7 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(project.team).to receive(:members).twice.and_return([user1])
+        expect(project.team).to receive(:members).at_least(:once).and_return([user1])
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])
@@ -140,7 +140,7 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(project).to receive(:owner).twice.and_return(user1)
+        expect(project).to receive(:owner).at_least(:once).and_return(user1)
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])
@@ -151,7 +151,7 @@ describe Ability, lib: true do
         user2 = build(:user, external: true)
         users = [user1, user2]
 
-        expect(project.team).to receive(:members).twice.and_return([user1])
+        expect(project.team).to receive(:members).at_least(:once).and_return([user1])
 
         expect(described_class.users_that_can_read_project(users, project))
           .to eq([user1])

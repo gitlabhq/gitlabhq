@@ -2,7 +2,8 @@ module Gitlab
   module PerformanceBar
     include Gitlab::CurrentSettings
 
-    ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids'.freeze
+    ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'.freeze
+    EXPIRY_TIME = 5.minutes
 
     def self.enabled?(user = nil)
       return false unless user && allowed_group_id
@@ -15,7 +16,7 @@ module Gitlab
     end
 
     def self.allowed_user_ids
-      Rails.cache.fetch(ALLOWED_USER_IDS_KEY) do
+      Rails.cache.fetch(ALLOWED_USER_IDS_KEY, expires_in: EXPIRY_TIME) do
         group = Group.find_by_id(allowed_group_id)
 
         if group

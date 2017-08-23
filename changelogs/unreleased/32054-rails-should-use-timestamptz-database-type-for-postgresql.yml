@@ -1,4 +1,0 @@
----
-title: Add database helpers 'add_timestamps_with_timezone' and 'timestamps_with_timezone'
-merge_request: 11229
-author: @blackst0ne

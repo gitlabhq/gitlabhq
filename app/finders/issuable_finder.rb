@@ -20,9 +20,9 @@
 #
 class IssuableFinder
   include CreatedAtFilter
-  
+
   NONE = '0'.freeze
-  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page].freeze
+  IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   attr_accessor :current_user, :params
 
@@ -89,8 +89,14 @@ class IssuableFinder
     execute.find_by!(*params)
   end
 
-  def state_counter_cache_key(state)
-    Digest::SHA1.hexdigest(state_counter_cache_key_components(state).flatten.join('-'))
+  def state_counter_cache_key
+    cache_key(state_counter_cache_key_components)
+  end
+
+  def clear_caches!
+    state_counter_cache_key_components_permutations.each do |components|
+      Rails.cache.delete(cache_key(components))
+    end
   end
 
   def group
@@ -417,12 +423,19 @@ class IssuableFinder
     params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
   end
 
-  def state_counter_cache_key_components(state)
+  def state_counter_cache_key_components
     opts = params.with_indifferent_access
-    opts[:state] = state
     opts.except!(*IRRELEVANT_PARAMS_FOR_CACHE_KEY)
     opts.delete_if { |_, value| value.blank? }
 
     ['issuables_count', klass.to_ability_name, opts.sort]
+  end
+
+  def state_counter_cache_key_components_permutations
+    [state_counter_cache_key_components]
+  end
+
+  def cache_key(components)
+    Digest::SHA1.hexdigest(components.flatten.join('-'))
   end
 end

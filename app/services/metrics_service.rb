@@ -28,6 +28,6 @@ class MetricsService
   end
 
   def multiprocess_metrics_path
-    @multiprocess_metrics_path ||= Rails.root.join(ENV['prometheus_multiproc_dir']).freeze
+    ::Prometheus::Client.configuration.multiprocess_files_dir
   end
 end

@@ -75,13 +75,23 @@ class IssuesFinder < IssuableFinder
     current_user.blank? || for_counting || params[:for_counting]
   end
 
-  def state_counter_cache_key_components(state)
+  def state_counter_cache_key_components
     extra_components = [
       user_can_see_all_confidential_issues?,
       user_cannot_see_confidential_issues?(for_counting: true)
     ]
 
     super + extra_components
+  end
+
+  def state_counter_cache_key_components_permutations
+    # Ignore the last two, as we'll provide both options for them.
+    components = super.first[0..-3]
+
+    [
+      components + [false, true],
+      components + [true, false]
+    ]
   end
 
   def by_assignee(items)

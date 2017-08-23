@@ -1,5 +1,0 @@
----
-title: Detect if file that appears to be text in the first 1024 bytes is actually
-  binary afer loading all data
-merge_request:
-author:

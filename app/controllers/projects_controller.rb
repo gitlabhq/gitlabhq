@@ -50,10 +50,13 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
+
         format.html do
           redirect_to(edit_project_path(@project))
         end
       else
+        flash[:alert] = result[:message]
+
         format.html { render 'edit' }
       end
 
