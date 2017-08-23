@@ -140,13 +140,20 @@ describe('RepoCommitSection', () => {
 
   describe('methods', () => {
     describe('resetCommitState', () => {
-      it('should reset store vars and scroll to top', () => {
+      it('should reset store vars, calls setViewToPreview and scroll to top', () => {
         const vm = {
           submitCommitsLoading: true,
           changedFiles: new Array(10),
           commitMessage: 'commitMessage',
           editMode: true,
+          openedFiles: [{
+            changed: true,
+          }, {
+            changed: true,
+          }],
         };
+
+        spyOn(RepoStore, 'setViewToPreview');
 
         repoCommitSection.methods.resetCommitState.call(vm);
 
@@ -154,6 +161,9 @@ describe('RepoCommitSection', () => {
         expect(vm.changedFiles).toEqual([]);
         expect(vm.commitMessage).toEqual('');
         expect(vm.editMode).toEqual(false);
+        expect(vm.openedFiles[0].changed).toBeFalsy();
+        expect(vm.openedFiles[1].changed).toBeFalsy();
+        expect(RepoStore.setViewToPreview).toHaveBeenCalled();
       });
     });
   });
