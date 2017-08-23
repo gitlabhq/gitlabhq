@@ -3,7 +3,7 @@ import repoCommitSection from '~/repo/components/repo_commit_section.vue';
 import RepoStore from '~/repo/stores/repo_store';
 import RepoService from '~/repo/services/repo_service';
 
-fdescribe('RepoCommitSection', () => {
+describe('RepoCommitSection', () => {
   const branch = 'master';
   const projectUrl = 'projectUrl';
   const changedFiles = [{
