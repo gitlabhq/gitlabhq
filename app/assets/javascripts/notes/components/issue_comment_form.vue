@@ -123,6 +123,7 @@
             noteData.data.note.type = constants.DISCUSSION_NOTE;
           }
           this.isSubmitting = true;
+          this.note = ''; // Empty textarea while being requested. Repopulate in catch
 
           this.saveNote(noteData)
             .then((res) => {
@@ -148,11 +149,9 @@
             .catch(() => {
               this.isSubmitting = false;
               this.discard(false);
-              Flash(
-                'Your comment could not be submitted! Please check your network connection and try again.',
-                'alert',
-                $(this.$el),
-              );
+              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              Flash(msg, 'alert', $(this.$el));
+              this.note = noteData.data.note.note; // Restore textarea content.
               this.removePlaceholderNotes();
             });
         } else {
