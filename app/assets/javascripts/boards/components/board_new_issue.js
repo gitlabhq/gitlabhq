@@ -42,13 +42,6 @@ export default {
     },
   },
   methods: {
-    loadProjects() {
-      this.loading = true;
-      Api.groupProjects(this.groupId, {}, (projects) => {
-        this.projects = projects;
-        this.loading = false;
-      });
-    },
     submit(e) {
       e.preventDefault();
       if (this.title.trim() === '') return Promise.resolve();
@@ -104,8 +97,29 @@ export default {
         search: {
           fields: ['name_with_namespace'],
         },
-        data(term, callback) {
-          return Api.groupProjects(this.groupId, term, callback);
+        clicked: ({ $el, e }) => {
+          e.preventDefault();
+          this.selectedProject = {
+            id: $el.data('project-id'),
+            name: $el.data('project-name'),
+          };
+        },
+        selectable: true,
+        data: (term, callback) => {
+          this.loading = true;
+          return Api.groupProjects(this.groupId, term, (projects) => {
+            this.loading = false;
+            callback(projects);
+          });
+        },
+        renderRow(project) {
+          return `
+            <li>
+              <a href='#' class='dropdown-menu-link' data-project-id="${project.id}" data-project-name="${project.name}">
+                ${_.escape(project.name)}
+              </a>
+            </li>
+          `;
         },
         text: project => project.name,
       });
@@ -135,9 +149,8 @@ export default {
             :for="list.id + '-project'">
             Project
           </label>
-          <div class="dropdown">
+          <div ref="projectsDropdown" class="dropdown">
             <button
-              @click="loadProjects"
               class="dropdown-menu-toggle wide"
               type="button"
               data-toggle="dropdown"
@@ -146,18 +159,17 @@ export default {
               <i class="fa fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-              <loading-icon v-if="loading" />
-              <ul>
-                <li v-for="project in projects">
-                  <a
-                    href="#"
-                    role="button"
-                    :class="{ 'is-active': project.id == selectedProject.id }"
-                    @click.prevent="selectedProject = project">
-                    {{ project.name }}
-                  </a>
-                </li>
-              </ul>
+              <div class="dropdown-title">
+                <span>Projects</span>
+                <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
+                  <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
+                </button>
+              </div>
+              <div class="dropdown-input">
+                <input class="dropdown-input-field">
+              </div>
+              <div class="dropdown-content"></div>
+              <div class="dropdown-loading"></div>
             </div>
           </div>
         </template>
