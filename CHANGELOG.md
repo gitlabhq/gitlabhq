@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.1 (2017-08-23)
+
+- [FIXED] Fix merge request pipeline status when pipeline has errors. !13664
+- [FIXED] Commit rows would occasionally render with the wrong language.
+- [FIXED] Fix caching of future broadcast messages.
+- [FIXED] Only require Sidekiq throttling library when enabled, to reduce cache misses.
+- Raise Housekeeping timeout to 24 hours. !13719
+
 ## 9.5.0 (2017-08-22)
 
 - [FIXED] Fix timeouts when creating projects in groups with many members. !13508
