@@ -194,6 +194,16 @@ module Gitlab
         response.commit
       end
 
+      def patch(revision)
+        request = Gitaly::CommitPatchRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
+
+        response.sum(&:data)
+      end
+
       private
 
       def commit_diff_request_params(commit, options = {})
