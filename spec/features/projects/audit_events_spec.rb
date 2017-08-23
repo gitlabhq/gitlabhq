@@ -10,6 +10,44 @@ feature 'Projects > Audit Events', :js do
     sign_in(user)
   end
 
+  context 'unlicensed' do
+    before do
+      stub_licensed_features(audit_events: false)
+    end
+
+    it 'returns 404' do
+      visit project_audit_events_path(project)
+
+      expect(page.status_code).to eq(404)
+    end
+
+    it 'does not have Audit Events button in head nav bar' do
+      visit edit_project_path(project)
+
+      expect(page).not_to have_link('Audit Events')
+    end
+  end
+
+  context 'unlicensed but we show promotions' do
+    before do
+      stub_licensed_features(audit_events: false)
+      let!(:license) { nil }
+    end
+
+    it 'returns 404' do
+      visit project_audit_events_path(project)
+
+      expect(page.status_code).to eq(200)
+    end
+
+    it 'does not have Audit Events button in head nav bar' do
+      visit edit_project_path(project)
+
+      expect(page).to have_link('Audit Events')
+    end
+  end
+
+
   it 'has Audit Events button in head nav bar' do
     visit edit_project_path(project)
 

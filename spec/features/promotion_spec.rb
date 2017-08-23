@@ -25,7 +25,7 @@ describe 'Promotions', js: true do
   describe 'for project features in general on premise' do
     context 'no license installed' do
       before do
-        License.destroy_all
+        allow(License).to receive(:current).and_return(nil)
         stub_application_setting(check_namespace_plan: false)
         project.team << [user, :master]
       end
@@ -183,7 +183,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
-      expect(find('#promote_burndown_charts')).to have_content 'Improve milestone with Burndown Charts.'
+      expect(find('#promote_burndown_charts')).to have_content 'Improve milestones with Burndown Charts.'
     end
 
     it 'does not show when cookie is set' do

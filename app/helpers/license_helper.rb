@@ -75,8 +75,8 @@ module LicenseHelper
     end
   end
 
-  def show_promotions?
-    if current_user
+  def show_promotions?(selected_user = current_user)
+    if selected_user
       if current_application_settings.should_check_namespace_plan?
         true
       else

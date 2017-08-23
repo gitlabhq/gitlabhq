@@ -2,7 +2,7 @@ class Groups::AnalyticsController < Groups::ApplicationController
   include LicenseHelper
 
   before_action :group
-  before_action :check_contribution_analytics_available! && !LicenseHelper.show_promotions?
+  before_action :check_contribution_analytics_available!
 
   layout 'group'
 
@@ -31,5 +31,9 @@ class Groups::AnalyticsController < Groups::ApplicationController
 
   def user_ids
     @user_ids ||= @users.map(&:id)
+  end
+
+  def check_contribution_analytics_available!
+    render_404 unless (@group.feature_available?(:contribution_analytics) || LicenseHelper.show_promotions?(current_user))
   end
 end
