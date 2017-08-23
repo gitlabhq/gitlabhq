@@ -4,9 +4,10 @@ describe Users::DestroyService do
   describe "Deletes a user and all their personal projects" do
     let!(:user)      { create(:user) }
     let!(:admin)     { create(:admin) }
-    let!(:namespace) { create(:namespace, owner: user) }
+    let!(:namespace) { user.namespace }
     let!(:project)   { create(:project, namespace: namespace) }
     let(:service)    { described_class.new(admin) }
+    let(:gitlab_shell) { Gitlab::Shell.new }
 
     context 'no options are given' do
       it 'deletes the user' do
@@ -14,7 +15,7 @@ describe Users::DestroyService do
 
         expect { user_data['email'].to eq(user.email) }
         expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
-        expect { Namespace.with_deleted.find(user.namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { Namespace.with_deleted.find(namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'will delete the project' do
@@ -181,6 +182,28 @@ describe Users::DestroyService do
         service.execute(mirror_user)
 
         expect(project.reload.mirror_user).to eq group_owner
+      end
+    end
+
+    describe "user personal's repository removal" do
+      before do
+        Sidekiq::Testing.inline! { service.execute(user) }
+      end
+
+      context 'legacy storage' do
+        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
+
+        it 'removes repository' do
+          expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        end
+      end
+
+      context 'hashed storage' do
+        let!(:project) { create(:project, :empty_repo, :hashed, namespace: user.namespace) }
+
+        it 'removes repository' do
+          expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+        end
       end
     end
   end

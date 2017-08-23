@@ -195,6 +195,14 @@ all your changes will be available to preview by anyone with the Review Apps lin
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
 
+## Merge request diff file navigation
+
+The diff view has a persistent dropdown for file navigation. As you scroll through
+diffs with a large number of files and/or many changes in those files, you can
+easily jump to any changed file through the dropdown navigation.
+
+![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
+
 ## Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff

@@ -53,6 +53,29 @@ describe BroadcastMessage do
 
       2.times { described_class.current }
     end
+
+    it 'includes messages that need to be displayed in the future' do
+      create(:broadcast_message)
+
+      future = create(
+        :broadcast_message,
+        starts_at: Time.now + 10.minutes,
+        ends_at: Time.now + 20.minutes
+      )
+
+      expect(described_class.current.length).to eq(1)
+
+      Timecop.travel(future.starts_at) do
+        expect(described_class.current.length).to eq(2)
+      end
+    end
+
+    it 'does not clear the cache if only a future message should be displayed' do
+      create(:broadcast_message, :future)
+
+      expect(Rails.cache).not_to receive(:delete)
+      expect(described_class.current.length).to eq(0)
+    end
   end
 
   describe '#active?' do

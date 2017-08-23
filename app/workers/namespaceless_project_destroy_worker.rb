@@ -18,7 +18,8 @@ class NamespacelessProjectDestroyWorker
     rescue ActiveRecord::RecordNotFound
       return
     end
-    return unless project.namespace_id.nil?  # Reject doing anything for projects that *do* have a namespace
+
+    return if project.namespace  # Reject doing anything for projects that *do* have a namespace
 
     project.team.truncate
 

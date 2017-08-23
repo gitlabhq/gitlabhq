@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.boolean "password_authentication_enabled"
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "project_export_enabled", default: true, null: false
+    t.boolean "hashed_storage_enabled", default: false, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1487,6 +1488,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.string "ci_config_path"
     t.boolean "disable_overriding_approvers_per_merge_request"
     t.text "delete_error"
+    t.integer "storage_version", limit: 2
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

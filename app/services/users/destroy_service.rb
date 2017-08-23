@@ -35,10 +35,13 @@ module Users
         Groups::DestroyService.new(group, current_user).execute
       end
 
+      namespace = user.namespace
+      namespace.prepare_for_destroy
+
       user.personal_projects.each do |project|
         # Skip repository removal because we remove directory with namespace
         # that contain all this repositories
-        ::Projects::DestroyService.new(project, current_user, skip_repo: true).execute
+        ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
       end
 
       Project.includes(group: :owners).where(mirror_user: user).find_each do |project|
@@ -50,7 +53,6 @@ module Users
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 
       # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
-      namespace = user.namespace
       user_data = user.destroy
       namespace.really_destroy!
 
