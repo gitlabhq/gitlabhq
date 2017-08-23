@@ -19,13 +19,13 @@ describe Gitlab::Database::ShaAttribute do
 
   let(:attribute) { described_class.new }
 
-  describe '#type_cast_from_database' do
+  describe '#deserialize' do
     it 'converts the binary SHA to a String' do
       expect(attribute.deserialize(binary_from_db)).to eq(sha)
     end
   end
 
-  describe '#type_cast_for_database' do
+  describe '#serialize' do
     it 'converts a SHA String to binary data' do
       expect(attribute.serialize(sha).to_s).to eq(binary_sha)
     end
