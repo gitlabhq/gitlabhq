@@ -69,9 +69,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for service desk', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -95,9 +96,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for merge request improve', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -121,9 +123,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for repository features', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -148,9 +151,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for squash commits', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -174,9 +178,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for burndown charts', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -200,9 +205,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for issue export', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -215,9 +221,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for project audit events', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+
       project.team << [user, :master]
       sign_in(user)
     end
@@ -229,9 +236,10 @@ describe 'Promotions', js: true do
   end
 
   describe 'for group contribution analytics', js: true do
-    let!(:license) { nil }
-
     before do
+      allow(License).to receive(:current).and_return(nil)
+      stub_application_setting(check_namespace_plan: false)
+      
       group.add_owner(user)
       sign_in(user)
     end

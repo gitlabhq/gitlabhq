@@ -54,7 +54,6 @@ describe Groups::AnalyticsController do
 
     it 'returns page when feature is not available and we show promotions' do
       stub_licensed_features(contribution_analytics: false)
-      let!(:license) { nil }
 
       get :show, group_id: group.path
 

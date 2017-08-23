@@ -16,6 +16,8 @@ describe 'layouts/nav/_group' do
 
     context 'no license installed' do
       before do
+        current_user = create(:user)
+        allow(helper).to receive(:current_user).and_return(current_user)
         allow(License).to receive(:current).and_return(nil)
         stub_application_setting(check_namespace_plan: false)
       end
