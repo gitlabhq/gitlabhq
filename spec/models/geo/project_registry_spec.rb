@@ -9,26 +9,26 @@ describe Geo::ProjectRegistry do
     it { is_expected.to validate_presence_of(:project) }
   end
 
-  describe '.synced' do
-    let(:project) { create(:project) }
-    let(:synced_at) { Time.now }
-
-    it 'does not return dirty projects' do
+  describe '.failed' do
+    it 'returns projects where last attempt to sync failed' do
+      project = create(:project)
+      create(:geo_project_registry, :synced, project: project)
       create(:geo_project_registry, :synced, :dirty, project: project)
+      repository_sync_failed = create(:geo_project_registry, :repository_sync_failed, project: project)
+      wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed, project: project)
 
-      expect(described_class.synced).to be_empty
+      expect(described_class.failed).to match_array([repository_sync_failed, wiki_sync_failed])
     end
+  end
 
-    it 'does not return projects where last attempt to sync failed' do
-      create(:geo_project_registry, :sync_failed, project: project)
-
-      expect(described_class.synced).to be_empty
-    end
-
+  describe '.synced' do
     it 'returns synced projects' do
-      registry = create(:geo_project_registry, :synced, project: project)
+      project = create(:project)
+      create(:geo_project_registry, :synced, :dirty, project: project)
+      create(:geo_project_registry, :sync_failed, project: project)
+      synced_project = create(:geo_project_registry, :synced, project: project)
 
-      expect(described_class.synced).to match_array([registry])
+      expect(described_class.synced).to match_array([synced_project])
     end
   end
 

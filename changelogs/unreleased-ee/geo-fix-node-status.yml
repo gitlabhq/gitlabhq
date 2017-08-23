@@ -1,0 +1,5 @@
+---
+title: Geo - Count projects where wiki sync failed in node status page
+merge_request:
+author:
+type: fixed
