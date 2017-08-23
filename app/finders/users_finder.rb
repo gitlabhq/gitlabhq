@@ -78,7 +78,7 @@ class UsersFinder
   end
 
   def by_admin(users)
-    return users if params[:admin].nil?
+    return users unless params[:admin]
 
     users.where(admin: params[:admin])
   end

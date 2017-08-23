@@ -50,16 +50,16 @@ module API
         optional :blocked, type: Boolean, default: false, desc: 'Filters only blocked users'
         optional :created_after, type: DateTime, desc: 'Return users created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return users created before the specified time'
-        optional :admin, type: Boolean, desc: 'Filters on admin status'
+        optional :admin, type: Boolean, default: false, desc: 'Filters on admin status'
         all_or_none_of :extern_uid, :provider
 
         use :pagination
       end
       get do
-        authenticated_as_admin! if params[:external].present? || (params[:extern_uid].present? && params[:provider].present?)
+        authenticated_as_admin! if params[:external].present? || params[:admin].present? || (params[:extern_uid].present? && params[:provider].present?)
 
         unless current_user&.admin?
-          params.except!(:created_after, :created_before, :admin)
+          params.except!(:created_after, :created_before)
         end
 
         users = UsersFinder.new(current_user, params).execute
