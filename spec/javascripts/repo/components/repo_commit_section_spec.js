@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import repoCommitSection from '~/repo/components/repo_commit_section.vue';
 import RepoStore from '~/repo/stores/repo_store';
-import Api from '~/api';
+import RepoService from '~/repo/services/repo_service';
 
-describe('RepoCommitSection', () => {
+fdescribe('RepoCommitSection', () => {
   const branch = 'master';
   const projectUrl = 'projectUrl';
   const changedFiles = [{
@@ -111,7 +111,7 @@ describe('RepoCommitSection', () => {
       expect(submitCommit.disabled).toBeFalsy();
 
       spyOn(vm, 'makeCommit').and.callThrough();
-      spyOn(Api, 'commitMultiple').and.callFake(() => Promise.resolve());
+      spyOn(RepoService, 'commitFiles').and.callFake(() => Promise.resolve());
 
       submitCommit.click();
 
@@ -119,10 +119,9 @@ describe('RepoCommitSection', () => {
         expect(vm.makeCommit).toHaveBeenCalled();
         expect(submitCommit.querySelector('.fa-spinner.fa-spin')).toBeTruthy();
 
-        const args = Api.commitMultiple.calls.allArgs()[0];
-        const { commit_message, actions, branch: payloadBranch } = args[1];
+        const args = RepoService.commitFiles.calls.allArgs()[0];
+        const { commit_message, actions, branch: payloadBranch } = args[0];
 
-        expect(args[0]).toBe(projectId);
         expect(commit_message).toBe(commitMessage);
         expect(actions.length).toEqual(2);
         expect(payloadBranch).toEqual(branch);
