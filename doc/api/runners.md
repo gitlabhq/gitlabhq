@@ -138,7 +138,8 @@ Example response:
         "ruby",
         "mysql"
     ],
-    "version": null
+    "version": null,
+    "access_level": 0
 }
 ```
 
@@ -156,6 +157,9 @@ PUT /runners/:id
 | `description` | string  | no       | The description of a runner |
 | `active`      | boolean | no       | The state of a runner; can be set to `true` or `false` |
 | `tag_list`    | array   | no       | The list of tags for a runner; put array of tags, that should be finally assigned to a runner |
+| `run_untagged`    | boolean   | no       | Flag indicating the runner can execute untagged jobs |
+| `locked`    | boolean   | no       | Flag indicating the runner is locked |
+| `access_level`    | integer   | no       | The access_level of the runner; `unprotected`: 0, `protected`: 1 |
 
 ```
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -190,7 +194,8 @@ Example response:
         "tag1",
         "tag2"
     ],
-    "version": null
+    "version": null,
+    "access_level": 0
 }
 ```
 

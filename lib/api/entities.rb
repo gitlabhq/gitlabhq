@@ -775,6 +775,7 @@ module API
       expose :tag_list
       expose :run_untagged
       expose :locked
+      expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
