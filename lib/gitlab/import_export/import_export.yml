@@ -98,14 +98,11 @@ excluded_attributes:
     - :last_activity_at
     - :last_repository_updated_at
     - :last_repository_check_at
-<<<<<<< HEAD
     - :mirror_last_update_at
     - :mirror_last_successful_update_at
     - :mirror_user_id
     - :mirror_trigger_builds
-=======
     - :storage_version
->>>>>>> upstream/master
   snippets:
     - :expired_at
   merge_request_diff:

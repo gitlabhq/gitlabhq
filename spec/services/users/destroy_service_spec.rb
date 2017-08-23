@@ -167,7 +167,6 @@ describe Users::DestroyService do
       end
     end
 
-<<<<<<< HEAD
     context "when the user was the mirror_user for a group project" do
       let(:group_owner) { create(:user) }
       let(:mirror_user) { create(:user) }
@@ -183,7 +182,9 @@ describe Users::DestroyService do
         service.execute(mirror_user)
 
         expect(project.reload.mirror_user).to eq group_owner
-=======
+      end
+    end
+
     describe "user personal's repository removal" do
       before do
         Sidekiq::Testing.inline! { service.execute(user) }
@@ -203,7 +204,6 @@ describe Users::DestroyService do
         it 'removes repository' do
           expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
         end
->>>>>>> upstream/master
       end
     end
   end
