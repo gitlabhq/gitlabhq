@@ -106,5 +106,9 @@ describe EventsHelper do
     it "handles empty strings" do
       expect(helper.event_commit_title("")).to eq("")
     end
+
+    it 'handles nil values' do
+      expect(helper.event_commit_title(nil)).to eq('')
+    end
   end
 end
