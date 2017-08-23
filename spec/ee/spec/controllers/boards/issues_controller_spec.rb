@@ -163,7 +163,7 @@ describe Boards::IssuesController do
 
       post :create, board_id: board.to_param,
                     list_id: list.to_param,
-                    issue: { title: title, project_id: project_1.id},
+                    issue: { title: title, project_id: project_1.id },
                     format: :json
     end
   end

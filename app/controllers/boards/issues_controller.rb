@@ -65,7 +65,7 @@ module Boards
     end
 
     def move_params
-      params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_iid, :move_after_iid)
+      params.permit(:board_id, :id, :from_list_id, :to_list_id, :move_before_id, :move_after_id)
     end
 
     def issue_params

@@ -98,7 +98,7 @@ describe Boards::Issues::MoveService do
           issue.move_to_end && issue.save!
         end
 
-        params.merge!(move_after_iid: issue1.iid, move_before_iid: issue2.iid)
+        params.merge!(move_after_id: issue1.id, move_before_id: issue2.id)
 
         described_class.new(project, user, params).execute(issue)
 
