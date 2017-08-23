@@ -2,6 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
   prepend EE::Issue
+  prepend EE::RelativePositioning
 
   include InternalId
   include Issuable
