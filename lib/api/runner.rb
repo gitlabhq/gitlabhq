@@ -25,7 +25,7 @@ module API
         elsif project = Project.find_by(runners_token: params[:token])
           runner = project.runners.create(attributes)
         else
-          return forbidden!
+          return forbidden!("Invalid token")
         end
 
         return render_validation_error!(runner) if runner.errors.any?
