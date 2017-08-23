@@ -37,7 +37,7 @@ started:
 1. Generate the private/public key pair with the following command:
 
     ```sh
-    gpg --full-gen-key
+    gpg --gen-key
     ```
 
     This will spawn a series of questions.
