@@ -2,6 +2,10 @@
 class TreeRootEntity < Grape::Entity
   include RequestAwareEntity
 
+  expose :last_commit, using: CommitEntity do |tree|
+    request.project.repository.last_commit_for_path(request.commit.id, tree.path) || request.commit
+  end
+
   expose :path
 
   expose :trees, using: TreeEntity

@@ -3,8 +3,8 @@ class TreeEntity < Grape::Entity
 
   expose :id, :path, :name, :mode
 
-  expose :last_commit do |tree|
-    request.project.repository.last_commit_for_path(tree.commit_id, tree.path)
+  expose :last_commit, using: CommitEntity do |tree|
+    request.project.repository.last_commit_for_path(request.commit.id, tree.path)
   end
 
   expose :icon do |tree|

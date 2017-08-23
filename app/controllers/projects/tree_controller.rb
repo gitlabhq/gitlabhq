@@ -35,7 +35,7 @@ class Projects::TreeController < Projects::ApplicationController
       end
 
       format.json do
-        render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref).represent(@tree)
+        render json: TreeSerializer.new(project: @project, repository: @repository, ref: @ref, commit: @commit).represent(@tree)
       end
     end
   end
