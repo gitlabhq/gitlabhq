@@ -37,6 +37,12 @@ describe API::Users do
         expect(json_response.size).to eq(0)
       end
 
+      it "returns authorization error when username and admin=true are passed" do
+        get api("/users"), username: user.username, admin: true
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -119,6 +125,12 @@ describe API::Users do
         expect(response).to have_http_status(403)
       end
 
+      it "returns a 403 when non-admin user searches by admin status" do
+        get api("/users?admin=true", user)
+
+        expect(response).to have_http_status(403)
+      end
+
       it 'does not reveal the `is_admin` flag of the user' do
         get api('/users', user)
 
@@ -162,6 +174,16 @@ describe API::Users do
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
+
+       it "returns one user by admin status" do
+        get api("/users?admin=true", admin)
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['username']).to eq(admin.username)
+        expect(json_response.first['is_admin']).to eq(true)
+      en
 
       it "returns 400 error if provider with no extern_uid" do
         get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
