@@ -239,7 +239,7 @@ describe 'Promotions', js: true do
     before do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
-      
+
       group.add_owner(user)
       sign_in(user)
     end
