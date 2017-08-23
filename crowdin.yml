@@ -1,0 +1,3 @@
+files:
+  - source: /locale/gitlab.pot
+    translation: /locale/%two_letters_code%/gitlab.po

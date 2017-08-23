@@ -75,8 +75,11 @@ module Gitlab
         content = result["_source"]["blob"]["content"]
         total_lines = content.lines.size
 
-        highlighted_content = result["highlight"]["blob.content"]
-        term = highlighted_content && highlighted_content[0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
+        term =
+          if result['highlight']
+            highlighted = result['highlight']['blob.content']
+            highlighted && highlighted[0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
+          end
 
         found_line_number = 0
 

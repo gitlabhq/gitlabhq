@@ -16,9 +16,9 @@ module API
                              case scope
                              when String
                                [scope]
-                             when Hashie::Mash
+                             when ::Hash
                                scope.values
-                             when Hashie::Array
+                             when ::Array
                                scope
                              else
                                ['unknown']

@@ -16,7 +16,7 @@ module API
                              coerce_with: ->(scope) {
                                             if scope.is_a?(String)
                                               [scope]
-                                            elsif   scope.is_a?(Hashie::Mash)
+                                            elsif   scope.is_a?(::Hash)
                                               scope.values
                                             else
                                               ['unknown']

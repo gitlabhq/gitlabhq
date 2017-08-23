@@ -336,8 +336,8 @@ Settings.artifacts['max_size']   ||= 100 # in megabytes
 Settings.artifacts['object_store'] ||= Settingslogic.new({})
 Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
 Settings.artifacts['object_store']['remote_directory'] ||= nil
-# Convert upload connection settings to use symbol keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_symbolize_keys!
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Registry
@@ -514,7 +514,9 @@ unless Settings.repositories.storages['default']
   Settings.repositories.storages['default']['path'] ||= Settings.gitlab['user_home'] + '/repositories/'
 end
 
-Settings.repositories.storages.values.each do |storage|
+Settings.repositories.storages.each do |key, storage|
+  storage = Settingslogic.new(storage)
+
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
   # Set failure defaults
@@ -528,6 +530,8 @@ Settings.repositories.storages.values.each do |storage|
   storage['failure_reset_time'] = storage['failure_reset_time'].to_i
   # We might want to have a timeout shorter than 1 second.
   storage['storage_timeout'] = storage['storage_timeout'].to_f
+
+  Settings.repositories.storages[key] = storage
 end
 
 #

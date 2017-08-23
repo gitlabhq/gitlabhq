@@ -239,7 +239,7 @@ describe ObjectStoreUploader do
   end
 
   describe '#fog_credentials' do
-    let(:connection) { 'connection' }
+    let(:connection) { Settingslogic.new("provider" => "AWS") }
 
     before do
       uploader_class.storage_options double(
@@ -248,7 +248,7 @@ describe ObjectStoreUploader do
 
     subject { uploader.fog_credentials }
 
-    it { is_expected.to eq(connection) }
+    it { is_expected.to eq(provider: 'AWS') }
   end
 
   describe '#fog_public' do

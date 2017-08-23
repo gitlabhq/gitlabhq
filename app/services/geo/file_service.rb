@@ -27,8 +27,9 @@ module Geo
       klass_name.camelize
     end
 
-    def log_info(message)
+    def log_info(message, details = {})
       data = log_base_data(message)
+      data.merge!(details) if details
       Gitlab::Geo::Logger.info(data)
     end
 

@@ -32,6 +32,7 @@ Shortcuts to GitLab's most visited docs:
 
 - [User documentation](user/index.md)
 - [Administrator documentation](#administrator-documentation)
+- [Technical Articles](articles/index.md)
 
 ## Getting started with GitLab
 
@@ -110,7 +111,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
-- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
+- [Signing commits](user/project/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 

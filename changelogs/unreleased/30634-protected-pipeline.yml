@@ -1,5 +1,0 @@
----
-title: Disallow running the pipeline if ref is protected and user cannot merge the
-  branch or create the tag
-merge_request: 11910
-author:

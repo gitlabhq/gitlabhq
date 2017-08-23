@@ -92,25 +92,24 @@
             Update username
   %hr
 
-- if signup_enabled?
-  .row.prepend-top-default
-    .col-lg-4.profile-settings-sidebar
-      %h4.prepend-top-0.danger-title
-        Remove account
-    .col-lg-8
-      - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
+.row.prepend-top-default
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0.danger-title
+      Remove account
+  .col-lg-8
+    - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
+      %p
+        Deleting an account has the following effects:
+      = render 'users/deletion_guidance', user: current_user
+      = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+    - else
+      - if @user.solo_owned_groups.present?
         %p
-          Deleting an account has the following effects:
-        = render 'users/deletion_guidance', user: current_user
-        = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+          Your account is currently an owner in these groups:
+          %strong= @user.solo_owned_groups.map(&:name).join(', ')
+        %p
+          You must transfer ownership or delete these groups before you can delete your account.
       - else
-        - if @user.solo_owned_groups.present?
-          %p
-            Your account is currently an owner in these groups:
-            %strong= @user.solo_owned_groups.map(&:name).join(', ')
-          %p
-            You must transfer ownership or delete these groups before you can delete your account.
-        - else
-          %p
-            You don't have access to delete this user.
+        %p
+          You don't have access to delete this user.
 .append-bottom-default

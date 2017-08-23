@@ -45,7 +45,6 @@ module Gitlab
                             raise "Unsupported action: #{action}"
                           end
         if feature_enabled
-          params[:GitalyAddress] = server[:address] # This field will be deprecated
           params[:GitalyServer] = server
         end
 

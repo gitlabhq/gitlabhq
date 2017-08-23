@@ -57,6 +57,23 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. Once approved, your merge request is [squashed and merged](#squash-and-merge), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
+## Merge requests per project
+
+View all the merge requests within a project by navigating to **Project > Merge Requests**.
+
+When you access your project's merge requests, GitLab will present them in a list,
+and you can use the tabs available to quickly filter by open and closed. You can also [search and filter the results](../../search/index.md#issues-and-merge-requests-per-project).
+
+![Project merge requests list view](img/project_merge_requests_list_view.png)
+
+## Merge requests per group
+
+View all the merge requests in a group (that is, all the merge requests across all projects in that
+group) by navigating to **Group > Merge Requests**. This view also has the open, merged, and closed
+merge request tabs, from which you can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group).
+
+![Group Issues list view](img/group_merge_requests_list_view.png)
+
 ## Authorization for merge requests
 
 There are two main ways to have a merge request flow with GitLab:
@@ -198,7 +215,6 @@ in a per-branch basis. No need to checkout the branch, install and preview local
 all your changes will be available to preview by anyone with the Review Apps link.
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
-
 
 ## Tips
 

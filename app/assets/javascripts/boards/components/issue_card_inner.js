@@ -97,7 +97,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
       return `Avatar for ${assignee.name}`;
     },
     showLabel(label) {
-      if (!this.list || !label) return true;
+      if (!label.id) return false;
       return true;
     },
     filterByLabel(label, e) {

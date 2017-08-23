@@ -8,7 +8,6 @@ class MergeRequest < ActiveRecord::Base
   include IgnorableColumn
   include CreatedAtFilterable
 
-  ignore_column :position
   ignore_column :locked_at
 
   include ::EE::MergeRequest

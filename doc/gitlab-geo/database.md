@@ -214,7 +214,7 @@ data before running `pg_basebackup`.
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo-secondary_my_domain_com
+    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com
     ```
 
     Change the `--host=` to the primary node IP or FQDN. You can check other possible

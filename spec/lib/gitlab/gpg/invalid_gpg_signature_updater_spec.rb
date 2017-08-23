@@ -4,23 +4,16 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do
     let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
     let!(:project) { create :project, :repository, path: 'sample-project' }
-    let!(:raw_commit) do
-      raw_commit = double(:raw_commit, signature: [
-        GpgHelpers::User1.signed_commit_signature,
-        GpgHelpers::User1.signed_commit_base_data
-      ], sha: commit_sha)
-
-      allow(raw_commit).to receive :save!
-
-      raw_commit
-    end
-
-    let!(:commit) do
-      create :commit, git_commit: raw_commit, project: project
-    end
 
     before do
-      allow_any_instance_of(Project).to receive(:commit).and_return(commit)
+      allow(Rugged::Commit).to receive(:extract_signature)
+        .with(Rugged::Repository, commit_sha)
+        .and_return(
+          [
+            GpgHelpers::User1.signed_commit_signature,
+            GpgHelpers::User1.signed_commit_base_data
+          ]
+        )
     end
 
     context 'gpg signature did have an associated gpg key which was removed later' do

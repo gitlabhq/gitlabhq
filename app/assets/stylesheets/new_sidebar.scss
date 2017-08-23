@@ -97,13 +97,16 @@ $new-sidebar-collapsed-width: 50px;
   top: $header-height;
   bottom: 0;
   left: 0;
-  overflow: auto;
   background-color: $gray-normal;
   box-shadow: inset -2px 0 0 $border-color;
+  transform: translate3d(0, 0, 0);
 
   &.sidebar-icons-only {
     width: $new-sidebar-collapsed-width;
-    overflow-x: hidden;
+
+    .nav-sidebar-inner-scroll {
+      overflow-x: hidden;
+    }
 
     .badge,
     .project-title {
@@ -111,7 +114,11 @@ $new-sidebar-collapsed-width: 50px;
     }
 
     .nav-item-name {
-      opacity: 0;
+      display: none;
+    }
+
+    .sidebar-top-level-items > li > a {
+      min-height: 44px;
     }
   }
 
@@ -174,6 +181,12 @@ $new-sidebar-collapsed-width: 50px;
       width: 16px;
     }
   }
+}
+
+.nav-sidebar-inner-scroll {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }
 
 .with-performance-bar .nav-sidebar {

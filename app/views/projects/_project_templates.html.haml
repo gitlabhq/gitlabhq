@@ -5,6 +5,6 @@
     Blank
   - Gitlab::ProjectTemplate.all.each do |template|
     .btn
-      %input{ type: "radio",  autocomplete: "off", name: "project_templates", id: template.name }
+      %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name }
       = custom_icon(template.logo)
       = template.title

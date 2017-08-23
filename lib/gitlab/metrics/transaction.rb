@@ -66,8 +66,12 @@ module Gitlab
       # event_name - The name of the event (e.g. "git_push").
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
+        add_event_with_values(event_name, {}, tags)
+      end
+
+      def add_event_with_values(event_name, values, tags = {})
         @metrics << Metric.new(EVENT_SERIES,
-                               { count: 1 },
+                               { count: 1 }.merge(values),
                                { event: event_name }.merge(tags),
                                :event)
       end

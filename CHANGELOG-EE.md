@@ -1,5 +1,35 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 9.5.0 (2017-08-22)
+
+- [FIXED] Fix Copy to Clipboard for SSH Public Key on Pull Repository settings. !2692
+- [FIXED] Enable mirror repository button.
+- [FIXED] Create system notes only if issue was successfully related.
+- [FIXED] Fix issue boards focus button not being visible to guest users.
+- Namespace license checks Audit Events & Admin Audit Log. !2326
+- Namespace license checks for Repository Mirrors. !2328
+- Automatically link kerberos users to LDAP people. !2405
+- Implement SSH public-key support for repository mirroring. !2423
+- Shows project names for commits in elasticsearch global search. !2434
+- Add admin application setting to allow group owners to manage LDAP. !2529
+- Geo - Selectively choose which namespaces to replicate in DR. !2533
+- Support variables on Trigger API for Cross-project pipeline. !2557
+- Allow excluding sidekiq queues from execution in sidekiq-cluster. !2571
+- Ensure artifacts are moved locally within the filesystem to prevent timeouts. !2572
+- Audit failed login events. !2587
+- Spread load across all nodes in an elasticsearch cluster. !2625
+- Improves handling of stuck imports. !2628
+- Improves handling of the mirror threshold. !2671
+- Allow artifacts access with job_token parameter or CI_JOB_TOKEN header.
+- Add initial Groups/Billing and Profile/Billing routing and template.
+- Fix rebase from fork when upstream has protected branches.
+- Present Related Issues add badge only when user can manage related issues (previously when user could edit issue).
+- clean up merge request widget UI.
+- Make contextual sidebar collapsible.
+- Fix accessing individual files on Object Storage.
+- Fix rebase button when merge request is created from a fork.
+- Skip oAuth authorization for trusted applications.
+
 ## 9.4.5 (2017-08-14)
 
 - Ensure artifacts are moved locally within the filesystem to prevent timeouts. !2572

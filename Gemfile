@@ -16,7 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
-gem 'grape-route-helpers', '~> 2.0.0'
+gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -79,7 +79,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.2'
+gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -162,7 +162,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
-gem 'sidekiq-limit_fetch', '~> 3.4'
+gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -240,7 +240,7 @@ gem 'ace-rails-ap', '~> 4.1.0'
 gem 'mousetrap-rails', '~> 1.4.6'
 
 # Detect and convert string character encoding
-gem 'charlock_holmes', '~> 0.7.3'
+gem 'charlock_holmes', '~> 0.7.5'
 
 # Faster JSON
 gem 'oj', '~> 2.17.4'
@@ -299,7 +299,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta12'
   gem 'raindrops', '~> 0.18'
 end
 

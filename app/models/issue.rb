@@ -12,10 +12,7 @@ class Issue < ActiveRecord::Base
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
-  include IgnorableColumn
   include CreatedAtFilterable
-
-  ignore_column :position
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze

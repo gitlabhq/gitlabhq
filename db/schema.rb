@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170811203342) do
+ActiveRecord::Schema.define(version: 20170820100558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -452,6 +452,8 @@ ActiveRecord::Schema.define(version: 20170811203342) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "name"
+    t.integer "status"
+    t.integer "lock_version"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
@@ -705,8 +707,6 @@ ActiveRecord::Schema.define(version: 20170811203342) do
     t.text "deleted_path", null: false
     t.text "deleted_wiki_path"
     t.text "deleted_project_name", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "geo_repository_deleted_events", ["project_id"], name: "index_geo_repository_deleted_events_on_project_id", using: :btree
@@ -726,7 +726,6 @@ ActiveRecord::Schema.define(version: 20170811203342) do
   add_index "geo_repository_renamed_events", ["project_id"], name: "index_geo_repository_renamed_events_on_project_id", using: :btree
 
   create_table "geo_repository_updated_events", id: :bigserial, force: :cascade do |t|
-    t.datetime "created_at", null: false
     t.integer "branches_affected", null: false
     t.integer "tags_affected", null: false
     t.integer "project_id", null: false
@@ -2104,7 +2103,7 @@ ActiveRecord::Schema.define(version: 20170811203342) do
   add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id"
-  add_foreign_key "protected_tag_create_access_levels", "protected_tags"
+  add_foreign_key "protected_tag_create_access_levels", "protected_tags", name: "fk_f7dfda8c51", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "users"
   add_foreign_key "protected_tags", "projects", name: "fk_8e4af87648", on_delete: :cascade
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade

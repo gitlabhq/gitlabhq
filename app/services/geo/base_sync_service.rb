@@ -65,7 +65,7 @@ module Geo
       Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
-    def update_registry(type, started_at: nil, finished_at: nil)
+    def update_registry(started_at: nil, finished_at: nil)
       return unless started_at || finished_at
 
       log_info("Updating #{type} sync information")
