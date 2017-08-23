@@ -26,6 +26,7 @@ class Group < Namespace
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
   validate :visibility_level_allowed_by_projects
+  validate :visibility_level_allowed_by_sub_groups, if: :visibility_level_changed?
   validate :visibility_level_allowed_by_parent
 
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
@@ -112,14 +113,25 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects
-    allowed_by_projects = self.projects.where('visibility_level > ?', self.visibility_level).none?
+    check_visibility_level_for(:projects)
+  end
 
-    unless allowed_by_projects
+  def visibility_level_allowed_by_sub_groups
+    check_visibility_level_for(:children)
+  end
+
+  def check_visibility_level_for(children_type)
+    base_query = public_send(children_type)
+    children_have_higher_visibility = base_query.where('visibility_level > ?', visibility_level).exists?
+
+    if children_have_higher_visibility
+      children_label = children_type == :projects ? 'projects' : 'sub groups'
       level_name = Gitlab::VisibilityLevel.level_name(visibility_level).downcase
-      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are projects with higher visibility.")
+
+      self.errors.add(:visibility_level, "#{level_name} is not allowed since there are #{children_label} with higher visibility.")
     end
 
-    allowed_by_projects
+    children_have_higher_visibility
   end
 
   def avatar_url(**args)

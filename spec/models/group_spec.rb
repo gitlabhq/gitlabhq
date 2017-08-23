@@ -117,6 +117,50 @@ describe Group do
         end
       end
     end
+
+    describe '#visibility_level_allowed_by_projects' do
+      let!(:internal_group) { create(:group, :internal) }
+      let!(:internal_project) { create(:project, :internal, group: internal_group) }
+
+      context 'when group has a lower visibility' do
+        it 'is invalid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_invalid
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are projects with higher visibility.')
+        end
+      end
+
+      context 'when group has a higher visibility' do
+        it 'is valid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+          expect(internal_group).to be_valid
+        end
+      end
+    end
+
+    describe '#visibility_level_allowed_by_sub_groups' do
+      let!(:internal_group) { create(:group, :internal) }
+      let!(:internal_sub_group) { create(:group, :internal, parent: internal_group) }
+
+      context 'when parent group has a lower visibility' do
+        it 'is invalid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+
+          expect(internal_group).to be_invalid
+          expect(internal_group.errors[:visibility_level]).to include('private is not allowed since there are sub groups with higher visibility.')
+        end
+      end
+
+      context 'when parent group has a higher visibility' do
+        it 'is valid' do
+          internal_group.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+
+          expect(internal_group).to be_valid
+        end
+      end
+    end
   end
 
   describe '.visible_to_user' do
