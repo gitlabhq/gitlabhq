@@ -15,12 +15,14 @@ describe 'layouts/nav/_group' do
     end
 
     context 'no license installed' do
-      current_user = create(:user)
-      allow(helper).to receive(:current_user).and_return(current_user)
+      let!(:cuser) { create(:admin) }
 
       before do
         allow(License).to receive(:current).and_return(nil)
         stub_application_setting(check_namespace_plan: false)
+
+        allow(view).to receive(:can?).and_return(true)
+        allow(view).to receive(:current_user).and_return(cuser)
       end
 
       it 'is visible when there is no valid license but we show promotions' do
