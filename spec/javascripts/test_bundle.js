@@ -1,11 +1,11 @@
 /* eslint-disable jasmine/no-global-setup */
 import $ from 'jquery';
 import _ from 'underscore';
-import './lib/utils/jasmine_jquery_patched_3';
-import '~/commons';
-
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+
+import './lib/utils/jasmine_jquery_patched_3';
+import '~/commons';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
@@ -37,7 +37,6 @@ window.addEventListener('unhandledrejection', (event) => {
 const checkUnhandledPromiseRejections = (done) => {
   expect(hasUnhandledPromiseRejections).toBe(false);
   done();
-  
 };
 
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
