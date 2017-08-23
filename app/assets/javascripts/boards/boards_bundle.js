@@ -155,7 +155,7 @@ $(() => {
         focusModeAvailable: gl.utils.convertPermissionToBoolean(
           $boardApp.dataset.focusModeAvailable,
         ),
-        canAdminList: gl.utils.convertPermissionToBoolean(
+        canAdminList: this.$options.el && gl.utils.convertPermissionToBoolean(
           this.$options.el.dataset.canAdminList,
         ),
       };
@@ -167,6 +167,9 @@ $(() => {
     },
     computed: {
       disabled() {
+        if (!this.store) {
+          return true;
+        }
         return !this.store.lists.filter(list => !list.preset).length;
       },
       tooltipTitle() {
