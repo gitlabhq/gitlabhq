@@ -1,4 +1,0 @@
----
-title: Extract "@request.env[devise.mapping] = Devise.mappings[:user]" to a test helper
-merge_request: 12742
-author: Jacopo Beschi @jacopo-beschi

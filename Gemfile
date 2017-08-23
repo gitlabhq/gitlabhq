@@ -396,12 +396,12 @@ gem 'net-ssh', '~> 4.1.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 3.2'
+  gem 'rbnacl', '~> 4.0'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.29.0'
+gem 'gitaly', '~> 0.30.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

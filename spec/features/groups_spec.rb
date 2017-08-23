@@ -104,23 +104,30 @@ feature 'Group' do
     end
 
     context 'as group owner' do
-      let(:user) { create(:user) }
+      it 'creates a nested group' do
+        user = create(:user)
 
-      before do
         group.add_owner(user)
         sign_out(:user)
         sign_in(user)
 
         visit subgroups_group_path(group)
         click_link 'New Subgroup'
-      end
-
-      it 'creates a nested group' do
         fill_in 'Group path', with: 'bar'
         click_button 'Create group'
 
         expect(current_path).to eq(group_path('foo/bar'))
         expect(page).to have_content("Group 'bar' was successfully created.")
+      end
+    end
+
+    context 'when nested group feature is disabled' do
+      it 'renders 404' do
+        allow(Group).to receive(:supports_nested_groups?).and_return(false)
+
+        visit subgroups_group_path(group)
+
+        expect(page.status_code).to eq(404)
       end
     end
   end
