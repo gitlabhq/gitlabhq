@@ -1,10 +1,7 @@
 class BlobBasicEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :id, :path, :name, :mode, :extension, :mime_type, :file_type
-
-  expose :raw_size, as: :size
-  expose :raw_binary?, as: :binary
+  expose :id, :path, :name, :mode
 
   expose :last_commit do |blob|
     request.project.repository.last_commit_for_path(blob.commit_id, blob.path)
