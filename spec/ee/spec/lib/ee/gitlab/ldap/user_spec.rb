@@ -15,11 +15,10 @@ describe Gitlab::LDAP::User do
   let(:auth_hash) do
     OmniAuth::AuthHash.new(uid: 'uid=john,ou=people,dc=example,dc=com', provider: 'ldapmain', info: info)
   end
-  let(:adapter) { ldap_adapter }
   let(:group_cn) { 'foo' }
   let(:group_member_dns) { [auth_hash.uid] }
   let(:external_groups) { [] }
-  let(:fake_proxy) { double(:proxy, adapter: adapter) }
+  let!(:fake_proxy) { fake_ldap_sync_proxy(auth_hash.provider) }
 
   before do
     allow(fake_proxy).to receive(:dns_for_group_cn).with(group_cn).and_return(group_member_dns)
@@ -31,10 +30,6 @@ describe Gitlab::LDAP::User do
   end
 
   describe '#initialize' do
-    before do
-      expect(::EE::Gitlab::LDAP::Sync::Proxy).to receive(:open).with(auth_hash.provider).and_yield(fake_proxy)
-    end
-
     context 'when the user is in an external group' do
       let(:external_groups) { [group_cn] }
 
