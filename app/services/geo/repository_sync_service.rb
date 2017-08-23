@@ -38,15 +38,5 @@ module Geo
     def ssh_url_to_repo
       "#{primary_ssh_path_prefix}#{project.full_path}.git"
     end
-
-    def update_delay_in_seconds
-      return unless project.last_repository_updated_at
-
-      (registry.last_repository_successful_sync_at.to_f - project.last_repository_updated_at.to_f).round(3)
-    end
-
-    def download_time_in_seconds
-      (registry.last_repository_successful_sync_at - registry.last_repository_synced_at).to_f.round(3)
-    end
   end
 end

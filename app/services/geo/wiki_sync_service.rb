@@ -31,17 +31,5 @@ module Geo
     def ssh_url_to_wiki
       "#{primary_ssh_path_prefix}#{project.full_path}.wiki.git"
     end
-
-    def update_delay_in_seconds
-      # We don't track the last update time of repositories and Wiki
-      # separately in the main database
-      return unless project.last_repository_updated_at
-
-      (registry.last_wiki_successful_sync_at.to_f - project.last_repository_updated_at.to_f).round(3)
-    end
-
-    def download_time_in_seconds
-      (registry.last_wiki_successful_sync_at - registry.last_wiki_synced_at).to_f.round(3)
-    end
   end
 end
