@@ -18,44 +18,25 @@ describe('RepoTabs', () => {
 
   it('renders a list of tabs', () => {
     RepoStore.openedFiles = openedFiles;
-    RepoStore.tabsOverflow = true;
 
     const vm = createComponent();
     const tabs = [...vm.$el.querySelectorAll(':scope > li')];
 
     expect(vm.$el.id).toEqual('tabs');
-    expect(vm.$el.classList.contains('overflown')).toBeTruthy();
     expect(tabs.length).toEqual(3);
     expect(tabs[0].classList.contains('active')).toBeTruthy();
     expect(tabs[1].classList.contains('active')).toBeFalsy();
     expect(tabs[2].classList.contains('tabs-divider')).toBeTruthy();
   });
 
-  it('does not render a tabs list if not isMini', () => {
-    RepoStore.openedFiles = [];
-
-    const vm = createComponent();
-
-    expect(vm.$el.innerHTML).toBeFalsy();
-  });
-
-  it('does not apply overflown class if not tabsOverflow', () => {
-    RepoStore.openedFiles = openedFiles;
-    RepoStore.tabsOverflow = false;
-
-    const vm = createComponent();
-
-    expect(vm.$el.classList.contains('overflown')).toBeFalsy();
-  });
-
   describe('methods', () => {
-    describe('xClicked', () => {
+    describe('tabClosed', () => {
       it('calls removeFromOpenedFiles with file obj', () => {
         const file = {};
 
         spyOn(RepoStore, 'removeFromOpenedFiles');
 
-        repoTabs.methods.xClicked(file);
+        repoTabs.methods.tabClosed(file);
 
         expect(RepoStore.removeFromOpenedFiles).toHaveBeenCalledWith(file);
       });

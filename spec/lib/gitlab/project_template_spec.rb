@@ -4,7 +4,9 @@ describe Gitlab::ProjectTemplate do
   describe '.all' do
     it 'returns a all templates' do
       expected = [
-        described_class.new('rails', 'Ruby on Rails')
+        described_class.new('rails', 'Ruby on Rails'),
+        described_class.new('spring', 'Spring'),
+        described_class.new('express', 'NodeJS Express')
       ]
 
       expect(described_class.all).to be_an(Array)

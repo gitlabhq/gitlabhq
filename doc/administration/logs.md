@@ -9,6 +9,33 @@ documentation](http://docs.gitlab.com/ee/administration/audit_events.html)
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.
 
+## `production_json.log`
+
+This file lives in `/var/log/gitlab/gitlab-rails/production_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/production_json.log` for
+installations from source. (When Gitlab is running in an environment
+other than production, the corresponding logfile is shown here.)
+
+It contains a structured log for Rails controller requests received from
+GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/). Note that
+requests from the API [are not yet logged to this
+file](https://gitlab.com/gitlab-org/gitlab-ce/issues/36189).
+
+Each line contains a JSON line that can be ingested by Elasticsearch, Splunk, etc. For example:
+
+```json
+{"method":"GET","path":"/gitlab/gitlab-ce/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":{"namespace_id":"gitlab","project_id":"gitlab-ce","id":"1234"},"remote_ip":"18.245.0.1","user_id":1,"username":"admin"}
+```
+
+In this example, you can see this was a GET request for a specific issue. Notice each line also contains performance data:
+
+1. `duration`: the total time taken to retrieve the request
+2. `view`: total time taken inside the Rails views
+3. `db`: total time to retrieve data from the database
+
+In addition, the log contains the IP address from which the request originated
+(`remote_ip`) as well as the user's ID (`user_id`), and username (`username`).
+
 ## `production.log`
 
 This file lives in `/var/log/gitlab/gitlab-rails/production.log` for

@@ -1,6 +1,6 @@
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity $sidebar-transition-duration;
 }
 
 .monaco-loader {
@@ -28,11 +28,6 @@
 .project-refs-form,
 .project-refs-target-form {
   display: inline-block;
-
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
 }
 
 .fade-enter,
@@ -90,7 +85,7 @@
     }
 
     .blob-viewer-container {
-      height: calc(100vh - 63px);
+      height: calc(100vh - 62px);
       overflow: auto;
     }
 
@@ -114,6 +109,7 @@
         border-right: 1px solid $white-dark;
         border-bottom: 1px solid $white-dark;
         white-space: nowrap;
+        cursor: pointer;
 
         &.remove {
           animation: swipeRightDissapear ease-in 0.1s;
@@ -133,10 +129,10 @@
         a {
           @include str-truncated(100px);
           color: $black;
-          display: inline-block;
           width: 100px;
           text-align: center;
           vertical-align: middle;
+          text-decoration: none;
 
           &.close {
             width: auto;
@@ -146,15 +142,15 @@
           }
         }
 
-        i.fa.fa-times,
-        i.fa.fa-circle {
+        .close-icon,
+        .unsaved-icon {
           float: right;
           margin-top: 3px;
           margin-left: 15px;
           color: $gray-darkest;
         }
 
-        i.fa.fa-circle {
+        .unsaved-icon {
           color: $brand-success;
         }
 
@@ -204,7 +200,7 @@
     background: $gray-light;
     padding: 20px;
 
-    span.help-block {
+    .help-block {
       padding-top: 7px;
       margin-top: 0;
     }
@@ -232,6 +228,7 @@
       vertical-align: top;
       width: 20%;
       border-right: 1px solid $white-normal;
+      min-height: 475px;
       height: calc(100vh + 20px);
       overflow: auto;
     }
@@ -261,7 +258,6 @@
           text-transform: uppercase;
           font-weight: bold;
           color: $gray-darkest;
-          width: 185px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -270,7 +266,7 @@
         }
       }
 
-      .fa {
+      .file-icon {
         margin-right: 5px;
       }
 
@@ -280,115 +276,19 @@
     }
 
     a {
+      @include str-truncated(250px);
       color: $almost-black;
       display: inline-block;
       vertical-align: middle;
     }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-
-      li {
-        border-bottom: 1px solid $border-gray-normal;
-        padding: 10px 20px;
-
-        a {
-          color: $almost-black;
-        }
-
-        .fa {
-          font-size: $code_font_size;
-          margin-right: 5px;
-        }
-      }
-    }
-  }
-
-}
-
-.animation-container {
-  background: $repo-editor-grey;
-  height: 40px;
-  overflow: hidden;
-  position: relative;
-
-  &.animation-container-small {
-    height: 12px;
-  }
-
-  &::before {
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-iteration-count: infinite;
-    animation-name: blockTextShine;
-    animation-timing-function: linear;
-    background-image: $repo-editor-linear-gradient;
-    background-repeat: no-repeat;
-    background-size: 800px 45px;
-    content: ' ';
-    display: block;
-    height: 100%;
-    position: relative;
-  }
-
-  div {
-    background: $white-light;
-    height: 6px;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-
-  .line-of-code-1 {
-    left: 0;
-    top: 8px;
-  }
-
-  .line-of-code-2 {
-    left: 150px;
-    top: 0;
-    height: 10px;
-  }
-
-  .line-of-code-3 {
-    left: 0;
-    top: 23px;
-  }
-
-  .line-of-code-4 {
-    left: 0;
-    top: 38px;
-  }
-
-  .line-of-code-5 {
-    left: 200px;
-    top: 28px;
-    height: 10px;
-  }
-
-  .line-of-code-6 {
-    top: 14px;
-    left: 230px;
-    height: 10px;
   }
 }
 
 .render-error {
-  min-height: calc(100vh - 63px);
+  min-height: calc(100vh - 62px);
 
   p {
     width: 100%;
-  }
-}
-
-@keyframes blockTextShine {
-  0% {
-    transform: translateX(-468px);
-  }
-
-  100% {
-    transform: translateX(468px);
   }
 }
 

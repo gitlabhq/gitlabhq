@@ -24,6 +24,7 @@ integrated platform
   from messing with history or pushing code without review
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
+  - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) (**EES/EEP**): Ask for approval before

@@ -1,5 +1,0 @@
----
-title: Add API for protected branches to allow for wildcard matching and no access
-  restrictions
-merge_request: 12756
-author: Eric Yu

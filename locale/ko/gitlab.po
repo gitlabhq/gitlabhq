@@ -1,4 +1,7 @@
-# chang-ho,cha <changho.cha@gmail.com>, 2017. #zanata
+# Korean translations for gitlab package.
+# Copyright (C) 2017 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the gitlab package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
 # Huang Tao <htve@outlook.com>, 2017. #zanata
 msgid ""
 msgstr ""
@@ -8,12 +11,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-08-06 09:40-0400\n"
+"PO-Revision-Date: 2017-08-08 08:32-0400\n"
 "Last-Translator: chang-ho,cha <changho.cha@gmail.com>\n"
 "Language-Team: Korean (https://translate.zanata.org/project/view/GitLab)\n"
 "Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 3.9.6\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 
 msgid "%d commit"
 msgid_plural "%d commits"
@@ -25,7 +28,7 @@ msgid_plural ""
 msgstr[0] "%s 추가 커밋은 성능 이슈를 방지하기 위해 생략되었습니다."
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
-msgstr "%{commit_timeago} 에 %{commit_author_link} 이(가) 커밋하였습니다. "
+msgstr "%{commit_timeago} 에 %{commit_author_link} 님이 커밋하였습니다. "
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -791,7 +794,7 @@ msgid "Select target branch"
 msgstr "대상 브랜치 선택"
 
 msgid "Set a password on your account to pull or push via %{protocol}."
-msgstr "%{protocol}을(를) 통해 Pull 하거나 Push하려면 계정에 패스워드를 설정하십시오."
+msgstr "%{protocol} 프로토콜을 통해 Pull 하거나 Push하려면 계정에 패스워드를 설정하십시오."
 
 msgid "Set up CI"
 msgstr "CI 설정"
@@ -1122,7 +1125,7 @@ msgid ""
 "You are going to remove %{group_name}.\n"
 "Removed groups CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
-msgstr "%{group_name}을(를) 제거하려고합니다.\n"
+msgstr "%{group_name} 그룹을 제거하려고합니다.\n"
 "\"정말로\" 확실합니까?"
 
 msgid ""
@@ -1130,7 +1133,7 @@ msgid ""
 "Removed project CANNOT be restored!\n"
 "Are you ABSOLUTELY sure?"
 msgstr ""
-"%{project_name_with_namespace}을(를) 삭제하려고합니다.\n"
+"%{project_name_with_namespace} 프로젝트를 삭제하려고합니다.\n"
 "삭제된 프로젝트를 복원 할 수 없습니다!\n"
 "\"정말로\" 확실합니까?"
 
@@ -1185,7 +1188,7 @@ msgid ""
 "You won't be able to pull or push project code via SSH until you "
 "%{add_ssh_key_link} to your profile"
 msgstr ""
-"당신의 프로필에 %{add_ssh_key_link} 을(를) 하기 전에는 SSH를 통해 프로젝트 코드를 Pull 하거나 Push 할 수 "
+"당신의 프로필에 %{add_ssh_key_link} 를 하기 전에는 SSH를 통해 프로젝트 코드를 Pull 하거나 Push 할 수 "
 "없습니다"
 
 msgid "Your name"

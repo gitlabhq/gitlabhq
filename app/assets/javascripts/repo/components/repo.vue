@@ -14,13 +14,13 @@ export default {
   data: () => Store,
   mixins: [RepoMixin],
   components: {
-    'repo-sidebar': RepoSidebar,
-    'repo-tabs': RepoTabs,
-    'repo-file-buttons': RepoFileButtons,
+    RepoSidebar,
+    RepoTabs,
+    RepoFileButtons,
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
-    'repo-commit-section': RepoCommitSection,
-    'popup-dialog': PopupDialog,
-    'repo-preview': RepoPreview,
+    RepoCommitSection,
+    PopupDialog,
+    RepoPreview,
   },
 
   mounted() {
@@ -28,12 +28,12 @@ export default {
   },
 
   methods: {
-    dialogToggled(toggle) {
+    toggleDialogOpen(toggle) {
       this.dialog.open = toggle;
     },
 
     dialogSubmitted(status) {
-      this.dialog.open = false;
+      this.toggleDialogOpen(false);
       this.dialog.status = status;
     },
 
@@ -43,21 +43,25 @@ export default {
 </script>
 
 <template>
-<div class="repository-view tree-content-holder">
-  <repo-sidebar/><div class="panel-right" :class="{'edit-mode': editMode}">
-    <repo-tabs/>
-    <component :is="currentBlobView" class="blob-viewer-container"></component>
-    <repo-file-buttons/>
+  <div class="repository-view tree-content-holder">
+    <repo-sidebar/><div v-if="isMini"
+    class="panel-right"
+    :class="{'edit-mode': editMode}">
+      <repo-tabs/>
+      <component
+        :is="currentBlobView"
+        class="blob-viewer-container"/>
+      <repo-file-buttons/>
+    </div>
+    <repo-commit-section/>
+    <popup-dialog
+      v-show="dialog.open"
+      :primary-button-label="__('Discard changes')"
+      kind="warning"
+      :title="__('Are you sure?')"
+      :body="__('Are you sure you want to discard your changes?')"
+      @toggle="toggleDialogOpen"
+      @submit="dialogSubmitted"
+    />
   </div>
-  <repo-commit-section/>
-  <popup-dialog
-    :primary-button-label="__('Discard changes')"
-    :open="dialog.open"
-    kind="warning"
-    :title="__('Are you sure?')"
-    :body="__('Are you sure you want to discard your changes?')"
-    @toggle="dialogToggled"
-    @submit="dialogSubmitted"
-  />
-</div>
 </template>

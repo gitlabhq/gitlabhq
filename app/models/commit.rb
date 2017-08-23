@@ -392,6 +392,6 @@ class Commit
   end
 
   def gpg_commit
-    @gpg_commit ||= Gitlab::Gpg::Commit.new(self)
+    @gpg_commit ||= Gitlab::Gpg::Commit.for_commit(self)
   end
 end

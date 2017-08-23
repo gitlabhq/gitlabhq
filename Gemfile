@@ -84,7 +84,7 @@ gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 gem 'hashie-forbidden_attributes'
 
 # Pagination
-gem 'kaminari', '~> 0.17.0'
+gem 'kaminari', '~> 1.0'
 
 # HAML
 gem 'hamlit', '~> 2.6.1'

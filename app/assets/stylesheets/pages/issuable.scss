@@ -8,13 +8,13 @@
 .is-confidential {
   color: $orange-600;
   background-color: $orange-50;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }
 
 .is-not-confidential {
-  border-radius: 3px;
+  border-radius: $border-radius-default;
   padding: 5px;
   margin: 0 3px 0 -4px;
 }
@@ -35,7 +35,7 @@
   .commit-box,
   .info-well,
   .commit-ci-menu,
-  .files-changed,
+  .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
     @extend .fixed-width-container;
@@ -81,6 +81,7 @@
     border: 1px solid $white-normal;
     padding: 5px;
     max-height: calc(100vh - 100px);
+    max-width: 100%;
   }
 
   .emoji-block {
@@ -259,7 +260,7 @@
       padding-top: 10px;
     }
 
-    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
       }

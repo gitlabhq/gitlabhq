@@ -1,12 +1,13 @@
-/* global bp */
-import Cookies from 'js-cookie';
 import {
   calculateTop,
   hideSubLevelItems,
   showSubLevelItems,
   canShowSubItems,
   canShowActiveSubItems,
+  getHeaderHeight,
+  setSidebar,
 } from '~/fly_out_nav';
+import bp from '~/breakpoints';
 
 describe('Fly out sidebar navigation', () => {
   let el;
@@ -59,7 +60,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         el.querySelector('.sidebar-sub-level-items').style.display,
-      ).toBe('none');
+      ).toBe('');
     });
 
     it('does not hude subitems on mobile', () => {
@@ -146,7 +147,7 @@ describe('Fly out sidebar navigation', () => {
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top)}px, 0px)`);
+      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
@@ -182,7 +183,7 @@ describe('Fly out sidebar navigation', () => {
 
   describe('canShowActiveSubItems', () => {
     afterEach(() => {
-      Cookies.remove('sidebar_collapsed');
+      setSidebar(null);
     });
 
     it('returns true by default', () => {
@@ -191,36 +192,23 @@ describe('Fly out sidebar navigation', () => {
       ).toBeTruthy();
     });
 
-    it('returns false when cookie is false & element is active', () => {
-      Cookies.set('sidebar_collapsed', 'false');
+    it('returns false when active & expanded sidebar', () => {
+      const sidebar = document.createElement('div');
       el.classList.add('active');
+
+      setSidebar(sidebar);
 
       expect(
         canShowActiveSubItems(el),
       ).toBeFalsy();
     });
 
-    it('returns true when cookie is false & element is active', () => {
-      Cookies.set('sidebar_collapsed', 'true');
+    it('returns true when active & collapsed sidebar', () => {
+      const sidebar = document.createElement('div');
+      sidebar.classList.add('sidebar-icons-only');
       el.classList.add('active');
 
-      expect(
-        canShowActiveSubItems(el),
-      ).toBeTruthy();
-    });
-
-    it('returns true when element is active & breakpoint is sm', () => {
-      breakpointSize = 'sm';
-      el.classList.add('active');
-
-      expect(
-        canShowActiveSubItems(el),
-      ).toBeTruthy();
-    });
-
-    it('returns true when element is active & breakpoint is md', () => {
-      breakpointSize = 'md';
-      el.classList.add('active');
+      setSidebar(sidebar);
 
       expect(
         canShowActiveSubItems(el),

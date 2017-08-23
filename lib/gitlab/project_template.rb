@@ -25,7 +25,9 @@ module Gitlab
     end
 
     TEMPLATES_TABLE = [
-      ProjectTemplate.new('rails', 'Ruby on Rails')
+      ProjectTemplate.new('rails', 'Ruby on Rails'),
+      ProjectTemplate.new('spring', 'Spring'),
+      ProjectTemplate.new('express', 'NodeJS Express')
     ].freeze
 
     class << self

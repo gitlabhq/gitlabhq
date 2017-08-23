@@ -48,6 +48,16 @@ describe MergeRequests::CreateService do
         expect(Todo.where(attributes).count).to be_zero
       end
 
+      it 'creates exactly 1 create MR event' do
+        attributes = {
+          action: Event::CREATED,
+          target_id: @merge_request.id,
+          target_type: @merge_request.class.name
+        }
+
+        expect(Event.where(attributes).count).to eq(1)
+      end
+
       context 'when merge request is assigned to someone' do
         let(:opts) do
           {

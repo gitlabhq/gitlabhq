@@ -234,6 +234,8 @@ module ProjectsHelper
   # If no limit is applied we'll just issue a COUNT since the result set could
   # be too large to load into memory.
   def any_projects?(projects)
+    return projects.any? if projects.is_a?(Array)
+
     if projects.limit_value
       projects.to_a.any?
     else
