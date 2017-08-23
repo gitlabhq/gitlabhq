@@ -3,7 +3,7 @@
 module Gitlab
   module LDAP
     class Person
-      include ::EE::Gitlab::LDAP::Person
+      prepend ::EE::Gitlab::LDAP::Person
 
       # Active Directory-specific LDAP filter that checks if bit 2 of the
       # userAccountControl attribute is set.
@@ -23,6 +23,15 @@ module Gitlab
 
       def self.disabled_via_active_directory?(dn, adapter)
         adapter.dn_matches_filter?(dn, AD_USER_DISABLED)
+      end
+
+      def self.ldap_attributes(config)
+        [
+          'dn', # Used in `dn`
+          config.uid, # Used in `uid`
+          *config.attributes['name'], # Used in `name`
+          *config.attributes['email'] # Used in `email`
+        ]
       end
 
       def initialize(entry, provider)
