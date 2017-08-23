@@ -386,15 +386,15 @@
     w.gl.utils.backOff = (fn, timeout = 60000) => {
       const maxInterval = 32000;
       let nextInterval = 2000;
-
-      const startTime = Date.now();
+      let timeElapsed = 0;
 
       return new Promise((resolve, reject) => {
         const stop = arg => ((arg instanceof Error) ? reject(arg) : resolve(arg));
 
         const next = () => {
-          if (Date.now() - startTime < timeout) {
-            setTimeout(fn.bind(null, next, stop), nextInterval);
+          if (timeElapsed < timeout) {
+            setTimeout(() => fn(next, stop), nextInterval);
+            timeElapsed += nextInterval;
             nextInterval = Math.min(nextInterval + nextInterval, maxInterval);
           } else {
             reject(new Error('BACKOFF_TIMEOUT'));

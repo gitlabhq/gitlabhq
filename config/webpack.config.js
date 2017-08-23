@@ -77,7 +77,6 @@ var config = {
     terminal:             './terminal/terminal_bundle.js',
     u2f:                  ['vendor/u2f'],
     ui_development_kit:   './ui_development_kit.js',
-    users:                './users/index.js',
     raven:                './raven/index.js',
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
@@ -279,14 +278,9 @@ if (IS_PRODUCTION) {
     })
   );
 
-  // zopfli requires a lot of compute time and is disabled in CI
+  // compression can require a lot of compute time and is disabled in CI
   if (!NO_COMPRESSION) {
-    // gracefully fall back to gzip if `node-zopfli` is unavailable (e.g. in CentOS 6)
-    try {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'zopfli' }));
-    } catch(err) {
-      config.plugins.push(new CompressionPlugin({ algorithm: 'gzip' }));
-    }
+    config.plugins.push(new CompressionPlugin());
   }
 }
 

@@ -362,7 +362,9 @@
   %fieldset
     %legend Background Jobs
     %p
-      These settings require a restart to take effect.
+      These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -491,6 +493,16 @@
   %fieldset
     %legend Repository Storage
     .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :hashed_storage_enabled do
+            = f.check_box :hashed_storage_enabled
+            Create new projects using hashed storage paths
+          .help-block
+            Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
+            repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
+            %em (EXPERIMENTAL)
+    .form-group
       = f.label :repository_storages, 'Storage paths for new projects', class: 'control-label col-sm-2'
       .col-sm-10
         = f.select :repository_storages, repository_storages_options_for_select, {include_hidden: false}, multiple: true, class: 'form-control'
@@ -498,6 +510,7 @@
           Manage repository storage paths. Learn more in the
           = succeed "." do
             = link_to "repository storages documentation", help_page_path("administration/repository_storages")
+
 
   %fieldset
     %legend Repository Checks

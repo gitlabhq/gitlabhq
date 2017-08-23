@@ -26,6 +26,13 @@ class GroupsController < Groups::ApplicationController
 
   def new
     @group = Group.new
+
+    if params[:parent_id].present?
+      parent = Group.find_by(id: params[:parent_id])
+      if can?(current_user, :create_subgroup, parent)
+        @group.parent = parent
+      end
+    end
   end
 
   def create

@@ -13,9 +13,9 @@ module Groups
         return @group
       end
 
-      if @group.parent && !can?(current_user, :admin_group, @group.parent)
+      if @group.parent && !can?(current_user, :create_subgroup, @group.parent)
         @group.parent = nil
-        @group.errors.add(:parent_id, 'manage access required to create subgroup')
+        @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
 
         return @group
       end

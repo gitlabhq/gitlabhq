@@ -413,7 +413,7 @@ import initChangesDropdown from './init_changes_dropdown';
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
 
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
 
           new TreeView();
           new BlobViewer();
@@ -433,7 +433,7 @@ import initChangesDropdown from './init_changes_dropdown';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepo()) break;
+          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
