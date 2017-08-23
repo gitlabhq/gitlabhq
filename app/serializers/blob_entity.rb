@@ -1,4 +1,9 @@
 class BlobEntity < BlobBasicEntity
+  expose :extension, :mime_type, :file_type
+
+  expose :raw_size, as: :size
+  expose :raw_binary?, as: :binary
+
   expose :simple_viewer, :rich_viewer, :auxiliary_viewer, using: BlobViewerEntity
 
   expose :stored_externally?, as: :stored_externally
