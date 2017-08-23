@@ -3,7 +3,7 @@ module Issues
     include SpamCheckService
 
     def execute(issue)
-      handle_move_between_iids(issue)
+      handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
       update(issue)
@@ -54,13 +54,13 @@ module Issues
       end
     end
 
-    def handle_move_between_iids(issue)
-      return unless params[:move_between_iids]
+    def handle_move_between_ids(issue)
+      return unless params[:move_between_ids]
 
-      after_iid, before_iid = params.delete(:move_between_iids)
+      after_id, before_id = params.delete(:move_between_ids)
 
-      issue_before = get_issue_if_allowed(issue.project, before_iid) if before_iid
-      issue_after = get_issue_if_allowed(issue.project, after_iid) if after_iid
+      issue_before = get_issue_if_allowed(before_id) if before_id
+      issue_after = get_issue_if_allowed(after_id) if after_id
 
       issue.move_between(issue_before, issue_after)
     end
@@ -76,8 +76,8 @@ module Issues
 
     private
 
-    def get_issue_if_allowed(project, iid)
-      issue = project.issues.find_by(iid: iid)
+    def get_issue_if_allowed(id)
+      issue = Issue.find(id)
       issue if can?(current_user, :update_issue, issue)
     end
 

@@ -44,7 +44,7 @@ module Boards
           )
         end
 
-        attrs[:move_between_iids] = move_between_iids if move_between_iids
+        attrs[:move_between_ids] = move_between_ids if move_between_ids
 
         attrs
       end
@@ -69,10 +69,10 @@ module Boards
         Array(label_ids).compact
       end
 
-      def move_between_iids
-        return unless params[:move_after_iid] || params[:move_before_iid]
+      def move_between_ids
+        return unless params[:move_after_id] || params[:move_before_id]
 
-        [params[:move_after_iid], params[:move_before_iid]]
+        [params[:move_after_id], params[:move_before_id]]
       end
     end
   end
