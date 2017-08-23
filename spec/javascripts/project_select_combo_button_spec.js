@@ -101,5 +101,40 @@ describe('Project Select Combo Button', function () {
       window.localStorage.clear();
     });
   });
+
+  describe('deriveTextVariants', function () {
+    beforeEach(function () {
+      this.mockExecutionContext = {
+        resourceType: '',
+        resourceLabel: '',
+      };
+
+      this.comboButton = new ProjectSelectComboButton(this.projectSelectInput);
+
+      this.method = this.comboButton.deriveTextVariants.bind(this.mockExecutionContext);
+    });
+
+    it('correctly derives test variants for merge requests', function () {
+      this.mockExecutionContext.resourceType = 'merge_requests';
+      this.mockExecutionContext.resourceLabel = 'New merge request';
+
+      const returnedVariants = this.method();
+
+      expect(returnedVariants.localStorageItemType).toBe('new-merge-request');
+      expect(returnedVariants.defaultTextPrefix).toBe('New merge request');
+      expect(returnedVariants.presetTextSuffix).toBe('merge request');
+    });
+
+    it('correctly derives text variants for issues', function () {
+      this.mockExecutionContext.resourceType = 'issues';
+      this.mockExecutionContext.resourceLabel = 'New issue';
+
+      const returnedVariants = this.method();
+
+      expect(returnedVariants.localStorageItemType).toBe('new-issue');
+      expect(returnedVariants.defaultTextPrefix).toBe('New issue');
+      expect(returnedVariants.presetTextSuffix).toBe('issue');
+    });
+  });
 });
 

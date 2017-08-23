@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.integer "performance_bar_allowed_group_id"
     t.boolean "password_authentication_enabled"
     t.boolean "project_export_enabled", default: true, null: false
+    t.boolean "hashed_storage_enabled", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -379,6 +380,8 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "name"
+    t.integer "status"
+    t.integer "lock_version"
   end
 
   add_index "ci_stages", ["pipeline_id", "name"], name: "index_ci_stages_on_pipeline_id_and_name", using: :btree
@@ -1206,6 +1209,7 @@ ActiveRecord::Schema.define(version: 20170820100558) do
     t.datetime "last_repository_updated_at"
     t.string "ci_config_path"
     t.text "delete_error"
+    t.integer "storage_version", limit: 2
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

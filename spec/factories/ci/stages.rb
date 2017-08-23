@@ -15,4 +15,12 @@ FactoryGirl.define do
                                     warnings: warnings)
     end
   end
+
+  factory :ci_stage_entity, class: Ci::Stage do
+    project factory: :project
+    pipeline factory: :ci_empty_pipeline
+
+    name 'test'
+    status 'pending'
+  end
 end
