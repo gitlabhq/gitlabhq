@@ -5,6 +5,11 @@ class GitOperationService
     committer = Gitlab::Git::Committer.from_user(committer) if committer.is_a?(User)
     @committer = committer
 
+    # Refactoring aid
+    unless new_repository.is_a?(Gitlab::Git::Repository)
+      raise "expected a Gitlab::Git::Repository, got #{new_repository}"
+    end
+
     @repository = new_repository
   end
 
@@ -55,10 +60,14 @@ class GitOperationService
   def with_branch(
     branch_name,
     start_branch_name: nil,
-    start_project: repository.project,
+    start_repository: repository,
     &block)
 
-    start_repository = start_project.repository
+    # Refactoring aid
+    unless start_repository.is_a?(Gitlab::Git::Repository)
+      raise "expected a Gitlab::Git::Repository, got #{start_repository}"
+    end
+
     start_branch_name = nil if start_repository.empty_repo?
 
     if start_branch_name && !start_repository.branch_exists?(start_branch_name)
@@ -75,6 +84,7 @@ class GitOperationService
 
   private
 
+  # Returns [newrev, should_run_after_create, should_run_after_create_branch]
   def update_branch_with_hooks(branch_name)
     update_autocrlf_option
 
@@ -93,12 +103,7 @@ class GitOperationService
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
     update_ref_in_hooks(ref, newrev, oldrev)
 
-    # If repo was empty expire cache
-    repository.after_create if was_empty
-    repository.after_create_branch if
-      was_empty || Gitlab::Git.blank_ref?(oldrev)
-
-    newrev
+    [newrev, was_empty, was_empty || Gitlab::Git.blank_ref?(oldrev)]
   end
 
   def find_oldrev_from_branch(newrev, branch)
@@ -140,7 +145,7 @@ class GitOperationService
     command = %W[#{Gitlab.config.git.bin_path} update-ref --stdin -z]
     _, status = Gitlab::Popen.popen(
       command,
-      repository.path_to_repo) do |stdin|
+      repository.path) do |stdin|
       stdin.write("update #{ref}\x00#{newrev}\x00#{oldrev}\x00")
     end
 
@@ -152,8 +157,8 @@ class GitOperationService
   end
 
   def update_autocrlf_option
-    if repository.raw_repository.autocrlf != :input
-      repository.raw_repository.autocrlf = :input
+    if repository.autocrlf != :input
+      repository.autocrlf = :input
     end
   end
 end
