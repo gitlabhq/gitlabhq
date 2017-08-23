@@ -29,21 +29,27 @@ describe AuthorizedProjectsWorker do
   end
 
   describe '#perform' do
-    subject { described_class.new }
+    let(:user) { create(:user) }
+
+    subject(:job) { described_class.new }
 
     it "refreshes user's authorized projects" do
-      user = create(:user)
-
       expect_any_instance_of(User).to receive(:refresh_authorized_projects)
 
-      subject.perform(user.id)
+      job.perform(user.id)
+    end
+
+    it 'notifies the JobWaiter when done if the key is provided' do
+      expect(Gitlab::JobWaiter).to receive(:notify).with('notify-key', job.jid)
+
+      job.perform(user.id, 'notify-key')
     end
 
     context "when the user is not found" do
       it "does nothing" do
         expect_any_instance_of(User).not_to receive(:refresh_authorized_projects)
 
-        subject.perform(-1)
+        job.perform(-1)
       end
     end
   end

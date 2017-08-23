@@ -13,13 +13,17 @@ module Groups
         return @group
       end
 
+<<<<<<< HEAD
       # Repository size limit comes as MB from the view
       limit = params.delete(:repository_size_limit)
       @group.repository_size_limit = Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
 
       if @group.parent && !can?(current_user, :admin_group, @group.parent)
+=======
+      if @group.parent && !can?(current_user, :create_subgroup, @group.parent)
+>>>>>>> upstream/master
         @group.parent = nil
-        @group.errors.add(:parent_id, 'manage access required to create subgroup')
+        @group.errors.add(:parent_id, 'You don’t have permission to create a subgroup in this group.')
 
         return @group
       end

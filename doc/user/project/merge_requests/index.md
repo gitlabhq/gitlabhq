@@ -145,6 +145,7 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
+<<<<<<< HEAD
 ## Merge request approvals
 
 > Included in [GitLab Enterprise Edition Starter][products].
@@ -194,6 +195,15 @@ in a per-branch basis. No need to checkout the branch, install and preview local
 all your changes will be available to preview by anyone with the Review Apps link.
 
 [Read more about Review Apps.](../../../ci/review_apps/index.md)
+=======
+## Merge request diff file navigation
+
+The diff view has a persistent dropdown for file navigation. As you scroll through
+diffs with a large number of files and/or many changes in those files, you can
+easily jump to any changed file through the dropdown navigation.
+
+![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
+>>>>>>> upstream/master
 
 ## Ignore whitespace changes in Merge Request diff view
 
