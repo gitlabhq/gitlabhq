@@ -55,7 +55,6 @@ describe Groups::AnalyticsController do
     expect(response).to have_http_status(200)
   end
 
-
   it 'sets instance variables properly' do
     get :show, group_id: group.path
 

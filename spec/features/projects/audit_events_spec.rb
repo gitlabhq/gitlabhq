@@ -47,7 +47,6 @@ feature 'Projects > Audit Events', :js do
     end
   end
 
-
   it 'has Audit Events button in head nav bar' do
     visit edit_project_path(project)
 
