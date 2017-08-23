@@ -70,8 +70,7 @@ $new-sidebar-collapsed-width: 50px;
     background-color: $white-light;
   }
 
-  .project-title,
-  .group-title {
+  .sidebar-context-title {
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -109,7 +108,7 @@ $new-sidebar-collapsed-width: 50px;
     }
 
     .badge,
-    .project-title {
+    .sidebar-context-title {
       display: none;
     }
 
