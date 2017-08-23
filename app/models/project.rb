@@ -1167,7 +1167,11 @@ class Project < ActiveRecord::Base
   end
 
   def open_issues_count
-    issues.opened.count
+    Projects::OpenIssuesCountService.new(self).count
+  end
+
+  def open_merge_requests_count
+    Projects::OpenMergeRequestsCountService.new(self).count
   end
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)

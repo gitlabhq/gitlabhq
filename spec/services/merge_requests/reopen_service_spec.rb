@@ -47,6 +47,13 @@ describe MergeRequests::ReopenService do
       end
     end
 
+    it 'refreshes the number of open merge requests for a valid MR' do
+      service = described_class.new(project, user, {})
+
+      expect { service.execute(merge_request) }
+        .to change { project.open_merge_requests_count }.from(0).to(1)
+    end
+
     context 'current user is not authorized to reopen merge request' do
       before do
         perform_enqueued_jobs do
