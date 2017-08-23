@@ -12,6 +12,7 @@
 #     active: boolean
 #     blocked: boolean
 #     external: boolean
+#     admin: boolean
 #
 class UsersFinder
   include CreatedAtFilter
@@ -32,6 +33,7 @@ class UsersFinder
     users = by_external_identity(users)
     users = by_external(users)
     users = by_created_at(users)
+    users = by_admin(users)
 
     users
   end
@@ -73,5 +75,11 @@ class UsersFinder
     return users unless params[:external]
 
     users.external
+  end
+
+  def by_admin(users)
+    return users if params[:admin].nil?
+
+    users.where(admin: params[:admin])
   end
 end

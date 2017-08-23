@@ -152,6 +152,12 @@ You can search users by creation date time range with:
 GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
 ```
 
+You can search for admin users:
+
+```
+GET /users?admin=true
+```
+
 ## Single user
 
 Get a single user.
