@@ -168,6 +168,7 @@ body[data-page='projects:blob:show'] .content-wrapper {
           margin-top: 3px;
           margin-left: 15px;
           color: $dropdown-title-btn-color;
+
           &:hover {
             color: darken($dropdown-title-btn-color, 15%);
           }

@@ -50,7 +50,12 @@ export default {
       this.changedFiles = [];
       this.commitMessage = '';
       this.editMode = false;
-      this.openedFiles.forEach(f => f.changed = false);
+      this.openedFiles = this.openedFiles.map((file) => {
+        const f = file;
+        f.changed = false;
+
+        return f;
+      });
       Store.setViewToPreview();
       window.scrollTo(0, 0);
     },
