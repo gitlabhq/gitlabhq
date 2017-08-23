@@ -6,28 +6,7 @@ class AutocompleteController < ApplicationController
   before_action :find_users, only: [:users]
 
   def users
-    @users ||= User.none
-    @users = @users.active
-    @users = @users.reorder(:name)
-    @users = @users.search(params[:search]) if params[:search].present?
-    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
-    @users = @users.page(params[:page]).per(params[:per_page])
-
-    if params[:todo_filter].present? && current_user
-      @users = @users.todo_authors(current_user.id, params[:todo_state_filter])
-    end
-
-    if params[:search].blank?
-      # Include current user if available to filter by "Me"
-      if params[:current_user].present? && current_user
-        @users = [current_user, *@users].uniq
-      end
-
-      if params[:author_id].present? && current_user
-        author = User.find_by_id(params[:author_id])
-        @users = [author, *@users].uniq if author
-      end
-    end
+    @users = YetAnotherUsersFinder.new(params: params, current_user: current_user, users: @users).execute
 
     render json: @users, only: [:name, :username, :id], methods: [:avatar_url]
   end
