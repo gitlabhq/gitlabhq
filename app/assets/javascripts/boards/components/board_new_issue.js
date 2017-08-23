@@ -23,7 +23,6 @@ export default {
       title: '',
       loading: true,
       selectedProject: {},
-      projects: [],
       error: false,
     };
   },
@@ -126,67 +125,71 @@ export default {
     }
   },
   template: `
-    <div class="card board-new-issue-form">
-      <form @submit="submit($event)">
-        <div class="flash-container"
-          v-if="error">
-          <div class="flash-alert">
-            An error occured. Please try again.
-          </div>
-        </div>
-        <label class="label-light"
-          :for="list.id + '-title'">
-          Title
-        </label>
-        <input class="form-control"
-          type="text"
-          v-model="title"
-          ref="input"
-          autocomplete="off"
-          :id="list.id + '-title'" />
-        <template v-if="groupId">
-          <label class="label-light prepend-top-10"
-            :for="list.id + '-project'">
-            Project
-          </label>
-          <div ref="projectsDropdown" class="dropdown">
-            <button
-              class="dropdown-menu-toggle wide"
-              type="button"
-              data-toggle="dropdown"
-              aria-expanded="false">
-              {{ selectedProjectName }}
-              <i class="fa fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
-              <div class="dropdown-title">
-                <span>Projects</span>
-                <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
-                  <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
-                </button>
-              </div>
-              <div class="dropdown-input">
-                <input class="dropdown-input-field">
-              </div>
-              <div class="dropdown-content"></div>
-              <div class="dropdown-loading"></div>
+    <div class="board-new-issue-form">
+      <div class="card">
+        <form @submit="submit($event)">
+          <div class="flash-container"
+            v-if="error">
+            <div class="flash-alert">
+              An error occured. Please try again.
             </div>
           </div>
-        </template>
-        <div class="clearfix prepend-top-10">
-          <button class="btn btn-success pull-left"
-            type="submit"
-            :disabled="disabled"
-            ref="submit-button">
-            Submit issue
-          </button>
-          <button class="btn btn-default pull-right"
-            type="button"
-            @click="cancel">
-            Cancel
-          </button>
-        </div>
-      </form>
+          <label class="label-light"
+            :for="list.id + '-title'">
+            Title
+          </label>
+          <input class="form-control"
+            type="text"
+            v-model="title"
+            ref="input"
+            autocomplete="off"
+            :id="list.id + '-title'" />
+          <template v-if="groupId">
+            <label class="label-light prepend-top-10"
+              :for="list.id + '-project'">
+              Project
+            </label>
+            <div ref="projectsDropdown" class="dropdown">
+              <button
+                class="dropdown-menu-toggle wide"
+                type="button"
+                data-toggle="dropdown"
+                aria-expanded="false">
+                {{ selectedProjectName }}
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-full-width">
+                <div class="dropdown-title">
+                  <span>Projects</span>
+                  <button aria-label="Close" type="button" class="dropdown-title-button dropdown-menu-close">
+                    <i aria-hidden="true" data-hidden="true" class="fa fa-times dropdown-menu-close-icon"></i>
+                  </button>
+                </div>
+                <div class="dropdown-input">
+                  <input class="dropdown-input-field">
+                </div>
+                <div class="dropdown-content"></div>
+                <div class="dropdown-loading">
+                  <loading-icon />
+                </div>
+              </div>
+            </div>
+          </template>
+          <div class="clearfix prepend-top-10">
+            <button class="btn btn-success pull-left"
+              type="submit"
+              :disabled="disabled"
+              ref="submit-button">
+              Submit issue
+            </button>
+            <button class="btn btn-default pull-right"
+              type="button"
+              @click="cancel">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   `,
 };

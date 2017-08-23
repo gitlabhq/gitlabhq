@@ -163,20 +163,21 @@ export default {
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },
   template: `
-    <div class="board-list-component">
+    <transition-group tag="div" class="board-list-component">
       <div
+        key="loading"
         class="board-list-loading text-center"
         aria-label="Loading issues"
         v-if="loading">
         <loading-icon />
       </div>
-      <transition name="slide-down">
-        <board-new-issue
-          :group-id="groupId"
-          :list="list"
-          v-if="list.type !== 'closed' && showIssueForm"/>
-      </transition>
+      <board-new-issue
+        key="newIssue"
+        :group-id="groupId"
+        :list="list"
+        v-if="list.type !== 'closed' && showIssueForm"/>
       <ul
+        key="list"
         class="board-list"
         v-show="!loading"
         ref="list"
@@ -211,6 +212,6 @@ export default {
           </span>
         </li>
       </ul>
-    </div>
+    </transition-group>
   `,
 };
