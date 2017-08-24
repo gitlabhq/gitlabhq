@@ -9,6 +9,13 @@ describe Gitlab::LDAP::Person do
     expect(described_class).to include(EE::Gitlab::LDAP::Person)
   end
 
+  describe '.ldap_attributes' do
+    it 'appends EE-specific attributes' do
+      stub_ldap_config(sync_ssh_keys: 'sshPublicKey')
+      expect(described_class.ldap_attributes(ldap_adapter.config)).to include('sshPublicKey')
+    end
+  end
+
   describe '.find_by_email' do
     let(:adapter) { ldap_adapter }
 

@@ -52,12 +52,6 @@ module EE
             LDAP::Group.new(entry, self)
           end
         end
-
-        def user_attributes
-          attributes = super
-          attributes << config.sync_ssh_keys if config.sync_ssh_keys
-          attributes
-        end
       end
     end
   end
