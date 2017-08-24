@@ -10,7 +10,7 @@ export default class ProtectedTagCreate {
   buildDropdowns() {
     const $allowedToCreateDropdown = this.$form.find('.js-allowed-to-create');
 
-    if ($allowedToCreateDropdown && $allowedToCreateDropdown.data('glDropdown')) {
+    if ($allowedToCreateDropdown) {
       // Cache callback
       this.onSelectCallback = this.onSelect.bind(this);
 
@@ -22,7 +22,7 @@ export default class ProtectedTagCreate {
       });
 
       // Select default
-      $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
+      if ($allowedToCreateDropdown.data('glDropdown')) $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
 
       // Protected tag dropdown
       this.protectedTagDropdown = new ProtectedTagDropdown({
