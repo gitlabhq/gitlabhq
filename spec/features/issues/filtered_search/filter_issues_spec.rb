@@ -196,7 +196,17 @@ describe 'Filter issues', js: true do
       end
 
       it 'filters issues by multiple assignees' do
-        skip('to be tested, issue #26546')
+        create(:issue, project: project, author: user, assignees: [user2, user])
+
+        input_filtered_search("assignee:@#{user.username} assignee:@#{user2.username}")
+
+        expect_tokens([
+          assignee_token(user.name),
+          assignee_token(user2.name)
+        ])
+
+        expect_issues_list_count(1)
+        expect_filtered_search_input_empty
       end
     end
 

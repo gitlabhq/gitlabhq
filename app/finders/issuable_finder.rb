@@ -26,7 +26,7 @@ class IssuableFinder
   IRRELEVANT_PARAMS_FOR_CACHE_KEY = %i[utf8 sort page state].freeze
 
   SCALAR_PARAMS = %i(scope state group_id project_id milestone_title assignee_id search label_name sort assignee_username author_id author_username authorized_only due_date iids non_archived weight).freeze
-  ARRAY_PARAMS = { label_name: [], iids: [] }.freeze
+  ARRAY_PARAMS = { label_name: [], iids: [], assignee_username: [] }.freeze
   VALID_PARAMS = (SCALAR_PARAMS + [ARRAY_PARAMS]).freeze
 
   attr_accessor :current_user, :params
@@ -307,18 +307,6 @@ class IssuableFinder
     # Ensure we always have an explicit sort order (instead of inheriting
     # multiple orders when combining ActiveRecord::Relation objects).
     params[:sort] ? items.sort(params[:sort], excluded_labels: label_names) : items.reorder(id: :desc)
-  end
-
-  def by_assignee(items)
-    if assignee
-      items = items.where(assignee_id: assignee.id)
-    elsif no_assignee?
-      items = items.where(assignee_id: nil)
-    elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
-    end
-
-    items
   end
 
   def by_author(items)
