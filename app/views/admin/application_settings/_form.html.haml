@@ -217,7 +217,13 @@
         .help-block 0 for unlimited
 
   %fieldset
-    %legend Continuous Integration
+    %legend Continuous Integration and Continuous Deployment
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :auto_devops_enabled do
+            = f.check_box :auto_devops_enabled
+            Allow projects to get automaticly configured to use GitLab CI/CD.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

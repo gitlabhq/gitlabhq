@@ -784,13 +784,47 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#ci_yaml_file' do
-    it 'reports error if the file is not found' do
-      allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+    let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-      pipeline.ci_yaml_file
+    context 'when AutoDevops is enabled' do
+      it 'returns the configuration if found' do
+        allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+          .and_return('config')
 
-      expect(pipeline.yaml_errors)
-        .to eq('Failed to load CI/CD config file at custom')
+        expect(pipeline.ci_yaml_file).to be_a(String)
+        expect(pipeline.ci_yaml_file).not_to eq(implied_yml)
+        expect(pipeline.yaml_errors).to be_nil
+      end
+
+      it 'returns the implied configuration when its not found' do
+        allow_any_instance_of(ApplicationSetting)
+          .to receive(:auto_devops_enabled?) { true }
+        allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+        expect(pipeline.ci_yaml_file).to eq(implied_yml)
+      end
+    end
+
+    context 'when AudoDevOps is disabled' do
+      context 'when an invalid path is given' do
+        it 'sets the yaml errors' do
+          allow(pipeline.project).to receive(:ci_config_path) { 'custom' }
+
+          expect(pipeline.ci_yaml_file).to be_nil
+          expect(pipeline.yaml_errors)
+            .to start_with('Failed to load CI/CD config file')
+        end
+      end
+
+      context 'when the config file can be found' do
+        it 'has no yaml_errors' do
+          allow(pipeline.project.repository).to receive(:gitlab_ci_yml_for)
+            .and_return('config')
+
+          expect(pipeline.ci_yaml_file).to eq('config')
+          expect(pipeline.yaml_errors).to be_nil
+        end
+      end
     end
   end
 
