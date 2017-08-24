@@ -188,7 +188,7 @@ describe 'Promotions', js: true do
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
-      expect(find('#promote_burndown_charts')).to have_content "Upgrade the plan for #{ .group.name } to improve milestones"
+      expect(find('#promote_burndown_charts')).to have_content "Upgrade the plan for #{ group.name } to improve milestones"
     end
 
     it 'should appear in milestone page with owners name' do
