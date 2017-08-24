@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ImportExport::CleanupService do
+describe Projects::HousecleaningService do
   subject { described_class.new(project) }
 
   let(:project) { create(:project, :repository) }

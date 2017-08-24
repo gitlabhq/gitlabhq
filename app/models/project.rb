@@ -372,7 +372,7 @@ class Project < ActiveRecord::Base
       if Gitlab::ImportSources.importer_names.include?(project.import_type) && project.repo_exists?
         project.run_after_commit do
           begin
-            Projects::ImportExport::CleanupService.new(project).execute
+            Projects::HousecleaningService.new(project).execute
           rescue Projects::HousekeepingService::LeaseTaken => e
             Rails.logger.info("Could not perform housekeeping for project #{project.full_path} (#{project.id}): #{e}")
           end

@@ -1563,14 +1563,14 @@ describe Project do
 
   describe 'project import state transitions' do
     context 'state transition: [:started] => [:finished]' do
-      let(:cleanup_service) { spy(:cleanup_service) }
+      let(:housecleaning_service) { spy(:housecleaning_service) }
       let(:housekeeping_service) { spy(:housekeeping_service) }
 
       before do
-        allow(Projects::ImportExport::CleanupService)
-          .to receive(:new) { cleanup_service }
+        allow(Projects::HousecleaningService)
+          .to receive(:new) { housecleaning_service }
 
-        allow(cleanup_service)
+        allow(housecleaning_service)
           .to receive(:execute) { housekeeping_service.execute }
 
         allow(Projects::HousekeepingService)
@@ -1589,7 +1589,7 @@ describe Project do
 
         project.import_finish
 
-        expect(cleanup_service).to have_received(:execute)
+        expect(housecleaning_service).to have_received(:execute)
         expect(housekeeping_service).to have_received(:execute)
       end
 
