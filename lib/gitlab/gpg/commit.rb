@@ -77,22 +77,22 @@ module Gitlab
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
-          valid_signature: verification_status == GpgSignature.verification_statuses[:verified],
+          valid_signature: verification_status == :verified,
           verification_status: verification_status
         }
       end
 
       def verification_status(gpg_key)
-        return GpgSignature.verification_statuses[:unknown_key] unless gpg_key
-        return GpgSignature.verification_statuses[:unverified_key] unless gpg_key.verified?
-        return GpgSignature.verification_statuses[:unverified] unless verified_signature.valid?
+        return :unknown_key unless gpg_key
+        return :unverified_key unless gpg_key.verified?
+        return :unverified unless verified_signature.valid?
 
         if gpg_key.verified_and_belongs_to_email?(@commit.committer_email)
-          GpgSignature.verification_statuses[:verified]
+          :verified
         elsif gpg_key.user.all_emails.include?(@commit.committer_email)
-          GpgSignature.verification_statuses[:same_user_different_email]
+          :same_user_different_email
         else
-          GpgSignature.verification_statuses[:other_user]
+          :other_user
         end
       end
 
