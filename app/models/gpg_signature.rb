@@ -4,6 +4,14 @@ class GpgSignature < ActiveRecord::Base
   sha_attribute :commit_sha
   sha_attribute :gpg_key_primary_keyid
 
+  enum verification_status: {
+    unverified: 0,
+    verified: 1,
+    other_user: 2,
+    unverified_key: 3,
+    unknown_key: 4
+  }
+
   belongs_to :project
   belongs_to :gpg_key
 

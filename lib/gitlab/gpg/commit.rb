@@ -68,6 +68,7 @@ module Gitlab
 
       def attributes(gpg_key)
         user_infos = user_infos(gpg_key)
+        verification_status = verification_status(gpg_key)
 
         {
           commit_sha: @commit.sha,
@@ -76,12 +77,21 @@ module Gitlab
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
           gpg_key_user_email: user_infos[:email],
-          valid_signature: gpg_signature_valid_signature_value(gpg_key)
+          valid_signature: verification_status == GpgSignature.verification_statuses[:verified],
+          verification_status: verification_status
         }
       end
 
-      def gpg_signature_valid_signature_value(gpg_key)
-        !!(gpg_key && gpg_key.verified? && verified_signature.valid?)
+      def verification_status(gpg_key)
+        if gpg_key && gpg_key.verified_and_belongs_to_email?(@commit.committer_email) && verified_signature.valid?
+          GpgSignature.verification_statuses[:verified]
+        elsif gpg_key && gpg_key.verified? && verified_signature.valid?
+          GpgSignature.verification_statuses[:other_user]
+        elsif gpg_key
+          GpgSignature.verification_statuses[:unverified_key]
+        else
+          GpgSignature.verification_statuses[:unknown_key]
+        end
       end
 
       def user_infos(gpg_key)
