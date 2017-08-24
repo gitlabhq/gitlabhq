@@ -210,6 +210,16 @@ module Gitlab
 
           @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
         end
+
+        def shas_with_signatures(repository, shas)
+          shas.select do |sha|
+            begin
+              Rugged::Commit.extract_signature(repository.rugged, sha)
+            rescue Rugged::OdbError
+              false
+            end
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)
@@ -261,7 +271,13 @@ module Gitlab
       #
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/324
       def to_diff
-        rugged_diff_from_parent.patch
+        Gitlab::GitalyClient.migrate(:commit_patch) do |is_enabled|
+          if is_enabled
+            @repository.gitaly_commit_client.patch(id)
+          else
+            rugged_diff_from_parent.patch
+          end
+        end
       end
 
       # Returns a diff object for the changes from this commit's first parent.
@@ -333,15 +349,6 @@ module Gitlab
 
       def parents
         parent_ids.map { |oid| self.class.find(@repository, oid) }.compact
-      end
-
-      # Get the gpg signature of this commit.
-      #
-      # Ex.
-      #   commit.signature(repo)
-      #
-      def signature(repo)
-        Rugged::Commit.extract_signature(repo.rugged, sha)
       end
 
       def stats

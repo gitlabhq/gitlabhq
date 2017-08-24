@@ -55,7 +55,17 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
+## Issues and merge requests within a group
+
+Issues and merge requests are part of projects. For a given group, view all the
+[issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+together in a single list view.
+
 ## Create a new group
+
+> **Notes:**
+- For a list of words that are not allowed to be used as group names see the
+  [reserved names][reserved].
 
 You can create a group in GitLab from:
 
@@ -214,3 +224,4 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 
 [permissions]: ../permissions.md#permissions
 [ee]: https://about.gitlab.com/products/
+[reserved]:  ../reserved_names.md

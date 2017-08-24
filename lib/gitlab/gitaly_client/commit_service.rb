@@ -60,22 +60,28 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request)
-        entry = response.first
-        return unless entry.oid.present?
 
-        if entry.type == :BLOB
-          rest_of_data = response.reduce("") { |memo, msg| memo << msg.data }
-          entry.data += rest_of_data
+        entry = nil
+        data = ''
+        response.each do |msg|
+          if entry.nil?
+            entry = msg
+
+            break unless entry.type == :BLOB
+          end
+
+          data << msg.data
         end
+        entry.data = data
 
-        entry
+        entry unless entry.oid.blank?
       end
 
       def tree_entries(repository, revision, path)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path.presence || '.'
+          revision: GitalyClient.encode(revision),
+          path: path.present? ? GitalyClient.encode(path) : '.'
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)
@@ -169,8 +175,8 @@ module Gitlab
       def raw_blame(revision, path)
         request = Gitaly::RawBlameRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path
+          revision: GitalyClient.encode(revision),
+          path: GitalyClient.encode(path)
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request)
@@ -186,6 +192,16 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :commit_service, :find_commit, request)
 
         response.commit
+      end
+
+      def patch(revision)
+        request = Gitaly::CommitPatchRequest.new(
+          repository: @gitaly_repo,
+          revision: GitalyClient.encode(revision)
+        )
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request)
+
+        response.sum(&:data)
       end
 
       private

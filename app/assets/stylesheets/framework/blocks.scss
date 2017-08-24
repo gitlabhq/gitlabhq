@@ -8,7 +8,7 @@
   text-align: center;
   padding: 20px;
   color: $gl-text-color;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   font-size: 14px;
   line-height: 36px;
 
@@ -213,7 +213,7 @@
 
     h1 {
       display: inline;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       font-size: 24px;
       color: $gl-text-color;
     }

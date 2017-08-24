@@ -11,7 +11,7 @@ class MigrateRepoSize < ActiveRecord::Migration
       path = File.join(namespace_path, project['project_path'] + '.git')
 
       begin
-        repo = Gitlab::Git::Repository.new('default', path)
+        repo = Gitlab::Git::Repository.new('default', path, '')
         if repo.empty?
           print '-'
         else

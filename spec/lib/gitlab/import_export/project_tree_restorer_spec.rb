@@ -10,6 +10,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         @shared = Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path')
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+
+        allow(@project.repository).to receive(:fetch_ref).and_return(true)
+        allow(@project.repository.raw).to receive(:rugged_branch_exists?).and_return(false)
+
+        expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
+        allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
+
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
         @restored_project_json = project_tree_restorer.restore
       end
@@ -183,7 +190,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do
-      allow(ImportExport).to receive(:project_filename).and_return('project.light.json')
+      project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+
       allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
     end
 
@@ -195,7 +203,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
           restored_project_json
 
-          expect(shared.errors.first).not_to include('test')
+          expect(shared.errors.first).to be_nil
         end
       end
     end
@@ -219,15 +227,42 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+
         restored_project_json
       end
 
-      it 'has group labels' do
-        expect(GroupLabel.count).to eq(1)
+      it 'correctly restores project' do
+        expect(restored_project_json).to be_truthy
+        expect(shared.errors).to be_empty
+      end
+
+      it 'has labels' do
+        expect(project.labels.count).to eq(2)
+      end
+
+      it 'creates group label' do
+        expect(project.group.labels.count).to eq(1)
       end
 
       it 'has label priorities' do
-        expect(GroupLabel.first.priorities).not_to be_empty
+        expect(project.labels.first.priorities).not_to be_empty
+      end
+
+      it 'has milestones' do
+        expect(project.milestones.count).to eq(1)
+      end
+
+      it 'has issue' do
+        expect(project.issues.count).to eq(1)
+        expect(project.issues.first.labels.count).to eq(2)
+      end
+
+      it 'has issue with group label and project label' do
+        labels = project.issues.first.labels
+
+        expect(labels.where(type: "GroupLabel").count).to eq(1)
+        expect(labels.where(type: "ProjectLabel").count).to eq(1)
       end
     end
   end

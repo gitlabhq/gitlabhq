@@ -117,7 +117,7 @@ following these rules:
   created (requires GitLab Runner v1.1.0 or higher)
 
 To override the default behavior, you can
-[specify a service alias](#available-settings-for-services-entry).
+[specify a service alias](#available-settings-for-services).
 
 ## Define `image` and `services` from `.gitlab-ci.yml`
 
@@ -183,8 +183,7 @@ test:
 
 ## Extended Docker configuration options
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
 When configuring the `image` or `services` entries, you can use a string or a map as
 options:
@@ -221,27 +220,28 @@ For example, the following two definitions are equal:
 
 ### Available settings for `image`
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting    | Required | Description |
-|------------|----------|-------------|
-| `name`     | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| Setting    | Required | GitLab version | Description |
+|------------|----------|----------------| ----------- |
+| `name`     | yes, when used with any other option      | 9.4 |Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
 
 ### Available settings for `services`
 
-> **Note:**
-This feature requires GitLab 9.4 and GitLab Runner 9.4 or higher.
+> Introduced in GitLab and GitLab Runner 9.4.
 
-| Setting    | Required | Description |
-|------------|----------|-------------|
-| `name`       | yes, when used with any other option      | Full name of the image that should be used. It should contain the Registry part if needed. |
-| `entrypoint` | no     | Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
-| `command`    | no       | Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
-| `alias`      | no       | Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
+| Setting    | Required | GitLab version | Description |
+|------------|----------|----------------| ----------- |
+| `name`       | yes, when used with any other option  | 9.4 | Full name of the image that should be used. It should contain the Registry part if needed. |
+| `entrypoint` | no     | 9.4 |Command or script that should be executed as the container's entrypoint. It will be translated to Docker's `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`][entrypoint] directive, where each shell token is a separate string in the array. |
+| `command`    | no       | 9.4 |Command or script that should be used as the container's command. It will be translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`][cmd] directive, where each shell token is a separate string in the array. |
+| `alias`      | no       | 9.4 |Additional alias that can be used to access the service from the job's container. Read [Accessing the services](#accessing-the-services) for more information. |
 
 ### Starting multiple services from the same image
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Before the new extended Docker configuration options, the following configuration
 would not work properly:
@@ -273,6 +273,9 @@ but now each of them will also be accessible with the alias configured
 in `.gitlab-ci.yml` file.
 
 ### Setting a command for the service
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Let's assume you have a `super/sql:latest` image with some SQL database
 inside it and you would like to use it as a service for your job. Let's also
@@ -312,6 +315,9 @@ services:
 As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
 
 ### Overriding the entrypoint of an image
+
+> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
+configuration options](#extended-docker-configuration-options).
 
 Let's assume you have a `super/sql:experimental` image with some SQL database
 inside it and you would like to use it as a base image for your job because you

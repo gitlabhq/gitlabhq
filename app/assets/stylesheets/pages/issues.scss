@@ -75,7 +75,7 @@ ul.related-merge-requests > li {
 .merge-requests-title,
 .related-branches-title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: $gl-font-weight-bold;
 }
 
 .merge-request-id {
@@ -244,7 +244,7 @@ ul.related-merge-requests > li {
 
       strong {
         display: block;
-        font-weight: 600;
+        font-weight: $gl-font-weight-bold;
       }
     }
   }

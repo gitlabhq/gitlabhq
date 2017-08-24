@@ -260,7 +260,7 @@
       padding-top: 10px;
     }
 
-    &:not(.issue-boards-sidebar):not([data-signed-in]) {
+    &:not(.issue-boards-sidebar):not([data-signed-in]):not([data-always-show-toggle]) {
       .issuable-sidebar-header {
         display: none;
       }
@@ -271,7 +271,7 @@
     }
 
     .light {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .no-value {
@@ -306,7 +306,7 @@
       display: block;
       margin-top: 4px;
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .hide-expanded {
@@ -689,7 +689,7 @@
     .issuable-info,
     .task-status,
     .issuable-updated-at {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       color: $gl-text-color-secondary;
 
       a {

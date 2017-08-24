@@ -18,15 +18,12 @@ class NamespacelessProjectDestroyWorker
     rescue ActiveRecord::RecordNotFound
       return
     end
-    return unless project.namespace_id.nil?  # Reject doing anything for projects that *do* have a namespace
+
+    return if project.namespace  # Reject doing anything for projects that *do* have a namespace
 
     project.team.truncate
 
     unlink_fork(project) if project.forked?
-
-    # Override Project#remove_pages for this instance so it doesn't do anything
-    def project.remove_pages
-    end
 
     project.destroy!
   end

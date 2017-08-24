@@ -47,11 +47,6 @@ class User < ActiveRecord::Base
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
 
-  # devise overrides #inspect, so we manually use the Referable one
-  def inspect
-    referable_inspect
-  end
-
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   def update_tracked_fields!(request)
@@ -842,7 +837,12 @@ class User < ActiveRecord::Base
     create_namespace!(path: username, name: username) unless namespace
 
     if username_changed?
-      namespace.update_attributes(path: username, name: username)
+      unless namespace.update_attributes(path: username, name: username)
+        namespace.errors.each do |attribute, message|
+          self.errors.add(:"namespace_#{attribute}", message)
+        end
+        raise ActiveRecord::RecordInvalid.new(namespace)
+      end
     end
   end
 

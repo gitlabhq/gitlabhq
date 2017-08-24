@@ -98,11 +98,11 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 - [Git](topics/git/index.md): Getting started with Git, branching strategies, Git LFS, advanced use.
 - [Git cheatsheet](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf): Download a PDF describing the most used Git operations.
 - [GitLab Flow](workflow/gitlab_flow.md): explore the best of Git with the GitLab Flow strategy.
-- [Signing commits](workflow/gpg_signed_commits/index.md): use GPG to sign your commits.
+- [Signing commits](user/project/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Migrate and import your projects from other platforms
 
-- [Importing to GitLab](workflow/importing/README.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
+- [Importing to GitLab](user/project/import/index.md): Import your projects from GitHub, Bitbucket, GitLab.com, FogBugz and SVN into GitLab.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md): Convert a SVN repository to Git and GitLab.
 
 ### Continuous Integration, Delivery, and Deployment

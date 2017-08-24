@@ -53,7 +53,8 @@ module Gitlab
     end
 
     def kubernetes_namespace_regex_message
-      "can contain only letters, digits or '-', and cannot start or end with '-'"
+      "can contain only lowercase letters, digits, and '-'. " \
+      "Must start with a letter, and cannot end with '-'"
     end
 
     def environment_slug_regex

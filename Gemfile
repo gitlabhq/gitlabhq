@@ -16,7 +16,7 @@ gem 'mysql2', '~> 0.4.5', group: :mysql
 gem 'pg', '~> 0.18.2', group: :postgres
 
 gem 'rugged', '~> 0.26.0'
-gem 'grape-route-helpers', '~> 2.0.0'
+gem 'grape-route-helpers', '~> 2.1.0'
 
 gem 'faraday', '~> 0.12'
 
@@ -76,7 +76,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.4', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape', '~> 0.19.2'
+gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.6.0'
 gem 'rack-cors', '~> 0.4.0', require: 'rack/cors'
 
@@ -144,8 +144,6 @@ end
 
 # State machine
 gem 'state_machines-activerecord', '~> 0.4.0'
-# Run events after state machine commits
-gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 4.0'
@@ -154,7 +152,7 @@ gem 'acts-as-taggable-on', '~> 4.0'
 gem 'sidekiq', '~> 5.0'
 gem 'sidekiq-cron', '~> 0.6.0'
 gem 'redis-namespace', '~> 1.5.2'
-gem 'sidekiq-limit_fetch', '~> 3.4'
+gem 'sidekiq-limit_fetch', '~> 3.4', require: false
 
 # Cron Parser
 gem 'rufus-scheduler', '~> 3.4'
@@ -208,9 +206,6 @@ gem 'kubeclient', '~> 2.2.0'
 
 # d3
 gem 'd3_rails', '~> 3.5.0'
-
-# underscore-rails
-gem 'underscore-rails', '~> 1.8.0'
 
 # Sanitize user input
 gem 'sanitize', '~> 2.0'
@@ -289,7 +284,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta11'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta12'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -398,12 +393,12 @@ gem 'net-ssh', '~> 4.1.0'
 # Required for ED25519 SSH host key support
 group :ed25519 do
   gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 3.2'
+  gem 'rbnacl', '~> 4.0'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly', '~> 0.27.0'
+gem 'gitaly', '~> 0.30.0'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
