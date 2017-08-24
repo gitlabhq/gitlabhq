@@ -3,6 +3,7 @@ import RepoSidebar from './repo_sidebar.vue';
 import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
+import RepoFileInfo from './repo_file_info.vue';
 import RepoPreview from './repo_preview.vue';
 import RepoMixin from '../mixins/repo_mixin';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
@@ -17,6 +18,7 @@ export default {
     RepoSidebar,
     RepoTabs,
     RepoFileButtons,
+    RepoFileInfo,
     'repo-editor': MonacoLoaderHelper.repoEditorLoader,
     RepoCommitSection,
     PopupDialog,
@@ -54,6 +56,10 @@ export default {
           :is="currentBlobView"
           class="blob-viewer-container"/>
         <repo-file-buttons/>
+        <repo-file-info
+          :branch-name="currentBranch"
+          :mime-type="activeFile.mime_type"
+        />
       </div>
     </div>
     <repo-commit-section/>
