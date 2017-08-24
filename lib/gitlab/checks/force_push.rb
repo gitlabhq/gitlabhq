@@ -12,7 +12,7 @@ module Gitlab
             !project
               .repository
               .gitaly_commit_client
-              .is_ancestor(oldrev, newrev)
+              .ancestor?(oldrev, newrev)
           else
             Gitlab::Git::RevList.new(
               path_to_repo: project.repository.path_to_repo,
