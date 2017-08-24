@@ -70,11 +70,11 @@ class GpgKey < ActiveRecord::Base
   end
 
   def verified?
-    emails_with_verified_status.any? { |_email, verified| verified }
+    emails_with_verified_status.values.any?
   end
 
   def verified_and_belongs_to_email?(email)
-    emails_with_verified_status.any? { |key_email, verified| key_email == email && verified }
+    emails_with_verified_status.fetch(email, false)
   end
 
   def update_invalid_gpg_signatures
