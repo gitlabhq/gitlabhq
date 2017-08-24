@@ -246,14 +246,14 @@ describe Gitlab::LDAP::Access do
     end
 
     it "adds a Kerberos identity if it is in Active Directory but not in GitLab" do
-      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "mylogin@FOO.COM")
+      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "mylogin@FOO.COM")
 
       expect { access.update_kerberos_identity }.to change(user.identities.where(provider: :kerberos), :count).from(0).to(1)
       expect(user.identities.where(provider: "kerberos").last.extern_uid).to eq("mylogin@FOO.COM")
     end
 
     it "updates existing Kerberos identity in GitLab if Active Directory has a different one" do
-      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "otherlogin@BAR.COM")
+      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: "otherlogin@BAR.COM")
       user.identities.build(provider: "kerberos", extern_uid: "mylogin@FOO.COM").save
 
       expect { access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
@@ -261,7 +261,7 @@ describe Gitlab::LDAP::Access do
     end
 
     it "does not remove Kerberos identities from GitLab if they are none in the LDAP provider" do
-      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
       user.identities.build(provider: "kerberos", extern_uid: "otherlogin@BAR.COM").save
 
       expect { access.update_kerberos_identity }.not_to change(user.identities.where(provider: "kerberos"), :count)
@@ -269,7 +269,7 @@ describe Gitlab::LDAP::Access do
     end
 
     it "does not modify identities in GitLab if they are no kerberos principal in the LDAP provider" do
-      allow_any_instance_of(Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
+      allow_any_instance_of(EE::Gitlab::LDAP::Person).to receive_messages(kerberos_principal: nil)
 
       expect { access.update_kerberos_identity }.not_to change(user.identities, :count)
     end
