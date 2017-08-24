@@ -86,6 +86,11 @@ To follow conventions of naming across GitLab, and to futher move away from the
 `build` term and toward `job` CI variables have been renamed for the 9.0
 release.
 
+>**Note:**
+Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
+strongly advised to use the new variables as we will remove the old ones in
+future GitLab releases.**
+
 | 8.x name              | 9.0+ name               |
 | --------------------- |------------------------ |
 | `CI_BUILD_ID`         | `CI_JOB_ID`             |
