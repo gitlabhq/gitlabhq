@@ -82,7 +82,7 @@ module Milestoneish
     false
   end
 
-  def is_dashboard_milestone?
+  def dashboard_milestone?
     false
   end
 

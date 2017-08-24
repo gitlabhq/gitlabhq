@@ -3,7 +3,7 @@ class DashboardMilestone < GlobalMilestone
     { authorized_only: true }
   end
 
-  def is_dashboard_milestone?
+  def dashboard_milestone?
     true
   end
 end
