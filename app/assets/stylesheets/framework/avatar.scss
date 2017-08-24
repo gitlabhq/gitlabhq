@@ -82,7 +82,7 @@
   &.s60 { font-size: 32px; line-height: 58px; }
   &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
-  &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
+  &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
 }

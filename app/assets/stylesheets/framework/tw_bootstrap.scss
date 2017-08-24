@@ -103,7 +103,7 @@ summary {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
   display: inline-block;
 
   &.label-gray {
@@ -165,7 +165,7 @@ summary {
     .panel-heading {
       padding: 6px 15px;
       font-size: 13px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
 
       a {
         color: $panel-heading-link-color;
