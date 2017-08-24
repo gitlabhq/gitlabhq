@@ -73,6 +73,7 @@ var config = {
     protected_tags:       './protected_tags',
     ee_protected_tags:    'ee/protected_tags',
     service_desk:         './projects/settings_service_desk/service_desk_bundle.js',
+    service_desk_issues:  './service_desk_issues/index.js',
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
