@@ -41,7 +41,3 @@
         %li.commits-stat
           = link_to create_mr_path(project.default_branch, event.ref_name, project) do
             Create Merge Request
-- elsif event.rm_ref?
-  .event-body
-    %ul.well-list.event_commits
-      = render "events/commit", project: project, event: event

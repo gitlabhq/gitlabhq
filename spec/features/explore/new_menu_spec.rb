@@ -74,7 +74,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Title')
     end
 
-    scenario 'Click on New subgroup shows new group page' do
+    scenario 'Click on New subgroup shows new group page', :nested_groups do
       visit group_path(group)
 
       click_topmenuitem("New subgroup")

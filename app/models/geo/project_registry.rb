@@ -4,7 +4,16 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   validates :project, presence: true
 
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
-  scope :failed, -> { where.not(last_repository_synced_at: nil).where(last_repository_successful_sync_at: nil) }
+
+  def self.failed
+    repository_sync_failed = arel_table[:last_repository_synced_at].not_eq(nil)
+      .and(arel_table[:last_repository_successful_sync_at].eq(nil))
+
+    wiki_sync_failed = arel_table[:last_wiki_synced_at].not_eq(nil)
+      .and(arel_table[:last_wiki_successful_sync_at].eq(nil))
+
+    where(repository_sync_failed.or(wiki_sync_failed))
+  end
 
   def self.synced
     where.not(last_repository_synced_at: nil, last_repository_successful_sync_at: nil)

@@ -4,7 +4,7 @@
 %li.filter-dropdown-item{ class: ('js-current-user' if user == current_user) }
   %button.btn.btn-link.dropdown-user{ type: :button }
     .avatar-container.s40
-      = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 40).gsub('/images/{{avatar_url}}','{{avatar_url}}').html_safe
+      = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 40, has_tooltip: false).gsub('/images/{{avatar_url}}','{{avatar_url}}').html_safe
     .dropdown-user-details
       %span
         = user.name
