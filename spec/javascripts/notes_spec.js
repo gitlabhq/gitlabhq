@@ -8,7 +8,7 @@ import '~/render_gfm';
 import '~/render_math';
 import '~/notes';
 
-(function() {
+(function () {
   window.gon || (window.gon = {});
   window.gl = window.gl || {};
   gl.utils = gl.utils || {};
@@ -30,7 +30,7 @@ import '~/notes';
     return escapedString;
   };
 
-  describe('Notes', function() {
+  fdescribe('Notes', function () {
     const FLASH_TYPE_ALERT = 'alert';
     var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
@@ -42,15 +42,15 @@ import '~/notes';
       $('body').data('page', 'projects:merge_requets:show');
     });
 
-    describe('task lists', function() {
-      beforeEach(function() {
-        $('.js-comment-button').on('click', function(e) {
+    describe('task lists', function () {
+      beforeEach(function () {
+        $('.js-comment-button').on('click', function (e) {
           e.preventDefault();
         });
         this.notes = new Notes('', []);
       });
 
-      it('modifies the Markdown field', function() {
+      it('modifies the Markdown field', function () {
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
         $('input[type=checkbox]').attr('checked', true)[1].dispatchEvent(changeEvent);
@@ -58,8 +58,8 @@ import '~/notes';
         expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
 
-      it('submits an ajax request on tasklist:changed', function() {
-        spyOn(jQuery, 'ajax').and.callFake(function(req) {
+      it('submits an ajax request on tasklist:changed', function () {
+        spyOn(jQuery, 'ajax').and.callFake(function (req) {
           expect(req.type).toBe('PATCH');
           expect(req.url).toBe('http://test.host/frontend-fixtures/merge-requests-project/merge_requests/1.json');
           return expect(req.data.note).not.toBe(null);
@@ -69,17 +69,17 @@ import '~/notes';
       });
     });
 
-    describe('comments', function() {
+    describe('comments', function () {
       var textarea = '.js-note-text';
 
-      beforeEach(function() {
+      beforeEach(function () {
         this.notes = new Notes('', []);
 
         this.autoSizeSpy = spyOnEvent($(textarea), 'autosize:update');
         spyOn(this.notes, 'renderNote').and.stub();
 
         $(textarea).data('autosave', {
-          reset: function() {}
+          reset: function () {}
         });
 
         $('.js-comment-button').on('click', (e) => {
@@ -91,7 +91,7 @@ import '~/notes';
         });
       });
 
-      it('autosizes after comment submission', function() {
+      it('autosizes after comment submission', function () {
         $(textarea).text('This is an example comment note');
         expect(this.autoSizeSpy).not.toHaveBeenTriggered();
 
@@ -273,8 +273,7 @@ import '~/notes';
 
     describe('isUpdatedNote', () => {
       it('should consider same note text as the same', () => {
-        const result = Notes.isUpdatedNote(
-          {
+        const result = Notes.isUpdatedNote({
             note: 'initial'
           },
           $(`<div>
@@ -286,8 +285,7 @@ import '~/notes';
       });
 
       it('should consider same note with trailing newline as the same', () => {
-        const result = Notes.isUpdatedNote(
-          {
+        const result = Notes.isUpdatedNote({
             note: 'initial\n'
           },
           $(`<div>
@@ -299,8 +297,7 @@ import '~/notes';
       });
 
       it('should consider different notes as different', () => {
-        const result = Notes.isUpdatedNote(
-          {
+        const result = Notes.isUpdatedNote({
             note: 'foo'
           },
           $(`<div>
@@ -351,7 +348,9 @@ import '~/notes';
 
         beforeEach(() => {
           body = jasmine.createSpyObj('body', ['attr']);
-          discussionContainer = { length: 0 };
+          discussionContainer = {
+            length: 0
+          };
 
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
@@ -367,7 +366,9 @@ import '~/notes';
 
       describe('Discussion sub note', () => {
         beforeEach(() => {
-          discussionContainer = { length: 1 };
+          discussionContainer = {
+            length: 1
+          };
 
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
@@ -442,7 +443,7 @@ import '~/notes';
       });
     });
 
-    describe('postComment & updateComment', () => {
+    fdescribe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
       const note = {
@@ -463,6 +464,11 @@ import '~/notes';
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
         $form.find('textarea.js-note-text').val(sampleComment);
+        jasmine.clock().install();
+      });
+
+      afterEach(() => {
+        jasmine.clock().uninstall();
       });
 
       it('should show placeholder note while new comment is being posted', () => {
@@ -473,10 +479,14 @@ import '~/notes';
       it('should remove placeholder note when new comment is done posting', () => {
         const deferred = $.Deferred();
         spyOn($, 'ajax').and.returnValue(deferred.promise());
+
         $('.js-comment-button').click();
 
         deferred.resolve(note);
-        expect($notesContainer.find('.note.being-posted').length).toEqual(0);
+
+        jasmine.clock().tick(200);
+
+        return expect($notesContainer.find('.note.being-posted').length).toEqual(0);
       });
 
       it('should show actual note element when new comment is done posting', () => {
@@ -485,18 +495,23 @@ import '~/notes';
         $('.js-comment-button').click();
 
         deferred.resolve(note);
-        expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(true);
+
+        jasmine.clock().tick(200);
+
+        return expect($notesContainer.find(`#note_${note.id}`).length > 0).toEqual(true);
       });
 
       it('should reset Form when new comment is done posting', () => {
-        spyOn(jQuery, 'ajax').and.callFake(() => {
-          const def = $.Deferred();
-          def.resolve(note);
-          return def.promise();
-        });
+        const deferred = $.Deferred();
+        spyOn($, 'ajax').and.returnValue(deferred.promise());
 
         $('.js-comment-button').click();
-        expect($form.find('textarea.js-note-text').val()).toEqual('');
+
+        deferred.resolve(note);
+
+        jasmine.clock().tick(200);
+
+        return expect($form.find('textarea.js-note-text').val()).toEqual('');
       });
 
       it('should show flash error message when new comment failed to be posted', () => {
@@ -505,6 +520,9 @@ import '~/notes';
         $('.js-comment-button').click();
 
         deferred.reject();
+
+        jasmine.clock().tick(200);
+
         expect($notesContainer.parent().find('.flash-container .flash-text').is(':visible')).toEqual(true);
       });
 
@@ -520,6 +538,9 @@ import '~/notes';
         $noteEl.find('.js-comment-save-button').click();
 
         deferred.reject();
+
+        jasmine.clock().tick(200);
+
         const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
         expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
         expect($updatedNoteEl.find('.note-text').text().trim()).toEqual(sampleComment); // See if comment reverted back to original
@@ -624,7 +645,11 @@ import '~/notes';
 
       it('should return form metadata object from form reference', () => {
         $form.find('textarea.js-note-text').val(sampleComment);
-        const { formData, formContent, formAction } = this.notes.getFormData($form);
+        const {
+          formData,
+          formContent,
+          formAction
+        } = this.notes.getFormData($form);
 
         expect(formData.indexOf(sampleComment) > -1).toBe(true);
         expect(formContent).toEqual(sampleComment);
@@ -637,7 +662,9 @@ import '~/notes';
         sampleComment = '<script>alert("Boom!");</script>';
         $form.find('textarea.js-note-text').val(sampleComment);
 
-        const { formContent } = this.notes.getFormData($form);
+        const {
+          formContent
+        } = this.notes.getFormData($form);
 
         expect(_.escape).toHaveBeenCalledWith(sampleComment);
         expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
@@ -698,10 +725,21 @@ import '~/notes';
     });
 
     describe('getQuickActionDescription', () => {
-      const availableQuickActions = [
-        { name: 'close', description: 'Close this issue', params: [] },
-        { name: 'title', description: 'Change title', params: [{}] },
-        { name: 'estimate', description: 'Set time estimate', params: [{}] }
+      const availableQuickActions = [{
+          name: 'close',
+          description: 'Close this issue',
+          params: []
+        },
+        {
+          name: 'title',
+          description: 'Change title',
+          params: [{}]
+        },
+        {
+          name: 'estimate',
+          description: 'Set time estimate',
+          params: [{}]
+        }
       ];
 
       beforeEach(() => {
@@ -750,7 +788,7 @@ import '~/notes';
         expect($tempNote.attr('id')).toEqual(uniqueId);
         expect($tempNote.hasClass('being-posted')).toBeTruthy();
         expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-        $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function() {
+        $tempNote.find('.timeline-icon > a, .note-header-info > a').each(function () {
           expect($(this).attr('href')).toEqual(`/${currentUsername}`);
         });
         expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);

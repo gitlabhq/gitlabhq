@@ -4,8 +4,8 @@ import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 
-import './lib/utils/jasmine_jquery_patched_3';
 import '~/commons';
+import './lib/utils/jasmine_jquery_patched_3';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
