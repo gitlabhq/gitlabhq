@@ -9,15 +9,15 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
   end
 
   step "The project has 0 stars" do
-    has_n_stars(0)
+    has_n_stars?(0)
   end
 
   step "The project has 1 star" do
-    has_n_stars(1)
+    has_n_stars?(1)
   end
 
   step "The project has 2 stars" do
-    has_n_stars(2)
+    has_n_stars?(2)
   end
 
   # Requires @javascript
@@ -31,7 +31,7 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
 
   protected
 
-  def has_n_stars(n)
+  def has_n_stars?(n)
     expect(page).to have_css(".star-count", text: n, visible: true)
   end
 end
