@@ -201,6 +201,19 @@ module Gitlab
         end
       end
 
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def ref_exists?(ref_name)
+        gitaly_migrate(:ref_exists) do |is_enabled|
+          if is_enabled
+            gitaly_ref_exists?(ref_name)
+          else
+            rugged_ref_exists?(ref_name)
+          end
+        end
+      end
+
       # Returns true if the given tag exists
       #
       # name - The name of the tag as a String.
@@ -987,6 +1000,16 @@ module Gitlab
         end
 
         raw_output.compact
+      end
+
+      # Returns true if the given ref name exists
+      #
+      # Ref names must start with `refs/`.
+      def rugged_ref_exists?(ref_name)
+        raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+        rugged.references.exist?(ref_name)
+      rescue Rugged::ReferenceError
+        false
       end
 
       # Returns true if the given ref name exists
