@@ -414,8 +414,11 @@ module API
             requires :impersonation_token_id, type: Integer, desc: 'The ID of the impersonation token'
           end
           delete ':impersonation_token_id' do
-            status 204
-            find_impersonation_token.revoke!
+            token = find_impersonation_token
+
+            destroy_conditionally!(token) do
+              token.revoke!
+            end
           end
         end
       end

@@ -1,7 +1,6 @@
 require_dependency 'declarative_policy'
 
 module API
-  # Projects API
   class Projects < Grape::API
     include PaginationParams
 
