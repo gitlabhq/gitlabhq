@@ -604,7 +604,7 @@ describe MergeRequest do
       request = build_stubbed(:merge_request)
 
       expect(request.merge_commit_message)
-        .to match("See merge request #{request.to_reference}")
+        .to match("See merge request #{request.to_reference(full: true)}")
     end
 
     it 'excludes multiple linebreak runs when description is blank' do
