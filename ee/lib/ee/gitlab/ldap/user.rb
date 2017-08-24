@@ -9,36 +9,36 @@ module EE
         def initialize(auth_hash)
           super
 
-          with_proxy(auth_hash.provider) do |proxy|
-            set_external_with_external_groups(proxy)
-          end
+          set_external_with_external_groups
         end
+
+        private
 
         # Intended to be called during #initialize, and #save should be called
         # after initialize.
-        def set_external_with_external_groups(proxy)
-          gl_user.external = in_any_external_group?(proxy)
+        def set_external_with_external_groups
+          gl_user.external = in_any_external_group?
         end
 
         # Returns true if the User is found in an external group listed in the
         # config.
-        #
-        # Only checks the LDAP provider where the User was authorized.
-        def in_any_external_group?(proxy)
-          external_groups = proxy.adapter.config.external_groups
-          external_groups.any? do |group_cn|
-            in_group?(proxy, group_cn)
+        def in_any_external_group?
+          with_proxy do |proxy|
+            external_groups = proxy.adapter.config.external_groups
+            external_groups.any? do |group_cn|
+              in_group?(group_cn, proxy)
+            end
           end
         end
 
         # Returns true if the User is a member of the group.
-        def in_group?(proxy, group_cn)
+        def in_group?(group_cn, proxy)
           member_dns = proxy.dns_for_group_cn(group_cn)
           member_dns.include?(auth_hash.uid)
         end
 
-        def with_proxy(provider, &block)
-          ::EE::Gitlab::LDAP::Sync::Proxy.open(provider, &block)
+        def with_proxy(&block)
+          ::EE::Gitlab::LDAP::Sync::Proxy.open(auth_hash.provider, &block)
         end
       end
     end

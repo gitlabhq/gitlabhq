@@ -30,91 +30,75 @@ describe Gitlab::LDAP::User do
   end
 
   describe '#initialize' do
-    context 'when the user is in an external group' do
+    context 'when there is one external group' do
       let(:external_groups) { [group_cn] }
 
-      it "sets the user's external flag to true" do
-        expect(gl_user.external).to be_truthy
+      context 'when there is another user in the external group' do
+        context 'when the user is in the external group' do
+          let(:group_member_dns) { ['uid=someone_else,ou=people,dc=example,dc=com', auth_hash.uid] }
+
+          it "sets the user's external flag to true" do
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        context 'when the user is not in the external group' do
+          let(:group_member_dns) { ['uid=someone_else,ou=people,dc=example,dc=com'] }
+
+          it "sets the user's external flag to false" do
+            expect(gl_user.external).to be_falsey
+          end
+        end
+      end
+
+      context 'when there are no other users in the external group' do
+        context 'when the user is in the external group' do
+          let(:group_member_dns) { [auth_hash.uid] }
+
+          it "sets the user's external flag to true" do
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        context 'when the user is not in the external group' do
+          let(:group_member_dns) { [] }
+
+          it "sets the user's external flag to false" do
+            expect(gl_user.external).to be_falsey
+          end
+        end
       end
     end
 
-    context 'when the user is not in an external group' do
-      it "sets the user's external flag to false" do
-        expect(gl_user.external).to be_falsey
-      end
-    end
-  end
-
-  describe '#set_external_with_external_groups' do
-    context 'when the LDAP user is in an external group' do
-      let(:external_groups) { [group_cn] }
+    context 'when there is more than one external group' do
+      let(:external_groups) { ['bar', group_cn] }
 
       before do
-        gl_user.update!(external: false)
+        allow(fake_proxy).to receive(:dns_for_group_cn).with('bar').and_return(['uid=someone_else,ou=people,dc=example,dc=com'])
       end
-
-      it 'sets the GitLab user external flag to true' do
-        expect do
-          ldap_user.set_external_with_external_groups(fake_proxy)
-        end.to change { gl_user.external }.from(false).to(true)
-      end
-    end
-
-    context 'when the LDAP user is not in an external group' do
-      before do
-        gl_user.update!(external: true)
-      end
-
-      it 'sets the GitLab user external flag to true' do
-        expect do
-          ldap_user.set_external_with_external_groups(fake_proxy)
-        end.to change { gl_user.external }.from(true).to(false)
-      end
-    end
-  end
-
-  describe '#in_any_external_group?' do
-    subject { ldap_user.in_any_external_group?(fake_proxy) }
-
-    context 'when there is an external group' do
-      let(:external_groups) { [group_cn] }
 
       context 'when the user is in an external group' do
-        it 'returns true' do
-          expect(subject).to be_truthy
+        let(:group_member_dns) { [auth_hash.uid] }
+
+        it "sets the user's external flag to true" do
+          expect(gl_user.external).to be_truthy
         end
       end
 
       context 'when the user is not in an external group' do
-        let(:group_member_dns) { ['uid=someone_else,ou=people,dc=example,dc=com'] }
+        let(:group_member_dns) { [] }
 
-        it 'returns false' do
-          expect(subject).to be_falsey
+        it "sets the user's external flag to false" do
+          expect(gl_user.external).to be_falsey
         end
       end
     end
 
-    context 'when are no external groups' do
-      it 'returns false' do
-        expect(subject).to be_falsey
-      end
-    end
-  end
+    context 'when there are no external groups' do
+      let(:external_groups) { [] }
 
-  describe '#in_group?' do
-    subject { ldap_user.in_group?(fake_proxy, group_cn) }
-
-    context 'when the LDAP user is in the group' do
-      it 'returns true' do
-        expect(subject).to be_truthy
-      end
-    end
-
-    context 'when the LDAP user is not in the group' do
-      let(:group_member_dns) { ['uid=someone_else,ou=people,dc=example,dc=com'] }
-
-      it 'returns false' do
-        expect(subject).to be_falsey
+      it "sets the user's external flag to false" do
+        expect(gl_user.external).to be_falsey
       end
     end
   end
