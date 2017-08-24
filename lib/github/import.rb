@@ -56,7 +56,7 @@ module Github
       begin
         project.ensure_repository
         project.repository.add_remote('github', repo_url)
-        project.repository.set_remote_as_mirror('github')
+        project.repository.set_import_remote_as_mirror('github')
         project.repository.fetch_remote('github', forced: true)
       rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
         error(:project, repo_url, e.message)
@@ -140,7 +140,7 @@ module Github
         response.body.each do |raw|
           pull_request  = Github::Representation::PullRequest.new(raw, options.merge(project: project))
           merge_request = MergeRequest.find_or_initialize_by(iid: pull_request.iid, source_project_id: project.id)
-          next unless merge_request.new_record? && pull_request.valid?
+          next unless merge_request.new_record? && pull_request.valid? && merge_request.source_branch_head
 
           begin
             pull_request.restore_branches!
@@ -173,8 +173,6 @@ module Github
             fetch_comments(merge_request, :review_comment, review_comments_url, LegacyDiffNote)
           rescue => e
             error(:pull_request, pull_request.url, e.message)
-          ensure
-            pull_request.remove_restored_branches!
           end
         end
 

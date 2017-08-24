@@ -55,7 +55,8 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def ensure_commit_shas
-    merge_request.fetch_ref
+    merge_request.fetch_ref unless merge_request.source_branch_head
+
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
