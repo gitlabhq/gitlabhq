@@ -2,6 +2,19 @@ require 'rails_helper'
 
 describe Gitlab::Gpg::Commit do
   describe '#signature' do
+    shared_examples 'returns the cached signature on second call' do
+      it 'returns the cached signature on second call' do
+        gpg_commit = described_class.new(commit)
+
+        expect(gpg_commit).to receive(:using_keychain).and_call_original
+        gpg_commit.signature
+
+        # consecutive call
+        expect(gpg_commit).not_to receive(:using_keychain).and_call_original
+        gpg_commit.signature
+      end
+    end
+
     let!(:project) { create :project, :repository, path: 'sample-project' }
     let!(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }
 
@@ -48,16 +61,7 @@ describe Gitlab::Gpg::Commit do
             )
           end
 
-          it 'returns the cached signature on second call' do
-            gpg_commit = described_class.new(commit)
-
-            expect(gpg_commit).to receive(:using_keychain).and_call_original
-            gpg_commit.signature
-
-            # consecutive call
-            expect(gpg_commit).not_to receive(:using_keychain).and_call_original
-            gpg_commit.signature
-          end
+          it_behaves_like 'returns the cached signature on second call'
         end
 
         context 'user does not match the committer' do
@@ -92,6 +96,8 @@ describe Gitlab::Gpg::Commit do
               verification_status: 'other_user'
             )
           end
+
+          it_behaves_like 'returns the cached signature on second call'
         end
       end
 
@@ -127,6 +133,8 @@ describe Gitlab::Gpg::Commit do
             verification_status: 'unverified_key'
           )
         end
+
+        it_behaves_like 'returns the cached signature on second call'
       end
     end
 
@@ -157,16 +165,7 @@ describe Gitlab::Gpg::Commit do
         )
       end
 
-      it 'returns the cached signature on second call' do
-        gpg_commit = described_class.new(commit)
-
-        expect(gpg_commit).to receive(:using_keychain).and_call_original
-        gpg_commit.signature
-
-        # consecutive call
-        expect(gpg_commit).not_to receive(:using_keychain).and_call_original
-        gpg_commit.signature
-      end
+      it_behaves_like 'returns the cached signature on second call'
     end
   end
 end
