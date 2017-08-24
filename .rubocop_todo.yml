@@ -244,9 +244,6 @@ Style/PerlBackrefs:
 # NameWhitelist: is_a?
 Style/PredicateName:
   Enabled: true
-  # Exclude:
-    # - 'features/*'
-  # NamePrefix: is_
   NamePrefixBlacklist: is_
   NameWhitelist: have_visible_content
 
