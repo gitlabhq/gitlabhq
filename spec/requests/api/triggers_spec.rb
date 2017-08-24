@@ -8,8 +8,8 @@ describe API::Triggers do
   let!(:project) { create(:project, :repository, creator: user) }
   let!(:master) { create(:project_member, :master, user: user, project: project) }
   let!(:developer) { create(:project_member, :developer, user: user2, project: project) }
-  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token) }
-  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2) }
+  let!(:trigger) { create(:ci_trigger, project: project, token: trigger_token, owner: user) }
+  let!(:trigger2) { create(:ci_trigger, project: project, token: trigger_token_2, owner: user2) }
   let!(:trigger_request) { create(:ci_trigger_request, trigger: trigger, created_at: '2015-01-01 12:13:14') }
 
   describe 'POST /projects/:project_id/trigger/pipeline' do
@@ -254,8 +254,6 @@ describe API::Triggers do
   describe 'POST /projects/:id/triggers/:trigger_id/take_ownership' do
     context 'authenticated user with valid permissions' do
       it 'updates owner' do
-        expect(trigger.owner).to be_nil
-
         post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user)
 
         expect(response).to have_http_status(200)
