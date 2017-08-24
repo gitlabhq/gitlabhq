@@ -183,7 +183,7 @@ describe API::Users do
         expect(json_response.size).to eq(1)
         expect(json_response.first['username']).to eq(admin.username)
         expect(json_response.first['is_admin']).to eq(true)
-      en
+      end
 
       it "returns 400 error if provider with no extern_uid" do
         get api("/users?extern_uid=#{omniauth_user.identities.first.extern_uid}", admin)
