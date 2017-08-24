@@ -977,6 +977,36 @@ describe Gitlab::Git::Repository, seed_helper: true do
     it 'returns the number of branches' do
       expect(repository.branch_count).to eq(10)
     end
+
+    context 'with local and remote branches' do
+      let(:repository) do
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+      end
+
+      before do
+        create_remote_branch(repository, 'joe', 'remote_branch', 'master')
+        repository.create_branch('local_branch', 'master')
+      end
+
+      after do
+        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
+        ensure_seeds
+      end
+
+      it 'returns the count of local branches' do
+        expect(repository.branch_count).to eq(repository.local_branches.count)
+      end
+
+      context 'with Gitaly disabled' do
+        before do
+          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+        end
+
+        it 'returns the count of local branches' do
+          expect(repository.branch_count).to eq(repository.local_branches.count)
+        end
+      end
+    end
   end
 
   describe "#ls_files" do
