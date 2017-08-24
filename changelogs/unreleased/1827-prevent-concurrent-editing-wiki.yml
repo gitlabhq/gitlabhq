@@ -1,4 +1,0 @@
----
-title: Alert the user if a Wiki page changed while they were editing it in order to prevent overwriting changes.
-merge_request: 9707
-author: Hiroyuki Sato

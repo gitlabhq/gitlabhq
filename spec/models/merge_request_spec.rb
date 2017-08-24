@@ -1692,4 +1692,13 @@ describe MergeRequest do
       expect(subject.ref_fetched?).to be_falsey
     end
   end
+
+  describe 'removing a merge request' do
+    it 'refreshes the number of open merge requests of the target project' do
+      project = subject.target_project
+
+      expect { subject.destroy }
+        .to change { project.open_merge_requests_count }.from(1).to(0)
+    end
+  end
 end

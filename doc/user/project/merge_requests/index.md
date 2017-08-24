@@ -137,6 +137,14 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
+## Merge request diff file navigation
+
+The diff view has a persistent dropdown for file navigation. As you scroll through
+diffs with a large number of files and/or many changes in those files, you can
+easily jump to any changed file through the dropdown navigation.
+
+![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
+
 ## Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff

@@ -304,6 +304,50 @@ describe Event do
     end
   end
 
+  describe '#body?' do
+    let(:push_event) do
+      event = build(:push_event)
+
+      allow(event).to receive(:push?).and_return(true)
+
+      event
+    end
+
+    it 'returns true for a push event with commits' do
+      allow(push_event).to receive(:push_with_commits?).and_return(true)
+
+      expect(push_event).to be_body
+    end
+
+    it 'returns false for a push event without a valid commit range' do
+      allow(push_event).to receive(:push_with_commits?).and_return(false)
+
+      expect(push_event).not_to be_body
+    end
+
+    it 'returns true for a Note event' do
+      event = build(:event)
+
+      allow(event).to receive(:note?).and_return(true)
+
+      expect(event).to be_body
+    end
+
+    it 'returns true if the target responds to #title' do
+      event = build(:event)
+
+      allow(event).to receive(:target).and_return(double(:target, title: 'foo'))
+
+      expect(event).to be_body
+    end
+
+    it 'returns false for a regular event without a target' do
+      event = build(:event)
+
+      expect(event).not_to be_body
+    end
+  end
+
   def create_push_event(project, user)
     event = create(:push_event, project: project, author: user)
 
