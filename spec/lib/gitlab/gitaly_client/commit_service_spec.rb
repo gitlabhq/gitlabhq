@@ -119,5 +119,19 @@ describe Gitlab::GitalyClient::CommitService do
 
       client.tree_entries(repository, revision, path)
     end
+
+    context 'with UTF-8 params strings' do
+      let(:revision) { "branch\u011F" }
+      let(:path) { "foo/\u011F.txt" }
+
+      it 'handles string encodings correctly' do
+        expect_any_instance_of(Gitaly::CommitService::Stub)
+          .to receive(:get_tree_entries)
+          .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+          .and_return([])
+
+        client.tree_entries(repository, revision, path)
+      end
+    end
   end
 end

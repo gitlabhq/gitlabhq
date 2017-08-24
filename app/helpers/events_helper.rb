@@ -176,7 +176,7 @@ module EventsHelper
     sanitize(
       text,
       tags: %w(a img gl-emoji b pre code p span),
-      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-name', 'data-unicode-version']
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
     )
   end
 

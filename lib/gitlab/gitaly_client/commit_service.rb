@@ -63,8 +63,8 @@ module Gitlab
       def tree_entries(repository, revision, path)
         request = Gitaly::GetTreeEntriesRequest.new(
           repository: @gitaly_repo,
-          revision: revision,
-          path: path.presence || '.'
+          revision: GitalyClient.encode(revision),
+          path: path.present? ? GitalyClient.encode(path) : '.'
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :get_tree_entries, request)

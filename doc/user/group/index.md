@@ -55,6 +55,12 @@ By doing so:
 - John mentions everyone from his team with `@john-team`
 - John mentions only his marketing team with `@john-team/marketing`
 
+## Issues and merge requests within a group
+
+Issues and merge requests are part of projects. For a given group, view all the
+[issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
+together in a single list view.
+
 ## Create a new group
 
 You can create a group in GitLab from:
