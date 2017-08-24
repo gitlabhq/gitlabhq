@@ -24,8 +24,8 @@ describe Projects::HousekeepingService do
     end
 
     it 'yields the block if given' do
-      expect do |b|
-        subject.execute(&b)
+      expect do |block|
+        subject.execute(&block)
       end.to yield_with_no_args
     end
 
@@ -47,8 +47,8 @@ describe Projects::HousekeepingService do
       end
 
       it 'does not yield' do
-        expect do |b|
-          expect { subject.execute(&b) }
+        expect do |block|
+          expect { subject.execute(&block) }
             .to raise_error(Projects::HousekeepingService::LeaseTaken)
         end.not_to yield_with_no_args
       end
