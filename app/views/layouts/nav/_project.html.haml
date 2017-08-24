@@ -28,7 +28,8 @@
           %span
             Issues
             - if @project.issues_enabled?
-              %span.badge.count.issue_counter= number_with_delimiter(issuables_count_for_state(:issues, :opened, finder: IssuesFinder.new(current_user, project_id: @project.id)))
+              %span.badge.count.issue_counter
+                = number_with_delimiter(@project.open_issues_count)
 
     - if project_nav_tab? :merge_requests
       - controllers = [:merge_requests, 'projects/merge_requests/conflicts']
@@ -37,7 +38,8 @@
         = link_to project_merge_requests_path(@project), title: 'Merge Requests', class: 'shortcuts-merge_requests' do
           %span
             Merge Requests
-            %span.badge.count.merge_counter.js-merge-counter= number_with_delimiter(issuables_count_for_state(:merge_requests, :opened, finder: MergeRequestsFinder.new(current_user, project_id: @project.id)))
+            %span.badge.count.merge_counter.js-merge-counter
+              = number_with_delimiter(@project.open_merge_requests_count)
 
     - if project_nav_tab? :pipelines
       = nav_link(controller: [:pipelines, :builds, :environments, :artifacts]) do

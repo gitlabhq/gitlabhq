@@ -1424,7 +1424,7 @@ describe User do
     end
 
     it "excludes push event if branch has been deleted" do
-      allow_any_instance_of(Repository).to receive(:branch_names).and_return(['foo'])
+      allow_any_instance_of(Repository).to receive(:branch_exists?).with('master').and_return(false)
 
       expect(subject.recent_push).to eq(nil)
     end

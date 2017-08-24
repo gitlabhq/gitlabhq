@@ -34,6 +34,7 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -707,9 +708,8 @@ class MergeRequest < ActiveRecord::Base
     if !include_description && closes_issues_references.present?
       message << "Closes #{closes_issues_references.to_sentence}"
     end
-
     message << "#{description}" if include_description && description.present?
-    message << "See merge request #{to_reference}"
+    message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")
   end
@@ -961,8 +961,13 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+<<<<<<< HEAD
   def base_pipeline
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
+=======
+  def update_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+>>>>>>> ce/master
   end
 
   private
