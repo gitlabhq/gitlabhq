@@ -5,7 +5,13 @@ class RemoveSystemHookFromGeoNodes < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    SystemHook.destroy_all(id: GeoNode.select(:system_hook_id))
+    execute <<-EOF.strip_heredoc
+      DELETE FROM web_hooks
+      WHERE id IN (
+        SELECT system_hook_id
+        FROM geo_nodes
+      );
+    EOF
 
     remove_reference :geo_nodes, :system_hook
   end
