@@ -211,7 +211,7 @@ class Milestone < ActiveRecord::Base
     group_id.present?
   end
 
-  def is_project_milestone?
+  def project_milestone?
     project_id.present?
   end
 

@@ -74,7 +74,7 @@ module Milestoneish
     false
   end
 
-  def is_project_milestone?
+  def project_milestone?
     false
   end
 

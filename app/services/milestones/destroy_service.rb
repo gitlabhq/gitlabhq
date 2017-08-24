@@ -1,7 +1,7 @@
 module Milestones
   class DestroyService < Milestones::BaseService
     def execute(milestone)
-      return unless milestone.is_project_milestone?
+      return unless milestone.project_milestone?
 
       Milestone.transaction do
         update_params = { milestone: nil }
