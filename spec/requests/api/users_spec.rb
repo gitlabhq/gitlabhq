@@ -40,7 +40,7 @@ describe API::Users do
       it "returns authorization error when username and admin=true are passed" do
         get api("/users"), username: user.username, admin: true
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       context "when public level is restricted" do
@@ -175,7 +175,7 @@ describe API::Users do
         expect(json_response.first['username']).to eq(omniauth_user.username)
       end
 
-       it "returns one user by admin status" do
+      it "returns one user by admin status" do
         get api("/users?admin=true", admin)
 
         expect(response).to have_http_status(200)
