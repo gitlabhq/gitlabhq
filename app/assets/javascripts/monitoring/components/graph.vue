@@ -36,6 +36,8 @@
 
     data() {
       return {
+        baseGraphHeight: 450,
+        baseGraphWidth: 600,
         graphHeight: 450,
         graphWidth: 600,
         graphHeightOffset: 120,
@@ -54,7 +56,6 @@
         currentDataIndex: 0,
         currentXCoordinate: 0,
         currentFlagPosition: 0,
-        metricUsage: '',
         showFlag: false,
         showDeployInfo: true,
         timeSeries: [],
@@ -76,12 +77,12 @@
 
     computed: {
       outterViewBox() {
-        return `0 0 ${this.graphWidth} ${this.graphHeight}`;
+        return `0 0 ${this.baseGraphWidth} ${this.baseGraphHeight}`;
       },
 
       innerViewBox() {
-        if ((this.graphWidth - 150) > 0) {
-          return `0 0 ${this.graphWidth - 150} ${this.graphHeight}`;
+        if ((this.baseGraphWidth - 150) > 0) {
+          return `0 0 ${this.baseGraphWidth - 150} ${this.baseGraphHeight}`;
         }
         return '0 0 0 0';
       },
@@ -92,7 +93,7 @@
 
       paddingBottomRootSvg() {
         return {
-          paddingBottom: `${(Math.ceil(this.graphHeight * 100) / this.graphWidth) || 0}%`,
+          paddingBottom: `${(Math.ceil(this.baseGraphHeight * 100) / this.baseGraphWidth) || 0}%`,
         };
       },
     },
@@ -113,6 +114,8 @@
         this.graphWidth = this.$refs.baseSvg.clientWidth -
                      this.margin.left - this.margin.right;
         this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
+        this.baseGraphHeight = this.graphHeight;
+        this.baseGraphWidth = this.graphWidth;
         this.renderAxesPaths();
         this.formatDeployments();
       },
@@ -177,6 +180,10 @@
             values: timeSeries.values,
           };
         });
+
+        if (this.timeSeries.length > 4) {
+          this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 4) * 20;
+        }
 
         const axisXScale = d3.time.scale()
           .range([0, this.graphWidth]);

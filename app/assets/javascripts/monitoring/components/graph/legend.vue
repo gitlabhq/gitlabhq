@@ -48,6 +48,8 @@
       return {
         yLabelWidth: 0,
         yLabelHeight: 0,
+        seriesXPosition: 0,
+        metricUsageXPosition: 0,
       };
     },
     computed: {
@@ -77,7 +79,7 @@
     },
     methods: {
       translateLegendGroup(index) {
-        return `translate(${120 * index}, 0)`;
+        return `translate(0, ${12 * (index)})`;
       },
 
       formatMetricUsage(series) {
@@ -87,6 +89,8 @@
     mounted() {
       this.$nextTick(() => {
         const bbox = this.$refs.ylabel.getBBox();
+        this.seriesXPosition = this.$refs.legendTitleSvg[0].getBBox().width;
+        this.metricUsageXPosition = this.$refs.seriesTitleSvg[0].getBBox().width;
         this.yLabelWidth = bbox.width + 10; // Added some padding
         this.yLabelHeight = bbox.height + 5;
       });
@@ -153,21 +157,23 @@
         :y="graphHeight - measurements.legendOffset">
       </rect>
       <text
-        class="text-metric-title"
-        x="45"
+        class="legend-metric-title"
+        ref="legendTitleSvg"
+        x="38"
         :y="graphHeight - 30">
         {{legendTitle}}
       </text>
       <text
-        class="text-metric-title"
-        x="45"
-        :y="graphHeight - 20">
+        class="legend-metric-title"
+        ref="seriesTitleSvg"
+        :x="seriesXPosition + 40"
+        :y="graphHeight - 30">
         Series {{index + 1}}
       </text>
       <text
         class="text-metric-usage"
-        x="45"
-        :y="graphHeight - 10">
+        :x="metricUsageXPosition + seriesXPosition + 45"
+        :y="graphHeight - 30">
         {{formatMetricUsage(series)}}
       </text>
     </g>
