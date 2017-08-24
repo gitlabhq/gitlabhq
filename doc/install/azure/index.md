@@ -2,7 +2,7 @@
 
 > _This article was originally written by Dave Wentzel and [published on the GitLab Blog][Original-Blog-Post]._
 >
-> _Ported to the GitLab documentation and updated in 2017-08-24 by [Ian Scorer](https://gitlab.com/iscorer)._
+> _Ported to the GitLab documentation and updated on 2017-08-24 by [Ian Scorer](https://gitlab.com/iscorer)._
 
 Azure is Microsoft's business cloud and GitLab is a pre-configured offering on the Azure Marketplace. 
 Hopefully, you aren't surprised to hear that Microsoft and Azure have embraced open source software 
