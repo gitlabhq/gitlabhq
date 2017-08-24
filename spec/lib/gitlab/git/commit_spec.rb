@@ -461,6 +461,17 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { is_expected.not_to include("feature") }
   end
 
+  describe '#rugged_commit' do
+    let(:raw_commit) { { id: SeedRepo::Commit::ID } }
+    let(:commit) { described_class.decorate(repository, raw_commit) }
+    subject { commit.send(:rugged_commit) }
+
+    it 'returns a rugged commit based on the id of a non-rugged raw commit' do
+      expect(subject.class).to be(Rugged::Commit)
+      expect(subject).to eq(rugged_commit)
+    end
+  end
+
   def sample_commit_hash
     {
       author_email: "dmitriy.zaporozhets@gmail.com",
