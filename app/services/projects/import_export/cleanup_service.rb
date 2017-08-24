@@ -1,11 +1,15 @@
 module Projects
   module ImportExport
     class CleanupService
-      RESERVED_REFS_NAMES =
+      def self.reserved_refs_names
         %w[heads tags merge-requests keep-around environments]
-      RESERVED_REFS_REGEXP =
-        %r{\Arefs/(?:#{
-          RESERVED_REFS_NAMES.map(&Regexp.method(:escape)).join('|')})/}x
+      end
+
+      def self.reserved_refs_regexp
+        names = reserved_refs_names.map(&Regexp.method(:escape)).join('|')
+
+        %r{\Arefs/(?:#{names})/}
+      end
 
       attr_reader :project
 
@@ -23,8 +27,12 @@ module Projects
       private
 
       def garbage_refs
-        @garbage_refs ||= rugged.references.reject do |ref|
-          ref.name =~ RESERVED_REFS_REGEXP
+        @garbage_refs ||= begin
+          reserved_refs_regexp = self.class.reserved_refs_regexp
+
+          rugged.references.reject do |ref|
+            ref.name =~ reserved_refs_regexp
+          end
         end
       end
 

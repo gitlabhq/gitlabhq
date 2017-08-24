@@ -37,7 +37,7 @@ describe Projects::ImportExport::CleanupService do
       end
     end
 
-    described_class::RESERVED_REFS_NAMES.each do |name|
+    described_class.reserved_refs_names.each do |name|
       context "with a ref in refs/#{name}/tmp" do
         before do
           repository.write_ref("refs/#{name}/tmp", sha)
