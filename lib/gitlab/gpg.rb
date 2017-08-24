@@ -39,7 +39,7 @@ module Gitlab
         fingerprints = CurrentKeyChain.fingerprints_from_key(key)
 
         GPGME::Key.find(:public, fingerprints).flat_map do |raw_key|
-          raw_key.uids.map { |uid| { name: uid.name, email: uid.email } }
+          raw_key.uids.map { |uid| { name: uid.name, email: uid.email.downcase } }
         end
       end
     end
