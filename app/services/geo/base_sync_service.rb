@@ -99,11 +99,11 @@ module Geo
     end
 
     def last_successful_sync_at
-      registry.public_send("last_#{type}_successful_sync_at")
+      registry.public_send("last_#{type}_successful_sync_at") # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def last_synced_at
-      registry.public_send("last_#{type}_synced_at")
+      registry.public_send("last_#{type}_synced_at") # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 end
