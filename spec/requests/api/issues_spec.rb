@@ -984,7 +984,7 @@ describe API::Issues, :mailer do
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
       allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
-      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
     end
 
     let(:params) do
@@ -1114,7 +1114,7 @@ describe API::Issues, :mailer do
 
     it "does not create a new project issue" do
       allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
-      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
+      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
 
       put api("/projects/#{project.id}/issues/#{issue.iid}", user), params
 
