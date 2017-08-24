@@ -18,9 +18,17 @@ the hardware requirements.
   Useful for unsupported systems like *BSD. For an overview of the directory
   structure, read the [structure documentation](structure.md).
 - [Docker](https://docs.gitlab.com/omnibus/docker/) - Install GitLab using Docker.
+
+## Install GitLab on cloud providers
+
 - [Installing in Kubernetes](kubernetes/index.md) - Install GitLab into a Kubernetes
   Cluster using our official Helm Chart Repository.
-- Testing only! [DigitalOcean and Docker Machine](digitaloceandocker.md) -
+- [Install GitLab on OpenShift](../articles/openshift_and_gitlab/index.md)
+- [Install GitLab on DC/OS](https://mesosphere.com/blog/gitlab-dcos/) via [GitLab/Mesosphere integration](https://about.gitlab.com/2016/09/16/announcing-gitlab-and-mesosphere/)
+- [Install GitLab on Azure](azure/index.md)
+- [Install GitLab on Google Cloud Platform](google_cloud_platform/index.md)
+- [Install on AWS](https://about.gitlab.com/aws/)
+- _Testing only!_ [DigitalOcean and Docker Machine](digitaloceandocker.md) -
   Quickly test any version of GitLab on DigitalOcean using Docker Machine.
 
 ## Database

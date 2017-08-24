@@ -39,10 +39,6 @@ Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/READM
 | [How to use GitLab CI and MacStadium to build your macOS or iOS projects](https://about.gitlab.com/2017/05/15/how-to-use-macstadium-and-gitlab-ci-to-build-your-macos-or-ios-projects/) | Technical overview | 2017/05/15 |
 | [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/) | Tutorial | 2016/03/10 |
 
-## Deployment
-
-- [How to setup a GitLab Instance on Microsoft Azure](how_to_setup_gitlab_on_azure/index.md)
-
 ## Git
 
 Learn how to use [Git with GitLab](../topics/git/index.md):
@@ -79,7 +75,7 @@ Learn how to deploy a static website with [GitLab Pages](../user/project/pages/i
 
 ## Install and maintain GitLab
 
-Install, upgrade, integrate, migrate to GitLab:
+[Admin](../#), [install](../install/README.md), upgrade, integrate, migrate to GitLab:
 
 | Article title | Category | Publishing date |
 | :------------ | :------: | --------------: |
