@@ -243,7 +243,9 @@ Style/PerlBackrefs:
 # NamePrefixBlacklist: is_, has_, have_
 # NameWhitelist: is_a?
 Style/PredicateName:
-  Enabled: false
+  Enabled: true
+  # NamePrefix: is_
+  NamePrefixBlacklist: is_
 
 # Offense count: 58
 # Cop supports --auto-correct.

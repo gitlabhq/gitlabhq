@@ -229,7 +229,7 @@ module IssuablesHelper
   end
 
   def updated_at_by(issuable)
-    return {} unless issuable.is_edited?
+    return {} unless issuable.edited?
 
     {
       updatedAt: issuable.updated_at.to_time.iso8601,
