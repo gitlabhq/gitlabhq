@@ -160,7 +160,7 @@ header {
 
     li {
       &.active a {
-        font-weight: bold;
+        font-weight: $gl-font-weight-bold;
       }
     }
   }
@@ -250,7 +250,7 @@ header {
       font-size: 18px;
       line-height: 22px;
       display: inline-block;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       color: $gl-text-color;
       vertical-align: top;
       white-space: nowrap;
@@ -326,7 +326,7 @@ header {
     .badge {
       position: inherit;
       top: -8px;
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
       margin-left: -11px;
       font-size: 11px;
       color: $white-light;

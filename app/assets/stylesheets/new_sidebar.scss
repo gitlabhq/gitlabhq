@@ -46,7 +46,7 @@ $new-sidebar-collapsed-width: 50px;
 
   a {
     border-bottom: 1px solid $border-color;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     display: flex;
     align-items: center;
     padding: 10px 16px 10px 10px;
@@ -160,7 +160,7 @@ $new-sidebar-collapsed-width: 50px;
 
     > a {
       color: $active-color;
-      font-weight: 700;
+      font-weight: $gl-font-weight-bold;
     }
 
     svg {
@@ -308,7 +308,7 @@ $new-sidebar-collapsed-width: 50px;
 
       .badge {
         color: $active-color;
-        font-weight: 600;
+        font-weight: $gl-font-weight-bold;
       }
 
       .sidebar-sub-level-items {
@@ -474,6 +474,6 @@ $new-sidebar-collapsed-width: 50px;
   border-bottom-color: $active-border;
 
   .badge {
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
   }
 }
