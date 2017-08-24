@@ -79,6 +79,10 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   def select_branch(branch_name)
+    within('#new-branch-form') do
+      find('.dropdown').click
+    end
+
     click_button 'master'
 
     page.within '#new-branch-form .dropdown-menu' do
