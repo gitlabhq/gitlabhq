@@ -20,6 +20,6 @@ class GpgSignature < ActiveRecord::Base
   end
 
   def gpg_commit
-    Gitlab::Gpg::Commit.new(project, commit_sha)
+    Gitlab::Gpg::Commit.new(commit)
   end
 end

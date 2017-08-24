@@ -1,17 +1,12 @@
 module Gitlab
   module Gpg
     class Commit
-      def self.for_commit(commit)
-        new(commit.project, commit.sha)
-      end
-
-      def initialize(project, sha)
-        @project = project
-        @sha = sha
+      def initialize(commit)
+        @commit = commit
 
         @signature_text, @signed_text =
           begin
-            Rugged::Commit.extract_signature(project.repository.rugged, sha)
+            Rugged::Commit.extract_signature(@commit.project.repository.rugged, @commit.sha)
           rescue Rugged::OdbError
             nil
           end
@@ -26,7 +21,7 @@ module Gitlab
 
         return @signature if @signature
 
-        cached_signature = GpgSignature.find_by(commit_sha: @sha)
+        cached_signature = GpgSignature.find_by(commit_sha: @commit.sha)
         return @signature = cached_signature if cached_signature.present?
 
         @signature = create_cached_signature!
@@ -75,8 +70,8 @@ module Gitlab
         user_infos = user_infos(gpg_key)
 
         {
-          commit_sha: @sha,
-          project: @project,
+          commit_sha: @commit.sha,
+          project: @commit.project,
           gpg_key: gpg_key,
           gpg_key_primary_keyid: gpg_key&.primary_keyid || verified_signature.fingerprint,
           gpg_key_user_name: user_infos[:name],
