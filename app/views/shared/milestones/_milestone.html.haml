@@ -21,7 +21,7 @@
   - if milestone.is_a?(GlobalMilestone) || milestone.is_group_milestone?
     .row
       .col-sm-6
-        - if milestone.is_legacy_group_milestone?
+        - if milestone.legacy_group_milestone?
           .expiration= render('shared/milestone_expired', milestone: milestone)
           .projects
             - milestone.milestones.each do |milestone|

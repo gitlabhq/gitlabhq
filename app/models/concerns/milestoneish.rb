@@ -78,7 +78,7 @@ module Milestoneish
     false
   end
 
-  def is_legacy_group_milestone?
+  def legacy_group_milestone?
     false
   end
 
