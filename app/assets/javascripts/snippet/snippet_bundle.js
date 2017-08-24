@@ -5,10 +5,9 @@
   $(function() {
     if (typeof ace !== 'undefined') {
       var editor = ace.edit("editor");
-
       $(".snippet-form-holder form").on('submit', function() {
         $(".snippet-file-content").val(editor.getValue());
       });
-    }    
+    }
   });
 }).call(window);

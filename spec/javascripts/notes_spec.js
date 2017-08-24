@@ -282,8 +282,8 @@ import '~/notes';
     describe('isUpdatedNote', () => {
       it('should consider same note text as the same', () => {
         const result = Notes.isUpdatedNote({
-            note: 'initial'
-          },
+          note: 'initial'
+        },
           $(`<div>
             <div class="original-note-content">initial</div>
           </div>`)
@@ -294,8 +294,8 @@ import '~/notes';
 
       it('should consider same note with trailing newline as the same', () => {
         const result = Notes.isUpdatedNote({
-            note: 'initial\n'
-          },
+          note: 'initial\n'
+        },
           $(`<div>
             <div class="original-note-content">initial\n</div>
           </div>`)
@@ -306,8 +306,8 @@ import '~/notes';
 
       it('should consider different notes as different', () => {
         const result = Notes.isUpdatedNote({
-            note: 'foo'
-          },
+          note: 'foo'
+        },
           $(`<div>
             <div class="original-note-content">bar</div>
           </div>`)
@@ -583,7 +583,7 @@ import '~/notes';
           dataSources: {
             commands: '/root/test-project/autocomplete_sources/commands'
           }
-        }; 
+        };
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
         $form.find('textarea.js-note-text').val(sampleComment);
@@ -742,20 +742,20 @@ import '~/notes';
 
     describe('getQuickActionDescription', () => {
       const availableQuickActions = [{
-          name: 'close',
-          description: 'Close this issue',
-          params: []
-        },
-        {
-          name: 'title',
-          description: 'Change title',
-          params: [{}]
-        },
-        {
-          name: 'estimate',
-          description: 'Set time estimate',
-          params: [{}]
-        }
+        name: 'close',
+        description: 'Close this issue',
+        params: []
+      },
+      {
+        name: 'title',
+        description: 'Change title',
+        params: [{}]
+      },
+      {
+        name: 'estimate',
+        description: 'Set time estimate',
+        params: [{}]
+      }
       ];
 
       beforeEach(() => {
