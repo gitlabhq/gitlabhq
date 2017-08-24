@@ -980,7 +980,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'with local and remote branches' do
       let(:repository) do
-        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'))
+        Gitlab::Git::Repository.new('default', File.join(TEST_MUTABLE_REPO_PATH, '.git'), '')
       end
 
       before do
