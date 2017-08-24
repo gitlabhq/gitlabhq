@@ -61,6 +61,10 @@ module Gitlab
       if entry[:msgid].is_a?(Array)
         errors << "<#{message_id}> is defined over multiple lines, this breaks some tooling."
       end
+
+      if translations_in_entry(entry).any? { |translation| translation.is_a?(Array) }
+        errors << "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+      end
     end
 
     def validate_variables(errors, entry)
@@ -171,6 +175,18 @@ module Gitlab
 
     def join_message(message)
       Array(message).join
+    end
+
+    def translations_in_entry(entry)
+      if entry[:msgid_plural].present?
+        entry.fetch_values(*plural_translation_keys_in_entry(entry))
+      else
+        [entry[:msgstr]]
+      end
+    end
+
+    def plural_translation_keys_in_entry(entry)
+      entry.keys.select { |key| key =~ /msgstr\[\d*\]/ }
     end
   end
 end

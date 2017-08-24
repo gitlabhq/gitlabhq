@@ -26,11 +26,25 @@ describe Gitlab::PoLinter do
     context 'for a translations with newlines' do
       let(:po_path) { 'spec/fixtures/newlines.po' }
 
-      it 'has an error' do
+      it 'has an error for a normal string' do
         message_id = "You are going to remove %{group_name}.\\nRemoved groups CANNOT be restored!\\nAre you ABSOLUTELY sure?"
         expected_message = "<#{message_id}> is defined over multiple lines, this breaks some tooling."
 
-        is_expected.to include(message_id => [expected_message])
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'has an error when a translation is defined over multiple lines' do
+        message_id = "You are going to remove %{group_name}.\\nRemoved groups CANNOT be restored!\\nAre you ABSOLUTELY sure?"
+        expected_message = "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+
+        expect(errors[message_id]).to include(expected_message)
+      end
+
+      it 'raises an error when a plural translation is defined over multiple lines' do
+        message_id = 'With plural'
+        expected_message = "<#{message_id}> has translations defined over multiple lines, this breaks some tooling."
+
+        expect(errors[message_id]).to include(expected_message)
       end
     end
 
