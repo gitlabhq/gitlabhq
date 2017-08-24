@@ -30,7 +30,7 @@ import '~/notes';
     return escapedString;
   };
 
-  fdescribe('Notes', function () {
+  describe('Notes', function () {
     const FLASH_TYPE_ALERT = 'alert';
     var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
     preloadFixtures(commentsTemplate);
@@ -443,7 +443,7 @@ import '~/notes';
       });
     });
 
-    fdescribe('postComment & updateComment', () => {
+    describe('postComment & updateComment', () => {
       const sampleComment = 'foo';
       const updatedComment = 'bar';
       const note = {
