@@ -80,7 +80,28 @@ describe VisibilityLevelHelper do
       end
     end
 
-    describe "Snippet" do
+    describe "group" do
+      let(:group) { create(:group, :internal) }
+
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
+        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      end
+    end
+
+    describe "sub-group" do
+      let(:group) { create(:group, :private) }
+      let(:subgroup) { create(:group, :private, parent: group) }
+
+      it "disallows levels" do
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::INTERNAL)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+      end
+    end
+
+    describe "snippet" do
       let(:snippet) { create(:snippet, :internal) }
 
       it "disallows levels" do
