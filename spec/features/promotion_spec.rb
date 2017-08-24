@@ -183,18 +183,12 @@ describe 'Promotions', js: true do
       allow(Gitlab).to receive(:com?) { true }
 
       project.team << [user, :master]
-      otherproject.team << [user, :master]
       sign_in(user)
     end
 
     it 'should appear in milestone page' do
       visit project_milestone_path(project, milestone)
       expect(find('#promote_burndown_charts')).to have_content "Upgrade the plan for #{group.name} to improve milestones"
-    end
-
-    it 'should appear in milestone page with owners name' do
-      visit project_milestone_path(otherproject, milestone)
-      expect(find('#promote_burndown_charts')).to have_content "Upgrade #{otherdeveloper.name}'s plan to improve milestones with Burndown Charts."
     end
 
     it 'does not show when cookie is set' do
