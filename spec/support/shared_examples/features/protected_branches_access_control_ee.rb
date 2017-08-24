@@ -2,7 +2,7 @@ shared_examples "protected branches > access control > EE" do
   [['merge', ProtectedBranch::MergeAccessLevel], ['push', ProtectedBranch::PushAccessLevel]].each do |git_operation, access_level_class|
     # Need to set a default for the `git_operation` access level that _isn't_ being tested
     other_git_operation = git_operation == 'merge' ? 'push' : 'merge'
-    roles = git_operation == 'merge' ? access_level_class.human_access_levels : access_level_class.human_access_levels.except(0)
+    roles_except_noone = access_level_class.human_access_levels.except(0)
 
     let(:users) { create_list(:user, 5) }
     let(:groups) { create_list(:group, 5) }
@@ -22,7 +22,7 @@ shared_examples "protected branches > access control > EE" do
       set_protected_branch_name('master')
       set_allowed_to(git_operation, users.map(&:name))
       set_allowed_to(git_operation, groups.map(&:name))
-      set_allowed_to(git_operation, roles.values)
+      roles_except_noone.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
       set_allowed_to(other_git_operation)
 
       click_on "Protect"
@@ -31,7 +31,7 @@ shared_examples "protected branches > access control > EE" do
       expect(ProtectedBranch.count).to eq(1)
 
       access_levels = last_access_levels(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      roles_except_noone.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
       users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
       groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
     end
@@ -46,14 +46,14 @@ shared_examples "protected branches > access control > EE" do
 
       set_allowed_to(git_operation, users.map(&:name), form: ".js-protected-branch-edit-form")
       set_allowed_to(git_operation, groups.map(&:name), form: ".js-protected-branch-edit-form")
-      set_allowed_to(git_operation, roles.values, form: ".js-protected-branch-edit-form")
+      roles_except_noone.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name, form: ".js-protected-branch-edit-form") }
 
       wait_for_requests
 
       expect(ProtectedBranch.count).to eq(1)
 
       access_levels = last_access_levels(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      roles_except_noone.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
       users.each { |user| expect(access_levels.map(&:user_id)).to include(user.id) }
       groups.each { |group| expect(access_levels.map(&:group_id)).to include(group.id) }
     end
@@ -63,7 +63,7 @@ shared_examples "protected branches > access control > EE" do
       set_protected_branch_name('master')
 
       users.each { |user| set_allowed_to(git_operation, user.name) }
-      roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
+      roles_except_noone.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
       groups.each { |group| set_allowed_to(git_operation, group.name) }
       set_allowed_to(other_git_operation)
 
@@ -71,7 +71,7 @@ shared_examples "protected branches > access control > EE" do
 
       users.each { |user| set_allowed_to(git_operation, user.name, form: ".js-protected-branch-edit-form") }
       groups.each { |group| set_allowed_to(git_operation, group.name, form: ".js-protected-branch-edit-form") }
-      roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name, form: ".js-protected-branch-edit-form") }
+      roles_except_noone.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name, form: ".js-protected-branch-edit-form") }
 
       wait_for_requests
 
@@ -89,7 +89,7 @@ shared_examples "protected branches > access control > EE" do
 
       # Create Protected Branch
       set_protected_branch_name('master')
-      set_allowed_to(git_operation, roles.values)
+      roles_except_noone.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
       set_allowed_to(other_git_operation)
 
       click_on 'Protect'
@@ -119,7 +119,7 @@ shared_examples "protected branches > access control > EE" do
       expect(ProtectedBranch.count).to eq(1)
 
       access_levels = last_access_levels(git_operation)
-      roles.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
+      roles_except_noone.each { |(access_type_id, _)| expect(access_levels.map(&:access_level)).to include(access_type_id) }
       expect(access_levels.map(&:user_id)).to include(users.last.id)
     end
   end

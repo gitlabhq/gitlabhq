@@ -110,7 +110,7 @@ describe 'Branches' do
         project.add_user(user, :developer)
       end
 
-      it 'does not allow devleoper to removes protected branch', js: true do
+      it 'does not allow devleoper to remove protected branch', js: true do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
