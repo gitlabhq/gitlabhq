@@ -17,7 +17,7 @@ import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import { mockBoardService } from './mock_data';
 
-fdescribe('Store', () => {
+describe('Store', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = mockBoardService();
@@ -210,6 +210,7 @@ fdescribe('Store', () => {
     it('moves issue in list', (done) => {
       const issue = new ListIssue({
         title: 'Testing',
+        id: 2,
         iid: 2,
         confidential: false,
         labels: [],

@@ -94,7 +94,8 @@ class ListIssue {
       data.issue.label_ids = [''];
     }
 
-    return Vue.http.patch(url.replace(':project_path', this.project.path), data);
+    const projectPath = this.project ? this.project.path : '';
+    return Vue.http.patch(url.replace(':project_path', projectPath), data);
   }
 }
 

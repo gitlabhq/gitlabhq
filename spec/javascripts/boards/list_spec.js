@@ -23,10 +23,7 @@ describe('List model', () => {
   beforeEach(() => {
     Vue.http.interceptors.push(boardsMockInterceptor);
     gl.boardService = mockBoardService({
-      boardsEndpoint: '/test/issue-boards/board',
-      listsEndpoint: '/boards/1',
       bulkUpdatePath: '/test/issue-boards/board/1/lists',
-      boardId: '1',
     });
     gl.issueBoards.BoardsStore.create();
 

@@ -44,24 +44,13 @@ const BoardsMockData = {
         assignees: [],
       }],
     },
-    '/boards/1{/id}/issues': {
-      issues: [{
-        title: 'Testing',
-        id: 1,
-        iid: 1,
-        confidential: false,
-        labels: [],
-        assignees: [],
-      }],
-      size: 1
-    },
     '/test/issue-boards/milestones.json': [{
       id: 1,
       title: 'test',
     }],
   },
   'POST': {
-    '/boards/1{/id}': listObj
+    '/test/boards/1{/id}': listObj
   },
   'PUT': {
     '/test/issue-boards/board/1/lists{/id}': {}

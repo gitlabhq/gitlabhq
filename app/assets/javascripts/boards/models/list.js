@@ -111,6 +111,7 @@ class List {
       .then(resp => resp.json())
       .then((data) => {
         issue.id = data.id;
+        issue.iid = data.iid;
         issue.milestone = data.milestone;
 
         if (this.issuesSize > 1) {

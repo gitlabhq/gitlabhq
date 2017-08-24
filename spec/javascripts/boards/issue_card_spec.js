@@ -37,6 +37,7 @@ describe('Issue card component', () => {
     list = listObj;
     issue = new ListIssue({
       title: 'Testing',
+      id: 1,
       iid: 1,
       confidential: false,
       labels: [list.label],

@@ -82,7 +82,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },
@@ -163,7 +163,7 @@ export default {
     this.$refs.list.removeEventListener('scroll', this.onScroll);
   },
   template: `
-    <transition-group tag="div" class="board-list-component">
+    <div class="board-list-component">
       <div
         key="loading"
         class="board-list-loading text-center"
@@ -212,6 +212,6 @@ export default {
           </span>
         </li>
       </ul>
-    </transition-group>
+    </div>
   `,
 };
