@@ -9,78 +9,66 @@ describe YetAnotherUsersFinder do
     let(:current_user) { create(:user) }
     let(:params) { {} }
 
-    it 'returns no users' do
-      users = described_class.new(params: params, current_user: current_user).execute
+    let(:users) { User.all }
+    subject { described_class.new(params: params, current_user: current_user, users: users).execute.to_a }
 
-      expect(users.size).to eq(0)
+    context 'when users param not passed or nil' do
+      let(:users) { nil }
+
+      it { is_expected.to match_array([]) }
     end
 
+    it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
 
-    # context 'with a normal user' do
-    #   let(:user) { create(:user) }
+    context 'when filtered by search' do
+      let(:params) { {search: 'johndoe' } }
 
-    #   it 'returns all users' do
-    #     users = described_class.new(user).execute
+      it { is_expected.to match_array([user1]) }
+    end
 
-    #     expect(users).to contain_exactly(user, user1, user2, omniauth_user)
-    #   end
+    context 'when filtered by skip_users' do
+      let(:params) { {skip_users: [omniauth_user.id, current_user.id] } }
 
-    #   it 'filters by username' do
-    #     users = described_class.new(user, username: 'johndoe').execute
+      it { is_expected.to match_array([user1, external_user]) }
+    end
 
-    #     expect(users).to contain_exactly(user1)
-    #   end
+    context 'when todos exist' do
+      let!(:pending_todo1) { create(:todo, user: current_user, author: user1, state: :pending) }
+      let!(:pending_todo2) { create(:todo, user: external_user, author: omniauth_user, state: :pending) }
+      let!(:done_todo1) { create(:todo, user: current_user, author: external_user, state: :done) }
+      let!(:done_todo2) { create(:todo, user: user1, author: external_user, state: :done) }
 
-    #   it 'filters by search' do
-    #     users = described_class.new(user, search: 'orando').execute
+      context 'when filtered by todo_filter without todo_state_filter' do
+        let(:params) { {todo_filter: true} }
 
-    #     expect(users).to contain_exactly(user2)
-    #   end
+        it { is_expected.to match_array([]) }
+      end
 
-    #   it 'filters by blocked users' do
-    #     users = described_class.new(user, blocked: true).execute
+      context 'when filtered by todo_filter with pending todo_state_filter' do
+        let(:params) { {todo_filter: true, todo_state_filter: 'pending'} }
 
-    #     expect(users).to contain_exactly(user2)
-    #   end
+        it { is_expected.to match_array([user1]) }
+      end
 
-    #   it 'filters by active users' do
-    #     users = described_class.new(user, active: true).execute
 
-    #     expect(users).to contain_exactly(user, user1, omniauth_user)
-    #   end
+      context 'when filtered by todo_filter with done todo_state_filter' do
+        let(:params) { {todo_filter: true, todo_state_filter: 'done'} }
 
-    #   it 'returns no external users' do
-    #     users = described_class.new(user, external: true).execute
+        it { is_expected.to match_array([external_user]) }
+      end
+    end
 
-    #     expect(users).to contain_exactly(user, user1, user2, omniauth_user)
-    #   end
+    context 'when filtered by current_user' do
+      let(:current_user) { user2 }
+      let(:params) { {current_user: true } }
 
-    #   it 'filters by created_at' do
-    #     filtered_user_before = create(:user, created_at: 3.days.ago)
-    #     filtered_user_after = create(:user, created_at: Time.now + 3.days)
+      it { is_expected.to match_array([user2, user1, external_user, omniauth_user]) }
+    end
 
-    #     users = described_class.new(user,
-    #                                 created_after: 2.days.ago,
-    #                                 created_before: Time.now + 2.days).execute
+    context 'when filtered by author_id' do
+      let(:params) { {author_id: user2.id } }
 
-    #     expect(users.map(&:username)).not_to include([filtered_user_before.username, filtered_user_after.username])
-    #   end
-    # end
-
-    # context 'with an admin user' do
-    #   let(:admin) { create(:admin) }
-
-    #   it 'filters by external users' do
-    #     users = described_class.new(admin, external: true).execute
-
-    #     expect(users).to contain_exactly(external_user)
-    #   end
-
-    #   it 'returns all users' do
-    #     users = described_class.new(admin).execute
-
-    #     expect(users).to contain_exactly(admin, user1, user2, external_user, omniauth_user)
-    #   end
-    # end
+      it { is_expected.to match_array([user2, user1, external_user, omniauth_user, current_user]) }
+    end
   end
 end
