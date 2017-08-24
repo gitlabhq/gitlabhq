@@ -247,6 +247,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
