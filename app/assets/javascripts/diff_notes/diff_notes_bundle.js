@@ -16,7 +16,7 @@ import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
 
 $(() => {
-  const projectPath = document.querySelector('.merge-request').dataset.projectPath;
+  const projectPath = document.querySelector('.merge-request') && document.querySelector('.merge-request').dataset.projectPath;
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
 
   window.gl = window.gl || {};
@@ -66,12 +66,14 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
+  if (document.getElementById('resolve-count-app')) {
+    new Vue({
+      el: '#resolve-count-app',
+      components: {
+        'resolve-count': window.ResolveCount
+      }
+    });
+  }
 
   $(window).trigger('resize.nav');
 });

@@ -10,11 +10,13 @@
       this.options.screenKeys = options.screenKeys || true;
       this.container = document.querySelector(options.selector);
 
-      this.setSocketUrl();
-      this.createTerminal();
-      $(window).off('resize.terminal').on('resize.terminal', () => {
-        this.terminal.fit();
-      });
+      if (this.container) {
+        this.setSocketUrl();
+        this.createTerminal();
+        $(window).off('resize.terminal').on('resize.terminal', () => {
+          this.terminal.fit();
+        });
+      }
     }
 
     setSocketUrl() {

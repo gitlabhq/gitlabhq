@@ -10,24 +10,26 @@ export default class ProtectedTagCreate {
   buildDropdowns() {
     const $allowedToCreateDropdown = this.$form.find('.js-allowed-to-create');
 
-    // Cache callback
-    this.onSelectCallback = this.onSelect.bind(this);
+    if ($allowedToCreateDropdown && $allowedToCreateDropdown.data('glDropdown')) {
+      // Cache callback
+      this.onSelectCallback = this.onSelect.bind(this);
 
-    // Allowed to Create dropdown
-    this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
-      $dropdown: $allowedToCreateDropdown,
-      data: gon.create_access_levels,
-      onSelect: this.onSelectCallback,
-    });
+      // Allowed to Create dropdown
+      this.protectedTagAccessDropdown = new ProtectedTagAccessDropdown({
+        $dropdown: $allowedToCreateDropdown,
+        data: gon.create_access_levels,
+        onSelect: this.onSelectCallback,
+      });
 
-    // Select default
-    $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
+      // Select default
+      $allowedToCreateDropdown.data('glDropdown').selectRowAtIndex(0);
 
-    // Protected tag dropdown
-    this.protectedTagDropdown = new ProtectedTagDropdown({
-      $dropdown: this.$form.find('.js-protected-tag-select'),
-      onSelect: this.onSelectCallback,
-    });
+      // Protected tag dropdown
+      this.protectedTagDropdown = new ProtectedTagDropdown({
+        $dropdown: this.$form.find('.js-protected-tag-select'),
+        onSelect: this.onSelectCallback,
+      });
+    }
   }
 
   // This will run after clicked callback

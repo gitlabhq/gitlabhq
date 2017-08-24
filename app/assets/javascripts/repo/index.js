@@ -63,7 +63,7 @@ function initRepoEditButton(el) {
 function initRepoBundle() {
   const repo = document.getElementById('repo');
   const editButton = document.querySelector('.editable-mode');
-  setInitialStore(repo.dataset);
+  if (repo) setInitialStore(repo.dataset);
   addEventsForNonVueEls();
   initDropdowns();
 

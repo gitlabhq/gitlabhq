@@ -100,7 +100,7 @@ import '~/notes';
       });
     });
 
-    fdescribe('updateNote', () => {
+    describe('updateNote', () => {
       let sampleComment;
       let noteEntity;
       let $form;

@@ -9,7 +9,9 @@ export default class ProtectedTagEdit {
     this.$allowedToCreateDropdownButton = this.$wrap.find('.js-allowed-to-create');
     this.onSelectCallback = this.onSelect.bind(this);
 
-    this.buildDropdowns();
+    if (this.$allowedToCreateDropdownButton) {
+      this.buildDropdowns();
+    }
   }
 
   buildDropdowns() {

@@ -11,32 +11,35 @@ export default class ProtectedBranchCreate {
     const $allowedToMergeDropdown = this.$form.find('.js-allowed-to-merge');
     const $allowedToPushDropdown = this.$form.find('.js-allowed-to-push');
 
-    // Cache callback
-    this.onSelectCallback = this.onSelect.bind(this);
+    if ($allowedToMergeDropdown && $allowedToPushDropdown) {
+      // Cache callback
+      this.onSelectCallback = this.onSelect.bind(this);
 
-    // Allowed to Merge dropdown
-    this.protectedBranchMergeAccessDropdown = new ProtectedBranchAccessDropdown({
-      $dropdown: $allowedToMergeDropdown,
-      data: gon.merge_access_levels,
-      onSelect: this.onSelectCallback,
-    });
+      // Allowed to Merge dropdown
+      this.protectedBranchMergeAccessDropdown = new ProtectedBranchAccessDropdown({
+        $dropdown: $allowedToMergeDropdown,
+        data: gon.merge_access_levels,
+        onSelect: this.onSelectCallback,
+      });
 
-    // Allowed to Push dropdown
-    this.protectedBranchPushAccessDropdown = new ProtectedBranchAccessDropdown({
-      $dropdown: $allowedToPushDropdown,
-      data: gon.push_access_levels,
-      onSelect: this.onSelectCallback,
-    });
+      // Allowed to Push dropdown
+      this.protectedBranchPushAccessDropdown = new ProtectedBranchAccessDropdown({
+        $dropdown: $allowedToPushDropdown,
+        data: gon.push_access_levels,
+        onSelect: this.onSelectCallback,
+      });
 
-    // Select default
-    $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
-    $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
+      // Select default
+      if ($allowedToPushDropdown.data('glDropdown')) $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
+      if ($allowedToMergeDropdown.data('glDropdown')) $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
 
-    // Protected branch dropdown
-    this.protectedBranchDropdown = new ProtectedBranchDropdown({
-      $dropdown: this.$form.find('.js-protected-branch-select'),
-      onSelect: this.onSelectCallback,
-    });
+      
+      // Protected branch dropdown
+      this.protectedBranchDropdown = new ProtectedBranchDropdown({
+        $dropdown: this.$form.find('.js-protected-branch-select'),
+        onSelect: this.onSelectCallback,
+      });
+    }
   }
 
   // This will run after clicked callback
