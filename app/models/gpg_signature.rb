@@ -7,9 +7,10 @@ class GpgSignature < ActiveRecord::Base
   enum verification_status: {
     unverified: 0,
     verified: 1,
-    other_user: 2,
-    unverified_key: 3,
-    unknown_key: 4
+    same_user_different_email: 2,
+    other_user: 3,
+    unverified_key: 4,
+    unknown_key: 5
   }
 
   belongs_to :project

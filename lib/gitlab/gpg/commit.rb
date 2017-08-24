@@ -85,6 +85,8 @@ module Gitlab
       def verification_status(gpg_key)
         if gpg_key && gpg_key.verified_and_belongs_to_email?(@commit.committer_email) && verified_signature.valid?
           GpgSignature.verification_statuses[:verified]
+        elsif gpg_key && gpg_key.verified? && verified_signature.valid? && gpg_key.user.all_emails.include?(@commit.committer_email)
+          GpgSignature.verification_statuses[:same_user_different_email]
         elsif gpg_key && gpg_key.verified? && verified_signature.valid?
           GpgSignature.verification_statuses[:other_user]
         elsif gpg_key

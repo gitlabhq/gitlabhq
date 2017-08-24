@@ -28,7 +28,7 @@ describe Gitlab::Gpg::Commit do
 
     context 'known key' do
       context 'user matches the key uid' do
-        context 'user matches the committer' do
+        context 'user email matches the email committer' do
           let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User1.emails.first }
 
           let!(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
@@ -64,7 +64,47 @@ describe Gitlab::Gpg::Commit do
           it_behaves_like 'returns the cached signature on second call'
         end
 
-        context 'user does not match the committer' do
+        context 'user email does not match the committer email, but is the same user' do
+          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User2.emails.first }
+
+          let(:user) do
+            create(:user, email: GpgHelpers::User1.emails.first).tap do |user|
+              create :email, user: user, email: GpgHelpers::User2.emails.first
+            end
+          end
+
+          let!(:gpg_key) do
+            create :gpg_key, key: GpgHelpers::User1.public_key, user: user
+          end
+
+          before do
+            allow(Rugged::Commit).to receive(:extract_signature)
+            .with(Rugged::Repository, commit_sha)
+            .and_return(
+              [
+                GpgHelpers::User1.signed_commit_signature,
+                GpgHelpers::User1.signed_commit_base_data
+              ]
+            )
+          end
+
+          it 'returns an invalid signature' do
+            expect(described_class.new(commit).signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              gpg_key: gpg_key,
+              gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
+              gpg_key_user_name: GpgHelpers::User1.names.first,
+              gpg_key_user_email: GpgHelpers::User1.emails.first,
+              valid_signature: false,
+              verification_status: 'same_user_different_email'
+            )
+          end
+
+          it_behaves_like 'returns the cached signature on second call'
+        end
+
+        context 'user email does not match the committer email' do
           let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User2.emails.first }
 
           let(:user) { create(:user, email: GpgHelpers::User1.emails.first) }
