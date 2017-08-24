@@ -190,6 +190,10 @@ describe API::DeployKeys do
 
       expect(response).to have_http_status(404)
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin) }
+    end
   end
 
   describe 'POST /projects/:id/deploy_keys/:key_id/enable' do

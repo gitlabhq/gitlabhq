@@ -228,9 +228,6 @@ describe API::ProjectSnippets do
     let(:snippet) { create(:project_snippet, author: admin) }
 
     it 'deletes snippet' do
-      admin = create(:admin)
-      snippet = create(:project_snippet, author: admin)
-
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
       expect(response).to have_http_status(204)
@@ -241,6 +238,10 @@ describe API::ProjectSnippets do
 
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
+    end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin) }
     end
   end
 

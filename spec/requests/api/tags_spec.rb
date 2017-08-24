@@ -278,6 +278,10 @@ describe API::Tags do
         expect(response).to have_gitlab_http_status(204)
       end
 
+      it_behaves_like '412 response' do
+        let(:request) { api(route, current_user) }
+      end
+
       context 'when tag does not exist' do
         let(:tag_name) { 'unknown' }
 

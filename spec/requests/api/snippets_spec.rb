@@ -270,6 +270,10 @@ describe API::Snippets do
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
+
+    it_behaves_like '412 response' do
+      let(:request) { api("/snippets/#{public_snippet.id}", user) }
+    end
   end
 
   describe "GET /snippets/:id/user_agent_detail" do
