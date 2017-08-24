@@ -1,14 +1,8 @@
-> **Article [Type](../../development/writing_documentation.html#types-of-technical-articles):** tutorial ||
-> **Level:** beginner ||
-> **Author:** [Ian Scorer](https://gitlab.com/iscorer) ||
-> **Publication date:** 2017/08/16
+# Install GitLab on Microsoft Azure
 
-# How to Setup a GitLab Instance on Microsoft Azure
-
-_This article was originally written by Dave Wentzel and [published on the GitLab Blog][Original-Blog-Post]. 
-Ported to the GitLab documentation and updated in August 2017 by [Ian Scorer](https://gitlab.com/iscorer)_
-
-## GitLab on Azure
+> _This article was originally written by Dave Wentzel and [published on the GitLab Blog][Original-Blog-Post]. 
+>
+> Ported to the GitLab documentation and updated in 2017-08-24 by [Ian Scorer](https://gitlab.com/iscorer)._
 
 Azure is Microsoft's business cloud and GitLab is a pre-configured offering on the Azure Marketplace. 
 Hopefully, you aren't surprised to hear that Microsoft and Azure have embraced open source software 
@@ -17,6 +11,7 @@ pre-configured GitLab VM and have your very own private GitLab up and running in
 Let's get started.
 
 ### Getting started
+
 First, you'll need an account on Azure. There are three ways to do this:
 
 - If your company (or you) already has an account, then you are ready to go!
