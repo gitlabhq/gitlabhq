@@ -155,7 +155,7 @@
   .branch-commit {
 
     .ref-name {
-      font-weight: bold;
+      font-weight: $gl-font-weight-bold;
       max-width: 120px;
       overflow: hidden;
       display: inline-block;
@@ -307,7 +307,7 @@
 
     .build-name {
       float: right;
-      font-weight: 500;
+      font-weight: $gl-font-weight-normal;
     }
 
     .ci-status-icon-failed svg {
@@ -316,7 +316,7 @@
 
     .stage {
       color: $gl-text-color-secondary;
-      font-weight: 500;
+      font-weight: $gl-font-weight-normal;
       vertical-align: middle;
     }
   }
@@ -449,7 +449,7 @@
 
   .stage-name {
     margin: 0 0 15px 10px;
-    font-weight: bold;
+    font-weight: $gl-font-weight-bold;
     width: 176px;
     white-space: nowrap;
     overflow: hidden;
@@ -609,7 +609,7 @@
   vertical-align: bottom;
   display: inline-block;
   position: relative;
-  font-weight: normal;
+  font-weight: $gl-font-weight-normal;
 }
 
 @mixin mini-pipeline-graph-color($color-light, $color-main, $color-dark) {
@@ -754,7 +754,7 @@ a.linked-pipeline-mini-item {
   .mini-pipeline-graph-dropdown-item {
     padding: 3px 7px 4px;
     clear: both;
-    font-weight: normal;
+    font-weight: $gl-font-weight-normal;
     line-height: 1.428571429;
     white-space: nowrap;
     margin: 0 5px;

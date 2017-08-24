@@ -196,7 +196,7 @@
     @extend .ref-name;
 
     color: $gl-text-color;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     overflow: hidden;
     word-break: break-all;
 
@@ -227,7 +227,7 @@
   .mr-widget-body {
     h4 {
       float: left;
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       font-size: 14px;
       line-height: inherit;
       margin-top: 0;
@@ -238,7 +238,7 @@
       }
 
       time {
-        font-weight: normal;
+        font-weight: $gl-font-weight-normal;
       }
     }
 
@@ -248,7 +248,7 @@
     }
 
     label {
-      font-weight: normal;
+      font-weight: $gl-font-weight-normal;
     }
 
     .spacing {
@@ -256,12 +256,12 @@
     }
 
     .bold {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       color: $gl-gray-light;
     }
 
     .state-label {
-      font-weight: 600;
+      font-weight: $gl-font-weight-bold;
       padding-right: 10px;
     }
 
@@ -328,7 +328,7 @@
 
       .text {
         span {
-          font-weight: 600;
+          font-weight: $gl-font-weight-bold;
         }
 
         p {
@@ -491,7 +491,7 @@
 .panel-new-merge-request {
   .panel-heading {
     padding: 5px 10px;
-    font-weight: 600;
+    font-weight: $gl-font-weight-bold;
     line-height: 25px;
   }
 
